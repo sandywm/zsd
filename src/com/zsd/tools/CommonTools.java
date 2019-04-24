@@ -366,6 +366,6 @@ public class CommonTools {
 	}
 		
 	public static void main(String[] args){
-		System.out.println("测试1345");
+		System.out.println("测试134567");
 	}
 }
