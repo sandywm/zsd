@@ -6,7 +6,18 @@
   <form-beans />
   <global-exceptions />
   <global-forwards />
-  <action-mappings />
+  <action-mappings >
+  	<!-- 登录动作 -->
+    <action path="/login"  parameter="action" scope="request" type="com.zsd.action.login.LoginAction">
+      <set-property property="cancellable" value="true" />
+    </action>
+    <!-- 用户管理 -->
+    <action path="/user" parameter="action" scope="request" type="com.zsd.action.UserAction">
+      <set-property property="cancellable" value="true" />
+    </action>
+
+  </action-mappings>
+
   <message-resources parameter="com.yourcompany.struts.ApplicationResources" />
 </struts-config>
 
