@@ -2,4 +2,5 @@
 <appContext>
 	<app id="edition_Web" class="com.zsd.service.impl.EditionManagerImpl"/>
 	<app id="subject_Web" class="com.zsd.service.impl.SubjectManagerImpl"/>
+	<app id="grade_subject_Web" class="com.zsd.service.impl.GradeSubjectManagerImpl"/>
 </appContext>

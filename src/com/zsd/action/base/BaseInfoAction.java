@@ -17,9 +17,14 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
 
+import com.zsd.page.PageConst;
 import com.zsd.factory.AppFactory;
 import com.zsd.module.Edition;
+import com.zsd.module.GradeSubject;
+import com.zsd.module.Subject;
 import com.zsd.service.EditionManager;
+import com.zsd.service.GradeSubjectManager;
+import com.zsd.service.SubjectManager;
 import com.zsd.tools.CommonTools;
 import com.zsd.util.Constants;
 
@@ -79,5 +84,206 @@ public class BaseInfoAction extends DispatchAction {
 		return null;
 	}
 	
+	/**
+	 * 获取学科列表
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getSubjectData(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		SubjectManager sm = (SubjectManager) AppFactory.instance(null).getApp(Constants.WEB_SUBJECT_INFO);
+		Integer showStatus = CommonTools.getFinalInteger("showStatus", request);//-1表示全部,0：显示，1：隐藏
+		List<Subject> sList = sm.listInfoByDisplayStatus(showStatus);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "error";
+		if(sList.size() > 0){
+			msg = "success";
+			List<Object> list_d = new ArrayList<Object>();
+			for(Iterator<Subject> it = sList.iterator() ; it.hasNext();){
+				Subject sub = it.next();
+				Map<String,Object> map_d = new HashMap<String,Object>();
+				map_d.put("id", sub.getId());
+				map_d.put("subName", sub.getSubName());
+				map_d.put("subOrder", sub.getSubOrder());
+				if(sub.getDisplayStatus().equals(0)){
+					map_d.put("showStatusChi", "显示");
+				}else{
+					map_d.put("showStatusChi", "隐藏");
+				}
+				map_d.put("showStatus", sub.getDisplayStatus());
+				list_d.add(map_d);
+			}
+			map.put("subList", list_d);
+		}else{
+			msg = "noInfo";
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
 	
+	/**
+	 * 分页获取年级学科列表
+	 * @author wm
+	 * @date 2019-4-28 下午10:15:54 
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getGSubjectData(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		GradeSubjectManager gsm = (GradeSubjectManager) AppFactory.instance(null).getApp(Constants.WEB_GRADE_SUBJECT_INFO);
+		String gName = Transcode.unescape_new("gName", request);
+		Integer subId = CommonTools.getFinalInteger("subId", request);
+		Integer showStatus = CommonTools.getFinalInteger("showStatus", request);//-1表示全部,0：显示，1：隐藏
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "error";
+		Integer count = gsm.getCountByOpt(gName, subId, 0, showStatus);
+		if(count > 0){
+			Integer pageSize = PageConst.getPageSize(String.valueOf(request.getParameter("limit")), 10);//等同于pageSize
+			Integer pageNo = CommonTools.getFinalInteger("page", request);//等同于pageNo
+			List<GradeSubject> gsList = gsm.listPageInfoByOpt(gName, subId, 0, showStatus, pageNo, pageSize);
+			msg = "success";
+			List<Object> list_d = new ArrayList<Object>();
+			for(Iterator<GradeSubject> it = gsList.iterator() ; it.hasNext();){
+				GradeSubject gs = it.next();
+				Map<String,Object> map_d = new HashMap<String,Object>();
+				map_d.put("id", gs.getId());
+				map_d.put("gName", gs.getGradeName());
+				map_d.put("subName", gs.getSubject().getSubName());
+				map_d.put("subId", gs.getSubject().getId());
+				Integer schoolType = gs.getSchoolType();
+				String schoolTypeChi = "";
+				if(schoolType.equals(1)){
+					schoolTypeChi = "小学";
+				}else if(schoolType.equals(2)){
+					schoolTypeChi = "初中";
+				}else if(schoolType.equals(3)){
+					schoolTypeChi = "高中";
+				}
+				map_d.put("schoolType", schoolType);
+				map_d.put("schoolTypeChi", schoolTypeChi);
+				Integer showStatus_db = gs.getDisplayStatus();
+				if(showStatus_db.equals(0)){
+					map_d.put("showStatusChi", "可见");
+				}else{
+					map_d.put("showStatusChi", "隐藏");
+				}
+				map_d.put("showStatus", showStatus_db);
+				list_d.add(map_d);
+			}
+			map.put("data", list_d);
+			map.put("count", count);
+			map.put("code", 0);
+		}else{
+			msg = "noInfo";
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 获取指定年级学科编号详情
+	 * @author wm
+	 * @date 2019-4-28 下午10:34:39 
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getGSubjectDetail(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		GradeSubjectManager gsm = (GradeSubjectManager) AppFactory.instance(null).getApp(Constants.WEB_GRADE_SUBJECT_INFO);
+		Integer gsId = CommonTools.getFinalInteger("gsId", request);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "error";
+		List<GradeSubject> gsList = gsm.listSpecInfoById(gsId);
+		if(gsList.size() > 0){
+			msg = "success";
+			GradeSubject gs = gsList.get(0);
+			map.put("id", gs.getId());
+			map.put("gName", gs.getGradeName());
+			map.put("subName", gs.getSubject().getSubName());
+			map.put("subId", gs.getSubject().getId());
+			map.put("schoolType", gs.getSchoolType());
+			map.put("showStatus", gs.getDisplayStatus());
+		}else{
+			msg = "noInfo";
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 获取指定学科下的学科年级列表
+	 * @author wm
+	 * @date 2019-4-28 下午11:16:06 
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getGSubjectBySubId(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		GradeSubjectManager gsm = (GradeSubjectManager) AppFactory.instance(null).getApp(Constants.WEB_GRADE_SUBJECT_INFO);
+		Integer subId = CommonTools.getFinalInteger("subId", request);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "error";
+		List<GradeSubject> gsList = gsm.listSpecInfoBySubId(subId);
+		if(gsList.size() > 0){
+			msg = "success";
+			GradeSubject gs = gsList.get(0);
+			map.put("gId", gs.getId());
+			map.put("gName", gs.getGradeName());
+		}else{
+			msg = "noInfo";
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 修改指定的年级学科信息
+	 * @author wm
+	 * @date 2019-4-28 下午10:31:31 
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward updateGSubjectInfo(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		GradeSubjectManager gsm = (GradeSubjectManager) AppFactory.instance(null).getApp(Constants.WEB_GRADE_SUBJECT_INFO);
+		Integer gsId = CommonTools.getFinalInteger("gsId", request);
+		String gName = Transcode.unescape_new("gName", request);
+		Integer subId = CommonTools.getFinalInteger("subId", request);
+		Integer showStatus = CommonTools.getFinalInteger("showStatus", request);//0：显示，1：隐藏
+		Integer schoolType = CommonTools.getFinalInteger("schoolType", request);
+		boolean flag = gsm.updateGSub(gsId, gName, subId, schoolType, showStatus);
+		Map<String,Boolean> map = new HashMap<String,Boolean>();
+		map.put("result", flag);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
 }

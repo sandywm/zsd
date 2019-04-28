@@ -47,6 +47,7 @@ public class SubjectDaoImpl implements SubjectDao{
 		if(displayStatus >= 0){
 			hql += " where sub.displayStatus = "+displayStatus;
 		}
+		hql += " order by sub.subOrder";
 		return sess.createQuery(hql).list();
 	}
 

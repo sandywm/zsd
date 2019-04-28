@@ -47,6 +47,7 @@ public class EditionDaoImpl implements EditionDao{
 		if(showStatus >= 0){
 			hql += " where edi.showStatus = "+showStatus;
 		}
+		hql += " order by edi.ediOrder";
 		return sess.createQuery(hql).list();
 	}
 
