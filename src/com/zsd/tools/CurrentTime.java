@@ -10,7 +10,7 @@ import java.util.GregorianCalendar;
 
 public class CurrentTime {
 	/**
-	 * 获取当前日期（格式yyyy-MM-dd HH:mm:ss�?
+	 * 获取当前日期（格式yyyy-MM-dd HH:mm:ss）
 	 * @description
 	 * @author wm
 	 * @date 2015-10-17 上午10:49:02
@@ -27,7 +27,7 @@ public class CurrentTime {
 		return getFormat("yyyyMMddHHmmssSSS");
 	}
 	/**
-	 * 获取当前日期（格式yyyy-MM-dd�?
+	 * 获取当前日期（格式yyyy-MM-dd）
 	 * @description
 	 * @author wm
 	 * @date 2015-10-17 上午10:49:24
@@ -50,9 +50,9 @@ public class CurrentTime {
 		NumberFormat nf = NumberFormat.getInstance();
 		// 设置是否使用分组
 		nf.setGroupingUsed(false);
-		// 设置�?��整数位数
+		// 设置最大整数位数
 		nf.setMaximumIntegerDigits(12);
-		// 设置�?��整数位数
+		// 设置最小整数位数
 		nf.setMinimumIntegerDigits(12);
 		return nf.format(d);
 	}
@@ -121,7 +121,7 @@ public class CurrentTime {
 	}
 	
 	/**
-	 * string转换成date（java.util.Date�?
+	 * string转换成date（java.util.Date）
 	 * @description
 	 * @author wm
 	 * @date 2018-7-25 上午09:12:58
@@ -213,7 +213,7 @@ public class CurrentTime {
 	}
 	
 	/**
-	 * 指定日期加月�?
+	 * 指定日期加月数
 	 * @description
 	 * @author Administrator
 	 * @date 2018-10-12 上午10:08:22
@@ -290,7 +290,7 @@ public class CurrentTime {
 		}
 		return diffDays;
 	}
-	//日期相减相差毫秒�?
+	//日期相减相差毫秒数
 	public static long compareDateTime(String currentTime,String addTime){
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date addDate;
@@ -307,7 +307,7 @@ public class CurrentTime {
 		}
 		return difference;
 	}
-	//日期相减相差�?月数
+	//日期相减相差年/月数
 	public static int comparaDate(String currentDate,String oldDate,String dateType){
 		int result = 0;
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -331,7 +331,7 @@ public class CurrentTime {
     
 
     /**
-     * 本月的第�?��
+     * 本月的第一天
      * @param sYear 年份
      * @param sMonth 月份
      * @return
@@ -346,7 +346,7 @@ public class CurrentTime {
     }
 
     /**
-     * 本月的最后一�?
+     * 本月的最后一天
      * @param sYear 年份
      * @param sMonth 月份
      * @return
@@ -381,10 +381,10 @@ public class CurrentTime {
     }  
     /**
      * 
-     * @description 获取上个月的第一�?
+     * @description 获取上个月的第一天
      * @author zong
      * @date 2015-8-27 上午10:13:17
-     * @return 返回上个月的第一�?
+     * @return 返回上个月的第一天
      */
     public static String getMonthOrOne(){
     	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -394,10 +394,10 @@ public class CurrentTime {
 	    return format.format(calendar.getTime());
     }
     /**
-     * @description 获取上一个月的最后一�?
+     * @description 获取上一个月的最后一天
      * @author zong
      * @date 2015-8-27 下午04:08:50
-     * @return返回上个月的�?���?��
+     * @return返回上个月的最后一天
      */
     public static String getMonthOrLast(){
     	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -408,7 +408,7 @@ public class CurrentTime {
     }
     /**
      * @author zong
-     * @return 本月的第�?��
+     * @return 本月的第一天
      */
     public static String getBeginDate(){
         Calendar begin = Calendar.getInstance(); 
@@ -423,7 +423,7 @@ public class CurrentTime {
     }
     /**
      * @author zong
-     * @return 本月的最后一�?
+     * @return 本月的最后一天
      */
     public static String getEndDate(){
         Calendar end = Calendar.getInstance(); 
@@ -438,7 +438,7 @@ public class CurrentTime {
     }
     
     /**
-     * 获取本月的第�?��
+     * 获取本月的第一天
      * @description
      * @author wm
      * @date 2018-7-13 上午10:42:40
@@ -457,7 +457,7 @@ public class CurrentTime {
     }
     
     /**
-     * 获取本月的最后一�?
+     * 获取本月的最后一天
      * @description
      * @author wm
      * @date 2018-7-13 上午10:43:06
@@ -476,8 +476,8 @@ public class CurrentTime {
     }
     
     /**
-     * 根据指定日期获取每隔3个月的时�?
-     * 2015-12-11�?016-03-10:2016-03-11�?016-06-10:2016-06-11�?016-09-10:2016-09-11�?016-12-10
+     * 根据指定日期获取每隔3个月的时间
+     * 2015-12-11至2016-03-10:2016-03-11至2016-06-10:2016-06-11至2016-09-10:2016-09-11至2016-12-10
      * @description
      * @author wm
      * @date 2015-12-11 下午04:59:15
@@ -509,7 +509,7 @@ public class CurrentTime {
     }
     
     /**
-     * 获取随机数（�?�?毫秒�?
+     * 获取随机数（分+秒+毫秒）
      * @description
      * @author Administrator
      * @date 2018-10-9 下午04:42:50
@@ -517,12 +517,12 @@ public class CurrentTime {
      */
     public static String getRadomTime(){
     	Integer max = 100,min = 10;
-    	String radomStr = String.valueOf(Math.round(Math.random()*(max-min)+min));//两位随机�?
+    	String radomStr = String.valueOf(Math.round(Math.random()*(max-min)+min));//两位随机数
     	return getFormat("mm")+getFormat("ss")+getFormat("SSS")+radomStr;
     }
     
     /**
-     * �?#######日期转换�?###-##-##
+     * 将########日期转换成####-##-##
      * @description
      * @author Administrator
      * @date 2018-9-22 上午09:56:01
@@ -583,14 +583,14 @@ public class CurrentTime {
 //				calendar.add(Calendar.MONTH, 3);
 //				calendar.add(Calendar.DAY_OF_YEAR,-1);
 //				String dateStr2 = format1.format(calendar.getTime());
-//				dateArray = dateStr1 + "�?+ dateStr2;
+//				dateArray = dateStr1 + "至"+ dateStr2;
 //			}else{
 //				calendar.add(Calendar.DAY_OF_YEAR,+1);
 //				String dateStr3 = format1.format(calendar.getTime());
 //				calendar.add(Calendar.MONTH, 3);
 //				calendar.add(Calendar.DAY_OF_YEAR,-1);
 //				String dateStr4 = format1.format(calendar.getTime());
-//				dateArray += ":"+dateStr3 + "�?+ dateStr4;
+//				dateArray += ":"+dateStr3 + "至"+ dateStr4;
 //			}
 //		}
 //		//System.out.println(dateArray);

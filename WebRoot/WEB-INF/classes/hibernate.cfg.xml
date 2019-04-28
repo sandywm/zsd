@@ -10,10 +10,10 @@
 		<property name="connection.driver_class">
 			com.mysql.jdbc.Driver
 		</property>
-		<!-- useUnicode=true&amp;characterEncoding=utf-8 -->
+		<!-- ?useUnicode=true&amp;characterEncoding=utf-8 -->
 		<!-- 目的是为了防止数据库查询不到条件为中文时的记录 -->
 		<property name="connection.url">
-			jdbc:mysql://127.0.0.1:3306/patent?useUnicode=true&amp;characterEncoding=utf-8
+			jdbc:mysql://localhost:3306/zsd?useUnicode=true&amp;characterEncoding=utf-8
 		</property>
 		<property name="connection.username">root</property>
 		<property name="connection.password">32011823pyly</property>
@@ -56,6 +56,57 @@
 		<property name="myeclipse.connection.profile">
 			myDataBase
 		</property>
+		<mapping resource="com/zsd/xml/RoleInfo.hbm.xml" />
+		<mapping resource="com/zsd/xml/LoreRelateInfo.hbm.xml" />
+		<mapping resource="com/zsd/xml/StuSubjectEduInfo.hbm.xml" />
+		<mapping resource="com/zsd/xml/NetTeacherStudent.hbm.xml" />
+		<mapping resource="com/zsd/xml/User.hbm.xml" />
+		<mapping resource="com/zsd/xml/UserClassInfo.hbm.xml" />
+		<mapping resource="com/zsd/xml/LoreInfo.hbm.xml" />
+		<mapping resource="com/zsd/xml/LoreQuestionSubInfo.hbm.xml" />
+		<mapping resource="com/zsd/xml/StudyMapInfo.hbm.xml" />
+		<mapping resource="com/zsd/xml/LoreQuestion.hbm.xml" />
+		<mapping resource="com/zsd/xml/LexInfo.hbm.xml" />
+		<mapping resource="com/zsd/xml/StudyStuQfTjInfo.hbm.xml" />
+		<mapping resource="com/zsd/xml/StudyDetailInfo.hbm.xml" />
+		<mapping resource="com/zsd/xml/ClassInfo.hbm.xml" />
+		<mapping resource="com/zsd/xml/ModuleInfo.hbm.xml" />
+		<mapping resource="com/zsd/xml/BuffetSendInfo.hbm.xml" />
+		<mapping resource="com/zsd/xml/StudyLogInfo.hbm.xml" />
+		<mapping resource="com/zsd/xml/NetTeacherReturnRecord.hbm.xml" />
+		<mapping resource="com/zsd/xml/LexLoreRelateInfo.hbm.xml" />
+		<mapping resource="com/zsd/xml/ActRoleInfo.hbm.xml" />
+		<mapping resource="com/zsd/xml/RoleUserInfo.hbm.xml" />
+		<mapping resource="com/zsd/xml/BuffetLoreStudyLogInfo.hbm.xml" />
+		<mapping resource="com/zsd/xml/Subject.hbm.xml" />
+		<mapping resource="com/zsd/xml/ApplyClassInfo.hbm.xml" />
+		<mapping resource="com/zsd/xml/StudentParentInfo.hbm.xml" />
+		<mapping resource="com/zsd/xml/StudyStuTjInfo.hbm.xml" />
+		<mapping resource="com/zsd/xml/School.hbm.xml" />
+		<mapping resource="com/zsd/xml/NetTeacherTxRecord.hbm.xml" />
+		<mapping resource="com/zsd/xml/News.hbm.xml" />
+		<mapping resource="com/zsd/xml/StudentRechargeRecord.hbm.xml" />
+		<mapping resource="com/zsd/xml/BuffetStudyDetailInfo.hbm.xml" />
+		<mapping resource="com/zsd/xml/QuestionInfo.hbm.xml" />
+		<mapping resource="com/zsd/xml/StudentPayOrderInfo.hbm.xml" />
+		<mapping resource="com/zsd/xml/MobileCode.hbm.xml" />
+		<mapping resource="com/zsd/xml/BuffetLoreStudyDetailInfo.hbm.xml" />
+		<mapping resource="com/zsd/xml/BuffetLoreRelateInfo.hbm.xml" />
+		<mapping resource="com/zsd/xml/StudyAllTjInfo.hbm.xml" />
+		<mapping resource="com/zsd/xml/Edition.hbm.xml" />
+		<mapping resource="com/zsd/xml/NetTeacherInfo.hbm.xml" />
+		<mapping resource="com/zsd/xml/ModuleActionInfo.hbm.xml" />
+		<mapping resource="com/zsd/xml/BuffetQueInfo.hbm.xml" />
+		<mapping resource="com/zsd/xml/GradeSubject.hbm.xml" />
+		<mapping resource="com/zsd/xml/NetTeacherCertificateInfo.hbm.xml" />
+		<mapping resource="com/zsd/xml/Chapter.hbm.xml" />
+		<mapping resource="com/zsd/xml/LoreQuestionErrorInfo.hbm.xml" />
+		<mapping resource="com/zsd/xml/StudyTaskInfo.hbm.xml" />
+		<mapping resource="com/zsd/xml/NetTeacherBasicInfo.hbm.xml" />
+		<mapping resource="com/zsd/xml/Email.hbm.xml" />
+		<mapping resource="com/zsd/xml/Education.hbm.xml" />
+
+
 
 	</session-factory>
 

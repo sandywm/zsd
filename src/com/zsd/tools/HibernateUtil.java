@@ -12,9 +12,9 @@ public class HibernateUtil {
 	{
         try
 		{
-            //采用默认的hibernate.cfg.xml来启动一个Configuration的实�?
+            //采用默认的hibernate.cfg.xml来启动一个Configuration的实例
 			Configuration configuration=new Configuration().configure();
-			//由Configuration的实例来创建�?��SessionFactory实例
+			//由Configuration的实例来创建一个SessionFactory实例
             sessionFactory = configuration.buildSessionFactory();
         }
 		catch (Throwable ex)
@@ -36,7 +36,7 @@ public class HibernateUtil {
         if (s == null)
 		{
             s = sessionFactory.openSession();
-            //将获得的Session变量存储在ThreadLocal变量session�?
+            //将获得的Session变量存储在ThreadLocal变量session里
             session.set(s);
         }
 

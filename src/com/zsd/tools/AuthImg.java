@@ -11,47 +11,47 @@ public class AuthImg extends HttpServlet {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	//ÉèÖÃÉú³ÉÍ¼ĞÎÑéÖ¤ÂëÀïÃæ×ÖÄ¸µÄ×ÖÌåºÍ´óĞ¡
+	//è®¾ç½®ç”Ÿæˆå›¾å½¢éªŒè¯ç é‡Œé¢å­—æ¯çš„å­—ä½“å’Œå¤§å°
 	public AuthImg() {
 		super();
 	}
-    //servletµÄÏìÓ¦·½·¨
+    //servletçš„å“åº”æ–¹æ³•
     public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
     	System.out.println(String.valueOf(request.getParameter("userId")));
-    	//ÉèÖÃÏìÓ¦µÄÎÄ¼şÍ·
+    	//è®¾ç½®å“åº”çš„æ–‡ä»¶å¤´
         response.setHeader("Pragma","No-cache");
         response.setHeader("Cache-Control","no-cache");
         response.setDateHeader("Expires", 0);
-        //±íÃ÷Éú³ÉµÄÏìÓ¦ÊÇÍ¼Æ¬£¬¶ø·ÇJSPÒ³Ãæ
+        //è¡¨æ˜ç”Ÿæˆçš„å“åº”æ˜¯å›¾ç‰‡ï¼Œè€ŒéJSPé¡µé¢
         response.setContentType("image/jpeg");
-      //ÑéÖ¤Âë£¬ÓÉ2¸öÒ»Î»ÊıµÄ¼Ó¼õ·¨¹¹³É
+      //éªŒè¯ç ï¼Œç”±2ä¸ªä¸€ä½æ•°çš„åŠ å‡æ³•æ„æˆ
         Integer num1 = (int)(Math.random() * 10);
         Integer num2 = (int)(Math.random() * 10);
         String verifyCode = "";
-        String funMethod = "¼Ó";
+        String funMethod = "åŠ ";
         Integer result = 0;
         Random random = new Random();
-        Integer funNo = random.nextInt(3);//²úÉú¡¾0,1,2Ö®¼äµÄËæ»úÕûÊı¡¿
-        if(funNo.equals(2)){//³Ë·¨
+        Integer funNo = random.nextInt(3);//äº§ç”Ÿã€0,1,2ä¹‹é—´çš„éšæœºæ•´æ•°ã€‘
+        if(funNo.equals(2)){//ä¹˜æ³•
         	result = num1 * num2;
-        	funMethod = "³Ë";
-        	verifyCode = num1 + funMethod + num2 + "µÈ¼¸";
+        	funMethod = "ä¹˜";
+        	verifyCode = num1 + funMethod + num2 + "ç­‰å‡ ";
         }else{
             if(num1 >= num2){
-            	funMethod = "¼õ";
+            	funMethod = "å‡";
             	result = num1 - num2;
             }else{
             	result = num1 + num2;
             }
-        	verifyCode = num1 + funMethod + num2 + "µÈ¼¸";
+        	verifyCode = num1 + funMethod + num2 + "ç­‰å‡ ";
         }
     	
         String finalResult = String.valueOf(result);
-        //½«Ëæ»ú²úÉúµÄ×Ö·û´®·ÅÔÚsessionÖĞ
+        //å°†éšæœºäº§ç”Ÿçš„å­—ç¬¦ä¸²æ”¾åœ¨sessionä¸­
         HttpSession session = request.getSession(false);
         session.setAttribute("rand",finalResult);
-      //½«Í¼Æ¬Êä³öµ½servletÏìÓ¦
+      //å°†å›¾ç‰‡è¾“å‡ºåˆ°servletå“åº”
         VerifyCodeUtils.outputImage(150, 40, response.getOutputStream(), verifyCode);
         
     }

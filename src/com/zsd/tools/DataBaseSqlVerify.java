@@ -69,9 +69,9 @@ public class DataBaseSqlVerify {
 	            .replaceAll("0x0a", "");  
 	  
 	        if(!temp.equals(src)){  
-//	            System.out.println("输入信息存在xss攻击�?);  
+//	            System.out.println("输入信息存在xss攻击！");  
 //	            System.out.println("原始输入信息-->"+temp);  
-//	            System.out.println("处理后信�?->"+src);  
+//	            System.out.println("处理后信息-->"+src);  
 	            flag = true;
 	        }  
 		}

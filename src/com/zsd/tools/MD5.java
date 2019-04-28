@@ -4,7 +4,7 @@ import java.security.MessageDigest;
 
 public class MD5{
   /** 
-   * 获得MD5加密密码的方�?
+   * 获得MD5加密密码的方法 
    */  
   public String calcMD5(String origString) {  
       String origMD5 = null;  
@@ -18,7 +18,7 @@ public class MD5{
       return origMD5;  
   }  
   /** 
-   * 处理字节数组得到MD5密码的方�?
+   * 处理字节数组得到MD5密码的方法 
    */  
   private static String byteArray2HexStr(byte[] bs) {  
       StringBuffer sb = new StringBuffer();  
@@ -28,20 +28,20 @@ public class MD5{
       return sb.toString();  
   }  
   /** 
-   * 字节标准移位转十六进制方�?
+   * 字节标准移位转十六进制方法 
    */  
   private static String byte2HexStr(byte b) {  
       String hexStr = null;  
       int n = b;  
       if (n < 0) {  
-          //若需要自定义加密,请修改这个移位算法即�? 
+          //若需要自定义加密,请修改这个移位算法即可  
           n = b & 0x7F + 128;  
       }  
       hexStr = Integer.toHexString(n / 16) + Integer.toHexString(n % 16);  
       return hexStr.toUpperCase();  
   }  
   /** 
-   * 提供�?��MD5多次加密方法 
+   * 提供一个MD5多次加密方法 
    */  
   public String calcMD5(String origString, int times) {  
 	  MD5 md5 = new MD5();
@@ -53,7 +53,7 @@ public class MD5{
   }  
 
   /** 
-   * 重载�?��多次(也可�?�?加密时的密码验证方法 
+   * 重载一个多次(也可是1次)加密时的密码验证方法 
    */  
   public static boolean verifyPassword(String inputStr, String MD5Code, int times) {  
 	  MD5 md5 = new MD5();

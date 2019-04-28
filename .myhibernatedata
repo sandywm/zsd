@@ -1,5 +1,5 @@
 #MyEclipse Hibernate Properties
-#Thu Apr 18 08:36:22 GMT+08:00 2019
+#Sun Apr 28 08:38:41 GMT+08:00 2019
 sessionFactoryName=
 genBasicCompId=false
 profile=
@@ -11,8 +11,8 @@ reStrategyClass=
 detectO2O=false
 springDaoFile=
 useJavaTypes=true
-keyGenerator=
-libInstallFolder=/WebRoot/WEB-INF/lib
+keyGenerator=native
+libInstallFolder=<no jars/zips in selected libraries>
 addLibs2Project=true
 genVersionTag=false
 sessionFactoryId=
@@ -22,4 +22,3 @@ reSettingsFile=
 configFile=/zsd/src/hibernate.cfg.xml
 createConfigFile=true
 addLibs2Classpath=true
-baseDaoClass=

@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 
-
 /**
  * 文件操作类
  * 文件的复制，删除，文件夹的删除
@@ -89,8 +88,4 @@ public class FileOpration {
 		}
 		return "";
 	}
-	
-	 public static void main(String[] args) throws Exception{
-		 
-	 }
 }

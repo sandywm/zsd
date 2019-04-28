@@ -1,8 +1,7 @@
-#Thu Apr 18 08:52:45 GMT+08:00 2019
+#Sat Apr 27 13:37:48 CST 2019
 eclipse.preferences.version=1
 encoding//src/com/zsd/action/base/InitServlet.java=UTF-8
 encoding//src/com/zsd/action/base/MyActionServlet.java=UTF-8
 encoding//src/com/zsd/action/base/Transcode.java=UTF-8
-encoding//src/com/zsd/tools/AuthImg.java=GBK
 encoding//src/com/zsd/web/NewXssHttpServletRequestWrapper.java=UTF-8
 encoding/<project>=UTF-8

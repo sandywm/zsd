@@ -12,7 +12,7 @@
       <!--forward name="signPage" path="/register.jsp"></forward><!-- 注册界面 -->
     </action>
     <!-- 用户管理 -->
-    <action path="/user" parameter="action" scope="request" type="com.zsd.action.UserAction">
+    <action path="/user" parameter="action" scope="request" type="com.zsd.action.user.UserAction">
       <!--forward name="managerPage" path="/register.jsp"></forward><!-- 知识点/超级管理员登录后欢迎界面 -->
       <!--forward name="welcomePage" path="/register.jsp"></forward><!-- 普通用户登录后欢迎界面 -->
     </action>
@@ -21,4 +21,3 @@
 
   <message-resources parameter="com.yourcompany.struts.ApplicationResources" />
 </struts-config>
-

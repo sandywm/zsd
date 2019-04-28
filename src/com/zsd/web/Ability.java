@@ -4,6 +4,9 @@ package com.zsd.web;
 import java.io.IOException;
 import javax.servlet.http.HttpServletResponse;
 
+import com.zsd.factory.AppFactory;
+import com.zsd.util.Constants;
+
 public class Ability
 {
 
@@ -29,4 +32,23 @@ public class Ability
             e.printStackTrace();
         }
     }
+    
+    /**
+     * 获取指定角色有无指定动作的权限(查看不计)
+     * @description
+     * @author wm
+     * @date 2018-8-10 上午10:14:51
+     * @param roleId 角色编号
+     * @param actNameEng 动作
+     * @return
+     * @throws Exception 
+     */
+//    public static boolean checkAuthorization(Integer roleId,String actNameEng) throws Exception{
+//    	ActRoleInfoManager arm = (ActRoleInfoManager) AppFactory.instance(null).getApp(Constants.WEB_ACT_ROLE_INFO);
+//		if(arm.listInfoByOpt(roleId, actNameEng).size() > 0){
+//			return true;
+//		}
+//		return false;
+//    }
+    
 }
