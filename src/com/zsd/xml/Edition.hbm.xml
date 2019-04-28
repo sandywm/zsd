@@ -20,21 +20,10 @@
                 <comment>排列顺序</comment>
             </column>
         </property>
-        <!--set name="buffetLoreRelateInfos" inverse="true">
-            <key>
-                <column name="edition_id" not-null="true">
-                    <comment>出版社编号</comment>
-                </column>
-            </key>
-            <one-to-many class="com.zsd.module.BuffetLoreRelateInfo" />
-        </set>
-        <set name="educations" inverse="true">
-            <key>
-                <column name="edition_id" not-null="true">
-                    <comment>出版社编号</comment>
-                </column>
-            </key>
-            <one-to-many class="com.zsd.module.Education" />
-        </set-->
+        <property name="showStatus" type="java.lang.Integer">
+            <column name="show_status" not-null="true">
+                <comment>显示状态(0：显示，1：隐藏)</comment>
+            </column>
+        </property>
     </class>
 </hibernate-mapping>

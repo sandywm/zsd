@@ -16,7 +16,7 @@ import com.zsd.util.WebUrl;
 public class DaoFactory {
 	private Map<String , Object> daoMap = new HashMap<String , Object>(); 
     private static DaoFactory df;
-    @SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	private DaoFactory(String path)throws Exception
     {
     	Document doc =  new SAXReader().read(new File(WebUrl.DATA_URL_WEB_INFO + "/daoContext.xml"));

@@ -387,88 +387,9 @@ public class CommonTools {
 		String regex = "\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*";
         return Pattern.matches(regex, inputEmail);   
 	}
-	
-	/**
-	 * 根据年度、专利类型获取年费
-	 * @description
-	 * @author Administrator
-	 * @date 2018-10-28 上午09:25:21
-	 * @param yearNum
-	 * @param zlType
-	 * @return
-	 */
-	public static Double getYearFee(Integer yearNum,String zlType){
-		Double yearFee = 0d;
-		if(zlType.equals("fm")){
-			if(yearNum >= 1 && yearNum <= 3){
-				yearFee = Constants.FM_YEAR_FEE_1_3;
-			}else if(yearNum >= 4 && yearNum <= 6){
-				yearFee = Constants.FM_YEAR_FEE_4_6;
-			}else if(yearNum >= 7 && yearNum <= 9){
-				yearFee = Constants.FM_YEAR_FEE_7_9;
-			}else if(yearNum >= 10 && yearNum <= 12){
-				yearFee = Constants.FM_YEAR_FEE_10_12;
-			}else if(yearNum >= 13 && yearNum <= 15){
-				yearFee = Constants.FM_YEAR_FEE_13_15;
-			}else if(yearNum >= 16 && yearNum <= 20 ){
-				yearFee = Constants.FM_YEAR_FEE_16_20;
-			}
-		}else{//新型+外观
-			if(yearNum >= 1 && yearNum <= 3){
-				yearFee = Constants.SY_WG_YEAR_FEE_1_3;
-			}else if(yearNum >= 4 && yearNum <= 6){
-				yearFee = Constants.SY_WG_YEAR_FEE_4_5;
-			}else if(yearNum >= 7 && yearNum <= 9){
-				yearFee = Constants.SY_WG_YEAR_FEE_6_8;
-			}else if(yearNum >= 10 && yearNum <= 12){
-				yearFee = Constants.SY_WG_YEAR_FEE_9_10;
-			}
-		}
-		return yearFee;
-	}
+
 	
 	public static void main(String[] args){
-//		String[] ipArray = {"1.31.255.255","124.117.66.101","222.75.147.27","220.182.50.226","219.159.235.101","61.244.148.166","59.108.49.35","182.116.193.7","61.157.134.73"};
-//		System.out.println(CommonTools.searchIpByBaidu(ipArray[0]));
-//		System.out.println(CommonTools.searchIpByBaidu(ipArray[1]));
-//		System.out.println(CommonTools.searchIpByBaidu(ipArray[2]));
-//		System.out.println(CommonTools.searchIpByBaidu(ipArray[3]));
-//		System.out.println(CommonTools.searchIpByBaidu(ipArray[4]));
-//		System.out.println(CommonTools.searchIpByBaidu(ipArray[5]));
-//		System.out.println(CommonTools.searchIpByBaidu(ipArray[6]));
-//		System.out.println(CommonTools.searchIpByBaidu(ipArray[7]));
-//		System.out.println(CommonTools.searchIpByBaidu(ipArray[8]));
-//		float aa = (float) (3.13 + 3.16) / 2;
-//		System.out.println(aa);
-//		System.out.println(Convert.convertInputNumber(aa));
-//		Map<String,String> map = new HashMap<String,String>();
-//		map.put("userId", "10");
-//		map.put("img1", "img1");
-//		map.put("img2", "img2");
-//		for(Map.Entry<String, String> entry : map.entrySet()){
-//			System.out.println("key = " + entry.getKey() + "  value = " + entry.getValue());
-//		}
-//		System.out.println("-------------");
-//		for(String value :map.values()){
-//			System.out.println("value = "+value);
-//		}
-//		System.out.println("-------------");
-//		
-//		ListIterator<Map.Entry<String, String>> i = new ArrayList<Map.Entry<String, String>>(map.entrySet()).listIterator(map.size());
-//		while(i.hasPrevious()){
-//			Map.Entry<String, String> entry = i.previous();
-//			System.out.println("key = " + entry.getKey() + "  value = " + entry.getValue());
-//		}
-//		System.out.println(CommonTools.getInStoreNo("A_001223"));
-//		
-//		System.out.println(CommonTools.checkMobile(""));
-//		System.out.println(CommonTools.checkMobile("133110"));
-//		System.out.println(CommonTools.checkMobile("13311089766"));
-//		float aba = 118 * 100 / 1000f;
-//		double abc = 118 * 100d / 100000;
-//		String aaa = Convert.convertInputNumber_1(118 * 100d / 100000);
-//		System.out.println(Double.parseDouble(aaa));
-//		System.out.println(aba);
-//		System.out.println(abc);
+
 	}
 }

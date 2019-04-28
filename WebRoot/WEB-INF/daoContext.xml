@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <daoContext>
-	
+	<dao id="edition_Dao" class="com.zsd.dao.impl.EditionDaoImpl"/>
 </daoContext>

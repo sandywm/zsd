@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <appContext>
-	
+	<app id="edition_Web" class="com.zsd.service.impl.EditionManagerImpl"/>
 </appContext>

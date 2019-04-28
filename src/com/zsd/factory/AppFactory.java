@@ -19,6 +19,7 @@ public class AppFactory {
 
 	    private static AppFactory df;
 
+		@SuppressWarnings("rawtypes")
 		private AppFactory(String path)throws Exception
 	    {	
 	        Document doc = new SAXReader().read(new File(WebUrl.DATA_URL_WEB_INFO + "/appContext.xml"));

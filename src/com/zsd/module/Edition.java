@@ -1,8 +1,5 @@
 package com.zsd.module;
 
-import java.util.HashSet;
-import java.util.Set;
-
 /**
  * Edition entity. @author MyEclipse Persistence Tools
  */
@@ -18,6 +15,7 @@ public class Edition implements java.io.Serializable {
 	private Integer id;
 	private String ediName;
 	private Integer ediOrder;
+	private Integer showStatus;
 
 	// Constructors
 
@@ -26,9 +24,10 @@ public class Edition implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public Edition(String ediName, Integer ediOrder) {
+	public Edition(String ediName, Integer ediOrder,Integer showStatus) {
 		this.ediName = ediName;
 		this.ediOrder = ediOrder;
+		this.showStatus = showStatus;
 	}
 
 	// Property accessors
@@ -55,6 +54,14 @@ public class Edition implements java.io.Serializable {
 
 	public void setEdiOrder(Integer ediOrder) {
 		this.ediOrder = ediOrder;
+	}
+
+	public Integer getShowStatus() {
+		return showStatus;
+	}
+
+	public void setShowStatus(Integer showStatus) {
+		this.showStatus = showStatus;
 	}
 
 }
