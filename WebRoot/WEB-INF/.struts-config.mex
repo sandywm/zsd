@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FlowViewLayout Version="1.2">
   <StrutsActivity path="/login.do" location="50,50" dimension="231,104" />
-  <StrutsActivity path="/user.do" />
+  <StrutsActivity path="/user.do" location="350,50" dimension="222,104" />
+  <StrutsActivity path="/baseInfo.do" location="650,50" dimension="249,104" />
 </FlowViewLayout>
 

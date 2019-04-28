@@ -4,8 +4,6 @@
  */
 package com.zsd.action.base;
 
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -19,7 +17,6 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
 
-import com.alibaba.fastjson.JSON;
 import com.zsd.factory.AppFactory;
 import com.zsd.module.Edition;
 import com.zsd.service.EditionManager;
@@ -34,7 +31,6 @@ import com.zsd.util.Constants;
  * @struts.action validate="true"
  */
 public class BaseInfoAction extends DispatchAction {
-	
 	
 	/**
 	 * 根据条件获取出版社列表
@@ -58,6 +54,7 @@ public class BaseInfoAction extends DispatchAction {
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "error";
 		if(ediList.size() > 0){
+			msg = "success";
 			List<Object> list_d = new ArrayList<Object>();
 			for(Iterator<Edition> it = ediList.iterator() ; it.hasNext();){
 				Edition edi = it.next();
@@ -81,4 +78,6 @@ public class BaseInfoAction extends DispatchAction {
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
+	
+	
 }

@@ -31,6 +31,8 @@ public class CommonTools {
 	 * @throws IOException
 	 */
 	public static void getJsonPkg(Object obj,HttpServletResponse response) throws IOException{
+		response.setContentType("text/html;charset=UTF-8");
+	    response.setCharacterEncoding("UTF-8");
 		String json = JSON.toJSONString(obj);
         PrintWriter pw = response.getWriter();  
         pw.write(json); 

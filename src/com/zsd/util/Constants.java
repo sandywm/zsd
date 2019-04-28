@@ -13,9 +13,10 @@ public class Constants {
 
 	//-------------------WEB-------------------------//
 	public static final String WEB_EDITION_INFO = "edition_Web";
+	public static final String WEB_SUBJECT_INFO = "subject_Web";
 
 	
 	//-------------------DAO-------------------------//
 	public static final String DAO_EDITION_INFO = "edition_Dao";
-
+	public static final String DAO_SUBJECT_INFO = "subejct_Dao";
 }
