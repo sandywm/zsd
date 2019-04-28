@@ -10,19 +10,33 @@ import java.net.InetAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
-//import java.util.ArrayList;
-//import java.util.HashMap;
-//import java.util.ListIterator;
-//import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import com.zsd.util.Constants;
+import com.alibaba.fastjson.JSON;
 
 public class CommonTools {
+	
+	/**
+	 * 封装json
+	 * @description
+	 * @author Administrator
+	 * @date 2019-4-28 下午04:05:08
+	 * @param obj
+	 * @param response
+	 * @throws IOException
+	 */
+	public static void getJsonPkg(Object obj,HttpServletResponse response) throws IOException{
+		String json = JSON.toJSONString(obj);
+        PrintWriter pw = response.getWriter();  
+        pw.write(json); 
+        pw.flush();  
+        pw.close();
+	}
 	
 	/**
 	 * null转换为""
