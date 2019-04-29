@@ -41,11 +41,36 @@ public class SchoolManagerImpl implements SchoolManager{
 	}
 
 	@Override
-	public boolean updateSchoolInfoById(Integer id, String prov, String city,
+	public boolean updateSchoolInfoById(Integer id, String schoolName, String prov, String city,
 			String county, String town, Integer schoolType, Integer yearSystem,
 			Integer showStatus) throws WEBException {
 		// TODO Auto-generated method stub
-		return false;
+		try {
+			sDao = (SchoolDao) DaoFactory.instance(null).getDao(Constants.DAO_SCHOOL_INFO);
+			Session sess  = HibernateUtil.currentSession();
+			tran = sess.beginTransaction();
+			School sch = sDao.get(sess, id);
+			if(sch != null){
+				sch.setSchoolName(schoolName);
+				sch.setProv(prov);
+				sch.setCity(city);
+				sch.setCounty(county);
+				sch.setTown(town);
+				sch.setSchoolType(schoolType);
+				sch.setYearSystem(yearSystem);
+				sch.setShowStatus(showStatus);
+				sDao.update(sess, sch);
+				tran.commit();
+				return true;
+			}
+			return false;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new WEBException("修改学校信息时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
 	}
 
 	@Override
@@ -112,6 +137,22 @@ public class SchoolManagerImpl implements SchoolManager{
 			String town, Integer schoolType) throws WEBException {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public List<School> listInfoBySName(String sName) throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			sDao = (SchoolDao) DaoFactory.instance(null).getDao(Constants.DAO_SCHOOL_INFO);
+			Session sess  = HibernateUtil.currentSession();
+			return sDao.findInfoBySName(sess, sName);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new WEBException("根据学校名称获取学校信息列表时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
 	}
 
 }

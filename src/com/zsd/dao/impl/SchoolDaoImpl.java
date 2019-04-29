@@ -137,4 +137,11 @@ public class SchoolDaoImpl implements SchoolDao{
 		return sess.createQuery(hql).list();
 	}
 
+	@Override
+	public List<School> findInfoBySName(Session sess, String sName) {
+		// TODO Auto-generated method stub
+		String hql = " from School as sch where sch.schoolName = '"+sName+"'";
+		return sess.createQuery(hql).list();
+	}
+
 }

@@ -16,7 +16,16 @@
       <!--forward name="managerPage" path="/register.jsp"></forward--><!-- 知识点/超级管理员登录后欢迎界面 -->
       <!--forward name="welcomePage" path="/register.jsp"></forward--><!-- 普通用户登录后欢迎界面 -->
     </action>
+    <!-- 基础数据 -->
     <action path="/baseInfo" parameter="action" scope="request" type="com.zsd.action.base.BaseInfoAction">
+      <set-property property="cancellable" value="true" />
+    </action>
+    <!-- 学校管理 -->
+    <action path="/school" parameter="action" scope="request" type="com.zsd.action.school.SchoolAction">
+      <set-property property="cancellable" value="true" />
+    </action>
+    <!-- 通用 -->
+    <action path="/common" parameter="action" scope="request" type="com.zsd.action.base.CommonAction">
       <set-property property="cancellable" value="true" />
     </action>
 

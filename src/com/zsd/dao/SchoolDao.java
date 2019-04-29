@@ -118,4 +118,14 @@ public interface SchoolDao {
 	 * @return
 	 */
 	List<School> findInfoByOpt(Session sess,String prov,String city,String county,String town,Integer schoolType);
+	
+	/**
+	 * 根据学校名称获取学校信息列表
+	 * @author Administrator
+	 * @date 2019-4-29 下午04:04:25
+	 * @param sess
+	 * @param sName 学校名称
+	 * @return
+	 */
+	List<School> findInfoBySName(Session sess,String sName);
 }

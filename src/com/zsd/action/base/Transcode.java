@@ -92,7 +92,7 @@ public class Transcode {
      */
     public static String unescape_new(String src,HttpServletRequest request) { 
     	src = String.valueOf(request.getParameter(src));
-    	if(src.equals("null")){
+    	if(src.equals("null") || src.equals("")){
     		return "";
     	}else{
     		Integer inputStrLength = src.length();

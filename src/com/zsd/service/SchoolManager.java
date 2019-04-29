@@ -29,6 +29,7 @@ public interface SchoolManager {
 	 * @author Administrator
 	 * @date 2019-4-29 上午11:53:52
 	 * @param id
+	 * @param schoolName 学校名字
 	 * @param prov 省
 	 * @param city 市
 	 * @param county 县
@@ -39,7 +40,7 @@ public interface SchoolManager {
 	 * @return
 	 * @throws WEBException
 	 */
-	boolean updateSchoolInfoById(Integer id,String prov,String city,String county,
+	boolean updateSchoolInfoById(Integer id,String schoolName, String prov,String city,String county,
 			String town,Integer schoolType,Integer yearSystem,Integer showStatus)throws WEBException;
 	
 	/**
@@ -111,4 +112,14 @@ public interface SchoolManager {
 	 * @throws WEBException
 	 */
 	List<School> listInfoByOpt(String prov,String city,String county,String town,Integer schoolType)throws WEBException;
+	
+	/**
+	 * 根据学校名称获取学校列表
+	 * @author Administrator
+	 * @date 2019-4-29 下午04:06:04
+	 * @param sName 学校名称
+	 * @return
+	 * @throws WEBException
+	 */
+	List<School> listInfoBySName(String sName)throws WEBException;
 }

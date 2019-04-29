@@ -82,6 +82,9 @@ public class UserLoginFilter implements Filter{
 		if(userId.equals(0)){
 			if(!requesturi.endsWith("/login.do") 
 					&& !requesturi.endsWith("/baseInfo.do")
+					&& !requesturi.endsWith("/common.do")
+					&& !requesturi.endsWith("/school.do")
+					&& !requesturi.endsWith("/baseInfo.do")
 					&& !requesturi.endsWith("/authImg")
 					&& !requesturi.endsWith("jsp")
 					&& !requesturi.endsWith("css") 
