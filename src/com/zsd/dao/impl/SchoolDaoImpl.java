@@ -81,7 +81,7 @@ public class SchoolDaoImpl implements SchoolDao{
 			String city, String county, String town, Integer schoolType,
 			Integer showStatus) {
 		// TODO Auto-generated method stub
-		String hql = " from School as sch where 1=1";
+		String hql = "select count(sch.id) from School as sch where 1=1";
 		if(!schoolName.equals("")){
 			hql += " and sch.schoolName like '"+schoolName+"'";
 		}

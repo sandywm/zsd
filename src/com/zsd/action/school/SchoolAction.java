@@ -159,6 +159,7 @@ public class SchoolAction extends DispatchAction {
 			map.put("prov", sch.getProv());
 			map.put("city", sch.getCity());
 			map.put("county", sch.getCounty());
+			map.put("town", sch.getTown());
 			map.put("schoolType", sch.getSchoolType());
 			map.put("yearSystem", sch.getYearSystem());
 			map.put("showStatus", sch.getShowStatus());
