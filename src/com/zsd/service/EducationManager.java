@@ -70,5 +70,5 @@ public interface EducationManager {
 	 * @param gradeId 年级编号(0表示全部)
 	 * @return
 	 */
-	Integer getCountByOpt(Integer ediId,Integer subId,Integer gradeId);
+	Integer getCountByOpt(Integer ediId,Integer subId,Integer gradeId) throws WEBException;
 }

@@ -21,6 +21,7 @@ public class School implements java.io.Serializable {
 	private String town;
 	private Integer schoolType;
 	private Integer yearSystem;
+	private Integer showStatus;
 
 	// Constructors
 
@@ -37,7 +38,7 @@ public class School implements java.io.Serializable {
 
 	/** full constructor */
 	public School(String schoolName, String prov, String city, String county,
-			String town, Integer schoolType, Integer yearSystem) {
+			String town, Integer schoolType, Integer yearSystem,Integer showStatus) {
 		this.schoolName = schoolName;
 		this.prov = prov;
 		this.city = city;
@@ -45,6 +46,7 @@ public class School implements java.io.Serializable {
 		this.town = town;
 		this.schoolType = schoolType;
 		this.yearSystem = yearSystem;
+		this.showStatus = showStatus;
 	}
 
 	// Property accessors
@@ -111,6 +113,14 @@ public class School implements java.io.Serializable {
 
 	public void setYearSystem(Integer yearSystem) {
 		this.yearSystem = yearSystem;
+	}
+
+	public Integer getShowStatus() {
+		return showStatus;
+	}
+
+	public void setShowStatus(Integer showStatus) {
+		this.showStatus = showStatus;
 	}
 
 }

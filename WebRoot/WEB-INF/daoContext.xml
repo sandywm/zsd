@@ -3,4 +3,6 @@
 	<dao id="edition_Dao" class="com.zsd.dao.impl.EditionDaoImpl"/>
 	<dao id="subject_Dao" class="com.zsd.dao.impl.SubjectDaoImpl"/>
 	<dao id="grade_subject_Dao" class="com.zsd.dao.impl.GradeSubjectDaoImpl"/>
+	<dao id="education_Dao" class="com.zsd.dao.impl.EducationDaoImpl"/>
+	<dao id="school_Dao" class="com.zsd.dao.impl.SchoolDaoImpl"/>
 </daoContext>

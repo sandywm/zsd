@@ -20,9 +20,11 @@ import org.apache.struts.actions.DispatchAction;
 import com.zsd.page.PageConst;
 import com.zsd.factory.AppFactory;
 import com.zsd.module.Edition;
+import com.zsd.module.Education;
 import com.zsd.module.GradeSubject;
 import com.zsd.module.Subject;
 import com.zsd.service.EditionManager;
+import com.zsd.service.EducationManager;
 import com.zsd.service.GradeSubjectManager;
 import com.zsd.service.SubjectManager;
 import com.zsd.tools.CommonTools;
@@ -160,7 +162,6 @@ public class BaseInfoAction extends DispatchAction {
 				map_d.put("id", gs.getId());
 				map_d.put("gName", gs.getGradeName());
 				map_d.put("subName", gs.getSubject().getSubName());
-				map_d.put("subId", gs.getSubject().getId());
 				Integer schoolType = gs.getSchoolType();
 				String schoolTypeChi = "";
 				if(schoolType.equals(1)){
@@ -170,15 +171,12 @@ public class BaseInfoAction extends DispatchAction {
 				}else if(schoolType.equals(3)){
 					schoolTypeChi = "高中";
 				}
-				map_d.put("schoolType", schoolType);
 				map_d.put("schoolTypeChi", schoolTypeChi);
-				Integer showStatus_db = gs.getDisplayStatus();
-				if(showStatus_db.equals(0)){
+				if(gs.getDisplayStatus().equals(0)){
 					map_d.put("showStatusChi", "可见");
 				}else{
 					map_d.put("showStatusChi", "隐藏");
 				}
-				map_d.put("showStatus", showStatus_db);
 				list_d.add(map_d);
 			}
 			map.put("data", list_d);
@@ -281,6 +279,136 @@ public class BaseInfoAction extends DispatchAction {
 		Integer showStatus = CommonTools.getFinalInteger("showStatus", request);//0：显示，1：隐藏
 		Integer schoolType = CommonTools.getFinalInteger("schoolType", request);
 		boolean flag = gsm.updateGSub(gsId, gName, subId, schoolType, showStatus);
+		Map<String,Boolean> map = new HashMap<String,Boolean>();
+		map.put("result", flag);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 分页获取指定条件的教材信息列表
+	 * @author Administrator
+	 * @date 2019-4-29 上午11:01:30
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getEducationData(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		EducationManager em = (EducationManager) AppFactory.instance(null).getApp(Constants.WEB_EDUCATION_INFO);
+		Integer ediId = CommonTools.getFinalInteger("ediId", request);
+		Integer subId = CommonTools.getFinalInteger("subId", request);
+		Integer gradeId = CommonTools.getFinalInteger("gradeId", request);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "error";
+		Integer count = em.getCountByOpt(ediId, subId, gradeId);
+		if(count > 0){
+			Integer pageSize = PageConst.getPageSize(String.valueOf(request.getParameter("limit")), 10);//等同于pageSize
+			Integer pageNo = CommonTools.getFinalInteger("page", request);//等同于pageNo
+			List<Education> eList = em.listPageInfoByOpt(ediId, subId, gradeId, pageNo, pageSize);
+			msg = "success";
+			List<Object> list_d = new ArrayList<Object>();
+			for(Iterator<Education> it = eList.iterator() ; it.hasNext();){
+				Education edu = it.next();
+				Map<String,Object> map_d = new HashMap<String,Object>();
+				map_d.put("eduId", edu.getId());
+				map_d.put("ediName", edu.getEdition().getEdiName());
+				GradeSubject gs = edu.getGradeSubject();
+				Subject sub = gs.getSubject();
+				map_d.put("subName", sub.getSubName());
+				Integer schoolType = gs.getSchoolType();
+				String schoolTypeChi = "";
+				if(schoolType.equals(1)){
+					schoolTypeChi = "小学";
+				}else if(schoolType.equals(2)){
+					schoolTypeChi = "初中";
+				}else if(schoolType.equals(3)){
+					schoolTypeChi = "高中";
+				}
+				map_d.put("schoolType", schoolTypeChi);
+				map_d.put("gradeName", gs.getGradeName());
+				Integer showStatus = edu.getDisplayStatus();
+				if(showStatus.equals(0)){
+					map_d.put("showStatusChi", "可见");
+				}else{
+					map_d.put("showStatusChi", "隐藏");
+				}
+				map_d.put("eduColume", edu.getEduVolume());
+				list_d.add(map_d);
+			}
+			map.put("data", list_d);
+			map.put("count", count);
+			map.put("code", 0);
+		}else{
+			msg = "noInfo";
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 获取教材详情
+	 * @author Administrator
+	 * @date 2019-4-29 上午11:15:08
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getEducationDetail(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		EducationManager em = (EducationManager) AppFactory.instance(null).getApp(Constants.WEB_EDUCATION_INFO);
+		Integer eduId = CommonTools.getFinalInteger("eduId", request);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "error";
+		List<Education> eList = em.listSpecInfoById(eduId);
+		if(eList.size() > 0){
+			msg = "success";
+			Education edu = eList.get(0);
+			map.put("eduId", edu.getId());
+			map.put("subId", edu.getGradeSubject().getSubject().getId());
+			map.put("gradeId", edu.getGradeSubject().getId());
+			map.put("ediId", edu.getEdition().getId());
+			map.put("showStatus", edu.getDisplayStatus());
+			map.put("eduColume", edu.getEduVolume());
+			map.put("eduImg", edu.getEduImg());
+		}else{
+			msg = "noInfo";
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 修改指定教材的信息
+	 * @author Administrator
+	 * @date 2019-4-29 上午11:26:57
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward updateEducationInfo(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		EducationManager em = (EducationManager) AppFactory.instance(null).getApp(Constants.WEB_EDUCATION_INFO);
+		Integer ediId = CommonTools.getFinalInteger("ediId", request);
+		Integer eduId = CommonTools.getFinalInteger("eduId", request);
+		Integer gradeId = CommonTools.getFinalInteger("gradeId", request);
+		String eduVolume = Transcode.unescape_new("eduVolume", request);
+		Integer showStatus = CommonTools.getFinalInteger("showStatus", request);//0：显示，1：隐藏
+		boolean flag = em.updateEduById(eduId, gradeId, ediId, 0, showStatus, eduVolume, "");
 		Map<String,Boolean> map = new HashMap<String,Boolean>();
 		map.put("result", flag);
 		CommonTools.getJsonPkg(map, response);

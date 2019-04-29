@@ -42,24 +42,13 @@
         </property>
         <property name="yearSystem" type="java.lang.Integer">
             <column name="year_system" not-null="true">
-                <comment>学年制[0(6-3-3),1(5-4-3)]</comment>
+                <comment>学年制(3,4,5,6)</comment>
             </column>
         </property>
-        <!--set name="studyStuQfTjInfos" inverse="true">
-            <key>
-                <column name="school_id" not-null="true">
-                    <comment>学校编号</comment>
-                </column>
-            </key>
-            <one-to-many class="com.zsd.module.StudyStuQfTjInfo" />
-        </set>
-        <set name="classInfos" inverse="true">
-            <key>
-                <column name="school_id" not-null="true">
-                    <comment>学校编号</comment>
-                </column>
-            </key>
-            <one-to-many class="com.zsd.module.ClassInfo" />
-        </set-->
+         <property name="showStatus" type="java.lang.Integer">
+            <column name="show_status" not-null="true">
+                <comment>显示状态（0：显示，1：隐藏）</comment>
+            </column>
+        </property>
     </class>
 </hibernate-mapping>
