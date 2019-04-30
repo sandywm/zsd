@@ -5,4 +5,5 @@
 	<dao id="grade_subject_Dao" class="com.zsd.dao.impl.GradeSubjectDaoImpl"/>
 	<dao id="education_Dao" class="com.zsd.dao.impl.EducationDaoImpl"/>
 	<dao id="school_Dao" class="com.zsd.dao.impl.SchoolDaoImpl"/>
+	<dao id="user_Dao" class="com.zsd.dao.impl.UserDaoImpl" />
 </daoContext>
