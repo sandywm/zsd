@@ -4,14 +4,27 @@
  */
 package com.zsd.action.user;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
 
 import com.zsd.action.base.Transcode;
+import com.zsd.factory.AppFactory;
+import com.zsd.module.School;
+import com.zsd.module.User;
+import com.zsd.service.SchoolManager;
+import com.zsd.service.UserManager;
+import com.zsd.tools.CommonTools;
+import com.zsd.tools.CurrentTime;
+import com.zsd.util.Constants;
 
 /** 
  * MyEclipse Struts
@@ -45,5 +58,52 @@ public class UserAction extends DispatchAction {
 			urlPage = "welcomePage";
 		}
 		return mapping.findForward(urlPage);
+	}
+	/**
+	 * 注册用户信息
+	 * @author zong
+	 * @date  2019-4-29 上午10:46:12
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward addUserInfo(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		String lastLoginIp = CommonTools.getIpAddress(request); //最后登录Ip
+		String area = CommonTools.getSelfArea(lastLoginIp);
+		String prov = area.split(":")[0];
+		String city = area.split(":")[1];
+		UserManager uManager = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
+		SchoolManager scManager = (SchoolManager) AppFactory.instance(null).getApp(Constants.WEB_SCHOOL_INFO);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String userAccount =CommonTools.getFinalStr("userAccount",request);
+		String realName=CommonTools.getFinalStr("realName",request);
+		String password=CommonTools.getFinalStr("password",request);
+		String mobile=CommonTools.getFinalStr("mobile",request);
+		String lastLoginDate=CurrentTime.getCurrentTime();
+		String signDate=CurrentTime.getCurrentTime();
+		Integer schoolId=CommonTools.getFinalInteger("schoolId", request);
+		String endDate=CurrentTime.getFinalDateTime(30);
+		List<School> scList = scManager.listInfoById(schoolId);
+		Integer yearSystem=0;
+		if(scList.size()>0){
+			yearSystem = scList.get(0).getYearSystem();
+		}
+		List<User> uList = uManager.listInfoByAccount(userAccount);//判断账户是否存在
+		String msg ="fail";
+		if(uList.size()>0){
+			
+		}else{
+			Integer userId=uManager.addUser(userAccount, realName, password, mobile, lastLoginDate, lastLoginIp, signDate, schoolId, endDate, yearSystem, prov, city);
+			if(userId>0){
+				msg = "success";
+			}
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
 	}
 }

@@ -4,12 +4,23 @@
  */
 package com.zsd.action.login;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
+
+import com.zsd.factory.AppFactory;
+import com.zsd.module.User;
+import com.zsd.service.UserManager;
+import com.zsd.tools.CommonTools;
+import com.zsd.util.Constants;
 
 /** 
  * MyEclipse Struts
@@ -72,6 +83,33 @@ public class LoginAction extends DispatchAction {
 		// TODO Auto-generated method stub
 		return mapping.findForward("signPage");
 	}
-	
+	/**
+	 * 用户登录
+	 * @author zong
+	 * @date  2019-4-29 下午04:21:29
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward userLogin(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		UserManager uManager = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String userAccount =CommonTools.getFinalStr("userAccount",request);
+		String password=CommonTools.getFinalStr("password",request);
+		String msg = "error";
+		if(userAccount!=""&& password!=""){
+			List<User> uList = uManager.listInfoByAccount(userAccount, password);
+			if(uList.size()>0){
+				msg = "success";
+			}
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
 	
 }
