@@ -35,6 +35,24 @@ import com.zsd.util.Constants;
 public class SchoolAction extends DispatchAction {
 	
 	/**
+	 * 导向学校管理模块
+	 * @author  Administrator
+	 * @ModifiedBy  
+	 * @date  2019-5-1 下午04:31:05
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward goSchoolPage(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		return mapping.findForward("schoolPage");
+	}
+	
+	/**
 	 * 根据条件分页获取学校列表
 	 * @author Administrator
 	 * @date 2019-4-29 下午03:56:37

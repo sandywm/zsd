@@ -40,6 +40,24 @@ import com.zsd.util.Constants;
 public class CommonAction extends DispatchAction {
 	
 	/**
+	 * 导向出版社页面
+	 * @author  Administrator
+	 * @ModifiedBy  
+	 * @date  2019-5-1 下午04:32:47
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward goEditionPage(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		return mapping.findForward("ediPage");
+	}
+	
+	/**
 	 * 根据条件获取出版社列表
 	 * @description
 	 * @author Administrator
@@ -87,6 +105,24 @@ public class CommonAction extends DispatchAction {
 	}
 	
 	/**
+	 * 导向学科页面
+	 * @author  Administrator
+	 * @ModifiedBy  
+	 * @date  2019-5-1 下午04:33:58
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward goSubjectPage(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		return mapping.findForward("subjectPage");
+	}
+	
+	/**
 	 * 获取学科列表
 	 * @param mapping
 	 * @param form
@@ -126,6 +162,24 @@ public class CommonAction extends DispatchAction {
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
 		return null;
+	}
+	
+	/**
+	 * 导向年级学科页面
+	 * @author  Administrator
+	 * @ModifiedBy  
+	 * @date  2019-5-1 下午04:34:47
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward goGSubjectPage(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		return mapping.findForward("gsPage");
 	}
 	
 	/**
@@ -304,6 +358,24 @@ public class CommonAction extends DispatchAction {
 		map.put("result", flag);
 		CommonTools.getJsonPkg(map, response);
 		return null;
+	}
+	
+	/**
+	 * 导向教材页面
+	 * @author  Administrator
+	 * @ModifiedBy  
+	 * @date  2019-5-1 下午04:35:32
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward goEducationPage(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		return mapping.findForward("eduPage");
 	}
 	
 	/**

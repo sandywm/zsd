@@ -22,11 +22,14 @@
     </action>
     <!-- 学校管理 -->
     <action path="/school" parameter="action" scope="request" type="com.zsd.action.school.SchoolAction">
-      <set-property property="cancellable" value="true" />
+      <forward name="schoolPage" path="/###.jsp"></forward><!-- 学校管理首页 -->
     </action>
     <!-- 通用 -->
     <action path="/common" parameter="action" scope="request" type="com.zsd.action.base.CommonAction">
-      <set-property property="cancellable" value="true" />
+      <forward name="ediPage" path="/###.jsp"></forward><!-- 出版社管理首页 -->
+      <forward name="subjectPage" path="/###.jsp"></forward><!-- 学科管理首页 -->
+      <forward name="gsPage" path="/###.jsp"></forward><!-- 年级学科管理首页 -->
+      <forward name="eduPage" path="/###.jsp"></forward><!-- 教材管理首页 -->
     </action>
 
   </action-mappings>
