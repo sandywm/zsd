@@ -463,6 +463,9 @@ public class CommonAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
 		EducationManager em = (EducationManager) AppFactory.instance(null).getApp(Constants.WEB_EDUCATION_INFO);
+		SubjectManager sm = (SubjectManager) AppFactory.instance(null).getApp(Constants.WEB_SUBJECT_INFO);
+		EditionManager edim = (EditionManager) AppFactory.instance(null).getApp(Constants.WEB_EDITION_INFO);
+		GradeSubjectManager gsm = (GradeSubjectManager) AppFactory.instance(null).getApp(Constants.WEB_GRADE_SUBJECT_INFO);
 		Integer eduId = CommonTools.getFinalInteger("eduId", request);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "error";
@@ -471,9 +474,73 @@ public class CommonAction extends DispatchAction {
 			msg = "success";
 			Education edu = eList.get(0);
 			map.put("eduId", edu.getId());
-			map.put("subId", edu.getGradeSubject().getSubject().getId());
-			map.put("gradeId", edu.getGradeSubject().getId());
-			map.put("ediId", edu.getEdition().getId());
+			Integer subId = edu.getGradeSubject().getSubject().getId();
+			map.put("subId", subId);
+			//获取所有学科列表
+			List<Subject> sList = sm.listInfoByDisplayStatus(0);
+			List<Object> list_sub_d = new ArrayList<Object>();
+			for(Iterator<Subject> it = sList.iterator() ; it.hasNext();){
+				Subject sub = it.next();
+				Map<String,Object> map_sub_d = new HashMap<String,Object>();
+				map_sub_d.put("subId", sub.getId());
+				map_sub_d.put("subName", sub.getSubName());
+				if(subId.equals(sub.getId())){
+					map_sub_d.put("selStatus", true);
+				}else{
+					map_sub_d.put("selStatus", false);
+				}
+				list_sub_d.add(map_sub_d);
+			}
+			map.put("subList", list_sub_d);
+			Integer gradeId = edu.getGradeSubject().getId();
+			map.put("gradeId", gradeId);
+			//获取指定学科的年级学科列表
+			List<GradeSubject> gsList = gsm.listSpecInfoBySubId(subId);
+			if(gsList.size() > 0){
+				List<Object> list_g_d = new ArrayList<Object>();
+				for(Iterator<GradeSubject> it = gsList.iterator() ; it.hasNext();){
+					Map<String,Object> map_g_d = new HashMap<String,Object>();
+					GradeSubject gs = it.next();
+					map_g_d.put("gId", gs.getId());
+					Integer schoolType = gs.getSchoolType();
+					String schoolTypeChi = "";
+					if(schoolType.equals(1)){
+						schoolTypeChi = "小学:";
+					}else if(schoolType.equals(2)){
+						schoolTypeChi = "初中:";
+					}else if(schoolType.equals(3)){
+						schoolTypeChi = "高中:";
+					}
+					map_g_d.put("gName", schoolTypeChi+gs.getGradeName());
+					if(gradeId.equals(gs.getId())){
+						map_g_d.put("selStatus", true);
+					}else{
+						map_g_d.put("selStatus", false);
+					}
+					list_g_d.add(map_g_d);
+				}
+				map.put("gList", list_g_d);
+			}
+			//获取所有出版社列表
+			Integer ediId = edu.getEdition().getId();
+			map.put("ediId", ediId);
+			List<Edition> ediList = edim.listInfoByShowStatus(0, 0);
+			if(ediList.size() > 0){
+				List<Object> list_edi_d = new ArrayList<Object>();
+				for(Iterator<Edition> it = ediList.iterator() ; it.hasNext();){
+					Edition edi = it.next();
+					Map<String,Object> map_edi_d = new HashMap<String,Object>();
+					map_edi_d.put("ediId", edi.getId());
+					map_edi_d.put("ediName", edi.getEdiName());
+					if(ediId.equals(edi.getId())){
+						map_edi_d.put("selStatus", true);
+					}else{
+						map_edi_d.put("selStatus", false);
+					}
+					list_edi_d.add(map_edi_d);
+				}
+				map.put("ediList", list_edi_d);
+			}
 			map.put("showStatus", edu.getDisplayStatus());
 			map.put("eduColume", edu.getEduVolume());
 			map.put("eduImg", edu.getEduImg());
