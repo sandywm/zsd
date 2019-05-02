@@ -95,7 +95,9 @@ public class CommonAction extends DispatchAction {
 				map_d.put("showStatus", edi.getEdiOrder());
 				list_d.add(map_d);
 			}
-			map.put("ediList", list_d);
+			map.put("data", list_d);
+			map.put("count", ediList.size());
+			map.put("code", 0);
 		}else{
 			msg = "noInfo";
 		}
@@ -155,7 +157,9 @@ public class CommonAction extends DispatchAction {
 				}
 				list_d.add(map_d);
 			}
-			map.put("subList", list_d);
+			map.put("data", list_d);
+			map.put("count", sList.size());
+			map.put("code", 0);
 		}else{
 			msg = "noInfo";
 		}
