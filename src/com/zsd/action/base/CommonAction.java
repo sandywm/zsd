@@ -262,6 +262,7 @@ public class CommonAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
 		GradeSubjectManager gsm = (GradeSubjectManager) AppFactory.instance(null).getApp(Constants.WEB_GRADE_SUBJECT_INFO);
+		SubjectManager sm = (SubjectManager) AppFactory.instance(null).getApp(Constants.WEB_SUBJECT_INFO);
 		Integer gsId = CommonTools.getFinalInteger("gsId", request);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "error";
@@ -270,7 +271,24 @@ public class CommonAction extends DispatchAction {
 			msg = "success";
 			GradeSubject gs = gsList.get(0);
 			map.put("id", gs.getId());
-			map.put("subId", gs.getSubject().getId());
+			Integer subId = gs.getSubject().getId();
+			map.put("subId", subId);
+			//获取所有学科列表
+			List<Subject> sList = sm.listInfoByDisplayStatus(0);
+			List<Object> list_sub_d = new ArrayList<Object>();
+			for(Iterator<Subject> it = sList.iterator() ; it.hasNext();){
+				Subject sub = it.next();
+				Map<String,Object> map_sub_d = new HashMap<String,Object>();
+				map_sub_d.put("subId", sub.getId());
+				map_sub_d.put("subName", sub.getSubName());
+				if(subId.equals(sub.getId())){
+					map_sub_d.put("selStatus", true);
+				}else{
+					map_sub_d.put("selStatus", false);
+				}
+				list_sub_d.add(map_sub_d);
+			}
+			map.put("subList", list_sub_d);
 			Integer schoolType = gs.getSchoolType();
 			map.put("schoolType", schoolType);
 			map.put("gName", gs.getGradeName());
