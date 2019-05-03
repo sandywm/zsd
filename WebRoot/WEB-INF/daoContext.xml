@@ -6,4 +6,5 @@
 	<dao id="education_Dao" class="com.zsd.dao.impl.EducationDaoImpl"/>
 	<dao id="school_Dao" class="com.zsd.dao.impl.SchoolDaoImpl"/>
 	<dao id="user_Dao" class="com.zsd.dao.impl.UserDaoImpl" />
+	<dao id="chapter_Dao" class="com.zsd.dao.impl.ChapterDaoImpl" />
 </daoContext>

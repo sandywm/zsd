@@ -6,4 +6,5 @@
 	<app id="education_Web" class="com.zsd.service.impl.EducationManagerImpl"/>
 	<app id="school_Web" class="com.zsd.service.impl.SchoolManagerImpl"/>
 	<app id="user_Web" class="com.zsd.service.impl.UserManagerImpl"/>
+	<app id="chapter_Web" class="com.zsd.service.impl.ChapterManagerImpl"/>
 </appContext>

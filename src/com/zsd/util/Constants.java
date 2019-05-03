@@ -18,6 +18,7 @@ public class Constants {
 	public static final String WEB_EDUCATION_INFO = "education_Web";
 	public static final String WEB_SCHOOL_INFO = "school_Web";
 	public static final String WEB_USER_INFO = "user_Web";
+	public static final String WEB_CHAPTER_INFO = "chapter_Web";
 	
 	//-------------------DAO-------------------------//
 	public static final String DAO_EDITION_INFO = "edition_Dao";
@@ -26,4 +27,5 @@ public class Constants {
 	public static final String DAO_EDUCATION_INFO = "education_Dao";
 	public static final String DAO_SCHOOL_INFO = "school_Dao";
 	public static final String DAO_USER_INFO ="user_Dao";
+	public static final String DAO_CHAPTER_INFO ="chapter_Dao";
 }

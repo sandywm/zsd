@@ -87,5 +87,4 @@ public class EducationDaoImpl implements EducationDao{
 		Object countObj = sess.createQuery(hql).uniqueResult();
 		return CommonTools.longToInt(countObj);
 	}
-
 }

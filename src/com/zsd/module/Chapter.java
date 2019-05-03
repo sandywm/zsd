@@ -1,8 +1,5 @@
 package com.zsd.module;
 
-import java.util.HashSet;
-import java.util.Set;
-
 /**
  * Chapter entity. @author MyEclipse Persistence Tools
  */
