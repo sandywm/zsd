@@ -70,23 +70,25 @@ public class ChapterAction extends DispatchAction {
 		String gradeName = Transcode.unescape_new("gradeName", request);
 		Integer ediId = CommonTools.getFinalInteger("ediId", request);
 		String eduVolume = Transcode.unescape_new("eduVolume", request);
-		List<Chapter> cList = cm.ListInfoByOpt(subId, gradeName, ediId, eduVolume);
 		String msg = "noInfo";
 		Map<String,Object> map = new HashMap<String,Object>();
-		if(cList.size() > 0){
-			msg = "success";
-			List<Object> list_d = new ArrayList<Object>();
-			for(Iterator<Chapter> it = cList.iterator() ; it.hasNext();){
-				Chapter cpt = it.next();
-				Map<String,Object> map_d = new HashMap<String,Object>();
-				map_d.put("id", cpt.getId());
-				map_d.put("cptName", cpt.getChapterName());
-				map_d.put("cptOrder", cpt.getChapterOrder());
-				list_d.add(map_d);
+		if(subId > 0 && !gradeName.equals("") && ediId > 0 && !eduVolume.equals("")){
+			List<Chapter> cList = cm.ListInfoByOpt(subId, gradeName, ediId, eduVolume);
+			if(cList.size() > 0){
+				msg = "success";
+				List<Object> list_d = new ArrayList<Object>();
+				for(Iterator<Chapter> it = cList.iterator() ; it.hasNext();){
+					Chapter cpt = it.next();
+					Map<String,Object> map_d = new HashMap<String,Object>();
+					map_d.put("id", cpt.getId());
+					map_d.put("cptName", cpt.getChapterName());
+					map_d.put("cptOrder", cpt.getChapterOrder());
+					list_d.add(map_d);
+				}
+				map.put("data", list_d);
+				map.put("count", cList.size());
+				map.put("code", 0);
 			}
-			map.put("data", list_d);
-			map.put("count", cList.size());
-			map.put("code", 0);
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
@@ -94,7 +96,7 @@ public class ChapterAction extends DispatchAction {
 	}
 	
 	/**
-	 * 根据指定的教材编号获取章节列表
+	 * 根据指定的教材编号获取章节列表(学习时)
 	 * @author  Administrator
 	 * @ModifiedBy  
 	 * @date  2019-5-3 下午10:20:53
