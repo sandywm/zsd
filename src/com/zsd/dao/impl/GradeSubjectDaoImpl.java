@@ -102,4 +102,13 @@ public class GradeSubjectDaoImpl implements GradeSubjectDao{
 		return sess.createQuery(hql).list();
 	}
 
+	@Override
+	public List<GradeSubject> findSpecInfoByOpt(Session sess,
+			String gradeName, Integer subId, Integer shoolType) {
+		// TODO Auto-generated method stub
+		String hql = " from GradeSubject as gs where gs.gradeName = '"+gradeName+"'";
+		hql += " and gs.subject.id = "+subId + " and gs.shoolType = "+shoolType;
+		return sess.createQuery(hql).list();
+	}
+
 }

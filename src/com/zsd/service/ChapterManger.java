@@ -37,7 +37,7 @@ public interface ChapterManger {
 	boolean updateChapter(Integer chapterId,String chapterName,Integer chapterOrder) throws WEBException;
 	
 	/**
-	 * 根据（科目、年级、出版社、上/下册）获取到教材编号--获取到章节列表
+	 * 根据（科目、年级、出版社、上/下册）获取到教材编号--获取到章节列表（升序排序）
 	 * @author  Administrator
 	 * @ModifiedBy  
 	 * @date  2019-5-3 下午09:46:17
@@ -51,7 +51,7 @@ public interface ChapterManger {
 	List<Chapter> ListInfoByOpt(Integer subId,String gradeName,Integer ediId,String eduVolume) throws WEBException;
 	
 	/**
-	 * 根据教材编号获取章节列表
+	 * 根据教材编号获取章节列表（升序排序）
 	 * @author  Administrator
 	 * @ModifiedBy  
 	 * @date  2019-5-3 下午10:22:23
@@ -71,4 +71,14 @@ public interface ChapterManger {
 	 * @throws WEBException
 	 */
 	Chapter getEntityById(Integer cptId) throws WEBException;
+	
+	/**
+	 * 根据教材编号、章节名称获取章节信息
+	 * @author Administrator
+	 * @date 2019-5-5 上午09:25:20
+	 * @param eduId 教材编号
+	 * @param cptName 章节名称
+	 * @return
+	 */
+	List<Chapter> listInfoByOpt(Integer eduId,String cptName) throws WEBException ;
 }

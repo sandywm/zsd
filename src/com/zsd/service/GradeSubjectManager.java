@@ -81,4 +81,16 @@ public interface GradeSubjectManager {
 	 * @throws WEBException
 	 */
 	List<GradeSubject> listSpecInfoBySubId(Integer subId) throws WEBException;
+	
+	/**
+	 * 根据年级、学科编号、学段获取年级学科列表
+	 * @author Administrator
+	 * @date 2019-5-5 上午10:11:48
+	 * @param gradeName 年级名称
+	 * @param subId 学科编号
+	 * @param shoolType 学段
+	 * @return
+	 * @throws WEBException
+	 */
+	List<GradeSubject> listSpecInfoByOpt(String gradeName,Integer subId,Integer shoolType) throws WEBException;
 }

@@ -126,4 +126,20 @@ public class ChapterManagerImpl implements ChapterManger{
 		}
 	}
 
+	@Override
+	public List<Chapter> listInfoByOpt(Integer eduId, String cptName) throws WEBException  {
+		// TODO Auto-generated method stub
+		try {
+			cDao = (ChapterDao) DaoFactory.instance(null).getDao(Constants.DAO_CHAPTER_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return cDao.findInfoByOpt(sess, eduId, cptName);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new WEBException("根据教材编号、章节名称获取章节信息出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
 }

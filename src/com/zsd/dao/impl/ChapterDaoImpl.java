@@ -49,13 +49,22 @@ public class ChapterDaoImpl implements ChapterDao{
 		String hql = " from Chapter as c where c.education.gradeSubject.subject.id = "+subId;
 		hql += " and c.education.gradeSubject.gradeName = '"+gradeName+"'";
 		hql += " and c.education.edition.id = "+ediId + " and c.education.eduVolume = '"+eduVolume+"'";
+		hql += " order by c.chapterOrder asc";
 		return sess.createQuery(hql).list();
 	}
 
 	@Override
 	public List<Chapter> findInfoByEduId(Session sess, Integer eduId) {
 		// TODO Auto-generated method stub
-		String hql = " from Chapter as c where c.education.id = "+eduId;
+		String hql = " from Chapter as c where c.education.id = "+eduId + " order by c.chapterOrder asc";
+		return sess.createQuery(hql).list();
+	}
+
+	@Override
+	public List<Chapter> findInfoByOpt(Session sess, Integer eduId,
+			String cptName) {
+		// TODO Auto-generated method stub
+		String hql = " from Chapter as c where c.education.id = "+eduId + " and c.chapterName = '"+cptName+"'"; 
 		return sess.createQuery(hql).list();
 	}
 

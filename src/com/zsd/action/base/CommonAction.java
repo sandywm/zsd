@@ -375,9 +375,57 @@ public class CommonAction extends DispatchAction {
 		Integer subId = CommonTools.getFinalInteger("subId", request);
 		Integer showStatus = CommonTools.getFinalInteger("showStatus", request);//0：显示，1：隐藏
 		Integer schoolType = CommonTools.getFinalInteger("schoolType", request);
-		boolean flag = gsm.updateGSub(gsId, gName, subId, schoolType, showStatus);
-		Map<String,Boolean> map = new HashMap<String,Boolean>();
-		map.put("result", flag);
+		List<GradeSubject> gsList_1 = gsm.listSpecInfoById(gsId);
+		boolean existFlag = false;
+		Map<String,String> map = new HashMap<String,String>();
+		if(gsList_1.size() > 0){
+			GradeSubject gs = gsList_1.get(0);
+			if(gName.equals(gs.getGradeName()) && subId.equals(gs.getSubject().getId()) && schoolType.equals(gs.getSchoolType())){
+				//都没发生变化，不用检查
+			}else{
+				//有变化，需要检查
+				List<GradeSubject> gsList = gsm.listSpecInfoByOpt(gName, subId, schoolType);
+				if(gsList.size() > 0){
+					existFlag = true;
+				}
+			}
+		}
+		if(!existFlag){
+			gsm.updateGSub(gsId, gName, subId, schoolType, showStatus);
+			map.put("result", "success");
+		}else{
+			map.put("result", "existInfo");
+		}
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 增加年级学科信息
+	 * @author Administrator
+	 * @date 2019-5-5 上午09:45:52
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward addGSubjectInfo(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		GradeSubjectManager gsm = (GradeSubjectManager) AppFactory.instance(null).getApp(Constants.WEB_GRADE_SUBJECT_INFO);
+		String gName = Transcode.unescape_new("gName", request);
+		Integer subId = CommonTools.getFinalInteger("subId", request);
+		Integer schoolType = CommonTools.getFinalInteger("schoolType", request);
+		List<GradeSubject> gsList = gsm.listSpecInfoByOpt(gName, subId, schoolType);
+		Map<String,String> map = new HashMap<String,String>();
+		if(gsList.size() > 0){
+			gsm.addGSub(gName, subId, schoolType);
+			map.put("result", "success");
+		}else{
+			map.put("result", "existInfo");
+		}
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
