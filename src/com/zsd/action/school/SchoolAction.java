@@ -74,7 +74,7 @@ public class SchoolAction extends DispatchAction {
 		String town = Transcode.unescape_new("town", request);
 		Integer schoolType = CommonTools.getFinalInteger("schoolType", request);
 		Integer count = sm.getCountByOpt(schoolName, prov, city, county, town, schoolType, -1);
-		String msg = "noInfo";
+		String msg = "暂无记录";
 		Map<String,Object> map = new HashMap<String,Object>();
 		if(count > 0){
 			Integer pageSize = PageConst.getPageSize(String.valueOf(request.getParameter("limit")), 10);//等同于pageSize

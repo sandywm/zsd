@@ -70,7 +70,7 @@ public class ChapterAction extends DispatchAction {
 		String gradeName = Transcode.unescape_new("gradeName", request);
 		Integer ediId = CommonTools.getFinalInteger("ediId", request);
 		String eduVolume = Transcode.unescape_new("eduVolume", request);
-		String msg = "noInfo";
+		String msg = "暂无记录";
 		Map<String,Object> map = new HashMap<String,Object>();
 		if(subId > 0 && !gradeName.equals("") && ediId > 0 && !eduVolume.equals("")){
 			List<Chapter> cList = cm.ListInfoByOpt(subId, gradeName, ediId, eduVolume);

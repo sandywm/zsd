@@ -98,7 +98,7 @@ public class CommonAction extends DispatchAction {
 			map.put("count", ediList.size());
 			map.put("code", 0);
 		}else{
-			msg = "noInfo";
+			msg = "暂无记录";
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
@@ -194,7 +194,7 @@ public class CommonAction extends DispatchAction {
 			map.put("count", sList.size());
 			map.put("code", 0);
 		}else{
-			msg = "noInfo";
+			msg = "暂无记录";
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
@@ -273,7 +273,7 @@ public class CommonAction extends DispatchAction {
 			map.put("count", count);
 			map.put("code", 0);
 		}else{
-			msg = "noInfo";
+			msg = "暂无记录";
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
@@ -533,7 +533,7 @@ public class CommonAction extends DispatchAction {
 			map.put("count", count);
 			map.put("code", 0);
 		}else{
-			msg = "noInfo";
+			msg = "暂无记录";
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
