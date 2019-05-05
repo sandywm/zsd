@@ -39,6 +39,11 @@
     <action path="/lore" parameter="action" scope="request" type="com.zsd.action.lore.LoreAction">
       <forward name="lorePage" path="/###.jsp"></forward><!-- 知识点管理首页 -->
     </action>
+    <!-- 模块管理 -->
+    <action path="/mod" parameter="action" scope="request" type="com.zsd.action.module.ModuleAction">
+      <forward name="modPage" path="/###.jsp"></forward><!-- 模块管理首页 -->
+      <forward name="abilityPage" path="/###.jsp"></forward><!-- 角色权限管理首页 -->
+    </action>
 
   </action-mappings>
 

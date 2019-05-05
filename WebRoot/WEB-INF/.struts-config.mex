@@ -6,9 +6,17 @@
   <StrutsActivity path="/school.do" location="950,50" dimension="247,104" />
   <StrutsActivity path="/common.do" location="50,250" dimension="251,104" />
   <StrutsActivity path="/chapter.do" location="50,450" dimension="260,104" />
+  <StrutsActivity path="/lore.do" location="650,450" dimension="219,104" />
+  <StrutsActivity path="/mod.do" location="950,450" dimension="259,104" />
   <StrutsActivity path="/###.jsp" location="950,250" dimension="81,53" />
   <StrutsActivity path="/register.jsp" location="650,250" dimension="102,53" />
-  <StrutsActivity path="/lore.do" location="650,450" dimension="219,104" />
+  <StrutsTransition id="/mod.do,abilityPage,/###.jsp,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="1079,450" />
+      <AbsolutePoint location="1079,298" />
+      <AbsolutePoint location="1031,298" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
   <StrutsTransition id="/common.do,subjectPage,/###.jsp,1" routingType="0">
     <AutomaticBendpoints>
       <AbsolutePoint location="301,318" />
@@ -39,13 +47,6 @@
       <AbsolutePoint location="960,250" />
     </AutomaticBendpoints>
   </StrutsTransition>
-  <StrutsTransition id="/lore.do,chapterPage,/###.jsp,1" routingType="0">
-    <AutomaticBendpoints>
-      <AbsolutePoint location="767,450" />
-      <AbsolutePoint location="767,276" />
-      <AbsolutePoint location="950,276" />
-    </AutomaticBendpoints>
-  </StrutsTransition>
   <StrutsTransition id="/common.do,gsPage,/###.jsp,1" routingType="0">
     <AutomaticBendpoints>
       <AbsolutePoint location="145,250" />
@@ -59,6 +60,13 @@
       <AbsolutePoint location="301,348" />
       <AbsolutePoint location="990,348" />
       <AbsolutePoint location="990,303" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/mod.do,modPage,/###.jsp,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="1101,450" />
+      <AbsolutePoint location="1101,276" />
+      <AbsolutePoint location="1031,276" />
     </AutomaticBendpoints>
   </StrutsTransition>
   <StrutsTransition id="/school.do,schoolPage,/###.jsp,1" routingType="0">

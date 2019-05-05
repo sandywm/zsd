@@ -97,17 +97,23 @@ public interface UserManager {
 			Integer loginTimes, Integer loginStatus) throws WEBException;
 
 	/**
-	 * 根据用户账户获取用户信息
-	 * 
+	 * 根据用户账户和密码获取用户信息
 	 * @author zong
-	 * @date 2019-4-28 下午05:01:48
-	 * @param account
-	 *            用户账户
+	 * @date  2019-5-4 上午10:06:52
+	 * @param account 用户账户
+	 * @param password 密码
 	 * @return
 	 * @throws WEBException
 	 */
 	List<User> listInfoByAccount(String account, String password)
 			throws WEBException;
-
+	/**
+	 * 根据用户账户获取用户信息
+	 * @author zong
+	 * @date 2019-4-28 下午05:01:48
+	 * @param account   用户账户
+	 * @return
+	 * @throws WEBException
+	 */
 	List<User> listInfoByAccount(String account) throws WEBException;
 }

@@ -18,13 +18,18 @@ import org.apache.struts.actions.DispatchAction;
 
 import com.zsd.action.base.Transcode;
 import com.zsd.factory.AppFactory;
+import com.zsd.module.RoleInfo;
 import com.zsd.module.School;
 import com.zsd.module.User;
+import com.zsd.service.RoleInfoManager;
+import com.zsd.service.RoleUserInfoManager;
 import com.zsd.service.SchoolManager;
 import com.zsd.service.UserManager;
 import com.zsd.tools.CommonTools;
 import com.zsd.tools.CurrentTime;
+import com.zsd.tools.MD5;
 import com.zsd.util.Constants;
+
 
 /** 
  * MyEclipse Struts
@@ -59,6 +64,7 @@ public class UserAction extends DispatchAction {
 		}
 		return mapping.findForward(urlPage);
 	}
+	
 	/**
 	 * 注册用户信息
 	 * @author zong
@@ -70,7 +76,7 @@ public class UserAction extends DispatchAction {
 	 * @return
 	 * @throws Exception
 	 */
-	public ActionForward addUserInfo(ActionMapping mapping, ActionForm form,
+	public ActionForward regUserInfo(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String lastLoginIp = CommonTools.getIpAddress(request); //最后登录Ip
 		String area = CommonTools.getSelfArea(lastLoginIp);
@@ -78,10 +84,13 @@ public class UserAction extends DispatchAction {
 		String city = area.split(":")[1];
 		UserManager uManager = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
 		SchoolManager scManager = (SchoolManager) AppFactory.instance(null).getApp(Constants.WEB_SCHOOL_INFO);
+		RoleUserInfoManager ruManager = (RoleUserInfoManager) AppFactory.instance(null).getApp(Constants.WEB_ROLE_USER_INFO);
+		RoleInfoManager rManager = (RoleInfoManager) AppFactory.instance(null).getApp(Constants.WEB_ROLE_INFO);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String userAccount =CommonTools.getFinalStr("userAccount",request);
+		String roleName =CommonTools.getFinalStr("roleName",request);
 		String realName=CommonTools.getFinalStr("realName",request);
-		String password=CommonTools.getFinalStr("password",request);
+		String password=new MD5().calcMD5(CommonTools.getFinalStr("password",request));
 		String mobile=CommonTools.getFinalStr("mobile",request);
 		String lastLoginDate=CurrentTime.getCurrentTime();
 		String signDate=CurrentTime.getCurrentTime();
@@ -93,13 +102,24 @@ public class UserAction extends DispatchAction {
 			yearSystem = scList.get(0).getYearSystem();
 		}
 		List<User> uList = uManager.listInfoByAccount(userAccount);//判断账户是否存在
-		String msg ="fail";
+		String msg ="fail";//注册用户失败
 		if(uList.size()>0){
-			
+			msg="exist"; //用户名存在
 		}else{
+			//1.用户注册
 			Integer userId=uManager.addUser(userAccount, realName, password, mobile, lastLoginDate, lastLoginIp, signDate, schoolId, endDate, yearSystem, prov, city);
 			if(userId>0){
-				msg = "success";
+				msg = "success";//注册用户成功
+				
+				List<RoleInfo> rList = rManager.listRoleInfo(roleName);
+				Integer roleId = 0;
+				if(rList.size() > 0){
+					roleId = rList.get(0).getId();
+					//绑定角色
+					ruManager.addRoleUserInfo(userId, roleId);
+				}
+			}else{
+				msg ="fail";//注册用户失败
 			}
 		}
 		map.put("result", msg);

@@ -2,6 +2,9 @@ package com.zsd.tools;
 
 import java.text.DecimalFormat;
 
+import com.zsd.tools.Convert;
+import com.zsd.tools.CurrentTime;
+
 import net.sourceforge.pinyin4j.PinyinHelper;
 import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
 import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
@@ -10,6 +13,111 @@ import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
 import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
 
 public class Convert {
+	
+	/**
+	 * 数字转换成年级
+	 * @author Administrator
+	 * @date 2019-5-5 下午05:42:52
+	 * @param number
+	 * @return
+	 */
+	public static String  NunberConvertChinese(int number){
+		String convertStr = "";
+		if(number > 0){
+			String[] chineseStr = {"一年级","二年级","三年级","四年级","五年级","六年级","七年级","八年级","九年级","高一","高二","高三"};
+			if(number <= chineseStr.length){
+				convertStr = chineseStr[number-1];
+			}else{//超过年级数组，按最后一个年级数据取值
+				convertStr = "高三";
+			}
+		}
+		return convertStr;
+	}
+	
+	/**
+	 * 班级创建日期转成年级数字（1,2,3）
+	 * @author Administrator
+	 * @date 2019-5-5 下午05:43:05
+	 * @param buildClassDate
+	 * @return
+	 */
+	public static int dateConvertGradeNumber(String buildClassDate){
+		int gradeNumber = 0;
+		String currentTime = CurrentTime.getCurrentTime();
+		int diffYear = CurrentTime.comparaDate(currentTime, buildClassDate, "year");
+		int diffMonth = CurrentTime.comparaDate(currentTime, buildClassDate, "month");
+		if(diffYear == 0){
+			if(diffMonth < 0){
+				gradeNumber = 0;
+			}else{
+				gradeNumber = 1;
+			}
+		}else{
+			if(diffMonth < 0){
+				gradeNumber = diffYear;
+			}else{
+				gradeNumber = diffYear + 1;
+			}
+		}
+		return gradeNumber;
+	}
+	
+	/**
+	 * 数字转换成章节
+	 * @author Administrator
+	 * @date 2019-5-5 下午05:42:58
+	 * @param number
+	 * @return
+	 */
+	public static String  NunberConvertChapterName(int number){
+		String convertStr = "";
+		String[] chineseStr = {"第一单元","第二单元","第三单元","第四单元","第五单元",
+							   "第六单元","第七单元","第八单元","第九单元","第第十单元",
+							   "第十一单元","第十二单元","第十三单元","第十四单元","第十五单元",
+							   "第十六单元","第十七单元","第十八单元","第十九单元","第二十单元"};
+		if(number <= chineseStr.length){
+			convertStr = chineseStr[number-1];
+		}
+		return convertStr;
+	}
+	
+	
+	/**
+	 * 账号失效日期转成年级数字
+	 * @author Administrator
+	 * @date 2019-5-5 下午05:43:13
+	 * @param endDate
+	 * @param buildClassDate
+	 * @return
+	 */
+	public static int dateConvertGradeNumber(String endDate,String buildClassDate){
+		int gradeNumber = 0;
+		int diffYear = CurrentTime.comparaDate(endDate, buildClassDate, "year");
+		int diffMonth = CurrentTime.comparaDate(endDate, buildClassDate, "month");
+		if(diffYear == 0){
+			if(diffMonth < 0){
+				gradeNumber = 0;
+			}else{
+				gradeNumber = 1;
+			}
+		}else{
+			if(diffMonth < 0){
+				gradeNumber = diffYear;
+			}else{
+				gradeNumber = diffYear + 1;
+			}
+		}
+		return gradeNumber;
+	}
+	
+	//班级创建日期转换成年级名称
+	public static String dateConvertGradeName(String buildClassDate){
+		String gradeName = "";
+		int gradeNumber = Convert.dateConvertGradeNumber(buildClassDate);
+		gradeName = Convert.NunberConvertChinese(gradeNumber);
+		return gradeName;
+	}
+	
 	/**
 	 * 获取中文全拼
 	 * @description

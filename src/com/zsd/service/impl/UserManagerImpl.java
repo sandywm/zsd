@@ -51,6 +51,14 @@ public class UserManagerImpl implements UserManager {
 			User user = userDao.get(sess, id);
 			if(user != null){
 				user.setNickName(nickName);
+				user.setRealName(realName);
+				user.setSex(sex);
+				user.setPassword(password);
+				user.setEmail(email);
+				user.setMobile(mobile);
+				user.setPortrait(portrait);
+				user.setBirthday(birthday);
+				user.setQq(qq);
 				tran.commit();
 				return true;
 			}
@@ -74,6 +82,9 @@ public class UserManagerImpl implements UserManager {
 			User user = userDao.get(sess, id);
 			if(user != null){
 				user.setLastLoginDate(lastLoginDate);
+				user.setLastLoginDate(lastLoginDate);
+				user.setLoginTimes(loginTimes);
+				user.setLoginStatus(loginStatus);
 				tran.commit();
 				return true;
 			}

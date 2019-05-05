@@ -6,5 +6,15 @@
 	<app id="education_Web" class="com.zsd.service.impl.EducationManagerImpl"/>
 	<app id="school_Web" class="com.zsd.service.impl.SchoolManagerImpl"/>
 	<app id="user_Web" class="com.zsd.service.impl.UserManagerImpl"/>
+	<app id="net_teacher_student_Web" class="com.zsd.service.impl.NetTeacherStudentManagerImpl"/>
+	<app id="role_Web" class="com.zsd.service.impl.RoleInfoManagerImpl"/>
+	<app id="role_user_Web" class="com.zsd.service.impl.RoleUserInfoManagerImpl"/>
+	<app id="student_parent_Web" class="com.zsd.service.impl.StudentParentInfoManagerImpl"/>
+	<app id="net_teacher_info_Web" class="com.zsd.service.impl.NetTeacherInfoManagerImpl"/>
 	<app id="chapter_Web" class="com.zsd.service.impl.ChapterManagerImpl"/>
+	<app id="module_Web" class="com.zsd.service.impl.ModuleManagerImpl"/>
+	<app id="module_action_Web" class="com.zsd.service.impl.ModuleActionInfoManagerImpl"/>
+	<app id="act_role_Web" class="com.zsd.service.impl.ActRoleInfoManagerImpl"/>
+	<app id="class_Web" class="com.zsd.service.impl.ClassInfoManagerImpl"/>
+	<app id="user_class_Web" class="com.zsd.service.impl.UserClassInfoManagerImpl"/>
 </appContext>

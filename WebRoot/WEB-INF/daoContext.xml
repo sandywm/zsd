@@ -6,5 +6,15 @@
 	<dao id="education_Dao" class="com.zsd.dao.impl.EducationDaoImpl"/>
 	<dao id="school_Dao" class="com.zsd.dao.impl.SchoolDaoImpl"/>
 	<dao id="user_Dao" class="com.zsd.dao.impl.UserDaoImpl" />
+	<dao id="role_Dao" class="com.zsd.dao.impl.RoleInfoDaoImpl" />
+	<dao id="role_user_Dao" class="com.zsd.dao.impl.RoleUserInfoDaoImpl" />
+	<dao id="net_teacher_student_Dao" class="com.zsd.dao.impl.NetTeacherStudentDaoImpl" />
+	<dao id="student_parent_Dao" class="com.zsd.dao.impl.StudentParentInfoDaoImpl" />
+	<dao id="net_teacher_info_Dao" class="com.zsd.dao.impl.NetTeacherInfoDaoImpl" />
 	<dao id="chapter_Dao" class="com.zsd.dao.impl.ChapterDaoImpl" />
+	<dao id="module_Dao" class="com.zsd.dao.impl.ModuleDaoImpl" />
+	<dao id="module_action_Dao" class="com.zsd.dao.impl.ModuleActionInfoDaoImpl" />
+	<dao id="act_role_Dao" class="com.zsd.dao.impl.ActRoleInfoDaoImpl" />
+	<dao id="class_Dao" class="com.zsd.dao.impl.ClassInfoDaoImpl" />
+	<dao id="user_class_Dao" class="com.zsd.dao.impl.UserClassInfoDaoImpl" />
 </daoContext>
