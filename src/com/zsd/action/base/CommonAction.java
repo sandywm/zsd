@@ -74,8 +74,7 @@ public class CommonAction extends DispatchAction {
 		// TODO Auto-generated method stub
 		EditionManager em = (EditionManager) AppFactory.instance(null).getApp(Constants.WEB_EDITION_INFO);
 		Integer showStatus = CommonTools.getFinalInteger("showStatus", request);//-1表示全部,0：显示，1：隐藏
-		Integer ediId = CommonTools.getFinalInteger("ediId", request);//指定出版社编号
-		List<Edition> ediList = em.listInfoByShowStatus(ediId, showStatus);
+		List<Edition> ediList = em.listInfoByShowStatus(0, showStatus);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "error";
 		if(ediList.size() > 0){
@@ -92,12 +91,46 @@ public class CommonAction extends DispatchAction {
 				}else{
 					map_d.put("showStatusChi", "隐藏");
 				}
-				map_d.put("showStatus", edi.getEdiOrder());
+				map_d.put("showStatus", edi.getShowStatus());
 				list_d.add(map_d);
 			}
 			map.put("data", list_d);
 			map.put("count", ediList.size());
 			map.put("code", 0);
+		}else{
+			msg = "noInfo";
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 获取指定出版社详情
+	 * @author wm
+	 * @date 2019-5-4 下午10:11:36 
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getEditionDetail(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		EditionManager em = (EditionManager) AppFactory.instance(null).getApp(Constants.WEB_EDITION_INFO);
+		Integer ediId = CommonTools.getFinalInteger("ediId", request);
+		List<Edition> ediList = em.listInfoByShowStatus(ediId, -1);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "error";
+		if(ediList.size() > 0){
+			msg = "success";
+			Edition edi = ediList.get(0);
+			map.put("id", edi.getId());
+			map.put("ediName", edi.getEdiName());
+			map.put("ediOrder", edi.getEdiOrder());
+			map.put("showStatus", edi.getShowStatus());
 		}else{
 			msg = "noInfo";
 		}
@@ -292,13 +325,6 @@ public class CommonAction extends DispatchAction {
 			Integer schoolType = gs.getSchoolType();
 			map.put("schoolType", schoolType);
 			map.put("gName", gs.getGradeName());
-			if(schoolType.equals(1)){
-				map.put("gradeArr", "一年级,二年级,三年级,四年级,五年级,六年级");
-			}else if(schoolType.equals(2)){
-				map.put("gradeArr", "七年级,八年级,九年级");
-			}else if(schoolType.equals(3)){
-				map.put("gradeArr", "高一,高二,高三");
-			}
 			map.put("showStatus", gs.getDisplayStatus());
 		}else{
 			msg = "noInfo";
@@ -465,7 +491,7 @@ public class CommonAction extends DispatchAction {
 		EducationManager em = (EducationManager) AppFactory.instance(null).getApp(Constants.WEB_EDUCATION_INFO);
 		Integer ediId = CommonTools.getFinalInteger("ediId", request);
 		Integer subId = CommonTools.getFinalInteger("subId", request);
-		Integer gradeId = CommonTools.getFinalInteger("gradeId", request);
+		Integer gradeId = CommonTools.getFinalInteger("gradeId", request);	
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "error";
 		Integer count = em.getCountByOpt(ediId, subId, gradeId);
