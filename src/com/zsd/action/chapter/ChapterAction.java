@@ -152,9 +152,16 @@ public class ChapterAction extends DispatchAction {
 		Integer eduId = CommonTools.getFinalInteger("eduId", request);
 		String cptName = Transcode.unescape_new("cptName", request);//第##单元:章节名称
 		Integer cptOrder = CommonTools.getFinalInteger("cptOrder", request);
-		Map<String,Boolean> map = new HashMap<String,Boolean>();
-		cm.addChapter(eduId, cptName, cptOrder);
-		map.put("result", true);
+		Map<String,String> map = new HashMap<String,String>();
+		List<Chapter> cList = cm.listInfoByOpt(eduId, cptName);
+		String msg = "error";
+		if(cList.size() > 0){
+			msg = "existInfo";
+		}else{
+			msg = "scucess";
+			cm.addChapter(eduId, cptName, cptOrder);
+		}
+		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
@@ -185,6 +192,7 @@ public class ChapterAction extends DispatchAction {
 				map.put("cptId", cpt.getId());
 				map.put("cptName", cpt.getChapterName());
 				map.put("cptOrder", cpt.getChapterOrder());
+				map.put("eduId", cpt.getEducation().getId());
 			}
 		}
 		map.put("result", msg);
@@ -211,9 +219,24 @@ public class ChapterAction extends DispatchAction {
 		Integer cptId = CommonTools.getFinalInteger("cptId", request);
 		String cptName = Transcode.unescape_new("cptName", request);//第##单元:章节名称
 		Integer cptOrder = CommonTools.getFinalInteger("cptOrder", request);
-		Map<String,Boolean> map = new HashMap<String,Boolean>();
-		cm.updateChapter(cptId, cptName, cptOrder);
-		map.put("result", true);
+		Integer eduId =  CommonTools.getFinalInteger("eduId", request);
+		Map<String,String> map = new HashMap<String,String>();
+		String msg = "error";
+		if(cptId > 0){
+			Chapter cpt = cm.getEntityById(cptId);
+			if(cpt != null){
+				if(!cpt.getChapterName().equals(cptName)){//章节名称发生变化-需要进行名称检查
+					List<Chapter> cList = cm.listInfoByOpt(eduId, cptName);
+					if(cList.size() > 0){
+						msg = "existInfo";
+					}else{
+						msg = "scucess";
+						cm.updateChapter(cptId, cptName, cptOrder);
+					}
+				}
+			}
+		}
+		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
