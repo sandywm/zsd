@@ -5,9 +5,10 @@
   <StrutsActivity path="/baseInfo.do" location="650,50" dimension="249,104" />
   <StrutsActivity path="/school.do" location="950,50" dimension="247,104" />
   <StrutsActivity path="/common.do" location="50,250" dimension="251,104" />
+  <StrutsActivity path="/chapter.do" location="50,450" dimension="260,104" />
   <StrutsActivity path="/###.jsp" location="950,250" dimension="81,53" />
   <StrutsActivity path="/register.jsp" location="650,250" dimension="102,53" />
-  <StrutsActivity path="/chapter.do" location="50,450" dimension="260,104" />
+  <StrutsActivity path="/lore.do" location="650,450" dimension="219,104" />
   <StrutsTransition id="/common.do,subjectPage,/###.jsp,1" routingType="0">
     <AutomaticBendpoints>
       <AbsolutePoint location="301,318" />
@@ -15,10 +16,18 @@
       <AbsolutePoint location="960,303" />
     </AutomaticBendpoints>
   </StrutsTransition>
+  <StrutsTransition id="/lore.do,lorePage,/###.jsp,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="767,450" />
+      <AbsolutePoint location="767,276" />
+      <AbsolutePoint location="950,276" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
   <StrutsTransition id="/chapter.do,chapterPage,/###.jsp,1" routingType="0">
     <AutomaticBendpoints>
-      <AbsolutePoint location="310,502" />
-      <AbsolutePoint location="1020,502" />
+      <AbsolutePoint location="180,450" />
+      <AbsolutePoint location="180,408" />
+      <AbsolutePoint location="1020,408" />
       <AbsolutePoint location="1020,303" />
     </AutomaticBendpoints>
   </StrutsTransition>
@@ -30,19 +39,19 @@
       <AbsolutePoint location="960,250" />
     </AutomaticBendpoints>
   </StrutsTransition>
+  <StrutsTransition id="/lore.do,chapterPage,/###.jsp,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="767,450" />
+      <AbsolutePoint location="767,276" />
+      <AbsolutePoint location="950,276" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
   <StrutsTransition id="/common.do,gsPage,/###.jsp,1" routingType="0">
     <AutomaticBendpoints>
       <AbsolutePoint location="145,250" />
       <AbsolutePoint location="145,199" />
       <AbsolutePoint location="990,199" />
       <AbsolutePoint location="990,250" />
-    </AutomaticBendpoints>
-  </StrutsTransition>
-  <StrutsTransition id="/chapter.do,ediPage,/###.jsp,1" routingType="0">
-    <AutomaticBendpoints>
-      <AbsolutePoint location="310,502" />
-      <AbsolutePoint location="1020,502" />
-      <AbsolutePoint location="1020,303" />
     </AutomaticBendpoints>
   </StrutsTransition>
   <StrutsTransition id="/common.do,ediPage,/###.jsp,1" routingType="0">
