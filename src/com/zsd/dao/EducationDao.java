@@ -93,4 +93,16 @@ public interface EducationDao {
 	 * @return
 	 */
 	Integer getCountByOpt(Session sess,Integer ediId,Integer subId,Integer gradeId);
+	
+	/**
+	 * 根据出版社编号、年级学科编号、卷册获取教材信息列表
+	 * @author Administrator
+	 * @date 2019-5-5 上午10:37:50
+	 * @param sess
+	 * @param ediId 出版社编号
+	 * @param gradeId 年级学科编号
+	 * @param eduVolume 卷册
+	 * @return
+	 */
+	List<Education> findInfoByOpt(Session sess,Integer ediId,Integer gradeId,String eduVolume);
 }

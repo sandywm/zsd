@@ -638,9 +638,61 @@ public class CommonAction extends DispatchAction {
 		Integer gradeId = CommonTools.getFinalInteger("gradeId", request);
 		String eduVolume = Transcode.unescape_new("eduVolume", request);
 		Integer showStatus = CommonTools.getFinalInteger("showStatus", request);//0：显示，1：隐藏
-		boolean flag = em.updateEduById(eduId, gradeId, ediId, 0, showStatus, eduVolume, "");
-		Map<String,Boolean> map = new HashMap<String,Boolean>();
-		map.put("result", flag);
+		List<Education> eduList = em.listSpecInfoById(eduId);
+		Map<String,String> map = new HashMap<String,String>();
+		String msg = "error";
+		if(eduList.size() > 0){
+			Education edu = eduList.get(0);
+			if(edu.getEdition().getId().equals(ediId) && edu.getGradeSubject().getId().equals(gradeId) && edu.getEduVolume().equals(eduVolume)){
+				//没发生变化-不检查
+				msg = "success";
+			}else{
+				if(em.listInfoByOpt(ediId, gradeId, eduVolume).size() > 0){
+					msg = "existInfo";
+				}else{
+					msg = "success";
+				}
+			}
+			if(msg.equals("success")){
+				em.updateEduById(eduId, gradeId, ediId, 0, showStatus, eduVolume, "");
+			}
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 增加教材信息
+	 * @author Administrator
+	 * @date 2019-5-5 上午10:44:37
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward addEducationInfo(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		EducationManager em = (EducationManager) AppFactory.instance(null).getApp(Constants.WEB_EDUCATION_INFO);
+		Integer ediId = CommonTools.getFinalInteger("ediId", request);
+		Integer gradeId = CommonTools.getFinalInteger("gradeId", request);
+		String eduVolume = Transcode.unescape_new("eduVolume", request);
+		Map<String,String> map = new HashMap<String,String>();
+		String msg = "error";
+		Integer eduOrder = 1;
+		if(em.listInfoByOpt(ediId, gradeId, eduVolume).size() > 0){
+			msg = "existInfo";
+		}else{
+			msg = "success";
+			if(eduVolume.equals("下册")){
+				eduOrder = 2;
+			}
+			em.addEdu(gradeId, ediId, eduOrder, eduVolume, "");
+		}
+		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}

@@ -87,4 +87,13 @@ public class EducationDaoImpl implements EducationDao{
 		Object countObj = sess.createQuery(hql).uniqueResult();
 		return CommonTools.longToInt(countObj);
 	}
+
+	@Override
+	public List<Education> findInfoByOpt(Session sess, Integer ediId,
+			Integer gradeId, String eduVolume) {
+		// TODO Auto-generated method stub
+		String hql = " from Education as edu where edu.edition.id = "+ediId;
+		hql += " and edu.gradeSubject.id = "+gradeId + " and edu.eduVolume = '"+eduVolume+"'";
+		return sess.createQuery(hql).list();
+	}
 }
