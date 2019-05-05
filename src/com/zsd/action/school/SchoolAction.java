@@ -113,7 +113,7 @@ public class SchoolAction extends DispatchAction {
 			map.put("code", 0);
 			msg = "success";
 		}
-		map.put("result", msg);
+		map.put("msg", msg);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}

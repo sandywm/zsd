@@ -100,7 +100,7 @@ public class CommonAction extends DispatchAction {
 		}else{
 			msg = "暂无记录";
 		}
-		map.put("result", msg);
+		map.put("msg", msg);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
@@ -196,7 +196,7 @@ public class CommonAction extends DispatchAction {
 		}else{
 			msg = "暂无记录";
 		}
-		map.put("result", msg);
+		map.put("msg", msg);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
@@ -275,7 +275,7 @@ public class CommonAction extends DispatchAction {
 		}else{
 			msg = "暂无记录";
 		}
-		map.put("result", msg);
+		map.put("msg", msg);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
@@ -535,7 +535,7 @@ public class CommonAction extends DispatchAction {
 		}else{
 			msg = "暂无记录";
 		}
-		map.put("result", msg);
+		map.put("msg", msg);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}

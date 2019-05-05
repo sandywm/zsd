@@ -90,7 +90,7 @@ public class ChapterAction extends DispatchAction {
 				map.put("code", 0);
 			}
 		}
-		map.put("result", msg);
+		map.put("msg", msg);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
