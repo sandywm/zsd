@@ -359,4 +359,22 @@ public class LoreAction extends DispatchAction {
 		return null;
 	}
 	
+	/**
+	 * 分页获取指定知识点的题库列表
+	 * @author wm
+	 * @date 2019-5-6 下午05:22:33
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getPageLoreQuesionData(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		LoreInfoManager lm = (LoreInfoManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
+		
+		return null;
+	}
 }
