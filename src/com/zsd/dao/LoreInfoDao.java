@@ -87,4 +87,46 @@ public interface LoreInfoDao {
 	 * @return
 	 */
 	List<LoreInfo> findInfoByCptId(Session sess,Integer cptId);
+	
+	/**
+	 * 根据知识点名称或者拼音码获取知识点列表
+	 * @author wm
+	 * @date 2019-5-6 上午08:24:36
+	 * @param sess
+	 * @param lorePyCode 知识点拼音码(""不查)
+	 * @param loreName 知识点名称(""不查)
+	 * @return
+	 */
+	List<LoreInfo> findInfoByOpt(Session sess,String lorePyCode,String loreName);
+	
+	/**
+	 * 获取指定章节下指定知识点名称的知识点信息列表（同一章节下知识点名称不能重名）
+	 * @author wm
+	 * @date 2019-5-6 上午08:50:24
+	 * @param sess
+	 * @param cptId 章节编号
+	 * @param loreName 知识点名称
+	 * @return
+	 */
+	List<LoreInfo> findInfoByOpt(Session sess,Integer cptId,String loreName);
+	
+	/**
+	 * 重写根据主键获取实体信息
+	 * @author wm
+	 * @date 2019-5-6 上午09:01:24
+	 * @param sess
+	 * @param id 主键
+	 * @return
+	 */
+	LoreInfo getEntityById(Session sess,Integer id);
+	
+	/**
+	 * 根据主知识点（通用版）获取所有子知识点信息列表
+	 * @author wm
+	 * @date 2019-5-6 上午09:06:17
+	 * @param sess
+	 * @param mainLoreId 主知识点
+	 * @return
+	 */
+	List<LoreInfo> findInfoByMainLoreId(Session sess,Integer mainLoreId);
 }

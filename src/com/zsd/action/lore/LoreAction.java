@@ -6,13 +6,16 @@ package com.zsd.action.lore;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
 
+import com.zsd.factory.AppFactory;
+import com.zsd.module.LoreInfo;
+import com.zsd.service.LoreInfoManager;
 import com.zsd.tools.CommonTools;
+import com.zsd.util.Constants;
 
 /** 
  * MyEclipse Struts
@@ -48,12 +51,16 @@ public class LoreAction extends DispatchAction {
 	 * @param request
 	 * @param response
 	 * @return
+	 * @throws Exception 
 	 */
 	public ActionForward getLoreData(ActionMapping mapping, ActionForm form,
-			HttpServletRequest request, HttpServletResponse response) {
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
+		LoreInfoManager lm = (LoreInfoManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
 		Integer cptId = CommonTools.getFinalInteger("cptId", request);
-		
+		Integer loreId = CommonTools.getFinalInteger("loreId", request);
+		LoreInfo lore = lm.getEntityById(loreId);
+		System.out.println(lore != null);
 		return null;
 	}
 }

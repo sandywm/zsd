@@ -69,4 +69,43 @@ public class LoreInfoDaoImpl implements LoreInfoDao{
 		return sess.createQuery(hql).list();
 	}
 
+	@Override
+	public List<LoreInfo> findInfoByOpt(Session sess, String lorePyCode,
+			String loreName) {
+		// TODO Auto-generated method stub
+		String hql =" from LoreInfo as lore where 1=1";
+		if(!lorePyCode.equals("")){
+			hql += " and lore.lorePyCode like '%"+lorePyCode+"%'";
+		}
+		if(!loreName.equals("")){
+			hql += " and lore.loreName like '%"+loreName+"%'";
+		}
+		return sess.createQuery(hql).list();
+	}
+
+	@Override
+	public List<LoreInfo> findInfoByOpt(Session sess, Integer cptId,
+			String loreName) {
+		// TODO Auto-generated method stub
+		String hql = "select count(lore.id) from LoreInfo as lore where lore.chapter.id = "+cptId + " and lore.loreName = '"+loreName+"'";
+		return sess.createQuery(hql).list();
+	}
+
+	@Override
+	public LoreInfo getEntityById(Session sess, Integer id) {
+		// TODO Auto-generated method stub
+		String hql = " from LoreInfo as lore where lore.id = "+id;
+		List<LoreInfo> loreList = sess.createQuery(hql).list();
+		if(loreList.size() > 0){
+			return loreList.get(0);
+		}
+		return null;
+	}
+
+	@Override
+	public List<LoreInfo> findInfoByMainLoreId(Session sess, Integer mainLoreId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

@@ -17,4 +17,5 @@
 	<app id="act_role_Web" class="com.zsd.service.impl.ActRoleInfoManagerImpl"/>
 	<app id="class_Web" class="com.zsd.service.impl.ClassInfoManagerImpl"/>
 	<app id="user_class_Web" class="com.zsd.service.impl.UserClassInfoManagerImpl"/>
+	<app id="lore_Web" class="com.zsd.service.impl.LoreInfoManagerImpl"/>
 </appContext>

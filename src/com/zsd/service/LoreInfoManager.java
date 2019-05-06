@@ -5,7 +5,7 @@ import java.util.List;
 import com.zsd.exception.WEBException;
 import com.zsd.module.LoreInfo;
 
-public interface LoreInfoManger {
+public interface LoreInfoManager {
 
 	/**
 	 * 增加知识点
@@ -16,18 +16,18 @@ public interface LoreInfoManger {
 	 * @param lorePyCode 知识点拼音
 	 * @param loreOrder 知识点排序
 	 * @param mainLoreId 引用知识点编号
-	 * @param lore_code 知识点编码
+	 * @param loreCode 知识点编码
 	 * @return
 	 * @throws WEBException
 	 */
-	Integer addLore(Integer cptId,String loreName,String lorePyCode,Integer loreOrder,Integer mainLoreId,String lore_code)throws WEBException;
+	Integer addLore(Integer cptId,String loreName,String lorePyCode,Integer loreOrder,Integer mainLoreId,String loreCode)throws WEBException;
 	
 	/**
 	 * 修改指定编号的知识点实体信息（-1:不修改）
 	 * @author wm
 	 * @date 2019-5-4 下午11:17:14 
 	 * @param id 编号
-	 * @param loreName 名称（-1:不修改）
+	 * @param loreName 名称（"":不修改）
 	 * @param cptId 章节编号（-1:不修改）
 	 * @param orders 排列顺序（-1:不修改）
 	 * @param inUse 是否启用（-1:不修改）
@@ -85,7 +85,7 @@ public interface LoreInfoManger {
 	 * @date 2019-5-4 下午11:24:17 
 	 * @param cptId 章节编号
 	 * @param loreName 知识点名称
-	 * @return
+	 * @return true:存在
 	 * @throws WEBException
 	 */
 	boolean checkExistByCptId(Integer cptId,String loreName)throws WEBException;
@@ -101,7 +101,7 @@ public interface LoreInfoManger {
 	LoreInfo getEntityById(Integer id)throws WEBException;
 	
 	/**
-	 * 根据被引用的知识点编号获取当前知识点的编号（通用版不做题）
+	 * 根据主知识点（通用版）获取所有子知识点信息列表
 	 * @author wm
 	 * @date 2019-5-4 下午11:26:37 
 	 * @param mainLoreId 被引用的知识点编号

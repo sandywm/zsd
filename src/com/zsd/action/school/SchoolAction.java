@@ -226,6 +226,9 @@ public class SchoolAction extends DispatchAction {
 					sm.updateSchoolInfoById(schoolId, schoolName, prov, city, county, town, schoolType, yearSystem, showStatus);
 					msg = "success";
 				}
+			}else{
+				sm.updateSchoolInfoById(schoolId, schoolName, prov, city, county, town, schoolType, yearSystem, showStatus);
+				msg = "success";
 			}
 		}
 		map.put("result", msg);

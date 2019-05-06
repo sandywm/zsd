@@ -62,6 +62,21 @@ public class Convert {
 		return gradeNumber;
 	}
 	
+
+	/**
+	 * 班级创建日期转换成年级名称
+	 * @author wm
+	 * @date 2019-5-6 上午08:38:23
+	 * @param buildClassDate
+	 * @return
+	 */
+	public static String dateConvertGradeName(String buildClassDate){
+		String gradeName = "";
+		int gradeNumber = Convert.dateConvertGradeNumber(buildClassDate);
+		gradeName = Convert.NunberConvertChinese(gradeNumber);
+		return gradeName;
+	}
+	
 	/**
 	 * 数字转换成章节
 	 * @author Administrator
@@ -108,14 +123,6 @@ public class Convert {
 			}
 		}
 		return gradeNumber;
-	}
-	
-	//班级创建日期转换成年级名称
-	public static String dateConvertGradeName(String buildClassDate){
-		String gradeName = "";
-		int gradeNumber = Convert.dateConvertGradeNumber(buildClassDate);
-		gradeName = Convert.NunberConvertChinese(gradeNumber);
-		return gradeName;
 	}
 	
 	/**

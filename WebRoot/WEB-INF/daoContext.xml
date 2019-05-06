@@ -17,4 +17,5 @@
 	<dao id="act_role_Dao" class="com.zsd.dao.impl.ActRoleInfoDaoImpl" />
 	<dao id="class_Dao" class="com.zsd.dao.impl.ClassInfoDaoImpl" />
 	<dao id="user_class_Dao" class="com.zsd.dao.impl.UserClassInfoDaoImpl" />
+	<dao id="lore_Dao" class="com.zsd.dao.impl.LoreInfoDaoImpl" />
 </daoContext>
