@@ -105,6 +105,7 @@
 		<mapping resource="com/zsd/xml/NetTeacherBasicInfo.hbm.xml" />
 		<mapping resource="com/zsd/xml/Email.hbm.xml" />
 		<mapping resource="com/zsd/xml/Education.hbm.xml" />
+		<mapping resource="com/zsd/xml/InviteCodeInfo.hbm.xml" />
 
 
 

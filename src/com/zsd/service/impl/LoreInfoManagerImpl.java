@@ -200,14 +200,59 @@ public class LoreInfoManagerImpl implements LoreInfoManager{
 	public List<LoreInfo> listInfoByMainLoreId(Integer mainLoreId)
 			throws WEBException {
 		// TODO Auto-generated method stub
-		return null;
+		try {
+			lDao = (LoreInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_LORE_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return lDao.findInfoByMainLoreId(sess, mainLoreId);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new WEBException("根据主知识点（通用版）获取所有子知识点信息列表时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
 	}
 
 	@Override
 	public List<LoreInfo> listInfoByLorePyOrName(String lorePyCode,
 			String loreName) throws WEBException {
 		// TODO Auto-generated method stub
-		return null;
+		try {
+			lDao = (LoreInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_LORE_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return lDao.findInfoByOpt(sess, lorePyCode, loreName);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new WEBException("根据知识点拼音码/名称模糊查询知识点列表时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public boolean updateLoreCodeById(Integer loreId, String loreCode)
+			throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			lDao = (LoreInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_LORE_INFO);
+			Session sess = HibernateUtil.currentSession();
+			tran = sess.beginTransaction();
+			LoreInfo lore = lDao.getEntityById(sess, loreId);
+			if(lore != null){
+				lore.setLoreCode(loreCode);
+				lDao.update(sess, lore);
+				tran.commit();
+				return true;
+			}
+			return false;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new WEBException("修改知识点的编码时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
 	}
 
 }

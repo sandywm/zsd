@@ -105,7 +105,8 @@ public class LoreInfoDaoImpl implements LoreInfoDao{
 	@Override
 	public List<LoreInfo> findInfoByMainLoreId(Session sess, Integer mainLoreId) {
 		// TODO Auto-generated method stub
-		return null;
+		String hql = " from LoreInfo as lore where lore.mainLoreId = "+mainLoreId;
+		return sess.createQuery(hql).list();
 	}
 
 }

@@ -35,6 +35,43 @@ public class Convert {
 	}
 	
 	/**
+	 * 中文年级名称转换成年级号
+	 * @author wm
+	 * @date 2019-5-6 上午10:15:45
+	 * @param gradeName
+	 * @return
+	 */
+	public static String  ChineseConvertNumber(String gradeName){
+		String gradeNo = "";
+		if(gradeName.equals("一年级")){
+			gradeNo = "01";
+		}else if(gradeName.equals("二年级")){
+			gradeNo = "02";
+		}else if(gradeName.equals("三年级")){
+			gradeNo = "03";
+		}else if(gradeName.equals("四年级")){
+			gradeNo = "04";
+		}else if(gradeName.equals("五年级")){
+			gradeNo = "05";
+		}else if(gradeName.equals("六年级")){
+			gradeNo = "06";
+		}else if(gradeName.equals("七年级")){
+			gradeNo = "07";
+		}else if(gradeName.equals("八年级")){
+			gradeNo = "08";
+		}else if(gradeName.equals("九年级")){
+			gradeNo = "09";
+		}else if(gradeName.equals("高一")){
+			gradeNo = "10";
+		}else if(gradeName.equals("高二")){
+			gradeNo = "11";
+		}else if(gradeName.equals("高三")){
+			gradeNo = "12";
+		}
+		return gradeNo;
+	}
+	
+	/**
 	 * 班级创建日期转成年级数字（1,2,3）
 	 * @author Administrator
 	 * @date 2019-5-5 下午05:43:05

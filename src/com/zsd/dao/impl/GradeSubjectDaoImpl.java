@@ -107,7 +107,7 @@ public class GradeSubjectDaoImpl implements GradeSubjectDao{
 			String gradeName, Integer subId, Integer shoolType) {
 		// TODO Auto-generated method stub
 		String hql = " from GradeSubject as gs where gs.gradeName = '"+gradeName+"'";
-		hql += " and gs.subject.id = "+subId + " and gs.shoolType = "+shoolType;
+		hql += " and gs.subject.id = "+subId + " and gs.schoolType = "+shoolType;
 		return sess.createQuery(hql).list();
 	}
 

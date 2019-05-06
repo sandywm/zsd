@@ -11,6 +11,22 @@ public class Constants {
 	public static final String LOGIN_USER_ROLE_NAME = "login_user_role_name";
 	
 
+	//--------------------费用---------------------------//
+	public static final double NET_TEACHER_SERVICE_FEE_XX = 4500.00;
+	public static final double NET_TEACHER_SERVICE_FEE_CZ = 5500.00;
+	public static final double NET_TEACHER_SERVICE_FEE_GZ = 6500.00;
+	
+
+	public static final double BASE_GRADE_MONEY = 1200.00;//基础价格为1000
+	public static final double GRADE_STEP_ADD_MONEY = 1000.00;//每隔一年级相差的钱数
+	
+	public static final double PRIMARY_MONEY = 1599.00;//小学（1-6年级）年费用
+	public static final double PRIMARY_MONEY_HALF = 899.00;//小学半年费用
+	public static final double JUNIOR_MONEY = 2599.00;//初中（7-9年级）年费用
+	public static final double JUNIOR_MONEY_HALF = 1399.00;//初中半年费用
+	public static final double HIGN_MONEY = 3399.00;//高中（10-12年级）年费用
+	public static final double HIGN_MONEY_HALF = 1799.00;//高中半年费用
+	
 	//-------------------WEB-------------------------//
 	public static final String WEB_EDITION_INFO = "edition_Web";
 	public static final String WEB_SUBJECT_INFO = "subject_Web";

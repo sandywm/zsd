@@ -121,4 +121,15 @@ public interface LoreInfoManager {
 	 */
 	List<LoreInfo> listInfoByLorePyOrName(String lorePyCode,String loreName)throws WEBException;
 	
+	/**
+	 * 修改指定知识点的编码
+	 * @author wm
+	 * @date 2019-5-6 上午11:34:11
+	 * @param loreId 知识点编号
+	 * @param loreCode 知识点编码
+	 * @return
+	 * @throws WEBException
+	 */
+	boolean updateLoreCodeById(Integer loreId,String loreCode)throws WEBException;
+	
 }
