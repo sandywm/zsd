@@ -815,6 +815,7 @@ public class CommonAction extends DispatchAction {
 		String msg = "noInfo";
 		List<Education>  eList = em.listInfoByOpt(ediId, gsId);
 		if(eList.size() > 0){
+			msg = "success";
 			List<Object> list_d = new ArrayList<Object>();
 			for(Iterator<Education> it = eList.iterator() ; it.hasNext();){
 				Education edu = it.next();
