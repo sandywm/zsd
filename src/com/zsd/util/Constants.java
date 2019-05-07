@@ -47,6 +47,7 @@ public class Constants {
 	public static final String WEB_USER_CLASS_INFO = "user_class_Web";
 	public static final String WEB_LORE_INFO = "lore_Web";
 	public static final String WEB_LORE_QUESTION_INFO = "lore_question_Web";
+	public static final String WEB_LORE_QUESTION_SUB_INFO = "lore_question_sub_Web";
 	
 	//-------------------DAO-------------------------//
 	public static final String DAO_EDITION_INFO = "edition_Dao";
@@ -68,5 +69,6 @@ public class Constants {
 	public static final String DAO_USER_CLASS_INFO = "user_class_Dao";
 	public static final String DAO_LORE_INFO = "lore_Dao";
 	public static final String DAO_LORE_QUESTION_INFO = "lore_question_Dao";
+	public static final String DAO_LORE_QUESTION_SUB_INFO = "lore_question_sub_Dao";
 }
 
