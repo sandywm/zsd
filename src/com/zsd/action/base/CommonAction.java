@@ -305,11 +305,47 @@ public class CommonAction extends DispatchAction {
 			for(Iterator<GradeSubject> it = gsList.iterator() ; it.hasNext();){
 				GradeSubject gs = it.next();
 				Map<String,Object> map_d = new HashMap<String,Object>();
-				map_d.put("subId", gs.getId());
+				map_d.put("subId", gs.getSubject().getId());
 				map_d.put("subName", gs.getSubject().getSubName());
 				list_d.add(map_d);
 			}
 			map.put("subList", list_d);
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 根据学科编号获取年级列表
+	 * @author wm
+	 * @date 2019-5-7 下午05:22:53
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getGradeDataBySubId(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		GradeSubjectManager gsm = (GradeSubjectManager) AppFactory.instance(null).getApp(Constants.WEB_GRADE_SUBJECT_INFO);
+		Integer subId = CommonTools.getFinalInteger("subId", request);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "noInfo";
+		List<GradeSubject> gsList = gsm.listSpecInfoBySubId(subId);
+		if(gsList.size() > 0){
+			msg = "success";
+			List<Object> list_d = new ArrayList<Object>();
+			for(Iterator<GradeSubject> it = gsList.iterator() ; it.hasNext();){
+				GradeSubject gs = it.next();
+				Map<String,Object> map_d = new HashMap<String,Object>();
+				map_d.put("gsId", gs.getId());
+				map_d.put("gName", gs.getGradeName());
+				list_d.add(map_d);
+			}
+			map.put("gList", list_d);
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
@@ -526,15 +562,14 @@ public class CommonAction extends DispatchAction {
 		// TODO Auto-generated method stub
 		EducationManager em = (EducationManager) AppFactory.instance(null).getApp(Constants.WEB_EDUCATION_INFO);
 		Integer ediId = CommonTools.getFinalInteger("ediId", request);
-		Integer subId = CommonTools.getFinalInteger("subId", request);
-		Integer gradeId = CommonTools.getFinalInteger("gradeId", request);	
+		Integer gsId = CommonTools.getFinalInteger("gsId", request);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "error";
-		Integer count = em.getCountByOpt(ediId, subId, gradeId);
+		Integer count = em.getCountByOpt(ediId, gsId);
 		if(count > 0){
 			Integer pageSize = PageConst.getPageSize(String.valueOf(request.getParameter("limit")), 10);//等同于pageSize
 			Integer pageNo = CommonTools.getFinalInteger("page", request);//等同于pageNo
-			List<Education> eList = em.listPageInfoByOpt(ediId, subId, gradeId, pageNo, pageSize);
+			List<Education> eList = em.listPageInfoByOpt(ediId, gsId, pageNo, pageSize);
 			msg = "success";
 			List<Object> list_d = new ArrayList<Object>();
 			for(Iterator<Education> it = eList.iterator() ; it.hasNext();){
@@ -753,6 +788,42 @@ public class CommonAction extends DispatchAction {
 				eduOrder = 2;
 			}
 			em.addEdu(gradeId, ediId, eduOrder, eduVolume, "");
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 根据年级学科编号、出版社编号获取教材信息列表
+	 * @author wm
+	 * @date 2019-5-7 下午05:44:33
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getEduData(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		EducationManager em = (EducationManager) AppFactory.instance(null).getApp(Constants.WEB_EDUCATION_INFO);
+		Integer ediId = CommonTools.getFinalInteger("ediId", request);
+		Integer gsId = CommonTools.getFinalInteger("gsId", request);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "noInfo";
+		List<Education>  eList = em.listInfoByOpt(ediId, gsId);
+		if(eList.size() > 0){
+			List<Object> list_d = new ArrayList<Object>();
+			for(Iterator<Education> it = eList.iterator() ; it.hasNext();){
+				Education edu = it.next();
+				Map<String,Object> map_d = new HashMap<String,Object>();
+				map_d.put("eduId", edu.getId());
+				map_d.put("eduColume", edu.getEduVolume());
+				list_d.add(map_d);
+			}
+			map.put("eduList", list_d);
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);

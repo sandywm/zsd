@@ -77,7 +77,7 @@ public interface LoreQuestionDao {
 	 * @date 2019-5-6 下午05:30:53
 	 * @param sess
 	 * @param loreId 知识点编号
-	 * @param loreType 知识点类型(""表示全部，zsqd(知识清单),dbzd(点拨指导),jtsf(解题示范),ggxl(巩固训练),zdzd(针对性诊断),zczd(再次诊断),zsjj(知识讲解))
+	 * @param loreType 知识点类型(""表示全部，知识清单,点拨指导,解题示范,巩固训练,针对性诊断,再次诊断,知识讲解)
 	 * @param inUse 有效状态(-1：表示全部,0：有效，1：无效)
 	 * @return
 	 */

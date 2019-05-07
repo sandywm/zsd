@@ -99,14 +99,14 @@ public class EducationManagerImpl implements EducationManager{
 	}
 
 	@Override
-	public List<Education> listPageInfoByOpt(Integer ediId, Integer subId,
-			Integer gradeId, Integer pageNo, Integer pageSize)
+	public List<Education> listPageInfoByOpt(Integer ediId, Integer gsId,
+			Integer pageNo, Integer pageSize)
 			throws WEBException {
 		// TODO Auto-generated method stub
 		try {
 			eduDao = (EducationDao) DaoFactory.instance(null).getDao(Constants.DAO_EDUCATION_INFO);
 			Session sess = HibernateUtil.currentSession();
-			return eduDao.findPageInfoByOpt(sess, ediId, subId, gradeId, pageNo, pageSize);
+			return eduDao.findPageInfoByOpt(sess, ediId, gsId, pageNo, pageSize);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -117,12 +117,12 @@ public class EducationManagerImpl implements EducationManager{
 	}
 
 	@Override
-	public Integer getCountByOpt(Integer ediId, Integer subId, Integer gradeId) throws WEBException {
+	public Integer getCountByOpt(Integer ediId, Integer gsId) throws WEBException {
 		// TODO Auto-generated method stub
 		try {
 			eduDao = (EducationDao) DaoFactory.instance(null).getDao(Constants.DAO_EDUCATION_INFO);
 			Session sess = HibernateUtil.currentSession();
-			return eduDao.getCountByOpt(sess, ediId, subId, gradeId);
+			return eduDao.getCountByOpt(sess, ediId, gsId);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -161,6 +161,23 @@ public class EducationManagerImpl implements EducationManager{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			throw new WEBException("根据出版社编号、年级名称、科目编号、上/下册获取教材列表时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public List<Education> listInfoByOpt(Integer ediId, Integer gsId)
+			throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			eduDao = (EducationDao) DaoFactory.instance(null).getDao(Constants.DAO_EDUCATION_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return eduDao.findInfoByOpt(sess, ediId, gsId);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new WEBException("根据出版社编号、年级学科编号获取教材列表时出现异常!");
 		} finally{
 			HibernateUtil.closeSession();
 		}

@@ -21,7 +21,9 @@ public class RoleUserInfoManagerImpl implements RoleUserInfoManager {
 	RoleUserInfoDao ruinfoDao = null;
 	Transaction tran = null;
 	@Override
-	public Integer addRoleUserInfo(Integer userId, Integer roleId)
+	public Integer addRoleUserInfo(Integer userId, Integer roleId, String prov, String city,
+			String county, String town, Integer schoolType, Integer schoolId,
+			Integer gradeNo, Integer classId)
 			throws WEBException {
 		try {
 			roleinfoDao = (RoleInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_ROLE_INFO);
@@ -31,7 +33,7 @@ public class RoleUserInfoManagerImpl implements RoleUserInfoManager {
 			tran = sess.beginTransaction();
 			User user = userDao.get(sess, userId);
 			RoleInfo roleInfo = roleinfoDao.get(sess, roleId);
-			RoleUserInfo  ruInfo = new RoleUserInfo(user, roleInfo);
+			RoleUserInfo  ruInfo = new RoleUserInfo(user, roleInfo,prov,city,county,town,schoolType,schoolId,gradeNo,classId);
 			ruinfoDao.save(sess, ruInfo);
 			tran.commit();
 			return ruInfo.getId();

@@ -69,41 +69,25 @@ public class ChapterAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
 		ChapterManger cm = (ChapterManger) AppFactory.instance(null).getApp(Constants.WEB_CHAPTER_INFO);
-		EducationManager em = (EducationManager) AppFactory.instance(null).getApp(Constants.WEB_EDUCATION_INFO);
-		Integer subId = CommonTools.getFinalInteger("subId", request);
-		String gradeName = Transcode.unescape_new("gradeName", request);
-		Integer ediId = CommonTools.getFinalInteger("ediId", request);
-		String eduVolume = Transcode.unescape_new("eduVolume", request);
+		Integer eduId = CommonTools.getFinalInteger("eduId", request);
 		String msg = "暂无记录";
 		Map<String,Object> map = new HashMap<String,Object>();
-		if(subId > 0 && !gradeName.equals("") && ediId > 0 && !eduVolume.equals("")){
-			List<Chapter> cList = cm.ListInfoByOpt(subId, gradeName, ediId, eduVolume);
-			if(cList.size() > 0){
-				msg = "success";
-				List<Object> list_d = new ArrayList<Object>();
-				for(Iterator<Chapter> it = cList.iterator() ; it.hasNext();){
-					Chapter cpt = it.next();
-					Map<String,Object> map_d = new HashMap<String,Object>();
-					map_d.put("id", cpt.getId());
-					map_d.put("cptName", cpt.getChapterName());
-					map_d.put("cptOrder", cpt.getChapterOrder());
-					list_d.add(map_d);
-				}
-				map.put("data", list_d);
-				map.put("count", cList.size());
-				map.put("code", 0);
-				map.put("eduId", cList.get(0).getEducation().getId());
+		List<Chapter> cList = cm.ListInfoByEduId(eduId);
+		if(cList.size() > 0){
+			msg = "success";
+			List<Object> list_d = new ArrayList<Object>();
+			for(Iterator<Chapter> it = cList.iterator() ; it.hasNext();){
+				Chapter cpt = it.next();
+				Map<String,Object> map_d = new HashMap<String,Object>();
+				map_d.put("id", cpt.getId());
+				map_d.put("cptName", cpt.getChapterName());
+				map_d.put("cptOrder", cpt.getChapterOrder());
+				list_d.add(map_d);
 			}
-		}else{
-			//获取指定教材编号
-			List<Education> eduList = em.listInfoByOpt(ediId, gradeName, subId, eduVolume);
-			if(eduList.size() > 0){
-				map.put("eduId", eduList.get(0).getId());
-			}else{
-				msg = "eduNoInfo";
-			}
+			map.put("data", list_d);
+			map.put("count", cList.size());
+			map.put("code", 0);
 		}
-		
 		map.put("msg", msg);
 		CommonTools.getJsonPkg(map, response);
 		return null;

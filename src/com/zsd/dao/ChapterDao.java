@@ -74,7 +74,7 @@ public interface ChapterDao {
 	 * @param eduVolume 上下册
 	 * @return
 	 */
-	List<Chapter> findInfoByOpt(Session sess,Integer subId,String gradeName,Integer ediId,String eduVolume);
+	List<Chapter> findInfoByOpt(Session sess,Integer eduId,String gradeName,Integer ediId,String eduVolume);
 	
 	/**
 	 * 根据教材编号获取章节列表(升序排列)

@@ -52,25 +52,23 @@ public interface EducationManager {
 	 * @author wm
 	 * @date 2019-4-28 下午11:06:04 
 	 * @param ediId 出版社编号(0表示全部)
-	 * @param subId 学科编号(0表示全部)
-	 * @param gradeId 年级编号(0表示全部)
+	 * @param gsId 学科年级编号(0表示全部)
 	 * @param pageNo
 	 * @param pageSize
 	 * @return
 	 * @throws WEBException
 	 */
-	List<Education> listPageInfoByOpt(Integer ediId,Integer subId,Integer gradeId,Integer pageNo,Integer pageSize) throws WEBException;
+	List<Education> listPageInfoByOpt(Integer ediId,Integer gsId,Integer pageNo,Integer pageSize) throws WEBException;
 	
 	/**
 	 * 获取指定条件的教材记录条数
 	 * @author wm
 	 * @date 2019-4-28 下午11:09:32 
-	 *  @param ediId 出版社编号(0表示全部)
-	 * @param subId 学科编号(0表示全部)
-	 * @param gradeId 年级编号(0表示全部)
+	 * @param ediId 出版社编号(0表示全部)
+	 * @param gsId 学科年级编号(0表示全部)
 	 * @return
 	 */
-	Integer getCountByOpt(Integer ediId,Integer subId,Integer gradeId) throws WEBException;
+	Integer getCountByOpt(Integer ediId,Integer gsId) throws WEBException;
 	
 	/**
 	 * 根据出版社编号、年级学科编号、卷册获取教材信息列表
@@ -96,4 +94,15 @@ public interface EducationManager {
 	 * @throws WEBException
 	 */
 	List<Education> listInfoByOpt(Integer ediId,String gName ,Integer subId,String eduVolume) throws WEBException;
+	
+	/**
+	 * 根据出版社编号、年级学科编号获取教材信息列表
+	 * @author wm
+	 * @date 2019-5-7 下午05:38:09
+	 * @param ediId 出版社编号
+	 * @param gsId 年级学科编号
+	 * @return
+	 * @throws WEBException
+	 */
+	List<Education> listInfoByOpt(Integer ediId,Integer gsId) throws WEBException;
 }

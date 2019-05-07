@@ -50,17 +50,14 @@ public class EducationDaoImpl implements EducationDao{
 
 	@Override
 	public List<Education> findPageInfoByOpt(Session sess, Integer ediId,
-			Integer subId, Integer gradeId, Integer pageNo, Integer pageSize) {
+			Integer gsId, Integer pageNo, Integer pageSize) {
 		// TODO Auto-generated method stub
 		String hql = " from Education as edu where 1=1";
 		if(ediId > 0){
 			hql += " and edu.edition.id = "+ediId;
 		}
-		if(subId > 0){
-			hql += " and edu.gradeSubject.subject.id = "+subId;
-		}
-		if(gradeId > 0){
-			hql += " and edu.gradeSubject.id = "+gradeId;
+		if(gsId > 0){
+			hql += " and edu.gradeSubject.id = "+gsId;
 		}
 		hql += " order by edu.eduOrder";
 		int offset = (pageNo - 1) * pageSize;
@@ -71,18 +68,14 @@ public class EducationDaoImpl implements EducationDao{
 	}
 
 	@Override
-	public Integer getCountByOpt(Session sess, Integer ediId, Integer subId,
-			Integer gradeId) {
+	public Integer getCountByOpt(Session sess, Integer ediId, Integer gsId) {
 		// TODO Auto-generated method stub
 		String hql = "select count(edu.id) from Education as edu where 1=1";
 		if(ediId > 0){
 			hql += " and edu.edition.id = "+ediId;
 		}
-		if(subId > 0){
-			hql += " and edu.gradeSubject.subject.id = "+subId;
-		}
-		if(gradeId > 0){
-			hql += " and edu.gradeSubject.id = "+gradeId;
+		if(gsId > 0){
+			hql += " and edu.gradeSubject.id = "+gsId;
 		}
 		Object countObj = sess.createQuery(hql).uniqueResult();
 		return CommonTools.longToInt(countObj);
@@ -103,6 +96,14 @@ public class EducationDaoImpl implements EducationDao{
 		// TODO Auto-generated method stub
 		String hql = " from Education as edu where edu.edition.id = "+ediId + " and edu.eduVolume = '"+eduVolume+"'";
 		hql += " and edu.gradeSubject.gradeName = '"+gName+"' and edu.gradeSubject.subject.id = "+subId;
+		return sess.createQuery(hql).list();
+	}
+
+	@Override
+	public List<Education> findInfoByOpt(Session sess, Integer ediId,
+			Integer gsId) {
+		// TODO Auto-generated method stub
+		String hql = " from Education as edu where edu.edition.id = "+ediId + " and edu.gradeSubject.id = "+gsId;
 		return sess.createQuery(hql).list();
 	}
 }

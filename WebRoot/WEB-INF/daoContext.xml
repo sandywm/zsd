@@ -18,4 +18,5 @@
 	<dao id="class_Dao" class="com.zsd.dao.impl.ClassInfoDaoImpl" />
 	<dao id="user_class_Dao" class="com.zsd.dao.impl.UserClassInfoDaoImpl" />
 	<dao id="lore_Dao" class="com.zsd.dao.impl.LoreInfoDaoImpl" />
+	<dao id="lore_question_Dao" class="com.zsd.dao.impl.LoreQuestionDaoImpl" />
 </daoContext>

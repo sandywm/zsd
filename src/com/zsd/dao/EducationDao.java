@@ -74,13 +74,12 @@ public interface EducationDao {
 	 * @date 2019-4-28 下午10:56:16 
 	 * @param sess
 	 * @param ediId 出版社编号(0表示全部)
-	 * @param subId 学科编号(0表示全部)
-	 * @param gradeId 年级编号(0表示全部)
+	 * @param gsId 学科年级编号(0表示全部)
 	 * @param pageNo
 	 * @param pageSize
 	 * @return
 	 */
-	List<Education> findPageInfoByOpt(Session sess,Integer ediId,Integer subId,Integer gradeId,Integer pageNo,Integer pageSize);
+	List<Education> findPageInfoByOpt(Session sess,Integer ediId,Integer gsId,Integer pageNo,Integer pageSize);
 	
 	/**
 	 * 根据条件获取教材记录条数
@@ -88,11 +87,10 @@ public interface EducationDao {
 	 * @date 2019-4-28 下午10:57:19 
 	 * @param sess
 	 * @param ediId 出版社编号(0表示全部)
-	 * @param subId 学科编号(0表示全部)
-	 * @param gradeId 年级编号(0表示全部)
+	 * @param gsId 学科年级编号(0表示全部)
 	 * @return
 	 */
-	Integer getCountByOpt(Session sess,Integer ediId,Integer subId,Integer gradeId);
+	Integer getCountByOpt(Session sess,Integer ediId,Integer gsId);
 	
 	/**
 	 * 根据出版社编号、年级学科编号、卷册获取教材信息列表
@@ -118,4 +116,15 @@ public interface EducationDao {
 	 * @return
 	 */
 	List<Education> findInfoByOpt(Session sess,Integer ediId,String gName,Integer subId,String eduVolume);
+	
+	/**
+	 * 根据出版社编号、年级学科编号获取教材列表
+	 * @author wm
+	 * @date 2019-5-7 下午05:40:44
+	 * @param sess
+	 * @param ediId 出版社编号
+	 * @param gsId 学科年级编号
+	 * @return
+	 */
+	List<Education> findInfoByOpt(Session sess,Integer ediId,Integer gsId);
 }
