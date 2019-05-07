@@ -13,8 +13,8 @@ public class LoreRelateInfo implements java.io.Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	private Integer id;
-	private LoreInfo loreInfoByRootLoreId;
-	private LoreInfo loreInfoByLoreId;
+	private LoreInfo loreInfo;
+	private LoreInfo rootLoreInfo;
 
 	// Constructors
 
@@ -22,37 +22,34 @@ public class LoreRelateInfo implements java.io.Serializable {
 	public LoreRelateInfo() {
 	}
 
-	/** full constructor */
-	public LoreRelateInfo(LoreInfo loreInfoByRootLoreId,
-			LoreInfo loreInfoByLoreId) {
-		this.loreInfoByRootLoreId = loreInfoByRootLoreId;
-		this.loreInfoByLoreId = loreInfoByLoreId;
+	public LoreRelateInfo(LoreInfo loreInfo, LoreInfo rootLoreInfo) {
+		this.loreInfo = loreInfo;
+		this.rootLoreInfo = rootLoreInfo;
 	}
 
 	// Property accessors
-
 	public Integer getId() {
-		return this.id;
+		return id;
 	}
 
 	public void setId(Integer id) {
 		this.id = id;
 	}
 
-	public LoreInfo getLoreInfoByRootLoreId() {
-		return this.loreInfoByRootLoreId;
+	public LoreInfo getLoreInfo() {
+		return loreInfo;
 	}
 
-	public void setLoreInfoByRootLoreId(LoreInfo loreInfoByRootLoreId) {
-		this.loreInfoByRootLoreId = loreInfoByRootLoreId;
+	public void setLoreInfo(LoreInfo loreInfo) {
+		this.loreInfo = loreInfo;
 	}
 
-	public LoreInfo getLoreInfoByLoreId() {
-		return this.loreInfoByLoreId;
+	public LoreInfo getRootLoreInfo() {
+		return rootLoreInfo;
 	}
 
-	public void setLoreInfoByLoreId(LoreInfo loreInfoByLoreId) {
-		this.loreInfoByLoreId = loreInfoByLoreId;
+	public void setRootLoreInfo(LoreInfo rootLoreInfo) {
+		this.rootLoreInfo = rootLoreInfo;
 	}
 
 }

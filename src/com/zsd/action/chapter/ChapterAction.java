@@ -260,7 +260,7 @@ public class ChapterAction extends DispatchAction {
 		ChapterManger cm = (ChapterManger) AppFactory.instance(null).getApp(Constants.WEB_CHAPTER_INFO);
 		Integer eduId = CommonTools.getFinalInteger("eduId", request);
 		List<Chapter> cList = cm.ListInfoByEduId(eduId);
-		Integer currentOrder = 0;
+		Integer currentOrder = 1;
 		if(cList.size() > 0){
 			currentOrder = cList.get(cList.size() - 1).getChapterOrder() + 1;
 		}

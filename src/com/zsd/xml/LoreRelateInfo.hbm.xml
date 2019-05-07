@@ -10,14 +10,14 @@
             <column name="id" />
             <generator class="native" />
         </id>
-        <many-to-one name="loreInfoByRootLoreId" class="com.zsd.module.LoreInfo" lazy="false">
-            <column name="root_lore_id" not-null="true">
-                <comment>关联知识点编号</comment>
-            </column>
-        </many-to-one>
-        <many-to-one name="loreInfoByLoreId" class="com.zsd.module.LoreInfo" lazy="false">
+        <many-to-one name="loreInfo" class="com.zsd.module.LoreInfo" lazy="false">
             <column name="lore_id" not-null="true">
                 <comment>当前知识点编号</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="rootLoreInfo" class="com.zsd.module.LoreInfo" lazy="false">
+            <column name="root_lore_id" not-null="true">
+                <comment>关联知识点编号</comment>
             </column>
         </many-to-one>
     </class>
