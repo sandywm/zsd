@@ -18,5 +18,5 @@
 	<app id="class_Web" class="com.zsd.service.impl.ClassInfoManagerImpl"/>
 	<app id="user_class_Web" class="com.zsd.service.impl.UserClassInfoManagerImpl"/>
 	<app id="lore_Web" class="com.zsd.service.impl.LoreInfoManagerImpl"/>
-	<app id="lore_question_Web" class="com.zsd.service.impl.LoreQuestionManagerImpl"/>
+	<!--app id="lore_question_Web" class="com.zsd.service.impl.LoreQuestionManagerImpl"/-->
 </appContext>
