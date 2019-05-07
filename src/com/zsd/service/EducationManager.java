@@ -83,4 +83,17 @@ public interface EducationManager {
 	 * @throws WEBException
 	 */
 	List<Education> listInfoByOpt(Integer ediId,Integer gradeId,String eduVolume) throws WEBException;
+	
+	/**
+	 * 根据出版社编号、年级名称、科目编号、上/下册获取教材列表
+	 * @author wm
+	 * @date 2019-5-7 上午10:27:16
+	 * @param ediId 出版社编号
+	 * @param gName 年级名称
+	 * @param subId 学科编号
+	 * @param eduVolume 教材卷
+	 * @return
+	 * @throws WEBException
+	 */
+	List<Education> listInfoByOpt(Integer ediId,String gName ,Integer subId,String eduVolume) throws WEBException;
 }

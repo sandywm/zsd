@@ -149,4 +149,21 @@ public class EducationManagerImpl implements EducationManager{
 		}
 	}
 
+	@Override
+	public List<Education> listInfoByOpt(Integer ediId, String gName,
+			Integer subId, String eduVolume) throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			eduDao = (EducationDao) DaoFactory.instance(null).getDao(Constants.DAO_EDUCATION_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return eduDao.findInfoByOpt(sess, ediId, gName, subId, eduVolume);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new WEBException("根据出版社编号、年级名称、科目编号、上/下册获取教材列表时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
 }

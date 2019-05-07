@@ -20,7 +20,9 @@ import org.apache.struts.actions.DispatchAction;
 import com.zsd.action.base.Transcode;
 import com.zsd.factory.AppFactory;
 import com.zsd.module.Chapter;
+import com.zsd.module.Education;
 import com.zsd.service.ChapterManger;
+import com.zsd.service.EducationManager;
 import com.zsd.tools.CommonTools;
 import com.zsd.tools.Convert;
 import com.zsd.util.Constants;
@@ -67,6 +69,7 @@ public class ChapterAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
 		ChapterManger cm = (ChapterManger) AppFactory.instance(null).getApp(Constants.WEB_CHAPTER_INFO);
+		EducationManager em = (EducationManager) AppFactory.instance(null).getApp(Constants.WEB_EDUCATION_INFO);
 		Integer subId = CommonTools.getFinalInteger("subId", request);
 		String gradeName = Transcode.unescape_new("gradeName", request);
 		Integer ediId = CommonTools.getFinalInteger("ediId", request);
@@ -89,8 +92,18 @@ public class ChapterAction extends DispatchAction {
 				map.put("data", list_d);
 				map.put("count", cList.size());
 				map.put("code", 0);
+				map.put("eduId", cList.get(0).getEducation().getId());
+			}
+		}else{
+			//获取指定教材编号
+			List<Education> eduList = em.listInfoByOpt(ediId, gradeName, subId, eduVolume);
+			if(eduList.size() > 0){
+				map.put("eduId", eduList.get(0).getId());
+			}else{
+				msg = "eduNoInfo";
 			}
 		}
+		
 		map.put("msg", msg);
 		CommonTools.getJsonPkg(map, response);
 		return null;
