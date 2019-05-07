@@ -119,4 +119,14 @@ public interface GradeSubjectDao {
 	 * @return
 	 */
 	List<GradeSubject> findSpecInfoByOpt(Session sess,String gradeName,Integer subId,Integer shoolType);
+	
+	/**
+	 * 根据年级名称获取年级学科列表(显示状态下)
+	 * @author wm
+	 * @date 2019-5-7 上午09:53:28
+	 * @param sess
+	 * @param gradeName 年级名称
+	 * @return
+	 */
+	List<GradeSubject> findSpecInfoByGname(Session sess,String gradeName);
 }

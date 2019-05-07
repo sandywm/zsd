@@ -281,6 +281,42 @@ public class CommonAction extends DispatchAction {
 	}
 	
 	/**
+	 * 根据年级名称获取学科列表
+	 * @author wm
+	 * @date 2019-5-7 上午09:57:56
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getSubjectDataByGname(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		GradeSubjectManager gsm = (GradeSubjectManager) AppFactory.instance(null).getApp(Constants.WEB_GRADE_SUBJECT_INFO);
+		String gName = Transcode.unescape_new("gName", request);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "noInfo";
+		List<GradeSubject> gsList = gsm.listSpecInfoByGname(gName);
+		if(gsList.size() > 0){
+			msg = "success";
+			List<Object> list_d = new ArrayList<Object>();
+			for(Iterator<GradeSubject> it = gsList.iterator() ; it.hasNext();){
+				GradeSubject gs = it.next();
+				Map<String,Object> map_d = new HashMap<String,Object>();
+				map_d.put("subId", gs.getId());
+				map_d.put("subName", gs.getSubject().getSubName());
+				list_d.add(map_d);
+			}
+			map.put("subList", list_d);
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
 	 * 获取指定年级学科编号详情
 	 * @author wm
 	 * @date 2019-4-28 下午10:34:39 
@@ -447,10 +483,10 @@ public class CommonAction extends DispatchAction {
 		List<GradeSubject> gsList = gsm.listSpecInfoByOpt(gName, subId, schoolType);
 		Map<String,String> map = new HashMap<String,String>();
 		if(gsList.size() > 0){
+			map.put("result", "existInfo");
+		}else{
 			gsm.addGSub(gName, subId, schoolType);
 			map.put("result", "success");
-		}else{
-			map.put("result", "existInfo");
 		}
 		CommonTools.getJsonPkg(map, response);
 		return null;

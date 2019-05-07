@@ -22,6 +22,7 @@ import com.zsd.factory.AppFactory;
 import com.zsd.module.Chapter;
 import com.zsd.service.ChapterManger;
 import com.zsd.tools.CommonTools;
+import com.zsd.tools.Convert;
 import com.zsd.util.Constants;
 
 /** 
@@ -192,7 +193,9 @@ public class ChapterAction extends DispatchAction {
 			if(cpt != null){
 				msg = "success";
 				map.put("cptId", cpt.getId());
-				map.put("cptName", cpt.getChapterName());
+				String cptName = cpt.getChapterName();
+				map.put("cptNameCon", cptName.split(":")[1]);
+				map.put("cptNamePre", cptName.split(":")[0]);
 				map.put("cptOrder", cpt.getChapterOrder());
 				map.put("eduId", cpt.getEducation().getId());
 			}
@@ -244,7 +247,7 @@ public class ChapterAction extends DispatchAction {
 	}
 	
 	/**
-	 * 获取指定教材下下次出现的章节排序号
+	 * 获取指定教材下下次出现的章节排序号、单元前缀中文名称
 	 * @author Administrator
 	 * @date 2019-5-5 上午09:18:59
 	 * @param mapping
@@ -264,50 +267,9 @@ public class ChapterAction extends DispatchAction {
 		if(cList.size() > 0){
 			currentOrder = cList.get(cList.size() - 1).getChapterOrder() + 1;
 		}
-		Map<String,Integer> map = new HashMap<String,Integer>();
-		map.put("result", currentOrder);
-		CommonTools.getJsonPkg(map, response);
-	    return null;
-	}
-	
-	/**
-	 * 检查指定教材下章节是否重名
-	 * @author Administrator
-	 * @date 2019-5-5 上午09:21:37
-	 * @param mapping
-	 * @param form
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws Exception
-	 */
-	public ActionForward checkExist(ActionMapping mapping, ActionForm form,
-			HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// TODO Auto-generated method stub
-		ChapterManger cm = (ChapterManger) AppFactory.instance(null).getApp(Constants.WEB_CHAPTER_INFO);
-		Integer cptId = CommonTools.getFinalInteger("cptId", request);
-		Integer eduId = CommonTools.getFinalInteger("eduId", request);
-		String cptName = Transcode.unescape_new("cptName", request);
-		boolean checkFlag = false;
-		boolean existFlag = false;
-		if(cptId > 0){//编辑时
-			Chapter cpt = cm.getEntityById(cptId);
-			if(cpt != null){
-				if(!cpt.getChapterName().equals(cptName)){//章节名称发生变化-需要进行名称检查
-					checkFlag = true;
-				}
-			}
-		}else{//增加时-需要进行名称检查
-			checkFlag = true;
-		}
-		if(checkFlag){
-			List<Chapter> cList = cm.listInfoByOpt(eduId, cptName);
-			if(cList.size() > 0){
-				existFlag = true;
-			}
-		}
-		Map<String,Boolean> map = new HashMap<String,Boolean>();
-		map.put("result", existFlag);
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("cptOrder", currentOrder);
+		map.put("cptNamePre", Convert.NunberConvertChapterName(currentOrder));
 		CommonTools.getJsonPkg(map, response);
 	    return null;
 	}
