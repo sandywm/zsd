@@ -116,7 +116,7 @@ public class ChapterManagerImpl implements ChapterManger{
 		try {
 			cDao = (ChapterDao) DaoFactory.instance(null).getDao(Constants.DAO_CHAPTER_INFO);
 			Session sess = HibernateUtil.currentSession();
-			return cDao.get(sess, cptId);
+			return cDao.getEntityById(sess, cptId);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -97,4 +97,14 @@ public interface ChapterDao {
 	 * @return
 	 */
 	List<Chapter> findInfoByOpt(Session sess,Integer eduId,String cptName);
+	
+	/**
+	 * 根据主键获取章节详细信息
+	 * @author wm
+	 * @date 2019-5-8 下午12:01:34
+	 * @param sess
+	 * @param id 章节编号
+	 * @return
+	 */
+	Chapter getEntityById(Session sess,Integer id);
 }

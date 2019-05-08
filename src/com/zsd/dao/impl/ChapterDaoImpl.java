@@ -68,4 +68,15 @@ public class ChapterDaoImpl implements ChapterDao{
 		return sess.createQuery(hql).list();
 	}
 
+	@Override
+	public Chapter getEntityById(Session sess, Integer id) {
+		// TODO Auto-generated method stub
+		String hql = " from Chapter as c where c.id = "+id;
+		List<Chapter> cList = sess.createQuery(hql).list();
+		if(cList.size() > 0){
+			return cList.get(0);
+		}
+		return null;
+	}
+
 }
