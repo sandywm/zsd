@@ -235,6 +235,9 @@ public class ChapterAction extends DispatchAction {
 						msg = "scucess";
 						cm.updateChapter(cptId, cptName, cptOrder);
 					}
+				}else{
+					msg = "success";
+					cm.updateChapter(cptId, cptName, cptOrder);
 				}
 			}
 		}

@@ -65,6 +65,7 @@ public class ChapterManagerImpl implements ChapterManger{
 				cpt.setChapterName(chapterName);
 				cpt.setChapterOrder(chapterOrder);
 				cDao.update(sess, cpt);
+				tran.commit();
 				return true;
 			}
 			return false;
