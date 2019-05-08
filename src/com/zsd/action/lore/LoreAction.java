@@ -136,49 +136,53 @@ public class LoreAction extends DispatchAction {
 		String loreName = Transcode.unescape_new("loreName", request);
 		String subIdCode = "";
 		String msg = "error";
-		Chapter c = cm.getEntityById(cptId);
-		if(c != null){
-			msg = "success";
-			Education edu = c.getEducation();
-			ediId = edu.getEdition().getId();
-			subId = edu.getGradeSubject().getSubject().getId();
-			gradeName = edu.getGradeSubject().getGradeName();
-			gradeCode = Convert.ChineseConvertNumber(gradeName);
-			eduVolume = edu.getEduVolume();
-			if(subId < 10){
-				subIdCode = "0" + subId;
+		if(lm.checkExistByCptId(cptId, loreName)){
+			msg = "exist";
+		}else{
+			Chapter c = cm.getEntityById(cptId);
+			if(c != null){
+				msg = "success";
+				Education edu = c.getEducation();
+				ediId = edu.getEdition().getId();
+				subId = edu.getGradeSubject().getSubject().getId();
+				gradeName = edu.getGradeSubject().getGradeName();
+				gradeCode = Convert.ChineseConvertNumber(gradeName);
+				eduVolume = edu.getEduVolume();
+				if(subId < 10){
+					subIdCode = "0" + subId;
+				}
+				String paraCode = "";//学段号
+				Integer gradeNum = Integer.parseInt(gradeCode);
+				if(gradeNum < 7){
+					paraCode = "01";
+				}else if(gradeNum >= 7 && gradeNum <= 9){
+					paraCode = "02";
+				}else{
+					paraCode = "03";
+				}
+				String eduVolumeCode = "02";//教材编号
+				if(eduVolume.equals("上册")){
+					eduVolumeCode = "01";
+				}
+				
+				String ediIdCode = "";//出版社号
+				if(ediId < 10){
+					ediIdCode = "0" + ediId;
+				}
+				String cptIdCode = "";//章节号
+				if(cptId < 10){
+					cptIdCode = "0" + cptId;
+				}
+				String loreOrderCode = "";//知识点顺序
+				Integer loreOrder = lm.getCurrentMaxOrderByCptId(cptId);
+				if(loreOrder < 10){
+					loreOrderCode = "0" + loreOrder;
+				}
+				
+				String loreCode = subIdCode + "-" + paraCode + "-" + gradeCode + "-" + eduVolumeCode + "-" + ediIdCode + "-" + cptIdCode + "-" + loreOrderCode;
+				lm.addLore(cptId, loreName, Convert.getFirstSpell(loreName), loreOrder, 0, loreCode);
+				
 			}
-			String paraCode = "";//学段号
-			Integer gradeNum = Integer.parseInt(gradeCode);
-			if(gradeNum < 7){
-				paraCode = "01";
-			}else if(gradeNum >= 7 && gradeNum <= 9){
-				paraCode = "02";
-			}else{
-				paraCode = "03";
-			}
-			String eduVolumeCode = "02";//教材编号
-			if(eduVolume.equals("上册")){
-				eduVolumeCode = "01";
-			}
-			
-			String ediIdCode = "";//出版社号
-			if(ediId < 10){
-				ediIdCode = "0" + ediId;
-			}
-			String cptIdCode = "";//章节号
-			if(cptId < 10){
-				cptIdCode = "0" + cptId;
-			}
-			String loreOrderCode = "";//知识点顺序
-			Integer loreOrder = lm.getCurrentMaxOrderByCptId(cptId);
-			if(loreOrder < 10){
-				loreOrderCode = "0" + loreOrder;
-			}
-			
-			String loreCode = subIdCode + "-" + paraCode + "-" + gradeCode + "-" + eduVolumeCode + "-" + ediIdCode + "-" + cptIdCode + "-" + loreOrderCode;
-			lm.addLore(cptId, loreName, Convert.getFirstSpell(loreName), loreOrder, 0, loreCode);
-			
 		}
 		Map<String,String> map = new HashMap<String,String>();
 		map.put("result", msg);
@@ -206,11 +210,29 @@ public class LoreAction extends DispatchAction {
 		Integer loreOrder = CommonTools.getFinalInteger("loreOrder", request);//知识点排序号（-1不修改）
 		Integer inUse = CommonTools.getFinalInteger("inUse", request);//显示状态(-1不修改)
 		Integer freeStatus = CommonTools.getFinalInteger("freeStatus", request);//免费状态(-1不修改)
-		boolean flag = lm.updateLore(loreId, loreName, -1, loreOrder, inUse, freeStatus);
-		Map<String,String> map = new HashMap<String,String>();
+		LoreInfo lore = lm.getEntityById(loreId);
 		String msg = "error";
-		if(flag){
-			msg = "success";
+		Map<String,String> map = new HashMap<String,String>();
+		if(lore != null){
+			if(!lore.getLoreName().equals(loreName)){//名字变化
+				Integer cptId = lore.getChapter().getId();
+				if(lm.checkExistByCptId(cptId, loreName)){
+					msg = "existInfo";
+				}else{
+					msg = "success";
+				}
+			}else{
+				msg = "success";
+			}
+			if(msg.equals("success")){
+				boolean flag = lm.updateLore(loreId, loreName, -1, loreOrder, inUse, freeStatus);
+				lm.updateLore(loreId, loreName, -1, loreOrder, inUse, freeStatus);
+				if(flag){
+					msg = "success";
+				}else{
+					msg = "error";
+				}
+			}
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
