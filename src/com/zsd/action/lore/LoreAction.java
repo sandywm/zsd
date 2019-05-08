@@ -24,6 +24,8 @@ import com.zsd.module.Education;
 import com.zsd.module.GradeSubject;
 import com.zsd.module.LoreInfo;
 import com.zsd.page.PageConst;
+import com.zsd.service.ChapterManger;
+import com.zsd.service.EducationManager;
 import com.zsd.service.LoreInfoManager;
 import com.zsd.tools.CommonTools;
 import com.zsd.tools.Convert;
@@ -124,49 +126,62 @@ public class LoreAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
 		LoreInfoManager lm = (LoreInfoManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
+		ChapterManger cm = (ChapterManger) AppFactory.instance(null).getApp(Constants.WEB_CHAPTER_INFO);
 		Integer cptId = CommonTools.getFinalInteger("cptId", request);//章节编号
-		Integer subId = CommonTools.getFinalInteger("subId", request);//学科编号
-		String gradeName = Transcode.unescape_new("gradeName", request);
-		String gradeCode = Convert.ChineseConvertNumber(gradeName);//年级号
-		String eduVolume = Transcode.unescape_new("eduVolume", request);
-		Integer ediId = CommonTools.getFinalInteger("ediId", request);//出版社编号
+		Integer ediId = 0;//出版社编号
+		Integer subId = 0;//学科编号
+		String gradeName = "";
+		String gradeCode = "";//年级号
+		String eduVolume = "";
 		String loreName = Transcode.unescape_new("loreName", request);
 		String subIdCode = "";
-		if(subId < 10){
-			subIdCode = "0" + subId;
+		String msg = "error";
+		Chapter c = cm.getEntityById(cptId);
+		if(c != null){
+			msg = "success";
+			Education edu = c.getEducation();
+			ediId = edu.getEdition().getId();
+			subId = edu.getGradeSubject().getSubject().getId();
+			gradeName = edu.getGradeSubject().getGradeName();
+			gradeCode = Convert.ChineseConvertNumber(gradeName);
+			eduVolume = edu.getEduVolume();
+			if(subId < 10){
+				subIdCode = "0" + subId;
+			}
+			String paraCode = "";//学段号
+			Integer gradeNum = Integer.parseInt(gradeCode);
+			if(gradeNum < 7){
+				paraCode = "01";
+			}else if(gradeNum >= 7 && gradeNum <= 9){
+				paraCode = "02";
+			}else{
+				paraCode = "03";
+			}
+			String eduVolumeCode = "02";//教材编号
+			if(eduVolume.equals("上册")){
+				eduVolumeCode = "01";
+			}
+			
+			String ediIdCode = "";//出版社号
+			if(ediId < 10){
+				ediIdCode = "0" + ediId;
+			}
+			String cptIdCode = "";//章节号
+			if(cptId < 10){
+				cptIdCode = "0" + cptId;
+			}
+			String loreOrderCode = "";//知识点顺序
+			Integer loreOrder = lm.getCurrentMaxOrderByCptId(cptId);
+			if(loreOrder < 10){
+				loreOrderCode = "0" + loreOrder;
+			}
+			
+			String loreCode = subIdCode + "-" + paraCode + "-" + gradeCode + "-" + eduVolumeCode + "-" + ediIdCode + "-" + cptIdCode + "-" + loreOrderCode;
+			lm.addLore(cptId, loreName, Convert.getFirstSpell(loreName), loreOrder, 0, loreCode);
+			
 		}
-		String paraCode = "";//学段号
-		Integer gradeNum = Integer.parseInt(gradeCode);
-		if(gradeNum < 7){
-			paraCode = "01";
-		}else if(gradeNum >= 7 && gradeNum <= 9){
-			paraCode = "02";
-		}else{
-			paraCode = "03";
-		}
-		String eduVolumeCode = "02";//教材编号
-		if(eduVolume.equals("上册")){
-			eduVolumeCode = "01";
-		}
-		
-		String ediIdCode = "";//出版社号
-		if(ediId < 10){
-			ediIdCode = "0" + ediId;
-		}
-		String cptIdCode = "";//章节号
-		if(cptId < 10){
-			cptIdCode = "0" + cptId;
-		}
-		String loreOrderCode = "";//知识点顺序
-		Integer loreOrder = lm.getCurrentMaxOrderByCptId(cptId);
-		if(loreOrder < 10){
-			loreOrderCode = "0" + loreOrder;
-		}
-		
-		String loreCode = subIdCode + "-" + paraCode + "-" + gradeCode + "-" + eduVolumeCode + "-" + ediIdCode + "-" + cptIdCode + "-" + loreOrderCode;
-		lm.addLore(cptId, loreName, Convert.getFirstSpell(loreName), loreOrder, 0, loreCode);
 		Map<String,String> map = new HashMap<String,String>();
-		map.put("result", "success");
+		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
@@ -191,9 +206,13 @@ public class LoreAction extends DispatchAction {
 		Integer loreOrder = CommonTools.getFinalInteger("loreOrder", request);//知识点排序号（-1不修改）
 		Integer inUse = CommonTools.getFinalInteger("inUse", request);//显示状态(-1不修改)
 		Integer freeStatus = CommonTools.getFinalInteger("freeStatus", request);//免费状态(-1不修改)
-		lm.updateLore(loreId, loreName, -1, loreOrder, inUse, freeStatus);
+		boolean flag = lm.updateLore(loreId, loreName, -1, loreOrder, inUse, freeStatus);
 		Map<String,String> map = new HashMap<String,String>();
-		map.put("result", "success");
+		String msg = "error";
+		if(flag){
+			msg = "success";
+		}
+		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
@@ -235,54 +254,67 @@ public class LoreAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
 		LoreInfoManager lm = (LoreInfoManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
+		ChapterManger cm = (ChapterManger) AppFactory.instance(null).getApp(Constants.WEB_CHAPTER_INFO);
 		Integer cptId = CommonTools.getFinalInteger("cptId", request);//章节编号
-		Integer subId = CommonTools.getFinalInteger("subId", request);//学科编号
-		String gradeName = Transcode.unescape_new("gradeName", request);
-		String gradeCode = Convert.ChineseConvertNumber(gradeName);//年级号
-		String eduVolume = Transcode.unescape_new("eduVolume", request);
-		Integer ediId = CommonTools.getFinalInteger("ediId", request);//出版社编号
+		Integer ediId = 0;//出版社编号
+		Integer subId = 0;//学科编号
+		String gradeName = "";
+		String gradeCode = "";//年级号
+		String eduVolume = "";
 		String subIdCode = "";
-		if(subId < 10){
-			subIdCode = "0" + subId;
-		}
-		String paraCode = "";//学段号
-		Integer gradeNum = Integer.parseInt(gradeCode);
-		if(gradeNum < 7){
-			paraCode = "01";
-		}else if(gradeNum >= 7 && gradeNum <= 9){
-			paraCode = "02";
-		}else{
-			paraCode = "03";
-		}
 		
-		String eduVolumeCode = "02";//教材编号
-		if(eduVolume.equals("上册")){
-			eduVolumeCode = "01";
-		}
-		
-		String ediIdCode = "";//出版社号
-		if(ediId < 10){
-			ediIdCode = "0" + ediId;
-		}
-		String cptIdCode = "";//章节号
-		if(cptId < 10){
-			cptIdCode = "0" + cptId;
-		}
+		String msg = "noInfo";
 		List<LoreInfo> loreList = lm.listPageInfoByCptId(cptId, 1, 100000);
-		String msg = "";
-		for(Iterator<LoreInfo> it = loreList.iterator() ; it.hasNext();){
-			LoreInfo lore = it.next();
-			Integer loreOrder = lore.getLoreOrder();
-			String loreOrderCode = "";
-			if(loreOrder < 10){
-				loreOrderCode = "0" + loreOrder;
-			}
-			String loreCode = subIdCode + "-" + paraCode + "-" + gradeCode + "-" + eduVolumeCode + "-" + ediIdCode + "-" + cptIdCode + "-" + loreOrderCode;
-			Boolean flag = lm.updateLoreCodeById(lore.getId(), loreCode);
-			if(flag){
-				msg += "知识点[" + lore.getLoreName() + "]增加编码成功\n";
-			}else{
-				msg += "知识点[" + lore.getLoreName() + "]增加编码失败\n";
+		if(loreList.size() > 0){
+			Chapter c = cm.getEntityById(cptId);
+			if(c != null){
+				msg = "success";
+				Education edu = c.getEducation();
+				ediId = edu.getEdition().getId();
+				subId = edu.getGradeSubject().getSubject().getId();
+				gradeName = edu.getGradeSubject().getGradeName();
+				gradeCode = Convert.ChineseConvertNumber(gradeName);
+				eduVolume = edu.getEduVolume();
+				if(subId < 10){
+					subIdCode = "0" + subId;
+				}
+				String paraCode = "";//学段号
+				Integer gradeNum = Integer.parseInt(gradeCode);
+				if(gradeNum < 7){
+					paraCode = "01";
+				}else if(gradeNum >= 7 && gradeNum <= 9){
+					paraCode = "02";
+				}else{
+					paraCode = "03";
+				}
+				String eduVolumeCode = "02";//教材编号
+				if(eduVolume.equals("上册")){
+					eduVolumeCode = "01";
+				}
+				
+				String ediIdCode = "";//出版社号
+				if(ediId < 10){
+					ediIdCode = "0" + ediId;
+				}
+				String cptIdCode = "";//章节号
+				if(cptId < 10){
+					cptIdCode = "0" + cptId;
+				}
+				for(Iterator<LoreInfo> it = loreList.iterator() ; it.hasNext();){
+					LoreInfo lore = it.next();
+					Integer loreOrder = lore.getLoreOrder();
+					String loreOrderCode = "";
+					if(loreOrder < 10){
+						loreOrderCode = "0" + loreOrder;
+					}
+					String loreCode = subIdCode + "-" + paraCode + "-" + gradeCode + "-" + eduVolumeCode + "-" + ediIdCode + "-" + cptIdCode + "-" + loreOrderCode;
+					Boolean flag = lm.updateLoreCodeById(lore.getId(), loreCode);
+					if(flag){
+						msg += "知识点[" + lore.getLoreName() + "]增加编码成功\n";
+					}else{
+						msg += "知识点[" + lore.getLoreName() + "]增加编码失败\n";
+					}
+				}
 			}
 		}
 		Map<String,String> map = new HashMap<String,String>();
