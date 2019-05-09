@@ -94,15 +94,14 @@ public interface LoreQuestionManager {
 	 * @date 2019-5-8 上午10:11:54
 	 * @param lqId 题库编号
 	 * @param queSub 题干
-	 * @param queAnswer 答案（解题示范）""不修改
+	 * @param queAnswer 答案（解题示范）(知识讲解是为视频地址)
 	 * @param queResolution 解析（解题示范）""不修改
-	 * @param videoPath 视频地址（知识讲解）""不修改
 	 * @param operateUserName 操作人
 	 * @param operateDate 操作日期
 	 * @return
 	 */
 	boolean updateSimpleLoreQuestionByLqId(Integer lqId,String queSub,String queAnswer,String queResolution,
-			String videoPath,String operateUserName,String operateDate);
+			String operateUserName,String operateDate)throws WEBException ;
 	
 	/**
 	 * 增加知识清单，点拨指导题库信息
@@ -117,7 +116,7 @@ public interface LoreQuestionManager {
 	 * @return
 	 * @throws WEBException
 	 */
-	Integer addSimpleLoreQuestion(Integer loreId,String loreType,String queTitle,String queSub,String operateUserName,String operateDate)throws WEBException;
+	Integer addSimpleLoreQuestion(Integer loreId,String loreType,Integer queOrder,String queTitle,String queSub,String operateUserName,String operateDate)throws WEBException;
 	
 	/**
 	 * 修改指定编号的知识清单、点拨指导题库信息

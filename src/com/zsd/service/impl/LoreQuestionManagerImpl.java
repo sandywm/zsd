@@ -216,18 +216,65 @@ public class LoreQuestionManagerImpl implements LoreQuestionManager{
 
 	@Override
 	public boolean updateSimpleLoreQuestionByLqId(Integer lqId, String queSub,
-			String queAnswer, String queResolution, String videoPath,
-			String operateUserName, String operateDate) {
+			String queAnswer, String queResolution, 
+			String operateUserName, String operateDate) throws WEBException {
 		// TODO Auto-generated method stub
-		return false;
+		try {
+			lqDao = (LoreQuestionDao) DaoFactory.instance(null).getDao(Constants.DAO_LORE_QUESTION_INFO);
+			lDao = (LoreInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_LORE_INFO);
+			Session sess = HibernateUtil.currentSession();
+			tran = sess.beginTransaction();
+			LoreQuestion lq = lqDao.getEntityById(sess, lqId);
+			if(lq != null){
+				lq.setQueSub(queSub);
+				if(!queAnswer.equals("")){
+					lq.setQueAnswer(queAnswer);
+				}
+				if(!queResolution.equals("")){
+					lq.setQueResolution(queResolution);
+				}
+				lq.setQueAnswer(queAnswer);
+				lq.setOperateDate(operateDate);
+				lq.setOperateUserName(operateUserName);
+				lqDao.update(sess, lq);
+				tran.commit();
+				return true;
+			}
+			return false;
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			throw new WEBException("修改解题示范、知识讲解内容时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+		
 	}
 
 	@Override
-	public Integer addSimpleLoreQuestion(Integer loreId, String loreType,
+	public Integer addSimpleLoreQuestion(Integer loreId, String loreType,Integer queOrder,
 			String queTitle, String queSub, String operateUserName,
 			String operateDate) throws WEBException {
 		// TODO Auto-generated method stub
-		return null;
+		try {
+			lqDao = (LoreQuestionDao) DaoFactory.instance(null).getDao(Constants.DAO_LORE_QUESTION_INFO);
+			lDao = (LoreInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_LORE_INFO);
+			Session sess = HibernateUtil.currentSession();
+			tran = sess.beginTransaction();
+			LoreQuestion lq = new LoreQuestion(lDao.getEntityById(sess, loreId) , loreType,
+					"", queOrder, queTitle,queSub, "",  0,  0,
+					"", "",  queOrder,"", "", "", "", "", "",
+					"",  0, operateUserName,operateDate,  0);
+			lqDao.save(sess, lq);
+			tran.commit();
+			return lq.getId();
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			throw new WEBException("增加指定知识点下的知识清单和点拨指导题库时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
 	}
 
 	@Override
@@ -243,7 +290,23 @@ public class LoreQuestionManagerImpl implements LoreQuestionManager{
 			String loreType, String queTitle, String queSub, Integer order,
 			String operateUserName, String operateDate) throws WEBException {
 		// TODO Auto-generated method stub
-		return null;
+		try {
+			lqDao = (LoreQuestionDao) DaoFactory.instance(null).getDao(Constants.DAO_LORE_QUESTION_INFO);
+			lqsDao = (LoreQuestionSubDao) DaoFactory.instance(null).getDao(Constants.DAO_LORE_QUESTION_SUB_INFO);
+			Session sess = HibernateUtil.currentSession();
+			tran = sess.beginTransaction();
+			LoreQuestionSubInfo lqs = new LoreQuestionSubInfo(lqDao.getEntityById(sess, loreQuestionId), loreType,
+					"", queTitle, queSub,order, operateUserName, operateDate);
+			lqsDao.save(sess, lqs);
+			tran.commit();
+			return lqs.getId();
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			throw new WEBException("增加指定知识点下的知识清单和点拨指导题库时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
 	}
 
 	@Override

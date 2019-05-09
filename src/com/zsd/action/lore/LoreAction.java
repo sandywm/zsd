@@ -191,6 +191,39 @@ public class LoreAction extends DispatchAction {
 	}
 	
 	/**
+	 * 根据知识点目录编号获取知识点目录详情
+	 * @author wm
+	 * @date 2019-5-9 上午11:34:20
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getLoreDetail(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		LoreInfoManager lm = (LoreInfoManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
+		Integer loreId = CommonTools.getFinalInteger("loreId", request);//知识点编号
+		LoreInfo lore = lm.getEntityById(loreId);
+		String msg = "noInfo";
+		Map<String,Object> map = new HashMap<String,Object>();
+		if(loreId > 0){
+			msg = "success";
+			map.put("loreId", lore.getId());
+			map.put("loreName", lore.getLoreName());
+			map.put("inUse", lore.getInUse());
+			map.put("freeStatus", lore.getFreeStatus());
+			map.put("loreOrder", lore.getLoreOrder());
+			map.put("loreCode", lore.getLoreCode());
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
 	 * 修改知识点信息（名称、排序、有效、免费）
 	 * @author wm
 	 * @date 2019-5-6 上午11:17:36
