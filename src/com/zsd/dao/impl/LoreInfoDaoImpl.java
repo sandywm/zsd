@@ -87,7 +87,7 @@ public class LoreInfoDaoImpl implements LoreInfoDao{
 	public List<LoreInfo> findInfoByOpt(Session sess, Integer cptId,
 			String loreName) {
 		// TODO Auto-generated method stub
-		String hql = "select count(lore.id) from LoreInfo as lore where lore.chapter.id = "+cptId + " and lore.loreName = '"+loreName+"'";
+		String hql = " from LoreInfo as lore where lore.chapter.id = "+cptId + " and lore.loreName = '"+loreName+"'";
 		return sess.createQuery(hql).list();
 	}
 
