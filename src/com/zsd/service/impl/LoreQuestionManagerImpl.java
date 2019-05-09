@@ -10,7 +10,6 @@ import com.zsd.dao.LoreQuestionDao;
 import com.zsd.dao.LoreQuestionSubDao;
 import com.zsd.exception.WEBException;
 import com.zsd.factory.DaoFactory;
-import com.zsd.module.LoreInfo;
 import com.zsd.module.LoreQuestion;
 import com.zsd.module.LoreQuestionSubInfo;
 import com.zsd.service.LoreQuestionManager;
@@ -190,8 +189,8 @@ public class LoreQuestionManagerImpl implements LoreQuestionManager{
 	@Override
 	public Integer addSimpleLoreQuestion(Integer loreId, String loreType,String queTitle,
 			String queSub, Integer queOrder, String queAnswer,
-			String queResolution,  String operateUserName,
-			String operateDate) throws WEBException {
+			String queResolution, String operateUserName, String operateDate)
+			throws WEBException {
 		// TODO Auto-generated method stub
 		try {
 			lqDao = (LoreQuestionDao) DaoFactory.instance(null).getDao(Constants.DAO_LORE_QUESTION_INFO);
@@ -208,7 +207,7 @@ public class LoreQuestionManagerImpl implements LoreQuestionManager{
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
-			throw new WEBException("增加指定知识点下的题库时出现异常!");
+			throw new WEBException("增加知识清单，点拨指导、解题示范、知识讲解题库内容时出现异常!");
 		} finally{
 			HibernateUtil.closeSession();
 		}
@@ -216,8 +215,8 @@ public class LoreQuestionManagerImpl implements LoreQuestionManager{
 
 	@Override
 	public boolean updateSimpleLoreQuestionByLqId(Integer lqId, String queSub,
-			String queAnswer, String queResolution, 
-			String operateUserName, String operateDate) throws WEBException {
+			String queAnswer, String queResolution, String operateUserName,
+			String operateDate) throws WEBException {
 		// TODO Auto-generated method stub
 		try {
 			lqDao = (LoreQuestionDao) DaoFactory.instance(null).getDao(Constants.DAO_LORE_QUESTION_INFO);
@@ -227,9 +226,6 @@ public class LoreQuestionManagerImpl implements LoreQuestionManager{
 			LoreQuestion lq = lqDao.getEntityById(sess, lqId);
 			if(lq != null){
 				lq.setQueSub(queSub);
-				if(!queAnswer.equals("")){
-					lq.setQueAnswer(queAnswer);
-				}
 				if(!queResolution.equals("")){
 					lq.setQueResolution(queResolution);
 				}
@@ -248,46 +244,11 @@ public class LoreQuestionManagerImpl implements LoreQuestionManager{
 		} finally{
 			HibernateUtil.closeSession();
 		}
-		
-	}
-
-	@Override
-	public Integer addSimpleLoreQuestion(Integer loreId, String loreType,Integer queOrder,
-			String queTitle, String queSub, String operateUserName,
-			String operateDate) throws WEBException {
-		// TODO Auto-generated method stub
-		try {
-			lqDao = (LoreQuestionDao) DaoFactory.instance(null).getDao(Constants.DAO_LORE_QUESTION_INFO);
-			lDao = (LoreInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_LORE_INFO);
-			Session sess = HibernateUtil.currentSession();
-			tran = sess.beginTransaction();
-			LoreQuestion lq = new LoreQuestion(lDao.getEntityById(sess, loreId) , loreType,
-					"", queOrder, queTitle,queSub, "",  0,  0,
-					"", "",  queOrder,"", "", "", "", "", "",
-					"",  0, operateUserName,operateDate,  0);
-			lqDao.save(sess, lq);
-			tran.commit();
-			return lq.getId();
-		} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-			throw new WEBException("增加指定知识点下的知识清单和点拨指导题库时出现异常!");
-		} finally{
-			HibernateUtil.closeSession();
-		}
-	}
-
-	@Override
-	public boolean updateSimpleLoreQuestionByLqId(Integer lqId, Integer loreId,
-			String loreType, String queTitle, String queSub,
-			String operateUserName, String operateDate) throws WEBException {
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 	@Override
 	public Integer addLoreQuestionSubInfo(Integer loreQuestionId,
-			String loreType, String queTitle, String queSub, Integer order,
+			String loreType, String lqsTitle, String lqsCon, Integer order,
 			String operateUserName, String operateDate) throws WEBException {
 		// TODO Auto-generated method stub
 		try {
@@ -296,38 +257,88 @@ public class LoreQuestionManagerImpl implements LoreQuestionManager{
 			Session sess = HibernateUtil.currentSession();
 			tran = sess.beginTransaction();
 			LoreQuestionSubInfo lqs = new LoreQuestionSubInfo(lqDao.getEntityById(sess, loreQuestionId), loreType,
-					"", queTitle, queSub,order, operateUserName, operateDate);
+					"", lqsTitle, lqsCon,order, operateUserName, operateDate);
 			lqsDao.save(sess, lqs);
 			tran.commit();
 			return lqs.getId();
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
-			throw new WEBException("增加指定知识点下的知识清单和点拨指导题库时出现异常!");
+			throw new WEBException("增加指定知识点下的知识清单和点拨指导题库子表时出现异常!");
 		} finally{
 			HibernateUtil.closeSession();
 		}
 	}
 
 	@Override
-	public boolean updateLoreQuestionSubByLqsId(Integer lqsId, String queTitle,
-			String queSub, String operateUserName, String operateDate)
+	public boolean updateLoreQuestionSubByLqsId(Integer lqsId, String lqsTitle,
+			String lqsCon, String operateUserName, String operateDate)
 			throws WEBException {
 		// TODO Auto-generated method stub
-		return false;
+		try {
+			lqDao = (LoreQuestionDao) DaoFactory.instance(null).getDao(Constants.DAO_LORE_QUESTION_INFO);
+			lqsDao = (LoreQuestionSubDao) DaoFactory.instance(null).getDao(Constants.DAO_LORE_QUESTION_SUB_INFO);
+			Session sess = HibernateUtil.currentSession();
+			tran = sess.beginTransaction();
+			LoreQuestionSubInfo lqs = lqsDao.getEntityById(sess, lqsId);
+			if(lqs != null){
+				lqs.setLqsTitle(lqsTitle);
+				lqs.setLqsContent(lqsCon);
+				lqs.setOperateDate(operateDate);
+				lqs.setOperateUserName(operateUserName);
+				lqsDao.update(sess, lqs);
+				tran.commit();
+				return true;
+			}
+			return false;
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			throw new WEBException("修改指定编号的知识清单、点拨指导题库子表信息时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
 	}
 
 	@Override
 	public boolean delLoreQuestionSubByLqsId(Integer lqsId) throws WEBException {
 		// TODO Auto-generated method stub
-		return false;
+		try {
+			lqDao = (LoreQuestionDao) DaoFactory.instance(null).getDao(Constants.DAO_LORE_QUESTION_INFO);
+			lqsDao = (LoreQuestionSubDao) DaoFactory.instance(null).getDao(Constants.DAO_LORE_QUESTION_SUB_INFO);
+			Session sess = HibernateUtil.currentSession();
+			tran = sess.beginTransaction();
+			LoreQuestionSubInfo lqs = lqsDao.getEntityById(sess, lqsId);
+			if(lqs != null){
+				lqsDao.delete(sess, lqs);
+				tran.commit();
+				return true;
+			}
+			return false;
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			throw new WEBException("删除指定题库子表信息时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
 	}
 
 	@Override
-	public LoreQuestionSubInfo listLQSInfoByLqId(Integer lqId)
+	public List<LoreQuestionSubInfo> listLQSInfoByLqId(Integer lqId)
 			throws WEBException {
 		// TODO Auto-generated method stub
-		return null;
+		try {
+			lqsDao = (LoreQuestionSubDao) DaoFactory.instance(null).getDao(Constants.DAO_LORE_QUESTION_SUB_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return lqsDao.findInfoByOpt(sess, lqId);
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			throw new WEBException("根据知识点题库编号获取知识点子表信息列表时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
 	}
 
 }

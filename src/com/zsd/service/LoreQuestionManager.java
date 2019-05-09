@@ -10,7 +10,7 @@ import com.zsd.module.LoreQuestionSubInfo;
 public interface LoreQuestionManager {
 
 	/**
-	 * 增加知识点题库
+	 * 增加知识点(巩固训练,针对性诊断,再次诊断)题库
 	 * @author wm
 	 * @date 2019-5-7 上午11:44:54
 	 * @param loreId 知识点编号
@@ -70,13 +70,13 @@ public interface LoreQuestionManager {
 			String operateUserName,String operateDate)throws WEBException;
 	
 	/**
-	 * 增加解题示范、知识讲解内容
+	 * 增加知识清单，点拨指导、解题示范、知识讲解内容
 	 * @author wm
 	 * @date 2019-5-8 上午10:01:18
 	 * @param loreId 知识点编号
-	 * @param loreType 知识点类型（解题示范、知识讲解）
-	 * @param queTitle 题库标题
-	 * @param queSub 题干
+	 * @param loreType 知识点类型（知识清单，点拨指导、解题示范、知识讲解）
+	 * @param queTitle 标题（知识清单，点拨指导，知识讲解，解题示范时为解题示范第N题）
+	 * @param queSub 题干(知识讲解)
 	 * @param queAnswer 答案（解题示范）(知识讲解是为视频地址)
 	 * @param queResolution 解析（解题示范）
 	 * @param queOrder 排序（解题示范,知识讲解是为1）
@@ -89,7 +89,7 @@ public interface LoreQuestionManager {
 			String operateUserName,String operateDate)throws WEBException;
 	
 	/**
-	 * 修改解题示范、知识讲解内容
+	 * 修改指定编号的解题示范、知识讲解内容
 	 * @author wm
 	 * @date 2019-5-8 上午10:11:54
 	 * @param lqId 题库编号
@@ -104,65 +104,35 @@ public interface LoreQuestionManager {
 			String operateUserName,String operateDate)throws WEBException ;
 	
 	/**
-	 * 增加知识清单，点拨指导题库信息
-	 * @author wm
-	 * @date 2019-5-8 上午10:09:15
-	 * @param loreId 知识点编号
-	 * @param loreType 知识点类型（解题示范、知识讲解）
-	 * @param queSub 题干
-	 * @param queTitle 标题
-	 * @param operateUserName 操作人
-	 * @param operateDate 操作日期
-	 * @return
-	 * @throws WEBException
-	 */
-	Integer addSimpleLoreQuestion(Integer loreId,String loreType,Integer queOrder,String queTitle,String queSub,String operateUserName,String operateDate)throws WEBException;
-	
-	/**
-	 * 修改指定编号的知识清单、点拨指导题库信息
-	 * @author wm
-	 * @date 2019-5-8 上午10:26:58
-	 * @param lqId 主键
-	 * @param loreId 知识点编号
-	 * @param loreType 知识点类型（解题示范、知识讲解）
-	 * @param queSub 题干
-	 * @param queTitle 标题
-	 * @param operateUserName 操作人
-	 * @param operateDate 操作日期
-	 * @return
-	 * @throws WEBException
-	 */
-	boolean updateSimpleLoreQuestionByLqId(Integer lqId,Integer loreId,String loreType,String queTitle,String queSub,String operateUserName,String operateDate)throws WEBException;
-	
-	/**
 	 * 增加知识清单、点拨指导题库子表信息
 	 * @author wm
 	 * @date 2019-5-8 上午09:44:25
 	 * @param loreQuestionId 知识点编号
-	 * @param loreType 知识点类型（知识清单,点拨指导）
-	 * @param queTitle 题库标题
-	 * @param queSub 题干
+	 * @param loreType 知识点类型（知识清单,点拨指导-重点、难点，关键点、易混点）
+	 * @param lqsTitle 题库标题
+	 * @param lqsCon 内容
 	 * @param order 排序
 	 * @param operateUserName 操作人
 	 * @param operateDate 操作时间
 	 * @param queAnswer
 	 * @return
 	 */
-	Integer addLoreQuestionSubInfo(Integer loreQuestionId,String loreType,String queTitle,String queSub,Integer order, String operateUserName,String operateDate)throws WEBException;
+	Integer addLoreQuestionSubInfo(Integer loreQuestionId,String loreType,String lqsTitle,String lqsCon,Integer order, String operateUserName,String operateDate)throws WEBException;
 	
 	/**
-	 * 修改指定编号的知识点题库子表的信息
+	 * 修改指定编号的知识清单、点拨指导题库子表信息
 	 * @author wm
-	 * @date 2019-5-8 上午10:32:44
-	 * @param lqsId 编号
-	 * @param queTitle 题库标题
-	 * @param queSub 题干
+	 * @date 2019-5-8 上午10:26:58
+	 * @param lqsId 主键
+	 * @param lqsCon 内容（同题干）
+	 * @param lqsTitle 标题
 	 * @param operateUserName 操作人
-	 * @param operateDate 操作时间
+	 * @param operateDate 操作日期
 	 * @return
 	 * @throws WEBException
 	 */
-	boolean updateLoreQuestionSubByLqsId(Integer lqsId,String queTitle,String queSub,String operateUserName,String operateDate)throws WEBException;
+	boolean updateLoreQuestionSubByLqsId(Integer lqsId,String lqsTitle,String lqsCon,String operateUserName,String operateDate)throws WEBException;
+	
 	
 	/**
 	 * 删除指定题库子表信息
@@ -232,14 +202,14 @@ public interface LoreQuestionManager {
 	LoreQuestion getEntityById(Integer id)throws WEBException;
 	
 	/**
-	 * 根据知识点题库编号获取知识点题库子表信息列表
+	 * 根据知识点题库编号获取知识点题库子表信息列表(知识清单、点拨指导)
 	 * @author wm
 	 * @date 2019-5-8 上午08:27:50
 	 * @param lqId 题库编号
 	 * @return
 	 * @throws WEBException
 	 */
-	LoreQuestionSubInfo listLQSInfoByLqId(Integer lqId)throws WEBException;
+	List<LoreQuestionSubInfo> listLQSInfoByLqId(Integer lqId)throws WEBException;
 	
 	
 }

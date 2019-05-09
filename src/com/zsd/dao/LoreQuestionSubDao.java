@@ -59,15 +59,14 @@ public interface LoreQuestionSubDao {
 	void update(Session sess,LoreQuestionSubInfo lqs);
 	
 	/**
-	 * 根据知识点题库编号、题库类型获取知识点子表信息列表
+	 * 根据知识点题库编号获取知识点子表信息列表
 	 * @author wm
 	 * @date 2019-5-7 下午09:52:48 
 	 * @param sess
 	 * @param lqId 知识点题库编号
-	 * @param loreTypeName 知识点题库类型
 	 * @return
 	 */
-	List<LoreQuestionSubInfo> findInfoByOpt(Session sess,Integer lqId,String loreTypeName);
+	List<LoreQuestionSubInfo> findInfoByOpt(Session sess,Integer lqId);
 	
 	/**
 	 * 根据主键获取知识点题库子表详情
