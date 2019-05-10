@@ -18,8 +18,51 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson.JSON;
+import com.zsd.util.Constants;
 
 public class CommonTools {
+	
+	/**
+	 * 获取session中的用户ID
+	 * @param request
+	 * @return
+	 */
+	public static Integer getLoginUserId(HttpServletRequest request){
+        Integer userId = (Integer)request.getSession(false).getAttribute(Constants.LOGIN_USER_ID);
+        return userId;
+	}
+	
+	/**
+	 * 获取session中的用户账号
+	 * @author wm
+	 * @date 2019-5-10 上午11:19:52
+	 * @param request
+	 * @return
+	 */
+	public static String getLoginAccount(HttpServletRequest request){
+        String account = (String)request.getSession(false).getAttribute(Constants.LOGIN_ACCOUNT);
+        return account;
+	}
+	
+	/**
+	 * 获取session中的用户角色编号
+	 * @param request
+	 * @return
+	 */
+	public static Integer getLoginRoleId(HttpServletRequest request){
+        Integer userId = (Integer)request.getSession(false).getAttribute(Constants.LOGIN_USER_ROLE_ID);
+        return userId;
+	}
+	
+	/**
+	 * 获取session中的用户角色名称
+	 * @param request
+	 * @return
+	 */
+	public static String getLoginRoleName(HttpServletRequest request){
+        String roleName = (String)request.getSession(false).getAttribute(Constants.LOGIN_USER_ROLE_NAME);
+        return roleName;
+	}
 	
 	/**
 	 * 封装json
@@ -38,23 +81,6 @@ public class CommonTools {
         pw.write(json); 
         pw.flush();  
         pw.close();
-	}
-	
-	/**
-	 * null转换为""
-	 * @description
-	 * @author wm
-	 * @date 2017-5-2 上午10:32:59
-	 * @param inputStr
-	 * @return
-	 */
-	public static String getFinalStr(String inputStr){
-		inputStr = String.valueOf(inputStr);
-		if(inputStr == "null"){
-			return "";
-		}else{
-			return inputStr;
-		}
 	}
 	
 	/**
@@ -83,23 +109,6 @@ public class CommonTools {
 	 * @param inputData
 	 * @return
 	 */
-	public static Integer getFinalInteger(String inputData){
-		inputData = String.valueOf(inputData);
-		if(inputData.equals("") || inputData.equals("null")){
-			return 0;
-		}else{
-			return Integer.parseInt(inputData);
-		}
-	}
-	
-	/**
-	 * 输入的数字类型转换成数据类型
-	 * @description
-	 * @author wm
-	 * @date 2016-9-6 下午03:09:46
-	 * @param inputData
-	 * @return
-	 */
 	public static Integer getFinalInteger(String inputData,HttpServletRequest request){
 		inputData = String.valueOf(request.getParameter(inputData));
 		if(inputData.equals("") || inputData.equals("null")){
@@ -108,24 +117,6 @@ public class CommonTools {
 			return Integer.parseInt(inputData);
 		}
 	}
-	
-	/**
-	 * 输入的数字类型转换成数据类型
-	 * @description
-	 * @author wm
-	 * @date 2017-4-21 上午11:16:34
-	 * @param inputData
-	 * @return
-	 */
-	public static Float getFinalFloat(String inputData){
-		inputData = String.valueOf(inputData);
-		if(inputData.equals("") || inputData.equals("null")){
-			return 0f;
-		}else{
-			return Float.parseFloat(inputData);
-		}
-	}
-
 	/**
 	 * 输入的数字类型转换成数据类型
 	 * @description

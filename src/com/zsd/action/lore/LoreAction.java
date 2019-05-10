@@ -32,6 +32,7 @@ import com.zsd.service.LoreInfoManager;
 import com.zsd.service.LoreQuestionManager;
 import com.zsd.tools.CommonTools;
 import com.zsd.tools.Convert;
+import com.zsd.tools.CurrentTime;
 import com.zsd.util.Constants;
 
 /** 
@@ -527,6 +528,7 @@ public class LoreAction extends DispatchAction {
 					for(Iterator<LoreQuestionSubInfo> it = lqsList.iterator(); it.hasNext();){
 						LoreQuestionSubInfo lqs = it.next();
 						Map<String,Object> map_d = new HashMap<String,Object>();
+						map_d.put("lqId", lqId);
 						map_d.put("lqsId", lqs.getId());
 						map_d.put("lqsTitle", lqs.getLqsTitle());
 						map_d.put("lqsCon", lqs.getLqsContent());
@@ -539,7 +541,7 @@ public class LoreAction extends DispatchAction {
 					}
 					map.put("listIfo", list_d);
 				}
-			}else if(loreType.equals("解题示范") || loreType.equals("知识讲解")){
+			}else if(loreType.equals("解题示范")){
 				Map<String,Object> map_d = new HashMap<String,Object>();
 				map_d.put("lqId", lqId);
 				map_d.put("lqTitle", lq.getQueTitle());
@@ -547,6 +549,14 @@ public class LoreAction extends DispatchAction {
 				map_d.put("lqSub", lq.getQueSub());
 				map_d.put("lqAnswer", lq.getQueAnswer());
 				map_d.put("lqResolution", lq.getQueResolution());
+				map_d.put("lqType", loreType);
+				map.put("listIfo", list_d);
+			}else if(loreType.equals("知识讲解")){
+				Map<String,Object> map_d = new HashMap<String,Object>();
+				map_d.put("lqId", lqId);
+				map_d.put("loreName", lq.getLoreInfo().getLoreName());
+				map_d.put("lqSub", lq.getQueSub());
+				map_d.put("lqAnswer", lq.getQueAnswer());
 				map_d.put("lqType", loreType);
 				map.put("listIfo", list_d);
 			}else{//巩固训练，针对性诊断，再次诊断
@@ -576,11 +586,34 @@ public class LoreAction extends DispatchAction {
 				map_d.put("anserE", answerE);
 				map_d.put("anserF", answerF);
 				map_d.put("lqAnswer", lq.getQueAnswer());
-				if(queType.equals("单选题") || queType.equals("多选题")){
+				Integer queOptNum = 0;//问题选项
+				Integer answerNum = 0;//答案数量
+				if(queType.equals("单选题") || queType.equals("多选题") || queType.equals("填空选择题")){
 					//有最大选项
-					
-				}else if(queType.equals("填空选择题")){
-					//有最大选项和填空数量
+					if(!answerA.equals("")){
+						queOptNum++;
+					}
+					if(!answerB.equals("")){
+						queOptNum++;
+					}
+					if(!answerC.equals("")){
+						queOptNum++;
+					}
+					if(!answerD.equals("")){
+						queOptNum++;
+					}
+					if(!answerE.equals("")){
+						queOptNum++;
+					}
+					if(!answerF.equals("")){
+						queOptNum++;
+					}
+					map_d.put("queOptNum", queOptNum);
+					if(queType.equals("填空选择题")){
+						//有最大选项和填空数量
+						answerNum = lq.getQueAnswer().split("&zsd&").length;//多个答案用&zsd&隔开
+						map_d.put("answerNum", answerNum);
+					}
 				}
 				map_d.put("lqResolution", lq.getQueResolution());
 				Integer queTipId = lq.getQueTips();
@@ -595,6 +628,98 @@ public class LoreAction extends DispatchAction {
 				}
 				map_d.put("lqType", loreType);
 				map.put("listIfo", list_d);
+			}
+		}
+		map.put("msg", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 修改指定的知识点题库/题库子表
+	 * @author wm
+	 * @date 2019-5-10 上午11:10:52
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward updateLoreQuesionDetail(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
+		Integer lqId = CommonTools.getFinalInteger("lqId", request);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "noInfo";
+		LoreQuestion lq = lqm.getEntityByLqId(lqId);
+		if(lq != null){
+			msg = "success";
+			String operateUserName = CommonTools.getLoginAccount(request);
+			String loreType = lq.getLoreTypeName();
+			if(loreType.equals("知识清单") || loreType.equals("点拨指导")){
+				String lqsIdStr_up = CommonTools.getFinalStr("lqsIdStr_up", request);//页面所有需要修改的子表编号，多个用&zsd&隔开
+				String lqsIdStr_del = CommonTools.getFinalStr("lqsIdStr_del", request);//页面所有需要删除的子表编号，多个用&zsd&隔开
+				String lqsTitleStr = Transcode.unescape_new1("lqsTitleStr", request);//页面所有需要修改的子表标题，多个用&zsd&隔开
+				String lqsConStr = Transcode.unescape_new1("lqsConStr", request);//页面所有需要修改的子表内容，多个用&zsd&隔开
+				//修改
+				if(!lqsIdStr_up.equals("")){
+					String[] lqsIdArr = lqsIdStr_up.split("&zsd&");
+					String[] lqsTitleArr = lqsTitleStr.split("&zsd&");
+					String[] lqsConArr = lqsConStr.split("&zsd&");
+					for(Integer i = 0 ; i < lqsIdArr.length ; i++){
+						Integer lqsId = Integer.parseInt(lqsIdArr[i]);
+						String lqsTitle = lqsTitleArr[i];
+						String lqsCon = lqsConArr[i];
+						lqm.updateLoreQuestionSubByLqsId(lqsId, lqsTitle, lqsCon, operateUserName, CurrentTime.getCurrentTime());
+					}
+				}
+				//删除
+				if(!lqsIdStr_del.equals("")){
+					String[] lqsIdArr = lqsIdStr_del.split("&zsd&");
+					for(Integer i = 0 ; i < lqsIdArr.length ; i++){
+						Integer lqsId = Integer.parseInt(lqsIdArr[i]);
+						lqm.delLoreQuestionSubByLqsId(lqsId);
+					}
+				}
+			}else if(loreType.equals("解题示范") || loreType.equals("知识讲解")){
+				String queSub = Transcode.unescape_new1("queSub", request);
+				String queAnswer = Transcode.unescape_new1("queAnswer", request);
+				String queResolution = "";
+				if(loreType.equals("解题示范")){
+					queResolution = Transcode.unescape_new1("queResolution", request);
+				}
+				lqm.updateSimpleLoreQuestionByLqId(lqId, queSub, queAnswer, queResolution, operateUserName, CurrentTime.getCurrentTime());
+			}else{//巩固训练、针对性诊断、再次诊断
+				
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * 设置知识点题库有/无效状态
+	 * @author wm
+	 * @date 2019-5-10 上午11:12:03
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward updateLQInUse(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
+		Integer lqId = CommonTools.getFinalInteger("lqId", request);
+		Integer inUse = CommonTools.getFinalInteger("inUse", request);//0:有效，1：无效
+		Map<String,String> map = new HashMap<String,String>();
+		String msg = "error";
+		LoreQuestion lq = lqm.getEntityByLqId(lqId);
+		if(lq != null){
+			if(inUse.equals(0) || inUse.equals(1)){
+				lqm.updateInUseStatusById(lqId, inUse, CommonTools.getLoginAccount(request), CurrentTime.getCurrentTime());
+				msg = "success";
 			}
 		}
 		map.put("msg", msg);
