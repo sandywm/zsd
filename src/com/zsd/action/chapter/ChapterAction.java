@@ -158,7 +158,7 @@ public class ChapterAction extends DispatchAction {
 		if(cList.size() > 0){
 			msg = "existInfo";
 		}else{
-			msg = "scucess";
+			msg = "success";
 			cm.addChapter(eduId, cptName, cptOrder);
 		}
 		map.put("result", msg);
