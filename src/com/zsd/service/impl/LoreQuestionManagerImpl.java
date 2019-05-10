@@ -171,12 +171,12 @@ public class LoreQuestionManagerImpl implements LoreQuestionManager{
 	}
 
 	@Override
-	public LoreQuestion getEntityById(Integer id) throws WEBException {
+	public LoreQuestion getEntityByLqId(Integer lqId) throws WEBException {
 		// TODO Auto-generated method stub
 		try {
 			lqDao = (LoreQuestionDao) DaoFactory.instance(null).getDao(Constants.DAO_LORE_QUESTION_INFO);
 			Session sess = HibernateUtil.currentSession();
-			return lqDao.getEntityById(sess, id);
+			return lqDao.getEntityById(sess, lqId);
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -336,6 +336,23 @@ public class LoreQuestionManagerImpl implements LoreQuestionManager{
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 			throw new WEBException("根据知识点题库编号获取知识点子表信息列表时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public LoreQuestionSubInfo getEntityByLqsId(Integer lqsId)
+			throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			lqsDao = (LoreQuestionSubDao) DaoFactory.instance(null).getDao(Constants.DAO_LORE_QUESTION_SUB_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return lqsDao.getEntityById(sess, lqsId);
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			throw new WEBException("根据知识点题库子表编号获取子表详情时出现异常!");
 		} finally{
 			HibernateUtil.closeSession();
 		}

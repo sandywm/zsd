@@ -195,11 +195,11 @@ public interface LoreQuestionManager {
 	 * 根据题库编号获取指定题库详情
 	 * @author wm
 	 * @date 2019-5-7 上午11:54:35
-	 * @param id 题库编号
+	 * @param lqId 题库编号
 	 * @return
 	 * @throws WEBException
 	 */
-	LoreQuestion getEntityById(Integer id)throws WEBException;
+	LoreQuestion getEntityByLqId(Integer lqId)throws WEBException;
 	
 	/**
 	 * 根据知识点题库编号获取知识点题库子表信息列表(知识清单、点拨指导)
@@ -210,6 +210,16 @@ public interface LoreQuestionManager {
 	 * @throws WEBException
 	 */
 	List<LoreQuestionSubInfo> listLQSInfoByLqId(Integer lqId)throws WEBException;
+	
+	/**
+	 * 根据知识点题库子表编号获取子表详情
+	 * @author wm
+	 * @date 2019-5-10 上午09:43:57
+	 * @param lqsId 子表编号
+	 * @return
+	 * @throws WEBException
+	 */
+	LoreQuestionSubInfo getEntityByLqsId(Integer lqsId)throws WEBException;
 	
 	
 }

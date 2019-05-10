@@ -23,10 +23,13 @@ import com.zsd.module.Chapter;
 import com.zsd.module.Education;
 import com.zsd.module.GradeSubject;
 import com.zsd.module.LoreInfo;
+import com.zsd.module.LoreQuestion;
+import com.zsd.module.LoreQuestionSubInfo;
 import com.zsd.page.PageConst;
 import com.zsd.service.ChapterManger;
 import com.zsd.service.EducationManager;
 import com.zsd.service.LoreInfoManager;
+import com.zsd.service.LoreQuestionManager;
 import com.zsd.tools.CommonTools;
 import com.zsd.tools.Convert;
 import com.zsd.util.Constants;
@@ -317,13 +320,13 @@ public class LoreAction extends DispatchAction {
 		String gradeCode = "";//年级号
 		String eduVolume = "";
 		String subIdCode = "";
-		
+		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "noInfo";
 		List<LoreInfo> loreList = lm.listPageInfoByCptId(cptId, 1, 100000);
 		if(loreList.size() > 0){
+			msg = "success";
 			Chapter c = cm.getEntityById(cptId);
 			if(c != null){
-				msg = "success";
 				Education edu = c.getEducation();
 				ediId = edu.getEdition().getId();
 				subId = edu.getGradeSubject().getSubject().getId();
@@ -355,8 +358,10 @@ public class LoreAction extends DispatchAction {
 				if(cptId < 10){
 					cptIdCode = "0" + cptId;
 				}
+				List<Object> list_d = new ArrayList<Object>();
 				for(Iterator<LoreInfo> it = loreList.iterator() ; it.hasNext();){
 					LoreInfo lore = it.next();
+					Map<String,String> map_d = new HashMap<String,String>();
 					Integer loreOrder = lore.getLoreOrder();
 					String loreOrderCode = "";
 					if(loreOrder < 10){
@@ -365,14 +370,17 @@ public class LoreAction extends DispatchAction {
 					String loreCode = subIdCode + "-" + paraCode + "-" + gradeCode + "-" + eduVolumeCode + "-" + ediIdCode + "-" + cptIdCode + "-" + loreOrderCode;
 					Boolean flag = lm.updateLoreCodeById(lore.getId(), loreCode);
 					if(flag){
-						msg += "知识点[" + lore.getLoreName() + "]增加编码成功\n";
+						map_d.put("codeResult", "succ");
+						map_d.put("codeInfo", "知识点[" + lore.getLoreName() + "]增加编码成功");
 					}else{
-						msg += "知识点[" + lore.getLoreName() + "]增加编码失败\n";
+						map_d.put("codeResult", "fail");
+						map_d.put("codeInfo", "知识点[" + lore.getLoreName() + "]增加编码失败");
 					}
+					list_d.add(map_d);
 				}
+				map.put("codeList", list_d);
 			}
 		}
-		Map<String,String> map = new HashMap<String,String>();
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
 		return null;
@@ -422,6 +430,7 @@ public class LoreAction extends DispatchAction {
 			for(Iterator<LoreInfo> it = loreList.iterator() ; it.hasNext();){
 				LoreInfo lore = it.next();
 				Map<String,Object> map_d = new HashMap<String,Object>();
+				map_d.put("loreId", lore.getId());
 				map_d.put("loreName", lore.getLoreName());
 				map_d.put("inUse", lore.getInUse().equals(0) ? "有效" : "无效");
 				Chapter cpt = lore.getChapter();
@@ -460,8 +469,136 @@ public class LoreAction extends DispatchAction {
 	public ActionForward getPageLoreQuesionData(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
-		LoreInfoManager lm = (LoreInfoManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
-		
+		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
+		Integer loreId = CommonTools.getFinalInteger("loreId", request);
+		Integer count = lqm.getCountByLoreId(loreId);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "暂无记录";
+		if(count > 0){
+			msg = "success";
+			List<Object> list_d = new ArrayList<Object>();
+			Integer pageSize = PageConst.getPageSize(String.valueOf(request.getParameter("limit")), 10);//等同于pageSize
+			Integer pageNo = CommonTools.getFinalInteger("page", request);//等同于pageNo
+			List<LoreQuestion> lqList = lqm.listPageInfoByLoreId(loreId, pageNo, pageSize);
+			for(Iterator<LoreQuestion> it = lqList.iterator(); it.hasNext();){
+				LoreQuestion lq = it.next();
+				Map<String,Object> map_d = new HashMap<String,Object>();
+				map_d.put("lqId", lq.getId());
+				map_d.put("lqTitle", lq.getQueTitle());
+				map_d.put("lqType", lq.getLoreTypeName());
+				map_d.put("inUse", lq.getInUse().equals(0) ? "有效" : "无效");
+				list_d.add(map_d);
+			}
+			map.put("data", list_d);
+			map.put("count", count);
+			map.put("code", 0);
+		}
+		map.put("msg", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 获取知识点题库详情
+	 * @author wm
+	 * @date 2019-5-10 上午08:42:21
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getLoreQuesionDetail(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
+		Integer lqId = CommonTools.getFinalInteger("lqId", request);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "noInfo";
+		LoreQuestion lq = lqm.getEntityByLqId(lqId);
+		if(lq != null){
+			msg = "success";
+			String loreType = lq.getLoreTypeName();
+			List<Object> list_d = new ArrayList<Object>();
+			if(loreType.equals("知识清单") || loreType.equals("点拨指导")){
+				List<LoreQuestionSubInfo> lqsList = lqm.listLQSInfoByLqId(lqId);
+				if(lqsList.size() > 0){
+					for(Iterator<LoreQuestionSubInfo> it = lqsList.iterator(); it.hasNext();){
+						LoreQuestionSubInfo lqs = it.next();
+						Map<String,Object> map_d = new HashMap<String,Object>();
+						map_d.put("lqsId", lqs.getId());
+						map_d.put("lqsTitle", lqs.getLqsTitle());
+						map_d.put("lqsCon", lqs.getLqsContent());
+						if(loreType.equals("知识清单")){
+							map_d.put("lqType", loreType);
+						}else{
+							map_d.put("lqType", lqs.getLoreTypeName());
+						}
+						list_d.add(map_d);
+					}
+					map.put("listIfo", list_d);
+				}
+			}else if(loreType.equals("解题示范") || loreType.equals("知识讲解")){
+				Map<String,Object> map_d = new HashMap<String,Object>();
+				map_d.put("lqId", lqId);
+				map_d.put("lqTitle", lq.getQueTitle());
+				map_d.put("loreName", lq.getLoreInfo().getLoreName());
+				map_d.put("lqSub", lq.getQueSub());
+				map_d.put("lqAnswer", lq.getQueAnswer());
+				map_d.put("lqResolution", lq.getQueResolution());
+				map_d.put("lqType", loreType);
+				map.put("listIfo", list_d);
+			}else{//巩固训练，针对性诊断，再次诊断
+				Map<String,Object> map_d = new HashMap<String,Object>();
+				map_d.put("lqId", lqId);
+				map_d.put("lqTitle", lq.getQueTitle());
+				map_d.put("loreName", lq.getLoreInfo().getLoreName());
+				String queType = lq.getQueType();
+				map_d.put("queType", queType);
+				map_d.put("queType2", lq.getQueType2());
+				Integer lexId = lq.getLexId();
+				map_d.put("lexId", lexId);
+				if(lexId > 0){
+					//后续增加
+				}
+				map_d.put("lqSub", lq.getQueSub());
+				String answerA = lq.getA();
+				String answerB = lq.getB();
+				String answerC = lq.getC();
+				String answerD = lq.getD();
+				String answerE = lq.getE();
+				String answerF = lq.getF();
+				map_d.put("anserA", answerA);
+				map_d.put("anserB", answerB);
+				map_d.put("anserC", answerC);
+				map_d.put("anserD", answerD);
+				map_d.put("anserE", answerE);
+				map_d.put("anserF", answerF);
+				map_d.put("lqAnswer", lq.getQueAnswer());
+				if(queType.equals("单选题") || queType.equals("多选题")){
+					//有最大选项
+					
+				}else if(queType.equals("填空选择题")){
+					//有最大选项和填空数量
+				}
+				map_d.put("lqResolution", lq.getQueResolution());
+				Integer queTipId = lq.getQueTips();
+				map_d.put("queTipId", queTipId);
+				if(queTipId > 0){//提示为知识清单或者点拨指导的一内容
+					LoreQuestionSubInfo  lqs = lqm.getEntityByLqsId(queTipId);
+					if(lqs != null){
+						map_d.put("queTipTitle", lqs.getLqsTitle());
+						map_d.put("queTipCon", lqs.getLqsContent());
+						map_d.put("queTipType", lqs.getLoreTypeName());
+					}
+				}
+				map_d.put("lqType", loreType);
+				map.put("listIfo", list_d);
+			}
+		}
+		map.put("msg", msg);
+		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
 }
