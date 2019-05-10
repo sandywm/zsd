@@ -650,8 +650,17 @@ public class LoreAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
 		Integer lqId = CommonTools.getFinalInteger("lqId", request);
-		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "noInfo";
+		String option = CommonTools.getFinalStr("option", request);//内容为错误类型+时间范围+修改状态+当前知识点修改状态+错题主键lqId+发送错题用户编号
+		if(!option.equals("")){//通过错题过来修改
+			String currLoreUpdateStatus = option.split(",")[3];
+			if(currLoreUpdateStatus.equals("1")){//之前已经被修改完成，不能再进行修改
+				msg = "noUpdate";
+			}else{
+				lqId = Integer.parseInt(option.split(",")[4]);
+			}
+		}
+		Map<String,Object> map = new HashMap<String,Object>();
 		LoreQuestion lq = lqm.getEntityByLqId(lqId);
 		if(lq != null){
 			msg = "success";
@@ -691,9 +700,31 @@ public class LoreAction extends DispatchAction {
 				}
 				lqm.updateSimpleLoreQuestionByLqId(lqId, queSub, queAnswer, queResolution, operateUserName, CurrentTime.getCurrentTime());
 			}else{//巩固训练、针对性诊断、再次诊断
-				
+				String queType = Transcode.unescape_new1("queType", request);//类型
+				String queType2 = Transcode.unescape_new1("queType2", request);//类型二
+				Integer queTipId = CommonTools.getFinalInteger("queTipId", request);//词条编号（提示）
+				Integer lexId = CommonTools.getFinalInteger("lexId", request);//词库编号
+				String queSub = Transcode.unescape_new1("queSub", request);//题干
+				String answerA = Transcode.unescape_new1("answerA", request);
+				String answerB = Transcode.unescape_new1("answerB", request);
+				String answerC = Transcode.unescape_new1("answerC", request);
+				String answerD = Transcode.unescape_new1("answerD", request);
+				String answerE = Transcode.unescape_new1("answerE", request);
+				String answerF = Transcode.unescape_new1("answerF", request);
+				String queAnswer = Transcode.unescape_new1("queAnswer", request);//答案，多个用&zsd&
+				String queResolution = Transcode.unescape_new1("queResolution", request);//解析
+				lqm.updateLoreQuestion(lqId, queSub, queAnswer, queTipId, lexId, queResolution, queType, queType2, 
+						answerA, answerB, answerC, answerD, answerE, answerF, operateUserName, CurrentTime.getCurrentTime());
+				if(!option.equals("")){//通过错题过来修改
+					//修改知识点错误表信息
+					
+					Integer stuId = Integer.parseInt(option.split(",")[5]);//提交错误题的学生编号
+					//奖励学生金币
+				}
 			}
 		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
 	
@@ -724,6 +755,53 @@ public class LoreAction extends DispatchAction {
 		}
 		map.put("msg", msg);
 		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 浏览指定知识点、指定类型的的题库
+	 * @author wm
+	 * @date 2019-5-10 下午06:57:38
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getLoreQuestionData(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
+		Integer loreId = CommonTools.getFinalInteger("loreId", request);
+		String loreType = Transcode.unescape_new1("loreType", request);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "noInfo";
+		List<LoreQuestion> lqList = lqm.listInfoByLoreId(loreId, loreType, -1);
+		if(lqList.size() > 0){
+			msg = "success";
+			List<Object> list_d = new ArrayList<Object>();
+			for(Iterator<LoreQuestion> it = lqList.iterator() ; it.hasNext();){
+				LoreQuestion lq = it.next();
+				Map<String,Object> map_d = new HashMap<String,Object>();
+				String loreType_db = lq.getLoreTypeName();
+				if(loreType_db.equals("知识清单") || loreType_db.equals("点拨指导")){
+					map_d.put("loreType", loreType_db);
+					List<LoreQuestionSubInfo> lqsList = lqm.listLQSInfoByLqId(lq.getId());
+					if(lqsList.size() > 0){
+						List<Object> list_d_1 = new ArrayList<Object>();
+						for(Iterator<LoreQuestionSubInfo> it_1 = lqsList.iterator() ; it_1.hasNext();){
+							LoreQuestionSubInfo lqs = it_1.next();
+							Map<String,Object> map_d_1 = new HashMap<String,Object>();
+							map_d_1.put("lqsType", lqs.getLoreTypeName());//重点，难点，关键点，易混点
+							map_d_1.put("lqsTitle", lqs.getLqsTitle());
+							map_d_1.put("lqsCon", lqs.getLqsContent());
+							list_d_1.add(map_d_1);
+						}
+						map_d.put("conList", list_d_1);
+					}
+				}
+			}
+		}
 		return null;
 	}
 }

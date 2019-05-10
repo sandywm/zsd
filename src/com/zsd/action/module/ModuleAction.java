@@ -88,7 +88,7 @@ public class ModuleAction extends DispatchAction {
 		ActRoleInfoManager arm = (ActRoleInfoManager) AppFactory.instance(null).getApp(Constants.WEB_ACT_ROLE_INFO);
 		RoleInfoManager rm = (RoleInfoManager)  AppFactory.instance(null).getApp(Constants.WEB_ROLE_INFO);
 		List<ModuleInfo> mList = mm.listAllInfo();
-		Integer selRoleId = CommonTools.getFinalInteger(request.getParameter("selRoleId"));
+		Integer selRoleId = CommonTools.getFinalInteger("selRoleId", request);
 		Map<String,Object> map = new HashMap<String,Object>();
 		//获取当前平台有那些角色列表
 		String msg = "noInfo";

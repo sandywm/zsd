@@ -35,6 +35,11 @@
                 <comment>添加时间</comment>
             </column>
         </property>
+        <property name="checkStatus" type="java.lang.Integer">
+            <column name="check_status" not-null="true">
+                <comment>审核状态（0:未审核,1:已审核，2:未通过）</comment>
+            </column>
+        </property>
         <property name="coin" type="java.lang.Integer">
             <column name="coin" not-null="true">
                 <comment>金币奖励(默认0)-后台人员确认修改后返还</comment>
@@ -48,6 +53,11 @@
         <property name="operateDate" type="java.lang.String">
             <column name="operate_date" length="30">
                 <comment>修改日期</comment>
+            </column>
+        </property>
+        <property name="remark" type="java.lang.String">
+            <column name="remark" length="30">
+                <comment>备注</comment>
             </column>
         </property>
     </class>

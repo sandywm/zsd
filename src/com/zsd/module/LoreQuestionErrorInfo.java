@@ -21,6 +21,8 @@ public class LoreQuestionErrorInfo implements java.io.Serializable {
 	private Integer coin;
 	private String operateUserName;
 	private String operateDate;
+	private Integer checkStatus;
+	private String remark;
 
 	// Constructors
 
@@ -28,29 +30,20 @@ public class LoreQuestionErrorInfo implements java.io.Serializable {
 	public LoreQuestionErrorInfo() {
 	}
 
-	/** minimal constructor */
-	public LoreQuestionErrorInfo(LoreQuestion loreQuestion, User user,
-			String errorType, String content, String addDate, Integer coin) {
-		this.loreQuestion = loreQuestion;
-		this.user = user;
-		this.errorType = errorType;
-		this.content = content;
-		this.addDate = addDate;
-		this.coin = coin;
-	}
-
 	/** full constructor */
 	public LoreQuestionErrorInfo(LoreQuestion loreQuestion, User user,
-			String errorType, String content, String addDate, Integer coin,
-			String operateUserName, String operateDate) {
+			String errorType, String content, String addDate, Integer checkStatus, Integer coin,
+			String operateUserName, String operateDate,String remark) {
 		this.loreQuestion = loreQuestion;
 		this.user = user;
 		this.errorType = errorType;
 		this.content = content;
 		this.addDate = addDate;
+		this.checkStatus = checkStatus;
 		this.coin = coin;
 		this.operateUserName = operateUserName;
 		this.operateDate = operateDate;
+		this.remark = remark;
 	}
 
 	// Property accessors
@@ -125,6 +118,22 @@ public class LoreQuestionErrorInfo implements java.io.Serializable {
 
 	public void setOperateDate(String operateDate) {
 		this.operateDate = operateDate;
+	}
+
+	public Integer getCheckStatus() {
+		return checkStatus;
+	}
+
+	public void setCheckStatus(Integer checkStatus) {
+		this.checkStatus = checkStatus;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
 	}
 
 }
