@@ -325,17 +325,17 @@ public class LoreQuestionManagerImpl implements LoreQuestionManager{
 	}
 
 	@Override
-	public List<LoreQuestionSubInfo> listLQSInfoByLqId(Integer lqId)
+	public List<LoreQuestionSubInfo> listLQSInfoByLqId(Integer lqId,String subType)
 			throws WEBException {
 		// TODO Auto-generated method stub
 		try {
 			lqsDao = (LoreQuestionSubDao) DaoFactory.instance(null).getDao(Constants.DAO_LORE_QUESTION_SUB_INFO);
 			Session sess = HibernateUtil.currentSession();
-			return lqsDao.findInfoByOpt(sess, lqId);
+			return lqsDao.findInfoByOpt(sess, lqId,subType);
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
-			throw new WEBException("根据知识点题库编号获取知识点子表信息列表时出现异常!");
+			throw new WEBException("根据知识点题库编号、子表类型获取知识点子表信息列表时出现异常!");
 		} finally{
 			HibernateUtil.closeSession();
 		}

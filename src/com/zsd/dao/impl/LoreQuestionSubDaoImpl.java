@@ -41,9 +41,12 @@ public class LoreQuestionSubDaoImpl implements LoreQuestionSubDao{
 	}
 
 	@Override
-	public List<LoreQuestionSubInfo> findInfoByOpt(Session sess, Integer lqId) {
+	public List<LoreQuestionSubInfo> findInfoByOpt(Session sess, Integer lqId,String subType) {
 		// TODO Auto-generated method stub
 		String hql = " from LoreQuestionSubInfo as lqs where lqs.loreQuestion.id = "+lqId;
+		if(!subType.equals("")){
+			hql += " and lqs.loreTypeName = '"+subType+"'";
+		}
 		return sess.createQuery(hql).list();
 	}
 

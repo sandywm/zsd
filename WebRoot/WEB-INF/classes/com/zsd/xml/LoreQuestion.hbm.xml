@@ -109,12 +109,12 @@
             </column>
         </property>
         <property name="operateUserName" type="java.lang.String">
-            <column name="operate_user_name">
+            <column name="operate_user_name"  length="30">
                 <comment>操作人员姓名</comment>
             </column>
         </property>
         <property name="operateDate" type="java.lang.String">
-            <column name="operate_date" length="0">
+            <column name="operate_date" length="30">
                 <comment>操作时间</comment>
             </column>
         </property>

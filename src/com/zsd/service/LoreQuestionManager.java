@@ -202,14 +202,15 @@ public interface LoreQuestionManager {
 	LoreQuestion getEntityByLqId(Integer lqId)throws WEBException;
 	
 	/**
-	 * 根据知识点题库编号获取知识点题库子表信息列表(知识清单、点拨指导)
+	 * 根据知识点题库编号、子表类型获取知识点题库子表信息列表(知识清单、点拨指导)
 	 * @author wm
 	 * @date 2019-5-8 上午08:27:50
 	 * @param lqId 题库编号
+	 * @param subType 子表类型""表示全部(知识清单、主题、重点，难点，关键点，易混点)
 	 * @return
 	 * @throws WEBException
 	 */
-	List<LoreQuestionSubInfo> listLQSInfoByLqId(Integer lqId)throws WEBException;
+	List<LoreQuestionSubInfo> listLQSInfoByLqId(Integer lqId,String subType)throws WEBException;
 	
 	/**
 	 * 根据知识点题库子表编号获取子表详情

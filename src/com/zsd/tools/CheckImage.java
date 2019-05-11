@@ -27,6 +27,20 @@ public class CheckImage
     }
     
     /**
+     * 检查是否为图片
+     * @author wm
+     * @date 2019-5-11 上午10:06:38
+     * @param fileName
+     * @return
+     */
+    public static boolean checkImg(String fileName){
+    	if(fileName.endsWith(".jpg") || fileName.endsWith(".jpeg") || fileName.endsWith(".bmp") || fileName.endsWith(".gif") || fileName.endsWith(".png")){
+    		return true;
+    	}
+    	return false;
+    }
+    
+    /**
      * 获取上传文件类型
      * @description
      * @author wm
