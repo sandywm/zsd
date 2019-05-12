@@ -397,6 +397,9 @@ public class CommonTools {
 
 	
 	public static void main(String[] args){
-			System.out.println("1223");
+		String aa = "Module\\commonJs\\ueditor\\jsp\\video\\aa.mp4";
+		String bb = aa.replace("\\", "/");
+		Double cc = 0.0;
+			System.out.println(cc.equals(0));
 	}
 }

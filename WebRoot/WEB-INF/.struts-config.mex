@@ -10,6 +10,7 @@
   <StrutsActivity path="/mod.do" location="950,450" dimension="259,104" />
   <StrutsActivity path="/###.jsp" location="950,250" dimension="81,53" />
   <StrutsActivity path="/register.jsp" location="650,250" dimension="102,53" />
+  <StrutsActivity path="/netTeacher.do" location="50,650" dimension="298,104" />
   <StrutsTransition id="/mod.do,abilityPage,/###.jsp,1" routingType="0">
     <AutomaticBendpoints>
       <AbsolutePoint location="1079,450" />

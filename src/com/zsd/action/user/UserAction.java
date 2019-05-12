@@ -4,7 +4,9 @@
  */
 package com.zsd.action.user;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -18,15 +20,27 @@ import org.apache.struts.actions.DispatchAction;
 
 import com.zsd.action.base.Transcode;
 import com.zsd.factory.AppFactory;
+import com.zsd.module.ClassInfo;
+import com.zsd.module.InviteCodeInfo;
 import com.zsd.module.RoleInfo;
+import com.zsd.module.RoleUserInfo;
 import com.zsd.module.School;
 import com.zsd.module.User;
+import com.zsd.page.PageConst;
+import com.zsd.service.ClassInfoManager;
+import com.zsd.service.InviteCodeInfoManager;
+import com.zsd.service.NetTeacherInfoManager;
+import com.zsd.service.NetTeacherStudentManager;
 import com.zsd.service.RoleInfoManager;
 import com.zsd.service.RoleUserInfoManager;
 import com.zsd.service.SchoolManager;
+import com.zsd.service.StudentParentInfoManager;
+import com.zsd.service.UserClassInfoManager;
 import com.zsd.service.UserManager;
 import com.zsd.tools.CommonTools;
+import com.zsd.tools.Convert;
 import com.zsd.tools.CurrentTime;
+import com.zsd.tools.InviteCode;
 import com.zsd.tools.MD5;
 import com.zsd.util.Constants;
 
@@ -86,44 +100,222 @@ public class UserAction extends DispatchAction {
 		SchoolManager scManager = (SchoolManager) AppFactory.instance(null).getApp(Constants.WEB_SCHOOL_INFO);
 		RoleUserInfoManager ruManager = (RoleUserInfoManager) AppFactory.instance(null).getApp(Constants.WEB_ROLE_USER_INFO);
 		RoleInfoManager rManager = (RoleInfoManager) AppFactory.instance(null).getApp(Constants.WEB_ROLE_INFO);
+		UserClassInfoManager ucManager = (UserClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
+		ClassInfoManager ciManager = (ClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_CLASS_INFO);
+		NetTeacherStudentManager ntsManager = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT);
+		InviteCodeInfoManager icManager = (InviteCodeInfoManager) AppFactory.instance(null).getApp(Constants.WEB_INVITE_CODE_INFO);
+		StudentParentInfoManager spManager = (StudentParentInfoManager) AppFactory.instance(null).getApp(Constants.WEB_STUDENT_PARENT_INFO);
+		NetTeacherInfoManager ntManager = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String userAccount =CommonTools.getFinalStr("userAccount",request);
 		String roleName =CommonTools.getFinalStr("roleName",request);
 		String realName=CommonTools.getFinalStr("realName",request);
+		String className=CommonTools.getFinalStr("className",request);
+		String inviteCode=CommonTools.getFinalStr("inviteCode",request);
 		String password=new MD5().calcMD5(CommonTools.getFinalStr("password",request));
 		String mobile=CommonTools.getFinalStr("mobile",request);
 		String lastLoginDate=CurrentTime.getCurrentTime();
 		String signDate=CurrentTime.getCurrentTime();
 		Integer schoolId=CommonTools.getFinalInteger("schoolId", request);
-		String endDate=CurrentTime.getFinalDateTime(30);
+		Integer gradeId=CommonTools.getFinalInteger("gradeId", request);
+		Integer subId=CommonTools.getFinalInteger("subId", request);
+		Integer schoolType=CommonTools.getFinalInteger("schoolType", request);
+		String msg ="";
+		Integer userId =0;
 		List<School> scList = scManager.listInfoById(schoolId);
 		Integer yearSystem=0;
 		if(scList.size()>0){
 			yearSystem = scList.get(0).getYearSystem();
 		}
 		List<User> uList = uManager.listInfoByAccount(userAccount);//判断账户是否存在
-		String msg ="fail";//注册用户失败
+		msg ="fail";//注册用户失败
 		if(uList.size()>0){
 			msg="exist"; //用户名存在
 		}else{
 			//1.用户注册
-			Integer userId=uManager.addUser(userAccount, realName, password, mobile, lastLoginDate, lastLoginIp, signDate, schoolId, endDate, yearSystem, prov, city);
-			if(userId>0){
-				msg = "success";//注册用户成功
-				
-				List<RoleInfo> rList = rManager.listRoleInfo(roleName);
-				Integer roleId = 0;
-				if(rList.size() > 0){
-					roleId = rList.get(0).getId();
-					//绑定角色
-					ruManager.addRoleUserInfo(userId, roleId);
-				}
-			}else{
-				msg ="fail";//注册用户失败
-			}
+			userId=uManager.addUser(userAccount, realName, password, mobile, lastLoginDate, lastLoginIp, signDate, schoolId, CurrentTime.getFinalDateTime(30), yearSystem, prov, city);
 		}
+		if(roleName.equals("学生")){
+				if(userId>0){
+					msg = "success";//注册用户成功
+					
+					List<RoleInfo> rList = rManager.listRoleInfo(roleName);
+					Integer roleId = 0;
+					if(rList.size() > 0){
+						roleId = rList.get(0).getId();
+						//2 绑定角色
+						Integer ruId=ruManager.addRoleUserInfo(userId, roleId, "", "", "", "", 0, 0, 0, 0);
+						if(ruId>0){//绑定角色成功
+							List<ClassInfo> ciList = ciManager.listClassInfoByOption(gradeId, CurrentTime.getCurrentTime(), schoolId, className);
+							if(ciList.size()>0){
+								Integer classId = ciList.get(0).getId();
+								ucManager.addUcInfo(userId, classId, roleId); //3 绑定用户班级
+								List<InviteCodeInfo> icList = icManager.listIcInfoByicCode(inviteCode);
+								if(icList.size()>0){
+									Integer teaId=icList.get(0).getInviteId();
+									ntsManager.addNTS(userId, teaId, CurrentTime.getCurrentTime(), -1, CurrentTime.getFinalDateTime(7), 0, "", "", 0);//4 网络导师学生绑定
+									//5 生成家长账户
+									Integer upId = uManager.addUser(userAccount+"_jz", "", new MD5().calcMD5("123456"), "", lastLoginDate, lastLoginIp, signDate, schoolId, CurrentTime.getFinalDateTime(30), yearSystem, prov, city);
+									//6 家长绑定角色
+									List<RoleInfo> jzlist = rManager.listRoleInfo("家长");
+									if(jzlist.size() > 0){
+										Integer jzRoleId = jzlist.get(0).getId();
+										ruManager.addRoleUserInfo(upId, jzRoleId, "", "", "", "", 0, 0, 0, 0);
+									}
+									// 7 学生家长绑定
+									spManager.addSpInfo(upId, userId);
+								}
+							}
+						}
+					}
+				}else{
+					msg ="fail";//注册用户失败
+				}
+		}else if(roleName.equals("网络导师")){ //网络导师注册
+			//网络导师生成自己的邀请码
+			String ivCode = InviteCode.getRandomCode();
+			Integer icId=icManager.addInviteCodeInfo(userId, "导师邀请码", ivCode, CurrentTime.getCurrentTime1());
+			if(icId>0){
+				Integer baseMoney = 0;
+				if(schoolType.equals(1)){
+					baseMoney = (int) Constants.NET_TEACHER_SERVICE_FEE_XX;
+				}else if(schoolType.equals(2)){
+					baseMoney = (int) Constants.NET_TEACHER_SERVICE_FEE_CZ;
+				}else{
+					baseMoney = (int) Constants.NET_TEACHER_SERVICE_FEE_GZ;
+				}
+				//6 家长绑定角色
+				List<RoleInfo> ntlist = rManager.listRoleInfo("网络导师");
+				if(ntlist.size() > 0){
+					Integer ntRoleId = ntlist.get(0).getId();
+					ruManager.addRoleUserInfo(userId, ntRoleId, "", "", "", "", 0, 0, 0, 0);
+				}
+				ntManager.addNtInfo(userId, subId, schoolType, baseMoney, "", "", "", "", "", "", "", "", 0, 0, 0); //添加网络导师基本信息
+			}
+			
+			
+		}
+		
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
 		return null;
+	}
+	/**
+	 * 根据账户,学校名称,角色名,省,市,县,学段,学校名称,年级获取用户信息
+	 * @author zong
+	 * 2019-5-10上午10:54:57
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getUserByOption(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		RoleUserInfoManager ruManager = (RoleUserInfoManager) AppFactory.instance(null).getApp(Constants.WEB_ROLE_USER_INFO);
+		SchoolManager schManager = (SchoolManager) AppFactory.instance(null).getApp(Constants.WEB_SCHOOL_INFO);
+		ClassInfoManager  cManager= (ClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_CLASS_INFO);
+		String accName =CommonTools.getFinalStr("accName",request);
+		Integer roleId =CommonTools.getFinalInteger("roleId",request);
+		String realName=CommonTools.getFinalStr("realName",request);
+		Integer schoolId=CommonTools.getFinalInteger("schoolId",request);
+		String prov=CommonTools.getFinalStr("prov",request);
+		String city=CommonTools.getFinalStr("city",request);
+		String county=CommonTools.getFinalStr("county",request);
+		Integer schoolType=CommonTools.getFinalInteger("schoolType", request);
+		Integer gradeNo=CommonTools.getFinalInteger("gradeNo", request);
+		Integer classId=CommonTools.getFinalInteger("classId", request);
+		Integer count = ruManager.listRuInfoByoption(accName, realName, schoolId, roleId, prov, city, county, schoolType, gradeNo, classId);
+		String msg = "暂无记录";
+		Map<String,Object> map = new HashMap<String,Object>();
+		if(count>0){
+			Integer pageSize = PageConst.getPageSize(String.valueOf(request.getParameter("limit")), 10);//等同于pageSize
+			Integer pageNo = CommonTools.getFinalInteger("page", request);//等同于pageNo
+			List<RoleUserInfo> ruList = ruManager.listUserRoleInfoByoption(accName, realName, schoolId, roleId, prov, city, county, schoolType, gradeNo, classId, pageNo, pageSize);
+			List<Object> list = new ArrayList<Object>();
+			for(Iterator<RoleUserInfo> it = ruList.iterator() ; it.hasNext();){
+				RoleUserInfo ruInfo = it.next();
+				Map<String,Object> map_ru = new HashMap<String,Object>();
+				map_ru.put("id", ruInfo.getUser().getId());
+				map_ru.put("accName", ruInfo.getUser().getUserAccount());
+				map_ru.put("realName", ruInfo.getUser().getRealName());
+				map_ru.put("nickName", ruInfo.getUser().getNickName());
+				map_ru.put("roleName", ruInfo.getRoleInfo().getRoleName());
+				String sexStr = ruInfo.getUser().getSex();
+				String sex ="";
+				if(sexStr.equalsIgnoreCase("m")){
+					sex="男";
+				}else if(sexStr.equalsIgnoreCase("f")){
+					sex="女";
+				}
+				map_ru.put("sex", sex);
+				Integer accSta = ruInfo.getUser().getAccountStatus();
+				String accStr = "";
+				if(accSta.equals(0)){
+					accStr="无效";
+				}else if(accSta.equals(1)){
+					accStr="有效";
+				}
+				map_ru.put("accStatus",accStr);
+				map_ru.put("QQ", ruInfo.getUser().getQq());
+				map_ru.put("birthday", ruInfo.getUser().getBirthday());
+				map_ru.put("endDate", ruInfo.getUser().getEndDate());
+				map_ru.put("prov", ruInfo.getProv());
+				map_ru.put("city",ruInfo.getCity());
+				map_ru.put("county", ruInfo.getCounty());
+				Integer schType = ruInfo.getSchoolType();
+				String schTypeStr = "";
+				if(schType.equals(1)){
+					schTypeStr = "小学";
+				}else if(schType.equals(2)){
+					schTypeStr = "初中";
+				}else if(schType.equals(3)){
+					schTypeStr = "高中";
+				}
+				map_ru.put("schoolType", schTypeStr);
+				List<School> schList = schManager.listInfoById(ruInfo.getSchoolId());
+				map_ru.put("schoolName", schList.get(0).getSchoolName());
+				map_ru.put("gradeName", Convert.NunberConvertChinese(ruInfo.getGradeNo()));
+				List<ClassInfo> cInfo = cManager.listClassInfoById(ruInfo.getClassId());
+				map_ru.put("className", cInfo.get(0).getClassName());
+				list.add(map_ru);
+			}
+			map.put("data", list);
+			map.put("count", count);
+			map.put("code", 0);
+			msg = "success";
+		}
+		map.put("msg", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	/**
+	 * 修改用户的截止时间或者账号状态
+	 * @author zong
+	 * 2019-5-11下午03:44:20
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward updateUserBydateOraccSta(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		UserManager uManager = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
+		Integer userId=CommonTools.getFinalInteger("userId", request);
+		String endDate=CommonTools.getFinalStr("endDate",request);
+		Integer accStatus=CommonTools.getFinalInteger("accStatus", request);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "fail";
+		boolean uflag = uManager.updateUser(userId, accStatus, endDate);
+		if(uflag){
+			msg ="success";
+		}
+		map.put("msg", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+		
 	}
 }

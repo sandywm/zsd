@@ -64,5 +64,27 @@ public interface ClassInfoDao {
 	 * @return
 	 */
 	List<ClassInfo> findClassInfo(Session sess);
+	 /**
+	  * 通过指定学校指定年级(通过当前时间换算)的班级名称获取该班级实体
+	  * @author zong
+	  * @date  2019-5-6 上午08:42:20
+	  * @param sess
+	  * @param gradeId 年级
+	  * @param currentTime 当前时间
+	  * @param schoolId 学校编号
+	  * @param className 班级名称
+	  * @return 班级实体
+	  */
+	List<ClassInfo> findClassInfoByOption(Session sess, Integer gradeId,String currentTime,
+			Integer schoolId, String className);
+	/**
+	 * 根据主键获取班级信息
+	 * @author zong
+	 * 2019-5-11上午11:37:52
+	 * @param sess
+	 * @param cId 主键
+	 * @return 班级实体
+	 */
+	List<ClassInfo> findClassInfoById(Session sess, Integer cId);
 
 }

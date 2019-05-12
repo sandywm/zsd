@@ -57,5 +57,25 @@ public interface NetTeacherInfoManager {
 			String honorPic, String bankName, String bankNumber,
 			String teaSign, String teaEdu, String graduateSchool, String major,
 			Integer schoolAge, Integer checkStatus, Integer teaScore) throws WEBException;
+	/**
+	 * 根据老师编号修改老师基本信息
+	 * @author zong
+	 * 2019-5-11下午05:08:05
+	 * @param id 主键
+	 * @param realName 真实姓名
+	 * @param nickName 网络昵称
+	 * @param teaSign  个性签名
+	 * @param teaEdu 学历
+	 * @param graduateSchool 毕业院校
+	 * @param major 专业
+	 * @param schoolAge 教龄
+	 * @param sex 性别
+	 * @param birthday 出生日期
+	 * @return
+	 * @throws WEBException
+	 */
+	boolean updateNtBybasicInfo(Integer id, String realName,String nickName,
+			String teaSign, String teaEdu, String graduateSchool, String major,
+			Integer schoolAge,String sex,String birthday) throws WEBException;
 
 }

@@ -4,6 +4,7 @@
  */
 package com.zsd.action.lore;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -17,6 +18,8 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
 
+import com.zsd.tools.FileOpration;
+import com.zsd.util.WebUrl;
 import com.zsd.action.base.Transcode;
 import com.zsd.factory.AppFactory;
 import com.zsd.module.Chapter;
@@ -30,6 +33,7 @@ import com.zsd.service.ChapterManger;
 import com.zsd.service.EducationManager;
 import com.zsd.service.LoreInfoManager;
 import com.zsd.service.LoreQuestionManager;
+import com.zsd.service.UserManager;
 import com.zsd.tools.CommonTools;
 import com.zsd.tools.Convert;
 import com.zsd.tools.CurrentTime;
@@ -649,6 +653,7 @@ public class LoreAction extends DispatchAction {
 	public ActionForward updateLoreQuesionDetail(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
+		UserManager um = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
 		Integer lqId = CommonTools.getFinalInteger("lqId", request);
 		String msg = "noInfo";
 		String option = CommonTools.getFinalStr("option", request);//内容为错误类型+时间范围+修改状态+当前知识点修改状态+错题主键lqId+发送错题用户编号
@@ -697,6 +702,27 @@ public class LoreAction extends DispatchAction {
 				String queResolution = "";
 				if(loreType.equals("解题示范")){
 					queResolution = Transcode.unescape_new1("queResolution", request);
+				}else{
+					String videoPath = lq.getQueAnswer();
+					if(!videoPath.equals(queAnswer)){
+						String videoName = queAnswer.substring(queAnswer.lastIndexOf("/")+1);
+						//复制上传的视频文件到文件名为loreId的文件中
+						String folder = String.valueOf(lq.getLoreInfo().getId());
+						String absoluteFilePath = WebUrl.DIAGNOSIS_DATA_URL.replace("\\", "/") + "/" + folder + "/" + videoName;
+						String relativeFilePath = WebUrl.NEW_DIAGNOSIS_DATA_URL.replace("\\", "/")  + folder + "/" + videoName;
+						String oldFilePath = WebUrl.DIAGNOSIS_DATA_URL.replace("\\", "/") + "/" + videoName;
+						File file = new File(WebUrl.DIAGNOSIS_DATA_URL.replace("\\", "/") + "/" + folder);
+						if(!file.exists()){
+							file.mkdirs();
+						}
+						//复制上传的文件到新建的文件夹里面
+						boolean flag_copy = FileOpration.copyFile(oldFilePath, absoluteFilePath);
+						//删除上传的旧文件
+						if(flag_copy){
+							FileOpration.deleteFile(oldFilePath);
+						}	
+						queAnswer = relativeFilePath;
+					}
 				}
 				lqm.updateSimpleLoreQuestionByLqId(lqId, queSub, queAnswer, queResolution, operateUserName, CurrentTime.getCurrentTime());
 			}else{//巩固训练、针对性诊断、再次诊断
@@ -720,6 +746,7 @@ public class LoreAction extends DispatchAction {
 					
 					Integer stuId = Integer.parseInt(option.split(",")[5]);//提交错误题的学生编号
 					//奖励学生金币
+					um.updateUser(stuId, 20, 0, 0, 0);
 				}
 			}
 		}
@@ -911,7 +938,35 @@ public class LoreAction extends DispatchAction {
 			map.put("zczdList", list_d_zczd);
 			map.put("zsjjList", list_d_zsjj);
 		}
-		map.put("msg", msg);
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 获取当前最大的题库数
+	 * @author wm
+	 * @date 2019-5-12 上午09:03:44
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getCurrMaxQueNum(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
+		Integer loreId = CommonTools.getFinalInteger("loreId", request);
+		String loreType = Transcode.unescape_new1("loreType", request);
+		List<LoreQuestion> lqList = lqm.listInfoByLoreId(loreId, loreType, -1);
+		Integer queNum = 1;
+		if(lqList.size() > 0){
+			queNum = lqList.get(lqList.size() - 1).getQueNum() + 1;
+		}
+		Map<String,Integer> map = new HashMap<String,Integer>();
+		map.put("queNum", queNum);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
@@ -933,6 +988,7 @@ public class LoreAction extends DispatchAction {
 		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
 		LoreInfoManager lm = (LoreInfoManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
 		Integer loreId = CommonTools.getFinalInteger("loreId", request);
+		String loreType = Transcode.unescape_new1("loreType", request);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "noInfo";
 		String operateUserName = CommonTools.getLoginAccount(request);
@@ -940,14 +996,13 @@ public class LoreAction extends DispatchAction {
 		if(loreId > 0){
 			LoreInfo lore = lm.getEntityById(loreId);
 			if(lore != null){
-				String loreType = Transcode.unescape_new1("loreType", request);
 				if(loreType.equals("知识清单")){
 					String queTitle = Transcode.unescape_new1("queTitle", request);
 					String queSub =  Transcode.unescape_new1("queSub", request);
 					List<LoreQuestion> lqList = lqm.listInfoByLoreId(loreId, loreType, -1);
 					if(lqList.size() == 0){//未增加过
 						//增加主表和子表
-						Integer lqId = lqm.addSimpleLoreQuestion(loreId, loreType, loreType, "", 1, "", "", operateUserName, operateDate);
+						Integer lqId = lqm.addSimpleLoreQuestion(loreId, loreType, loreType, "", 1,1, "", "", operateUserName, operateDate);
 						if(lqId > 0){
 							lqm.addLoreQuestionSubInfo(lqId, loreType, queTitle, queSub, 1, operateUserName, operateDate);
 						}
@@ -955,18 +1010,33 @@ public class LoreAction extends DispatchAction {
 						//增加子表
 						lqm.addLoreQuestionSubInfo(lqList.get(0).getId(), loreType, queTitle, queSub, 1, operateUserName, operateDate);
 					}
+					msg = "success";
 				}else if(loreType.equals("点拨指导")){
 					List<LoreQuestion> lqList = lqm.listInfoByLoreId(loreId, loreType, -1);
 					String contentZt = Transcode.unescape_new1("titleZt", request);//主题内容
 					Integer lqId = 0;
 					if(lqList.size() == 0){//未增加过
 						//增加主表和子表
-						lqId = lqm.addSimpleLoreQuestion(loreId, loreType, loreType, "", 2, "", "", operateUserName, operateDate);
-						if(lqId > 0){
-							if(!contentZt.equals("")){//主题有内容，就不能增加重点、难点、关键点、易混点
+						lqId = lqm.addSimpleLoreQuestion(loreId, loreType, loreType, "", 1,2, "", "", operateUserName, operateDate);
+					}else{//存在点拨指导的记录
+						//增加子表
+						lqId = lqList.get(0).getId();
+					}
+					if(lqId > 0){
+						if(!contentZt.equals("")){//主题有内容，就不能增加重点、难点、关键点、易混点
+							//先查询有无点拨指导的子表记录（主题只能在没有任何记录的情况下才能增加）
+							if(lqm.listLQSInfoByLqId(lqId, "").size() == 0){
 								lqm.addLoreQuestionSubInfo(lqId, "主题", loreType, contentZt, 1, operateUserName, operateDate);
-							}else{//增加重点、难点、关键点、易混点
-								String titleZd = Transcode.unescape_new1("titleZt", request);//重点标题（&zsd&隔开）
+								msg = "success";
+							}else{
+								//存在任何信息，不能再增加主题
+								msg = "noAdd";
+							}
+						}else{//增加重点、难点、关键点、易混点
+							if(lqm.listLQSInfoByLqId(lqId, "主题").size() > 0){//存在主题，不能增加重点、难点、关键点、易混点
+								msg = "noAdd";
+							}else{
+								String titleZd = Transcode.unescape_new1("titleZd", request);//重点标题（&zsd&隔开）
 								String contentZd = Transcode.unescape_new1("contentZd", request);//重点内容（&zsd&隔开）
 								String titleNd = Transcode.unescape_new1("titleNd", request);//难点标题（&zsd&隔开）
 								String contentNd = Transcode.unescape_new1("contentNd", request);//难点内容（&zsd&隔开）
@@ -1002,48 +1072,129 @@ public class LoreAction extends DispatchAction {
 										lqm.addLoreQuestionSubInfo(lqId, "易混点", titleYhdArr[i], contentYhdArr[i], i+1, operateUserName, operateDate);
 									}
 								}
+								msg = "success";
 							}
-						}
-					}else{
-						//增加子表
-						lqId = lqList.get(0).getId();
-						if(!contentZt.equals("")){//主题有内容，就不能增加重点、难点、关键点、易混点
-							//查询有没有主题记录
-							if(lqm.listLQSInfoByLqId(lqId, "").size() == 0){//子表不存在记录，能增加
-								lqm.addLoreQuestionSubInfo(lqId, "主题", loreType, contentZt, 1, operateUserName, operateDate);
-							}
-						}else{
-							
 						}
 					}
-				}
-				
-				
-				if(loreType.equals("知识清单") || loreType.equals("点拨指导")){
+				}else if(loreType.equals("解题示范")){
 					List<LoreQuestion> lqList = lqm.listInfoByLoreId(loreId, loreType, -1);
-					if(lqList.size() == 0){//未增加过
-						Integer order = 1;
-						//增加主表和子表
-						if(loreType.equals("点拨指导")){
-							order = 2;
-						}
-						Integer lqId = lqm.addSimpleLoreQuestion(loreId, loreType, loreType, "", order, "", "", operateUserName, operateDate);
-						if(lqId > 0){
-							if(loreType.equals("知识清单")){
-								String queTitle = Transcode.unescape_new1("queTitle", request);
-								String queSub =  Transcode.unescape_new1("queSub", request);
-								lqm.addLoreQuestionSubInfo(lqId, loreType, queTitle, queSub, 1, operateUserName, operateDate);
-							}else{//点拨指导
-								
-							}
-						}
-						
-					}else{
-						//增加子表
+					Integer queNum = 1;
+					Integer queOrder = 3;//解题示范3-10
+					if(lqList.size() > 0){
+						queNum = lqList.get(lqList.size() - 1).getQueNum();
+						queOrder += lqList.size();
 					}
+					String queTitle = loreType + "第" + queNum + "题";//解题示范第几题
+					String queSub =  Transcode.unescape_new1("queSub", request);//题干
+					String queAnswer = Transcode.unescape_new1("queAnswer", request);//题干
+					String queResolution = Transcode.unescape_new1("queResolution", request);//解析
+					lqm.addSimpleLoreQuestion(loreId, loreType, queTitle, queSub, queNum, queOrder, queAnswer, queResolution, operateUserName, operateDate);
+					msg = "success";
+				}else if(loreType.equals("知识讲解")){
+					List<LoreQuestion> lqList = lqm.listInfoByLoreId(loreId, loreType, -1);
+					if(lqList.size() == 0){
+						//没记录才能增加
+						String queTitle = loreType;
+						String queSub =  Transcode.unescape_new1("queSub", request);//题干
+						String queAnswer = Transcode.unescape_new1("queAnswer", request);//视频地址
+						String videoName = queAnswer.substring(queAnswer.lastIndexOf("/")+1);
+						//复制上传的视频文件到文件名为loreId的文件中
+						String folder = String.valueOf(loreId);
+						String absoluteFilePath = WebUrl.DIAGNOSIS_DATA_URL.replace("\\", "/") + "/" + folder + "/" + videoName;
+						String relativeFilePath = WebUrl.NEW_DIAGNOSIS_DATA_URL.replace("\\", "/")  + folder + "/" + videoName;
+						String oldFilePath = WebUrl.DIAGNOSIS_DATA_URL.replace("\\", "/") + "/" + videoName;
+						File file = new File(WebUrl.DIAGNOSIS_DATA_URL.replace("\\", "/") + "/" + folder);
+						if(!file.exists()){
+							file.mkdirs();
+						}
+						//复制上传的文件到新建的文件夹里面
+						boolean flag_copy = FileOpration.copyFile(oldFilePath, absoluteFilePath);
+						//删除上传的旧文件
+						if(flag_copy){
+							FileOpration.deleteFile(oldFilePath);
+						}	
+						lqm.addSimpleLoreQuestion(loreId, loreType, queTitle, queSub, 1, 170, relativeFilePath, "", operateUserName, operateDate);
+						msg = "success";
+					}else{
+						msg = "noAdd";
+					}
+				}else{//巩固训练、针对性诊断、再次诊断
+					List<LoreQuestion> lqList = lqm.listInfoByLoreId(loreId, loreType, -1);
+					Integer queNum = 1;
+					Integer queOrder = 0;//ggxl(巩固训练)11-60,zdzd(针对性诊断)61-110,zczd(再次诊断)111-160
+					if(loreType.equals("巩固训练")){
+						queOrder = 11;
+					}else if(loreType.equals("针对性诊断")){
+						queOrder = 61;
+					}else{
+						queOrder = 111;
+					}
+					if(lqList.size() > 0){
+						queNum = lqList.get(lqList.size() - 1).getQueNum();
+						queOrder += lqList.size();
+					}
+					String queTitle = loreType + "第" + queNum + "题";//第几题
+					String queSub =  Transcode.unescape_new1("queSub", request);//题干
+					String queAnswer = Transcode.unescape_new1("queAnswer", request);//答案
+					Integer queTipId = CommonTools.getFinalInteger("queTipId", request);//提示(知识清单，点拨指导子表的编号)
+					Integer lexId = CommonTools.getFinalInteger("lexId", request);//词库编号
+					String queResolution = Transcode.unescape_new1("queResolution", request);//解析
+					String queType = Transcode.unescape_new1("queType", request);//题型一
+					String queType2 = Transcode.unescape_new1("queType2", request);//题型二
+					String answerA = Transcode.unescape_new1("answerA", request);
+					String answerB = Transcode.unescape_new1("answerB", request);
+					String answerC = Transcode.unescape_new1("answerC", request);
+					String answerD = Transcode.unescape_new1("answerD", request);
+					String answerE = Transcode.unescape_new1("answerE", request);
+					String answerF = Transcode.unescape_new1("answerF", request);
+					Integer queClassTeaId = CommonTools.getFinalInteger("queClassTeaId", request);//上传题老师编号
+					lqm.addLoreQuestion(loreId, loreType, queNum, queTitle, queSub, queAnswer, queTipId, lexId, queResolution, queType,
+							queOrder, queType2, answerA, answerB, answerC, answerD, answerE, answerF, operateUserName, operateDate, queClassTeaId);
+					msg = "success";
 				}
 			}
 		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 获取是否能增加主题、重点、难点，关键点，易混点、知识讲解的能力
+	 * @author wm
+	 * @date 2019-5-12 下午05:06:25
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward checkAddInfo(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
+		Integer loreId = CommonTools.getFinalInteger("loreId", request);
+		String loreType = Transcode.unescape_new1("loreType", request);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "noAdd";
+		List<LoreQuestion> lqList = lqm.listInfoByLoreId(loreId, loreType, -1);
+		if(lqList.size() == 0){//未增加过
+			//都能增加
+			msg = "add";
+		}else{
+			if(loreType.equals("知识讲解")){
+				List<LoreQuestionSubInfo> lqsList = lqm.listLQSInfoByLqId(lqList.get(0).getId(), "主题");
+				if(lqsList.size() > 0){
+					//存在主题信息，不能增加点拨指导
+				}else{
+					//只能增加重点，难点，关键点，易混点
+					msg = "addLast";
+				}
+			}
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
 }

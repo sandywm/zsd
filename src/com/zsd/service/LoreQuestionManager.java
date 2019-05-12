@@ -79,13 +79,14 @@ public interface LoreQuestionManager {
 	 * @param queSub 题干(知识讲解)
 	 * @param queAnswer 答案（解题示范）(知识讲解是为视频地址)
 	 * @param queResolution 解析（解题示范）
-	 * @param queOrder 排序（解题示范,知识讲解是为1）
+	 * @param queNum 序号
+	 * @param queOrder 排序（知识讲解是为1）
 	 * @param operateUserName 操作人
 	 * @param operateDate 操作日期
 	 * @return
 	 * @throws WEBException
 	 */
-	Integer addSimpleLoreQuestion(Integer loreId,String loreType,String queTitle,String queSub,Integer queOrder, String queAnswer,String queResolution,
+	Integer addSimpleLoreQuestion(Integer loreId,String loreType,String queTitle,String queSub,Integer queNum,Integer queOrder, String queAnswer,String queResolution,
 			String operateUserName,String operateDate)throws WEBException;
 	
 	/**

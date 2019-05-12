@@ -133,8 +133,8 @@
                 <comment>知识典币</comment>
             </column>
         </property>
-        <property name="accountMoney" type="java.lang.Double">
-            <column name="account_money" precision="8">
+        <property name="accountMoney" type="java.lang.Integer">
+            <column name="account_money">
                 <comment>账户余额</comment>
             </column>
         </property>

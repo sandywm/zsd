@@ -88,4 +88,39 @@ public class NetTeacherInfoManagerImpl implements NetTeacherInfoManager {
 		}
 	}
 
+	@Override
+	public boolean updateNtBybasicInfo(Integer id, String realName,
+			String nickName, String teaSign, String teaEdu,
+			String graduateSchool, String major, Integer schoolAge, String sex,
+			String birthday) throws WEBException {
+		try {
+			ntDao = (NetTeacherInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_NET_TEACHER_INFO);
+			userDao = (UserDao) DaoFactory.instance(null).getDao(Constants.DAO_USER_INFO);
+			Session sess  = HibernateUtil.currentSession();
+			tran = sess.beginTransaction();
+			NetTeacherInfo nt = ntDao.get(sess, id);
+			if(nt != null){
+				User user = userDao.get(sess, nt.getUser().getId());
+				user.setRealName(realName);
+				user.setNickName(nickName);
+				user.setBirthday(birthday);
+				user.setSex(sex);
+				nt.setUser(user);
+				nt.setTeaSign(teaSign);
+				nt.setTeaEdu(teaEdu);
+				nt.setGraduateSchool(graduateSchool);
+				nt.setMajor(major);
+				nt.setSchoolAge(schoolAge);
+				tran.commit();
+				return true;
+			}
+			return false;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("修改指定网络导师基本信息时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
 }

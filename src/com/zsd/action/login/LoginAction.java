@@ -10,6 +10,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -20,6 +21,8 @@ import com.zsd.factory.AppFactory;
 import com.zsd.module.User;
 import com.zsd.service.UserManager;
 import com.zsd.tools.CommonTools;
+import com.zsd.tools.CurrentTime;
+import com.zsd.tools.MD5;
 import com.zsd.util.Constants;
 
 /** 
@@ -97,14 +100,39 @@ public class LoginAction extends DispatchAction {
 	public ActionForward userLogin(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		UserManager uManager = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
+		MD5 md5 = new MD5();
+		HttpSession session = request.getSession(false);
 		Map<String,Object> map = new HashMap<String,Object>();
-		String userAccount =CommonTools.getFinalStr("userAccount",request);
-		String password=CommonTools.getFinalStr("password",request);
+		String account =CommonTools.getFinalStr("account",request);
+		String password=md5.calcMD5(CommonTools.getFinalStr("password",request));
 		String msg = "error";
-		if(userAccount!=""&& password!=""){
-			List<User> uList = uManager.listInfoByAccount(userAccount, password);
-			if(uList.size()>0){
+		if(account!=""&& password!=""){
+			boolean uFlag = uManager.userLogin(account, password);
+			if(uFlag){
+				//登录成功
+				String currdate = CurrentTime.getCurrentTime();
+				List<User> uList = uManager.listInfoByAccount(account);
+				Integer uid = uList.get(0).getId();
+				//判断用户账号有效状态
+				Integer status = uList.get(0).getAccountStatus();
+				if(status.equals(1)){//状态 0:无效,1:有效
+					Integer loginStatus = uList.get(0).getLoginStatus();//每次登陆，loginStatus自动加1，满50时恢复0状态
+					if(loginStatus < 50){
+						loginStatus++;
+					}else{
+						loginStatus = 0;
+					}
+					//修改用户的登录IP、登录时间、登录次数
+					uManager.updateUser(uid, currdate, CommonTools.getIpAddress(request), uList.get(0).getLoginTimes() + 1, loginStatus);
+					session.setAttribute("userId",uid);
+					msg = "success";
+				}else{//账号无效
+					msg = "lock";
+				}
 				msg = "success";
+				
+			}else{
+				msg = "fail";
 			}
 		}
 		map.put("result", msg);

@@ -95,6 +95,17 @@ public interface UserManager {
 	 */
 	boolean updateUser(Integer id, String lastLoginDate, String lastLoginIp,
 			Integer loginTimes, Integer loginStatus) throws WEBException;
+	/**
+	 * 修改指定用户的账户状态,截止时间
+	 * @author zong
+	 * 2019-5-10下午05:15:01
+	 * @param id 用户编号
+	 * @param accStatus 账户状态
+	 * @param endDate 截止时间
+	 * @return
+	 * @throws WEBException
+	 */
+	boolean updateUser(Integer id,  Integer accStatus, String endDate) throws WEBException;
 
 	/**
 	 * 根据用户账户和密码获取用户信息
@@ -116,4 +127,25 @@ public interface UserManager {
 	 * @throws WEBException
 	 */
 	List<User> listInfoByAccount(String account) throws WEBException;
+	/**
+	 * 根据用户名和密码判断登录信息
+	 * @param account 用户名
+	 * @param password 密码
+	 * @return
+	 * @throws WEBException
+	 */
+	boolean userLogin(String account,String password) throws WEBException;
+	/**
+	 * 修改指定用户的金币数,经验,知识典币,账号余额
+	 * @author zong
+	 * 2019-5-11下午04:21:42
+	 * @param id 用户编号
+	 * @param coin 金币
+	 * @param exp 经验
+	 * @param zsdCoin 知识典币
+	 * @param accMoney 账号余额
+	 * @return 
+	 * @throws WEBException
+	 */
+	boolean updateUser(Integer id,  Integer coin, Integer exp,Integer zsdCoin,Integer accMoney) throws WEBException;
 }

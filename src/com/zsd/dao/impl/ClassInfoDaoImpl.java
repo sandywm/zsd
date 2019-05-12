@@ -44,4 +44,21 @@ public class ClassInfoDaoImpl implements ClassInfoDao {
 		return sess.createQuery(hql).list();
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ClassInfo> findClassInfoByOption(Session sess, Integer gradeId,
+			String currentTime, Integer schoolId, String className) {
+		String hql = "from ClassInfo as ci where ci.school.id = "+schoolId;
+		hql += " and truncate(period_diff(date_format('"+ currentTime +"','%Y%m'),date_format(c.buildClassDate,'%Y%m'))/12,0)+1 ="+gradeId;
+		hql += " and c.className = '"+ className +"'";
+		return sess.createQuery(hql).list();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ClassInfo> findClassInfoById(Session sess, Integer cId) {
+		String hql = "from ClassInfo as ci where ci.id = "+cId;
+		return sess.createQuery(hql).list();
+	}
+
 }

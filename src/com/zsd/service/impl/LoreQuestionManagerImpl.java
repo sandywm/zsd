@@ -188,7 +188,7 @@ public class LoreQuestionManagerImpl implements LoreQuestionManager{
 
 	@Override
 	public Integer addSimpleLoreQuestion(Integer loreId, String loreType,String queTitle,
-			String queSub, Integer queOrder, String queAnswer,
+			String queSub, Integer queNum,Integer queOrder, String queAnswer,
 			String queResolution, String operateUserName, String operateDate)
 			throws WEBException {
 		// TODO Auto-generated method stub
@@ -198,7 +198,7 @@ public class LoreQuestionManagerImpl implements LoreQuestionManager{
 			Session sess = HibernateUtil.currentSession();
 			tran = sess.beginTransaction();
 			LoreQuestion lq = new LoreQuestion(lDao.getEntityById(sess, loreId) , loreType,
-					"", queOrder, queTitle,queSub, queAnswer,  0,  0,
+					"", queNum, queTitle,queSub, queAnswer,  0,  0,
 					queResolution, "",  queOrder,"", "", "", "", "", "",
 					"",  0, operateUserName,operateDate,  0);
 			lqDao.save(sess, lq);

@@ -19,4 +19,6 @@
 	<app id="user_class_Web" class="com.zsd.service.impl.UserClassInfoManagerImpl"/>
 	<app id="lore_Web" class="com.zsd.service.impl.LoreInfoManagerImpl"/>
 	<app id="lore_question_Web" class="com.zsd.service.impl.LoreQuestionManagerImpl"/>
+	<app id="invite_code_Web" class="com.zsd.service.impl.InviteCodeInfoManagerImpl"/>
+	<app id="net_teacher_basic_Web" class="com.zsd.service.impl.NetTeacherBasicInfoManagerImpl"/>
 </appContext>

@@ -23,5 +23,17 @@ public class WebUrl {
   //上传文件留存地(相对路径)
     public static String NEW_DATA_URL_UP_FILE_UPLOAD;
     
+    //知识点图片位置绝对路径
+    public static String LORE_DATA_URL;
+    
+    //知识点图片位置相对路径
+    public static String NEW_LORE_DATA_URL;
+    
+    //上传课堂诊断视频/音频资源用绝对地址
+    public static String DIAGNOSIS_DATA_URL;
+    
+    //上传课堂诊断视频/音频资源用相对地址
+    public static String NEW_DIAGNOSIS_DATA_URL;
+    
     
 }

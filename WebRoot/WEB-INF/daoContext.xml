@@ -20,4 +20,6 @@
 	<dao id="lore_Dao" class="com.zsd.dao.impl.LoreInfoDaoImpl" />
 	<dao id="lore_question_Dao" class="com.zsd.dao.impl.LoreQuestionDaoImpl" />
 	<dao id="lore_question_sub_Dao" class="com.zsd.dao.impl.LoreQuestionSubDaoImpl" />
+	<dao id="invite_code_Dao" class="com.zsd.dao.impl.InviteCodeInfoDaoImpl" />
+	<dao id="net_teacher_basic_Dao" class="com.zsd.module.NetTeacherBasicInfo" />
 </daoContext>

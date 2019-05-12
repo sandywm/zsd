@@ -44,6 +44,10 @@
       <forward name="modPage" path="/###.jsp"></forward><!-- 模块管理首页 -->
       <forward name="abilityPage" path="/###.jsp"></forward><!-- 角色权限管理首页 -->
     </action>
+    <!-- 网络老师个人中心-->
+    <action path="/netTeacher" parameter="action" scope="request" type="com.zsd.action.netteacher.NetTeacherAction">
+      <set-property property="cancellable" value="true" />
+    </action>
 
   </action-mappings>
 

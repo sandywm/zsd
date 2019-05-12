@@ -38,7 +38,7 @@ public class User implements java.io.Serializable {
 	private Integer yearSystem;
 	private String dateFlag;
 	private Integer coinZsd;
-	private Double accountMoney;
+	private Integer accountMoney;
 	private String prov;
 	private String city;
 
@@ -63,7 +63,7 @@ public class User implements java.io.Serializable {
 			Integer loginTimes, Integer loginStatus, Integer accountStatus,
 			Integer freeStatus, Integer schoolId, String endDate, Integer coin,
 			Integer experience, Integer yearSystem, String dateFlag,
-			Integer coinZsd, Double accountMoney, String prov, String city) {
+			Integer coinZsd, Integer accountMoney, String prov, String city) {
 		this.userAccount = userAccount;
 		this.nickName = nickName;
 		this.realName = realName;
@@ -304,11 +304,11 @@ public class User implements java.io.Serializable {
 		this.coinZsd = coinZsd;
 	}
 
-	public Double getAccountMoney() {
+	public Integer getAccountMoney() {
 		return this.accountMoney;
 	}
 
-	public void setAccountMoney(Double accountMoney) {
+	public void setAccountMoney(Integer accountMoney) {
 		this.accountMoney = accountMoney;
 	}
 

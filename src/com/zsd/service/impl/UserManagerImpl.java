@@ -28,7 +28,7 @@ public class UserManagerImpl implements UserManager {
 			userDao = (UserDao) DaoFactory.instance(null).getDao(Constants.DAO_USER_INFO);
 			Session sess  = HibernateUtil.currentSession();
 			tran = sess.beginTransaction();
-			User user = new User(userAccount, "", realName, "", password, "", mobile, "", "", "", "", lastLoginDate, lastLoginIp, signDate, 0, 0, 1, 0, schoolId, endDate, 0, 0, yearSystem, "", 0, 0.0, prov, city);
+			User user = new User(userAccount, "", realName, "", password, "", mobile, "", "", "", "", lastLoginDate, lastLoginIp, signDate, 0, 0, 1, 0, schoolId, endDate, 0, 0, yearSystem, "", 0, 0, prov, city);
 			userDao.save(sess, user);
 			tran.commit();
 			return user.getId();
@@ -121,6 +121,86 @@ public class UserManagerImpl implements UserManager {
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new WEBException("根据用户账户获取用户信息时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public boolean userLogin(String account, String password)
+			throws WEBException {
+		boolean flag = false;
+		try {
+			userDao = (UserDao) DaoFactory.instance(null).getDao(Constants.DAO_USER_INFO);
+			Session sess  = HibernateUtil.currentSession();
+			List<User> ulist =userDao.findInfoByAccount(sess, account);
+			if(!ulist.isEmpty()){
+				if (ulist.get(0).getPassword().equalsIgnoreCase(password)) {
+					flag = true;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("根据用户账户获取用户信息时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+		return flag;
+	}
+
+	@Override
+	public boolean updateUser(Integer id, Integer accStatus, String endDate)
+			throws WEBException {
+		try {
+			userDao = (UserDao) DaoFactory.instance(null).getDao(Constants.DAO_USER_INFO);
+			Session sess  = HibernateUtil.currentSession();
+			tran = sess.beginTransaction();
+			User user = userDao.get(sess, id);
+			if(user != null){
+				user.setAccountStatus(accStatus);
+				if(!endDate.equals("")){
+					user.setEndDate(endDate);
+				}
+				tran.commit();
+				return true;
+			}
+			return false;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("修改指定用户截止时间,账户状态时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public boolean updateUser(Integer id, Integer coin, Integer exp,
+			Integer zsdCoin, Integer accMoney) throws WEBException {
+		try {
+			userDao = (UserDao) DaoFactory.instance(null).getDao(Constants.DAO_USER_INFO);
+			Session sess  = HibernateUtil.currentSession();
+			tran = sess.beginTransaction();
+			User user = userDao.get(sess, id);
+			if(user != null){
+				if(!coin.equals(0)){
+					user.setCoin(coin+user.getCoin());
+				}
+				if(!exp.equals(0)){
+					user.setExperience(exp+user.getExperience());
+				}
+				if(!zsdCoin.equals(0)){
+					user.setCoinZsd(zsdCoin+user.getCoinZsd());
+				}
+				if(!accMoney.equals(0)){
+					user.setAccountMoney(accMoney+user.getAccountMoney());
+				}
+				tran.commit();
+				return true;
+			}
+			return false;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("修改指定用户金币数,经验,知识典币,账号余额时出现异常!");
 		} finally{
 			HibernateUtil.closeSession();
 		}
