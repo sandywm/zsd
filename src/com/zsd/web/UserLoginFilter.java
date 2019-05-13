@@ -80,31 +80,31 @@ public class UserLoginFilter implements Filter{
 		}
 		Integer loginFlag_dataBase = -1;
 		if(userId.equals(0)){
-			if(!requesturi.endsWith("/login.do") 
-					&& !requesturi.endsWith("/baseInfo.do")
-					&& !requesturi.endsWith("/common.do")
-					&& !requesturi.endsWith("/school.do")
-					&& !requesturi.endsWith("/baseInfo.do")
-					&& !requesturi.endsWith("/chapter.do")
-					&& !requesturi.endsWith("/mod.do")
-					&& !requesturi.endsWith("/lore.do")
-					&& !requesturi.endsWith("/authImg")
-					&& !requesturi.endsWith("jsp")
-					&& !requesturi.endsWith("css") 
-					&& !requesturi.endsWith("js")
-					&& !requesturi.endsWith("png")
-					&& !requesturi.endsWith("gif")
-					&& !requesturi.endsWith("jpg")
-					&& !requesturi.endsWith("jpeg")
-					&& !requesturi.endsWith("ico")
-					&& !requesturi.endsWith("ttf")
-					&& !requesturi.endsWith("json")
-					&& !requesturi.endsWith(httpServletRequest.getContextPath()+ "/")){
-                String url = "window.top.location.href='login.do?action=loginOut'";
-				String authorizeScript = "由于您60分钟内没上线，系统已强制您下线，请重新登录！";
-				Ability.PrintAuthorizeScript(url,authorizeScript, httpServletResponse);
-                return;
-            }
+//			if(!requesturi.endsWith("/login.do") 
+//					&& !requesturi.endsWith("/baseInfo.do")
+//					&& !requesturi.endsWith("/common.do")
+//					&& !requesturi.endsWith("/school.do")
+//					&& !requesturi.endsWith("/baseInfo.do")
+//					&& !requesturi.endsWith("/chapter.do")
+//					&& !requesturi.endsWith("/mod.do")
+//					&& !requesturi.endsWith("/lore.do")
+//					&& !requesturi.endsWith("/authImg")
+//					&& !requesturi.endsWith("jsp")
+//					&& !requesturi.endsWith("css") 
+//					&& !requesturi.endsWith("js")
+//					&& !requesturi.endsWith("png")
+//					&& !requesturi.endsWith("gif")
+//					&& !requesturi.endsWith("jpg")
+//					&& !requesturi.endsWith("jpeg")
+//					&& !requesturi.endsWith("ico")
+//					&& !requesturi.endsWith("ttf")
+//					&& !requesturi.endsWith("json")
+//					&& !requesturi.endsWith(httpServletRequest.getContextPath()+ "/")){
+//                String url = "window.top.location.href='login.do?action=loginOut'";
+//				String authorizeScript = "由于您60分钟内没上线，系统已强制您下线，请重新登录！";
+//				Ability.PrintAuthorizeScript(url,authorizeScript, httpServletResponse);
+//                return;
+//            }
 			chain.doFilter(request, response);
 		}else{
 			try {
