@@ -71,9 +71,12 @@ public class LoreInfoDaoImpl implements LoreInfoDao{
 
 	@Override
 	public List<LoreInfo> findInfoByOpt(Session sess, String lorePyCode,
-			String loreName) {
+			String loreName,Integer ediId) {
 		// TODO Auto-generated method stub
 		String hql =" from LoreInfo as lore where 1=1";
+		if(ediId > 0){
+			hql += " and lore.chapter.education.edition.id = "+ediId;
+		}
 		if(!lorePyCode.equals("")){
 			hql += " and lore.lorePyCode like '%"+lorePyCode+"%'";
 		}

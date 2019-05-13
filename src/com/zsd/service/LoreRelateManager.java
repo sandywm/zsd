@@ -41,13 +41,24 @@ public interface LoreRelateManager {
 	boolean updateLoreRelate(Integer id,Integer loreId,Integer rootLoreId)throws WEBException;
 	
 	/**
-	 * 根据主知识点获取关联知识点信息列表（学生学习的时候需要loreInUse为开启状态）
+	 * 根据主知识点和关联知识点编号获取关联知识点信息列表（学生学习的时候需要loreInUse为开启状态）
 	 * @author wm
 	 * @date 2019-5-7 下午11:03:01 
-	 * @param loreId 知识点编号
+	 * @param loreId 知识点编号(0表示全部)
+	 * @param rootLoreId 子知识点编号(0表示全部)
 	 * @param loreInUse 开启状态（-1为全部）
 	 * @return
 	 * @throws WEBException
 	 */
-	List<LoreRelateInfo> listRelateInfoByLoreId(Integer loreId,Integer loreInUse)throws WEBException;
+	List<LoreRelateInfo> listRelateInfoByOpt(Integer loreId,Integer rootLoreId,Integer loreInUse)throws WEBException;
+	
+	/**
+	 * 根据主键获取实体信息
+	 * @author wm
+	 * @date 2019-5-13 上午11:58:14
+	 * @param id
+	 * @return
+	 * @throws WEBException
+	 */
+	LoreRelateInfo getEntityById(Integer id)throws WEBException;
 }

@@ -50,6 +50,7 @@ public class Constants {
 	public static final String WEB_LORE_QUESTION_SUB_INFO = "lore_question_sub_Web";
 	public static final String WEB_INVITE_CODE_INFO = "invite_code_Web";
 	public static final String WEB_NET_TEACHER_BASIC_INFO = "net_teacher_basic_Web";
+	public static final String WEB_LORE_RELATE_INFO = "lore_relate_Web";
 	
 	//-------------------DAO-------------------------//
 	public static final String DAO_EDITION_INFO = "edition_Dao";
@@ -74,5 +75,6 @@ public class Constants {
 	public static final String DAO_LORE_QUESTION_SUB_INFO = "lore_question_sub_Dao";
 	public static final String DAO_INVITE_CODE_INFO = "invite_code_Dao";
 	public static final String DAO_NET_TEACHER_BASIC_INFO = "net_teacher_basic_Dao";
+	public static final String DAO_LORE_RELATE_INFO = "lore_relate_Dao";
 }
 

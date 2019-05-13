@@ -59,13 +59,14 @@ public interface LoreRelateDao {
 	void update(Session sess,LoreRelateInfo lr);
 	
 	/**
-	 * 根据知识点编号获取关联的子知识点（学生学习时loreInUse=0，后台查看时loreInUse=-1）
+	 * 根据条件获取关联的子知识点（学生学习时loreInUse=0，后台查看时loreInUse=-1）
 	 * @author wm
 	 * @date 2019-5-7 下午10:38:31 
 	 * @param sess
-	 * @param loreId 知识点编号
+	 * @param loreId 知识点编号（0表示全部）
+	 * @param rootLoreId 子知识点编号（0表示全部）
 	 * @param loreInUse 知识点开启状态（-1表示全部）
 	 * @return
 	 */
-	List<LoreRelateInfo> findIndoByLoreId(Session sess,Integer loreId,Integer loreInUse);
+	List<LoreRelateInfo> findIndoByLoreId(Session sess,Integer loreId,Integer rootLoreId,Integer loreInUse);
 }

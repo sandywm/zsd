@@ -111,15 +111,16 @@ public interface LoreInfoManager {
 	List<LoreInfo> listInfoByMainLoreId(Integer mainLoreId)throws WEBException;
 	
 	/**
-	 * 根据知识点拼音码/名称模糊查询知识点列表
+	 * 根据知识点拼音码/名称、出版社编号模糊查询知识点列表
 	 * @author wm
 	 * @date 2019-5-4 下午11:30:42 
-	 * @param lorePyCode 知识点拼音码
-	 * @param loreName 知识点名称
+	 * @param lorePyCode 知识点拼音码(""不查询)
+	 * @param loreName 知识点名称(""不查询)
+	 * @param ediId 出版社编号(0表示全部)
 	 * @return
 	 * @throws WEBException
 	 */
-	List<LoreInfo> listInfoByLorePyOrName(String lorePyCode,String loreName)throws WEBException;
+	List<LoreInfo> listInfoByLorePyOrName(String lorePyCode,String loreName,Integer ediId)throws WEBException;
 	
 	/**
 	 * 修改指定知识点的编码

@@ -7,12 +7,18 @@ import org.hibernate.Session;
 import com.zsd.dao.LoreRelateDao;
 import com.zsd.module.LoreRelateInfo;
 
+@SuppressWarnings("unchecked")
 public class LoreRelateDaoImpl implements LoreRelateDao{
 
 	@Override
 	public LoreRelateInfo get(Session sess, int id) {
 		// TODO Auto-generated method stub
-		return (LoreRelateInfo) sess.load(LoreRelateInfo.class, id);
+		String hql = " from LoreRelateInfo as lr where lr.id = "+id; 
+		List<LoreRelateInfo> lrList = sess.createQuery(hql).list();
+		if(lrList.size() > 0){
+			return lrList.get(0);
+		}
+		return null;
 	}
 
 	@Override
@@ -39,12 +45,17 @@ public class LoreRelateDaoImpl implements LoreRelateDao{
 		sess.update(lr);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public List<LoreRelateInfo> findIndoByLoreId(Session sess, Integer loreId,
+	public List<LoreRelateInfo> findIndoByLoreId(Session sess, Integer loreId,Integer rootLoreId,
 			Integer loreInUse) {
 		// TODO Auto-generated method stub
-		String hql = " from LoreRelateInfo as lr where lr.loreInfo.id = "+loreId;
+		String hql = " from LoreRelateInfo as lr where 1=1";
+		if(loreId > 0){
+			hql += " and lr.loreInfo.id = "+loreId;
+		}
+		if(rootLoreId > 0){
+			hql += " and lr.rootLoreInfo.id = "+rootLoreId;
+		}
 		if(!loreInUse.equals(-1)){
 			hql += " and lr.loreInfo.inUse = "+loreInUse;
 		}

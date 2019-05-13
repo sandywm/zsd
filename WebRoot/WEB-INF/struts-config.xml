@@ -48,6 +48,10 @@
     <action path="/netTeacher" parameter="action" scope="request" type="com.zsd.action.netteacher.NetTeacherAction">
       <set-property property="cancellable" value="true" />
     </action>
+    <!-- 知识点关联 -->
+    <action path="/loreRelate" parameter="action" scope="request" type="com.zsd.action.loreRelate.LoreRelateAction">
+      <set-property property="cancellable" value="true" />
+    </action>
 
   </action-mappings>
 

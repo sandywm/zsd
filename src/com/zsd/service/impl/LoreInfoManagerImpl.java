@@ -215,16 +215,16 @@ public class LoreInfoManagerImpl implements LoreInfoManager{
 
 	@Override
 	public List<LoreInfo> listInfoByLorePyOrName(String lorePyCode,
-			String loreName) throws WEBException {
+			String loreName,Integer ediId) throws WEBException {
 		// TODO Auto-generated method stub
 		try {
 			lDao = (LoreInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_LORE_INFO);
 			Session sess = HibernateUtil.currentSession();
-			return lDao.findInfoByOpt(sess, lorePyCode, loreName);
+			return lDao.findInfoByOpt(sess, lorePyCode, loreName,ediId);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			throw new WEBException("根据知识点拼音码/名称模糊查询知识点列表时出现异常!");
+			throw new WEBException("根据出版社编号、知识点拼音码/名称模糊查询知识点列表时出现异常!");
 		} finally{
 			HibernateUtil.closeSession();
 		}

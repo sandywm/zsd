@@ -29,7 +29,7 @@ import com.zsd.module.LoreInfo;
 import com.zsd.module.LoreQuestion;
 import com.zsd.module.LoreQuestionSubInfo;
 import com.zsd.page.PageConst;
-import com.zsd.service.ChapterManger;
+import com.zsd.service.ChapterManager;
 import com.zsd.service.EducationManager;
 import com.zsd.service.LoreInfoManager;
 import com.zsd.service.LoreQuestionManager;
@@ -134,7 +134,7 @@ public class LoreAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
 		LoreInfoManager lm = (LoreInfoManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
-		ChapterManger cm = (ChapterManger) AppFactory.instance(null).getApp(Constants.WEB_CHAPTER_INFO);
+		ChapterManager cm = (ChapterManager) AppFactory.instance(null).getApp(Constants.WEB_CHAPTER_INFO);
 		Integer cptId = CommonTools.getFinalInteger("cptId", request);//章节编号
 		Integer ediId = 0;//出版社编号
 		Integer subId = 0;//学科编号
@@ -317,7 +317,7 @@ public class LoreAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
 		LoreInfoManager lm = (LoreInfoManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
-		ChapterManger cm = (ChapterManger) AppFactory.instance(null).getApp(Constants.WEB_CHAPTER_INFO);
+		ChapterManager cm = (ChapterManager) AppFactory.instance(null).getApp(Constants.WEB_CHAPTER_INFO);
 		Integer cptId = CommonTools.getFinalInteger("cptId", request);//章节编号
 		Integer ediId = 0;//出版社编号
 		Integer subId = 0;//学科编号
@@ -1192,6 +1192,53 @@ public class LoreAction extends DispatchAction {
 					msg = "addLast";
 				}
 			}
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 根据知识点拼音编码/名称模糊获取知识点列表（通用版）
+	 * @author wm
+	 * @date 2019-5-13 下午04:36:46
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getLoreList(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		LoreInfoManager lm = (LoreInfoManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
+		String loreName = Transcode.unescape_new1("loreName", request);
+		String loreNamePy = CommonTools.getFinalStr("loreNamePy", request);
+		Integer ediId = CommonTools.getFinalInteger("ediId", request);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "noInfo";
+		List<LoreInfo> lqList = lm.listInfoByLorePyOrName(loreNamePy, loreName,ediId);
+		if(lqList.size() > 0){
+			msg = "success";
+			List<Object> list_d = new ArrayList<Object>();
+			for(Iterator<LoreInfo> it = lqList.iterator() ; it.hasNext();){
+				LoreInfo lore = it.next();
+				Map<String,Object> map_d = new HashMap<String,Object>();
+				Chapter cpt = lore.getChapter();
+				Education edu = cpt.getEducation();
+				GradeSubject gs = edu.getGradeSubject();
+				map_d.put("loreId", lore.getId());//知识点编号
+				map_d.put("loreName", lore.getLoreName());//知识点名称
+				map_d.put("inUse", lore.getInUse().equals(0) ? "启用" : "未启用");//状态
+				map_d.put("ediName", edu.getEdition().getEdiName());//出版社名称
+				map_d.put("cptName", cpt.getChapterName());//章节名称
+				map_d.put("eduName", edu.getEduVolume());//教材
+				map_d.put("subName", gs.getSubject().getSubName());//学科
+				map_d.put("gradeName", gs.getGradeName());//年级
+				list_d.add(map_d);
+			}
+			map.put("loreList", list_d);
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);

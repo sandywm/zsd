@@ -13,7 +13,7 @@ import com.zsd.dao.EducationDao;
 import com.zsd.exception.WEBException;
 import com.zsd.factory.DaoFactory;
 import com.zsd.module.Chapter;
-import com.zsd.service.ChapterManger;
+import com.zsd.service.ChapterManager;
 import com.zsd.tools.HibernateUtil;
 import com.zsd.util.Constants;
 
@@ -25,7 +25,7 @@ import com.zsd.util.Constants;
  *  @date  2019-5-3 下午09:47:13 
  */
 
-public class ChapterManagerImpl implements ChapterManger{
+public class ChapterManagerImpl implements ChapterManager{
 
 	EducationDao eDao = null;
 	ChapterDao cDao = null;

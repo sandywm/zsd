@@ -95,9 +95,10 @@ public interface LoreInfoDao {
 	 * @param sess
 	 * @param lorePyCode 知识点拼音码(""不查)
 	 * @param loreName 知识点名称(""不查)
+	 * @param ediId 出版社编号(0表示全部)
 	 * @return
 	 */
-	List<LoreInfo> findInfoByOpt(Session sess,String lorePyCode,String loreName);
+	List<LoreInfo> findInfoByOpt(Session sess,String lorePyCode,String loreName,Integer ediId);
 	
 	/**
 	 * 获取指定章节下指定知识点名称的知识点信息列表（同一章节下知识点名称不能重名）

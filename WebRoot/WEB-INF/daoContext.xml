@@ -21,5 +21,6 @@
 	<dao id="lore_question_Dao" class="com.zsd.dao.impl.LoreQuestionDaoImpl" />
 	<dao id="lore_question_sub_Dao" class="com.zsd.dao.impl.LoreQuestionSubDaoImpl" />
 	<dao id="invite_code_Dao" class="com.zsd.dao.impl.InviteCodeInfoDaoImpl" />
-	<dao id="net_teacher_basic_Dao" class="com.zsd.module.NetTeacherBasicInfo" />
+	<dao id="net_teacher_basic_Dao" class="com.zsd.dao.impl.NetTeacherInfoDaoImpl" />
+	<dao id="lore_relate_Dao" class="com.zsd.dao.impl.LoreRelateDaoImpl" />
 </daoContext>

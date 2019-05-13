@@ -8,7 +8,7 @@ import java.util.List;
 import com.zsd.exception.WEBException;
 import com.zsd.module.Chapter;
 
-public interface ChapterManger {
+public interface ChapterManager {
 	
 	/**
 	 * 增加章节列表

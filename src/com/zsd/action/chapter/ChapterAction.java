@@ -21,7 +21,7 @@ import com.zsd.action.base.Transcode;
 import com.zsd.factory.AppFactory;
 import com.zsd.module.Chapter;
 import com.zsd.module.Education;
-import com.zsd.service.ChapterManger;
+import com.zsd.service.ChapterManager;
 import com.zsd.service.EducationManager;
 import com.zsd.tools.CommonTools;
 import com.zsd.tools.Convert;
@@ -68,7 +68,7 @@ public class ChapterAction extends DispatchAction {
 	public ActionForward getChapterData(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
-		ChapterManger cm = (ChapterManger) AppFactory.instance(null).getApp(Constants.WEB_CHAPTER_INFO);
+		ChapterManager cm = (ChapterManager) AppFactory.instance(null).getApp(Constants.WEB_CHAPTER_INFO);
 		Integer eduId = CommonTools.getFinalInteger("eduId", request);
 		String msg = "暂无记录";
 		Map<String,Object> map = new HashMap<String,Object>();
@@ -108,7 +108,7 @@ public class ChapterAction extends DispatchAction {
 	public ActionForward getSpecChapterData(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
-		ChapterManger cm = (ChapterManger) AppFactory.instance(null).getApp(Constants.WEB_CHAPTER_INFO);
+		ChapterManager cm = (ChapterManager) AppFactory.instance(null).getApp(Constants.WEB_CHAPTER_INFO);
 		Integer eduId = CommonTools.getFinalInteger("eduId", request);
 		String msg = "noInfo";
 		Map<String,Object> map = new HashMap<String,Object>();
@@ -148,7 +148,7 @@ public class ChapterAction extends DispatchAction {
 	public ActionForward addChapterData(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
-		ChapterManger cm = (ChapterManger) AppFactory.instance(null).getApp(Constants.WEB_CHAPTER_INFO);
+		ChapterManager cm = (ChapterManager) AppFactory.instance(null).getApp(Constants.WEB_CHAPTER_INFO);
 		Integer eduId = CommonTools.getFinalInteger("eduId", request);
 		String cptName = Transcode.unescape_new("cptName", request);//第##单元:章节名称
 		Integer cptOrder = CommonTools.getFinalInteger("cptOrder", request);
@@ -181,7 +181,7 @@ public class ChapterAction extends DispatchAction {
 	public ActionForward getChapterDetail(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
-		ChapterManger cm = (ChapterManger) AppFactory.instance(null).getApp(Constants.WEB_CHAPTER_INFO);
+		ChapterManager cm = (ChapterManager) AppFactory.instance(null).getApp(Constants.WEB_CHAPTER_INFO);
 		Integer cptId = CommonTools.getFinalInteger("cptId", request);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "noInfo";
@@ -217,7 +217,7 @@ public class ChapterAction extends DispatchAction {
 	public ActionForward updateChapterData(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
-		ChapterManger cm = (ChapterManger) AppFactory.instance(null).getApp(Constants.WEB_CHAPTER_INFO);
+		ChapterManager cm = (ChapterManager) AppFactory.instance(null).getApp(Constants.WEB_CHAPTER_INFO);
 		Integer cptId = CommonTools.getFinalInteger("cptId", request);
 		String cptName = Transcode.unescape_new("cptName", request);//第##单元:章节名称
 		Integer cptOrder = CommonTools.getFinalInteger("cptOrder", request);
@@ -260,7 +260,7 @@ public class ChapterAction extends DispatchAction {
 	public ActionForward getCurrentMaxOrder(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
-		ChapterManger cm = (ChapterManger) AppFactory.instance(null).getApp(Constants.WEB_CHAPTER_INFO);
+		ChapterManager cm = (ChapterManager) AppFactory.instance(null).getApp(Constants.WEB_CHAPTER_INFO);
 		Integer eduId = CommonTools.getFinalInteger("eduId", request);
 		List<Chapter> cList = cm.ListInfoByEduId(eduId);
 		Integer currentOrder = 1;
