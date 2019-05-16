@@ -153,5 +153,12 @@ public interface LoreInfoManager {
 	 */
 	List<LoreInfo> listAllInfo()throws WEBException;
 	
+	/**
+	 * 自动修改列表中的知识点编号和拼音码
+	 * @author wm
+	 * @date 2019-5-16 下午05:40:14
+	 * @param lList
+	 * @throws WEBException
+	 */
 	void updateBatchLoreCode(List<LoreInfo> lList)throws WEBException;
 }

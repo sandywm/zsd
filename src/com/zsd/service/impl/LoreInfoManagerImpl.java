@@ -300,16 +300,15 @@ public class LoreInfoManagerImpl implements LoreInfoManager{
 			tran = sess.beginTransaction();
 			for(Integer i = 0 ; i < lList.size() ; i++){
 				LoreInfo lore = lList.get(i);
-				Integer loreId = lore.getId();
+				String lorePyCode = Convert.getFirstSpell(lore.getLoreName());
 				Integer cptOrder = lore.getChapter().getChapterOrder();
 				Integer loreOrder = lore.getLoreOrder();
 				Education edu = lore.getChapter().getEducation();
 				GradeSubject gs = edu.getGradeSubject();
 				Integer subId = gs.getSubject().getId();
-				String gradeName = gs.getGradeName();
+				String gradeCode = Convert.ChineseConvertNumber(gs.getGradeName());
 				String eduVolume = edu.getEduVolume();
 				Integer ediId = edu.getEdition().getId();
-				String gradeCode = "";//年级号
 				String subIdCode = "";
 				if(subId < 10){
 					subIdCode = "0" + subId;
@@ -341,7 +340,17 @@ public class LoreInfoManagerImpl implements LoreInfoManager{
 					loreOrderCode = "0" + loreOrder;
 				}
 				String loreCode = subIdCode + "-" + paraCode + "-" + gradeCode + "-" + eduVolumeCode + "-" + ediIdCode + "-" + cptOrderCode + "-" + loreOrderCode;
+				lore.setLorePyCode(lorePyCode);
+				lore.setLoreCode(loreCode);
+				lDao.update(sess, lore);
+				if(i % 10 == 0){//批插入的对象立即写入数据库并释放内存
+					sess.flush();
+					sess.clear();
+					tran.commit();
+					tran = sess.beginTransaction();
+				}
 			}
+			tran.commit();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

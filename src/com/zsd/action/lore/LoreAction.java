@@ -398,7 +398,7 @@ public class LoreAction extends DispatchAction {
 	}
 	
 	/**
-	 * 自动修改全部知识点的编码
+	 * 自动修改列表中的知识点编号和拼音码
 	 * @author wm
 	 * @date 2019-5-16 下午04:48:32
 	 * @param mapping
@@ -412,10 +412,10 @@ public class LoreAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		LoreInfoManager lm = (LoreInfoManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
 		List<LoreInfo>  lList = lm.listAllInfo();
-		for(Iterator<LoreInfo> it = lList.iterator() ; it.hasNext();){
-			LoreInfo lore = it.next();
-			
-		}
+		lm.updateBatchLoreCode(lList);
+		Map<String,String> map = new HashMap<String,String>();
+		map.put("result", "success");
+		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
 	
