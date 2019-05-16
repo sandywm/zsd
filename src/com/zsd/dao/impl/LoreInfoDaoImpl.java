@@ -112,4 +112,24 @@ public class LoreInfoDaoImpl implements LoreInfoDao{
 		return sess.createQuery(hql).list();
 	}
 
+	@Override
+	public LoreInfo getLoreInfoByOpt(Session sess, Integer mainLoreId,
+			Integer ediId) {
+		// TODO Auto-generated method stub
+		String hql =  " from LoreInfo as lore where  lore.mainLoreId = "+mainLoreId;
+		hql += " and lore.chapter.education.edition.id = "+ediId;
+		List<LoreInfo> loreList = sess.createQuery(hql).list();
+		if(loreList.size() > 0){
+			return loreList.get(0);
+		}
+		return null;
+	}
+
+	@Override
+	public List<LoreInfo> findAllInfo(Session sess) {
+		// TODO Auto-generated method stub
+		String hql =  " from LoreInfo as lore";
+		return sess.createQuery(hql).list();
+	}
+
 }

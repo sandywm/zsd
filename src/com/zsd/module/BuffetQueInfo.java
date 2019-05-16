@@ -13,8 +13,8 @@ public class BuffetQueInfo implements java.io.Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	private Integer id;
+	private BuffetTypeInfo buffetTypeInfo;
 	private LoreInfo loreInfo;
-	private Integer typeNo;
 	private Integer buffetNum;
 	private String title;
 	private String subject;
@@ -23,8 +23,6 @@ public class BuffetQueInfo implements java.io.Serializable {
 	private Integer tips;
 	private String resolution;
 	private String queType;
-	private String abilityNo;
-	private String mindNo;
 	private Integer order;
 	private String a;
 	private String b;
@@ -42,29 +40,14 @@ public class BuffetQueInfo implements java.io.Serializable {
 	public BuffetQueInfo() {
 	}
 
-	/** minimal constructor */
-	public BuffetQueInfo(LoreInfo loreInfo, Integer typeNo, Integer buffetNum,
-			String title, String abilityNo, String mindNo, Integer order,
-			Integer inUse) {
-		this.loreInfo = loreInfo;
-		this.typeNo = typeNo;
-		this.buffetNum = buffetNum;
-		this.title = title;
-		this.abilityNo = abilityNo;
-		this.mindNo = mindNo;
-		this.order = order;
-		this.inUse = inUse;
-	}
-
 	/** full constructor */
-	public BuffetQueInfo(LoreInfo loreInfo, Integer typeNo, Integer buffetNum,
+	public BuffetQueInfo(BuffetTypeInfo buffetTypeInfo,LoreInfo loreInfo, Integer buffetNum,
 			String title, String subject, String answer, Integer lexId,
-			Integer tips, String resolution, String queType, String abilityNo,
-			String mindNo, Integer order, String a, String b, String c,
+			Integer tips, String resolution, String queType, Integer order, String a, String b, String c,
 			String d, String e, String f, Integer inUse,
 			String operateUserName, String operateDate) {
+		this.buffetTypeInfo = buffetTypeInfo;
 		this.loreInfo = loreInfo;
-		this.typeNo = typeNo;
 		this.buffetNum = buffetNum;
 		this.title = title;
 		this.subject = subject;
@@ -73,8 +56,6 @@ public class BuffetQueInfo implements java.io.Serializable {
 		this.tips = tips;
 		this.resolution = resolution;
 		this.queType = queType;
-		this.abilityNo = abilityNo;
-		this.mindNo = mindNo;
 		this.order = order;
 		this.a = a;
 		this.b = b;
@@ -104,15 +85,6 @@ public class BuffetQueInfo implements java.io.Serializable {
 	public void setLoreInfo(LoreInfo loreInfo) {
 		this.loreInfo = loreInfo;
 	}
-
-	public Integer getTypeNo() {
-		return this.typeNo;
-	}
-
-	public void setTypeNo(Integer typeNo) {
-		this.typeNo = typeNo;
-	}
-
 
 	public Integer getBuffetNum() {
 		return buffetNum;
@@ -176,22 +148,6 @@ public class BuffetQueInfo implements java.io.Serializable {
 
 	public void setQueType(String queType) {
 		this.queType = queType;
-	}
-
-	public String getAbilityNo() {
-		return this.abilityNo;
-	}
-
-	public void setAbilityNo(String abilityNo) {
-		this.abilityNo = abilityNo;
-	}
-
-	public String getMindNo() {
-		return this.mindNo;
-	}
-
-	public void setMindNo(String mindNo) {
-		this.mindNo = mindNo;
 	}
 
 	public Integer getOrder() {
@@ -272,6 +228,14 @@ public class BuffetQueInfo implements java.io.Serializable {
 
 	public void setOperateDate(String operateDate) {
 		this.operateDate = operateDate;
+	}
+
+	public BuffetTypeInfo getBuffetTypeInfo() {
+		return buffetTypeInfo;
+	}
+
+	public void setBuffetTypeInfo(BuffetTypeInfo buffetTypeInfo) {
+		this.buffetTypeInfo = buffetTypeInfo;
 	}
 
 }

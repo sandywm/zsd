@@ -130,4 +130,24 @@ public interface LoreInfoDao {
 	 * @return
 	 */
 	List<LoreInfo> findInfoByMainLoreId(Session sess,Integer mainLoreId);
+	
+	/**
+	 * 根据引用知识点编号（通用版），其他出版社获取知识点
+	 * @author wm
+	 * @date 2019-5-16 上午09:09:20
+	 * @param sess
+	 * @param mainLoreId 引用知识点编号（通用版）
+	 * @param ediId 其他出版社编号（通用版除外）
+	 * @return
+	 */
+	LoreInfo getLoreInfoByOpt(Session sess,Integer mainLoreId,Integer ediId);
+	
+	/**
+	 * 获取全部数据（自动修改编码时用）
+	 * @author wm
+	 * @date 2019-5-16 下午04:50:01
+	 * @param sess
+	 * @return
+	 */
+	List<LoreInfo> findAllInfo(Session sess);
 }

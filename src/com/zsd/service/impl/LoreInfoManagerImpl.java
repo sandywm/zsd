@@ -10,6 +10,8 @@ import com.zsd.dao.LoreInfoDao;
 import com.zsd.exception.WEBException;
 import com.zsd.factory.DaoFactory;
 import com.zsd.module.Chapter;
+import com.zsd.module.Education;
+import com.zsd.module.GradeSubject;
 import com.zsd.module.LoreInfo;
 import com.zsd.service.LoreInfoManager;
 import com.zsd.tools.Convert;
@@ -246,6 +248,100 @@ public class LoreInfoManagerImpl implements LoreInfoManager{
 				return true;
 			}
 			return false;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new WEBException("修改知识点的编码时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public LoreInfo getLoreInfoByOpt(Integer mainLoreId, Integer ediId)
+			throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			lDao = (LoreInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_LORE_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return lDao.getLoreInfoByOpt(sess, mainLoreId, ediId);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new WEBException("根据引用知识点编号（通用版），其他出版社获取知识点时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public List<LoreInfo> listAllInfo() throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			lDao = (LoreInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_LORE_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return lDao.findAllInfo(sess);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new WEBException("获取全部数据（自动修改编码时用）--其他任何时候不要调用时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public  void updateBatchLoreCode(List<LoreInfo> lList)
+			throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			lDao = (LoreInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_LORE_INFO);
+			Session sess = HibernateUtil.currentSession();
+			tran = sess.beginTransaction();
+			for(Integer i = 0 ; i < lList.size() ; i++){
+				LoreInfo lore = lList.get(i);
+				Integer loreId = lore.getId();
+				Integer cptOrder = lore.getChapter().getChapterOrder();
+				Integer loreOrder = lore.getLoreOrder();
+				Education edu = lore.getChapter().getEducation();
+				GradeSubject gs = edu.getGradeSubject();
+				Integer subId = gs.getSubject().getId();
+				String gradeName = gs.getGradeName();
+				String eduVolume = edu.getEduVolume();
+				Integer ediId = edu.getEdition().getId();
+				String gradeCode = "";//年级号
+				String subIdCode = "";
+				if(subId < 10){
+					subIdCode = "0" + subId;
+				}
+				String paraCode = "";//学段号
+				Integer gradeNum = Integer.parseInt(gradeCode);
+				if(gradeNum < 7){
+					paraCode = "01";
+				}else if(gradeNum >= 7 && gradeNum <= 9){
+					paraCode = "02";
+				}else{
+					paraCode = "03";
+				}
+				String eduVolumeCode = "02";//教材编号
+				if(eduVolume.equals("上册")){
+					eduVolumeCode = "01";
+				}
+				
+				String ediIdCode = "";//出版社号
+				if(ediId < 10){
+					ediIdCode = "0" + ediId;
+				}
+				String cptOrderCode = "";//章节排序号
+				if(cptOrder < 10){
+					cptOrderCode = "0" + cptOrder;
+				}
+				String loreOrderCode = "";
+				if(loreOrder < 10){
+					loreOrderCode = "0" + loreOrder;
+				}
+				String loreCode = subIdCode + "-" + paraCode + "-" + gradeCode + "-" + eduVolumeCode + "-" + ediIdCode + "-" + cptOrderCode + "-" + loreOrderCode;
+			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

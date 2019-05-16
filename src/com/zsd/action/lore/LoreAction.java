@@ -18,6 +18,8 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.zsd.tools.FileOpration;
 import com.zsd.util.WebUrl;
 import com.zsd.action.base.Transcode;
@@ -136,6 +138,7 @@ public class LoreAction extends DispatchAction {
 		LoreInfoManager lm = (LoreInfoManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
 		ChapterManager cm = (ChapterManager) AppFactory.instance(null).getApp(Constants.WEB_CHAPTER_INFO);
 		Integer cptId = CommonTools.getFinalInteger("cptId", request);//章节编号
+		Integer cptOrder = 0;
 		Integer ediId = 0;//出版社编号
 		Integer subId = 0;//学科编号
 		String gradeName = "";
@@ -150,6 +153,7 @@ public class LoreAction extends DispatchAction {
 			Chapter c = cm.getEntityById(cptId);
 			if(c != null){
 				msg = "success";
+				cptOrder = c.getChapterOrder();
 				Education edu = c.getEducation();
 				ediId = edu.getEdition().getId();
 				subId = edu.getGradeSubject().getSubject().getId();
@@ -177,9 +181,9 @@ public class LoreAction extends DispatchAction {
 				if(ediId < 10){
 					ediIdCode = "0" + ediId;
 				}
-				String cptIdCode = "";//章节号
-				if(cptId < 10){
-					cptIdCode = "0" + cptId;
+				String cptOrderCode = "";//章节号
+				if(cptOrder < 10){
+					cptOrderCode = "0" + cptOrder;
 				}
 				String loreOrderCode = "";//知识点顺序
 				Integer loreOrder = lm.getCurrentMaxOrderByCptId(cptId);
@@ -187,7 +191,7 @@ public class LoreAction extends DispatchAction {
 					loreOrderCode = "0" + loreOrder;
 				}
 				
-				String loreCode = subIdCode + "-" + paraCode + "-" + gradeCode + "-" + eduVolumeCode + "-" + ediIdCode + "-" + cptIdCode + "-" + loreOrderCode;
+				String loreCode = subIdCode + "-" + paraCode + "-" + gradeCode + "-" + eduVolumeCode + "-" + ediIdCode + "-" + cptOrderCode + "-" + loreOrderCode;
 				lm.addLore(cptId, loreName, Convert.getFirstSpell(loreName), loreOrder, 0, loreCode);
 				
 			}
@@ -321,6 +325,7 @@ public class LoreAction extends DispatchAction {
 		Integer cptId = CommonTools.getFinalInteger("cptId", request);//章节编号
 		Integer ediId = 0;//出版社编号
 		Integer subId = 0;//学科编号
+		Integer cptOrder = 0;//章节排序号
 		String gradeName = "";
 		String gradeCode = "";//年级号
 		String eduVolume = "";
@@ -332,6 +337,7 @@ public class LoreAction extends DispatchAction {
 			msg = "success";
 			Chapter c = cm.getEntityById(cptId);
 			if(c != null){
+				cptOrder = c.getChapterOrder();
 				Education edu = c.getEducation();
 				ediId = edu.getEdition().getId();
 				subId = edu.getGradeSubject().getSubject().getId();
@@ -359,9 +365,9 @@ public class LoreAction extends DispatchAction {
 				if(ediId < 10){
 					ediIdCode = "0" + ediId;
 				}
-				String cptIdCode = "";//章节号
-				if(cptId < 10){
-					cptIdCode = "0" + cptId;
+				String cptOrderCode = "";//章节排序号
+				if(cptOrder < 10){
+					cptOrderCode = "0" + cptOrder;
 				}
 				List<Object> list_d = new ArrayList<Object>();
 				for(Iterator<LoreInfo> it = loreList.iterator() ; it.hasNext();){
@@ -372,7 +378,7 @@ public class LoreAction extends DispatchAction {
 					if(loreOrder < 10){
 						loreOrderCode = "0" + loreOrder;
 					}
-					String loreCode = subIdCode + "-" + paraCode + "-" + gradeCode + "-" + eduVolumeCode + "-" + ediIdCode + "-" + cptIdCode + "-" + loreOrderCode;
+					String loreCode = subIdCode + "-" + paraCode + "-" + gradeCode + "-" + eduVolumeCode + "-" + ediIdCode + "-" + cptOrderCode + "-" + loreOrderCode;
 					Boolean flag = lm.updateLoreCodeById(lore.getId(), loreCode);
 					if(flag){
 						map_d.put("codeResult", "succ");
@@ -388,6 +394,28 @@ public class LoreAction extends DispatchAction {
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 自动修改全部知识点的编码
+	 * @author wm
+	 * @date 2019-5-16 下午04:48:32
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward updateBatchLoreCode_all(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		LoreInfoManager lm = (LoreInfoManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
+		List<LoreInfo>  lList = lm.listAllInfo();
+		for(Iterator<LoreInfo> it = lList.iterator() ; it.hasNext();){
+			LoreInfo lore = it.next();
+			
+		}
 		return null;
 	}
 	
@@ -554,6 +582,7 @@ public class LoreAction extends DispatchAction {
 				map_d.put("lqAnswer", lq.getQueAnswer());
 				map_d.put("lqResolution", lq.getQueResolution());
 				map_d.put("lqType", loreType);
+				list_d.add(map_d);
 				map.put("listIfo", list_d);
 			}else if(loreType.equals("知识讲解")){
 				Map<String,Object> map_d = new HashMap<String,Object>();
@@ -562,6 +591,7 @@ public class LoreAction extends DispatchAction {
 				map_d.put("lqSub", lq.getQueSub());
 				map_d.put("lqAnswer", lq.getQueAnswer());
 				map_d.put("lqType", loreType);
+				list_d.add(map_d);
 				map.put("listIfo", list_d);
 			}else{//巩固训练，针对性诊断，再次诊断
 				Map<String,Object> map_d = new HashMap<String,Object>();
@@ -631,6 +661,7 @@ public class LoreAction extends DispatchAction {
 					}
 				}
 				map_d.put("lqType", loreType);
+				list_d.add(map_d);
 				map.put("listIfo", list_d);
 			}
 		}
@@ -1239,6 +1270,109 @@ public class LoreAction extends DispatchAction {
 				list_d.add(map_d);
 			}
 			map.put("loreList", list_d);
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 导向生成其他版本知识点页面
+	 * @author wm
+	 * @date 2019-5-14 上午08:50:00
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward goNewEdiLorePage(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		return mapping.findForward("newEdiLorePage");
+	}
+	
+	/**
+	 * 增加其他版本知识点目录
+	 * @author wm
+	 * @date 2019-5-14 上午08:52:17
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward addNewEdiLoreCatalog(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		LoreInfoManager lm = (LoreInfoManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
+		ChapterManager cm = (ChapterManager) AppFactory.instance(null).getApp(Constants.WEB_CHAPTER_INFO);
+		Map<String,String> map = new HashMap<String,String>();
+		Integer cptId = CommonTools.getFinalInteger("cptId", request);
+		String loreCatalogNameStr = Transcode.unescape_new1("loreCatalogNameStr", request);
+		String msg = "error";
+		Integer cptOrder = 0;
+		Integer ediId = 0;
+		Integer subId = 0;
+		String subIdCode = "";
+		String gradeName = "";
+		String gradeCode = "";
+		String eduVolume = "";
+		String loreCode = "";
+		String loreOrderCode = "";//知识点顺序
+		if(cptId > 0 && !loreCatalogNameStr.equals("")){
+			Integer loreOrder = lm.getCurrentMaxOrderByCptId(cptId);
+			Chapter c = cm.getEntityById(cptId);
+			if(c != null){
+				msg = "success";
+				cptOrder = c.getChapterOrder();
+				Education edu = c.getEducation();
+				ediId = edu.getEdition().getId();
+				subId = edu.getGradeSubject().getSubject().getId();
+				gradeName = edu.getGradeSubject().getGradeName();
+				gradeCode = Convert.ChineseConvertNumber(gradeName);
+				eduVolume = edu.getEduVolume();
+				if(subId < 10){
+					subIdCode = "0" + subId;
+				}
+				String paraCode = "";//学段号
+				Integer gradeNum = Integer.parseInt(gradeCode);
+				if(gradeNum < 7){
+					paraCode = "01";
+				}else if(gradeNum >= 7 && gradeNum <= 9){
+					paraCode = "02";
+				}else{
+					paraCode = "03";
+				}
+				String eduVolumeCode = "02";//教材编号
+				if(eduVolume.equals("上册")){
+					eduVolumeCode = "01";
+				}
+				
+				String ediIdCode = "";//出版社号
+				if(ediId < 10){
+					ediIdCode = "0" + ediId;
+				}
+				String cptOrderCode = "";//章节号
+				if(cptOrder < 10){
+					cptOrderCode = "0" + cptOrder;
+				}
+				JSONArray loreCatalogArray = JSON.parseArray(loreCatalogNameStr);
+				for(int i = 0 ; i < loreCatalogArray.size() ; i++){
+					loreOrder += i;
+					if(loreOrder < 10){
+						loreOrderCode = "0" + loreOrder;
+					}
+					loreCode = subIdCode + "-" + paraCode + "-" + gradeCode + "-" + eduVolumeCode + "-" + ediIdCode + "-" + cptOrderCode + "-" + loreOrderCode;
+					String[] newLoreCatalogNameArray = loreCatalogArray.get(i).toString().split(",");//格式loreName,loreId
+					String newLoreCatalogName = newLoreCatalogNameArray[0];
+					Integer quoteLoreId = Integer.parseInt(newLoreCatalogNameArray[1]);
+					//增加知识点目录
+					lm.addLore(cptId, newLoreCatalogName, Convert.getFirstSpell(newLoreCatalogName), loreOrder, quoteLoreId, loreCode);
+				}
+			}
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);

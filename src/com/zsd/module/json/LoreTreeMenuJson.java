@@ -59,13 +59,27 @@ public class LoreTreeMenuJson {
 				attributes.put("loreName", loreName);
 				node2.setAttributes(attributes);
 				node2.setState("open");
+				if(ediId > 1){//如果是其他版本
+					loreId = lore.getMainLoreId();//获取被引用的通用版知识点
+				}
 				//根据知识点编号获取下级关联
 				List<LoreRelateInfo> lrList = lrm.listRelateInfoByOpt(loreId, 0, -1);
 				for(Iterator<LoreRelateInfo> it3 = lrList.iterator();it3.hasNext();){
 					List<MyTreeNode> tree3 = new ArrayList<MyTreeNode>();
 					LoreRelateInfo lr = it3.next();
 					Integer rootLoreId = lr.getRootLoreInfo().getId();
-					String rootLoreName = lr.getRootLoreInfo().getLoreName();
+					String rootLoreName = "";
+					if(ediId > 1){//其他版本
+						LoreInfo lore_root_other = lm.getLoreInfoByOpt(rootLoreId, ediId);//通过通用版知识点获取其他出版社下的知识点
+						if(lore_root_other != null){
+							rootLoreId = lore_root_other.getId();
+							rootLoreName = lore_root_other.getLoreName();
+						}else{
+							continue;
+						}
+					}else{//通用版
+						rootLoreName = lr.getRootLoreInfo().getLoreName();
+					}
 					MyTreeNode node3 = new MyTreeNode();
 					node3.setId(rootLoreId);
 					node3.setText(rootLoreName);

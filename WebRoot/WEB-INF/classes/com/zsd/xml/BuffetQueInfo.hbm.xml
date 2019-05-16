@@ -10,16 +10,16 @@
             <column name="id" />
             <generator class="native" />
         </id>
+        <many-to-one name="buffetTypeInfo" class="com.zsd.module.BuffetTypeInfo" lazy="false">
+            <column name="bt_id" not-null="true">
+                <comment>自助餐类型编号</comment>
+            </column>
+        </many-to-one>
         <many-to-one name="loreInfo" class="com.zsd.module.LoreInfo" lazy="false">
             <column name="lore_id" not-null="true">
                 <comment>知识点名称</comment>
             </column>
         </many-to-one>
-        <property name="typeNo" type="java.lang.Integer">
-            <column name="type_no" not-null="true">
-                <comment>自助餐类型编号（1-6）</comment>
-            </column>
-        </property>
         <property name="buffetNum" type="java.lang.Integer">
             <column name="buffet_num" not-null="true">
                 <comment>题库顺序（每个类型下从1开始）</comment>
@@ -58,16 +58,6 @@
         <property name="queType" type="java.lang.String">
             <column name="que_type" length="30">
                 <comment>题型一</comment>
-            </column>
-        </property>
-        <property name="abilityNo" type="java.lang.String">
-            <column name="ability_no" length="50" not-null="true">
-                <comment>能力类型</comment>
-            </column>
-        </property>
-        <property name="mindNo" type="java.lang.String">
-            <column name="mind_no" length="50" not-null="true">
-                <comment>思维类型</comment>
             </column>
         </property>
         <property name="order" type="java.lang.Integer">

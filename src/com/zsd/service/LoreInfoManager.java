@@ -133,4 +133,25 @@ public interface LoreInfoManager {
 	 */
 	boolean updateLoreCodeById(Integer loreId,String loreCode)throws WEBException;
 	
+	/**
+	 * 根据引用知识点编号（通用版），其他出版社获取知识点
+	 * @author wm
+	 * @date 2019-5-16 上午09:13:55
+	 * @param mainLoreId mainLoreId 引用知识点编号（通用版）
+	 * @param ediId ediId 其他出版社编号（通用版除外）
+	 * @return
+	 * @throws WEBException
+	 */
+	LoreInfo getLoreInfoByOpt(Integer mainLoreId,Integer ediId)throws WEBException;
+	
+	/**
+	 * 获取全部数据（自动修改编码时用）--其他任何时候不要调用
+	 * @author wm
+	 * @date 2019-5-16 下午04:51:18
+	 * @return
+	 * @throws WEBException
+	 */
+	List<LoreInfo> listAllInfo()throws WEBException;
+	
+	void updateBatchLoreCode(List<LoreInfo> lList)throws WEBException;
 }
