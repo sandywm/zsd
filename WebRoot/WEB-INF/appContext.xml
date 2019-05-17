@@ -22,4 +22,7 @@
 	<app id="invite_code_Web" class="com.zsd.service.impl.InviteCodeInfoManagerImpl"/>
 	<app id="net_teacher_basic_Web" class="com.zsd.service.impl.NetTeacherBasicInfoManagerImpl"/>
 	<app id="lore_relate_Web" class="com.zsd.service.impl.LoreRelateManagerImpl"/>
+	<app id="buffet_all_Web" class="com.zsd.service.impl.BuffetAllManagerImpl"/>
+	<app id="buffet_que_Web" class="com.zsd.service.impl.BuffetQueManagerImpl"/>
+	<app id="buffet_lore_relate_Web" class="com.zsd.service.impl.BuffetLoreRelateManagerImpl"/>
 </appContext>

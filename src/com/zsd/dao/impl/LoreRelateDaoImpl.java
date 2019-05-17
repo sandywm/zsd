@@ -59,8 +59,10 @@ public class LoreRelateDaoImpl implements LoreRelateDao{
 		if(!loreInUse.equals(-1)){
 			hql += " and lr.loreInfo.inUse = "+loreInUse;
 		}
-		if(!orderOpt.equals("")){
-			hql += " order by '"+orderOpt+"'";
+		if(orderOpt.equals("asc")){
+			hql += " order by lr.rootLoreInfo.loreCode asc";
+		}else if(orderOpt.equals("desc")){
+			hql += " order by lr.rootLoreInfo.loreCode desc";
 		}
 		return sess.createQuery(hql).list();
 	}

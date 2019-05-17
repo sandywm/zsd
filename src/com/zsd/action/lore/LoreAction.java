@@ -825,7 +825,7 @@ public class LoreAction extends DispatchAction {
 				String answerD = Transcode.unescape_new1("answerD", request);
 				String answerE = Transcode.unescape_new1("answerE", request);
 				String answerF = Transcode.unescape_new1("answerF", request);
-				String queAnswer = Transcode.unescape_new1("queAnswer", request);//答案，多个用&zsd&
+				String queAnswer = Transcode.unescape_new1("queAnswer", request);//答案，多个用逗号隔开
 				String queResolution = Transcode.unescape_new1("queResolution", request);//解析
 				lqm.updateLoreQuestion(lqId, queSub, queAnswer, queTipId, lexId, queResolution, queType, queType2, 
 						answerA, answerB, answerC, answerD, answerE, answerF, operateUserName, CurrentTime.getCurrentTime());
