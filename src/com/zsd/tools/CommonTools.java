@@ -10,6 +10,13 @@ import java.net.InetAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -397,9 +404,6 @@ public class CommonTools {
 
 	
 	public static void main(String[] args){
-		String aa = "Module\\commonJs\\ueditor\\jsp\\video\\aa.mp4";
-		String bb = aa.replace("\\", "/");
-		Double cc = 0.0;
-			System.out.println(cc.equals(0));
+		
 	}
 }

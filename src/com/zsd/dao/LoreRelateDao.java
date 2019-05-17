@@ -66,7 +66,8 @@ public interface LoreRelateDao {
 	 * @param loreId 知识点编号（0表示全部）
 	 * @param rootLoreId 子知识点编号（0表示全部）
 	 * @param loreInUse 知识点开启状态（-1表示全部）
+	 * @param orderOpt 知识点编码排序状态（asc,desc）""表示无
 	 * @return
 	 */
-	List<LoreRelateInfo> findIndoByLoreId(Session sess,Integer loreId,Integer rootLoreId,Integer loreInUse);
+	List<LoreRelateInfo> findIndoByLoreId(Session sess,Integer loreId,Integer rootLoreId,Integer loreInUse,String orderOpt);
 }

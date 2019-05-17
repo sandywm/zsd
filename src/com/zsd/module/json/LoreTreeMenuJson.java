@@ -63,7 +63,7 @@ public class LoreTreeMenuJson {
 					loreId = lore.getMainLoreId();//获取被引用的通用版知识点
 				}
 				//根据知识点编号获取下级关联
-				List<LoreRelateInfo> lrList = lrm.listRelateInfoByOpt(loreId, 0, -1);
+				List<LoreRelateInfo> lrList = lrm.listRelateInfoByOpt(loreId, 0, -1,"desc");
 				for(Iterator<LoreRelateInfo> it3 = lrList.iterator();it3.hasNext();){
 					List<MyTreeNode> tree3 = new ArrayList<MyTreeNode>();
 					LoreRelateInfo lr = it3.next();

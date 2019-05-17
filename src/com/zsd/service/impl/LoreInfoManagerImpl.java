@@ -330,16 +330,22 @@ public class LoreInfoManagerImpl implements LoreInfoManager{
 				String ediIdCode = "";//出版社号
 				if(ediId < 10){
 					ediIdCode = "0" + ediId;
+				}else{
+					ediIdCode = String.valueOf(ediId);
 				}
 				String cptOrderCode = "";//章节排序号
 				if(cptOrder < 10){
 					cptOrderCode = "0" + cptOrder;
+				}else{
+					cptOrderCode = String.valueOf(cptOrder);
 				}
 				String loreOrderCode = "";
 				if(loreOrder < 10){
 					loreOrderCode = "0" + loreOrder;
+				}else{
+					loreOrderCode = String.valueOf(loreOrder);
 				}
-				String loreCode = subIdCode + "-" + paraCode + "-" + gradeCode + "-" + eduVolumeCode + "-" + ediIdCode + "-" + cptOrderCode + "-" + loreOrderCode;
+				String loreCode = subIdCode + "-" + ediIdCode + "-" + paraCode + "-" + gradeCode + "-" + eduVolumeCode + "-"  + cptOrderCode + "-" + loreOrderCode;
 				lore.setLorePyCode(lorePyCode);
 				lore.setLoreCode(loreCode);
 				lDao.update(sess, lore);

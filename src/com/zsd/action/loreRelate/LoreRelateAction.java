@@ -76,7 +76,7 @@ public class LoreRelateAction extends DispatchAction {
 	}
 	
 	/**
-	 * 显示指定知识点的关联知识点(通用版)
+	 * 显示指定知识点的关联知识点(通用版可修改，其他版本只能查看)
 	 * @author wm
 	 * @date 2019-5-13 上午11:18:12
 	 * @param mapping
@@ -91,27 +91,44 @@ public class LoreRelateAction extends DispatchAction {
 		// TODO Auto-generated method stub
 		LoreRelateManager lrm = (LoreRelateManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_RELATE_INFO);
 		LoreInfoManager lm = (LoreInfoManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
-		Integer loreId = Integer.parseInt(request.getParameter("loreId"));
-		List<LoreRelateInfo> lrList = lrm.listRelateInfoByOpt(loreId, 0, -1);
+		Integer loreId = CommonTools.getFinalInteger("loreId", request);
+		String orderOpt = CommonTools.getFinalStr("orderOpt", request);//asc,desc
 		String msg = "noInfo";
 		Map<String,Object> map = new HashMap<String,Object>();
 		LoreInfo lore = lm.getEntityById(loreId);
 		if(lore != null){
+			Integer mainLoreId = lore.getMainLoreId();
+			Integer ediId = lore.getChapter().getEducation().getEdition().getId();
+			if(mainLoreId > 0){//其他出版社的知识点,通用版的知识点mainLoreId=0
+				//获取该知识点的通用版的知识点
+				loreId = mainLoreId;
+			}
 			msg = "success";
+			List<LoreRelateInfo> lrList = lrm.listRelateInfoByOpt(loreId, 0, -1,orderOpt);
 			if(lrList.size() > 0){
 				List<Object> list_d = new ArrayList<Object>();
 				for(Iterator<LoreRelateInfo> it = lrList.iterator() ; it.hasNext();){
 					LoreRelateInfo lr = it.next();
 					Map<String,Object> map_d = new HashMap<String,Object>();
-					map_d.put("lrId", lr.getId());
-					map_d.put("rootLoreName", lr.getRootLoreInfo().getLoreName());
-					list_d.add(map_d);
+					if(mainLoreId > 0){
+						Integer rootLoreId_ty = lr.getRootLoreInfo().getId();
+						LoreInfo lore_temp = lm.getLoreInfoByOpt(rootLoreId_ty, ediId);
+						if(lore_temp != null){
+							map_d.put("lrId", lr.getId());
+							map_d.put("rootLoreName", lore_temp.getLoreName());
+							list_d.add(map_d);
+						}
+					}else{
+						map_d.put("lrId", lr.getId());
+						map_d.put("rootLoreName", lr.getRootLoreInfo().getLoreName());
+						list_d.add(map_d);
+					}
 				}
 				map.put("lrList", list_d);
 			}
+			map.put("loreId", lore.getId());
+			map.put("loreName", lore.getLoreName());
 		}
-		map.put("loreId", lore.getId());
-		map.put("loreName", lore.getLoreName());
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
 	    return null;
@@ -168,7 +185,7 @@ public class LoreRelateAction extends DispatchAction {
 		String msg = "error";
 		Map<String,String> map = new HashMap<String,String>();
 		if(loreId > 0 && rootLoreId > 0){
-			if(lrm.listRelateInfoByOpt(loreId, rootLoreId, -1).size() == 0){
+			if(lrm.listRelateInfoByOpt(loreId, rootLoreId, -1,"").size() == 0){
 				lrm.addLoreRelate(loreId, rootLoreId);
 				msg = "success";
 			}else{

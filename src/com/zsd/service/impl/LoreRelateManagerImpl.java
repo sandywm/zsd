@@ -94,12 +94,12 @@ public class LoreRelateManagerImpl implements LoreRelateManager{
 
 	@Override
 	public List<LoreRelateInfo> listRelateInfoByOpt(Integer loreId,Integer rootLoreId,
-			Integer loreInUse) throws WEBException {
+			Integer loreInUse,String orderOpt) throws WEBException {
 		// TODO Auto-generated method stub
 		try {
 			lrDao = (LoreRelateDao) DaoFactory.instance(null).getDao(Constants.DAO_LORE_RELATE_INFO);
 			Session sess = HibernateUtil.currentSession();
-			return lrDao.findIndoByLoreId(sess, loreId, rootLoreId, loreInUse);
+			return lrDao.findIndoByLoreId(sess, loreId, rootLoreId, loreInUse, orderOpt);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

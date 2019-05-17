@@ -67,6 +67,42 @@ public class LoreAction extends DispatchAction {
 	}
 	
 	/**
+	 * 根据章节获取知识点列表
+	 * @author wm
+	 * @date 2019-5-17 上午09:02:22
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getSpecLoreCatalogData(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		LoreInfoManager lm = (LoreInfoManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
+		Integer cptId = CommonTools.getFinalInteger("cptId", request);
+		List<LoreInfo> loreList = lm.listInfoByCptId(cptId);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "noInfo";
+		if(loreList.size() > 0){
+			msg = "success";
+			List<Object> list_d = new ArrayList<Object>();
+			for(Iterator<LoreInfo> it = loreList.iterator() ; it.hasNext();){
+				LoreInfo lore = it.next();
+				Map<String,Object> map_d = new HashMap<String,Object>();
+				map_d.put("loreId", lore.getId());
+				map_d.put("loreName", lore.getLoreName());
+				list_d.add(map_d);
+			}
+			map.put("loreList", list_d);
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
 	 * 根据章节编号分页获取知识点目录列表
 	 * @author wm
 	 * @date 2019-5-4 下午10:55:52 
@@ -117,6 +153,37 @@ public class LoreAction extends DispatchAction {
 			map.put("code", 0);
 		}
 		map.put("msg", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 检查指定章节下是否存在相同的知识点
+	 * @author wm
+	 * @date 2019-5-17 上午08:57:07
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward checkExistLore(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		LoreInfoManager lm = (LoreInfoManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
+		Integer cptId = CommonTools.getFinalInteger("cptId", request);//章节编号
+		String loreName = Transcode.unescape_new("loreName", request);
+		String msg = "error";
+		Map<String,String> map = new HashMap<String,String>();
+		if(cptId > 0 && !loreName.equals("")){
+			if(lm.checkExistByCptId(cptId, loreName)){
+				msg = "exist";
+			}else{
+				msg = "success";
+			}
+		}
+		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
@@ -180,18 +247,24 @@ public class LoreAction extends DispatchAction {
 				String ediIdCode = "";//出版社号
 				if(ediId < 10){
 					ediIdCode = "0" + ediId;
+				}else{
+					ediIdCode = String.valueOf(ediId);
 				}
-				String cptOrderCode = "";//章节号
+				String cptOrderCode = "";//章节排序号
 				if(cptOrder < 10){
 					cptOrderCode = "0" + cptOrder;
+				}else{
+					cptOrderCode = String.valueOf(cptOrder);
 				}
 				String loreOrderCode = "";//知识点顺序
 				Integer loreOrder = lm.getCurrentMaxOrderByCptId(cptId);
 				if(loreOrder < 10){
 					loreOrderCode = "0" + loreOrder;
+				}else{
+					loreOrderCode = String.valueOf(loreOrder);
 				}
 				
-				String loreCode = subIdCode + "-" + paraCode + "-" + gradeCode + "-" + eduVolumeCode + "-" + ediIdCode + "-" + cptOrderCode + "-" + loreOrderCode;
+				String loreCode = subIdCode + "-" + ediIdCode + "-" + paraCode + "-" + gradeCode + "-" + eduVolumeCode + "-"  + cptOrderCode + "-" + loreOrderCode;
 				lm.addLore(cptId, loreName, Convert.getFirstSpell(loreName), loreOrder, 0, loreCode);
 				
 			}
@@ -285,28 +358,6 @@ public class LoreAction extends DispatchAction {
 	}
 	
 	/**
-	 * 批量增加知识点名称(生成其他版本知识点的时候)
-	 * @author wm
-	 * @date 2019-5-6 上午11:24:17
-	 * @param mapping
-	 * @param form
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws Exception
-	 */
-	public ActionForward addBatchLoreData(ActionMapping mapping, ActionForm form,
-			HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// TODO Auto-generated method stub
-		LoreInfoManager lm = (LoreInfoManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
-		
-		Map<String,String> map = new HashMap<String,String>();
-		map.put("result", "success");
-		CommonTools.getJsonPkg(map, response);
-		return null;
-	}
-	
-	/**
 	 * 批量生成知识点编码(指定章节下批量修改)
 	 * @author wm
 	 * @date 2019-5-6 上午11:26:13
@@ -364,10 +415,14 @@ public class LoreAction extends DispatchAction {
 				String ediIdCode = "";//出版社号
 				if(ediId < 10){
 					ediIdCode = "0" + ediId;
+				}else{
+					ediIdCode = String.valueOf(ediId);
 				}
 				String cptOrderCode = "";//章节排序号
 				if(cptOrder < 10){
 					cptOrderCode = "0" + cptOrder;
+				}else{
+					cptOrderCode = String.valueOf(cptOrder);
 				}
 				List<Object> list_d = new ArrayList<Object>();
 				for(Iterator<LoreInfo> it = loreList.iterator() ; it.hasNext();){
@@ -377,8 +432,10 @@ public class LoreAction extends DispatchAction {
 					String loreOrderCode = "";
 					if(loreOrder < 10){
 						loreOrderCode = "0" + loreOrder;
+					}else{
+						loreOrderCode = String.valueOf(loreOrder);
 					}
-					String loreCode = subIdCode + "-" + paraCode + "-" + gradeCode + "-" + eduVolumeCode + "-" + ediIdCode + "-" + cptOrderCode + "-" + loreOrderCode;
+					String loreCode = subIdCode + "-" + ediIdCode + "-" + paraCode + "-" + gradeCode + "-" + eduVolumeCode + "-"  + cptOrderCode + "-" + loreOrderCode;
 					Boolean flag = lm.updateLoreCodeById(lore.getId(), loreCode);
 					if(flag){
 						map_d.put("codeResult", "succ");
@@ -645,7 +702,7 @@ public class LoreAction extends DispatchAction {
 					map_d.put("queOptNum", queOptNum);
 					if(queType.equals("填空选择题")){
 						//有最大选项和填空数量
-						answerNum = lq.getQueAnswer().split("&zsd&").length;//多个答案用&zsd&隔开
+						answerNum = lq.getQueAnswer().split(",").length;//多个答案用&zsd&隔开
 						map_d.put("answerNum", answerNum);
 					}
 				}
@@ -1311,7 +1368,7 @@ public class LoreAction extends DispatchAction {
 		ChapterManager cm = (ChapterManager) AppFactory.instance(null).getApp(Constants.WEB_CHAPTER_INFO);
 		Map<String,String> map = new HashMap<String,String>();
 		Integer cptId = CommonTools.getFinalInteger("cptId", request);
-		String loreCatalogNameStr = Transcode.unescape_new1("loreCatalogNameStr", request);
+		String loreCatalogNameStr = Transcode.unescape_new1("loreCatalogNameStr", request);//新版本的loreName,通用版的loreId并在页面通过arrayToJson封装
 		String msg = "error";
 		Integer cptOrder = 0;
 		Integer ediId = 0;
@@ -1365,7 +1422,7 @@ public class LoreAction extends DispatchAction {
 					if(loreOrder < 10){
 						loreOrderCode = "0" + loreOrder;
 					}
-					loreCode = subIdCode + "-" + paraCode + "-" + gradeCode + "-" + eduVolumeCode + "-" + ediIdCode + "-" + cptOrderCode + "-" + loreOrderCode;
+					loreCode = subIdCode + "-" + ediIdCode + "-" + paraCode + "-" + gradeCode + "-" + eduVolumeCode + "-"  + cptOrderCode + "-" + loreOrderCode;
 					String[] newLoreCatalogNameArray = loreCatalogArray.get(i).toString().split(",");//格式loreName,loreId
 					String newLoreCatalogName = newLoreCatalogNameArray[0];
 					Integer quoteLoreId = Integer.parseInt(newLoreCatalogNameArray[1]);

@@ -47,7 +47,7 @@ public class LoreRelateDaoImpl implements LoreRelateDao{
 
 	@Override
 	public List<LoreRelateInfo> findIndoByLoreId(Session sess, Integer loreId,Integer rootLoreId,
-			Integer loreInUse) {
+			Integer loreInUse,String orderOpt) {
 		// TODO Auto-generated method stub
 		String hql = " from LoreRelateInfo as lr where 1=1";
 		if(loreId > 0){
@@ -58,6 +58,9 @@ public class LoreRelateDaoImpl implements LoreRelateDao{
 		}
 		if(!loreInUse.equals(-1)){
 			hql += " and lr.loreInfo.inUse = "+loreInUse;
+		}
+		if(!orderOpt.equals("")){
+			hql += " order by '"+orderOpt+"'";
 		}
 		return sess.createQuery(hql).list();
 	}
