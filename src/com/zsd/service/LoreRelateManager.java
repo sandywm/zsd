@@ -62,4 +62,16 @@ public interface LoreRelateManager {
 	 * @throws WEBException
 	 */
 	LoreRelateInfo getEntityById(Integer id)throws WEBException;
+	
+	/**
+	 * 根据学科编号、出版社编号、年级区间获取关联信息列表(通过制定版本关联生成通用版关联时用)
+	 * @author wm
+	 * @date 2019-5-18 下午05:12:54
+	 * @param subId 科目编号
+	 * @param ediId 出版社编号
+	 * @param gradeNoArea 年级区间(1,2,.....12)逗号隔开
+	 * @return
+	 * @throws WEBException
+	 */
+	List<LoreRelateInfo> listInfoByOpt(Integer subId,Integer ediId,String gradeNoArea)throws WEBException;
 }

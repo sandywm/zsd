@@ -37,6 +37,15 @@ public interface BuffetQueInfoDao {
 	void delete(Session sess,BuffetQueInfo bq);
 	
 	/**
+	 * 根据主键修改自助餐题库信息
+	 * @author wm
+	 * @date 2019-5-18 上午09:15:24
+	 * @param sess
+	 * @param bq
+	 */
+	void update(Session sess,BuffetQueInfo bq);
+	
+	/**
 	 * 根据知识点编号分页后去自助餐题库信息列表
 	 * @author wm
 	 * @date 2019-5-17 下午05:02:02
@@ -66,7 +75,8 @@ public interface BuffetQueInfoDao {
 	 * @param loreId 知识点编号
 	 * @param btId 自助餐类型编号（0表示全部）
 	 * @param inUse 有效状态(-1：表示全部,0：有效，1：无效)
+	 * @param currNumFlag 是否获取当前类型下最大的题序号和排序号（true:是）
 	 * @return
 	 */
-	List<BuffetQueInfo> findInfoByOpt(Session sess,Integer loreId,Integer btId,Integer inUse);
+	List<BuffetQueInfo> findInfoByOpt(Session sess,Integer loreId,Integer btId,Integer inUse,boolean currNumFlag);
 }

@@ -1,6 +1,5 @@
 package com.zsd.service;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 import com.zsd.exception.WEBException;
@@ -94,16 +93,16 @@ public interface BuffetQueInfoManager {
 	 * @return
 	 * @throws WEBException
 	 */
-	boolean updateInUseStatusById(Integer buffetId,Integer inUse,String operateUserName,Timestamp operateDate)throws WEBException;
+	boolean updateInUseStatusById(Integer buffetId,Integer inUse,String operateUserName,String operateDate)throws WEBException;
 	
 	/**
-	 * 获取指定知识点编号和指定基础类型下的最后一个巴菲特题的num值
+	 * 获取指定知识点编号和指定基础类型下的最后一个巴菲特题记录(获取下一个最大的的num和order)
 	 * @author wm
 	 * @date 2019-5-17 下午07:06:14
 	 * @param loreId 知识点编号
-	 * @param basicBuffetTypeId 基础类型编号
-	 * @return 最后一个巴菲特题的num值
+	 * @param btId 基础类型编号
+	 * @return 最后一个巴菲特题的num值和order
 	 * @throws WEBException
 	 */
-	Integer getLastCountByOpt(Integer loreId,Integer basicBuffetTypeId)throws WEBException;
+	BuffetQueInfo getCurrMaxNumAndOrderByOpt(Integer loreId,Integer btId)throws WEBException;
 }

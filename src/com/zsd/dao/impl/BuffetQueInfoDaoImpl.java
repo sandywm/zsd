@@ -56,7 +56,7 @@ public class BuffetQueInfoDaoImpl implements BuffetQueInfoDao{
 
 	@Override
 	public List<BuffetQueInfo> findInfoByOpt(Session sess, Integer loreId,
-			Integer btId, Integer inUse) {
+			Integer btId, Integer inUse, boolean currNumFlag) {
 		// TODO Auto-generated method stub
 		String hql = " from BuffetQueInfo as bq where bq.loreInfo.id = "+loreId;
 		if(btId > 0){
@@ -65,7 +65,17 @@ public class BuffetQueInfoDaoImpl implements BuffetQueInfoDao{
 		if(inUse >= 0){
 			hql += " and bq.inUse = "+inUse;
 		}
+		if(currNumFlag){
+			hql += " order by bq.buffetNum desc";
+			return sess.createQuery(hql).setFirstResult(0).setMaxResults(1).list();
+		}
 		return sess.createQuery(hql).list();
+	}
+
+	@Override
+	public void update(Session sess, BuffetQueInfo bq) {
+		// TODO Auto-generated method stub
+		sess.update(bq);
 	}
 
 }

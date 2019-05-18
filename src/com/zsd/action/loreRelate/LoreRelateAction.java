@@ -21,6 +21,7 @@ import com.zsd.factory.AppFactory;
 import com.zsd.service.LoreInfoManager;
 import com.zsd.service.LoreRelateManager;
 import com.zsd.util.Constants;
+import com.zsd.module.GradeSubject;
 import com.zsd.module.LoreInfo;
 import com.zsd.module.LoreRelateInfo;
 import com.zsd.module.json.LoreTreeMenuJson;
@@ -149,15 +150,49 @@ public class LoreRelateAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
 		LoreRelateManager lrm = (LoreRelateManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_RELATE_INFO);
+		LoreInfoManager lm = (LoreInfoManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
 		Integer lrId = CommonTools.getFinalInteger("lrId", request);
 		String msg = "noInfo";
 		Map<String,String> map = new HashMap<String,String>();
 		if(lrId > 0){
-			boolean flag = lrm.deleteLoreRelate(lrId);
-			if(flag){
-				msg = "success";
-			}else{
-				msg = "error";
+			LoreRelateInfo lr = lrm.getEntityById(lrId);
+			if(lr != null){
+				boolean flag = lrm.deleteLoreRelate(lrId);
+				if(flag){
+					msg = "success";
+					Integer ediId = lr.getLoreInfo().getChapter().getEducation().getEdition().getId();//出版社
+					//如果删除的知识点关联是通用版的话，那么其他的版本也需要相应删除
+					if(ediId.equals(1)){
+						Integer mainLoreId_ty = lr.getLoreInfo().getId();
+						Integer rootLoreId_ty = lr.getRootLoreInfo().getId();
+						List<LoreInfo> lList_main = lm.listInfoByMainLoreId(mainLoreId_ty);//获取其他版本下的主知识点列表
+						List<LoreInfo> lList_root = lm.listInfoByMainLoreId(rootLoreId_ty);//获取其他版本下的关联知识点列表
+						Integer num = 0;
+						if(lList_main.size() == lList_root.size()){
+							num = lList_main.size();//如果记录条数相等，随便取那个都可
+						}else{
+							//如果记录条数不等，取记录条数少的为准
+							if(lList_main.size() > lList_root.size()){
+								num = lList_root.size();
+							}else{
+								num = lList_main.size();
+							}
+						}
+						if(num > 0){
+							for(Integer i = 0 ; i < num ; i++){
+								Integer mainLoreId_edi = lList_main.get(i).getId();
+								Integer rootLoreId_edi = lList_root.get(i).getId();
+								List<LoreRelateInfo>  lrList = lrm.listRelateInfoByOpt(mainLoreId_edi, rootLoreId_edi, -1, "");
+								if(lrList.size() > 0){
+									lrm.deleteLoreRelate(lrList.get(0).getId());
+								}
+							}
+						}
+					}
+					//如果是其他版本的话就不需要
+				}else{
+					msg = "error";
+				}
 			}
 		}
 		map.put("result", msg);
@@ -180,6 +215,7 @@ public class LoreRelateAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
 		LoreRelateManager lrm = (LoreRelateManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_RELATE_INFO);
+		LoreInfoManager lm = (LoreInfoManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
 		Integer loreId = CommonTools.getFinalInteger("loreId", request);
 		Integer rootLoreId = CommonTools.getFinalInteger("rootLoreId", request);
 		String msg = "error";
@@ -187,6 +223,38 @@ public class LoreRelateAction extends DispatchAction {
 		if(loreId > 0 && rootLoreId > 0){
 			if(lrm.listRelateInfoByOpt(loreId, rootLoreId, -1,"").size() == 0){
 				lrm.addLoreRelate(loreId, rootLoreId);
+				LoreInfo lore = lm.getEntityById(loreId);
+				if(lore != null){
+					Integer ediId = lore.getChapter().getEducation().getEdition().getId();//出版社
+					if(ediId.equals(1)){//通用版
+						//自动生成其他版本的关联记录
+						List<LoreInfo> lList_main = lm.listInfoByMainLoreId(loreId);//获取其他版本下的主知识点列表
+						List<LoreInfo> lList_root = lm.listInfoByMainLoreId(rootLoreId);//获取其他版本下的关联知识点列表
+						Integer num = 0;
+						if(lList_main.size() == lList_root.size()){
+							num = lList_main.size();//如果记录条数相等，随便取那个都可
+						}else{
+							//如果记录条数不等，取记录条数少的为准
+							if(lList_main.size() > lList_root.size()){
+								num = lList_root.size();
+							}else{
+								num = lList_main.size();
+							}
+						}
+						if(num > 0){
+							for(Integer i = 0 ; i < num ; i++){
+								Integer mainLoreId_edi = lList_main.get(i).getId();
+								Integer rootLoreId_edi = lList_root.get(i).getId();
+								List<LoreRelateInfo>  lrList = lrm.listRelateInfoByOpt(mainLoreId_edi, rootLoreId_edi, -1, "");
+								if(lrList.size() == 0){
+									lrm.addLoreRelate(mainLoreId_edi, rootLoreId_edi);
+								}
+							}
+						}
+					}else{
+						//其他版本无需其他动作
+					}
+				}
 				msg = "success";
 			}else{
 				msg = "existInfo";
@@ -195,5 +263,48 @@ public class LoreRelateAction extends DispatchAction {
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
 		return  null;
+	}
+	
+	/**
+	 * 自动创建通用版关联
+	 * @author wm
+	 * @date 2019-5-18 下午04:09:27
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward autoAddTyRelate(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		/**
+		 * 数学：1-2年级（青岛10），3-9年级（鲁教版3），10-12年级（人教版2）
+		 * 化学：6-9年级（鲁教版3），10-12年级（人教版2）
+		 * 物理：6-9年级（沪科版11），10-12年级（人教版2）
+		 */
+		LoreRelateManager lrm = (LoreRelateManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_RELATE_INFO);
+		LoreInfoManager lm = (LoreInfoManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
+		Integer subId = CommonTools.getFinalInteger("subId", request);//数学2，物理4，化学5，生物7
+		Integer ediId = CommonTools.getFinalInteger("ediId", request);
+		String gradeNoArea = CommonTools.getFinalStr("gradeNoArea", request);//1,2,n
+		List<LoreRelateInfo> lrList = lrm.listInfoByOpt(subId, ediId, gradeNoArea);
+//		Map<String,Integer> map = new HashMap<String,Integer>();
+//		List<Object> list_d = new ArrayList<Object>();
+		int i = 1;
+		for(Iterator<LoreRelateInfo> it = lrList.iterator() ; it.hasNext();){
+			LoreRelateInfo lr = it.next();
+//			System.out.println("第"+(i++)+"条记录："+lr.getId() + "--" + lr.getLoreInfo().getId() + "--" + lr.getRootLoreInfo().getId());
+			Integer loreId_edi_main = lr.getLoreInfo().getId(); 
+			Integer loreId_edi_root = lr.getRootLoreInfo().getId();
+			LoreInfo lore_main = lm.getEntityById(loreId_edi_main);
+			LoreInfo lore_root = lm.getEntityById(loreId_edi_root);
+			if(lore_main != null){
+				Integer loreId_ty_main = lore_main.getMainLoreId();//通用版的主知识点
+				Integer loreId_ty_root = lore_root.getMainLoreId();//通用版的关联知识点
+			}
+		}
+		return null;
 	}
 }

@@ -125,4 +125,21 @@ public class LoreRelateManagerImpl implements LoreRelateManager{
 		}
 	}
 
+	@Override
+	public List<LoreRelateInfo> listInfoByOpt(Integer subId, Integer ediId,
+			String gradeNoArea) throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			lrDao = (LoreRelateDao) DaoFactory.instance(null).getDao(Constants.DAO_LORE_RELATE_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return lrDao.findInfoByOpt(sess, subId, ediId, gradeNoArea);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new WEBException("根据学科编号、出版社编号、年级区间获取关联信息列表时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
 }

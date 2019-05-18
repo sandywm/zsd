@@ -70,4 +70,16 @@ public interface LoreRelateDao {
 	 * @return
 	 */
 	List<LoreRelateInfo> findIndoByLoreId(Session sess,Integer loreId,Integer rootLoreId,Integer loreInUse,String orderOpt);
+	
+	/**
+	 * 根据学科编号、出版社编号、年级区间获取关联信息列表(通过制定版本关联生成通用版关联时用)
+	 * @author wm
+	 * @date 2019-5-18 下午04:41:21
+	 * @param sess
+	 * @param subId 科目编号
+	 * @param ediId 出版社编号
+	 * @param gradeNoArea 年级区间(1,2,.....12)逗号隔开
+	 * @return
+	 */
+	List<LoreRelateInfo> findInfoByOpt(Session sess,Integer subId,Integer ediId,String gradeNoArea);
 }
