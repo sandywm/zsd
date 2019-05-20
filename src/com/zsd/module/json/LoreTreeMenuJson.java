@@ -33,6 +33,10 @@ public class LoreTreeMenuJson {
 		LoreInfoManager lm = (LoreInfoManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
 		LoreRelateManager lrm = (LoreRelateManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_RELATE_INFO);
 		List<Chapter> cList = cm.ListInfoByEduId(eduId);
+		String orderOpt = "";
+		if(ediId > 1){//通用版无需知识点编码排序
+			orderOpt = "desc";//其他版本需要知识点编码降序排列
+		}
 		for(Iterator<Chapter> it1 = cList.iterator() ;it1.hasNext();){
 			MyTreeNode node1 = new MyTreeNode();
 			List<MyTreeNode> tree1 = new ArrayList<MyTreeNode>();
@@ -49,37 +53,34 @@ public class LoreTreeMenuJson {
 				Integer loreId = lore.getId();
 				String loreName = lore.getLoreName();
 				node2.setId(loreId);
-				if(ediId.equals(1)){//通用版才能设置
-					node2.setText(loreName+"&nbsp;<font color=blue>管理>></font>");
-				}else{
-					node2.setText(loreName);
-				}
+				node2.setText(loreName+"&nbsp;<font color=blue>管理>></font>");
 				Map<String, Object> attributes = new HashMap<String, Object>();
 				attributes.put("loreId", loreId);
 				attributes.put("loreName", loreName);
 				node2.setAttributes(attributes);
 				node2.setState("open");
-				if(ediId > 1){//如果是其他版本
-					loreId = lore.getMainLoreId();//获取被引用的通用版知识点
-				}
+//				if(ediId > 1){//如果是其他版本
+//					loreId = lore.getMainLoreId();//获取被引用的通用版知识点
+//				}
 				//根据知识点编号获取下级关联
-				List<LoreRelateInfo> lrList = lrm.listRelateInfoByOpt(loreId, 0, -1,"desc");
+				List<LoreRelateInfo> lrList = lrm.listRelateInfoByOpt(loreId, 0, -1,orderOpt);
 				for(Iterator<LoreRelateInfo> it3 = lrList.iterator();it3.hasNext();){
 					List<MyTreeNode> tree3 = new ArrayList<MyTreeNode>();
 					LoreRelateInfo lr = it3.next();
 					Integer rootLoreId = lr.getRootLoreInfo().getId();
 					String rootLoreName = "";
-					if(ediId > 1){//其他版本
-						LoreInfo lore_root_other = lm.getLoreInfoByOpt(rootLoreId, ediId);//通过通用版知识点获取其他出版社下的知识点
-						if(lore_root_other != null){
-							rootLoreId = lore_root_other.getId();
-							rootLoreName = lore_root_other.getLoreName();
-						}else{
-							continue;
-						}
-					}else{//通用版
-						rootLoreName = lr.getRootLoreInfo().getLoreName();
-					}
+//					if(ediId > 1){//其他版本
+//						LoreInfo lore_root_other = lm.getLoreInfoByOpt(rootLoreId, ediId);//通过通用版知识点获取其他出版社下的知识点
+//						if(lore_root_other != null){
+//							rootLoreId = lore_root_other.getId();
+//							rootLoreName = lore_root_other.getLoreName();
+//						}else{
+//							continue;
+//						}
+//					}else{//通用版
+//						rootLoreName = lr.getRootLoreInfo().getLoreName();
+//					}
+					rootLoreName = lr.getRootLoreInfo().getLoreName();
 					MyTreeNode node3 = new MyTreeNode();
 					node3.setId(rootLoreId);
 					node3.setText(rootLoreName);

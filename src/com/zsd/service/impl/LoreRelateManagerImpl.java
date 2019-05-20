@@ -20,7 +20,7 @@ public class LoreRelateManagerImpl implements LoreRelateManager{
 	LoreRelateDao lrDao = null;
 	Transaction tran = null;
 	@Override
-	public Integer addLoreRelate(Integer loreId, Integer rootLoreId)
+	public Integer addLoreRelate(Integer loreId, Integer rootLoreId,String addOpt)
 			throws WEBException {
 		// TODO Auto-generated method stub
 		try {
@@ -28,7 +28,7 @@ public class LoreRelateManagerImpl implements LoreRelateManager{
 			lrDao = (LoreRelateDao) DaoFactory.instance(null).getDao(Constants.DAO_LORE_RELATE_INFO);
 			Session sess = HibernateUtil.currentSession();
 			tran = sess.beginTransaction();
-			LoreRelateInfo lr = new LoreRelateInfo(lDao.getEntityById(sess, loreId),lDao.getEntityById(sess, rootLoreId));
+			LoreRelateInfo lr = new LoreRelateInfo(lDao.getEntityById(sess, loreId),lDao.getEntityById(sess, rootLoreId),addOpt);
 			lrDao.save(sess, lr);
 			tran.commit();
 			return lr.getId();

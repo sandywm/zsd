@@ -15,6 +15,7 @@ public class LoreRelateInfo implements java.io.Serializable {
 	private Integer id;
 	private LoreInfo loreInfo;
 	private LoreInfo rootLoreInfo;
+	private String addOpt;
 
 	// Constructors
 
@@ -22,9 +23,10 @@ public class LoreRelateInfo implements java.io.Serializable {
 	public LoreRelateInfo() {
 	}
 
-	public LoreRelateInfo(LoreInfo loreInfo, LoreInfo rootLoreInfo) {
+	public LoreRelateInfo(LoreInfo loreInfo, LoreInfo rootLoreInfo,String addOpt) {
 		this.loreInfo = loreInfo;
 		this.rootLoreInfo = rootLoreInfo;
+		this.addOpt = addOpt;
 	}
 
 	// Property accessors
@@ -50,6 +52,14 @@ public class LoreRelateInfo implements java.io.Serializable {
 
 	public void setRootLoreInfo(LoreInfo rootLoreInfo) {
 		this.rootLoreInfo = rootLoreInfo;
+	}
+
+	public String getAddOpt() {
+		return addOpt;
+	}
+
+	public void setAddOpt(String addOpt) {
+		this.addOpt = addOpt;
 	}
 
 }

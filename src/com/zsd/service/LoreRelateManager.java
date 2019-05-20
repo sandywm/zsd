@@ -13,10 +13,11 @@ public interface LoreRelateManager {
 	 * @date 2019-5-7 下午11:01:19 
 	 * @param loreId 主知识点
 	 * @param rootLoreId 关联知识点
+	 * @param 生成方式(manu:手动,auto:自动)
 	 * @return
 	 * @throws WEBException
 	 */
-	Integer addLoreRelate(Integer loreId,Integer rootLoreId) throws WEBException;
+	Integer addLoreRelate(Integer loreId,Integer rootLoreId,String addOpt) throws WEBException;
 	
 	/**
 	 * 删除关联知识点信息

@@ -72,22 +72,17 @@ public class LoreRelateDaoImpl implements LoreRelateDao{
 	public List<LoreRelateInfo> findInfoByOpt(Session sess, Integer subId,
 			Integer ediId, String gradeNoArea) {
 		// TODO Auto-generated method stub
-		String hql = " from LoreRelateInfo as lr where exists";
-		hql += " ( from LoreInfo as lore where exists";
-		hql += " ( from Chapter as c where exists";
-		hql += " ( from Education as edu where edu.edition.id = " + ediId + " and exists";
-		hql += " ( from GradeSubject as gs where gs.subject.id = "+subId;
-		hql += " and gs.gradeName in (";
-		String[] gradeNoAreaArr = gradeNoArea.split(",");
-		for(Integer i = 0 ; i < gradeNoAreaArr.length ; i++){
-			hql += " '"+Convert.NunberConvertChinese(Integer.parseInt(gradeNoAreaArr[i]))+"',";
+		String hql = " from LoreRelateInfo as lr where lr.loreInfo.chapter.education.edition.id = "+ediId;
+		hql += " and lr.loreInfo.chapter.education.gradeSubject.subject.id = "+subId;
+		if(!gradeNoArea.equals("")){
+			hql += " and lr.loreInfo.chapter.education.gradeSubject.gradeName in (";
+			String[] gradeNoAreaArr = gradeNoArea.split(",");
+			for(Integer i = 0 ; i < gradeNoAreaArr.length ; i++){
+				hql += " '"+Convert.NunberConvertChinese(Integer.parseInt(gradeNoAreaArr[i]))+"',";
+			}
+			hql = hql.substring(0,hql.length() - 1);//去掉末尾逗号
+			hql += " )";
 		}
-		hql = hql.substring(0,hql.length() - 1);//去掉末尾逗号
-		hql += " )";
-		hql += " and edu.gradeSubject.id = gs.id )";
-		hql += " and c.education.id = edu.id )";
-		hql += " and lore.chapter.id = c.id )";
-		hql += " and lr.loreInfo.id = lore.id )";
 		return sess.createQuery(hql).list();
 	}
 

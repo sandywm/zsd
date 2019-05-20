@@ -20,5 +20,10 @@
                 <comment>关联知识点编号</comment>
             </column>
         </many-to-one>
+         <property name="addOpt" type="java.lang.String">
+            <column name="add_opt" length="20" not-null="true">
+                <comment>生成方式(manu:手动,auto:自动)</comment>
+            </column>
+        </property>
     </class>
 </hibernate-mapping>

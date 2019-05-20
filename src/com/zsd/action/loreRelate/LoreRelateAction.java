@@ -21,7 +21,6 @@ import com.zsd.factory.AppFactory;
 import com.zsd.service.LoreInfoManager;
 import com.zsd.service.LoreRelateManager;
 import com.zsd.util.Constants;
-import com.zsd.module.GradeSubject;
 import com.zsd.module.LoreInfo;
 import com.zsd.module.LoreRelateInfo;
 import com.zsd.module.json.LoreTreeMenuJson;
@@ -77,7 +76,7 @@ public class LoreRelateAction extends DispatchAction {
 	}
 	
 	/**
-	 * 显示指定知识点的关联知识点(通用版可修改，其他版本只能查看)
+	 * 显示指定知识点的关联知识点
 	 * @author wm
 	 * @date 2019-5-13 上午11:18:12
 	 * @param mapping
@@ -93,17 +92,17 @@ public class LoreRelateAction extends DispatchAction {
 		LoreRelateManager lrm = (LoreRelateManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_RELATE_INFO);
 		LoreInfoManager lm = (LoreInfoManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
 		Integer loreId = CommonTools.getFinalInteger("loreId", request);
-		String orderOpt = CommonTools.getFinalStr("orderOpt", request);//asc,desc
+		String orderOpt = CommonTools.getFinalStr("orderOpt", request);//asc,desc--其他版本需要降序排列，通用版不用排序
 		String msg = "noInfo";
 		Map<String,Object> map = new HashMap<String,Object>();
 		LoreInfo lore = lm.getEntityById(loreId);
 		if(lore != null){
 			Integer mainLoreId = lore.getMainLoreId();
 			Integer ediId = lore.getChapter().getEducation().getEdition().getId();
-			if(mainLoreId > 0){//其他出版社的知识点,通用版的知识点mainLoreId=0
-				//获取该知识点的通用版的知识点
-				loreId = mainLoreId;
-			}
+//			if(mainLoreId > 0){//其他出版社的知识点,通用版的知识点mainLoreId=0
+//				//获取该知识点的通用版的知识点
+//				loreId = mainLoreId;
+//			}
 			msg = "success";
 			List<LoreRelateInfo> lrList = lrm.listRelateInfoByOpt(loreId, 0, -1,orderOpt);
 			if(lrList.size() > 0){
@@ -136,7 +135,7 @@ public class LoreRelateAction extends DispatchAction {
 	}
 	
 	/**
-	 * 删除一条关联记录
+	 * 删除一条关联记录（并自动删除其他版本知识点关联）
 	 * @author wm
 	 * @date 2019-5-13 上午11:56:49
 	 * @param mapping
@@ -201,7 +200,7 @@ public class LoreRelateAction extends DispatchAction {
 	}
 	
 	/**
-	 * 增加一条关联信息
+	 * 增加一条关联信息（并自动创建其他版本知识点关联）
 	 * @author wm
 	 * @date 2019-5-13 下午04:06:21
 	 * @param mapping
@@ -222,7 +221,7 @@ public class LoreRelateAction extends DispatchAction {
 		Map<String,String> map = new HashMap<String,String>();
 		if(loreId > 0 && rootLoreId > 0){
 			if(lrm.listRelateInfoByOpt(loreId, rootLoreId, -1,"").size() == 0){
-				lrm.addLoreRelate(loreId, rootLoreId);
+				lrm.addLoreRelate(loreId, rootLoreId,"manu");
 				LoreInfo lore = lm.getEntityById(loreId);
 				if(lore != null){
 					Integer ediId = lore.getChapter().getEducation().getEdition().getId();//出版社
@@ -245,9 +244,13 @@ public class LoreRelateAction extends DispatchAction {
 							for(Integer i = 0 ; i < num ; i++){
 								Integer mainLoreId_edi = lList_main.get(i).getId();
 								Integer rootLoreId_edi = lList_root.get(i).getId();
-								List<LoreRelateInfo>  lrList = lrm.listRelateInfoByOpt(mainLoreId_edi, rootLoreId_edi, -1, "");
-								if(lrList.size() == 0){
-									lrm.addLoreRelate(mainLoreId_edi, rootLoreId_edi);
+								Long mainLoreCode =  Long.parseLong(lList_main.get(i).getLoreCode());
+								Long rootLoreCode =  Long.parseLong(lList_root.get(i).getLoreCode());
+								if(mainLoreCode > rootLoreCode){//主知识点编码大于子知识点编码
+									List<LoreRelateInfo>  lrList = lrm.listRelateInfoByOpt(mainLoreId_edi, rootLoreId_edi, -1, "");
+									if(lrList.size() == 0){
+										lrm.addLoreRelate(mainLoreId_edi, rootLoreId_edi,"auto");
+									}
 								}
 							}
 						}
@@ -266,7 +269,34 @@ public class LoreRelateAction extends DispatchAction {
 	}
 	
 	/**
-	 * 自动创建通用版关联
+	 * 自动创建其他版本知识点关联(生成其他版本知识点的时候)
+	 * @author wm
+	 * @date 2019-5-20 上午08:16:43
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward autoAddEdiRelate(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		LoreRelateManager lrm = (LoreRelateManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_RELATE_INFO);
+		//获取通用版知识点关联
+		Integer subId = CommonTools.getFinalInteger("subId", request);
+		Integer ediId = CommonTools.getFinalInteger("ediId", request);
+		if(subId > 0){
+			List<LoreRelateInfo> lrList = lrm.listInfoByOpt(subId, 1, "");//获取通用版本知识点的关联信息
+			if(lrList.size() > 0){
+				
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * 自动创建通用版关联（未开启）
 	 * @author wm
 	 * @date 2019-5-18 下午04:09:27
 	 * @param mapping
@@ -290,21 +320,61 @@ public class LoreRelateAction extends DispatchAction {
 		Integer ediId = CommonTools.getFinalInteger("ediId", request);
 		String gradeNoArea = CommonTools.getFinalStr("gradeNoArea", request);//1,2,n
 		List<LoreRelateInfo> lrList = lrm.listInfoByOpt(subId, ediId, gradeNoArea);
-//		Map<String,Integer> map = new HashMap<String,Integer>();
-//		List<Object> list_d = new ArrayList<Object>();
-		int i = 1;
-		for(Iterator<LoreRelateInfo> it = lrList.iterator() ; it.hasNext();){
-			LoreRelateInfo lr = it.next();
-//			System.out.println("第"+(i++)+"条记录："+lr.getId() + "--" + lr.getLoreInfo().getId() + "--" + lr.getRootLoreInfo().getId());
-			Integer loreId_edi_main = lr.getLoreInfo().getId(); 
-			Integer loreId_edi_root = lr.getRootLoreInfo().getId();
-			LoreInfo lore_main = lm.getEntityById(loreId_edi_main);
-			LoreInfo lore_root = lm.getEntityById(loreId_edi_root);
-			if(lore_main != null){
-				Integer loreId_ty_main = lore_main.getMainLoreId();//通用版的主知识点
-				Integer loreId_ty_root = lore_root.getMainLoreId();//通用版的关联知识点
+		Map<String,String> map = new HashMap<String,String>();
+		Integer i = 1;
+		Integer errorNum = 0;
+		Integer noReplaceNum = 0;
+		if(lrList.size() > 0){
+			for(Iterator<LoreRelateInfo> it = lrList.iterator() ; it.hasNext();){
+				LoreRelateInfo lr = it.next();
+//				System.out.println("第"+(i++)+"条记录："+lr.getId() + "--" + lr.getLoreInfo().getId() + "--(" + lr.getLoreInfo().getMainLoreId() + ")--" + lr.getRootLoreInfo().getId() + "--(" + lr.getRootLoreInfo().getMainLoreId() + ")");
+				Integer loreId_edi_main = lr.getLoreInfo().getId(); //关联主知识点
+				Integer loreId_edi_root = lr.getRootLoreInfo().getId();//关联子知识点
+				Integer loreId_ty_main = lr.getLoreInfo().getMainLoreId();//通用主知识点
+				Integer loreId_ty_root = lr.getRootLoreInfo().getMainLoreId();//通用关联知识点
+				if(loreId_ty_main.equals(0) || loreId_ty_root.equals(0)){
+					errorNum++;
+					Integer right_loreId_edi_main = loreId_ty_main;
+					Integer right_loreId_edi_root = loreId_ty_root;
+					if(loreId_ty_main.equals(0)){
+						//获取同当前出版社一致的知识点
+						LoreInfo lore = lm.getLoreInfoByOpt(loreId_edi_main, ediId);
+						if(lore != null){
+							right_loreId_edi_main = lore.getId();
+						}else{
+							noReplaceNum++;
+						}
+					}
+					if(loreId_ty_root.equals(0)){
+						//获取同当前出版社一致的知识点
+						LoreInfo lore = lm.getLoreInfoByOpt(loreId_edi_root, ediId);
+						if(lore != null){
+							right_loreId_edi_root = lore.getId();
+						}else{
+							noReplaceNum++;
+						}
+					}
+					System.out.println("-------------------------错误记录："+lr.getId() + "------------------------------" + loreId_edi_main + "--(" + loreId_ty_main + ")--(正确知识点--- "+right_loreId_edi_main+")" + loreId_edi_root + "--(" + loreId_ty_root + ")--(正确知识点--- "+right_loreId_edi_root+")");
+				}else{
+					System.out.println("第"+(i++)+"条正确记录："+lr.getId() + "--" + loreId_edi_main + "--(" + loreId_ty_main + ")--" + loreId_edi_root + "--(" + loreId_ty_root + ")");
+				}
+//				LoreInfo lore_main = lm.getEntityById(loreId_edi_main);
+//				LoreInfo lore_root = lm.getEntityById(loreId_edi_root);
+//				if(lore_main != null){
+//					Integer loreId_ty_main = lore_main.getMainLoreId();//通用版的主知识点
+//					Integer loreId_ty_root = lore_root.getMainLoreId();//通用版的关联知识点
+//					if(lrm.listRelateInfoByOpt(loreId_ty_main, loreId_ty_root, -1, "").size() == 0){
+//						lrm.addLoreRelate(loreId_ty_main, loreId_ty_root);
+//					}
+//				}
 			}
+			System.out.println("关联错误知识点数量: "+errorNum);
+			System.out.println("无法替换关联错误知识点数量: "+noReplaceNum);
+			map.put("result", "success");
+		}else{
+			map.put("result", "noInfo");
 		}
+		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
 }
