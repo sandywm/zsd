@@ -702,11 +702,15 @@ public class LoreAction extends DispatchAction {
 						queOptNum++;
 					}
 					map_d.put("queOptNum", queOptNum);
-					if(queType.equals("填空选择题") || queType.equals("填空题")){
+					if(queType.equals("填空选择题")){
 						//有最大选项和填空数量
 						answerNum = lq.getQueAnswer().split(",").length;//多个答案用,隔开
 						map_d.put("answerNum", answerNum);
 					}
+				}
+				if(queType.equals("填空题")){
+					answerNum = lq.getQueAnswer().split(",").length;//多个答案用,隔开
+					map_d.put("answerNum", answerNum);
 				}
 				map_d.put("lqResolution", lq.getQueResolution());
 				Integer queTipId = lq.getQueTips();
