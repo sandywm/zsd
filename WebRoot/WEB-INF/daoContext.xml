@@ -26,4 +26,5 @@
 	<dao id="buffet_all_Dao" class="com.zsd.dao.impl.BuffetAllDaoImpl" />
 	<dao id="buffet_que_Dao" class="com.zsd.dao.impl.BuffetQueInfoDaoImpl" />
 	<dao id="buffet_lore_relate_Dao" class="com.zsd.dao.impl.BuffetLoreRelateInfoDaoImpl" />
+	<dao id="lex_Dao" class="com.zsd.dao.impl.LexInfoDaoImpl" />
 </daoContext>

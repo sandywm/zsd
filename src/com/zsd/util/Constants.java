@@ -54,6 +54,7 @@ public class Constants {
 	public static final String WEB_BUFFET_ALL_INFO = "buffet_all_Web";
 	public static final String WEB_BUFFET_QUE_INFO = "buffet_que_Web";
 	public static final String WEB_BUFFET_LORE_RELATE_INFO = "buffet_lore_relate_Web";
+	public static final String WEB_LEX_INFO = "lex_Web";
 	
 	//-------------------DAO-------------------------//
 	public static final String DAO_EDITION_INFO = "edition_Dao";
@@ -82,5 +83,6 @@ public class Constants {
 	public static final String DAO_BUFFET_ALL_INFO = "buffet_all_Dao";
 	public static final String DAO_BUFFET_QUE_INFO = "buffet_que_Dao";
 	public static final String DAO_BUFFET_LORE_RELATE_INFO = "buffet_lore_relate_Dao";
+	public static final String DAO_LEX_INFO = "lex_Dao";
 }
 
