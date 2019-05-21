@@ -1091,23 +1091,31 @@ public class LoreAction extends DispatchAction {
 			LoreInfo lore = lm.getEntityById(loreId);
 			if(lore != null){
 				if(loreType.equals("知识清单")){
-					String queTitle = Transcode.unescape_new1("queTitle", request);
-					String queSub =  Transcode.unescape_new1("queSub", request);
+					String queTitle = Transcode.unescape_new1("queTitle", request);//（&zsd&隔开）
+					String queSub =  Transcode.unescape_new1("queSub", request);//（&zsd&隔开）
 					List<LoreQuestion> lqList = lqm.listInfoByLoreId(loreId, loreType, -1);
+					String[] queTitleArr = queTitle.split("&zsd&");
+					String[] queSubArr = queSub.split("&zsd&");
+					Integer lqId = 0;
 					if(lqList.size() == 0){//未增加过
 						//增加主表和子表
-						Integer lqId = lqm.addSimpleLoreQuestion(loreId, loreType, loreType, "", 1,1, "", "", operateUserName, operateDate);
+						lqId = lqm.addSimpleLoreQuestion(loreId, loreType, loreType, "", 1,1, "", "", operateUserName, operateDate);
 						if(lqId > 0){
-							lqm.addLoreQuestionSubInfo(lqId, loreType, queTitle, queSub, 1, operateUserName, operateDate);
+							for(Integer i = 0 ; i < queTitleArr.length ; i++){
+								lqm.addLoreQuestionSubInfo(lqId, loreType, queTitleArr[i], queSubArr[i], 1, operateUserName, operateDate);
+							}
 						}
 					}else{
 						//增加子表
-						lqm.addLoreQuestionSubInfo(lqList.get(0).getId(), loreType, queTitle, queSub, 1, operateUserName, operateDate);
+						lqId = lqList.get(0).getId();
+						for(Integer i = 0 ; i < queTitleArr.length ; i++){
+							lqm.addLoreQuestionSubInfo(lqId, loreType, queTitleArr[i], queSubArr[i], 1, operateUserName, operateDate);
+						}
 					}
 					msg = "success";
 				}else if(loreType.equals("点拨指导")){
 					List<LoreQuestion> lqList = lqm.listInfoByLoreId(loreId, loreType, -1);
-					String contentZt = Transcode.unescape_new1("titleZt", request);//主题内容
+					String contentZt = Transcode.unescape_new1("contentZt", request);//主题内容
 					Integer lqId = 0;
 					if(lqList.size() == 0){//未增加过
 						//增加主表和子表
