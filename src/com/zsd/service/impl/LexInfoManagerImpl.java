@@ -108,13 +108,12 @@ public class LexInfoManagerImpl implements LexInfoManager{
 	}
 
 	@Override
-	public List<LexInfo> listInfoByOpt(String titleName, String titlePyCode,
-			String queryOpt) throws WEBException {
+	public List<LexInfo> listInfoByOpt(String titleName, String titlePyCode) throws WEBException {
 		// TODO Auto-generated method stub
 		try {
 			lexDao = (LexInfoDao)DaoFactory.instance(null).getDao(Constants.DAO_LEX_INFO);
 			Session sess = HibernateUtil.currentSession();
-			return lexDao.findInfoByOpt(sess, titleName, titlePyCode, queryOpt);
+			return lexDao.findInfoByOpt(sess, titleName, titlePyCode);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -126,13 +125,12 @@ public class LexInfoManagerImpl implements LexInfoManager{
 
 	@Override
 	public List<LexInfo> listPageInfoByOpt(String titleName,
-			String titlePyCode, String queryOpt, Integer pageNo,
-			Integer pageSize) throws WEBException {
+			String titlePyCode, Integer pageNo,Integer pageSize) throws WEBException {
 		// TODO Auto-generated method stub
 		try {
 			lexDao = (LexInfoDao)DaoFactory.instance(null).getDao(Constants.DAO_LEX_INFO);
 			Session sess = HibernateUtil.currentSession();
-			return lexDao.findPageInfoByOpt(sess, titleName, titlePyCode, queryOpt, pageNo, pageSize);
+			return lexDao.findPageInfoByOpt(sess, titleName, titlePyCode, pageNo, pageSize);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -143,13 +141,12 @@ public class LexInfoManagerImpl implements LexInfoManager{
 	}
 
 	@Override
-	public Integer getCountByOpt(String titleName, String titlePyCode,
-			String queryOpt) throws WEBException {
+	public Integer getCountByOpt(String titleName, String titlePyCode) throws WEBException {
 		// TODO Auto-generated method stub
 		try {
 			lexDao = (LexInfoDao)DaoFactory.instance(null).getDao(Constants.DAO_LEX_INFO);
 			Session sess = HibernateUtil.currentSession();
-			return lexDao.getCountByOpt(sess, titleName, titlePyCode, queryOpt);
+			return lexDao.getCountByOpt(sess, titleName, titlePyCode);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -162,20 +159,62 @@ public class LexInfoManagerImpl implements LexInfoManager{
 	@Override
 	public Integer addLLR(Integer lexId, Integer loreId) throws WEBException {
 		// TODO Auto-generated method stub
-		return null;
+		try {
+			lexDao = (LexInfoDao)DaoFactory.instance(null).getDao(Constants.DAO_LEX_INFO);
+			loreDao = (LoreInfoDao)DaoFactory.instance(null).getDao(Constants.DAO_LORE_INFO);
+			Session sess = HibernateUtil.currentSession();
+			tran = sess.beginTransaction();
+			LexLoreRelateInfo llr = new LexLoreRelateInfo(lexDao.getEntityById(sess, lexId),loreDao.getEntityById(sess, loreId));
+			lexDao.saveLlr(sess, llr);
+			tran.commit();
+			return llr.getId();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new WEBException("增加知识点词库关联时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
 	}
 
 	@Override
 	public boolean delLLRById(Integer llrId) throws WEBException {
 		// TODO Auto-generated method stub
-		return false;
+		try {
+			lexDao = (LexInfoDao)DaoFactory.instance(null).getDao(Constants.DAO_LEX_INFO);
+			Session sess = HibernateUtil.currentSession();
+			tran = sess.beginTransaction();
+			LexLoreRelateInfo llr = lexDao.getEntityByLlrId(sess, llrId);
+			if(llr != null){
+				lexDao.deleteLlr(sess, llr);
+				tran.commit();
+				return true;
+			}
+			return false;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new WEBException("删除指定知识点词库关联时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
 	}
 
 	@Override
 	public List<LexLoreRelateInfo> listInfoByOpt(Integer lexId, Integer loreId)
 			throws WEBException {
 		// TODO Auto-generated method stub
-		return null;
+		try {
+			lexDao = (LexInfoDao)DaoFactory.instance(null).getDao(Constants.DAO_LEX_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return lexDao.findInfoByOpt(sess, lexId, loreId);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new WEBException("根据条件查询知识点词库关联信息列表时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
 	}
 
 }

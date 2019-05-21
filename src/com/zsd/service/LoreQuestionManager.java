@@ -223,5 +223,44 @@ public interface LoreQuestionManager {
 	 */
 	LoreQuestionSubInfo getEntityByLqsId(Integer lqsId)throws WEBException;
 	
+	/**
+	 * 获取指定知识点下所有的知识清单和点拨指导的题库
+	 * @author wm
+	 * @date 2019-5-21 上午10:44:54
+	 * @param loreId 知识点编号
+	 * @return
+	 */
+	List<LoreQuestionSubInfo> listInfoByLoreId(Integer loreId)throws WEBException;
 	
+	/**
+	 * 根据词库编号获取题库列表
+	 * @author wm
+	 * @date 2019-5-21 上午11:52:48
+	 * @param lexId 词库编号
+	 * @return
+	 * @throws WEBException
+	 */
+	List<LoreQuestion> listInfoByLexId(Integer lexId)throws WEBException;
+	
+	/**
+	 * 根据提示编号获取题库列表
+	 * @author wm
+	 * @date 2019-5-21 上午11:53:05
+	 * @param tipsId 提示编号
+	 * @return
+	 * @throws WEBException
+	 */
+	List<LoreQuestion> listInfoByTipsId(Integer tipsId)throws WEBException;
+	
+	/**
+	 * 修改指定题库的提示编号、词库编号
+	 * @author wm
+	 * @date 2019-5-21 上午11:57:47
+	 * @param lqId
+	 * @param lexId 词库编号(0时不修改)
+	 * @param tipsId 提示编号(0时不修改)
+	 * @return
+	 * @throws WEBException
+	 */
+	boolean updateSimpleInfoByLqId(Integer lqId,Integer lexId,Integer tipsId)throws WEBException;
 }

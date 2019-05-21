@@ -358,4 +358,84 @@ public class LoreQuestionManagerImpl implements LoreQuestionManager{
 		}
 	}
 
+	@Override
+	public List<LoreQuestionSubInfo> listInfoByLoreId(Integer loreId) throws WEBException{
+		// TODO Auto-generated method stub
+		try {
+			lqsDao = (LoreQuestionSubDao) DaoFactory.instance(null).getDao(Constants.DAO_LORE_QUESTION_SUB_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return lqsDao.findInfoByLoreId(sess, loreId);
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			throw new WEBException("获取指定知识点下所有的知识清单和点拨指导的题库时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public List<LoreQuestion> listInfoByLexId(Integer lexId)
+			throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			lqDao = (LoreQuestionDao) DaoFactory.instance(null).getDao(Constants.DAO_LORE_QUESTION_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return lqDao.findInfoByLexId(sess, lexId);
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			throw new WEBException("根据词库编号获取题库列表时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public List<LoreQuestion> listInfoByTipsId(Integer tipsId)
+			throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			lqDao = (LoreQuestionDao) DaoFactory.instance(null).getDao(Constants.DAO_LORE_QUESTION_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return lqDao.findInfoByTipsId(sess, tipsId);
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			throw new WEBException("根据提示编号获取题库列表时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public boolean updateSimpleInfoByLqId(Integer lqId, Integer lexId,
+			Integer tipsId) throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			lqDao = (LoreQuestionDao) DaoFactory.instance(null).getDao(Constants.DAO_LORE_QUESTION_INFO);
+			Session sess = HibernateUtil.currentSession();
+			tran = sess.beginTransaction();
+			LoreQuestion lq = lqDao.getEntityById(sess, lqId);
+			if(lq != null){
+				if(tipsId > 0){
+					lq.setQueTips(tipsId);
+				}
+				if(lexId > 0){
+					lq.setLexId(lexId);
+				}
+				lqDao.update(sess, lq);
+				tran.commit();
+				return true;
+			}
+			return false;
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			throw new WEBException("修改指定题库的提示编号、词库编号时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
 }

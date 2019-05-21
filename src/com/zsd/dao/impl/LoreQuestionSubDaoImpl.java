@@ -61,4 +61,14 @@ public class LoreQuestionSubDaoImpl implements LoreQuestionSubDao{
 		return null;
 	}
 
+	@Override
+	public List<LoreQuestionSubInfo> findInfoByLoreId(Session sess,
+			Integer loreId) {
+		// TODO Auto-generated method stub
+		String hql = " from LoreQuestionSubInfo as lqs where lqs.loreQuestion.loreInfo.id = "+loreId;
+		hql += " and lqs.loreQuestion.loreTypeName in('知识清单','点拨指导')";
+		hql += " order by lqs.loreQuestion.queOrder asc";
+		return sess.createQuery(hql).list();
+	}
+
 }

@@ -404,6 +404,15 @@ public class CommonTools {
 
 	
 	public static void main(String[] args){
-		
+		for(int i = 1 ; i <= 100 ; i++){
+			System.out.println(i);
+			try {
+				Thread.sleep(1000);
+				new Thread().start();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 }

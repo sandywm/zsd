@@ -5,6 +5,7 @@
 package com.zsd.action.lore;
 
 import java.io.File;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -27,6 +28,7 @@ import com.zsd.factory.AppFactory;
 import com.zsd.module.Chapter;
 import com.zsd.module.Education;
 import com.zsd.module.GradeSubject;
+import com.zsd.module.LexInfo;
 import com.zsd.module.LoreInfo;
 import com.zsd.module.LoreQuestion;
 import com.zsd.module.LoreQuestionSubInfo;
@@ -34,6 +36,7 @@ import com.zsd.module.LoreRelateInfo;
 import com.zsd.page.PageConst;
 import com.zsd.service.ChapterManager;
 import com.zsd.service.EducationManager;
+import com.zsd.service.LexInfoManager;
 import com.zsd.service.LoreInfoManager;
 import com.zsd.service.LoreQuestionManager;
 import com.zsd.service.LoreRelateManager;
@@ -565,6 +568,14 @@ public class LoreAction extends DispatchAction {
 		Integer loreId = CommonTools.getFinalInteger("loreId", request);
 		Integer count = lqm.getCountByLoreId(loreId);
 		Map<String,Object> map = new HashMap<String,Object>();
+//		PrintWriter pw = response.getWriter(); 
+//		for(Integer i = 1 ; i <= 100 ; i++){
+//			pw.println("<script>");
+//			pw.println("document.write('<div>" + i + "</div>');");
+//			pw.println("</script>");
+//			pw.flush();
+//			Thread.sleep(500);
+//		}
 		String msg = "暂无记录";
 		if(count > 0){
 			msg = "success";
@@ -591,6 +602,46 @@ public class LoreAction extends DispatchAction {
 	}
 	
 	/**
+	 * 获取当前知识点下的提示列表(知识清单，点拨指导)
+	 * @author wm
+	 * @date 2019-5-21 上午09:37:33
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getCurrLoreTipsJson(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
+		Integer loreId = CommonTools.getFinalInteger("loreId", request);
+		//通过知识点编号获取该知识点下的知识清单和点拨指导
+		List<LoreQuestionSubInfo> lqsList = lqm.listInfoByLoreId(loreId);
+		String msg = "noInfo";
+		Map<String,Object> map = new HashMap<String,Object>();
+		if(lqsList.size() > 0){
+			msg = "success";
+			List<Object> list_d = new ArrayList<Object>();
+			for(Iterator<LoreQuestionSubInfo> it = lqsList.iterator() ; it.hasNext();){
+				LoreQuestionSubInfo lqs = it.next();
+				Map<String,Object> map_d = new HashMap<String,Object>();
+				map_d.put("lqsId", lqs.getId());
+				map_d.put("lqsTitle", lqs.getLqsTitle());
+				map_d.put("lqsContent", lqs.getLqsContent());
+				map_d.put("lqsType", lqs.getLoreTypeName());
+				map_d.put("selStatus", false);
+				list_d.add(map_d);
+			}
+			map.put("tipsList", list_d);
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
 	 * 获取知识点题库详情
 	 * @author wm
 	 * @date 2019-5-10 上午08:42:21
@@ -605,6 +656,7 @@ public class LoreAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
 		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
+		LexInfoManager lexm = (LexInfoManager) AppFactory.instance(null).getApp(Constants.WEB_LEX_INFO);
 		Integer lqId = CommonTools.getFinalInteger("lqId", request);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "noInfo";
@@ -663,7 +715,11 @@ public class LoreAction extends DispatchAction {
 				Integer lexId = lq.getLexId();
 				map_d.put("lexId", lexId);
 				if(lexId > 0){
-					//后续增加
+					LexInfo lex = lexm.getEntityById(lexId);
+					if(lex != null){
+						map_d.put("lexTitle", lex.getLexTitle());
+						map_d.put("lexContent", lex.getLexContent());
+					}
 				}
 				map_d.put("lqSub", lq.getQueSub());
 				String answerA = lq.getA();
@@ -715,13 +771,37 @@ public class LoreAction extends DispatchAction {
 				map_d.put("lqResolution", lq.getQueResolution());
 				Integer queTipId = lq.getQueTips();
 				map_d.put("queTipId", queTipId);
-				if(queTipId > 0){//提示为知识清单或者点拨指导的一内容
-					LoreQuestionSubInfo  lqs = lqm.getEntityByLqsId(queTipId);
-					if(lqs != null){
-						map_d.put("queTipTitle", lqs.getLqsTitle());
-						map_d.put("queTipCon", lqs.getLqsContent());
-						map_d.put("queTipType", lqs.getLoreTypeName());
+				List<LoreQuestionSubInfo> lqsList = lqm.listInfoByLoreId(lq.getLoreInfo().getId());
+				if(lqsList.size() > 0){
+					List<Object> list_d_1 = new ArrayList<Object>();
+					if(queTipId > 0){//提示为知识清单或者点拨指导的一内容
+						for(Iterator<LoreQuestionSubInfo> it = lqsList.iterator() ; it.hasNext();){
+							LoreQuestionSubInfo lqs = it.next();
+							Map<String,Object> map_d_1 = new HashMap<String,Object>();
+							map_d_1.put("lqsId", lqs.getId());
+							map_d_1.put("lqsTitle", lqs.getLqsTitle());
+							map_d_1.put("lqsContent", lqs.getLqsContent());
+							map_d_1.put("lqsType", lqs.getLoreTypeName());
+							if(queTipId.equals(lqs.getId())){
+								map_d_1.put("selStatus", true);
+							}else{
+								map_d_1.put("selStatus", false);
+							}
+							list_d_1.add(map_d_1);
+						}
+					}else{
+						for(Iterator<LoreQuestionSubInfo> it = lqsList.iterator() ; it.hasNext();){
+							LoreQuestionSubInfo lqs = it.next();
+							Map<String,Object> map_d_1 = new HashMap<String,Object>();
+							map_d_1.put("lqsId", lqs.getId());
+							map_d_1.put("lqsTitle", lqs.getLqsTitle());
+							map_d_1.put("lqsContent", lqs.getLqsContent());
+							map_d_1.put("lqsType", lqs.getLoreTypeName());
+							map_d_1.put("selStatus", false);
+							list_d_1.add(map_d_1);
+						}
 					}
+					map_d.put("tipsList", list_d_1);
 				}
 				map_d.put("lqType", loreType);
 				list_d.add(map_d);
@@ -893,8 +973,8 @@ public class LoreAction extends DispatchAction {
 	public ActionForward getLoreQuestionData(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
+		LexInfoManager lexm = (LexInfoManager) AppFactory.instance(null).getApp(Constants.WEB_LEX_INFO);
 		Integer loreId = CommonTools.getFinalInteger("loreId", request);
-//		String loreType = Transcode.unescape_new1("loreType", request);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "noInfo";
 		List<LoreQuestion> lqList = lqm.listInfoByLoreId(loreId, "", 0);
@@ -1010,7 +1090,12 @@ public class LoreAction extends DispatchAction {
 						}
 					}
 					Integer lexId = lq.getLexId();
-					//后期加上
+					if(lexId > 0){
+						LexInfo lex = lexm.getEntityById(lexId);
+						if(lex != null){
+							map_d.put("lexTitle", lex.getLexTitle());
+						}
+					}
 					if(loreType_db.equals("巩固训练")){
 						list_d_ggxl.add(map_d);
 					}else if(loreType_db.equals("针对性诊断")){

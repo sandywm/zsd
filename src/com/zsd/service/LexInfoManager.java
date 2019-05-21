@@ -59,11 +59,10 @@ public interface LexInfoManager {
 	 * @date 2019-5-20 下午04:47:48
 	 * @param titleName 词库标题(""全部)
 	 * @param titlePyCode 词库标题拼音码(""全部)
-	 * @param queryOpt 查询条件(mc:名称查询,py:拼音查询)
 	 * @return
 	 * @throws WEBException
 	 */
-	List<LexInfo> listInfoByOpt(String titleName,String titlePyCode, String queryOpt) throws WEBException;
+	List<LexInfo> listInfoByOpt(String titleName,String titlePyCode) throws WEBException;
 	
 	/**
 	 * 根据条件分页查询词库记录列表
@@ -71,13 +70,12 @@ public interface LexInfoManager {
 	 * @date 2019-5-20 下午04:48:21
 	 * @param titleName 词库标题(""全部)
 	 * @param titlePyCode 词库标题拼音码(""全部)
-	 * @param queryOpt 查询条件(mc:名称查询,py:拼音查询)
 	 * @param pageNo
 	 * @param pageSize
 	 * @return
 	 * @throws WEBException
 	 */
-	List<LexInfo> listPageInfoByOpt(String titleName,String titlePyCode, String queryOpt,Integer pageNo,Integer pageSize) throws WEBException;
+	List<LexInfo> listPageInfoByOpt(String titleName,String titlePyCode,Integer pageNo,Integer pageSize) throws WEBException;
 	
 	/**
 	 * 根据条件获取词库记录条数
@@ -85,11 +83,10 @@ public interface LexInfoManager {
 	 * @date 2019-5-20 下午04:48:42
 	 * @param titleName 词库标题(""全部)
 	 * @param titlePyCode 词库标题拼音码(""全部)
-	 * @param queryOpt 查询条件(mc:名称查询,py:拼音查询)
 	 * @return
 	 * @throws WEBException
 	 */
-	Integer getCountByOpt(String titleName,String titlePyCode, String queryOpt) throws WEBException;
+	Integer getCountByOpt(String titleName,String titlePyCode) throws WEBException;
 	
 	/**
 	 * 增加知识点词库关联信息
@@ -103,7 +100,7 @@ public interface LexInfoManager {
 	Integer addLLR(Integer lexId,Integer loreId) throws WEBException;
 	
 	/**
-	 * 删除指定编号的知识点词库关联信息
+	 * 删除指定编号的知识点词库关联信息（同时需要题库中的lexId=0）
 	 * @author wm
 	 * @date 2019-5-20 下午05:08:30
 	 * @param llrId

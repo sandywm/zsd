@@ -52,6 +52,14 @@
     <action path="/loreRelate" parameter="action" scope="request" type="com.zsd.action.loreRelate.LoreRelateAction">
       <set-property property="cancellable" value="true" />
     </action>
+    <!-- 词库关联 -->
+    <action path="/lex" parameter="action" scope="request" type="com.zsd.action.lex.LexAction">
+      <set-property property="cancellable" value="true" />
+    </action>
+    <!-- 自助餐管理 -->
+    <action path="/buffet" parameter="action" scope="request"  type="com.zsd.action.buffet.BuffetAction">
+      <set-property property="cancellable" value="true" />
+    </action>
 
   </action-mappings>
 

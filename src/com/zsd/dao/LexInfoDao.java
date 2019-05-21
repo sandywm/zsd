@@ -58,10 +58,9 @@ public interface LexInfoDao {
 	 * @param sess
 	 * @param titleName 词库标题(""全部)
 	 * @param titlePyCode 词库标题拼音码(""全部)
-	 * @param queryOpt 查询条件(mc:名称查询,py:拼音查询)
 	 * @return
 	 */
-	List<LexInfo> findInfoByOpt(Session sess,String titleName,String titlePyCode,String queryOpt);
+	List<LexInfo> findInfoByOpt(Session sess,String titleName,String titlePyCode);
 	
 	/**
 	 * 根据条件分页查询词库记录列表
@@ -70,12 +69,11 @@ public interface LexInfoDao {
 	 * @param sess
 	 * @param titleName  词库标题(""全部)
 	 * @param titlePyCode 词库标题拼音码(""全部)
-	 * @param queryOpt 查询条件(mc:名称查询,py:拼音查询)
 	 * @param pageNo
 	 * @param pageSize
 	 * @return
 	 */
-	List<LexInfo> findPageInfoByOpt(Session sess,String titleName,String titlePyCode,String queryOpt,Integer pageNo,Integer pageSize);
+	List<LexInfo> findPageInfoByOpt(Session sess,String titleName,String titlePyCode,Integer pageNo,Integer pageSize);
 	
 	/**
 	 * 根据条件获取词库记录条数
@@ -84,10 +82,9 @@ public interface LexInfoDao {
 	 * @param sess
 	 * @param titleName  词库标题(""全部)
 	 * @param titlePyCode 词库标题拼音码(""全部)
-	 * @param queryOpt 查询条件(mc:名称查询,py:拼音查询)
 	 * @return
 	 */
-	Integer getCountByOpt(Session sess,String titleName,String titlePyCode,String queryOpt);
+	Integer getCountByOpt(Session sess,String titleName,String titlePyCode);
 	
 	/**
 	 * 根据主键获取知识点词库关联信息实体

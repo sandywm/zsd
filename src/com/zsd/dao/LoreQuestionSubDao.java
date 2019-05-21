@@ -78,4 +78,14 @@ public interface LoreQuestionSubDao {
 	 * @return
 	 */
 	LoreQuestionSubInfo getEntityById(Session sess,Integer id);
+	
+	/**
+	 * 获取指定知识点下所有的知识清单和点拨指导的题库
+	 * @author wm
+	 * @date 2019-5-21 上午10:37:28
+	 * @param sess
+	 * @param loreId 知识点编号
+	 * @return
+	 */
+	List<LoreQuestionSubInfo> findInfoByLoreId(Session sess,Integer loreId);
 } 

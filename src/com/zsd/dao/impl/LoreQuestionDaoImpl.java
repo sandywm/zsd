@@ -87,4 +87,18 @@ public class LoreQuestionDaoImpl implements LoreQuestionDao{
 		return sess.createQuery(hql).list();
 	}
 
+	@Override
+	public List<LoreQuestion> findInfoByLexId(Session sess, Integer lexId) {
+		// TODO Auto-generated method stub
+		String hql = " from LoreQuestion as lq where lq.lexId = "+lexId;
+		return sess.createQuery(hql).list();
+	}
+
+	@Override
+	public List<LoreQuestion> findInfoByTipsId(Session sess, Integer tipsId) {
+		// TODO Auto-generated method stub
+		String hql = " from LoreQuestion as lq where lq.queTips = "+tipsId;
+		return sess.createQuery(hql).list();
+	}
+
 }

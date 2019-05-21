@@ -1,6 +1,5 @@
 package com.zsd.service.impl;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -12,8 +11,6 @@ import com.zsd.dao.LoreInfoDao;
 import com.zsd.exception.WEBException;
 import com.zsd.factory.DaoFactory;
 import com.zsd.module.BuffetQueInfo;
-import com.zsd.module.BuffetTypeInfo;
-import com.zsd.module.LoreInfo;
 import com.zsd.service.BuffetQueInfoManager;
 import com.zsd.tools.HibernateUtil;
 import com.zsd.util.Constants;
@@ -125,8 +122,6 @@ public class BuffetQueManagerImpl implements BuffetQueInfoManager{
 		// TODO Auto-generated method stub
 		try {
 			bqDao = (BuffetQueInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_BUFFET_QUE_INFO);
-			baDao = (BuffetAllDao) DaoFactory.instance(null).getDao(Constants.DAO_BUFFET_ALL_INFO);
-			lDao = (LoreInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_LORE_INFO);
 			Session sess = HibernateUtil.currentSession();
 			tran = sess.beginTransaction();
 			BuffetQueInfo bq = bqDao.getEntityById(sess, buffetId);

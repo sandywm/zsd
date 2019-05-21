@@ -1,0 +1,28 @@
+package com.zsd.module.json;
+
+import java.util.List;
+
+public class LoreTreeMenu {
+	private Integer id;
+    private String name;
+    private List<LoreTreeMenu> menus;
+	public Integer getId() {
+		return id;
+	}
+	public void setId(Integer id) {
+		this.id = id;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public List<LoreTreeMenu> getMenus() {
+		return menus;
+	}
+	public void setMenus(List<LoreTreeMenu> menus) {
+		this.menus = menus;
+	}
+}

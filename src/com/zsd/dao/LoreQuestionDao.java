@@ -83,6 +83,23 @@ public interface LoreQuestionDao {
 	 */
 	List<LoreQuestion> findInfoByOpt(Session sess,Integer loreId,String loreType,Integer inUse);
 	
+	/**
+	 * 根据词库编号获取题库列表
+	 * @author wm
+	 * @date 2019-5-21 上午11:49:06
+	 * @param sess
+	 * @param lexId 词库编号 
+	 * @return
+	 */
+	List<LoreQuestion> findInfoByLexId(Session sess,Integer lexId);
 	
-	
+	/**
+	 * 根据提示编号获取词库列表
+	 * @author wm
+	 * @date 2019-5-21 上午11:50:34
+	 * @param sess
+	 * @param tipsId 提示编号
+	 * @return
+	 */
+	List<LoreQuestion> findInfoByTipsId(Session sess,Integer tipsId);
 }

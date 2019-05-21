@@ -42,13 +42,12 @@ public class LexInfoDaoImpl implements LexInfoDao{
 	}
 
 	@Override
-	public List<LexInfo> findInfoByOpt(Session sess, String titleName,
-			String titlePyCode, String queryOpt) {
+	public List<LexInfo> findInfoByOpt(Session sess, String titleName,String titlePyCode) {
 		// TODO Auto-generated method stub
 		String hql = " from LexInfo as lex where 1=1";
-		if(!titleName.equals("") && queryOpt.equals("mc")){
+		if(!titleName.equals("")){
 			hql += " and lex.lexTitle like '"+titleName+"'";
-		}else if(!titlePyCode.equals("")  && queryOpt.equals("py")){
+		}else if(!titlePyCode.equals("")){
 			hql += " and lex.lexTitlePy like '"+titlePyCode+"'";
 		}
 		return sess.createQuery(hql).list();
@@ -56,13 +55,12 @@ public class LexInfoDaoImpl implements LexInfoDao{
 
 	@Override
 	public List<LexInfo> findPageInfoByOpt(Session sess, String titleName,
-			String titlePyCode, String queryOpt, Integer pageNo,
-			Integer pageSize) {
+			String titlePyCode, Integer pageNo,Integer pageSize) {
 		// TODO Auto-generated method stub
 		String hql = " from LexInfo as lex where 1=1";
-		if(!titleName.equals("") && queryOpt.equals("mc")){
+		if(!titleName.equals("")){
 			hql += " and lex.lexTitle like '"+titleName+"'";
-		}else if(!titlePyCode.equals("")  && queryOpt.equals("py")){
+		}else if(!titlePyCode.equals("")){
 			hql += " and lex.lexTitlePy like '"+titlePyCode+"'";
 		}
 		int offset = (pageNo - 1) * pageSize;
@@ -73,13 +71,12 @@ public class LexInfoDaoImpl implements LexInfoDao{
 	}
 
 	@Override
-	public Integer getCountByOpt(Session sess, String titleName,
-			String titlePyCode, String queryOpt) {
+	public Integer getCountByOpt(Session sess, String titleName,String titlePyCode) {
 		// TODO Auto-generated method stub
 		String hql = "select count(lex.id) from LexInfo as lex where 1=1";
-		if(!titleName.equals("") && queryOpt.equals("mc")){
+		if(!titleName.equals("")){
 			hql += " and lex.lexTitle like '"+titleName+"'";
-		}else if(!titlePyCode.equals("")  && queryOpt.equals("py")){
+		}else if(!titlePyCode.equals("")){
 			hql += " and lex.lexTitlePy like '"+titlePyCode+"'";
 		}
 		Object countObj = sess.createQuery(hql).uniqueResult();
