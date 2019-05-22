@@ -1047,28 +1047,29 @@ public class LoreAction extends DispatchAction {
 						//需要匹配出选项
 						String[] answerQueArr = queAnswer.split(",");
 						String queAnswer_text = "";
+						String replaceStr = "Module/commonJs/ueditor/jsp/lore/";
 						for(Integer i = 0 ; i < answerQueArr.length ; i++){
-							if(answerQueArr[i].equals(answerA.replace("Module/commonJs/ueditor/jsp/lore/",""))){
+							if(answerQueArr[i].equals(answerA.replace(replaceStr,""))){
 								queAnswer_text += "A,";
 								continue;
 							}
-							if(answerQueArr[i].equals(answerB.replace("Module/commonJs/ueditor/jsp/lore/",""))){
+							if(answerQueArr[i].equals(answerB.replace(replaceStr,""))){
 								queAnswer_text += "B,";
 								continue;
 							}
-							if(answerQueArr[i].equals(answerC.replace("Module/commonJs/ueditor/jsp/lore/",""))){
+							if(answerQueArr[i].equals(answerC.replace(replaceStr,""))){
 								queAnswer_text += "C,";
 								continue;
 							}
-							if(answerQueArr[i].equals(answerD.replace("Module/commonJs/ueditor/jsp/lore/",""))){
+							if(answerQueArr[i].equals(answerD.replace(replaceStr,""))){
 								queAnswer_text += "D,";
 								continue;
 							}
-							if(answerQueArr[i].equals(answerE.replace("Module/commonJs/ueditor/jsp/lore/",""))){
+							if(answerQueArr[i].equals(answerE.replace(replaceStr,""))){
 								queAnswer_text += "E,";
 								continue;
 							}
-							if(answerQueArr[i].equals(answerF.replace("Module/commonJs/ueditor/jsp/lore/",""))){
+							if(answerQueArr[i].equals(answerF.replace(replaceStr,""))){
 								queAnswer_text += "F,";
 								continue;
 							}
@@ -1086,8 +1087,10 @@ public class LoreAction extends DispatchAction {
 					if(queTipId > 0){//有提示
 						LoreQuestionSubInfo  lqs = lqm.getEntityByLqsId(queTipId);
 						if(lqs != null){
-							map_d.put("queTipTitle", lqs.getLqsTitle());
+							map_d.put("queTipTitle", lqs.getLqsTitle()+"("+lqs.getLoreTypeName()+")");
 						}
+					}else{
+						map_d.put("queTipTitle","");
 					}
 					Integer lexId = lq.getLexId();
 					if(lexId > 0){
@@ -1095,6 +1098,8 @@ public class LoreAction extends DispatchAction {
 						if(lex != null){
 							map_d.put("lexTitle", lex.getLexTitle());
 						}
+					}else{
+						map_d.put("lexTitle", "");
 					}
 					if(loreType_db.equals("巩固训练")){
 						list_d_ggxl.add(map_d);

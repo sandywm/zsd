@@ -68,6 +68,8 @@ public class BuffetQueInfoDaoImpl implements BuffetQueInfoDao{
 		if(currNumFlag){
 			hql += " order by bq.buffetNum desc";
 			return sess.createQuery(hql).setFirstResult(0).setMaxResults(1).list();
+		}else{
+			hql += " order by bq.order asc";
 		}
 		return sess.createQuery(hql).list();
 	}

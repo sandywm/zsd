@@ -11,6 +11,7 @@ import java.net.URL;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -404,15 +405,15 @@ public class CommonTools {
 
 	
 	public static void main(String[] args){
-		for(int i = 1 ; i <= 100 ; i++){
-			System.out.println(i);
-			try {
-				Thread.sleep(1000);
-				new Thread().start();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+		Integer items[] = {1,2,3,4,5,11,12,21};
+		Integer[] need_del_items =  {2,11,4};
+	    List<Integer> list1=Arrays.asList(items);
+	    List<Integer> arrList = new ArrayList<Integer>(list1); //这句话的重要性在上一节blog中有讲到
+	    for(Integer c : need_del_items){
+	    	Integer b = c;
+	        arrList.remove(b);
+	    }
+	    arrList.toArray();
+	    System.out.println(arrList);
 	}
 }

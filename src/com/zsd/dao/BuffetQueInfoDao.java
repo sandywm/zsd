@@ -75,7 +75,7 @@ public interface BuffetQueInfoDao {
 	 * @param loreId 知识点编号
 	 * @param btId 自助餐类型编号（0表示全部）
 	 * @param inUse 有效状态(-1：表示全部,0：有效，1：无效)
-	 * @param currNumFlag 是否获取当前类型下最大的题序号和排序号（true:是）
+	 * @param currNumFlag 是否获取当前类型下最大的题序号和排序号（true:是,false的时候按照order升序）
 	 * @return
 	 */
 	List<BuffetQueInfo> findInfoByOpt(Session sess,Integer loreId,Integer btId,Integer inUse,boolean currNumFlag);

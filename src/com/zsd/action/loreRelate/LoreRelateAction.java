@@ -244,8 +244,8 @@ public class LoreRelateAction extends DispatchAction {
 							for(Integer i = 0 ; i < num ; i++){
 								Integer mainLoreId_edi = lList_main.get(i).getId();
 								Integer rootLoreId_edi = lList_root.get(i).getId();
-								Long mainLoreCode =  Long.parseLong(lList_main.get(i).getLoreCode());
-								Long rootLoreCode =  Long.parseLong(lList_root.get(i).getLoreCode());
+								Long mainLoreCode =  Long.parseLong(lList_main.get(i).getLoreCode().replace("-", ""));
+								Long rootLoreCode =  Long.parseLong(lList_root.get(i).getLoreCode().replace("-", ""));
 								if(mainLoreCode > rootLoreCode){//主知识点编码大于子知识点编码
 									List<LoreRelateInfo>  lrList = lrm.listRelateInfoByOpt(mainLoreId_edi, rootLoreId_edi, -1, "");
 									if(lrList.size() == 0){

@@ -60,6 +60,10 @@
     <action path="/buffet" parameter="action" scope="request"  type="com.zsd.action.buffet.BuffetAction">
       <set-property property="cancellable" value="true" />
     </action>
+    <!-- 自助餐关联知识点 -->
+    <action path="/blr" parameter="action" scope="request"  type="com.zsd.action.buffet.BuffetLoreRelateAction">
+      <set-property property="cancellable" value="true" />
+    </action>
 
   </action-mappings>
 

@@ -49,7 +49,7 @@ public interface BuffetQueInfoManager {
 	BuffetQueInfo getEntityById(Integer buffetId) throws WEBException;
 	
 	/**
-	 * 根据知识点名称、自助餐基础类型、开启状态获取自助餐题库列表
+	 * 根据知识点名称、自助餐基础类型、开启状态获取自助餐题库列表（按照order升序）
 	 * @author wm
 	 * @date 2019-5-17 下午07:08:26
 	 * @param loreId 知识点编号
