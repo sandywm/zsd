@@ -59,9 +59,9 @@ public class LexInfoDaoImpl implements LexInfoDao{
 		// TODO Auto-generated method stub
 		String hql = " from LexInfo as lex where 1=1";
 		if(!titleName.equals("")){
-			hql += " and lex.lexTitle like '"+titleName+"'";
+			hql += " and lex.lexTitle like '%"+titleName+"%'";
 		}else if(!titlePyCode.equals("")){
-			hql += " and lex.lexTitlePy like '"+titlePyCode+"'";
+			hql += " and lex.lexTitlePy like '%"+titlePyCode+"%'";
 		}
 		int offset = (pageNo - 1) * pageSize;
 		if (offset < 0) {
@@ -75,9 +75,9 @@ public class LexInfoDaoImpl implements LexInfoDao{
 		// TODO Auto-generated method stub
 		String hql = "select count(lex.id) from LexInfo as lex where 1=1";
 		if(!titleName.equals("")){
-			hql += " and lex.lexTitle like '"+titleName+"'";
+			hql += " and lex.lexTitle like '%"+titleName+"%'";
 		}else if(!titlePyCode.equals("")){
-			hql += " and lex.lexTitlePy like '"+titlePyCode+"'";
+			hql += " and lex.lexTitlePy like '%"+titlePyCode+"%'";
 		}
 		Object countObj = sess.createQuery(hql).uniqueResult();
 		return CommonTools.longToInt(countObj);

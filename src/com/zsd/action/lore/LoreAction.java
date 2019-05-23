@@ -5,7 +5,6 @@
 package com.zsd.action.lore;
 
 import java.io.File;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -35,7 +34,6 @@ import com.zsd.module.LoreQuestionSubInfo;
 import com.zsd.module.LoreRelateInfo;
 import com.zsd.page.PageConst;
 import com.zsd.service.ChapterManager;
-import com.zsd.service.EducationManager;
 import com.zsd.service.LexInfoManager;
 import com.zsd.service.LoreInfoManager;
 import com.zsd.service.LoreQuestionManager;
@@ -1380,6 +1378,11 @@ public class LoreAction extends DispatchAction {
 				}else{
 					//只能增加重点，难点，关键点，易混点
 					msg = "addLast";
+				}
+			}else{
+				List<LoreQuestionSubInfo> lqsList = lqm.listLQSInfoByLqId(lqList.get(0).getId(), loreType);
+				if(lqsList.size() ==  0){
+					msg = "add";
 				}
 			}
 		}
