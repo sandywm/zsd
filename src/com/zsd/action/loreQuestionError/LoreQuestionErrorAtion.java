@@ -4,6 +4,12 @@
  */
 package com.zsd.action.loreQuestionError;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
@@ -12,6 +18,8 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
 
 import com.zsd.factory.AppFactory;
+import com.zsd.module.LoreQuestionErrorInfo;
+import com.zsd.page.PageConst;
 import com.zsd.service.LoreQuestionErrorManager;
 import com.zsd.tools.CommonTools;
 import com.zsd.util.Constants;
@@ -59,13 +67,73 @@ public class LoreQuestionErrorAtion extends DispatchAction {
 		String errorType = CommonTools.getFinalStr("errorType", request);
 		String sDate = CommonTools.getFinalStr("sDate", request);
 		String eDate = CommonTools.getFinalStr("eDate", request);
-		Integer updateStatus = CommonTools.getFinalInteger("updateStatus", request);
+		Integer updateStatus = CommonTools.getFinalInteger("updateStatus", request);//-1:全部,0:未修改,1:已修改
 		String opt = CommonTools.getFinalStr("opt", request);//类型(stu,admin)
 		Integer addUserId = 0;
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "暂无记录";
 		if(opt.equals("stu")){
 			addUserId = CommonTools.getLoginUserId(request);
 		}
-//		Integer count = lqem.getCountByOptions(addUserId, loreQuestionId, sDate, eDate, updateStatus, errorType);
+		Integer count = lqem.getCountByOptions(addUserId, sDate, eDate, errorType,updateStatus);
+		if(count > 0){
+			msg = "success";
+			Integer pageSize = PageConst.getPageSize(String.valueOf(request.getParameter("limit")), 10);//等同于pageSize
+			Integer pageNo = CommonTools.getFinalInteger("page", request);//等同于pageNo
+			List<LoreQuestionErrorInfo> lqeList = lqem.listPageInfoByOptions(addUserId, sDate, eDate, errorType, updateStatus, pageNo, pageSize);
+			List<Object> list_d = new ArrayList<Object>();
+			for(Iterator<LoreQuestionErrorInfo> it = lqeList.iterator() ; it.hasNext();){
+				LoreQuestionErrorInfo lqe = it.next();
+				Map<String,Object> map_d = new HashMap<String,Object>();
+				map_d.put("loreName", lqe.getLoreQuestion().getLoreInfo().getLoreName());
+				map_d.put("lqTitle", lqe.getLoreQuestion().getQueTitle());
+				map_d.put("content", lqe.getContent());
+				String errorType_text = lqe.getErrorType();
+				if(errorType_text.equals("noPicError")){
+					errorType_text = "图片错误";
+				}else if(errorType_text.equals("contentError")){
+					errorType_text = "内容错误";
+				}else if(errorType_text.equals("anserError")){
+					errorType_text = "答案错误";
+				}else if(errorType_text.equals("otherError")){
+					errorType_text = "其他错误";
+				}
+				map_d.put("errorType", errorType_text);
+				map_d.put("addate", lqe.getAddDate());
+				map_d.put("addUserName", lqe.getUser().getRealName());
+				map_d.put("updateStatuc", lqe.getCheckStatus().equals(0) ? "未修改" : "已修改");
+				map_d.put("updateUserName", lqe.getOperateUserName());
+				map_d.put("updateDate", lqe.getOperateDate());
+				map_d.put("remark", lqe.getRemark());
+				list_d.add(map_d);
+			}
+			map.put("data", list_d);
+			map.put("count", count);
+			map.put("code", 0);
+		}
+		map.put("msg", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 获取错题详情
+	 * @author wm
+	 * @date 2019-5-23 下午06:39:23
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getLqeDetail(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		LoreQuestionErrorManager lqem = (LoreQuestionErrorManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_ERROR_INFO);
+//		Integer lqeId = 
+		
+		
 		return null;
 	}
 }

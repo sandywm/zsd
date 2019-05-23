@@ -94,13 +94,13 @@ public class LoreQuestionErrorManagerImpl implements LoreQuestionErrorManager{
 
 	@Override
 	public List<LoreQuestionErrorInfo> listPageInfoByOptions(Integer userId, String sDate, String eDate,
-			Integer checkStatus, String errorType, Integer updateStatus,
+			String errorType, Integer updateStatus,
 			Integer pageNo, Integer pageSize) throws WEBException {
 		// TODO Auto-generated method stub
 		try {
 			lqeDao = (LoreQuestionErrorDao) DaoFactory.instance(null).getDao(Constants.DAO_LORE_QUESTION_ERROR_INFO);
 			Session sess = HibernateUtil.currentSession();
-			return lqeDao.findPageInfoByOpt(sess, errorType, sDate, eDate, checkStatus, pageNo, pageSize);
+			return lqeDao.findPageInfoByOpt(sess, userId,errorType, sDate, eDate, updateStatus, pageNo, pageSize);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -111,13 +111,13 @@ public class LoreQuestionErrorManagerImpl implements LoreQuestionErrorManager{
 	}
 
 	@Override
-	public Integer getCountByOptions(Integer userId, String sDate, String eDate, Integer checkStatus, String errorType,
+	public Integer getCountByOptions(Integer userId, String sDate, String eDate, String errorType,
 			Integer updateStatus) throws WEBException {
 		// TODO Auto-generated method stub
 		try {
 			lqeDao = (LoreQuestionErrorDao) DaoFactory.instance(null).getDao(Constants.DAO_LORE_QUESTION_ERROR_INFO);
 			Session sess = HibernateUtil.currentSession();
-			return lqeDao.getCountByOpt(sess, errorType, sDate, eDate, checkStatus);
+			return lqeDao.getCountByOpt(sess, userId, errorType, sDate, eDate, updateStatus);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

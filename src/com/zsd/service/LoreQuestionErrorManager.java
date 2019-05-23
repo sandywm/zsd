@@ -50,32 +50,32 @@ public interface LoreQuestionErrorManager {
 	 * 分页获取错题列表
 	 * @author wm
 	 * @date 2019-5-23 下午05:28:43
-	 * @param userId 提交人员编号
-	 * @param addDate 提交日期
-	 * @param checkStatus 审核状态
-	 * @param errorType 错误类型
-	 * @param updateStatus 修改状态
+	 * @param userId 提交人员编号(0表示全部)
+	 * @param sDate 开始日期
+	 * @param sDate 结束日期
+	 * @param errorType 错误类型(""表示全部,noPicError:没有图片,contentError:内容错误,anserError:答案错误,otherError:其他错误)
+	 * @param updateStatus 修改状态(-1:全部,0:未修改,1:已修改)
 	 * @param pageNo 页码
 	 * @param pageSize 每页记录条数
 	 * @return
 	 * @throws WEBException
 	 */
-	List<LoreQuestionErrorInfo> listPageInfoByOptions(Integer userId,String sDate,String eDate, Integer checkStatus,
+	List<LoreQuestionErrorInfo> listPageInfoByOptions(Integer userId,String sDate,String eDate,
 			String errorType,Integer updateStatus,Integer pageNo, Integer pageSize) throws WEBException;
 	
 	/**
 	 * 获取错题记录条数
 	 * @author wm
 	 * @date 2019-5-23 下午05:29:09
-	 * @param userId 提交人员编号
-	 * @param addDate 提交日期
-	 * @param checkStatus 审核状态
-	 * @param errorType 错误类型
-	 * @param updateStatus 修改状态
+	 * @param userId 提交人员编号(0表示全部)
+	 * @param sDate 开始日期
+	 * @param sDate 结束日期
+	 * @param errorType 错误类型(""表示全部,noPicError:没有图片,contentError:内容错误,anserError:答案错误,otherError:其他错误)
+	 * @param updateStatus 修改状态(-1:全部,0:未修改,1:已修改)
 	 * @param pageNo 页码
 	 * @param pageSize 每页记录条数
 	 * @return
 	 * @throws WEBException
 	 */
-	Integer getCountByOptions(Integer userId,String sDate,String eDate,Integer checkStatus,String errorType,Integer updateStatus) throws WEBException;
+	Integer getCountByOptions(Integer userId,String sDate,String eDate,String errorType,Integer updateStatus) throws WEBException;
 }

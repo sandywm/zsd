@@ -47,8 +47,8 @@ public class LoreQuestionErrorDaoImpl implements LoreQuestionErrorDao{
 	}
 
 	@Override
-	public List<LoreQuestionErrorInfo> findPageInfoByOpt(Session sess,
-			String errorType, String sDate, String eDate, Integer checkStatus,Integer pageNo,Integer pageSize) {
+	public List<LoreQuestionErrorInfo> findPageInfoByOpt(Session sess,Integer userId,
+			String errorType, String sDate, String eDate, Integer updateStatus,Integer pageNo,Integer pageSize) {
 		// TODO Auto-generated method stub
 		String hql = " from LoreQuestionErrorInfo as lqe where 1=1";
 		if(!errorType.equals("")){
@@ -57,8 +57,8 @@ public class LoreQuestionErrorDaoImpl implements LoreQuestionErrorDao{
 		if(!sDate.equals("") && !eDate.equals("")){
 			hql += " and lqe.addDate >= '"+sDate+"' and lqeDate <= '"+eDate+"'";
 		}
-		if(!checkStatus.equals(-1)){
-			hql += " and lqe.checkStatus = "+checkStatus;
+		if(!updateStatus.equals(-1)){
+			hql += " and lqe.checkStatus = "+updateStatus;
 		}
 		int offset = (pageNo - 1) * pageSize;
 		if (offset < 0) {
@@ -68,8 +68,8 @@ public class LoreQuestionErrorDaoImpl implements LoreQuestionErrorDao{
 	}
 
 	@Override
-	public Integer getCountByOpt(Session sess, String errorType, String sDate,
-			String eDate, Integer checkStatus) {
+	public Integer getCountByOpt(Session sess, Integer userId,String errorType, String sDate,
+			String eDate, Integer updateStatus) {
 		// TODO Auto-generated method stub
 		String hql = "select count(lqe.id) from LoreQuestionErrorInfo as lqe where 1=1";
 		if(!errorType.equals("")){
@@ -78,8 +78,8 @@ public class LoreQuestionErrorDaoImpl implements LoreQuestionErrorDao{
 		if(!sDate.equals("") && !eDate.equals("")){
 			hql += " and lqe.addDate >= '"+sDate+"' and lqeDate <= '"+eDate+"'";
 		}
-		if(!checkStatus.equals(-1)){
-			hql += " and lqe.checkStatus = "+checkStatus;
+		if(!updateStatus.equals(-1)){
+			hql += " and lqe.checkStatus = "+updateStatus;
 		}
 		Object countObj = sess.createQuery(hql).uniqueResult();
 		return CommonTools.longToInt(countObj);
