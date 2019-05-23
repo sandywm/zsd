@@ -105,4 +105,30 @@ public interface BuffetQueInfoManager {
 	 * @throws WEBException
 	 */
 	BuffetQueInfo getCurrMaxNumAndOrderByOpt(Integer loreId,Integer btId)throws WEBException;
+	
+	/**
+	 * 修改自助餐信息
+	 * @author wm
+	 * @date 2019-5-23 上午11:40:33
+	 * @param id 主键
+	 * @param queSub 题干
+	 * @param queAnswer 答案
+	 * @param queTipId 提示编号()
+	 * @param lexId 词库编号()
+	 * @param queResolution 解析
+	 * @param queType 题干类型
+	 * @param a 选项A
+	 * @param b 选项B
+	 * @param c 选项C
+	 * @param d 选项D
+	 * @param e 选项E
+	 * @param f 选项F
+	 * @param operateUserName 修改人
+	 * @param operateDate 修改时间
+	 * @return
+	 * @throws WEBException
+	 */
+	boolean updateInfoById(Integer id,String queSub,String queAnswer,Integer queTipId,Integer lexId,String queResolution,String queType,
+			String a,String b,String c,String d,String e,String f,String operateUserName,String operateDate)throws WEBException;
+			
 }

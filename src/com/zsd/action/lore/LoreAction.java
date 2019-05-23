@@ -763,8 +763,7 @@ public class LoreAction extends DispatchAction {
 						answerNum = lq.getQueAnswer().split(",").length;//多个答案用,隔开
 						map_d.put("answerNum", answerNum);
 					}
-				}
-				if(queType.equals("填空题")){
+				}else if(queType.equals("填空题")){
 					answerNum = lq.getQueAnswer().split(",").length;//多个答案用,隔开
 					map_d.put("answerNum", answerNum);
 				}
@@ -772,8 +771,8 @@ public class LoreAction extends DispatchAction {
 				Integer queTipId = lq.getQueTips();
 				map_d.put("queTipId", queTipId);
 				List<LoreQuestionSubInfo> lqsList = lqm.listInfoByLoreId(lq.getLoreInfo().getId());
+				List<Object> list_d_1 = new ArrayList<Object>();
 				if(lqsList.size() > 0){
-					List<Object> list_d_1 = new ArrayList<Object>();
 					if(queTipId > 0){//提示为知识清单或者点拨指导的一内容
 						for(Iterator<LoreQuestionSubInfo> it = lqsList.iterator() ; it.hasNext();){
 							LoreQuestionSubInfo lqs = it.next();
@@ -801,8 +800,8 @@ public class LoreAction extends DispatchAction {
 							list_d_1.add(map_d_1);
 						}
 					}
-					map_d.put("tipsList", list_d_1);
 				}
+				map_d.put("tipsList", list_d_1);
 				map_d.put("lqType", loreType);
 				list_d.add(map_d);
 				map.put("listIfo", list_d);
@@ -1026,24 +1025,12 @@ public class LoreAction extends DispatchAction {
 						String answerD = lq.getD();
 						String answerE = lq.getE();
 						String answerF = lq.getF();
-						if(!answerA.equals("")){
-							map_d.put("answerA", answerA);//选项A
-						}
-						if(!answerB.equals("")){
-							map_d.put("answerB", answerB);//选项B
-						}
-						if(!answerC.equals("")){
-							map_d.put("answerC", answerC);//选项C
-						}
-						if(!answerD.equals("")){
-							map_d.put("answerD", answerD);//选项D
-						}
-						if(!answerE.equals("")){
-							map_d.put("answerE", answerE);//选项E
-						}
-						if(!answerF.equals("")){
-							map_d.put("answerF", answerF);//选项F
-						}
+						map_d.put("answerA", answerA);//选项A
+						map_d.put("answerB", answerB);//选项B
+						map_d.put("answerC", answerC);//选项C
+						map_d.put("answerD", answerD);//选项D
+						map_d.put("answerE", answerE);//选项E
+						map_d.put("answerF", answerF);//选项F
 						//需要匹配出选项
 						String[] answerQueArr = queAnswer.split(",");
 						String queAnswer_text = "";
@@ -1144,10 +1131,18 @@ public class LoreAction extends DispatchAction {
 		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
 		Integer loreId = CommonTools.getFinalInteger("loreId", request);
 		String loreType = Transcode.unescape_new1("loreType", request);
-		List<LoreQuestion> lqList = lqm.listInfoByLoreId(loreId, loreType, -1);
 		Integer queNum = 1;
-		if(lqList.size() > 0){
-			queNum = lqList.get(lqList.size() - 1).getQueNum() + 1;
+		if(loreType.equals("解题示范")){
+			
+		}else{
+			List<LoreQuestion> lqList = lqm.listInfoByLoreId(loreId, loreType, -1);
+			if(lqList.size() > 0){
+				if(loreType.equals("解题示范")){
+					queNum = lqList.size() + 1;
+				}else{
+					queNum = lqList.get(lqList.size() - 1).getQueNum() + 1;
+				}
+			}
 		}
 		Map<String,Integer> map = new HashMap<String,Integer>();
 		map.put("queNum", queNum);
@@ -1340,6 +1335,9 @@ public class LoreAction extends DispatchAction {
 					String answerE = Transcode.unescape_new1("answerE", request);
 					String answerF = Transcode.unescape_new1("answerF", request);
 					Integer queClassTeaId = CommonTools.getFinalInteger("queClassTeaId", request);//上传题老师编号
+					if(CommonTools.getLoginRoleName(request).equals("老师")){//班内老师
+						queClassTeaId = CommonTools.getLoginUserId(request);
+					}
 					lqm.addLoreQuestion(loreId, loreType, queNum, queTitle, queSub, queAnswer, queTipId, lexId, queResolution, queType,
 							queOrder, queType2, answerA, answerB, answerC, answerD, answerE, answerF, operateUserName, operateDate, queClassTeaId);
 					msg = "success";

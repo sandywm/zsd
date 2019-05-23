@@ -164,4 +164,47 @@ public class BuffetQueManagerImpl implements BuffetQueInfoManager{
 		}
 	}
 
+	@Override
+	public boolean updateInfoById(Integer id,String queSub, String queAnswer,
+			Integer queTipId, Integer lexId, String queResolution,
+			String queType, String a, String b, String c, String d, String e,
+			String f, String operateUserName, String operateDate)
+			throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			bqDao = (BuffetQueInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_BUFFET_QUE_INFO);
+			baDao = (BuffetAllDao) DaoFactory.instance(null).getDao(Constants.DAO_BUFFET_ALL_INFO);
+			lDao = (LoreInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_LORE_INFO);
+			Session sess = HibernateUtil.currentSession();
+			tran = sess.beginTransaction();
+			BuffetQueInfo bq = bqDao.getEntityById(sess, id);
+			if(bq != null){
+				bq.setSubject(queSub);
+				bq.setAnswer(queAnswer);
+				bq.setTips(queTipId);
+				bq.setLexId(lexId);
+				bq.setResolution(queResolution);
+				bq.setQueType(queType);
+				bq.setA(a);
+				bq.setB(b);
+				bq.setC(c);
+				bq.setD(d);
+				bq.setE(e);
+				bq.setF(f);
+				bq.setOperateUserName(operateUserName);
+				bq.setOperateDate(operateDate);
+				bqDao.update(sess, bq);
+				tran.commit();
+				return true;
+			}
+			return false;
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			throw new WEBException("修改自助餐题库时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
 }

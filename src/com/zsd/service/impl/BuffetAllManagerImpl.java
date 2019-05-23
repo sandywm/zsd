@@ -24,6 +24,24 @@ public class BuffetAllManagerImpl implements BuffetAllManager{
 	BuffetAllDao baDao = null;
 	BuffetQueInfoDao bqDao = null;
 	Transaction tran = null;
+	
+	@Override
+	public BuffetTypeInfo getEntityByBtId(Integer btId) throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			baDao = (BuffetAllDao) DaoFactory.instance(null).getDao(Constants.DAO_BUFFET_ALL_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return baDao.getBTEntityById(sess, btId);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new WEBException("根据基础类型编号获取基础类型实体时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	
 	@Override
 	public List<BuffetTypeInfo> listBTInfo() throws WEBException {
 		// TODO Auto-generated method stub

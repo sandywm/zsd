@@ -17,6 +17,16 @@ import com.zsd.module.BuffetTypeInfo;
 public interface BuffetAllManager {
 
 	/**
+	 * 根据基础类型编号获取基础类型实体
+	 * @author wm
+	 * @date 2019-5-23 上午10:14:56
+	 * @param btId
+	 * @return
+	 * @throws WEBException
+	 */
+	BuffetTypeInfo getEntityByBtId(Integer btId) throws WEBException;
+	
+	/**
 	 * 获取基础类型类表
 	 * @author wm
 	 * @date 2019-5-17 下午06:10:46
