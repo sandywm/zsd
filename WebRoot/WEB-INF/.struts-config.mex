@@ -12,9 +12,10 @@
   <StrutsActivity path="/loreRelate.do" location="650,650" dimension="291,104" />
   <StrutsActivity path="/lex.do" location="50,850" dimension="205,104" />
   <StrutsActivity path="/buffet.do" location="350,850" dimension="238,104" />
+  <StrutsActivity path="/blr.do" location="650,850" dimension="300,104" />
   <StrutsActivity path="/###.jsp" location="950,250" dimension="81,53" />
   <StrutsActivity path="/register.jsp" location="650,250" dimension="102,53" />
-  <StrutsActivity path="/blr.do" location="650,850" dimension="300,104" />
+  <StrutsActivity path="/lqe.do" location="50,1050" dimension="377,104" />
   <StrutsTransition id="/mod.do,abilityPage,/###.jsp,1" routingType="0">
     <AutomaticBendpoints>
       <AbsolutePoint location="1079,450" />

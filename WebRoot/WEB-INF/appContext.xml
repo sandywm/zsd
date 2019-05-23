@@ -19,6 +19,7 @@
 	<app id="user_class_Web" class="com.zsd.service.impl.UserClassInfoManagerImpl"/>
 	<app id="lore_Web" class="com.zsd.service.impl.LoreInfoManagerImpl"/>
 	<app id="lore_question_Web" class="com.zsd.service.impl.LoreQuestionManagerImpl"/>
+	<app id="lore_question_error_Web" class="com.zsd.service.impl.LoreQuestionErrorManagerImpl"/>
 	<app id="invite_code_Web" class="com.zsd.service.impl.InviteCodeInfoManagerImpl"/>
 	<app id="net_teacher_basic_Web" class="com.zsd.service.impl.NetTeacherBasicInfoManagerImpl"/>
 	<app id="lore_relate_Web" class="com.zsd.service.impl.LoreRelateManagerImpl"/>

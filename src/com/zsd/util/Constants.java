@@ -47,6 +47,7 @@ public class Constants {
 	public static final String WEB_USER_CLASS_INFO = "user_class_Web";
 	public static final String WEB_LORE_INFO = "lore_Web";
 	public static final String WEB_LORE_QUESTION_INFO = "lore_question_Web";
+	public static final String WEB_LORE_QUESTION_ERROR_INFO = "lore_question_error_Web";
 	public static final String WEB_LORE_QUESTION_SUB_INFO = "lore_question_sub_Web";
 	public static final String WEB_INVITE_CODE_INFO = "invite_code_Web";
 	public static final String WEB_NET_TEACHER_BASIC_INFO = "net_teacher_basic_Web";
@@ -77,6 +78,7 @@ public class Constants {
 	public static final String DAO_USER_CLASS_INFO = "user_class_Dao";
 	public static final String DAO_LORE_INFO = "lore_Dao";
 	public static final String DAO_LORE_QUESTION_INFO = "lore_question_Dao";
+	public static final String DAO_LORE_QUESTION_ERROR_INFO = "lore_question_error_Dao";
 	public static final String DAO_LORE_QUESTION_SUB_INFO = "lore_question_sub_Dao";
 	public static final String DAO_INVITE_CODE_INFO = "invite_code_Dao";
 	public static final String DAO_NET_TEACHER_BASIC_INFO = "net_teacher_basic_Dao";

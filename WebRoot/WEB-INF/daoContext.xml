@@ -19,6 +19,7 @@
 	<dao id="user_class_Dao" class="com.zsd.dao.impl.UserClassInfoDaoImpl" />
 	<dao id="lore_Dao" class="com.zsd.dao.impl.LoreInfoDaoImpl" />
 	<dao id="lore_question_Dao" class="com.zsd.dao.impl.LoreQuestionDaoImpl" />
+	<dao id="lore_question_error_Dao" class="com.zsd.dao.impl.LoreQuestionErrorDaoImpl" />
 	<dao id="lore_question_sub_Dao" class="com.zsd.dao.impl.LoreQuestionSubDaoImpl" />
 	<dao id="invite_code_Dao" class="com.zsd.dao.impl.InviteCodeInfoDaoImpl" />
 	<dao id="net_teacher_basic_Dao" class="com.zsd.dao.impl.NetTeacherInfoDaoImpl" />

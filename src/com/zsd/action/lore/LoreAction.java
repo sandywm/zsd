@@ -1373,7 +1373,7 @@ public class LoreAction extends DispatchAction {
 			//都能增加
 			msg = "add";
 		}else{
-			if(loreType.equals("知识讲解")){
+			if(!loreType.equals("知识讲解")){
 				List<LoreQuestionSubInfo> lqsList = lqm.listLQSInfoByLqId(lqList.get(0).getId(), "主题");
 				if(lqsList.size() > 0){
 					//存在主题信息，不能增加点拨指导
