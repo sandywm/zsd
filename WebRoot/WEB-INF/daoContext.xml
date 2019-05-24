@@ -29,4 +29,5 @@
 	<dao id="buffet_lore_relate_Dao" class="com.zsd.dao.impl.BuffetLoreRelateInfoDaoImpl" />
 	<dao id="lex_Dao" class="com.zsd.dao.impl.LexInfoDaoImpl" />
 	<dao id="join_lore_relate_Dao" class="com.zsd.dao.impl.JoinLoreRelationDaoImpl" />
+	<dao id="stu_sub_edu_Dao" class="com.zsd.dao.impl.StuSubjectEduDaoImpl" />
 </daoContext>

@@ -51,12 +51,15 @@ public class Constants {
 	public static final String WEB_LORE_QUESTION_SUB_INFO = "lore_question_sub_Web";
 	public static final String WEB_INVITE_CODE_INFO = "invite_code_Web";
 	public static final String WEB_NET_TEACHER_BASIC_INFO = "net_teacher_basic_Web";
+	public static final String WEB_NET_TEACHER_CERTIFICATE_INFO = "net_teacher_certificate_Web";
+	public static final String WEB_QUESTION_INFO = "question_info_Web";
 	public static final String WEB_LORE_RELATE_INFO = "lore_relate_Web";
 	public static final String WEB_BUFFET_ALL_INFO = "buffet_all_Web";
 	public static final String WEB_BUFFET_QUE_INFO = "buffet_que_Web";
 	public static final String WEB_BUFFET_LORE_RELATE_INFO = "buffet_lore_relate_Web";
 	public static final String WEB_LEX_INFO = "lex_Web";
 	public static final String WEB_JOIN_LORE_RELATE_INFO = "join_lore_relate_Web";
+	public static final String WEB_STU_SUB_EDU_INFO = "stu_sub_edu_Web";
 	
 	//-------------------DAO-------------------------//
 	public static final String DAO_EDITION_INFO = "edition_Dao";
@@ -82,11 +85,14 @@ public class Constants {
 	public static final String DAO_LORE_QUESTION_SUB_INFO = "lore_question_sub_Dao";
 	public static final String DAO_INVITE_CODE_INFO = "invite_code_Dao";
 	public static final String DAO_NET_TEACHER_BASIC_INFO = "net_teacher_basic_Dao";
+	public static final String DAO_NET_TEACHER_CERTIFICATE_INFO = "net_teacher_certificate_Dao";
+	public static final String DAO_QUESTION_INFO = "question_info_Dao";
 	public static final String DAO_LORE_RELATE_INFO = "lore_relate_Dao";
 	public static final String DAO_BUFFET_ALL_INFO = "buffet_all_Dao";
 	public static final String DAO_BUFFET_QUE_INFO = "buffet_que_Dao";
 	public static final String DAO_BUFFET_LORE_RELATE_INFO = "buffet_lore_relate_Dao";
 	public static final String DAO_LEX_INFO = "lex_Dao";
 	public static final String DAO_JOIN_LORE_RELATE_INFO = "join_lore_relate_Dao";
+	public static final String DAO_STU_SUB_EDU_INFO = "stu_sub_edu_Dao";
 }
 

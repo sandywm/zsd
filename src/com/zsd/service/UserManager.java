@@ -148,4 +148,96 @@ public interface UserManager {
 	 * @throws WEBException
 	 */
 	boolean updateUser(Integer id,  Integer coin, Integer exp,Integer zsdCoin,Integer accMoney) throws WEBException;
+	/**
+	 * 修改指定用户的邮箱
+	 * @author zong
+	 * 2019-5-13上午09:30:51
+	 * @param id 用户编号
+	 * @param email 电子邮箱地址
+	 * @return
+	 * @throws WEBException
+	 */
+	boolean updateUserByEmail(Integer id ,String email) throws WEBException;
+	/**
+	 * 修改指定用户的电话号码
+	 * @author zong
+	 * 2019-5-13上午09:32:29
+	 * @param id 用户编号
+	 * @param mobile 电话号码
+	 * @return
+	 * @throws WEBException
+	 */
+	boolean updateUserByMobile(Integer id ,String mobile) throws WEBException;
+	/**
+	 * 修改指定用户编号的密码
+	 * @author zong
+	 * 2019-5-13上午09:41:55
+	 * @param id 用户编号
+	 * @param password 密码
+	 * @return
+	 * @throws WEBException
+	 */
+	boolean updateUserBypwd(Integer id,String password) throws WEBException;
+	/**
+	 * 获取指定编号的用户信息
+	 * @author zong
+	 * 2019-5-13上午09:43:24
+	 * @param sess
+	 * @param id 用户编号
+	 * @return
+	 * @throws WEBException
+	 */
+	List<User> listEntityById(Integer id) throws WEBException;
+	/**
+	 * 检查是否为当前用户密码
+	 * @author zong
+	 * 2019-5-14下午05:33:06
+	 * @param id 用户主键
+	 * @param password 密码
+	 * @return
+	 * @throws WEBException
+	 */
+	boolean checkCurrpwd(Integer id,String password) throws WEBException;
+	/**
+	 * 根据用户条件获取用户信息
+	 * @author zong
+	 * 2019-5-21上午10:18:58
+	 * @param accName  账户名称
+	 * @param realName 真实姓名
+	 * @param schName 学校名称
+	 * @param roleId 角色编号
+	 * @param prov 省
+	 * @param city 市
+	 * @param county 县
+	 * @param schoolType 学段
+	 * @param gradeNo 年级编号
+	 * @param pageNo  总页数
+	 * @param pageSize 每页多少条
+	 * @return
+	 * @throws WEBException
+	 */
+	List<User> listUserInfoByoption(String accName,
+			String realName, Integer schoolId, Integer roleId, String prov,
+			String city, String county, Integer schoolType, Integer gradeNo,
+			Integer classId, Integer pageNo, Integer pageSize)throws WEBException;
+	/**
+	 * 根据用户条件获取用户信息总记录数
+	 * @author zong
+	 * 2019-5-21上午10:21:01
+	 * @param accName  账户名称
+	 * @param realName 真实姓名
+	 * @param schName 学校名称
+	 * @param roleId 角色编号
+	 * @param prov 省
+	 * @param city 市
+	 * @param county 县
+	 * @param schoolType 学段
+	 * @param gradeNo 年级编号
+	 * @return
+	 * @throws WEBException
+	 */
+	Integer getUserByoptionCount(String accName,
+			String realName, Integer schoolId, Integer roleId, String prov,
+			String city, String county, Integer schoolType, Integer gradeNo,
+			Integer classId)throws WEBException;
 }

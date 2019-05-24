@@ -28,4 +28,5 @@
 	<app id="buffet_lore_relate_Web" class="com.zsd.service.impl.BuffetLoreRelateManagerImpl"/>
 	<app id="lex_Web" class="com.zsd.service.impl.LexInfoManagerImpl"/>
 	<app id="join_lore_relate_Web" class="com.zsd.service.impl.JoinLoreRelationManagerImpl"/>
+	<app id="stu_sub_edu_Web" class="com.zsd.service.impl.StuSubjectEduManagerImpl"/>
 </appContext>

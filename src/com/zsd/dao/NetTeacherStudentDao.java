@@ -1,5 +1,7 @@
 package com.zsd.dao;
 
+import java.util.List;
+
 import org.hibernate.Session;
 
 import com.zsd.module.NetTeacherStudent;
@@ -60,6 +62,23 @@ public interface NetTeacherStudentDao {
 	 * @param nts 需要更新的网络导师学生信息
 	 */
 	void update(Session sess,NetTeacherStudent nts);
-	
-
+	/**
+	 * 根据学生用户编号获取绑定导师
+	 * @author zong
+	 * 2019-5-23上午10:59:15
+	 * @param sess
+	 * @param stuId 用户编号
+	 * @return
+	 */
+	List<NetTeacherStudent> findNTByStuId(Session sess,int stuId);
+	/**
+	 * 根据网络导师用户编号获取绑定学生
+	 * @author zong
+	 * 2019-5-23上午11:00:33
+	 * @param sess
+	 * @param ntId 用户编号
+	 * @return
+	 */
+	List<NetTeacherStudent> findNTByntId(Session sess,int ntId);
+		
 }

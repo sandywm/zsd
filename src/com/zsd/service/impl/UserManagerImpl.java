@@ -206,5 +206,147 @@ public class UserManagerImpl implements UserManager {
 		}
 	}
 
+	@Override
+	public boolean updateUserByEmail(Integer id, String email)
+			throws WEBException {
+		try {
+			userDao = (UserDao) DaoFactory.instance(null).getDao(Constants.DAO_USER_INFO);
+			Session sess  = HibernateUtil.currentSession();
+			tran = sess.beginTransaction();
+			List<User> ulist = userDao.getEntityById(sess, id);
+			if(!ulist.isEmpty()){
+				User user = ulist.get(0);
+				user.setEmail(email);
+				tran.commit();
+				return true;
+			}
+			return false;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("修改指定用户电子邮箱地址时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public boolean updateUserByMobile(Integer id, String mobile)
+			throws WEBException {
+		try {
+			userDao = (UserDao) DaoFactory.instance(null).getDao(Constants.DAO_USER_INFO);
+			Session sess  = HibernateUtil.currentSession();
+			tran = sess.beginTransaction();
+			List<User> ulist = userDao.getEntityById(sess, id);
+			if(!ulist.isEmpty()){
+				User user = ulist.get(0);
+				user.setMobile(mobile);
+				tran.commit();
+				return true;
+			}
+			return false;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("修改指定电话号码时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public boolean updateUserBypwd(Integer id, String password)
+			throws WEBException {
+		try {
+			userDao = (UserDao) DaoFactory.instance(null).getDao(Constants.DAO_USER_INFO);
+			Session sess  = HibernateUtil.currentSession();
+			tran = sess.beginTransaction();
+			List<User> ulist = userDao.getEntityById(sess, id);
+			if(!ulist.isEmpty()){
+				User user = ulist.get(0);
+				if(password==user.getPassword()||password.equals("")){
+					
+				}else{
+					user.setPassword(password);
+				}
+				tran.commit();
+				return true;
+			}
+			return false;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("修改指定用户密码时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public List<User> listEntityById(Integer id)throws WEBException {
+		try {
+			userDao = (UserDao) DaoFactory.instance(null).getDao(Constants.DAO_USER_INFO);
+			Session sess  = HibernateUtil.currentSession();
+			return userDao.getEntityById(sess, id);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("根据用户编号获取用户信息时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public boolean checkCurrpwd(Integer id, String password)
+			throws WEBException {
+		try {
+			userDao = (UserDao) DaoFactory.instance(null).getDao(Constants.DAO_USER_INFO);
+			Session sess  = HibernateUtil.currentSession();
+			List<User> ulist = userDao.checkUserPwd(sess, id, password);
+			boolean flag = false;
+			if(!ulist.isEmpty()){
+				flag = true;
+			}
+			return flag;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("根据用户编号是否当前密码信息时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public List<User> listUserInfoByoption(String accName, String realName,
+			Integer schoolId, Integer roleId, String prov, String city,
+			String county, Integer schoolType, Integer gradeNo,
+			Integer classId, Integer pageNo, Integer pageSize)
+			throws WEBException {
+		try {
+			userDao = (UserDao) DaoFactory.instance(null).getDao(Constants.DAO_USER_INFO);
+			Session sess  = HibernateUtil.currentSession();
+			return userDao.findUserInfoByoption(sess, accName, realName, schoolId, roleId, prov, city, county, schoolType, gradeNo, classId, pageNo, pageSize);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("根据账户名,真实姓名,学校编号,角色编号,省市县,班级,年级获取用户信息时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public Integer getUserByoptionCount(String accName, String realName,
+			Integer schoolId, Integer roleId, String prov, String city,
+			String county, Integer schoolType, Integer gradeNo, Integer classId)
+			throws WEBException {
+		try {
+			userDao = (UserDao) DaoFactory.instance(null).getDao(Constants.DAO_USER_INFO);
+			Session sess  = HibernateUtil.currentSession();
+			return userDao.getUserByoptionCount(sess, accName, realName, schoolId, roleId, prov, city, county, schoolType, gradeNo, classId);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("根据账户名,真实姓名,学校编号,角色编号,省市县,班级,年级获取用户信息记录数时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
 
 }

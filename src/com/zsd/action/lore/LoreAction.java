@@ -36,6 +36,7 @@ import com.zsd.page.PageConst;
 import com.zsd.service.ChapterManager;
 import com.zsd.service.LexInfoManager;
 import com.zsd.service.LoreInfoManager;
+import com.zsd.service.LoreQuestionErrorManager;
 import com.zsd.service.LoreQuestionManager;
 import com.zsd.service.LoreRelateManager;
 import com.zsd.service.UserManager;
@@ -824,18 +825,11 @@ public class LoreAction extends DispatchAction {
 	public ActionForward updateLoreQuesionDetail(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
+		LoreQuestionErrorManager lqem = (LoreQuestionErrorManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_ERROR_INFO);
 		UserManager um = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
 		Integer lqId = CommonTools.getFinalInteger("lqId", request);
 		String msg = "noInfo";
-		String option = CommonTools.getFinalStr("option", request);//内容为错误类型+时间范围+修改状态+当前知识点修改状态+错题主键lqId+发送错题用户编号
-		if(!option.equals("")){//通过错题过来修改
-			String currLoreUpdateStatus = option.split(",")[3];
-			if(currLoreUpdateStatus.equals("1")){//之前已经被修改完成，不能再进行修改
-				msg = "noUpdate";
-			}else{
-				lqId = Integer.parseInt(option.split(",")[4]);
-			}
-		}
+		Integer lqeId = CommonTools.getFinalInteger("lqeId", request);
 		Map<String,Object> map = new HashMap<String,Object>();
 		LoreQuestion lq = lqm.getEntityByLqId(lqId);
 		if(lq != null){
@@ -912,12 +906,20 @@ public class LoreAction extends DispatchAction {
 				String queResolution = Transcode.unescape_new1("queResolution", request);//解析
 				lqm.updateLoreQuestion(lqId, queSub, queAnswer, queTipId, lexId, queResolution, queType, queType2, 
 						answerA, answerB, answerC, answerD, answerE, answerF, operateUserName, CurrentTime.getCurrentTime());
-				if(!option.equals("")){//通过错题过来修改
+				if(lqeId > 0){//通过错题过来修改
 					//修改知识点错误表信息
-					
-					Integer stuId = Integer.parseInt(option.split(",")[5]);//提交错误题的学生编号
-					//奖励学生金币
-					um.updateUser(stuId, 20, 0, 0, 0);
+					//页面放置已采纳、未采纳2个按钮
+					Integer cyStatus = CommonTools.getFinalInteger("cyStatus", request);//采用状态（0：未采纳，1：已采纳）--如果是已采用，需要奖励用户20金币
+					String remark = "您的意见未被未采纳，谢谢!";
+					Integer addCoinNumber = 0;
+					if(cyStatus.equals(1)){
+						remark = "您的意见已被采纳，特奖励20金币，谢谢!";
+						addCoinNumber = 20;
+						Integer stuId = lqem.getEntityById(lqeId).getUser().getId();//提交错误题的学生编号
+						//奖励学生金币
+						um.updateUser(stuId, 20, 0, 0, 0);
+					}
+					lqem.updateLQE(lqeId, addCoinNumber, 1, CommonTools.getLoginAccount(request), CurrentTime.getCurrentTime(), remark);
 				}
 			}
 		}

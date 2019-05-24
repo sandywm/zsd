@@ -1,6 +1,9 @@
 package com.zsd.service;
 
+import java.util.List;
+
 import com.zsd.exception.WEBException;
+import com.zsd.module.NetTeacherInfo;
 
 
 public interface NetTeacherInfoManager {
@@ -77,5 +80,24 @@ public interface NetTeacherInfoManager {
 	boolean updateNtBybasicInfo(Integer id, String realName,String nickName,
 			String teaSign, String teaEdu, String graduateSchool, String major,
 			Integer schoolAge,String sex,String birthday) throws WEBException;
+	/**
+	 * 根据用户编号获取网络导师信息
+	 * @author zong
+	 * 2019-5-14下午03:53:38
+	 * @param uid
+	 * @return
+	 * @throws WEBException
+	 */
+	List<NetTeacherInfo> listntInfoByuserId(Integer uid)throws WEBException; 
+	/**
+	 * 根据主键修改网络导师的审核状态
+	 * @author zong
+	 * 2019-5-18下午04:47:56
+	 * @param id
+	 * @param checkStatus
+	 * @return
+	 * @throws WEBException
+	 */
+	boolean updateNtInfoByCheckSta(Integer id,Integer checkStatus) throws WEBException;
 
 }

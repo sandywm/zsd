@@ -55,5 +55,14 @@ public interface NetTeacherStudentManager {
 	 * @throws WEBException
 	 */
 	List<NetTeacherStudent> listByStuId(Integer stuId)throws WEBException;
+	/**
+	 * 根据网络导师用户编号获取绑定学生
+	 * @author zong
+	 * 2019-5-23上午11:03:45
+	 * @param NTId 用户编号
+	 * @return
+	 * @throws WEBException
+	 */
+	List<NetTeacherStudent> listByntId(Integer ntId)throws WEBException;
 
 }

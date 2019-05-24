@@ -113,6 +113,7 @@ public class LoginAction extends DispatchAction {
 				String currdate = CurrentTime.getCurrentTime();
 				List<User> uList = uManager.listInfoByAccount(account);
 				Integer uid = uList.get(0).getId();
+				String  userAcc = uList.get(0).getUserAccount();
 				//判断用户账号有效状态
 				Integer status = uList.get(0).getAccountStatus();
 				if(status.equals(1)){//状态 0:无效,1:有效
@@ -125,6 +126,7 @@ public class LoginAction extends DispatchAction {
 					//修改用户的登录IP、登录时间、登录次数
 					uManager.updateUser(uid, currdate, CommonTools.getIpAddress(request), uList.get(0).getLoginTimes() + 1, loginStatus);
 					session.setAttribute("userId",uid);
+					session.setAttribute("userAcc",userAcc);
 					msg = "success";
 				}else{//账号无效
 					msg = "lock";

@@ -12,12 +12,7 @@ import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -58,8 +53,8 @@ public class CommonTools {
 	 * @return
 	 */
 	public static Integer getLoginRoleId(HttpServletRequest request){
-        Integer userId = (Integer)request.getSession(false).getAttribute(Constants.LOGIN_USER_ROLE_ID);
-        return userId;
+        Integer roleId = (Integer)request.getSession(false).getAttribute(Constants.LOGIN_USER_ROLE_ID);
+        return roleId;
 	}
 	
 	/**

@@ -64,5 +64,23 @@ public interface UserClassInfoDao {
 	 * @return
 	 */
 	List<UserClassInfo> findClassInfo(Session sess);
-
+	/**
+	 * 通过用户编号查看用户班级信息
+	 * @author zong
+	 * 2019-5-21下午05:36:35
+	 * @param userId 用户编号
+	 * @return
+	 */
+	List<UserClassInfo> findUcInfoByUserId(Session sess,Integer userId);
+	
+	/**
+	 * 根据用户编号，角色编号获取用户班级信息实体
+	 * @author wm
+	 * @date 2019-5-24 上午11:20:21
+	 * @param sess
+	 * @param userId 用户编号
+	 * @param roleId 角色编号
+	 * @return
+	 */
+	UserClassInfo getEntityByOpt(Session sess,Integer userId,Integer roleId);
 }

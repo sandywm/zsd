@@ -83,43 +83,6 @@ public interface RoleUserInfoDao {
 	 */
 	List<RoleUserInfo> findUserRoleInfoByPosition(Session sess,String prov, String city, String county,Integer schoolType,
 													Integer schoolId,Integer gradeNo,Integer classId);
-	/**
-	 * 根据用户条件查询用户信息
-	 * @author zong
-	 * 2019-5-9上午09:58:05
-	 * @param sess
-	 * @param accName  账户名称
-	 * @param realName 真实姓名
-	 * @param schName 学校名称
-	 * @param roleId 角色编号
-	 * @param prov 省
-	 * @param city 市
-	 * @param county 县
-	 * @param schoolType 学段
-	 * @param gradeNo 年级编号
-	 * @param pageNo  总页数
-	 * @param pageSize 每页多少条
-	 * @return
-	 */
-	List<RoleUserInfo> findUserRoleInfoByoption(Session sess,String accName,String realName,Integer schoolId,Integer roleId,String prov, String city, String county,Integer schoolType,
-			Integer gradeNo,Integer classId,Integer pageNo,Integer pageSize);
-	/**
-	 * 根据用户条件查询用户信息总记录数
-	 * @author zong
-	 * 2019-5-10下午04:37:45
-	 * @param sess
-	 * @param accName  账户名称
-	 * @param realName 真实姓名
-	 * @param schName 学校名称
-	 * @param roleId 角色编号
-	 * @param prov 省
-	 * @param city 市
-	 * @param county 县
-	 * @param schoolType 学段
-	 * @param gradeNo 年级编号
-	 * @return 记录数
-	 */
-	Integer findRuInfoByoptionCount(Session sess,String accName,String realName,Integer schoolId,Integer roleId,String prov, String city, String county,Integer schoolType,
-			Integer gradeNo,Integer classId);
+
 
 }

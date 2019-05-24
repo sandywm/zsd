@@ -68,6 +68,10 @@
     <action path="/lqe" parameter="action" scope="request"  type="com.zsd.action.loreQuestionError.LoreQuestionErrorAtion">
       <set-property property="cancellable" value="true" />
     </action>
+    <!-- 在线答题 -->
+    <action path="/onlineStudy" parameter="action" scope="request"  type="com.zsd.action.onlineStudy.OnlineStudyAction">
+      <set-property property="cancellable" value="true" />
+    </action>
 
   </action-mappings>
 

@@ -18,16 +18,20 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
 
 import com.zsd.factory.AppFactory;
+import com.zsd.module.ClassInfo;
 import com.zsd.module.Edition;
 import com.zsd.module.Education;
 import com.zsd.module.GradeSubject;
 import com.zsd.module.Subject;
+import com.zsd.module.UserClassInfo;
 import com.zsd.page.PageConst;
 import com.zsd.service.EditionManager;
 import com.zsd.service.EducationManager;
 import com.zsd.service.GradeSubjectManager;
 import com.zsd.service.SubjectManager;
+import com.zsd.service.UserClassInfoManager;
 import com.zsd.tools.CommonTools;
+import com.zsd.tools.Convert;
 import com.zsd.util.Constants;
 
 /** 
@@ -825,6 +829,49 @@ public class CommonAction extends DispatchAction {
 				list_d.add(map_d);
 			}
 			map.put("eduList", list_d);
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 获取用户所在的年级
+	 * @author wm
+	 * @date 2019-5-24 上午11:35:50
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getSelfGradeNumber(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		UserClassInfoManager ucm = (UserClassInfoManager)AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
+		Integer userId = CommonTools.getLoginUserId(request);
+		Integer roleId = CommonTools.getLoginRoleId(request);
+		String roleName = CommonTools.getLoginRoleName(request);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "error";
+		if(roleName.equals("学生")){
+			msg = "success";
+			Integer gradeNumber = 0;
+			String gradeName = "";
+			//获取该学生的班级,然后获取该班级所在年级
+			UserClassInfo uc = ucm.getEntityByOpt(userId, roleId);
+			ClassInfo c = null;
+			if(uc != null){
+				c = uc.getClassInfo();
+				gradeNumber = Convert.dateConvertGradeNumber(c.getBuildeClassDate());
+				if(gradeNumber > 12){
+					gradeNumber = 12;
+				}
+				gradeName = Convert.NunberConvertChinese(gradeNumber);
+			}
+			map.put("gradeNumber", gradeNumber);
+			map.put("gradeName", gradeName);
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);

@@ -1,5 +1,7 @@
 package com.zsd.service.impl;
 
+import java.util.List;
+
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -118,6 +120,43 @@ public class NetTeacherInfoManagerImpl implements NetTeacherInfoManager {
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new WEBException("修改指定网络导师基本信息时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public List<NetTeacherInfo> listntInfoByuserId(Integer uid)
+			throws WEBException {
+		try {
+			ntDao = (NetTeacherInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_NET_TEACHER_INFO);
+			Session sess  = HibernateUtil.currentSession();
+			return ntDao.findntInfoByuserId(sess, uid);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("根据用户编号获取网络导师信息列表时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public boolean updateNtInfoByCheckSta(Integer id, Integer checkStatus)
+			throws WEBException {
+		try {
+			ntDao = (NetTeacherInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_NET_TEACHER_INFO);
+			Session sess  = HibernateUtil.currentSession();
+			tran = sess.beginTransaction();
+			NetTeacherInfo nt = ntDao.get(sess, id);
+			if(nt != null){
+				nt.setCheckStatus(checkStatus);
+				tran.commit();
+				return true;
+			}
+			return false;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("根据主键修改指定网络导师审核状态时出现异常!");
 		} finally{
 			HibernateUtil.closeSession();
 		}

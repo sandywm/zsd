@@ -1,5 +1,7 @@
 package com.zsd.dao;
 
+import java.util.List;
+
 import org.hibernate.Session;
 
 import com.zsd.module.NetTeacherInfo;
@@ -52,6 +54,15 @@ public interface NetTeacherInfoDao {
 	 * @param nt 需要更新的出版社信息
 	 */
 	void update(Session sess,NetTeacherInfo nt);
+	/**
+	 * 根据用户编号查询导师信息
+	 * @author zong
+	 * 2019-5-14下午03:50:39
+	 * @param sess
+	 * @param uid 用户编号
+	 * @return
+	 */
+	List<NetTeacherInfo> findntInfoByuserId(Session sess,Integer uid);
 	
 	
 

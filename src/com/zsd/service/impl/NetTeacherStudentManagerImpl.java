@@ -86,8 +86,30 @@ public class NetTeacherStudentManagerImpl implements NetTeacherStudentManager {
 	@Override
 	public List<NetTeacherStudent> listByStuId(Integer stuId)
 			throws WEBException {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			ntsDao = (NetTeacherStudentDao) DaoFactory.instance(null).getDao(Constants.DAO_NET_TEACHER_STUDENT);
+			Session sess  = HibernateUtil.currentSession();
+			return ntsDao.findNTByStuId(sess, stuId);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("根据学生编号网络导师学生绑定关系信息时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public List<NetTeacherStudent> listByntId(Integer ntId) throws WEBException {
+		try {
+			ntsDao = (NetTeacherStudentDao) DaoFactory.instance(null).getDao(Constants.DAO_NET_TEACHER_STUDENT);
+			Session sess  = HibernateUtil.currentSession();
+			return ntsDao.findNTByntId(sess, ntId);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("根据网络导师编号获取绑定学生信息时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
 	}
 
 }

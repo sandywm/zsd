@@ -1,6 +1,9 @@
 package com.zsd.service;
 
+import java.util.List;
+
 import com.zsd.exception.WEBException;
+import com.zsd.module.UserClassInfo;
 
 public interface UserClassInfoManager {
 	/**
@@ -14,5 +17,24 @@ public interface UserClassInfoManager {
 	 * @throws WEBException
 	 */
 	Integer addUcInfo(Integer userId,Integer classId,Integer roleId) throws WEBException;
-
+	/**
+	 * 根据用户编号获取用户班级信息
+	 * @author zong
+	 * 2019-5-21下午05:40:23
+	 * @param userId 用户编号
+	 * @return
+	 * @throws WEBException
+	 */
+	List<UserClassInfo> listUcInfoByUserId(Integer userId)throws WEBException;
+	
+	/**
+	 * 根据用户编号，角色编号获取用户班级信息实体
+	 * @author wm
+	 * @date 2019-5-24 上午11:20:21
+	 * @param userId 用户编号
+	 * @param roleId 角色编号
+	 * @return
+	 * @throws WEBException
+	 */
+	UserClassInfo getEntityByOpt(Integer userId,Integer roleId)throws WEBException;
 }

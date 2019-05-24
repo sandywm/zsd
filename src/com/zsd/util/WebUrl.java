@@ -22,7 +22,10 @@ public class WebUrl {
     
   //上传文件留存地(相对路径)
     public static String NEW_DATA_URL_UP_FILE_UPLOAD;
-    
+    //上传网络导师个人中心(大图)
+    public static String PERSONAL_HONOR;
+    //上传网络导师个人中心(小图)
+    public static String NEW_PERSONAL_HONOR;
     //知识点图片位置绝对路径
     public static String LORE_DATA_URL;
     

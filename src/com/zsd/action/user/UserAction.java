@@ -213,57 +213,60 @@ public class UserAction extends DispatchAction {
 	 */
 	public ActionForward getUserByOption(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		UserManager uManager = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
 		RoleUserInfoManager ruManager = (RoleUserInfoManager) AppFactory.instance(null).getApp(Constants.WEB_ROLE_USER_INFO);
 		SchoolManager schManager = (SchoolManager) AppFactory.instance(null).getApp(Constants.WEB_SCHOOL_INFO);
 		ClassInfoManager  cManager= (ClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_CLASS_INFO);
 		String accName =CommonTools.getFinalStr("accName",request);
 		Integer roleId =CommonTools.getFinalInteger("roleId",request);
-		String realName=CommonTools.getFinalStr("realName",request);
+		String realName=Transcode.unescape_new1("realName",request);
 		Integer schoolId=CommonTools.getFinalInteger("schoolId",request);
-		String prov=CommonTools.getFinalStr("prov",request);
-		String city=CommonTools.getFinalStr("city",request);
-		String county=CommonTools.getFinalStr("county",request);
+		String prov=Transcode.unescape_new1("prov",request);
+		String city=Transcode.unescape_new1("city",request);
+		String county=Transcode.unescape_new1("county",request);
 		Integer schoolType=CommonTools.getFinalInteger("schoolType", request);
 		Integer gradeNo=CommonTools.getFinalInteger("gradeNo", request);
 		Integer classId=CommonTools.getFinalInteger("classId", request);
-		Integer count = ruManager.listRuInfoByoption(accName, realName, schoolId, roleId, prov, city, county, schoolType, gradeNo, classId);
-		String msg = "暂无记录";
+		Integer count = uManager.getUserByoptionCount(accName, realName, schoolId, roleId, prov, city, county, schoolType, gradeNo, classId);
+		String msg = "noinfo";
 		Map<String,Object> map = new HashMap<String,Object>();
 		if(count>0){
 			Integer pageSize = PageConst.getPageSize(String.valueOf(request.getParameter("limit")), 10);//等同于pageSize
 			Integer pageNo = CommonTools.getFinalInteger("page", request);//等同于pageNo
-			List<RoleUserInfo> ruList = ruManager.listUserRoleInfoByoption(accName, realName, schoolId, roleId, prov, city, county, schoolType, gradeNo, classId, pageNo, pageSize);
+			List<User> uList = uManager.listUserInfoByoption(accName, realName, schoolId, roleId, prov, city, county, schoolType, gradeNo, classId, pageNo, pageSize);
 			List<Object> list = new ArrayList<Object>();
-			for(Iterator<RoleUserInfo> it = ruList.iterator() ; it.hasNext();){
-				RoleUserInfo ruInfo = it.next();
-				Map<String,Object> map_ru = new HashMap<String,Object>();
-				map_ru.put("id", ruInfo.getUser().getId());
-				map_ru.put("accName", ruInfo.getUser().getUserAccount());
-				map_ru.put("realName", ruInfo.getUser().getRealName());
-				map_ru.put("nickName", ruInfo.getUser().getNickName());
-				map_ru.put("roleName", ruInfo.getRoleInfo().getRoleName());
-				String sexStr = ruInfo.getUser().getSex();
+			for(Iterator<User> it = uList.iterator() ; it.hasNext();){
+				User user = it.next();
+				Map<String,Object> map_u = new HashMap<String,Object>();
+				map_u.put("id", user.getId());
+				map_u.put("accName", user.getUserAccount());
+				map_u.put("realName", user.getRealName());
+				map_u.put("nickName", user.getNickName());
+				List<RoleUserInfo> ruList  = ruManager.listUserRoleInfoByuserId(user.getId());
+				RoleUserInfo ruInfo = ruList.get(0);
+				map_u.put("roleName", ruInfo.getRoleInfo().getRoleName());
+				String sexStr = user.getSex();
 				String sex ="";
 				if(sexStr.equalsIgnoreCase("m")){
 					sex="男";
 				}else if(sexStr.equalsIgnoreCase("f")){
 					sex="女";
 				}
-				map_ru.put("sex", sex);
-				Integer accSta = ruInfo.getUser().getAccountStatus();
+				map_u.put("sex", sex);
+				Integer accSta = user.getAccountStatus();
 				String accStr = "";
 				if(accSta.equals(0)){
 					accStr="无效";
 				}else if(accSta.equals(1)){
 					accStr="有效";
 				}
-				map_ru.put("accStatus",accStr);
-				map_ru.put("QQ", ruInfo.getUser().getQq());
-				map_ru.put("birthday", ruInfo.getUser().getBirthday());
-				map_ru.put("endDate", ruInfo.getUser().getEndDate());
-				map_ru.put("prov", ruInfo.getProv());
-				map_ru.put("city",ruInfo.getCity());
-				map_ru.put("county", ruInfo.getCounty());
+				map_u.put("accStatus",accStr);
+				map_u.put("QQ", user.getQq());
+				map_u.put("birthday", user.getBirthday());
+				map_u.put("endDate",user.getEndDate());
+				map_u.put("prov", ruInfo.getProv());
+				map_u.put("city",ruInfo.getCity());
+				map_u.put("county", ruInfo.getCounty());
 				Integer schType = ruInfo.getSchoolType();
 				String schTypeStr = "";
 				if(schType.equals(1)){
@@ -273,13 +276,13 @@ public class UserAction extends DispatchAction {
 				}else if(schType.equals(3)){
 					schTypeStr = "高中";
 				}
-				map_ru.put("schoolType", schTypeStr);
+				map_u.put("schoolType", schTypeStr);
 				List<School> schList = schManager.listInfoById(ruInfo.getSchoolId());
-				map_ru.put("schoolName", schList.get(0).getSchoolName());
-				map_ru.put("gradeName", Convert.NunberConvertChinese(ruInfo.getGradeNo()));
+				map_u.put("schoolName", schList.get(0).getSchoolName());
+				map_u.put("gradeName", Convert.NunberConvertChinese(ruInfo.getGradeNo()));
 				List<ClassInfo> cInfo = cManager.listClassInfoById(ruInfo.getClassId());
-				map_ru.put("className", cInfo.get(0).getClassName());
-				list.add(map_ru);
+				map_u.put("className", cInfo.get(0).getClassName());
+				list.add(map_u);
 			}
 			map.put("data", list);
 			map.put("count", count);
@@ -317,5 +320,109 @@ public class UserAction extends DispatchAction {
 		CommonTools.getJsonPkg(map, response);
 		return null;
 		
+	}
+	/**
+	 * 修改用户的电子邮箱地址
+	 * @author zong
+	 * 2019-5-13上午10:51:56
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward updateUserByEmail(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		UserManager uManager = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
+		Integer userId=(Integer) request.getSession().getAttribute("userId");
+		String email=CommonTools.getFinalStr("email",request);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "fail";
+		boolean uflag = uManager.updateUserByEmail(userId, email);
+		if(uflag){
+			msg ="success";
+		}
+		map.put("msg", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+		
+	}
+	/**
+	 * 修改用户的电话号码
+	 * @author zong
+	 * 2019-5-13上午10:53:23
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward updateUserByMobile(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		UserManager uManager = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
+		Integer userId=(Integer) request.getSession().getAttribute("userId");
+		String mobile=CommonTools.getFinalStr("mobile",request);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "fail";
+		boolean uflag = uManager.updateUserByMobile(userId, mobile);
+		if(uflag){
+			msg ="success";
+		}
+		map.put("msg", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+		
+	}
+	/**
+	 * 修改用户密码
+	 * @author zong
+	 * 2019-5-13上午10:55:30
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward updateUserByPwd(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		UserManager uManager = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
+		Integer userId=(Integer) request.getSession().getAttribute("userId");
+		String password=new MD5().calcMD5(CommonTools.getFinalStr("password", request));
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "fail";
+		
+		boolean uflag = uManager.updateUserBypwd(userId, password);
+		if(uflag){
+			msg ="success";
+		}
+		map.put("msg", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+		
+	}
+	/**
+	 * 检查是否为当前的用户密码
+	 * @author zong
+	 * 2019-5-14下午05:18:29
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward checkUserPwd(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		UserManager uManager = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
+		Map<String,Object> map = new HashMap<String,Object>();
+		Integer userId=(Integer) request.getSession().getAttribute("userId");
+		String password=new MD5().calcMD5(CommonTools.getFinalStr("password", request));
+		boolean flag = uManager.checkCurrpwd(userId, password);
+		map.put("msg", flag);
+		CommonTools.getJsonPkg(map, response);
+		return null;
 	}
 }

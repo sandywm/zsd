@@ -53,5 +53,62 @@ public interface UserDao {
 	 * @return
 	 */
 	List<User> findInfoByAccPwd(Session sess, String account, String password);
+	/**
+	 * 根据用户编号获取用户信息
+	 * @author zong
+	 * 2019-5-13上午09:39:29
+	 * @param sess
+	 * @param id 用户编号
+	 * @return
+	 */
+	List<User> getEntityById(Session sess, Integer id);
+	/**
+	 * 根据用户主键密码获取用户信息
+	 * @author zong
+	 * 2019-5-14下午05:26:29
+	 * @param sess
+	 * @param id 用户主键
+	 * @param passwrod 密码
+	 * @return
+	 */
+	List<User> checkUserPwd(Session sess, Integer id,String password);
+	/**
+	 * 根据用户条件查询用户信息
+	 * @author zong
+	 * 2019-5-20上午17:58:05
+	 * @param sess
+	 * @param accName  账户名称
+	 * @param realName 真实姓名
+	 * @param schName 学校名称
+	 * @param roleId 角色编号
+	 * @param prov 省
+	 * @param city 市
+	 * @param county 县
+	 * @param schoolType 学段
+	 * @param gradeNo 年级编号
+	 * @param pageNo  总页数
+	 * @param pageSize 每页多少条
+	 * @return
+	 */
+	List<User> findUserInfoByoption(Session sess,String accName,String realName,Integer schoolId,Integer roleId,String prov, String city, String county,Integer schoolType,
+			Integer gradeNo,Integer classId,Integer pageNo,Integer pageSize);
+	/**
+	 * 根据用户条件查询用户信息总记录数
+	 * @author zong
+	 * 2019-5-20下午17:59:45
+	 * @param sess
+	 * @param accName  账户名称
+	 * @param realName 真实姓名
+	 * @param schName 学校名称
+	 * @param roleId 角色编号
+	 * @param prov 省
+	 * @param city 市
+	 * @param county 县
+	 * @param schoolType 学段
+	 * @param gradeNo 年级编号
+	 * @return 记录数
+	 */
+	Integer getUserByoptionCount(Session sess,String accName,String realName,Integer schoolId,Integer roleId,String prov, String city, String county,Integer schoolType,
+			Integer gradeNo,Integer classId);
 
 }
