@@ -850,7 +850,12 @@ public class LoreAction extends DispatchAction {
 						Integer lqsId = Integer.parseInt(lqsIdArr[i]);
 						String lqsTitle = lqsTitleArr[i];
 						String lqsCon = lqsConArr[i];
-						lqm.updateLoreQuestionSubByLqsId(lqsId, lqsTitle, lqsCon, operateUserName, CurrentTime.getCurrentTime());
+						if(lqsId > 0){//修改
+							lqm.updateLoreQuestionSubByLqsId(lqsId, lqsTitle, lqsCon, operateUserName, CurrentTime.getCurrentTime());
+						}else{//增加
+							lqm.addLoreQuestionSubInfo(lqId, loreType, lqsTitle, lqsCon, 1, operateUserName, CurrentTime.getCurrentTime());
+						}
+						
 					}
 				}
 				//删除
