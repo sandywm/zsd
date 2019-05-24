@@ -853,7 +853,13 @@ public class LoreAction extends DispatchAction {
 						if(lqsId > 0){//修改
 							lqm.updateLoreQuestionSubByLqsId(lqsId, lqsTitle, lqsCon, operateUserName, CurrentTime.getCurrentTime());
 						}else{//增加
-							lqm.addLoreQuestionSubInfo(lqId, loreType, lqsTitle, lqsCon, 1, operateUserName, CurrentTime.getCurrentTime());
+							if(loreType.equals("知识清单")){
+								lqm.addLoreQuestionSubInfo(lqId, loreType, lqsTitle, lqsCon, 1, operateUserName, CurrentTime.getCurrentTime());
+							}else{
+								String lqsType = Transcode.unescape_new1("lqsType", request);//重点，难点，关键点，易混点
+								lqm.addLoreQuestionSubInfo(lqId, lqsType, lqsTitle, lqsCon, 1, operateUserName, CurrentTime.getCurrentTime());
+							}
+							
 						}
 						
 					}
