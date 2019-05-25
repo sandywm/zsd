@@ -828,8 +828,10 @@ public class LoreAction extends DispatchAction {
 		Integer lqsId = CommonTools.getFinalInteger("lqsId", request);
 		Map<String,String> map = new HashMap<String,String>();
 		String msg = "error";
+		
 		boolean flag = lqm.delLoreQuestionSubByLqsId(lqsId);
 		if(flag){
+//			lqm.l
 			msg = "success";
 		}
 		map.put("result", msg);
@@ -886,9 +888,7 @@ public class LoreAction extends DispatchAction {
 								String lqsType = Transcode.unescape_new1("lqsType", request);//重点，难点，关键点，易混点
 								lqm.addLoreQuestionSubInfo(lqId, lqsType, lqsTitle, lqsCon, 1, operateUserName, CurrentTime.getCurrentTime());
 							}
-							
 						}
-						
 					}
 				}
 				//删除
@@ -1273,28 +1273,28 @@ public class LoreAction extends DispatchAction {
 									String[] titleZdArr = titleZd.split("&zsd&");
 									String[] contentZdArr = contentZd.split("&zsd&");
 									for(Integer i = 0 ; i < titleZdArr.length ; i++){
-										lqm.addLoreQuestionSubInfo(lqId, "重点", titleZdArr[i], contentZdArr[i], i+1, operateUserName, operateDate);
+										lqm.addLoreQuestionSubInfo(lqId, "重点", titleZdArr[i], contentZdArr[i], 1, operateUserName, operateDate);
 									}
 								}
 								if(!titleNd.equals("") && !contentNd.equals("")){
 									String[] titleNdArr = titleNd.split("&zsd&");
 									String[] contentNdArr = contentNd.split("&zsd&");
 									for(Integer i = 0 ; i < titleNdArr.length ; i++){
-										lqm.addLoreQuestionSubInfo(lqId, "难点", titleNdArr[i], contentNdArr[i], i+1, operateUserName, operateDate);
+										lqm.addLoreQuestionSubInfo(lqId, "难点", titleNdArr[i], contentNdArr[i], 1, operateUserName, operateDate);
 									}
 								}
 								if(!titleGjd.equals("") && !contentGjd.equals("")){
 									String[] titleGjdArr = titleGjd.split("&zsd&");
 									String[] contentGjdArr = contentGjd.split("&zsd&");
 									for(Integer i = 0 ; i < titleGjdArr.length ; i++){
-										lqm.addLoreQuestionSubInfo(lqId, "关键点", titleGjdArr[i], contentGjdArr[i], i+1, operateUserName, operateDate);
+										lqm.addLoreQuestionSubInfo(lqId, "关键点", titleGjdArr[i], contentGjdArr[i], 1, operateUserName, operateDate);
 									}
 								}
 								if(!titleYhd.equals("") && !contentYhd.equals("")){
 									String[] titleYhdArr = titleYhd.split("&zsd&");
 									String[] contentYhdArr = contentYhd.split("&zsd&");
 									for(Integer i = 0 ; i < titleYhdArr.length ; i++){
-										lqm.addLoreQuestionSubInfo(lqId, "易混点", titleYhdArr[i], contentYhdArr[i], i+1, operateUserName, operateDate);
+										lqm.addLoreQuestionSubInfo(lqId, "易混点", titleYhdArr[i], contentYhdArr[i], 1, operateUserName, operateDate);
 									}
 								}
 								msg = "success";
@@ -1306,8 +1306,8 @@ public class LoreAction extends DispatchAction {
 					Integer queNum = 1;
 					Integer queOrder = 3;//解题示范3-10
 					if(lqList.size() > 0){
-						queNum = lqList.get(lqList.size() - 1).getQueNum();
-						queOrder += lqList.size();
+						queNum = lqList.get(lqList.size() - 1).getQueNum() + 1;
+						queOrder = 3;
 					}
 					String queTitle = loreType + "第" + queNum + "题";//解题示范第几题
 					String queSub =  Transcode.unescape_new1("queSub", request);//题干
