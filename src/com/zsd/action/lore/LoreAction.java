@@ -812,6 +812,33 @@ public class LoreAction extends DispatchAction {
 	}
 	
 	/**
+	 * 删除知识清单/点拨指导的子表
+	 * @author wm
+	 * @date 2019-5-25 上午09:23:44
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward delLQSInfo(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
+		Integer lqsId = CommonTools.getFinalInteger("lqsId", request);
+		Map<String,String> map = new HashMap<String,String>();
+		String msg = "error";
+		boolean flag = lqm.delLoreQuestionSubByLqsId(lqsId);
+		if(flag){
+			msg = "success";
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	
+	/**
 	 * 修改指定的知识点题库/题库子表
 	 * @author wm
 	 * @date 2019-5-10 上午11:10:52
