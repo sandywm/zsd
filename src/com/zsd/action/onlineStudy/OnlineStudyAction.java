@@ -85,7 +85,9 @@ public class OnlineStudyAction extends DispatchAction {
 		Map<String,Object> map = new HashMap<String,Object>();
 		Integer subId = CommonTools.getFinalInteger("subId", request);//学科编号
 		Integer ediId = CommonTools.getFinalInteger("ediId", request);//出版社编号
+		List<Education> list_edu = new ArrayList<Education>();
 		String msg = "error";
+		Integer gsId_curr = 0;
 		if(roleName.equals("学生")){
 			msg = "success";
 			Integer gradeNumber = 0;
@@ -108,7 +110,6 @@ public class OnlineStudyAction extends DispatchAction {
 					List<GradeSubject>  gsList = gsm.listSpecInfoByGname(gradeName);
 					List<Object> list_sub = new ArrayList<Object>();
 					List<Object> list_edi = new ArrayList<Object>();
-					Integer gsId = 0;
 					if(gsList.size() > 0){
 						for(Iterator<GradeSubject> it = gsList.iterator() ; it.hasNext();){
 							GradeSubject gs = it.next();
@@ -116,7 +117,7 @@ public class OnlineStudyAction extends DispatchAction {
 							Map<String,Object> map_d = new HashMap<String,Object>();
 							map_d.put("subId", sub.getId());
 							if(sub.getId().equals(subId)){//默认为数学
-								gsId = gs.getId();
+								gsId_curr = gs.getId();
 								map_d.put("selFlag", true);
 							}else{
 								map_d.put("selFlag", false);
@@ -138,7 +139,7 @@ public class OnlineStudyAction extends DispatchAction {
 						map.put("ediList", list_edi);
 						//获取学生学科教材信息列表
 						List<StuSubjectEduInfo> sseList = ssem.listInfoByOpt(userId, subId);
-						List<Education> eduList = edum.listInfoByOpt(ediId, gsId);
+						List<Education> eduList = edum.listInfoByOpt(ediId, gsId_curr);
 						if(eduList.size() > 0){
 							for(Integer i = 0 ; i < sseList.size() ; i++){
 								if(i.equals(0)){
@@ -146,17 +147,42 @@ public class OnlineStudyAction extends DispatchAction {
 								}
 							}
 						}
+						
+						
+						
 						if(ediId.equals(0)){//初始化加载
+							
 							if(sseList.size() > 0){
-								for(StuSubjectEduInfo sse : sseList){
+								for(Integer i = 0 ; i < sseList.size() ; i++){
+									StuSubjectEduInfo sse = sseList.get(i);
 									Education edu = sse.getEducation();
 									GradeSubject gs = edu.getGradeSubject();
-									
+									//-------------------------修改学生的实际年级并与之关联的教材-----------------------------//
+									Integer gsId_old = gs.getId();//历史记录中的年级
+									//当学生当前实际年级和StudentSubjectEducation中年级不一致时，表示学生应该是升年级，这时需要对StudentSubjectEducation表进行修改
+									//也有可能是高三开始复习可以进入高一高二（2016-12-23日修改）
+									if(edu.getDisplayStatus().equals(0)){//上下册已开启
+										ediId = edu.getEdition().getId();
+										Integer subId_old = gs.getId();
+										if(!gsId_old.equals(gsId_curr)){//年级不同（由于增加复习，去掉年级名字判断）
+											List<Education> eduList_temp = edum.listInfoByOpt(ediId, gsId_curr); 
+											if(eduList_temp.size() == 2){
+												ssem.updateSSEById(sse.getId(), eduList_temp.get(i).getId());
+											}else if(eduList_temp.size() == 1){
+												ssem.updateSSEById(sse.getId(), eduList_temp.get(0).getId());
+											}
+//											list_edu.add(e)
+										}
+									}else{
+										list_edu.add(edu);
+									}
 								}
-							}
+							}else{}
 						}else{//页面手动选择
-							
+							//先判断education表中有无指定年级+学科+出版社的记录
 						}
+						
+						
 						if(sseList.size() > 0){
 							for(StuSubjectEduInfo sse : sseList){
 								
