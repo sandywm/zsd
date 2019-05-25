@@ -418,10 +418,10 @@ public class LoreQuestionManagerImpl implements LoreQuestionManager{
 			tran = sess.beginTransaction();
 			LoreQuestion lq = lqDao.getEntityById(sess, lqId);
 			if(lq != null){
-				if(tipsId > 0){
+				if(tipsId >= 0){
 					lq.setQueTips(tipsId);
 				}
-				if(lexId > 0){
+				if(lexId >= 0){
 					lq.setLexId(lexId);
 				}
 				lqDao.update(sess, lq);
@@ -433,6 +433,46 @@ public class LoreQuestionManagerImpl implements LoreQuestionManager{
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 			throw new WEBException("修改指定题库的提示编号、词库编号时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public boolean delLoreQuestionByLqId(Integer lqId) throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			lqDao = (LoreQuestionDao) DaoFactory.instance(null).getDao(Constants.DAO_LORE_QUESTION_INFO);
+			Session sess = HibernateUtil.currentSession();
+			tran = sess.beginTransaction();
+			LoreQuestion lq = lqDao.getEntityById(sess, lqId);
+			if(lq != null){
+				lqDao.delete(sess, lq);
+				tran.commit();
+				return true;
+			}
+			return false;
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			throw new WEBException("删除指定题库主表信息时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public LoreQuestion getMaxNumInfoByOpt(Integer loreId, String loreType,
+			Integer inUse) throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			lqDao = (LoreQuestionDao) DaoFactory.instance(null).getDao(Constants.DAO_LORE_QUESTION_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return lqDao.getMaxNumInfoByOpt(sess, loreId, loreType, inUse);
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			throw new WEBException("获取指定知识点下，指定类型的最大num值时出现异常!");
 		} finally{
 			HibernateUtil.closeSession();
 		}

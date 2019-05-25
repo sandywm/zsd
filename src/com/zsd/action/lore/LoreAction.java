@@ -828,11 +828,19 @@ public class LoreAction extends DispatchAction {
 		Integer lqsId = CommonTools.getFinalInteger("lqsId", request);
 		Map<String,String> map = new HashMap<String,String>();
 		String msg = "error";
-		
-		boolean flag = lqm.delLoreQuestionSubByLqsId(lqsId);
-		if(flag){
-//			lqm.l
-			msg = "success";
+		LoreQuestionSubInfo lqs = lqm.getEntityByLqsId(lqsId);
+		if(lqs != null){
+			boolean flag = lqm.delLoreQuestionSubByLqsId(lqsId);
+			if(flag){
+				//重置提示
+				Integer lqId = lqs.getLoreQuestion().getId();
+				lqm.updateSimpleInfoByLqId(lqId, -1, 0);
+				if(lqm.listLQSInfoByLqId(lqId, lqs.getLoreQuestion().getLoreTypeName()).size() == 0){
+					//删除主表
+					lqm.delLoreQuestionByLqId(lqId);
+				}
+				msg = "success";
+			}
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
@@ -867,7 +875,6 @@ public class LoreAction extends DispatchAction {
 			String loreType = lq.getLoreTypeName();
 			if(loreType.equals("知识清单") || loreType.equals("点拨指导")){
 				String lqsIdStr_up = CommonTools.getFinalStr("lqsIdStr_up", request);//页面所有需要修改的子表编号，多个用&zsd&隔开
-				String lqsIdStr_del = CommonTools.getFinalStr("lqsIdStr_del", request);//页面所有需要删除的子表编号，多个用&zsd&隔开
 				String lqsTitleStr = Transcode.unescape_new1("lqsTitleStr", request);//页面所有需要修改的子表标题，多个用&zsd&隔开
 				String lqsConStr = Transcode.unescape_new1("lqsConStr", request);//页面所有需要修改的子表内容，多个用&zsd&隔开
 				//修改
@@ -889,14 +896,6 @@ public class LoreAction extends DispatchAction {
 								lqm.addLoreQuestionSubInfo(lqId, lqsType, lqsTitle, lqsCon, 1, operateUserName, CurrentTime.getCurrentTime());
 							}
 						}
-					}
-				}
-				//删除
-				if(!lqsIdStr_del.equals("")){
-					String[] lqsIdArr = lqsIdStr_del.split("&zsd&");
-					for(Integer i = 0 ; i < lqsIdArr.length ; i++){
-						Integer lqsId = Integer.parseInt(lqsIdArr[i]);
-						lqm.delLoreQuestionSubByLqsId(lqsId);
 					}
 				}
 			}else if(loreType.equals("解题示范") || loreType.equals("知识讲解")){
@@ -1171,15 +1170,11 @@ public class LoreAction extends DispatchAction {
 		String loreType = Transcode.unescape_new1("loreType", request);
 		Integer queNum = 1;
 		if(loreType.equals("解题示范")){
-			
+			queNum = lqm.listInfoByLoreId(loreId, loreType, -1).size() + 1;
 		}else{
-			List<LoreQuestion> lqList = lqm.listInfoByLoreId(loreId, loreType, -1);
-			if(lqList.size() > 0){
-				if(loreType.equals("解题示范")){
-					queNum = lqList.size() + 1;
-				}else{
-					queNum = lqList.get(lqList.size() - 1).getQueNum() + 1;
-				}
+			LoreQuestion lq = lqm.getMaxNumInfoByOpt(loreId, loreType, -1);
+			if(lq != null){
+				queNum = lq.getQueNum() + 1;
 			}
 		}
 		Map<String,Integer> map = new HashMap<String,Integer>();
@@ -1304,9 +1299,9 @@ public class LoreAction extends DispatchAction {
 				}else if(loreType.equals("解题示范")){
 					List<LoreQuestion> lqList = lqm.listInfoByLoreId(loreId, loreType, -1);
 					Integer queNum = 1;
-					Integer queOrder = 3;//解题示范3-10
+					Integer queOrder = 3;//解题示范3
 					if(lqList.size() > 0){
-						queNum = lqList.get(lqList.size() - 1).getQueNum() + 1;
+						queNum = lqList.size() + 1;
 						queOrder = 3;
 					}
 					String queTitle = loreType + "第" + queNum + "题";//解题示范第几题
@@ -1348,7 +1343,7 @@ public class LoreAction extends DispatchAction {
 					Integer queNum = 1;
 					Integer queOrder = 0;//ggxl(巩固训练)4-10,zdzd(针对性诊断)11-20,zczd(再次诊断)21-30
 					if(lqList.size() > 0){
-						queNum = lqList.get(lqList.size() - 1).getQueNum() + 1;
+						queNum = lqm.getMaxNumInfoByOpt(loreId, loreType, -1).getQueNum() + 1;
 						queOrder = lqList.get(lqList.size() - 1).getQueOrder() + 1;
 						if(loreType.equals("巩固训练")){
 							if(queOrder > 10){
@@ -1362,6 +1357,14 @@ public class LoreAction extends DispatchAction {
 							if(queOrder > 30){
 								queOrder = 30;
 							}
+						}
+					}else{
+						if(loreType.equals("巩固训练")){
+							queOrder = 4;
+						}else if(loreType.equals("针对性诊断")){
+							queOrder = 11;
+						}else{
+							queOrder = 21;
 						}
 					}
 					String queTitle = loreType + "第" + queNum + "题";//第几题

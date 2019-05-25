@@ -3,6 +3,8 @@ package com.zsd.service;
 
 import java.util.List;
 
+import org.hibernate.Session;
+
 import com.zsd.exception.WEBException;
 import com.zsd.module.LoreQuestion;
 import com.zsd.module.LoreQuestionSubInfo;
@@ -68,6 +70,16 @@ public interface LoreQuestionManager {
 	boolean updateLoreQuestion(Integer id,String queSub,String queAnswer,Integer queTipId,Integer lexId,String queResolution,String queType,
 			String queType2,String a,String b,String c,String d,String e,String f,
 			String operateUserName,String operateDate)throws WEBException;
+	
+	/**
+	 * 删除指定的题库
+	 * @author wm
+	 * @date 2019-5-25 上午11:16:37
+	 * @param lqId 主键
+	 * @return
+	 * @throws WEBException
+	 */
+	boolean delLoreQuestionByLqId(Integer lqId)throws WEBException;
 	
 	/**
 	 * 增加知识清单，点拨指导、解题示范、知识讲解内容
@@ -257,10 +269,21 @@ public interface LoreQuestionManager {
 	 * @author wm
 	 * @date 2019-5-21 上午11:57:47
 	 * @param lqId
-	 * @param lexId 词库编号(0时不修改)
-	 * @param tipsId 提示编号(0时不修改)
+	 * @param lexId 词库编号(大于等于0时修改)
+	 * @param tipsId 提示编号(大于等于0时修改)
 	 * @return
 	 * @throws WEBException
 	 */
 	boolean updateSimpleInfoByLqId(Integer lqId,Integer lexId,Integer tipsId)throws WEBException;
+	
+	/**
+	 * 获取指定知识点下，指定类型的最大num值
+	 * @author wm
+	 * @date 2019-5-25 上午11:23:22
+	 * @param loreId 知识点编号
+	 * @param loreType 知识点类型(""表示全部，知识清单,点拨指导,解题示范,巩固训练,针对性诊断,再次诊断,知识讲解)
+	 * @param inUse 有效状态(-1：表示全部,0：有效，1：无效)
+	 * @throws return
+	 */
+	LoreQuestion getMaxNumInfoByOpt(Integer loreId,String loreType,Integer inUse) throws WEBException;
 }

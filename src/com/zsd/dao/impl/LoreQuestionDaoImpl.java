@@ -101,4 +101,23 @@ public class LoreQuestionDaoImpl implements LoreQuestionDao{
 		return sess.createQuery(hql).list();
 	}
 
+	@Override
+	public LoreQuestion getMaxNumInfoByOpt(Session sess, Integer loreId,
+			String loreType, Integer inUse) {
+		// TODO Auto-generated method stub
+		String hql = " from LoreQuestion as lq where lq.loreInfo.id = "+loreId;
+		if(!loreType.equals("")){
+			hql += " and lq.loreTypeName = '"+loreType+"'";
+		}
+		if(!inUse.equals(-1)){
+			hql += " and lq.inUse = " + inUse;
+		}
+		hql += " order by lq.queNum desc";
+		List<LoreQuestion> lqList = sess.createQuery(hql).list();
+		if(lqList.size() > 0){
+			return lqList.get(0);
+		}
+		return null;
+	}
+
 }

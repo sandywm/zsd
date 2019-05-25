@@ -102,4 +102,16 @@ public interface LoreQuestionDao {
 	 * @return
 	 */
 	List<LoreQuestion> findInfoByTipsId(Session sess,Integer tipsId);
+	
+	/**
+	 * 获取指定知识点下，指定类型的最大num值
+	 * @author wm
+	 * @date 2019-5-25 上午11:23:22
+	 * @param sess
+	 * @param loreId 知识点编号
+	 * @param loreType 知识点类型(""表示全部，知识清单,点拨指导,解题示范,巩固训练,针对性诊断,再次诊断,知识讲解)
+	 * @param inUse 有效状态(-1：表示全部,0：有效，1：无效)
+	 * @return
+	 */
+	LoreQuestion getMaxNumInfoByOpt(Session sess,Integer loreId,String loreType,Integer inUse);
 }
