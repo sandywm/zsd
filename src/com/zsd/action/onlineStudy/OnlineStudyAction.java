@@ -139,6 +139,15 @@ public class OnlineStudyAction extends DispatchAction {
 						map.put("ediList", list_edi);
 						//获取学生学科教材信息列表
 						List<StuSubjectEduInfo> sseList = ssem.listInfoByOpt(userId, subId);
+						if(sseList.size() > 0){
+							for(StuSubjectEduInfo sse : sseList){
+								Education edu = sse.getEducation();
+								Integer ediId_old = edu.getEdition().getId();
+							}
+						}else{
+							msg = "noEduInfo";//mei
+						}
+						
 						List<Education> eduList = edum.listInfoByOpt(ediId, gsId_curr);
 						if(eduList.size() > 0){
 							for(Integer i = 0 ; i < sseList.size() ; i++){
@@ -163,23 +172,42 @@ public class OnlineStudyAction extends DispatchAction {
 									//也有可能是高三开始复习可以进入高一高二（2016-12-23日修改）
 									if(edu.getDisplayStatus().equals(0)){//上下册已开启
 										ediId = edu.getEdition().getId();
-										Integer subId_old = gs.getId();
 										if(!gsId_old.equals(gsId_curr)){//年级不同（由于增加复习，去掉年级名字判断）
 											List<Education> eduList_temp = edum.listInfoByOpt(ediId, gsId_curr); 
-											if(eduList_temp.size() == 2){
-												ssem.updateSSEById(sse.getId(), eduList_temp.get(i).getId());
-											}else if(eduList_temp.size() == 1){
-												ssem.updateSSEById(sse.getId(), eduList_temp.get(0).getId());
+											if(eduList_temp.size() > 0){
+												if(eduList_temp.size() == 2){
+													ssem.updateSSEById(sse.getId(), eduList_temp.get(i).getId());
+												}else if(eduList_temp.size() == 1){
+													ssem.updateSSEById(sse.getId(), eduList_temp.get(0).getId());
+												}
+												list_edu.add(eduList_temp.get(i));
 											}
-//											list_edu.add(e)
+										}else{
+											list_edu.add(edu);
 										}
-									}else{
-										list_edu.add(edu);
 									}
 								}
-							}else{}
+							}
 						}else{//页面手动选择
 							//先判断education表中有无指定年级+学科+出版社的记录
+							List<Education> eduList_temp = edum.listInfoByOpt(ediId, gsId_curr);
+							if(eduList_temp.size() > 0){
+								for(Integer i = 0 ; i < eduList_temp.size() ; i++){
+									Education edu = eduList_temp.get(i);
+									Integer showStatus = edu.getDisplayStatus();
+									if(showStatus.equals(0)){
+										if(sseList.size() == 0){
+											ssem.addSSE(userId, subId, edu.getId());
+										}else if(sseList.size() == 1){
+											Integer eduId = eduList_temp.get(0).getId();
+											ssem.updateSSEById(sseList.get(0).getId(), eduId);
+											
+										}else if(sseList.size() == 2){
+											
+										}
+									}
+								}
+							}
 						}
 						
 						
