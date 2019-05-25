@@ -32,6 +32,9 @@ public class CommonTools {
 	 */
 	public static Integer getLoginUserId(HttpServletRequest request){
         Integer userId = (Integer)request.getSession(false).getAttribute(Constants.LOGIN_USER_ID);
+        if(userId == null){
+        	return 0;
+        }
         return userId;
 	}
 	
@@ -43,7 +46,10 @@ public class CommonTools {
 	 * @return
 	 */
 	public static String getLoginAccount(HttpServletRequest request){
-        String account = (String)request.getSession(false).getAttribute(Constants.LOGIN_ACCOUNT);
+        String account = String.valueOf(request.getSession(false).getAttribute(Constants.LOGIN_ACCOUNT));
+        if(account.equals("null")){
+        	return "";
+        }
         return account;
 	}
 	
@@ -54,6 +60,9 @@ public class CommonTools {
 	 */
 	public static Integer getLoginRoleId(HttpServletRequest request){
         Integer roleId = (Integer)request.getSession(false).getAttribute(Constants.LOGIN_USER_ROLE_ID);
+        if(roleId == null){
+        	return 0;
+        }
         return roleId;
 	}
 	
@@ -63,7 +72,10 @@ public class CommonTools {
 	 * @return
 	 */
 	public static String getLoginRoleName(HttpServletRequest request){
-        String roleName = (String)request.getSession(false).getAttribute(Constants.LOGIN_USER_ROLE_NAME);
+        String roleName = String.valueOf(request.getSession(false).getAttribute(Constants.LOGIN_USER_ROLE_NAME));
+        if(roleName.equals("null")){
+        	return "";
+        }
         return roleName;
 	}
 	
