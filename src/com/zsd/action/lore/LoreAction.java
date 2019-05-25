@@ -830,14 +830,18 @@ public class LoreAction extends DispatchAction {
 		String msg = "error";
 		LoreQuestionSubInfo lqs = lqm.getEntityByLqsId(lqsId);
 		if(lqs != null){
-			//重置提示
 			Integer lqId = lqs.getLoreQuestion().getId();
-			lqm.updateSimpleInfoByLqId(lqId, -1, 0);
 			boolean flag = lqm.delLoreQuestionSubByLqsId(lqsId);
 			if(flag){
 				if(lqm.listLQSInfoByLqId(lqId, lqs.getLoreQuestion().getLoreTypeName()).size() == 0){
 					//删除主表
 					lqm.delLoreQuestionByLqId(lqId);
+				}
+				//获取有无关联的提示信息
+				List<LoreQuestion> lqList = lqm.listInfoByTipsId(lqsId);
+				for(Iterator<LoreQuestion> it = lqList.iterator() ; it.hasNext();){
+					LoreQuestion lq = it.next();
+					lqm.updateSimpleInfoByLqId(lq.getId(), -1, 0);
 				}
 				msg = "success";
 			}

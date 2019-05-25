@@ -222,7 +222,7 @@ public class LexAction extends DispatchAction {
 		List<LoreQuestion> lqList = lqm.listInfoByLexId(lexId);
 		for(Iterator<LoreQuestion> it = lqList.iterator() ; it.hasNext();){
 			LoreQuestion lq = it.next();
-			lqm.updateSimpleInfoByLqId(lq.getId(), 0, 0);
+			lqm.updateSimpleInfoByLqId(lq.getId(), 0, -1);
 		}
 		List<LexLoreRelateInfo>  llrList = lexm.listInfoByOpt(lexId, 0);
 		for(Iterator<LexLoreRelateInfo> it = llrList.iterator() ; it.hasNext();){
