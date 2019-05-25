@@ -1346,17 +1346,23 @@ public class LoreAction extends DispatchAction {
 				}else{//巩固训练、针对性诊断、再次诊断
 					List<LoreQuestion> lqList = lqm.listInfoByLoreId(loreId, loreType, -1);
 					Integer queNum = 1;
-					Integer queOrder = 0;//ggxl(巩固训练)11-60,zdzd(针对性诊断)61-110,zczd(再次诊断)111-160
-					if(loreType.equals("巩固训练")){
-						queOrder = 11;
-					}else if(loreType.equals("针对性诊断")){
-						queOrder = 61;
-					}else{
-						queOrder = 111;
-					}
+					Integer queOrder = 0;//ggxl(巩固训练)4-10,zdzd(针对性诊断)11-20,zczd(再次诊断)21-30
 					if(lqList.size() > 0){
-						queNum = lqList.get(lqList.size() - 1).getQueNum();
-						queOrder += lqList.size();
+						queNum = lqList.get(lqList.size() - 1).getQueNum() + 1;
+						queOrder = lqList.get(lqList.size() - 1).getQueOrder() + 1;
+						if(loreType.equals("巩固训练")){
+							if(queOrder > 10){
+								queOrder = 10;
+							}
+						}else if(loreType.equals("针对性诊断")){
+							if(queOrder > 20){
+								queOrder = 20;
+							}
+						}else{
+							if(queOrder > 30){
+								queOrder = 30;
+							}
+						}
 					}
 					String queTitle = loreType + "第" + queNum + "题";//第几题
 					String queSub =  Transcode.unescape_new1("queSub", request);//题干
