@@ -833,7 +833,7 @@ public class LoreAction extends DispatchAction {
 			Integer lqId = lqs.getLoreQuestion().getId();
 			boolean flag = lqm.delLoreQuestionSubByLqsId(lqsId);
 			if(flag){
-				if(lqm.listLQSInfoByLqId(lqId, lqs.getLoreQuestion().getLoreTypeName()).size() == 0){
+				if(lqm.listLQSInfoByLqId(lqId, "").size() == 0){
 					//删除主表
 					lqm.delLoreQuestionByLqId(lqId);
 				}
