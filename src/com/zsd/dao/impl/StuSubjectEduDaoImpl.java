@@ -38,7 +38,7 @@ public class StuSubjectEduDaoImpl implements StuSubjectEduDao{
 			Integer subId) {
 		// TODO Auto-generated method stub
 		String hql = " from StuSubjectEduInfo as sse where sse.user.id = "+stuId;
-		hql += " and sse.subject.id = "+subId;
+		hql += " and sse.subject.id = "+subId + " order by sse.education.id asc";
 		return sess.createQuery(hql).list();
 	}
 

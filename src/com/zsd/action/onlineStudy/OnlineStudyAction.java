@@ -86,6 +86,7 @@ public class OnlineStudyAction extends DispatchAction {
 		Integer subId = CommonTools.getFinalInteger("subId", request);//学科编号
 		Integer ediId = CommonTools.getFinalInteger("ediId", request);//出版社编号
 		Integer gradeNumber = CommonTools.getFinalInteger("gradeNumber", request);//高三初三复习时传递过来的年级编号
+		String opt = "manu";//手动选择
 		List<Education> list_edu = new ArrayList<Education>();
 		String msg = "error";
 		Integer gsId_curr = 0;
@@ -97,12 +98,15 @@ public class OnlineStudyAction extends DispatchAction {
 			ClassInfo c = null;
 			if(uc != null){
 				c = uc.getClassInfo();
-				gradeNumber = Convert.dateConvertGradeNumber(c.getBuildeClassDate());
+				if(gradeNumber.equals(0)){//如果页面没传递，直接通过学生获取
+					gradeNumber = Convert.dateConvertGradeNumber(c.getBuildeClassDate());
+				}
 				if(gradeNumber > 0){
 					if(gradeNumber > 12){
 						gradeNumber = 12;
 					}
 					if(subId.equals(0)){
+						opt = "init";//初始加载
 						subId = 2;//默认为数学
 					}
 					gradeName = Convert.NunberConvertChinese(gradeNumber);
@@ -127,6 +131,61 @@ public class OnlineStudyAction extends DispatchAction {
 							list_sub.add(map_d);
 						}
 						map.put("subList", list_sub);
+						
+						if(opt.equals("init")){
+							//获取学生学科教材信息列表
+							List<StuSubjectEduInfo> sseList = ssem.listInfoByOpt(userId, subId);
+							if(sseList.size() > 0){
+								msg = "success";
+								for(StuSubjectEduInfo sse : sseList){
+									Education edu_study = sse.getEducation();
+									Integer ediId_study = edu_study.getEdition().getId();
+									if(ediId.equals(0)){
+										ediId = ediId_study;
+									}
+									List<Education> eduList = edum.listInfoByOpt(ediId, gsId_curr);//获取当前年级学科、出版社下的教材信息
+									if(eduList.size() > 0){
+										for(Integer i = 0 ; i < eduList.size() ; i++){
+											Education edu_curr = eduList.get(i);
+											if(edu_curr.getDisplayStatus().equals(0) && edu_study.getId().equals(edu_curr.getId())){
+												//正常状态且相等
+												list_edu.add(edu_curr);
+											}
+										}
+									}
+								}
+							}else{
+								msg = "noStudyInfo";//mei
+							}
+						}else if(opt.equals("manu")){
+							List<Education> eduList = edum.listInfoByOpt(ediId, gsId_curr);//获取当前年级学科、出版社下的教材信息
+							if(eduList.size() > 0){
+								msg = "success";
+								for(Integer i = 0 ; i < eduList.size() ; i++){
+									Education edu_curr = eduList.get(i);
+									if(edu_curr.getDisplayStatus().equals(0)){
+										//获取学生学科教材信息列表
+										List<StuSubjectEduInfo> sseList = ssem.listInfoByOpt(userId, subId);
+										if(sseList.size() > 0){
+											for(StuSubjectEduInfo sse : sseList){
+												Education edu_study = sse.getEducation();
+												if(edu_study.getId().equals(edu_curr)){
+													
+												}else{
+													ssem.updateSSEById(sse.getId(), edu_curr.getId());
+												}
+											}
+										}else{
+											ssem.addSSE(userId, subId, edu_curr.getId());
+										}
+										list_edu.add(edu_curr);
+									}
+								}
+							}else{
+								msg = "noInfo";
+							}
+						}
+						
 						//获取出版社列表
 						List<Edition> ediList = em.listInfoByShowStatus(0, 0);
 						for(Iterator<Edition> it = ediList.iterator() ; it.hasNext();){
@@ -134,95 +193,66 @@ public class OnlineStudyAction extends DispatchAction {
 							Map<String,Object> map_d = new HashMap<String,Object>();
 							map_d.put("ediId", edi.getId());
 							map_d.put("ediName", edi.getEdiName());
+							if(ediId.equals(edi.getId())){
+								map_d.put("selFlag", true);
+							}else{
+								map_d.put("selFlag", false);
+							}
 							list_edi.add(map_d);
 						}
 						map.put("ediList", list_edi);
-						//获取学生学科教材信息列表
-						List<StuSubjectEduInfo> sseList = ssem.listInfoByOpt(userId, subId);
-						if(sseList.size() > 0){
-							for(StuSubjectEduInfo sse : sseList){
-								Education edu = sse.getEducation();
-								Integer ediId_old = edu.getEdition().getId();
-							}
-						}else{
-							msg = "noEduInfo";//mei
-						}
 						
-						List<Education> eduList = edum.listInfoByOpt(ediId, gsId_curr);
-						if(eduList.size() > 0){
-							for(Integer i = 0 ; i < sseList.size() ; i++){
-								if(i.equals(0)){
-									ssem.updateSSEById(sseList.get(i).getId(), eduList.get(0).getId());
-								}
-							}
-						}
-						
-						
-						
-						if(ediId.equals(0)){//初始化加载
-							
-							if(sseList.size() > 0){
-								for(Integer i = 0 ; i < sseList.size() ; i++){
-									StuSubjectEduInfo sse = sseList.get(i);
-									Education edu = sse.getEducation();
-									GradeSubject gs = edu.getGradeSubject();
-									//-------------------------修改学生的实际年级并与之关联的教材-----------------------------//
-									Integer gsId_old = gs.getId();//历史记录中的年级
-									//当学生当前实际年级和StudentSubjectEducation中年级不一致时，表示学生应该是升年级，这时需要对StudentSubjectEducation表进行修改
-									//也有可能是高三开始复习可以进入高一高二（2016-12-23日修改）
-									if(edu.getDisplayStatus().equals(0)){//上下册已开启
-										ediId = edu.getEdition().getId();
-										if(!gsId_old.equals(gsId_curr)){//年级不同（由于增加复习，去掉年级名字判断）
-											List<Education> eduList_temp = edum.listInfoByOpt(ediId, gsId_curr); 
-											if(eduList_temp.size() > 0){
-												if(eduList_temp.size() == 2){
-													ssem.updateSSEById(sse.getId(), eduList_temp.get(i).getId());
-												}else if(eduList_temp.size() == 1){
-													ssem.updateSSEById(sse.getId(), eduList_temp.get(0).getId());
-												}
-												list_edu.add(eduList_temp.get(i));
-											}
-										}else{
-											list_edu.add(edu);
-										}
-									}
-								}
-							}
-						}else{//页面手动选择
-							//先判断education表中有无指定年级+学科+出版社的记录
-							List<Education> eduList_temp = edum.listInfoByOpt(ediId, gsId_curr);
-							if(eduList_temp.size() > 0){
-								for(Integer i = 0 ; i < eduList_temp.size() ; i++){
-									Education edu = eduList_temp.get(i);
-									Integer showStatus = edu.getDisplayStatus();
-									if(showStatus.equals(0)){
-										if(sseList.size() == 0){
-											ssem.addSSE(userId, subId, edu.getId());
-										}else if(sseList.size() == 1){
-											Integer eduId = eduList_temp.get(0).getId();
-											ssem.updateSSEById(sseList.get(0).getId(), eduId);
-											
-										}else if(sseList.size() == 2){
-											
-										}
-									}
-								}
-							}
-						}
-						
-						
-						if(sseList.size() > 0){
-							for(StuSubjectEduInfo sse : sseList){
-								
-							}
-						}else{
-							msg = "noEduInfo";//mei
-						}
-					}else{
-						msg = "error";
+//						if(ediId.equals(0)){//初始化加载
+//							
+//							if(sseList.size() > 0){
+//								for(Integer i = 0 ; i < sseList.size() ; i++){
+//									StuSubjectEduInfo sse = sseList.get(i);
+//									Education edu = sse.getEducation();
+//									GradeSubject gs = edu.getGradeSubject();
+//									//-------------------------修改学生的实际年级并与之关联的教材-----------------------------//
+//									Integer gsId_old = gs.getId();//历史记录中的年级
+//									//当学生当前实际年级和StudentSubjectEducation中年级不一致时，表示学生应该是升年级，这时需要对StudentSubjectEducation表进行修改
+//									//也有可能是高三开始复习可以进入高一高二（2016-12-23日修改）
+//									if(edu.getDisplayStatus().equals(0)){//上下册已开启
+//										ediId = edu.getEdition().getId();
+//										if(!gsId_old.equals(gsId_curr)){//年级不同（由于增加复习，去掉年级名字判断）
+//											List<Education> eduList_temp = edum.listInfoByOpt(ediId, gsId_curr); 
+//											if(eduList_temp.size() > 0){
+//												if(eduList_temp.size() == 2){
+//													ssem.updateSSEById(sse.getId(), eduList_temp.get(i).getId());
+//												}else if(eduList_temp.size() == 1){
+//													ssem.updateSSEById(sse.getId(), eduList_temp.get(0).getId());
+//												}
+//												list_edu.add(eduList_temp.get(i));
+//											}
+//										}else{
+//											list_edu.add(edu);
+//										}
+//									}
+//								}
+//							}
+//						}else{//页面手动选择
+//							//先判断education表中有无指定年级+学科+出版社的记录
+//							List<Education> eduList_temp = edum.listInfoByOpt(ediId, gsId_curr);
+//							if(eduList_temp.size() > 0){
+//								for(Integer i = 0 ; i < eduList_temp.size() ; i++){
+//									Education edu = eduList_temp.get(i);
+//									Integer showStatus = edu.getDisplayStatus();
+//									if(showStatus.equals(0)){
+//										if(sseList.size() == 0){
+//											ssem.addSSE(userId, subId, edu.getId());
+//										}else if(sseList.size() == 1){
+//											Integer eduId = eduList_temp.get(0).getId();
+//											ssem.updateSSEById(sseList.get(0).getId(), eduId);
+//											
+//										}else if(sseList.size() == 2){
+//											
+//										}
+//									}
+//								}
+//							}
+//						}
 					}
-				}else{
-					msg = "error";
 				}
 			}
 		}
