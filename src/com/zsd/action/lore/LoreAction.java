@@ -5,14 +5,23 @@
 package com.zsd.action.lore;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -40,6 +49,7 @@ import com.zsd.service.LoreQuestionErrorManager;
 import com.zsd.service.LoreQuestionManager;
 import com.zsd.service.LoreRelateManager;
 import com.zsd.service.UserManager;
+import com.zsd.tools.CheckImage;
 import com.zsd.tools.CommonTools;
 import com.zsd.tools.Convert;
 import com.zsd.tools.CurrentTime;
@@ -911,23 +921,9 @@ public class LoreAction extends DispatchAction {
 				}else{
 					String videoPath = lq.getQueAnswer();
 					if(!videoPath.equals(queAnswer)){
-						String videoName = queAnswer.substring(queAnswer.lastIndexOf("/")+1);
-						//复制上传的视频文件到文件名为loreId的文件中
-						String folder = String.valueOf(lq.getLoreInfo().getId());
-						String absoluteFilePath = WebUrl.DIAGNOSIS_DATA_URL.replace("\\", "/") + "/" + folder + "/" + videoName;
-						String relativeFilePath = WebUrl.NEW_DIAGNOSIS_DATA_URL.replace("\\", "/")  + folder + "/" + videoName;
-						String oldFilePath = WebUrl.DIAGNOSIS_DATA_URL.replace("\\", "/") + "/" + videoName;
-						File file = new File(WebUrl.DIAGNOSIS_DATA_URL.replace("\\", "/") + "/" + folder);
-						if(!file.exists()){
-							file.mkdirs();
-						}
-						//复制上传的文件到新建的文件夹里面
-						boolean flag_copy = FileOpration.copyFile(oldFilePath, absoluteFilePath);
-						//删除上传的旧文件
-						if(flag_copy){
-							FileOpration.deleteFile(oldFilePath);
-						}	
-						queAnswer = relativeFilePath;
+						//删除旧视频
+						String filePath = WebUrl.DATA_URL_PRO + videoPath;
+						FileOpration.deleteFile(filePath);
 					}
 				}
 				lqm.updateSimpleLoreQuestionByLqId(lqId, queSub, queAnswer, queResolution, operateUserName, CurrentTime.getCurrentTime());
@@ -1321,23 +1317,7 @@ public class LoreAction extends DispatchAction {
 						String queTitle = loreType;
 						String queSub =  Transcode.unescape_new1("queSub", request);//题干
 						String queAnswer = Transcode.unescape_new1("queAnswer", request);//视频地址
-						String videoName = queAnswer.substring(queAnswer.lastIndexOf("/")+1);
-						//复制上传的视频文件到文件名为loreId的文件中
-						String folder = String.valueOf(loreId);
-						String absoluteFilePath = WebUrl.DIAGNOSIS_DATA_URL.replace("\\", "/") + "/" + folder + "/" + videoName;
-						String relativeFilePath = WebUrl.NEW_DIAGNOSIS_DATA_URL.replace("\\", "/")  + folder + "/" + videoName;
-						String oldFilePath = WebUrl.DIAGNOSIS_DATA_URL.replace("\\", "/") + "/" + videoName;
-						File file = new File(WebUrl.DIAGNOSIS_DATA_URL.replace("\\", "/") + "/" + folder);
-						if(!file.exists()){
-							file.mkdirs();
-						}
-						//复制上传的文件到新建的文件夹里面
-						boolean flag_copy = FileOpration.copyFile(oldFilePath, absoluteFilePath);
-						//删除上传的旧文件
-						if(flag_copy){
-							FileOpration.deleteFile(oldFilePath);
-						}	
-						lqm.addSimpleLoreQuestion(loreId, loreType, queTitle, queSub, 1, 170, relativeFilePath, "", operateUserName, operateDate);
+						lqm.addSimpleLoreQuestion(loreId, loreType, queTitle, queSub, 1, 170, queAnswer, "", operateUserName, operateDate);
 						msg = "success";
 					}else{
 						msg = "noAdd";
@@ -1397,6 +1377,87 @@ public class LoreAction extends DispatchAction {
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 上传知识讲解视频mp4,flv
+	 * @author wm
+	 * @date 2019-5-26 下午12:11:51
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward uploadFile(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		String msg = "";
+		boolean upFlag = false;
+		String fileUrl = "";
+		String filename = "";
+		Map<String,Object> map = new HashMap<String,Object>();
+		Integer loreId = CommonTools.getFinalInteger("loreId", request);//知识点编号
+		if(loreId > 0){
+			if (ServletFileUpload.isMultipartContent(request)){// 判断是否是上传文件
+				DiskFileItemFactory diskFileItemFactory = new DiskFileItemFactory();// 创建工厂对象
+				ServletFileUpload fileUpload = new ServletFileUpload(diskFileItemFactory); // 创建上传对象
+				try {
+					List<FileItem> filelist = fileUpload.parseRequest(request);
+					ListIterator<FileItem> iterator = filelist.listIterator();
+					String userPath = WebUrl.DIAGNOSIS_DATA_URL + "/" + loreId;
+					String filePre = "";
+					while (iterator.hasNext()) {
+						FileItem fileItem = iterator.next();// 获取文件对象
+						// 处理文件上传
+						filename = fileItem.getName();// 获取名字
+						Integer lastIndex = filename.lastIndexOf(".");
+						String suffix = filename.substring(lastIndex+1);
+						filePre = filename.substring(0, lastIndex);
+						filename = filePre + "_" + CurrentTime.getRadomTime() + "." + suffix;
+						CheckImage ci = new CheckImage();
+						//xls,xlsx
+						if(suffix.equals("mp4") || suffix.equals("flv")){//文件限制50M
+							upFlag = ci.checkItemSize(fileItem, 50 * 1024 * 1024);
+							if(!upFlag){
+								msg = "outSize";
+							}
+						}else{
+							msg = "suffixError";//上传文件必须是xlsx格式
+						}
+						if(upFlag){
+							byte[] data = fileItem.get();// 获取数据
+							//没有该文件夹先创建文件夹
+				    		File file = new File(userPath);
+				    		if(!file.exists()){
+				    			file.mkdirs();
+				    		}
+				    		FileOutputStream fileOutputStream = new FileOutputStream(userPath + "/" + filename);
+							fileOutputStream.write(data);// 写入文件
+							fileOutputStream.close();// 关闭文件流
+							msg = "success";
+							fileUrl +=  WebUrl.NEW_DIAGNOSIS_DATA_URL  + "/" + loreId + "/" + filename + ",";
+							if(!fileUrl.equals("")){
+								fileUrl = fileUrl.substring(0, fileUrl.length() - 1);
+							}
+							map.put("data", fileUrl);
+							map.put("fileName", filename);
+							map.put("code", 0);
+						}
+					}
+					map.put("msg", msg);
+					CommonTools.getJsonPkg(map, response);
+				}catch (FileUploadException e) {
+					e.printStackTrace();
+				}catch (FileNotFoundException e) {
+					e.printStackTrace();
+				}catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 		return null;
 	}
 	

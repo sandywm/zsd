@@ -85,12 +85,12 @@ public class OnlineStudyAction extends DispatchAction {
 		Map<String,Object> map = new HashMap<String,Object>();
 		Integer subId = CommonTools.getFinalInteger("subId", request);//学科编号
 		Integer ediId = CommonTools.getFinalInteger("ediId", request);//出版社编号
+		Integer gradeNumber = CommonTools.getFinalInteger("gradeNumber", request);//高三初三复习时传递过来的年级编号
 		List<Education> list_edu = new ArrayList<Education>();
 		String msg = "error";
 		Integer gsId_curr = 0;
 		if(roleName.equals("学生")){
 			msg = "success";
-			Integer gradeNumber = 0;
 			String gradeName = "";
 			//获取该学生的班级,然后获取该班级所在年级
 			UserClassInfo uc = ucm.getEntityByOpt(userId, roleId);
