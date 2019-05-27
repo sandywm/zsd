@@ -1484,7 +1484,8 @@ public class LoreAction extends DispatchAction {
 				List<LoreQuestionSubInfo> lqsList = lqm.listLQSInfoByLqId(lqList.get(0).getId(), "主题");
 				if(lqsList.size() > 0){
 					//存在主题信息，不能增加点拨指导
-				}else{
+					msg = "addZt";
+				}else{//不存在主题信息
 					//多出一种情况(子表全被删除了)
 					if(lqm.listLQSInfoByLqId(lqList.get(0).getId(), "").size() == 0){
 						//没有子表任何信息

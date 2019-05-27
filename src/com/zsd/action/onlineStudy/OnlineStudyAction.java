@@ -166,11 +166,16 @@ public class OnlineStudyAction extends DispatchAction {
 											list_edu.add(map_d);
 										}
 										map.put("studyList", list_edu);
+										map.put("selTxt", gradeName+"("+edu_study.getEdition().getEdiName()+")");
 										break;
+									}else{
+										msg = "noInfo";
+										map.put("selTxt", gradeName+"("+edu_study.getEdition().getEdiName()+")");
 									}
 								}
 							}else{
 								msg = "noStudyInfo";//mei
+								map.put("selTxt", gradeName+"("+em.listInfoByShowStatus(2, -1).get(0).getEdiName()+")");
 							}
 						}else if(opt.equals("manu")){
 							List<Education> eduList = edum.listInfoByOpt(ediId, gsId_curr);//获取当前年级学科、出版社下的教材信息
@@ -200,11 +205,12 @@ public class OnlineStudyAction extends DispatchAction {
 									list_edu.add(map_d);
 								}
 								map.put("studyList", list_edu);
+								map.put("selTxt", gradeName+"("+eduList.get(0).getEdition().getEdiName()+")");
 							}else{
 								msg = "noInfo";
+								map.put("selTxt", gradeName+"("+em.listInfoByShowStatus(2, -1).get(0).getEdiName()+")");
 							}
 						}
-						
 						//获取出版社列表
 						List<Edition> ediList = em.listInfoByShowStatus(0, 0);
 						for(Iterator<Edition> it = ediList.iterator() ; it.hasNext();){
