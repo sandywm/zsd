@@ -24,6 +24,7 @@ import com.zsd.module.Education;
 import com.zsd.module.GradeSubject;
 import com.zsd.module.StuSubjectEduInfo;
 import com.zsd.module.Subject;
+import com.zsd.module.User;
 import com.zsd.module.UserClassInfo;
 import com.zsd.service.EditionManager;
 import com.zsd.service.EducationManager;
@@ -32,6 +33,7 @@ import com.zsd.service.StuSubjectEduManager;
 import com.zsd.service.UserClassInfoManager;
 import com.zsd.tools.CommonTools;
 import com.zsd.tools.Convert;
+import com.zsd.tools.CurrentTime;
 import com.zsd.util.Constants;
 
 /** 
@@ -82,6 +84,9 @@ public class OnlineStudyAction extends DispatchAction {
 		Integer userId = CommonTools.getLoginUserId(request);
 		Integer roleId = CommonTools.getLoginRoleId(request);
 		String roleName = CommonTools.getLoginRoleName(request);
+		userId = 1;
+		roleId = 2;
+		roleName = "学生";
 		Map<String,Object> map = new HashMap<String,Object>();
 		Integer subId = CommonTools.getFinalInteger("subId", request);//学科编号
 		Integer ediId = CommonTools.getFinalInteger("ediId", request);//出版社编号
@@ -98,6 +103,9 @@ public class OnlineStudyAction extends DispatchAction {
 			ClassInfo c = null;
 			if(uc != null){
 				c = uc.getClassInfo();
+				User user = uc.getUser();
+				Integer remainDays = CurrentTime.compareDate(CurrentTime.getStringDate(), user.getEndDate());
+//				if(remainDays >) 
 				if(gradeNumber.equals(0)){//如果页面没传递，直接通过学生获取
 					gradeNumber = Convert.dateConvertGradeNumber(c.getBuildeClassDate());
 				}
@@ -131,8 +139,7 @@ public class OnlineStudyAction extends DispatchAction {
 							list_sub.add(map_d);
 						}
 						map.put("subList", list_sub);
-						
-						if(opt.equals("init")){
+						if(opt.equals("init")){//打开在线学习页面初始化加载时
 							//获取学生学科教材信息列表
 							List<StuSubjectEduInfo> sseList = ssem.listInfoByOpt(userId, subId);
 							if(sseList.size() > 0){
@@ -146,12 +153,17 @@ public class OnlineStudyAction extends DispatchAction {
 									List<Education> eduList = edum.listInfoByOpt(ediId, gsId_curr);//获取当前年级学科、出版社下的教材信息
 									if(eduList.size() > 0){
 										for(Integer i = 0 ; i < eduList.size() ; i++){
-											Education edu_curr = eduList.get(i);
-											if(edu_curr.getDisplayStatus().equals(0) && edu_study.getId().equals(edu_curr.getId())){
-												//正常状态且相等
-												list_edu.add(edu_curr);
-											}
+											Education edu = eduList.get(i);
+											ssem.updateSSEById(sse.getId(), edu.getId());
+											Map<String,Object> map_d = new HashMap<String,Object>();
+											map_d.put("eduId", edu.getId());
+											Subject sub = edu.getGradeSubject().getSubject();
+											map_d.put("subName", sub.getSubName());
+											map_d.put("subImg", sub.getImgUrl());
+											map_d.put("eduVolume", edu.getEduVolume());
+											map_d.put("remainDays", 0);
 										}
+										break;
 									}
 								}
 							}else{
@@ -161,24 +173,15 @@ public class OnlineStudyAction extends DispatchAction {
 							List<Education> eduList = edum.listInfoByOpt(ediId, gsId_curr);//获取当前年级学科、出版社下的教材信息
 							if(eduList.size() > 0){
 								msg = "success";
-								for(Integer i = 0 ; i < eduList.size() ; i++){
-									Education edu_curr = eduList.get(i);
-									if(edu_curr.getDisplayStatus().equals(0)){
-										//获取学生学科教材信息列表
-										List<StuSubjectEduInfo> sseList = ssem.listInfoByOpt(userId, subId);
-										if(sseList.size() > 0){
-											for(StuSubjectEduInfo sse : sseList){
-												Education edu_study = sse.getEducation();
-												if(edu_study.getId().equals(edu_curr)){
-													
-												}else{
-													ssem.updateSSEById(sse.getId(), edu_curr.getId());
-												}
-											}
-										}else{
-											ssem.addSSE(userId, subId, edu_curr.getId());
-										}
-										list_edu.add(edu_curr);
+								//获取学生学科教材信息列表
+								List<StuSubjectEduInfo> sseList = ssem.listInfoByOpt(userId, subId);
+								if(sseList.size() > 0){
+									for(Integer j = 0 ; j < sseList.size() ; j++){
+										ssem.updateSSEById(sseList.get(j).getId(), eduList.get(j).getId());
+									}
+								}else{
+									for(Integer i = 0 ; i < eduList.size() ; i++){
+										ssem.addSSE(userId, subId, eduList.get(i).getId());
 									}
 								}
 							}else{

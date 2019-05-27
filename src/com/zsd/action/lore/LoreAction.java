@@ -691,8 +691,8 @@ public class LoreAction extends DispatchAction {
 						}
 						list_d.add(map_d);
 					}
-					map.put("listIfo", list_d);
 				}
+				map.put("listIfo", list_d);
 			}else if(loreType.equals("解题示范")){
 				Map<String,Object> map_d = new HashMap<String,Object>();
 				map_d.put("lqId", lqId);
@@ -840,13 +840,8 @@ public class LoreAction extends DispatchAction {
 		String msg = "error";
 		LoreQuestionSubInfo lqs = lqm.getEntityByLqsId(lqsId);
 		if(lqs != null){
-			Integer lqId = lqs.getLoreQuestion().getId();
 			boolean flag = lqm.delLoreQuestionSubByLqsId(lqsId);
 			if(flag){
-				if(lqm.listLQSInfoByLqId(lqId, "").size() == 0){
-					//删除主表
-					lqm.delLoreQuestionByLqId(lqId);
-				}
 				//获取有无关联的提示信息
 				List<LoreQuestion> lqList = lqm.listInfoByTipsId(lqsId);
 				for(Iterator<LoreQuestion> it = lqList.iterator() ; it.hasNext();){

@@ -114,7 +114,7 @@ public class GradeSubjectDaoImpl implements GradeSubjectDao{
 	@Override
 	public List<GradeSubject> findSpecInfoByGname(Session sess, String gradeName) {
 		// TODO Auto-generated method stub
-		String hql = " from GradeSubject as gs where gs.gradeName = '"+gradeName+"' and displayStatus = 0";
+		String hql = " from GradeSubject as gs where gs.gradeName = '"+gradeName+"' and gs.displayStatus = 0";
 		return sess.createQuery(hql).list();
 	}
 
