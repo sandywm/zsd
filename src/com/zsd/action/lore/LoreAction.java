@@ -1485,8 +1485,14 @@ public class LoreAction extends DispatchAction {
 				if(lqsList.size() > 0){
 					//存在主题信息，不能增加点拨指导
 				}else{
-					//只能增加重点，难点，关键点，易混点
-					msg = "addLast";
+					//多出一种情况(子表全被删除了)
+					if(lqm.listLQSInfoByLqId(lqList.get(0).getId(), "").size() == 0){
+						//没有子表任何信息
+						msg = "add";//都能增加
+					}else{
+						//存在重点，难点，关键点，易混点
+						msg = "addLast";//只能增加重点，难点，关键点，易混点
+					}
 				}
 			}else{
 				List<LoreQuestionSubInfo> lqsList = lqm.listLQSInfoByLqId(lqList.get(0).getId(), loreType);

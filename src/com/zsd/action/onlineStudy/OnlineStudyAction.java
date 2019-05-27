@@ -92,7 +92,7 @@ public class OnlineStudyAction extends DispatchAction {
 		Integer ediId = CommonTools.getFinalInteger("ediId", request);//出版社编号
 		Integer gradeNumber = CommonTools.getFinalInteger("gradeNumber", request);//高三初三复习时传递过来的年级编号
 		String opt = "manu";//手动选择
-		List<Education> list_edu = new ArrayList<Education>();
+		List<Object> list_edu = new ArrayList<Object>();
 		String msg = "error";
 		Integer gsId_curr = 0;
 		if(roleName.equals("学生")){
@@ -105,7 +105,7 @@ public class OnlineStudyAction extends DispatchAction {
 				c = uc.getClassInfo();
 				User user = uc.getUser();
 				Integer remainDays = CurrentTime.compareDate(CurrentTime.getStringDate(), user.getEndDate());
-//				if(remainDays >) 
+				Integer freeStatus = user.getFreeStatus();//0:收费,1:免费
 				if(gradeNumber.equals(0)){//如果页面没传递，直接通过学生获取
 					gradeNumber = Convert.dateConvertGradeNumber(c.getBuildeClassDate());
 				}
@@ -161,8 +161,11 @@ public class OnlineStudyAction extends DispatchAction {
 											map_d.put("subName", sub.getSubName());
 											map_d.put("subImg", sub.getImgUrl());
 											map_d.put("eduVolume", edu.getEduVolume());
-											map_d.put("remainDays", 0);
+											map_d.put("remainDays", remainDays);
+											map_d.put("freeStatus", freeStatus.equals(0) ? "免费试用/付费使用" : "免费使用");
+											list_edu.add(map_d);
 										}
+										map.put("studyList", list_edu);
 										break;
 									}
 								}
@@ -184,6 +187,19 @@ public class OnlineStudyAction extends DispatchAction {
 										ssem.addSSE(userId, subId, eduList.get(i).getId());
 									}
 								}
+								for(Integer i = 0 ; i < eduList.size() ; i++){
+									Education edu = eduList.get(i);
+									Map<String,Object> map_d = new HashMap<String,Object>();
+									map_d.put("eduId", edu.getId());
+									Subject sub = edu.getGradeSubject().getSubject();
+									map_d.put("subName", sub.getSubName());
+									map_d.put("subImg", sub.getImgUrl());
+									map_d.put("eduVolume", edu.getEduVolume());
+									map_d.put("remainDays", remainDays);
+									map_d.put("freeStatus", freeStatus.equals(0) ? "免费试用/付费使用" : "免费使用");
+									list_edu.add(map_d);
+								}
+								map.put("studyList", list_edu);
 							}else{
 								msg = "noInfo";
 							}
@@ -204,59 +220,14 @@ public class OnlineStudyAction extends DispatchAction {
 							list_edi.add(map_d);
 						}
 						map.put("ediList", list_edi);
-						
-//						if(ediId.equals(0)){//初始化加载
-//							
-//							if(sseList.size() > 0){
-//								for(Integer i = 0 ; i < sseList.size() ; i++){
-//									StuSubjectEduInfo sse = sseList.get(i);
-//									Education edu = sse.getEducation();
-//									GradeSubject gs = edu.getGradeSubject();
-//									//-------------------------修改学生的实际年级并与之关联的教材-----------------------------//
-//									Integer gsId_old = gs.getId();//历史记录中的年级
-//									//当学生当前实际年级和StudentSubjectEducation中年级不一致时，表示学生应该是升年级，这时需要对StudentSubjectEducation表进行修改
-//									//也有可能是高三开始复习可以进入高一高二（2016-12-23日修改）
-//									if(edu.getDisplayStatus().equals(0)){//上下册已开启
-//										ediId = edu.getEdition().getId();
-//										if(!gsId_old.equals(gsId_curr)){//年级不同（由于增加复习，去掉年级名字判断）
-//											List<Education> eduList_temp = edum.listInfoByOpt(ediId, gsId_curr); 
-//											if(eduList_temp.size() > 0){
-//												if(eduList_temp.size() == 2){
-//													ssem.updateSSEById(sse.getId(), eduList_temp.get(i).getId());
-//												}else if(eduList_temp.size() == 1){
-//													ssem.updateSSEById(sse.getId(), eduList_temp.get(0).getId());
-//												}
-//												list_edu.add(eduList_temp.get(i));
-//											}
-//										}else{
-//											list_edu.add(edu);
-//										}
-//									}
-//								}
-//							}
-//						}else{//页面手动选择
-//							//先判断education表中有无指定年级+学科+出版社的记录
-//							List<Education> eduList_temp = edum.listInfoByOpt(ediId, gsId_curr);
-//							if(eduList_temp.size() > 0){
-//								for(Integer i = 0 ; i < eduList_temp.size() ; i++){
-//									Education edu = eduList_temp.get(i);
-//									Integer showStatus = edu.getDisplayStatus();
-//									if(showStatus.equals(0)){
-//										if(sseList.size() == 0){
-//											ssem.addSSE(userId, subId, edu.getId());
-//										}else if(sseList.size() == 1){
-//											Integer eduId = eduList_temp.get(0).getId();
-//											ssem.updateSSEById(sseList.get(0).getId(), eduId);
-//											
-//										}else if(sseList.size() == 2){
-//											
-//										}
-//									}
-//								}
-//							}
-//						}
+					}else{
+						 msg = "error";
 					}
+				}else{
+					 msg = "error";
 				}
+			}else{
+				 msg = "error";
 			}
 		}
 		map.put("result", msg);

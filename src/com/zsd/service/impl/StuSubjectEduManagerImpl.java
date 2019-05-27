@@ -60,6 +60,7 @@ public class StuSubjectEduManagerImpl implements StuSubjectEduManager{
 			StuSubjectEduInfo sse = sseDao.getEntityById(sess, sseId);
 			if(sse != null){
 				sse.setEducation(eDao.get(sess, eduId));
+				sse.setAddDate(CurrentTime.getCurrentTime());
 				sseDao.update(sess, sse);
 				tran.commit();
 				return true;
