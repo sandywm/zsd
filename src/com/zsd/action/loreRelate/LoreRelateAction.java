@@ -54,6 +54,28 @@ public class LoreRelateAction extends DispatchAction {
 	}
 	
 	/**
+	 * 显示指定知识点的知识树
+	 * @author wm
+	 * @date 2019-5-28 下午04:02:42
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward showLoreTree(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		Integer loreId = CommonTools.getFinalInteger("loreId", request);
+		LoreTreeMenuJson ltmj = new LoreTreeMenuJson();
+		List<MyTreeNode> result = ltmj.showTree(loreId,0);
+		CommonTools.getJsonPkg(result, response);
+		return null;
+	}
+	
+	
+	/**
 	 * 根据教材获取简单知识树
 	 * @author wm
 	 * @date 2019-5-13 上午10:28:10

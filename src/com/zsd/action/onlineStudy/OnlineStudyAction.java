@@ -18,17 +18,21 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
 
 import com.zsd.factory.AppFactory;
+import com.zsd.module.Chapter;
 import com.zsd.module.ClassInfo;
 import com.zsd.module.Edition;
 import com.zsd.module.Education;
 import com.zsd.module.GradeSubject;
+import com.zsd.module.LoreInfo;
 import com.zsd.module.StuSubjectEduInfo;
 import com.zsd.module.Subject;
 import com.zsd.module.User;
 import com.zsd.module.UserClassInfo;
+import com.zsd.service.ChapterManager;
 import com.zsd.service.EditionManager;
 import com.zsd.service.EducationManager;
 import com.zsd.service.GradeSubjectManager;
+import com.zsd.service.LoreInfoManager;
 import com.zsd.service.StuSubjectEduManager;
 import com.zsd.service.UserClassInfoManager;
 import com.zsd.tools.CommonTools;
@@ -256,5 +260,73 @@ public class OnlineStudyAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
 		return mapping.findForward("cptPage");
+	}
+	
+	/**
+	 * 根据教材编号或者章节信息
+	 * @author wm
+	 * @date 2019-5-28 下午03:15:44
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getStudyCptData(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		EducationManager edum = (EducationManager) AppFactory.instance(null).getApp(Constants.WEB_EDUCATION_INFO);
+		ChapterManager cm = (ChapterManager) AppFactory.instance(null).getApp(Constants.WEB_CHAPTER_INFO);
+		Integer eduId = CommonTools.getFinalInteger("eduId", request);//教材编号
+		List<Chapter> cptList = cm.ListInfoByEduId(eduId);
+		String msg = "noInfo";
+		Map<String,Object> map = new HashMap<String,Object>();
+		List<Education> eduList = edum.listSpecInfoById(eduId);
+		if(eduList.size() > 0){
+			Education edu = eduList.get(0);
+			map.put("eduInfo", edu.getGradeSubject().getGradeName() + edu.getGradeSubject().getSubject().getSubName() + edu.getEduVolume());
+			if(cptList.size() > 0){
+				msg = "success";
+				List<Object> list_d = new ArrayList<Object>();
+				for(Chapter cpt : cptList){
+					Map<String,Object> map_d = new HashMap<String,Object>();
+					map_d.put("cptId", cpt.getId());
+					map_d.put("cptName", cpt.getChapterName());
+					list_d.add(map_d);
+				}
+				map.put("cptList", list_d);
+			}
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 获取指定章节下知识点列表
+	 * @author wm
+	 * @date 2019-5-28 下午05:20:16
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getLoreData(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		LoreInfoManager lm = (LoreInfoManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
+		Integer cptId = CommonTools.getFinalInteger("cptId", request);//章节编号
+		String msg = "noInfo";
+		Map<String,Object> map = new HashMap<String,Object>();
+		List<LoreInfo> lList = lm.listInfoByCptId(cptId);
+		if(lList.size() > 0){
+			for(LoreInfo lore : lList){
+				
+			}
+		}
+		return null;
 	}
 }

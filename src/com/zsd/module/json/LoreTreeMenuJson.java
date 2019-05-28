@@ -16,8 +16,184 @@ import com.zsd.service.LoreInfoManager;
 import com.zsd.service.LoreRelateManager;
 import com.zsd.util.Constants;
 
+@SuppressWarnings("unchecked")
 public class LoreTreeMenuJson {
 
+	public String loreIdStr1 = "";
+	public String path = "";
+	boolean existFlag = false;
+	boolean existFlag1 = false;
+	public List loreList = new ArrayList();
+	public Integer num = 0;
+	public Integer loreStep = 0;//多少级知识点
+	public Integer loreNum = 0;//多少个知识点
+	
+	/**
+	 * 获取主知识点树形菜单
+	 * @author wm
+	 * @date 2019-5-28 下午04:06:23
+	 * @param lrList
+	 * @return
+	 * @throws Exception
+	 */
+	public List<LoreTreeMenu> getTreeMenuList(List<LoreRelateInfo> lrList) throws Exception{
+		List<LoreTreeMenu> result = new ArrayList<LoreTreeMenu>();
+		LoreTreeMenu ltMenu = new LoreTreeMenu();
+		if(lrList.size() > 0){
+			LoreInfo first_lore = lrList.get(0).getLoreInfo();
+			ltMenu.setId(first_lore.getId());
+			ltMenu.setName(first_lore.getLoreName());
+			ltMenu.setMenus(this.getSubTreeMenuList(lrList));
+			result.add(ltMenu);
+		}	
+		return result;
+	}
+	
+	public List<LoreTreeMenu> getNoTreeMenuList(LoreInfo first_lore) throws Exception{
+		List<LoreTreeMenu> result = new ArrayList<LoreTreeMenu>();
+		LoreTreeMenu ltMenu = new LoreTreeMenu();
+		if(first_lore != null){
+			ltMenu.setId(first_lore.getId());
+			ltMenu.setName(first_lore.getLoreName());
+			ltMenu.setMenus(null);
+			result.add(ltMenu);
+		}	
+		return result;
+	}
+	
+	public List<LoreTreeMenu> getLoreTreeMenuList(LoreTreeMenu ltMenu) throws Exception{
+		List<LoreTreeMenu> result = new ArrayList<LoreTreeMenu>();
+		result.add(ltMenu);
+		return result;
+	}
+	
+	/**
+	 * 获取树形子菜单
+	 * @author wm
+	 * @date 2019-5-28 下午04:06:42
+	 * @param lrList
+	 * @return
+	 * @throws Exception
+	 */
+	public List<LoreTreeMenu> getSubTreeMenuList(List<LoreRelateInfo> lrList)throws Exception{
+		List<LoreTreeMenu> leMenu_sub = new ArrayList<LoreTreeMenu>();
+		for(Iterator<LoreRelateInfo> it = lrList.iterator();it.hasNext();){
+			LoreRelateInfo lr = it.next();
+			//获取2级目录
+			LoreInfo rootLore = lr.getRootLoreInfo();
+			LoreTreeMenu ltMenu1 = new LoreTreeMenu();
+			ltMenu1.setId(rootLore.getId());
+			ltMenu1.setName(rootLore.getLoreName());
+			leMenu_sub.add(ltMenu1);
+		}
+		return leMenu_sub;
+	}
+	
+	public List<MyTreeNode> showTree(Integer loreId,Integer studyLogId) throws Exception {
+		LoreRelateManager lrm = (LoreRelateManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_RELATE_INFO);
+		LoreInfoManager lm = (LoreInfoManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
+	    List<LoreTreeMenu> l = this.getTreeMenuList(lrm.listRelateInfoByOpt(loreId, 0, -1, ""));
+	    List<MyTreeNode> tree = new ArrayList<MyTreeNode>();
+	    this.loreList = new ArrayList();
+	    this.num = 0;
+	    //2014年9月23日修改--wm
+	    if(l.size() == 0){//表示没有记录，就用当前知识点记录
+	    	l = this.getNoTreeMenuList(lm.getEntityById(loreId));
+	    }
+	    for (LoreTreeMenu t : l) {
+	        tree.add(tree1(t,t.getMenus(),true,studyLogId));
+	    }
+	    return tree;
+	}
+	
+	//判断是否存在该知识点
+	@SuppressWarnings("rawtypes")
+	private boolean checkExistLore(List loreIdList,Integer currentLoreId){
+		boolean flag = false;
+		for(int i = 0 ; i < loreIdList.size();i++){
+			if(loreIdList.get(i).equals(currentLoreId)){
+				flag = true;
+				break;
+			}
+		}
+		return flag;
+	}
+	
+	private MyTreeNode tree1(LoreTreeMenu t, List<LoreTreeMenu> n, boolean recursive,Integer studyLogId) throws Exception {
+		
+	    MyTreeNode node = new MyTreeNode(); 
+	    node.setId(t.getId());
+	    if(this.existFlag){
+	    	node.setText("<font color=red>"+t.getName()+"</font>");
+	    	node.setRepeatFlag(true);
+	    }else{
+	    	node.setText(t.getName());
+	    	if(this.loreList.size() == 0){
+	    		this.loreList.add(this.num++,t.getId());
+	    	}
+	    	if(studyLogId.equals(0)){
+	    		node.setZdxzdFlag(-1);
+	    		node.setStudyFlag(-1);
+	    		node.setZczdFlag(-1);
+	    		node.setStudyTimes(0);
+	    		node.setZczdTimes(0);
+	    	}else{
+//	    		RelationZdResultManager rzrm = (RelationZdResultManager)AppFactory.instance(null).getApp(Constants.WEB_RELATION_ZD_RESULT);
+//	    		List<RelationZdResultVO> rzrList = rzrm.listInfoByLogAndLoreId(studyLogId, node.getId());
+//	    		if(rzrList.size() > 0){
+//	    			RelationZdResultVO rzrVO = rzrList.get(0);
+//	    			node.setZdxzdFlag(rzrVO.getZdxzdFlag());
+//	    			node.setStudyFlag(rzrVO.getStudyFlag());
+//		    		node.setZczdFlag(rzrVO.getZczdFlag());
+//		    		node.setStudyTimes(rzrVO.getStudyTimes());
+//		    		node.setZczdTimes(rzrVO.getZczdTimes());
+//	    		}else{
+//	    			node.setZdxzdFlag(-1);
+//		    		node.setStudyFlag(-1);
+//		    		node.setZczdFlag(-1);
+//		    		node.setStudyTimes(0);
+//		    		node.setZczdTimes(0);
+//	    		}
+	    	}
+	    }
+    	List<MyTreeNode> children = new ArrayList<MyTreeNode>();
+    	LoreRelateManager lrm = (LoreRelateManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_RELATE_INFO);
+    	if(n != null){
+    		for(Iterator<LoreTreeMenu> it = n.iterator() ; it.hasNext();){
+		    	LoreTreeMenu ltMenu = it.next();
+		    	Integer loreId = ltMenu.getId();
+		    	List<LoreRelateInfo> lrList_new = new ArrayList<LoreRelateInfo>();
+		    	if(this.checkExistLore(this.loreList, loreId) == false){//不存在相同节点
+		    		this.loreList.add(this.num++,loreId);
+		    		lrList_new = lrm.listRelateInfoByOpt(loreId, 0, -1, "");//找下一级子节点
+		    		this.existFlag = false;
+	    		}else{//存在相同节点(直接终止查询，并让下一级子节点为空)
+	    			this.existFlag = true;
+	    		}
+		    	List<LoreTreeMenu> menuList = new ArrayList<LoreTreeMenu>();
+		    	if(lrList_new.size() > 0){
+		    		menuList = this.getTreeMenuList(lrList_new);
+		    	}else{
+		    		menuList = this.getLoreTreeMenuList(ltMenu);
+		    	}
+		    	if (menuList != null && menuList.size() > 0) {
+		    		
+		    		List<LoreTreeMenu> nextMenuList = menuList.get(0).getMenus();
+		    		node.setState("open");
+		    		if (recursive) {// 递归查询子节点
+		    			List<LoreTreeMenu> l = new ArrayList<LoreTreeMenu>(menuList);
+			            for (LoreTreeMenu r : l) {
+			                MyTreeNode tn = tree1(r, nextMenuList, true,studyLogId);
+			                children.add(tn);
+			            }
+			            node.setChildren(children);
+		    		}  
+			    }
+		    }
+	    }
+	    return node;
+	}
+	
 	/**
 	 * 知识点简单树浏览
 	 * @author wm
@@ -96,4 +272,5 @@ public class LoreTreeMenuJson {
 		}
 	    return tree;
 	}
+	
 }
