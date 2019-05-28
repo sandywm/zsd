@@ -86,7 +86,7 @@ public class LexAction extends DispatchAction {
 				LexInfo lex = it.next();
 				Map<String,Object> map_d = new HashMap<String,Object>();
 				map_d.put("id", lex.getId());
-				map_d.put("lexTitle", lex.getLexContent());
+				map_d.put("lexTitle", lex.getLexTitle());
 				map_d.put("lexTitlePy", lex.getLexTitlePy());
 				map_d.put("lexContent", lex.getLexContent());
 				list_d.add(map_d);
@@ -122,7 +122,7 @@ public class LexAction extends DispatchAction {
 		if(lex != null){
 			msg = "success";
 			map.put("id", lex.getId());
-			map.put("lexTitle", lex.getLexContent());
+			map.put("lexTitle", lex.getLexTitle());
 			map.put("lexTitlePy", lex.getLexTitlePy());
 			map.put("lexContent", lex.getLexContent());
 			//获取该词库关联的知识点
