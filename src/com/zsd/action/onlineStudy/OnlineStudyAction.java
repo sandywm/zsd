@@ -242,7 +242,7 @@ public class OnlineStudyAction extends DispatchAction {
 	}
 	
 	/**
-	 * 
+	 * 在线学习中章节知识点选择
 	 * @author wm
 	 * @date 2019-5-28 上午11:34:26
 	 * @param mapping
@@ -255,6 +255,6 @@ public class OnlineStudyAction extends DispatchAction {
 	public ActionForward goChaptePage(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
-		return mapping.findForward("studyPage");
+		return mapping.findForward("cptPage");
 	}
 }

@@ -1433,7 +1433,7 @@ public class LoreAction extends DispatchAction {
 							fileOutputStream.write(data);// 写入文件
 							fileOutputStream.close();// 关闭文件流
 							msg = "success";
-							fileUrl +=  WebUrl.NEW_DIAGNOSIS_DATA_URL  + "/" + loreId + "/" + filename + ",";
+							fileUrl +=  WebUrl.NEW_DIAGNOSIS_DATA_URL  + loreId + "/" + filename + ",";
 							if(!fileUrl.equals("")){
 								fileUrl = fileUrl.substring(0, fileUrl.length() - 1);
 							}
