@@ -1495,11 +1495,6 @@ public class LoreAction extends DispatchAction {
 						msg = "addLast";//只能增加重点，难点，关键点，易混点
 					}
 				}
-			}else{
-				List<LoreQuestionSubInfo> lqsList = lqm.listLQSInfoByLqId(lqList.get(0).getId(), loreType);
-				if(lqsList.size() ==  0){
-					msg = "add";
-				}
 			}
 		}
 		map.put("result", msg);
