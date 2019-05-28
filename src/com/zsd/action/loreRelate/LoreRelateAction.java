@@ -21,6 +21,7 @@ import com.zsd.factory.AppFactory;
 import com.zsd.service.LoreInfoManager;
 import com.zsd.service.LoreRelateManager;
 import com.zsd.util.Constants;
+import com.zsd.module.Education;
 import com.zsd.module.LoreInfo;
 import com.zsd.module.LoreRelateInfo;
 import com.zsd.module.json.LoreTreeMenuJson;
@@ -120,7 +121,8 @@ public class LoreRelateAction extends DispatchAction {
 		LoreInfo lore = lm.getEntityById(loreId);
 		if(lore != null){
 			Integer mainLoreId = lore.getMainLoreId();
-			Integer ediId = lore.getChapter().getEducation().getEdition().getId();
+			Education edu = lore.getChapter().getEducation();
+			Integer ediId = edu.getEdition().getId();
 //			if(mainLoreId > 0){//其他出版社的知识点,通用版的知识点mainLoreId=0
 //				//获取该知识点的通用版的知识点
 //				loreId = mainLoreId;
@@ -150,6 +152,10 @@ public class LoreRelateAction extends DispatchAction {
 			}
 			map.put("loreId", lore.getId());
 			map.put("loreName", lore.getLoreName());
+			map.put("eduVolume", edu.getEduVolume());
+			map.put("gsId", edu.getGradeSubject().getId());
+			map.put("subId", edu.getGradeSubject().getSubject().getId());
+			map.put("ediId", ediId);
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);

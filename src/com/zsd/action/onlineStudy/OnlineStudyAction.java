@@ -277,6 +277,7 @@ public class OnlineStudyAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
 		EducationManager edum = (EducationManager) AppFactory.instance(null).getApp(Constants.WEB_EDUCATION_INFO);
+		LoreInfoManager lm = (LoreInfoManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
 		ChapterManager cm = (ChapterManager) AppFactory.instance(null).getApp(Constants.WEB_CHAPTER_INFO);
 		Integer eduId = CommonTools.getFinalInteger("eduId", request);//教材编号
 		List<Chapter> cptList = cm.ListInfoByEduId(eduId);
@@ -289,11 +290,25 @@ public class OnlineStudyAction extends DispatchAction {
 			if(cptList.size() > 0){
 				msg = "success";
 				List<Object> list_d = new ArrayList<Object>();
+				Integer i = 1;
 				for(Chapter cpt : cptList){
+					
 					Map<String,Object> map_d = new HashMap<String,Object>();
 					map_d.put("cptId", cpt.getId());
 					map_d.put("cptName", cpt.getChapterName());
+					if(i.equals(1)){
+						List<LoreInfo> lList = lm.listInfoByCptId(cpt.getId());
+						List<Object> list_d_1 = new ArrayList<Object>();
+						for(LoreInfo lore : lList){
+							Map<String,Object> map_d_1 = new HashMap<String,Object>();
+							map_d_1.put("loreId", lore.getId());
+							map_d_1.put("loreName", lore.getLoreName());
+							list_d_1.add(map_d_1);
+						}
+						map_d.put("loreList", list_d_1);
+					}
 					list_d.add(map_d);
+					i++;
 				}
 				map.put("cptList", list_d);
 			}
@@ -319,14 +334,23 @@ public class OnlineStudyAction extends DispatchAction {
 		// TODO Auto-generated method stub
 		LoreInfoManager lm = (LoreInfoManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
 		Integer cptId = CommonTools.getFinalInteger("cptId", request);//章节编号
+		Integer stuId = CommonTools.getLoginUserId(request);
 		String msg = "noInfo";
 		Map<String,Object> map = new HashMap<String,Object>();
 		List<LoreInfo> lList = lm.listInfoByCptId(cptId);
 		if(lList.size() > 0){
+			msg = "success";
+			List<Object> list_d = new ArrayList<Object>();
 			for(LoreInfo lore : lList){
-				
+				Map<String,Object> map_d = new HashMap<String,Object>();
+				map_d.put("loreId", lore.getId());
+				map_d.put("loreName", lore.getLoreName());
+				list_d.add(map_d);
 			}
+			map.put("cptList", list_d);
 		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
 }
