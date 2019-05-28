@@ -1245,11 +1245,11 @@ public class LoreAction extends DispatchAction {
 								msg = "success";
 							}else{
 								//存在任何信息，不能再增加主题
-								msg = "noAdd";
+								msg = "noAddZt";
 							}
 						}else{//增加重点、难点、关键点、易混点
 							if(lqm.listLQSInfoByLqId(lqId, "主题").size() > 0){//存在主题，不能增加重点、难点、关键点、易混点
-								msg = "noAdd";
+								msg = "noAddPoint";
 							}else{
 								String titleZd = Transcode.unescape_new1("titleZd", request);//重点标题（&zsd&隔开）
 								String contentZd = Transcode.unescape_new1("contentZd", request);//重点内容（&zsd&隔开）
@@ -1484,7 +1484,7 @@ public class LoreAction extends DispatchAction {
 				List<LoreQuestionSubInfo> lqsList = lqm.listLQSInfoByLqId(lqList.get(0).getId(), "主题");
 				if(lqsList.size() > 0){
 					//存在主题信息，不能增加点拨指导
-					msg = "addZt";
+					msg = "editZt";
 				}else{//不存在主题信息
 					//多出一种情况(子表全被删除了)
 					if(lqm.listLQSInfoByLqId(lqList.get(0).getId(), "").size() == 0){
