@@ -25,6 +25,8 @@ import com.zsd.module.Education;
 import com.zsd.module.GradeSubject;
 import com.zsd.module.LoreInfo;
 import com.zsd.module.StuSubjectEduInfo;
+import com.zsd.module.StudyLogInfo;
+import com.zsd.module.StudyTaskInfo;
 import com.zsd.module.Subject;
 import com.zsd.module.User;
 import com.zsd.module.UserClassInfo;
@@ -34,6 +36,8 @@ import com.zsd.service.EducationManager;
 import com.zsd.service.GradeSubjectManager;
 import com.zsd.service.LoreInfoManager;
 import com.zsd.service.StuSubjectEduManager;
+import com.zsd.service.StudyLogManager;
+import com.zsd.service.StudyTaskManager;
 import com.zsd.service.UserClassInfoManager;
 import com.zsd.tools.CommonTools;
 import com.zsd.tools.Convert;
@@ -259,6 +263,8 @@ public class OnlineStudyAction extends DispatchAction {
 	public ActionForward goChaptePage(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
+		Integer eduId = CommonTools.getFinalInteger("eduId", request);//教材编号
+		request.setAttribute("eduId", eduId);
 		return mapping.findForward("cptPage");
 	}
 	
@@ -279,6 +285,7 @@ public class OnlineStudyAction extends DispatchAction {
 		EducationManager edum = (EducationManager) AppFactory.instance(null).getApp(Constants.WEB_EDUCATION_INFO);
 		LoreInfoManager lm = (LoreInfoManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
 		ChapterManager cm = (ChapterManager) AppFactory.instance(null).getApp(Constants.WEB_CHAPTER_INFO);
+		StudyLogManager slm = (StudyLogManager) AppFactory.instance(null).getApp(Constants.WEB_STUDY_LOG_INFO);
 		Integer eduId = CommonTools.getFinalInteger("eduId", request);//教材编号
 		List<Chapter> cptList = cm.ListInfoByEduId(eduId);
 		String msg = "noInfo";
@@ -303,6 +310,13 @@ public class OnlineStudyAction extends DispatchAction {
 							Map<String,Object> map_d_1 = new HashMap<String,Object>();
 							map_d_1.put("loreId", lore.getId());
 							map_d_1.put("loreName", lore.getLoreName());
+							List<StudyLogInfo> slList = slm.listLastStudyInfoByOpt(CommonTools.getLoginUserId(request), lore.getId(), 1);
+							//0:未学习,1:未通过,2:已经掌握
+							if(slList.size() > 0){
+								map_d_1.put("studyStatus", slList.get(0).getIsFinish());
+							}else{
+								map_d_1.put("studyStatus", 0);
+							}
 							list_d_1.add(map_d_1);
 						}
 						map_d.put("loreList", list_d_1);
@@ -333,6 +347,7 @@ public class OnlineStudyAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
 		LoreInfoManager lm = (LoreInfoManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
+		StudyLogManager slm = (StudyLogManager) AppFactory.instance(null).getApp(Constants.WEB_STUDY_LOG_INFO);
 		Integer cptId = CommonTools.getFinalInteger("cptId", request);//章节编号
 		Integer stuId = CommonTools.getLoginUserId(request);
 		String msg = "noInfo";
@@ -345,9 +360,110 @@ public class OnlineStudyAction extends DispatchAction {
 				Map<String,Object> map_d = new HashMap<String,Object>();
 				map_d.put("loreId", lore.getId());
 				map_d.put("loreName", lore.getLoreName());
+				List<StudyLogInfo> slList = slm.listLastStudyInfoByOpt(stuId, lore.getId(), 1);
+				//0:未学习,1:未通过,2:已经掌握
+				if(slList.size() > 0){
+					map_d.put("studyStatus", slList.get(0).getIsFinish());
+				}else{
+					map_d.put("studyStatus", 0);
+				}
 				list_d.add(map_d);
 			}
 			map.put("cptList", list_d);
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 检查一个知识点一个学生只能完成一次（自学）true-可以继续学习
+	 * @author wm
+	 * @date 2019-5-29 上午10:31:51
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward checkCurrentLore(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		StudyLogManager slm = (StudyLogManager) AppFactory.instance(null).getApp(Constants.WEB_STUDY_LOG_INFO);
+		Integer loreId = CommonTools.getFinalInteger("loreId", request);
+		Integer stuId = CommonTools.getLoginUserId(request);
+		boolean studyFlag = false;
+		Map<String,Boolean> map = new HashMap<String,Boolean>();
+		//自学的知识点一天只能完成一次，家庭作业只要状态是完成就不能再做(家庭不用在这判断)
+		List<StudyLogInfo> slList = slm.listLastStudyInfoByOpt(stuId, loreId, 1);
+		if(slList.size() == 0){
+			studyFlag = true;
+		}else{
+			StudyLogInfo sl = slList.get(0);
+			Integer isFinish = sl.getIsFinish();
+			String addTime = sl.getAddTime();
+			if(isFinish.equals(1)){//未完成
+				studyFlag = true;
+			}else{//已完成
+				//匹配时间
+				addTime = addTime.substring(0, 10);
+				if(!addTime.equals(CurrentTime.getStringDate())){
+					studyFlag = true;
+				}
+			}
+		}
+		map.put("studyFlag", studyFlag);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 获取指定学习记录的学习任务
+	 * @author wm
+	 * @date 2019-5-29 下午06:01:43
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getStudyTaskInfo(ActionMapping mapping ,ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		StudyTaskManager stm = (StudyTaskManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_TASK_INFO);
+		StudyLogManager slm = (StudyLogManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_LOG_INFO);
+		Integer loreId =  CommonTools.getFinalInteger("loreId", request);
+		Integer studyLogId = CommonTools.getFinalInteger("studyLogId", request);
+		Integer loretType = CommonTools.getFinalInteger("loreType", request);//1:自学,2:家庭作业
+		if(loretType.equals(0)){
+			loretType = 1;
+		}
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "noInfo";
+		StudyLogInfo sl = null;
+		if(studyLogId > 0){
+			sl = slm.getEntityById(studyLogId);
+		}else{
+			List<StudyLogInfo> slList = slm.listLastStudyInfoByOpt(CommonTools.getLoginUserId(request), loreId, loretType);
+			if(slList.size() > 0){
+				sl = slList.get(0);
+			}
+		}
+		if(sl != null){//表示已经有记录
+			//获取任务描述列表
+			List<StudyTaskInfo> stList = stm.listTaskInfoByOpt(sl.getId(), "");
+			if(stList.size() > 0){
+				msg = "success";
+				List<Object> list_d = new ArrayList<Object>();
+				for(StudyTaskInfo st : stList){
+					Map<String,Object> map_d = new HashMap<String,Object>();
+					map_d.put("taskName", st.getTaskName());
+					map_d.put("coin", st.getCoin());
+					list_d.add(map_d);
+				}
+				map.put("taskList", list_d);
+			}
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);

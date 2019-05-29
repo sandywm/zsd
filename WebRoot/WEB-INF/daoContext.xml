@@ -30,4 +30,6 @@
 	<dao id="lex_Dao" class="com.zsd.dao.impl.LexInfoDaoImpl" />
 	<dao id="join_lore_relate_Dao" class="com.zsd.dao.impl.JoinLoreRelationDaoImpl" />
 	<dao id="stu_sub_edu_Dao" class="com.zsd.dao.impl.StuSubjectEduDaoImpl" />
+	<dao id="study_log_Dao" class="com.zsd.dao.impl.StudyLogDaoImpl" />
+	<dao id="study_task_Dao" class="com.zsd.dao.impl.StudyTaskDaoImpl" />
 </daoContext>

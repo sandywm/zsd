@@ -60,6 +60,8 @@ public class Constants {
 	public static final String WEB_LEX_INFO = "lex_Web";
 	public static final String WEB_JOIN_LORE_RELATE_INFO = "join_lore_relate_Web";
 	public static final String WEB_STU_SUB_EDU_INFO = "stu_sub_edu_Web";
+	public static final String WEB_STUDY_LOG_INFO = "study_log_Web";
+	public static final String WEB_STUDY_TASK_INFO = "study_task_Web";
 	
 	//-------------------DAO-------------------------//
 	public static final String DAO_EDITION_INFO = "edition_Dao";
@@ -94,5 +96,7 @@ public class Constants {
 	public static final String DAO_LEX_INFO = "lex_Dao";
 	public static final String DAO_JOIN_LORE_RELATE_INFO = "join_lore_relate_Dao";
 	public static final String DAO_STU_SUB_EDU_INFO = "stu_sub_edu_Dao";
+	public static final String DAO_STUDY_LOG_INFO = "study_log_Dao";
+	public static final String DAO_STUDY_TASK_INFO = "study_task_Dao";
 }
 
