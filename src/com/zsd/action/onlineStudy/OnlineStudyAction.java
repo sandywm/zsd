@@ -30,6 +30,9 @@ import com.zsd.module.StudyTaskInfo;
 import com.zsd.module.Subject;
 import com.zsd.module.User;
 import com.zsd.module.UserClassInfo;
+import com.zsd.module.json.LoreTreeMenu;
+import com.zsd.module.json.LoreTreeMenuJson;
+import com.zsd.module.json.MyTreeNode;
 import com.zsd.service.ChapterManager;
 import com.zsd.service.EditionManager;
 import com.zsd.service.EducationManager;
@@ -364,8 +367,10 @@ public class OnlineStudyAction extends DispatchAction {
 				//0:未学习,1:未通过,2:已经掌握
 				if(slList.size() > 0){
 					map_d.put("studyStatus", slList.get(0).getIsFinish());
+					map_d.put("studyLogId", slList.get(0).getId());//studyLogId
 				}else{
 					map_d.put("studyStatus", 0);
+					map_d.put("studyLogId", 0);
 				}
 				list_d.add(map_d);
 			}
@@ -392,11 +397,17 @@ public class OnlineStudyAction extends DispatchAction {
 		// TODO Auto-generated method stub
 		StudyLogManager slm = (StudyLogManager) AppFactory.instance(null).getApp(Constants.WEB_STUDY_LOG_INFO);
 		Integer loreId = CommonTools.getFinalInteger("loreId", request);
+		Integer studyLogId = CommonTools.getFinalInteger("studyLogId", request);
 		Integer stuId = CommonTools.getLoginUserId(request);
 		boolean studyFlag = false;
 		Map<String,Boolean> map = new HashMap<String,Boolean>();
 		//自学的知识点一天只能完成一次，家庭作业只要状态是完成就不能再做(家庭不用在这判断)
-		List<StudyLogInfo> slList = slm.listLastStudyInfoByOpt(stuId, loreId, 1);
+		List<StudyLogInfo> slList = new ArrayList<StudyLogInfo>();
+		if(studyLogId > 0){
+			slList.add(slm.getEntityById(studyLogId));
+		}else{
+			slList = slm.listLastStudyInfoByOpt(stuId, loreId, 1);
+		}
 		if(slList.size() == 0){
 			studyFlag = true;
 		}else{
@@ -418,6 +429,27 @@ public class OnlineStudyAction extends DispatchAction {
 		return null;
 	}
 	
+	
+	/**
+	 * 进入学习地图页面(传递当前学习知识点编号和学习记录编号)
+	 * @author wm
+	 * @date 2019-5-30 上午08:19:25
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward goStudyMapPage(ActionMapping mapping ,ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		Integer loreId = CommonTools.getFinalInteger("loreId", request);
+		Integer studyLogId = CommonTools.getFinalInteger("studyLogId", request);
+		request.setAttribute("loreId", loreId);
+		request.setAttribute("studyLogId", studyLogId);
+		return mapping.findForward("studyMapPage");
+	}
+	
 	/**
 	 * 获取指定学习记录的学习任务
 	 * @author wm
@@ -435,7 +467,7 @@ public class OnlineStudyAction extends DispatchAction {
 		StudyLogManager slm = (StudyLogManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_LOG_INFO);
 		Integer loreId =  CommonTools.getFinalInteger("loreId", request);
 		Integer studyLogId = CommonTools.getFinalInteger("studyLogId", request);
-		Integer loretType = CommonTools.getFinalInteger("loreType", request);//1:自学,2:家庭作业
+		Integer loretType = CommonTools.getFinalInteger("loreType", request);//1:自学（默认不传）,2:家庭作业
 		if(loretType.equals(0)){
 			loretType = 1;
 		}
@@ -467,6 +499,69 @@ public class OnlineStudyAction extends DispatchAction {
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 获取学习地图数据
+	 * @author wm
+	 * @date 2019-5-30 上午09:11:32
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getStudyMapData(ActionMapping mapping ,ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		StudyLogManager slm = (StudyLogManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_LOG_INFO);
+		LoreInfoManager lm = (LoreInfoManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
+		Integer loreId =  CommonTools.getFinalInteger("loreId", request);
+		Integer studyLogId = CommonTools.getFinalInteger("studyLogId", request);
+		Integer stuId = CommonTools.getLoginUserId(request);
+		String msg = "error";
+		String path = "";//针对性诊断的路线
+		String studyPath = "";//学习的路线
+		String orderOpt = "";
+		if(loreId > 0){
+			LoreInfo lore = lm.getEntityById(loreId);
+			if(lore != null){
+				if(lore.getInUse().equals(0)){//知识点有效才能继续
+					orderOpt = "desc";
+					StudyLogInfo sl = null;
+					if(studyLogId.equals(0)){//新诊断
+						List<StudyLogInfo> slList = slm.listLastStudyInfoByOpt(stuId, loreId, 1);
+						if(slList.size() > 0){
+							sl = slList.get(0);
+						}
+					}else{//之前为完成
+						//判断是诊断时还是学习时
+						sl = slm.getEntityById(studyLogId);
+						if(sl != null){
+							if(sl.getStep() >= 3){//关联知识点学习-3，本知识点学习-4、再次诊断-5
+								orderOpt = "asc";
+							}else{//针对性诊断-1、关联性诊断-2
+								orderOpt = "desc";
+							}
+						}
+					}
+					LoreTreeMenuJson ltmj = new LoreTreeMenuJson();
+					List<MyTreeNode> ltList = ltmj.showTree(loreId, 0,orderOpt);
+					StringBuilder buff = new StringBuilder();
+					ltmj.getPath(ltList, buff);
+					path = buff.delete(buff.length() - 1, buff.length()).toString();//当step为1,2的时候就是诊断路线图，当为3,4,5时就是学习路线图
+				}else{
+					msg = "inUseError";//知识点无效，不能继续
+				}
+			}
+		}
+		System.out.println(path);
+		if(studyLogId > 0){//存在学习记录，继续学习
+			
+		}else{//刚开始学习，没学习记录
+			
+		}
 		return null;
 	}
 }

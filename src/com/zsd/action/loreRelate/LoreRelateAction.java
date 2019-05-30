@@ -68,9 +68,22 @@ public class LoreRelateAction extends DispatchAction {
 	public ActionForward showLoreTree(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
+		LoreInfoManager lm = (LoreInfoManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
 		Integer loreId = CommonTools.getFinalInteger("loreId", request);
+		String orderOpt = "";
+		if(loreId > 0){
+			LoreInfo lore = lm.getEntityById(loreId);
+			if(lore != null){
+				Integer ediId = lore.getChapter().getEducation().getEdition().getId();
+				if(ediId.equals(1)){//通用版-按照正常数据库顺序
+					
+				}else{
+					orderOpt = "desc";
+				}
+			}
+		}
 		LoreTreeMenuJson ltmj = new LoreTreeMenuJson();
-		List<MyTreeNode> result = ltmj.showTree(loreId,0);
+		List<MyTreeNode> result = ltmj.showTree(loreId,0,orderOpt);
 		CommonTools.getJsonPkg(result, response);
 		return null;
 	}

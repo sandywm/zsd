@@ -62,6 +62,7 @@ public class Constants {
 	public static final String WEB_STU_SUB_EDU_INFO = "stu_sub_edu_Web";
 	public static final String WEB_STUDY_LOG_INFO = "study_log_Web";
 	public static final String WEB_STUDY_TASK_INFO = "study_task_Web";
+	public static final String WEB_RELATION_ZD_RESULT_INFO = "relation_zd_result_Web";
 	
 	//-------------------DAO-------------------------//
 	public static final String DAO_EDITION_INFO = "edition_Dao";
@@ -98,5 +99,6 @@ public class Constants {
 	public static final String DAO_STU_SUB_EDU_INFO = "stu_sub_edu_Dao";
 	public static final String DAO_STUDY_LOG_INFO = "study_log_Dao";
 	public static final String DAO_STUDY_TASK_INFO = "study_task_Dao";
+	public static final String DAO_RELATION_ZD_RESULT_INFO = "relation_zd_result_Dao";
 }
 
