@@ -82,7 +82,7 @@ layui.define(['table','form','scrollBar'],function(exports){
     		if(editInpVal == 1){//通用版 不传升序和降序
     			field = {loreId:loreId};
     		}else{
-    			field = {loreId:loreId,orderOpt:'desc'};
+    			field = {loreId:loreId,orderOpt:'desc'}; 
     		}
     		$.ajax({
 				type:'post',
