@@ -133,13 +133,8 @@ public class LoreRelateAction extends DispatchAction {
 		Map<String,Object> map = new HashMap<String,Object>();
 		LoreInfo lore = lm.getEntityById(loreId);
 		if(lore != null){
-			Integer mainLoreId = lore.getMainLoreId();
 			Education edu = lore.getChapter().getEducation();
 			Integer ediId = edu.getEdition().getId();
-//			if(mainLoreId > 0){//其他出版社的知识点,通用版的知识点mainLoreId=0
-//				//获取该知识点的通用版的知识点
-//				loreId = mainLoreId;
-//			}
 			msg = "success";
 			List<LoreRelateInfo> lrList = lrm.listRelateInfoByOpt(loreId, 0, -1,orderOpt);
 			if(lrList.size() > 0){
@@ -147,17 +142,10 @@ public class LoreRelateAction extends DispatchAction {
 				for(Iterator<LoreRelateInfo> it = lrList.iterator() ; it.hasNext();){
 					LoreRelateInfo lr = it.next();
 					Map<String,Object> map_d = new HashMap<String,Object>();
-					if(mainLoreId > 0){
-						Integer rootLoreId_ty = lr.getRootLoreInfo().getId();
-						LoreInfo lore_temp = lm.getLoreInfoByOpt(rootLoreId_ty, ediId);
-						if(lore_temp != null){
-							map_d.put("lrId", lr.getId());
-							map_d.put("rootLoreName", lore_temp.getLoreName());
-							list_d.add(map_d);
-						}
-					}else{
+					LoreInfo rootLore = lr.getRootLoreInfo();
+					if(rootLore != null){
 						map_d.put("lrId", lr.getId());
-						map_d.put("rootLoreName", lr.getRootLoreInfo().getLoreName());
+						map_d.put("rootLoreName", rootLore.getLoreName());
 						list_d.add(map_d);
 					}
 				}
