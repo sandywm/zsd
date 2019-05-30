@@ -552,7 +552,7 @@ public class OnlineStudyAction extends DispatchAction {
 					ltmj.getPath(ltList, buff);
 					path = buff.delete(buff.length() - 1, buff.length()).toString();//当step为1,2的时候就是诊断路线图，当为3,4,5时就是学习路线图
 				}else{
-					msg = "inUseError";//知识点无效，不能继续
+					msg = "inUseError";//知识点无效，不能继续11
 				}
 			}
 		}
