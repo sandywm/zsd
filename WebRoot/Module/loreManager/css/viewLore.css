@@ -1,0 +1,129 @@
+.loreNav{
+	width:100%;
+	height:40px;
+	position:fixed;
+	left:0;
+	top:0;
+	background:#fff;
+	box-shadow:0 3px 5px #ccc;
+	z-index:10;
+}
+.loreNav li{
+	width:100px;
+	height:40px;
+	line-height:40px;
+	float:left;
+	text-align:center;
+	font-size:16px;
+	cursor:pointer;
+	color:#333;
+}
+.loreNav li.active{
+	color:#F47837;
+}
+.loreDetCon{
+	position:absolute;
+	left:0;
+	right:0;
+	top:40px;
+	bottom:0px;
+	overflow:hidden;
+	overflow-y:auto;
+	background:#f1f1f1;
+}
+.comLoreCon{
+	padding:0 10px;
+}
+.titStrong{
+	display:block;
+	width:100%;
+	line-height:35px;
+	font-size:16px;
+	font-weight:600;
+}
+.listLore{
+	padding:10px;
+	margin-bottom:10px;
+	background:#fff;
+}
+.listLore strong.smTit{
+	font-size:15px;
+	color:#666;
+	display:block;
+	margin-bottom:5px;
+}
+.listLore strong.smTit .queType{
+	color:#009688;
+	margin:0 5px;
+}
+.listLore strong.smTit .queType1{
+	color:#F47837;
+}
+.listLore .con p.titP{
+	font-size:15px;
+	color:#666;
+	margin-bottom:5px;
+	font-weight:600;
+}
+.listLore .con{
+	font-size:14px;
+}
+.listLore .con.hasMargBot{
+	margin-bottom:10px;
+}
+.listLore .con div{
+	color:#666;
+}
+.dbzdSmTit{
+	margin-bottom:5px;
+	display:block;
+	color:#333;
+	font-size:15px;
+}
+.queTit{
+	font-size:15px;
+	color:#333;
+	font-weight:600;
+	display:block;
+	margin-bottom:5px;
+}
+.conSelOpt{
+	margin-top:10px;
+}
+.comOpt {
+	margin-bottom:8px;
+	color:#666;
+	position:relative;
+}
+.comOpt span.queSelWord{
+	width:20px;
+	height:100%;
+	position:absolute;
+	left:0;
+	top:0;
+}
+.comOpt p{
+	margin-left:24px;
+	color:#666;
+}
+.conAns,
+.queTips{
+	margin-top:10px;
+}
+.conAns span.ansTit,
+.queTips p.titP{
+	font-size:15px;
+	color:#666;
+	font-weight:600;
+}
+.conAns span.ansTxtSpan{
+	font-weight:600;
+	color:#F47837;
+}
+.tipsCon{
+	color:#666;
+	margin-top:5px;
+}
+.listLore .con.hasMargTop{
+	margin-top:10px;
+}

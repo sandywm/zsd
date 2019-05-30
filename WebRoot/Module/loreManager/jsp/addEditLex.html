@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+ 	<meta charset="utf-8"/>
+ 	<link href="/plugins/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+ 	<link href="/Module/loreManager/css/addEditLex.css" rel="stylesheet" type="text/css"/>
+ 	<link href="/plugins/pace/pace-theme-flash.min.css" rel="stylesheet" type="text/css"/>
+	<script src="/plugins/pace/pace.min.js" type="text/javascript"></script>	
+  	<title>添加编辑关联词条</title>
+</head>
+<body style="background:#fff;">
+	<div class="searchPart layui-form">
+		<div class="item" style="margin-left:10px">
+			<div class="layui-input-inline">
+				<select id="ciTiaoSel" lay-filter="ciTiaoSel">
+					<option value="1">词条拼音码</option>
+			       	<option value="2">词条标题</option>
+			     </select>
+			</div>
+		</div>
+		<div class="item">
+			<div class="layui-input-inline" style="width:200px;">
+				<input id="lexTitInp_py" type="text" class="layui-input" placeholder="请输入词条拼音码"/>
+				<input id="lexTitInp_txt" type="text" class="layui-input" placeholder="请输入词条标题"/>
+			</div>
+		</div>
+		<div class="item">
+			<div class="layui-input-inline">
+				<button id="queryBtn" class="layui-btn"><i class="layui-icon layui-icon-search"></i></button>
+			</div>
+		</div>
+	</div>
+	<div class="lexBox layui-clear">
+		<div class="lexList">
+			<table id="lexTable" lay-filter="lexTable" class="layui-table"></table>
+		</div>
+		<div id="lexCon" class="lexCon">
+			<div id="innerLexCon"></div>
+		</div>
+	</div>	
+	<div class="lexBot">
+		<button id="addLexBtn" class="layui-btn">添加</button>
+	</div>
+	
+	
+	
+	<script src="/plugins/jquery/jquery.min.js"></script>
+	<script src="/plugins/layui/layui.js"></script>
+	<script type="text/javascript">
+		var loreType = parent.loreType;
+		layui.config({
+			base: '/plugins/frame/js/'
+		}).use(['layer','table','form','scrollBar'],function(){
+			var table = layui.table,form=layui.form,commonScrollBar = layui.scrollBar;
+			
+			form.on('select(ciTiaoSel)',function(data){
+				var value = data.value;
+				if(value == 1){
+					$('#lexTitInp_txt').hide().val('');
+					$('#lexTitInp_py').show();
+				}else{
+					$('#lexTitInp_txt').show();
+					$('#lexTitInp_py').hide().val('');
+				}
+			});
+			
+			var page = {
+				data : {
+					selLexTit : '',
+					selLexId : 0
+				},
+				init : function(){
+					this.bindEvent();
+				},
+				bindEvent : function(){
+					var _this = this;
+					$('#addLexBtn').on('click',function(){
+						var index= parent.layer.getFrameIndex(window.name);
+						if(_this.data.selLexTit == ''){
+							layer.msg('请选择您要添加的词条', {icon:5,anim:6,time:2000});
+							return;
+						}
+						
+						parent.$('#' + loreType +'_lexInp').val(_this.data.selLexTit);
+						parent.$('#' + loreType + '_lexId').val(_this.data.selLexId);
+						parent.layer.close(index);
+					});
+					$('#queryBtn').on('click',function(){
+						var lexVal_txt = $.trim($('#lexTitInp_txt').val()),
+							lexVal_py = $.trim($('#lexTitInp_py').val()),
+							field = {lexTitle:lexVal_txt,lexTitlePy:lexVal_py};
+						layer.load('1');
+						table.render({
+							elem: '#lexTable',
+							height: 'full-130',
+							url :'/lex.do?action=getPageLexInfo',
+							method : 'post',
+							where:field,
+							page : true,
+							even : true,
+							limit : 20,
+							limits:[10,20,30,40],
+							text: {none : '暂无相关数据'},
+							cols : [[
+								{field : '', title: '序号', type:'numbers', align:'center'},
+								{field : 'lexTitle', title: '标题', width:'190', align:'center' },
+								{field : 'lexTitlePy', title: '词条拼音码',width:'100',align:'center'},
+								{field : '', title: '操作',width:'60', align:'center',templet : function(d){
+									var fixStr = '';
+									fixStr += '<label class="labelMod"><span class="likeCheckSpan hasBorRad"><b class="layui-icon layui-icon-ok"></b></span></label>';
+									return fixStr;
+								}},
+							]],
+							done : function(res, curr, count){
+								layer.closeAll('loading');
+							}
+						});
+						
+						
+						table.on('row(lexTable)', function(obj){
+							var data = obj.data;
+							page.data.selLexTit = data.lexTitle;
+							page.data.selLexId = data.id;
+							$('.likeCheckSpan').removeClass('hasActive');
+							
+				    		$(this).find('.likeCheckSpan').addClass('hasActive');
+				    		$('#scrollParent').remove();
+				    		
+							$('#innerLexCon').html(data.lexContent);
+							if($('#lexCon').height() < $('#innerLexCon').height()){//创建模拟滚动条
+								var oScroll = '<div id="scrollParent" class="parentScroll"><div id="scrollSon" class="scrollBar"></div></div>';
+								//创建动态模拟滚动条
+								$('#lexCon').append(oScroll);
+								commonScrollBar.scrollBar('lexCon','innerLexCon','scrollParent','scrollSon',25);
+							}else{
+								$('#innerLexCon').animate({"top":'1%'});
+								document.getElementById("lexCon").onmousewheel = function(){
+									return false;
+								};
+							}
+						});
+						
+						$.ajax({
+							type:'post',
+					        dataType:'json',
+					        data:field,
+					        url:'/lex.do?action=getPageLexInfo',
+					        success:function (json){
+					        	layer.closeAll('loading');
+					        	console.log(json)
+					        	
+					        }
+						});
+					});
+				}
+			};
+			page.init();
+		});
+	</script>
+</body> 
+</html>

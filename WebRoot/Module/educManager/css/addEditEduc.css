@@ -1,0 +1,14 @@
+.itemDiv{
+	margin-top:15px;
+	float:left;
+}
+.itemDivs{
+	float:left;
+	margin-right:15px;
+}
+.searchForm .itemDiv:first-child{
+	margin-left:0px;
+}
+.editShow{
+	display:none;
+}

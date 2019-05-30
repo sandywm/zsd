@@ -1,0 +1,43 @@
+/*@import url("scrollBar.css");*/
+.diyRadCheckInp{
+	width:100%;
+	height:100%;
+	position:absolute;
+	left:0;
+	top:0;
+	cursor:pointer;
+	opacity:.0;
+	filter:alpha(opacity=0);
+	z-index:5;
+}
+/* 重置iframe高度 */
+.content-body{
+	position: absolute;
+    top: 60px;
+    right: 0;
+    bottom: 0px;
+    left: 200px;
+    z-index: 1;
+    overflow: hidden;
+}
+.content-body .layui-tab-content{
+	position: absolute;
+    top: 42px;
+    bottom: 0;
+    width: 100%;
+    padding: 0;
+    overflow: hidden;
+}
+.content-body .layui-tab-content .layui-tab-item{
+    height: 100%
+}
+/*使iframe高度100*/
+.content-body .layui-tab-content .layui-tab-item iframe {
+    height: 100%
+}
+.layui-footer{
+	text-align:center;
+}
+.layui-side-menu .layui-nav .layui-nav-item .iconfont{
+	margin-right:5px;
+}

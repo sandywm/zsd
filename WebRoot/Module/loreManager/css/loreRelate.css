@@ -1,0 +1,223 @@
+.relateWrap{
+	padding:10px;
+}
+.relateNav{
+	height:30px;
+	line-height:30px;
+}
+.relateNav p{
+	width:100px;
+	height:100%;
+	float:left;
+	font-size:16px;
+	color:#333;
+	cursor:pointer;
+	text-align:center;
+}
+.relateNav a{
+	width:10%;
+	height:100%;
+	float:right;
+	text-align:right;
+}
+.relateNav a i{
+	font-size:28px;
+	color:#f00;
+	font-weight:600;
+}
+.relateNav p.active{
+	background:#009688;
+	color:#fff;
+}
+.searchWrap{
+	border:1px solid #ccc;
+	border-top:3px solid #009688;
+	height:200px;
+	position:relative;
+}
+.searchLayer{
+	width:50%;
+	height:200px;
+	position:absolute;
+	left:50%;
+	top:0;
+	background:rgba(255,255,255,.8);
+	z-index:200;
+}
+.searchBox{
+	float:left;
+	position:relative;
+}
+.relateSelect{
+	width:48%;
+	height:90%;
+	padding:1%;
+}
+.relateSearch{
+	width:50%;
+	height:100%;
+}
+.itemDivs{
+	float:left;
+}
+.resultWrap{
+	height:300px;
+	position:relative;
+}
+.searchResBox,
+.hasAddResBox{
+	height:100%;
+	float:left;
+	position:relative;
+}
+.searchResBox{
+	width:60%;
+}
+.hasAddResBox{
+	width:40%;
+}
+.lineSpan,
+.searLinSpan{
+	width:1px;
+	height:100%;
+	background:#ccc;
+	position:absolute;
+	top:0;
+	z-index:10;
+}
+.lineSpan{
+	left:60%;
+}
+.searLinSpan{
+	right:0;
+}
+.layui-disabled, .layui-disabled:hover{
+	color:#000 !important;
+}
+.resNav{
+	height:30px;
+	line-height:30px;
+	background:#f1f1f1;
+	border:1px solid #ccc;
+	border-top:none;
+	border-right:none;
+}
+.resNav li{
+	float:left;
+	height:100%;
+	text-align:center;
+	color:#666;
+}
+.ellip{
+	text-overflow:ellipsis;
+	overflow:hidden;
+	white-space:nowrap;
+}
+.oneWid{
+	width:64px;
+	max-width:100%;
+}
+.twoWid{
+	width:160px;
+	max-width:100%;
+}
+#searResBox,
+#hasAddRes{
+	position:absolute;
+	left:0;
+	top:31px;
+	bottom:0;
+	right:0;
+	overflow:hidden;
+}
+#searResBox ul,
+#hasAddRes ul{
+	width:100%;
+	position:absolute;
+	left:0;
+	top:0;
+}
+#searResBox ul li,
+#hasAddRes ul li{
+	width:100%;
+	height:35px;
+	line-height:35px;
+	border-bottom:1px solid #ccc;
+}
+#searResBox ul li p,
+#hasAddRes ul li p{
+	float:left;
+	text-align:center;
+	color:#333;
+}
+#searResBox ul li p a{
+	color:#009688;
+}
+#searResBox ul li p a:hover{
+	color:#F47837;
+}
+.parentScroll,
+.scrollBar{
+	width:3px;
+	height:100%;
+	border-radius:20px;
+	position:absolute;
+	right:0;
+	top:0;
+}
+.scrollBar{
+	background:#009688;
+	opacity:.6;
+}
+.oddBgColor{
+	background:#f1f1f1;
+}
+.hasAddResTit{
+	background:#f1f1f1;
+	height:30px;
+	line-height:30px;
+	text-align:center;
+	color:#666;
+	border:1px solid #ccc;
+	border-top:none;
+	max-width:100%;
+	text-overflow:ellipsis;
+	white-space:nowrap;
+	overflow:hidden;
+}
+#hasAddRes ul li p.widOne{
+	width:90%;
+	text-align:left;
+	text-indent:10px;
+}
+#hasAddRes ul li p.widTwo{
+	width:10%;
+	height:100%;
+	position:relative;
+}
+#hasAddRes ul li p.widTwo i{
+	font-size:24px;
+	color:#f00;
+	cursor:pointer;
+	position:absolute;
+	left:50%;
+	margin-left:-12px;
+	top:0px;
+}
+.noDataTxt{
+	text-align:center;
+	color:#999;
+	margin-top:20px;
+	position:absolute;
+	font-size:14px;
+	left:50%;
+	margin-left:-49px;
+	top:105px;
+}
+#zsd_txt{
+	display:none;
+}
+.innerRelSear{
+	float:left;
+	margin:62px 0 0 95px;
+}

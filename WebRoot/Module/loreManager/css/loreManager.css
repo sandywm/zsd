@@ -1,0 +1,507 @@
+.addBtnRt,
+#addLoreCata,
+#zsdCodeBtn{
+	display:none;
+}
+.searchZsd{
+	float:right;
+	margin:5px 10px 0 0;
+}
+#zsd_txt{
+	display:none;
+}
+.itemDivs{
+	float:left;
+	margin-right:15px;
+}
+.tipsTxt,
+.tipsTxt_lore{
+	color: #999;
+    text-align: center;
+    margin:80px 0;
+}
+.sucColor{
+	color:#01AAED;
+}
+.warningCol{
+	color:#FF5722;
+}
+.loreHeader{
+	width:100%;
+	height:50px;
+	background:#fff;
+	position:fixed;
+	left:0;
+	top:0;
+	z-index:1001;
+	box-shadow:0 2px 3px #ccc;
+	border-bttom:none;
+}
+#currLoc{
+	position:relative;
+	margin-bottom:5px;
+	height:20px;
+}
+#currLoc,
+#currLoc a{
+	color:#999;
+}
+#currLoc a:hover{
+	color:#F47837;
+}
+#currLoc a.addEditBack{
+	position:absolute;
+	right:0;
+	top:0;
+}
+.layui-card-body .layui-table{
+	margin:0;
+}
+/* 增加编辑题型结构 */
+.layui-field-title{
+	margin:10px 0 10px 0;
+}
+#zsdName{
+	color:#009688;
+	margin-left:20px;
+	font-weight:600;
+}
+.queType{
+	border:1px solid #ccc;
+	padding:10px 15px;
+	background:#f1f1f1;
+	margin-bottom:15px;
+	position:relative;
+	z-index:1000;
+	display:none;
+}
+.quesAddEditBox{
+	display:none;
+}
+.typeBox{
+	height:38px;
+	line-height:38px;
+	margin-bottom:10px;
+}
+.typeBox span,
+.typeBox div.typeCon{
+	float:left;
+}
+.typeBox span{
+	color:#666;
+	margin-right:10px;
+}
+.layui-form-radio{
+	margin:0px 10px 0 0;
+}
+.tiganType{
+	width:140px;
+}
+.tiganType1{
+	width:80px;
+	margin-left:10px;
+}
+.layui-form-item,
+.newCreateDiv{
+	position:relative;
+}
+.comQuesBox{
+	display:none;
+	position:relative;
+}
+.layui-tab-content{
+	padding:10px 0;
+}
+.newCreate{
+	width:10px;
+	height:10px;
+	position:absolute;
+	left:28px;
+	top:13px;
+	background:red;
+	border-radius:50%;
+}
+.newCreateDiv input{
+	width:95%;
+}
+.newCreateDiv a{
+	width:5%;
+	height:100%;
+	line-height:38px;
+	position:absolute;
+	right:0;
+	top:0;
+	text-align:center;
+}
+.newCreateDiv a i{
+	color:red;
+	font-size:28px;
+}
+.addLoreCon,
+.addZhuti{
+	width:55px;
+	height:50px;
+	background:#F47837;
+	border-radius:10px;
+	position:fixed;
+	right:15px;
+	bottom:15px;
+	z-index:1000;
+	display:none;
+}
+.addLoreCon i,
+.addZhuti i{
+	width:100%;
+	color:#fff;
+	font-size:30px;
+	position:absolute;
+	top:3px;
+	text-align:center;
+}
+.addLoreCon span,
+.addZhuti span{
+	width:100%;
+	text-align:center;
+	font-size:12px;
+	position:absolute;
+	left:0;
+	bottom:2px;
+	color:#fff;
+}
+.zhutiNote,
+#zsjjTips{
+	font-size:12px;
+	color:#f00;
+	margin-left:110px;
+	margin-top:-14px;
+}
+#zsjjTips{
+	margin-bottom:10px;
+}
+.zhutiNote.tkNote{
+	margin:0;
+}
+.addGuide{
+	position:absolute;
+	right:0;
+	top:0;
+	height:40px;
+	line-height:40px;
+	text-align:center;
+	padding:0 5px;
+	color:#fff;
+	background:#F47837;
+}
+.maxChoice,
+.spaceBox{
+	margin-left:15px;
+}
+.choiceSelDiv{
+	float:left;
+	width:100px;
+}
+.spaceDiv{
+	float:left;
+	width:70px;
+}
+/* 问题选项 */
+.ansSelWrap{
+	display:none;
+}
+.answerSelectDiv{
+	border:1px solid #ccc;
+	background:#f1f1f1;
+	border-radius:4px;
+	padding:10px;
+}
+.selTypeSpan,
+.answSelTypeBox,
+.judgeTypeBox{
+	float:left;
+}
+.answSelTypeBox,
+.singleAnsBox,
+.judgeTypeBox{
+	margin:-2px 0 0 5px;
+}
+.multiAnsBox{
+	margin:-6px 0 0 5px;
+}
+.answerSelectTxt ,
+.singleAns,
+.multiAns{
+	margin-top:10px;
+}
+.txtAnsw{
+	width:24%;
+	height:35px;
+	line-height:35px;
+	border:1px solid #ccc;
+	float:left;
+	border-radius:4px;
+	background:#fff;
+	margin-right:1%;
+	margin-bottom:10px;
+}
+.txtAnsw:nth-of-type(4n){
+	margin-right:0;
+}
+.txtAnsw span{
+	width:13%;
+	height:100%;
+	float:left;
+	border-right:1px solid #ccc;
+	text-align:center;
+	color:#393D49;
+}
+.txtAnsw input{
+	border:none;
+	width:83%;
+	float:left;
+	height:100%;
+	margin-left:2%;
+	font-weight:600;
+	color:#393D49;
+}
+.txtAnsw input::-webkit-input-placeholder{
+	color:#999;
+	font-weight:normal;
+}
+.singleAns span,
+.singleAns .singleAnsBox,
+.multiAns span,
+.multiAns .multiAnsBox,
+.comPartAns,
+.comImgBox,
+.comPartAns_multi,
+.hasChoiceAns{
+	float:left;
+}
+.comImgBox{
+	width:100px;
+	text-align:center;
+	font-weight:600;
+	color:#393D49;
+	margin:10px 0 0 20px;
+}
+.comImgBox img{
+	cursor:pointer;
+}
+.hasChoiceAns{
+	margin-top:7px;
+}
+.hasChoiceAns em{
+	font-style:normal;
+}
+.hasChoiceAns em.noSel{
+	color:#999;
+}
+.hasChoiceAns em.hasSel{
+	color:#333;
+}
+.note{
+	color:#f00;
+	font-size:12px;
+}
+#myEditor_answer_select{
+	width:445px;
+	margin:15px auto 0;
+}
+.sureBtn{
+	text-align:center;
+	margin-top:10px;
+}
+.sureBtn a{
+	width:100px;
+	display:inline-block;
+}
+.getSrcLayer{
+	width:100%;
+	height:100%;
+	position:fixed;
+	left:0;
+	top:0;
+	z-index:9999;
+	background:rgba(0,0,0,.5);
+	opacity:0;
+	filter:alpha(opacity=0);
+	display:none;
+}
+.getImgSrcBox{
+	width:500px;
+	height:400px;
+	background:#fff;
+	position:fixed;
+	left:50%;
+	top:50%;
+	margin-left:-250px;
+	margin-top:-200px;
+	z-index:10000;
+	border-radius:4px;
+	display:none;
+}
+.getImgSrcBox strong{
+	width:100%;
+	height:40px;
+	line-height:40px;
+	display:block;
+	text-indent:10px;
+	font-size:16px;
+	color:#393D49;
+	border-radius:4px 4px 0 0;
+	background:#f1f1f1;
+	position:relative;
+}
+.getImgSrcBox strong a{
+	width:10%;
+	height:100%;
+	position:absolute;
+	right:0;
+	top:0;
+	text-align:center;
+}
+.getImgSrcBox strong a i{
+	font-size:18px;
+	color:#f00;
+}
+.wendaTypeWrap,
+.tiganTypeBox,
+.tkTypeWrap{
+	display:none;
+}
+input[name='answer_multiTk']{
+	width:30px;
+	height:30px;
+	line-height:30px;
+	margin-right:10px;
+	margin-top:3px;
+	background:#009688;
+	color:#fff;
+	cursor:pointer;
+	border:none;
+	border-radius:4px;
+}
+input[name='answer_multiTk']:hover{
+	background:#F47837;
+}
+.clearSelAnsBtn{
+	float:left;
+	margin:7px 0 0 20px;
+	color:#F00;
+}
+.clearSelAnsBtn:hover{
+	color:#F00;
+	opacity:.6;
+}
+#subBtnBox{
+	text-align:center;
+}
+#subBtnBox a{
+	display:inline-block;
+	width:100px;
+}
+.guideWrap{
+	display:none;
+	position:relative;
+}
+#basicTypeTxt,
+#tiganTypeTxt,
+#currAnsSelTypeTxt{
+	color:#009688;
+	font-weight:600;
+}
+#tiganTypeTxt{
+	float:left;
+}
+#currAnsSelTypeTxt{
+	color:#F47837;
+	margin-left:10px;
+}
+.lexInput{
+	width:50%;
+	float:left;
+}
+.addLexBtn,
+.delLextBtn{
+	float:left;
+	margin-left:10px;
+}
+.delLextBtn{
+	color:#f00;
+	cursor:pointer;
+	font-size:30px;
+}
+.switchTgGanTypeBox{
+	float:left;
+	margin-left:10px;
+}
+.switchTgGanTypeBox a{
+	color:#F47837;
+}
+.switchTgGanTypeBox a:hover{
+	font-weight:600;
+}
+.resetBtn{
+	margin-left:10px;
+	display:none;
+}
+/* 切换至其他题型时的显示结构 */
+.otherDOMWrap{
+	width:410px;
+	height:110px;
+	background:#fff;
+	margin:15px auto 0;
+}
+.saveBtnWrap{
+	text-align:center;
+	margin-top:25px;
+}
+.saveBtnWrap button{
+	width:100px;
+	display:inline-block;
+}
+.tipsCon{
+	height:200px;
+	border-radius:6px;
+	box-shadow:0 0 4px #ccc;
+	margin-top:10px;
+	padding:10px;
+}
+#guideTips{
+	position:absolute;
+	right:0;
+	top:0;
+	line-height:40px;
+	color:#f00;
+	font-size:14px;
+}
+.selTipsBox{
+	position:relative;
+	z-index:999;
+}
+.hasMargTop{
+	margin-top:30px;
+}
+.noticeSpan{
+	margin-left:10px;
+	color:#F47837;
+}
+#upListAction{
+	display:none;
+	float:right;
+}
+.videoBox{
+	width:100px;
+	height:100px;
+	margin-left:100px;
+	margin-top:25px;
+	position:relative;
+}
+.videoBox i{
+	cursor:pointer;
+	position:absolute;
+	right:-20px;
+	top:0;
+	font-size:28px;
+	color:#f00;
+}

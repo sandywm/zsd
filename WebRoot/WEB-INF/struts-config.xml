@@ -22,27 +22,23 @@
     </action>
     <!-- 学校管理 -->
     <action path="/school" parameter="action" scope="request" type="com.zsd.action.school.SchoolAction">
-      <forward name="schoolPage" path="/###.jsp"></forward><!-- 学校管理首页 -->
+      <forward name="schoolPage" path="/Module/schoolManager/jsp/schoolManager.jsp"></forward><!-- 学校管理首页 -->
     </action>
     <!-- 通用 -->
     <action path="/common" parameter="action" scope="request" type="com.zsd.action.base.CommonAction">
-      <forward name="ediPage" path="/###.jsp"></forward><!-- 出版社管理首页 -->
-      <forward name="subjectPage" path="/###.jsp"></forward><!-- 学科管理首页 -->
-      <forward name="gsPage" path="/###.jsp"></forward><!-- 年级学科管理首页 -->
-      <forward name="eduPage" path="/###.jsp"></forward><!-- 教材管理首页 -->
+      <forward name="ediPage" path="/Module/editionManager/jsp/editionManager.jsp"></forward><!-- 出版社管理首页 -->
+      <forward name="subjectPage" path="/Module/subManager/jsp/subManager.jsp"></forward><!-- 学科管理首页 -->
+      <forward name="gsPage" path="/Module/gradeSubManager/jsp/gradeSubManager.jsp"></forward><!-- 年级学科管理首页 -->
+      <forward name="eduPage" path="/Module/educManager/jsp/educManager.jsp"></forward><!-- 教材管理首页 -->
     </action>
     <!-- 章节管理 -->
     <action path="/chapter" parameter="action" scope="request" type="com.zsd.action.chapter.ChapterAction">
-      <forward name="chapterPage" path="/###.jsp"></forward><!-- 章节管理首页 -->
+      <forward name="chapterPage" path="/Module/chapter/jsp/chapter.jsp"></forward><!-- 章节管理首页 -->
     </action>
     <!-- 知识点管理 -->
     <action path="/lore" parameter="action" scope="request" type="com.zsd.action.lore.LoreAction">
-      <forward name="lorePage" path="/###.jsp"></forward><!-- 知识点管理首页 -->
-    </action>
-    <!-- 模块管理 -->
-    <action path="/mod" parameter="action" scope="request" type="com.zsd.action.module.ModuleAction">
-      <forward name="modPage" path="/###.jsp"></forward><!-- 模块管理首页 -->
-      <forward name="abilityPage" path="/###.jsp"></forward><!-- 角色权限管理首页 -->
+      <forward name="lorePage" path="/Module/loreCatalogManager/jsp/loreCatalogManager.jsp"></forward><!-- 知识点目录管理首页 -->
+      <forward name="loreQuePage" path="/Module/loreManager/jsp/loreManager.jsp"></forward><!-- 知识点管理首页 -->
     </action>
     <!-- 网络老师个人中心-->
     <action path="/netTeacher" parameter="action" scope="request" type="com.zsd.action.netteacher.NetTeacherAction">
@@ -50,11 +46,11 @@
     </action>
     <!-- 知识点关联 -->
     <action path="/loreRelate" parameter="action" scope="request" type="com.zsd.action.loreRelate.LoreRelateAction">
-      <set-property property="cancellable" value="true" />
+      <forward name="lrPage" path="/Module/loreRelateManager/jsp/loreRelateManager.jsp"></forward><!-- 知识点管理首页 -->
     </action>
     <!-- 词库关联 -->
     <action path="/lex" parameter="action" scope="request" type="com.zsd.action.lex.LexAction">
-      <set-property property="cancellable" value="true" />
+      <forward name="lexPage" path="/Module/lexManager/jsp/lexManager.jsp"></forward><!-- 知识点管理首页 -->
     </action>
     <!-- 自助餐管理 -->
     <action path="/buffet" parameter="action" scope="request"  type="com.zsd.action.buffet.BuffetAction">

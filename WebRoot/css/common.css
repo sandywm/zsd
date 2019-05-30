@@ -1,0 +1,144 @@
+.posRel{position:relative;}
+.posAbs{position:absolute;}
+.fl{float:left;}
+.fr{float:right;}
+.clearfix{zoom:1;}
+.clearfix:after{content:"";display:block;clear:both;}
+.blockA{width:100%;height:100%;display:block;}
+/* 多余文字...显示（单行） */
+.ellip{
+	overflow: hidden;
+	white-space:nowrap;
+	text-overflow: ellipsis;
+}
+/* 多余文字...显示（多行） */
+.multiEllip{
+	overflow : hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+}
+/* 头部添加按钮公共标签 */
+.newAddBtn{
+	right:15px;
+	top:0;
+	height:100%;
+	display:block;
+	background:#009688;
+	text-align:center;
+	padding:0 20px;
+	text-indent:18px;
+	color:#fff;
+}
+.newAddBtn:hover{
+	opacity:.8;
+	color:#fff;
+}
+.newAddBtn i{
+	font-size:25px;
+	position:absolute;
+	left:-8px;
+	top:0px;
+}
+.layui-layer-molv .layui-layer-btn .layui-layer-btn1{
+	background:#fff !important;
+}
+.inpRadCheck{
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	left: 0;
+	top: 0;
+	z-index: 5;
+	opacity: 0;
+	filter:alpha(opacity=0);
+	cursor:pointer;
+}
+.oddColor{
+	background:#f1f1f1;
+}
+.indexLayer,
+.tmpIndexLayer{
+	width:100%;
+	height:100%;
+	position:fixed;
+	left:0;
+	top:0;
+	z-index:9999;
+}
+.indexLayer{
+	background:rgba(0,0,0,.75);
+	/*display:none;*/
+}
+.tmpIndexLayer{
+	background:rgba(0,0,0,.01);
+}
+.loadingWrap{
+	width:300px;
+	height:120px;
+	position:fixed;
+	left:50%;
+	margin-left:-150px;
+	top:50%;
+	margin-top:-60px;
+	z-index:10000;
+	text-align:center;
+}
+.loadingWrap p{
+	color:#fff;
+}
+.loadingWrap p.succTxt{
+	color:#5FB878;
+	margin-top:5px;
+}
+.loadingWrap i.layui-extend-succ.readSucc{
+	font-size:35px;
+	color:#5FB878;
+}
+.upTipsTxt{
+	line-height:120px;
+}
+@keyframes blink{
+  0% {opacity: 1;}
+  50%{opacity: 1;}
+  50.01%{opacity: 0;} /* 注意这里定义50.01%立刻透明度为0，可以设置闪烁效果 */
+  100%{opacity: 0;}
+}
+/* 添加兼容性前缀 */
+@-webkit-keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 1; }
+    50.01% { opacity: 0; }
+    100% { opacity: 0; }
+}
+@-moz-keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 1; }
+    50.01% { opacity: 0; }
+    100% { opacity: 0; }
+}
+@-ms-keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 1; }
+    50.01% { opacity: 0; }
+    100% { opacity: 0; }
+}
+@-o-keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 1; }
+    50.01% { opacity: 0; }
+    100% { opacity: 0; }
+}
+.hasBlink {
+    animation: blink 1.5s linear infinite; 
+    -webkit-animation: blink 1.5s linear infinite;
+    -moz-animation: blink 1s linear infinite;
+    -ms-animation: blink 1s linear infinite;
+    -o-animation: blink 1s linear infinite;
+}
+.reloadBtn_sel{
+	margin-right:10px;
+}
+.progressBarBg{
+	background:#5FB878;
+}

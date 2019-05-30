@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+ 	<meta charset="utf-8"/>
+ 	<link href="/plugins/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+ 	<link href="/Module/loreManager/css/loreRelate.css" rel="stylesheet" type="text/css"/>
+ 	<link href="/plugins/pace/pace-theme-flash.min.css" rel="stylesheet" type="text/css"/>
+	<script src="/plugins/pace/pace.min.js" type="text/javascript"></script>	
+  	<title>关联知识点</title>
+</head>
+<body>	
+	<div class="relateWrap">
+		<div class="relateNav">
+			<p class="selZsdBtn active" nowLeft=0>选择知识点</p>
+			<p class="selZsdBtn" nowLeft=1>搜索知识点</p>
+			<a class="closeBtn" href="javascript:void(0)"><i class="layui-icon layui-icon-close"></i></a>
+		</div>
+		<!-- 选择知识点 -->
+		<div class="searchWrap">
+			<div class="searchLayer"></div>
+			<div class="searchBox relateSelect layui-form">
+				<span class="searLinSpan"></span>
+				<div class="itemDivs" style="width:112px;margin:0 10px 10px 0;">
+					<div class="layui-input-inline">
+						<input type="hidden" id="subInp" value="0"/>
+						<select id="subjectSel" lay-filter="subjectSel">
+						 	<option value="">请选择科目</option>
+						 </select> 
+					</div>
+				</div>
+				<div class="itemDivs" style="width:112px;margin:0 10px 10px 0;">
+					<input type="hidden" id="gradeInp"/>
+					<div class="layui-input-inline">
+						 <select id="gradeSel" lay-filter="gradeSel">
+						 	<option value="">请选择年级</option>
+						 </select> 
+					</div>
+				</div>
+				<div class="itemDivs" style="width:150px;margin-bottom:10px;">
+					<div class="layui-input-inline">
+						<input type="hidden" id="editInp" value="0"/>
+						<select id="editionSel" lay-filter="editionSel"></select> 
+					</div>
+				</div>
+				<div class="itemDivs" style="width:112px;margin:0 10px 10px 0;">
+					<div class="layui-input-inline">
+						<input type="hidden" id="eduColumeInp"/>
+						<select id="eduColumeSel" lay-filter="eduColumeSel">
+							<option value=''>请选择教材</option>
+						</select> 
+					</div>
+				</div>
+				<div class="itemDivs" style="margin:0 10px 10px 0;">
+					<div class="layui-input-inline">
+						<input type="hidden" id="chapterInp"/>
+						<select id="chapterSel" lay-filter="chapterSel">
+							<option value=''>请选择章节</option>
+						</select> 
+					</div>
+				</div>
+			</div>
+			<!-- 搜索知识点 -->
+			<div class="searchBox relateSearch">
+				<div class="innerRelSear">
+					<div class="itemDivs" style="width:90px;margin-right:10px;">
+						<div class="layui-input-inline layui-form">
+							<select id="zsdSel" lay-filter="zsdSel">
+								<option value="1">拼音码</option>
+						       	<option value="2">标题</option>
+						     </select>
+						</div>
+					</div>
+					<div class="itemDivs" style="margin-right:10px;">
+						<div class="layui-input-inline">
+							<input id="zsd_py" type="text" class="layui-input" placeholder="请输入知识点拼音码"/>
+							<input id="zsd_txt" type="text" class="layui-input" placeholder="请输入知识点标题"/>
+						</div>
+					</div>
+					<div class="itemDivs">
+						<div class="layui-input-inline">
+							<button id="queryBtn" class="layui-btn"><i class="layui-icon layui-icon-search"></i></button>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+		</div>
+		<!-- 结果层和添加层 -->
+		<div class="resultWrap">
+			<!-- 查询结果层 -->
+			<span class="lineSpan"></span>
+			<div class="searchResBox">
+				<ul class="resNav">
+					<li class="oneWid">年级</li>
+					<li class="oneWid">学科</li>
+					<li class="twoWid">章节</li>
+					<li class="twoWid">知识点</li>
+					<li class="oneWid">状态</li>
+					<li class="oneWid">操作</li>
+				</ul>
+				<div id="searResBox">
+					<ul id="innerSearResUl"></ul>
+				</div>
+			</div>
+			<!-- 添加结果层 -->
+			<div class="hasAddResBox">
+				<div class="hasAddResTit"></div>
+				<div id="hasAddRes">
+					<ul id="hasAddResUl"></ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
+	<script src="/plugins/jquery/jquery.min.js"></script>
+	<script src="/plugins/layui/layui.js"></script>
+	<script type="text/javascript">
+		var loreId = parent.loreBigId,loreName = parent.loreBigName;
+		var infoBySubOpt = 'getGradeOpt',nowSearType=1,searOpt='relate',//根据学科获取年级的信息
+			infoByGsEdOpt='geteduC',currPage='relatePage',ediId = parent.$('#editInp').val();//根据年级出版社获取教材信息 need
+		layui.config({
+			base: '/plugins/frame/js/'
+		}).use(['form','baseDataMet','relate'],function(){
+			var form = layui.form,baseDataMet = layui.baseDataMet,relate=layui.relate;
+			var page = {
+				init : function(){
+					this.bindEvent();
+					//获取科目
+					baseDataMet.getSubjectList('subjectSel');
+					//获取出版社
+					baseDataMet.getEditionList('editionSel');
+					$('#editInp').val(ediId);
+					$('.hasAddResTit').html('<span style="color:#F47837;">'+ loreName +'</span>已关联知识点');
+					form.render();
+					this.initHasAddRelation();
+				},
+				//加载已经添加的关联知识点
+				initHasAddRelation : function(){
+					relate.addRelateLoreAction(loreId,ediId);
+				},
+				bindEvent : function(){
+					$('#queryBtn').on('click',function(){
+						relate.searchZsdByTitOrPy();
+					});
+					$('.closeBtn').on('click',function(){
+						var index= parent.layer.getFrameIndex(window.name);
+						parent.layer.close(index);
+					});
+					$('.selZsdBtn').on('click',function(){
+						var nowLeft = $(this).attr('nowLeft');
+						$(this).addClass('active').siblings().removeClass('active');
+						if(nowLeft == 0){
+							$('.searchLayer').stop().animate({'left':'50%'});
+						}else{
+							$('.searchLayer').stop().animate({'left':0});
+						}
+					});
+				}
+			};
+			page.init();
+			
+		});
+		
+	</script>
+</body> 
+</html>

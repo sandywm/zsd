@@ -1,0 +1,25 @@
+.itemDivs{
+	float:left;
+	margin-right:15px;
+}
+.searchForm .itemDiv:first-child{
+	margin-left:0px;
+}
+.resetBtn{
+	color: #666;
+    float: left;
+    margin-top: 6px;
+    margin-left:-10px;
+}
+.resetBtn i{
+	margin-right:5px;
+}
+.resetBtn:hover{
+	color:#F47837;
+}
+.sucColor{
+	color:#01AAED;
+}
+.warningCol{
+	color:#FF5722;
+}

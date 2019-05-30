@@ -1,0 +1,108 @@
+.searchPart{
+	height:60px;
+	border-bottom:1px solid #ccc;
+}
+.item{
+	float:left;
+	margin-top:10px;
+	margin-right:10px;
+}
+.lexBox{
+	height:338px;
+}
+.lexList{
+	width:53%;
+	height:100%;
+	float:left;
+	border-right:1px solid #ccc;
+	padding:0 1%;
+}
+.layui-table, .layui-table-view{
+	margin:5px 0 0 0;
+}
+#lexTitInp_txt{
+	display:none;
+}
+.lexCon{
+	width:44%;
+	height:100%;
+	float:right;
+	position:relative;
+	overflow:hidden;
+}
+.lexCon #innerLexCon{
+	position:absolute;
+	left:0;
+	top:1%;
+	right:1.5%;
+	color:#666;
+}
+.lexBot{
+	text-align:center;
+	margin-top:10px;
+}
+.lexBot button{
+	width:100px;
+	display:inline-block;
+}
+.labelMod{
+	height:24px;
+	line-height:24px;
+	display:block;
+	position:relative;
+}
+.labelMod span.likeCheckSpan{
+	width:16px;
+	height:16px;
+	line-height:16px;
+	border:1px solid #d2d2d2;
+	border-radius:2px;
+	background:#fff;
+	-webkit-transition:.1s linear;
+	transition:.1s linear;
+	display:block;
+	margin:3px 6px 0 0px;
+	float:left;
+}
+.hasBorRad{
+	width:18px !important;
+	height:18px !important;
+	line-height:18px !important;
+	border-radius:50% !important;
+	margin-top:7px !important;
+	margin-left:6px !important;
+	border:1px solid #999 !important;
+}
+.labelMod span.likeCheckSpan b{
+	color:#fff;
+	font-size:12px;
+	display:block;
+}
+.labelMod span.hasActive{
+	border-color:#5FB878 !important;
+	background:#5FB878 !important;
+}
+.labelMod span.hasActive b{
+	color:#fff;
+}
+.labelMod strong{
+	font-weight:normal;
+	float:left;
+}
+.parentScroll,
+.scrollBar{
+	width:3px;
+	height:100%;
+	border-radius:20px;
+	position:absolute;
+	right:0;
+	top:0;
+}
+.scrollBar{
+	background:#009688;
+	opacity:.6;
+}
+/* 查看简单知识树 */
+#loreTree{
+	padding:10px 0;
+}

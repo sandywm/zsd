@@ -1,0 +1,19 @@
+.lexSearch .item{
+	float:left;
+}
+#lexTitInp_txt{
+	display:none;
+}
+.resetBtn{
+	float: left;
+	margin:6px 0 0 10px;
+}
+.resetBtn:hover{
+	color:#F47837;
+}
+.lexBot{
+	text-align:center;
+}
+.lexBot button{
+	width:100px;
+}
