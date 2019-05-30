@@ -1652,6 +1652,7 @@ public class LoreAction extends DispatchAction {
 					Integer newLoreId = lm.addLore(cptId, newLoreCatalogName, Convert.getFirstSpell(newLoreCatalogName), loreOrder, quoteLoreId, loreCode);
 					newLoreIdArr[i] = newLoreId;
 					tyLoreIdArr[i] = quoteLoreId;
+					newLoreCodeArr[i] = loreCode;
 				}
 				for(Integer j = 0 ; j < newLoreIdArr.length ; j++){//循环新增加的新版本知识点
 					List<LoreRelateInfo> lrList = lrm.listRelateInfoByOpt(tyLoreIdArr[j], 0, -1,"");//获取通用版的关联
@@ -1662,7 +1663,7 @@ public class LoreAction extends DispatchAction {
 							LoreInfo lore = lm.getLoreInfoByOpt(roolLoreId_ty, ediId);//根据通用版的关联知识点获取新版本下对应的知识点
 							if(lore != null){
 								Integer loreId_root_edi = lore.getId();
-								String loreCode_root_edi = lore.getLoreCode();
+								String loreCode_root_edi = lore.getLoreCode().replace("-", "");
 								if(Long.parseLong(newLoreCodeArr[j]) > Long.parseLong(loreCode_root_edi)){
 									//检查有无此条记录，没有就增加
 									if(lrm.listRelateInfoByOpt(newLoreIdArr[j], loreId_root_edi, -1, "").size() == 0){

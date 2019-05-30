@@ -32,4 +32,5 @@
 	<dao id="stu_sub_edu_Dao" class="com.zsd.dao.impl.StuSubjectEduDaoImpl" />
 	<dao id="study_log_Dao" class="com.zsd.dao.impl.StudyLogDaoImpl" />
 	<dao id="study_task_Dao" class="com.zsd.dao.impl.StudyTaskDaoImpl" />
+	<dao id="relation_zd_result_Dao" class="com.zsd.dao.impl.RelationZdResultDaoImpl" />
 </daoContext>

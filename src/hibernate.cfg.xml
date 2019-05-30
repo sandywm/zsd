@@ -112,6 +112,7 @@
 		<mapping resource="com/zsd/xml/BuffetTypeInfo.hbm.xml" />
 		<mapping resource="com/zsd/xml/BuffetAbilityRelationInfo.hbm.xml" />
 		<mapping resource="com/zsd/xml/JoinLoreRelation.hbm.xml" />
+		<mapping resource="com/zsd/xml/RelationZdResult.hbm.xml" />
 
 
 

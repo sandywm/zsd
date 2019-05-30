@@ -10,10 +10,12 @@ import com.zsd.factory.AppFactory;
 import com.zsd.module.Chapter;
 import com.zsd.module.LoreInfo;
 import com.zsd.module.LoreRelateInfo;
+import com.zsd.module.RelationZdResult;
 import com.zsd.module.json.MyTreeNode;
 import com.zsd.service.ChapterManager;
 import com.zsd.service.LoreInfoManager;
 import com.zsd.service.LoreRelateManager;
+import com.zsd.service.RelationZdResultManager;
 import com.zsd.util.Constants;
 
 @SuppressWarnings("unchecked")
@@ -89,10 +91,11 @@ public class LoreTreeMenuJson {
 		return leMenu_sub;
 	}
 	
-	public List<MyTreeNode> showTree(Integer loreId,Integer studyLogId) throws Exception {
+	@SuppressWarnings("rawtypes")
+	public List<MyTreeNode> showTree(Integer loreId,Integer studyLogId,String orderOpt) throws Exception {
 		LoreRelateManager lrm = (LoreRelateManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_RELATE_INFO);
 		LoreInfoManager lm = (LoreInfoManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
-	    List<LoreTreeMenu> l = this.getTreeMenuList(lrm.listRelateInfoByOpt(loreId, 0, -1, ""));
+	    List<LoreTreeMenu> l = this.getTreeMenuList(lrm.listRelateInfoByOpt(loreId, 0, -1, orderOpt));
 	    List<MyTreeNode> tree = new ArrayList<MyTreeNode>();
 	    this.loreList = new ArrayList();
 	    this.num = 0;
@@ -138,22 +141,21 @@ public class LoreTreeMenuJson {
 	    		node.setStudyTimes(0);
 	    		node.setZczdTimes(0);
 	    	}else{
-//	    		RelationZdResultManager rzrm = (RelationZdResultManager)AppFactory.instance(null).getApp(Constants.WEB_RELATION_ZD_RESULT);
-//	    		List<RelationZdResultVO> rzrList = rzrm.listInfoByLogAndLoreId(studyLogId, node.getId());
-//	    		if(rzrList.size() > 0){
-//	    			RelationZdResultVO rzrVO = rzrList.get(0);
-//	    			node.setZdxzdFlag(rzrVO.getZdxzdFlag());
-//	    			node.setStudyFlag(rzrVO.getStudyFlag());
-//		    		node.setZczdFlag(rzrVO.getZczdFlag());
-//		    		node.setStudyTimes(rzrVO.getStudyTimes());
-//		    		node.setZczdTimes(rzrVO.getZczdTimes());
-//	    		}else{
-//	    			node.setZdxzdFlag(-1);
-//		    		node.setStudyFlag(-1);
-//		    		node.setZczdFlag(-1);
-//		    		node.setStudyTimes(0);
-//		    		node.setZczdTimes(0);
-//	    		}
+	    		RelationZdResultManager rzrm = (RelationZdResultManager)AppFactory.instance(null).getApp(Constants.WEB_RELATION_ZD_RESULT_INFO);
+	    		RelationZdResult rz = rzrm.getEntityByOpt(studyLogId, node.getId());
+	    		if(rz != null){
+	    			node.setZdxzdFlag(rz.getZdxzdFlag());
+	    			node.setStudyFlag(rz.getStudyFlag());
+		    		node.setZczdFlag(rz.getZczdFlag());
+		    		node.setStudyTimes(rz.getStudyTimes());
+		    		node.setZczdTimes(rz.getZczdTimes());
+	    		}else{
+	    			node.setZdxzdFlag(-1);
+		    		node.setStudyFlag(-1);
+		    		node.setZczdFlag(-1);
+		    		node.setStudyTimes(0);
+		    		node.setZczdTimes(0);
+	    		}
 	    	}
 	    }
     	List<MyTreeNode> children = new ArrayList<MyTreeNode>();
@@ -192,6 +194,60 @@ public class LoreTreeMenuJson {
 		    }
 	    }
 	    return node;
+	}
+	
+	/**
+	 * 获取针对性诊断的路线
+	 * @author wm
+	 * @date 2019-5-30 上午10:39:46
+	 * @param nodeList
+	 * @param buff
+	 */
+	public void getPath(List<MyTreeNode> nodeList,StringBuilder buff){
+		if (nodeList == null || nodeList.size() == 0) {
+			return;
+		}
+		List<MyTreeNode> nodeList_1 = new ArrayList<MyTreeNode>();
+		for(MyTreeNode node : nodeList){
+			// 记录当前层所有元素
+			if(node.getRepeatFlag() == false){
+				buff.append(node.getId()).append("|");
+			}
+			if(node.getChildren() != null){
+				// 把每个元素的下一层放到一个list中
+				nodeList_1.addAll(node.getChildren());
+			}
+		}
+		if(buff.length() > 0){
+			buff.delete(buff.length() - 1, buff.length());
+		}
+		buff.append(":");
+		// 递归调用
+		getPath(nodeList_1, buff);
+	}
+	
+	/**
+	 * 获取学习的路线(和针对性诊断相反)
+	 * @author wm
+	 * @date 2019-5-30 上午10:40:02
+	 * @param path
+	 * @return
+	 */
+	public String getStudyPath(String path){
+		StringBuffer studyPath = new StringBuffer();
+		if(!path.equals("")){
+			for(int i = path.split(":").length - 1 ; i >= 0 ; i--){
+				String[] reverseArray = path.split(":")[i].split("\\|");
+				for(int j = reverseArray.length - 1 ; j >= 0 ; j--){
+					studyPath.append(reverseArray[j]).append("|");
+				}
+				studyPath.replace(studyPath.length() - 1, studyPath.length(), ":");
+			}
+			if(studyPath.length() > 0){
+				studyPath = studyPath.delete(studyPath.length() - 1, studyPath.length());
+			}
+		}
+		return studyPath.toString();
 	}
 	
 	/**
