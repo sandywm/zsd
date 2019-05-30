@@ -1,0 +1,84 @@
+.addBtnRt,
+#addLoreCata,
+#zsdCodeBtn{
+	display:none;
+}
+.itemDivs{
+	float:left;
+	margin-right:15px;
+}
+.tipsTxt,
+.tipsTxt_lore{
+	color: #999;
+    text-align: center;
+    margin:80px 0;
+}
+.sucColor{
+	color:#01AAED;
+}
+.warningCol{
+	color:#FF5722;
+}
+/* 批量生成知识点编码 */
+.codeResTit{
+	height:40px;
+	line-height:40px;
+	border-bottom:1px solid #ccc;
+	text-align:center;
+	font-size:16px;
+	color:#333;
+	font-weight:600;
+	background:#fff;
+}
+#codeResCon{
+	position:absolute;
+	left:0px;
+	right:0px;
+	top:41px;
+	bottom:10px;
+	overflow:hidden;
+}
+#codeResCon ul{
+	width:100%;
+	position:absolute;
+	left:0;
+	top:0;
+}
+#codeResCon ul li{
+	height:35px;
+	line-height:35px;
+	border-bottom:1px dashed #ccc;
+	font-size:14px;
+	padding:0 10px;
+}
+#codeResCon ul li.succResCol{
+	color:#01AAED;
+}
+#codeResCon ul li.failCol{
+	color:#f00;
+}
+#codeResCon ul li p{
+	max-width:100%;
+	overflow:hidden;
+	text-overflow:ellipsis;
+	white-space:nowrap;
+}
+.parentScroll,
+.scrollBar{
+	position: absolute;
+	right: 0px;
+	top:0;
+	width: 3px;
+	border-radius: 10px;
+	opacity: .8;
+}
+.parentScroll{
+	height: 100%;
+}
+.scrollBar{
+	height: 50px;
+	background: #999;
+}
+.oddColor{
+	background:#f2f2f2;
+}
