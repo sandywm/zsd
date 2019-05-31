@@ -10,6 +10,7 @@
 	<link href="/plugins/layui/css/layui.css" rel="stylesheet" type="text/css"/>
 	<link href="/Module/lexManager/css/lexManager.css" rel="stylesheet" type="text/css"/>
 	<link href="/plugins/layui/css/modules/layui-icon-extend/iconfont.css" rel="stylesheet" type="text/css"/>
+	<link href="/Module/commonJs/ueditor/themes/default/css/ueditor.min.css" type="text/css" rel="stylesheet" />
 	<link href="/plugins/pace/pace-theme-flash.min.css" rel="stylesheet" type="text/css"/>
 	<script src="/plugins/pace/pace.min.js" type="text/javascript"></script>	
     </head>
@@ -54,8 +55,10 @@
 	</body>
 	<script src="/plugins/jquery/jquery.min.js"></script>
    	<script src="/plugins/layui/layui.js"></script>
+   	<script src="/Module/commonJs/ueditor/ueditor.config.js"></script>
+	<script src="/Module/commonJs/ueditor/ueditor.all.min.js"></script>
 	<script type="text/javascript">
-		var loreBigId=0,loreBigName='',addEditFlag=false,globalOpts='',currLexId=0;
+		var addEditFlag=false,globalOpts='',currLexId=0,bigLexTit='';
 		layui.config({
 			base: '/plugins/frame/js/'
 		}).use(['layer','form','table'], function() {
@@ -75,10 +78,27 @@
 			});
 			
 			var page = {
+				data : function(){
+					layerIndex : 0
+				},
 				init : function(){
 					this.loadLexList('initLoad');
 					this.bindEvent();
 				},
+				initUeditor : function(id){
+					UE.getEditor(id,{
+						initialFrameWidth : '100%',
+						initialFrameHeight : 260,
+						wordCount:true,
+						textarea : 'description'
+					});
+				},
+				initUeditorContent : function(obj,content){
+		    		UE.getEditor(obj).addListener("ready", function () {
+				        // editor准备好之后才可以使用
+				        UE.getEditor(obj).setContent(content,null);
+					});
+		    	},
 				bindEvent : function(){
 					var _this = this;
 					$('.resetBtn').on('click',function(){
@@ -135,22 +155,98 @@
 						}
 					});
 				},
+				//添加编辑词库动作
+				addEditLexFun : function(){
+					var _this = this;
+					$('#addLexBtn').on('click',function(){
+		    			var lexTit = $.trim($('#lexTit').val()),
+		    				lexCon = UE.getEditor('lexEditor').getContent();
+		    			if(lexTit == ''){
+		    				layer.msg('请填写词库标题', {icon:5,anim:6,time:2000});
+		    			}else if(lexCon == ''){
+		    				layer.msg('请填写词库内容', {icon:5,anim:6,time:2000});
+		    			}else{
+		    				layer.load('1');
+		    				var field = null,url='';
+		    				if(globalOpts == 'add'){
+		    					field = {lexTitle:lexTit,lexContent:lexCon};
+		    					url = '/lex.do?action=addLex';
+		    				}else{
+		    					field = {lexId:currLexId,lexTitle:lexTit,lexContent:lexCon};
+		    					url = '/lex.do?action=updateLex';
+		    				}
+		    				$.ajax({
+		    					type:'post',
+		    			        dataType:'json',
+		    			        data:field,
+		    			        url:url,
+		    			        success:function (json){
+		    			        	layer.closeAll('loading');	
+		    			        	var title = globalOpts == 'add' ? '添加词库成功' : '编辑词库成功';
+		    			        	if(json.result == 'success'){
+		    			        		layer.msg(title,{icon:1,time:1000},function(){
+						        			addEditFlag = true;
+						        			layer.close(_this.data.layerIndex);
+		   				        		});
+		    			        	}
+		    			        }
+		    				});
+		    			}
+		    		});
+				},
 				showCommonLayer : function(title){
 					var _this = this;
-					layer.open({
+					var lexStr = this.addEdITLexDOM();
+					this.data.layerIndex = layer.open({
 						title:title,
-						type: 2,
+						type: 1,
 					  	area: ['750px', '500px'],
 					  	fixed: true, //不固定
 					  	maxmin: false,
 					  	shadeClose :false,
-					  	content: '/Module/lexManager/jsp/addEditLex.html',
+					  	content: lexStr,
+					  	zIndex:100,
 					  	end : function(){
 					  		if(addEditFlag){
 					  			_this.loadLexList('initLoad');
 					  		}
 					  	}
 					});	
+					if(globalOpts == 'edit'){
+						layer.load('1');
+	    				$.ajax({
+	    					type:'post',
+	    			        dataType:'json',
+	    			        data:{lexId:currLexId},
+	    			        url:'/lex.do?action=getLexDetail',
+	    			        success:function (json){
+	    			        	layer.closeAll('loading');	
+	    			        	if(json.result == 'success'){
+	    			        		$('#lexTit').val(json.lexTitle);
+	    			        		UE.delEditor('lexEditor');
+	    							_this.initUeditor('lexEditor');//初始化富文本
+	    			        		_this.initUeditorContent('lexEditor',json.lexContent);
+	    			        	}else if(json.result == 'noInfo'){
+	    			        		layer.msg('暂无此词库信息', {icon:5,anim:6,time:2000});
+	    			        	}
+	    			        }
+	    				});
+					}else{
+						UE.delEditor('lexEditor');
+						this.initUeditor('lexEditor');//初始化富文本
+					}
+					this.addEditLexFun();
+				},
+				//添加编辑词库结构
+				addEdITLexDOM : function(){
+					var lexStr = '';
+					lexStr += '<div class="lexBox layui-clear"><div class="lexTit layui-form-item" style="margin-top:15px;margin-bottom:10px;">';
+					lexStr += '<label class="layui-form-label">词库标题：</label><div class="layui-input-block" style="width:82%;"><input id="lexTit" type="text" placeholder="请输入词库标题" class="layui-input"/></div></div>';
+					lexStr += '<div class="lexCon layui-form-item"><label class="layui-form-label">词库内容：</label>';
+					lexStr += '<div class="layui-input-block" style="width:82%;"><div id="lexEditor"></div></div></div>';
+					lexStr += '</div>';
+					lexStr += '<div class="lexBot"><button id="addLexBtn" class="layui-btn">添加</button></div>';
+					return lexStr;
 				}
 			};
 			table.on('tool(lexTable)',function(obj){
@@ -160,6 +256,19 @@
 					globalOpts = $(this).attr('opts');
 					currLexId = $(this).attr('lexId');
 					page.showCommonLayer('编辑词库[<span style="color:#F47837;">'+ lexTit +'</span>]');
+				}else if(obj.event == 'relLore'){//关联知识点
+					currLexId = $(this).attr('lexId');
+					bigLexTit = $(this).attr('lexTit');
+					layer.open({
+						title:'',
+						type: 2, 
+					  	area: ['1000px', '560px'],
+					  	fixed: true, //不固定
+					  	maxmin: false, 
+					  	shadeClose :false,
+					  	closeBtn:0,
+					  	content: '/Module/lexManager/jsp/loreRelate.html'
+					});	
 				}else if(obj.event == 'delLex'){
 					var lexTit = $(this).attr('lexTit'),
 						lexId = $(this).attr('lexId');

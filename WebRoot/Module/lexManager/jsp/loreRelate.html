@@ -38,7 +38,7 @@
 				</div>
 				<div class="itemDivs" style="width:150px;margin-bottom:10px;">
 					<div class="layui-input-inline">
-						<input type="hidden" id="editInp" value="0"/>
+						<input type="hidden" id="editInp" value="1"/>
 						<select id="editionSel" lay-filter="editionSel"></select> 
 					</div>
 				</div>
@@ -116,9 +116,8 @@
 	<script src="/plugins/jquery/jquery.min.js"></script>
 	<script src="/plugins/layui/layui.js"></script>
 	<script type="text/javascript">
-		var loreId = parent.loreBigId,loreName = parent.loreBigName;
-		var infoBySubOpt = 'getGradeOpt',nowSearType=1,searOpt='relate',//根据学科获取年级的信息
-			infoByGsEdOpt='geteduC',currPage='relatePage',ediId = parent.$('#editInp').val();//根据年级出版社获取教材信息 need
+		var infoBySubOpt = 'getGradeOpt',nowSearType=1,searOpt='relate',nowSearType=1,searOpt='lexRelate',//默认当前搜索类型未拼音码
+			infoByGsEdOpt='geteduC',currPage='lexRelatePage',lexId = parent.currLexId,lexTit = parent.bigLexTit;
 		layui.config({
 			base: '/plugins/frame/js/'
 		}).use(['form','baseDataMet','relate'],function(){
@@ -130,14 +129,13 @@
 					baseDataMet.getSubjectList('subjectSel');
 					//获取出版社
 					baseDataMet.getEditionList('editionSel');
-					$('#editInp').val(ediId);
-					$('.hasAddResTit').html('<span style="color:#F47837;">'+ loreName +'</span>已关联知识点');
+					$('.hasAddResTit').html('词库<span style="color:#F47837;">'+ lexTit +'</span>已关联知识点');
 					form.render();
 					this.initHasAddRelation();
 				},
 				//加载已经添加的关联知识点
 				initHasAddRelation : function(){
-					relate.addRelateLoreAction(loreId,ediId);
+					relate.addLexRelateLoreAction(lexId);
 				},
 				bindEvent : function(){
 					$('#queryBtn').on('click',function(){

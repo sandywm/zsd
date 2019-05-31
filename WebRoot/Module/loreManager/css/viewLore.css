@@ -127,3 +127,10 @@
 .listLore .con.hasMargTop{
 	margin-top:10px;
 }
+.showVideoBtn{
+	cursor:pointer;
+}
+#videoBox{
+	width:700px;
+	height:452px;
+}

@@ -51,32 +51,74 @@ layui.define(['table','form','scrollBar'],function(exports){
     	addLoreRelate : function(){
     		var _this=this;
     		$('.addRelateBtn').on('click',function(){
-    			var rootLoreId = $(this).attr('rootLoreId'),
-    				editInpVal = $('#editInp').val();
-    			if(loreId == rootLoreId){
-    				layer.msg('当前知识点和需要关联的知识点相同，请重新选择',{icon:5,anim:6,time:2200});
-    				return;
+    			if(currPage == 'relatePage'){
+    				var rootLoreId = $(this).attr('rootLoreId'),
+    					editInpVal = $('#editInp').val();
+	    			if(loreId == rootLoreId){
+	    				layer.msg('当前知识点和需要关联的知识点相同，请重新选择',{icon:5,anim:6,time:2000});
+	    				return;
+	    			}
+	    			layer.load('1');
+	    			$.ajax({
+	    				type:'post',
+	    		        dataType:'json',
+	    		        data:{loreId:loreId,rootLoreId:rootLoreId},
+	    		        url:'/loreRelate.do?action=addRelate',
+	    		        success:function (json){
+	    		        	layer.closeAll('loading');
+	    		        	if(json['result'] == 'success'){
+	    		        		//执行增加动作
+	    		        		_this.addRelateLoreAction(loreId, editInpVal);
+	    		        	}else if(json['result'] == 'existInfo'){
+	    		        		layer.msg('当前知识点已被关联，请重新选择',{icon:5,anim:6,time:2200});
+	    		        	}else if(json['result'] == 'error'){
+	    		        		layer.msg('系统错误，请稍后重试',{icon:5,anim:6,time:1000});
+	    		        	}
+	    		        }
+	    			});
+    			}else if(currPage == 'lexRelatePage'){
+    				var rootLoreId = $(this).attr('rootLoreId');
+    				layer.load('1');
+	    			$.ajax({
+	    				type:'post',
+	    		        dataType:'json',
+	    		        data:{loreId:rootLoreId,lexId:lexId},
+	    		        url:'/lex.do?action=addLLR',
+	    		        success:function (json){
+	    		        	layer.closeAll('loading');
+	    		        	if(json['result'] == 'success'){
+	    		        		//执行增加动作
+	    		        		_this.addLexRelateLoreAction(lexId);
+	    		        	}else if(json['result'] == 'existInfo'){
+	    		        		layer.msg('当前知识点已被关联，请重新选择',{icon:5,anim:6,time:2000});
+	    		        	}
+	    		        }
+	    			});
     			}
-    			layer.load('1');
-    			$.ajax({
-    				type:'post',
-    		        dataType:'json',
-    		        data:{loreId:loreId,rootLoreId:rootLoreId},
-    		        url:'/loreRelate.do?action=addRelate',
-    		        success:function (json){
-    		        	layer.closeAll('loading');
-    		        	if(json['result'] == 'success'){
-    		        		//执行增加动作
-    		        		_this.addRelateLoreAction(loreId, editInpVal);
-    		        	}else if(json['result'] == 'existInfo'){
-    		        		layer.msg('当前知识点已被关联，请重新选择',{icon:5,anim:6,time:2200});
-    		        	}else if(json['result'] == 'error'){
-    		        		layer.msg('系统错误，请稍后重试',{icon:5,anim:6,time:1000});
-    		        	}
-    		        }
-    			});
+    			
     		});
     	},
+    	//词库关联知识点添加至右侧列表
+    	addLexRelateLoreAction : function(lexId){
+    		var _this = this;
+    		$.ajax({
+				type:'post',
+		        dataType:'json',
+		        data:{lexId:lexId},
+		        url:'/lex.do?action=getLexDetail',
+		        success:function (json){
+		        	layer.closeAll('loading');
+		        	if(json['result'] == 'success'){
+		        		console.log(json)
+		        		var lrList = json.loreList;
+		        		_this.renderHasAddRelationRes(lrList);
+		        	}else if(json['result'] == 'noInfo'){
+		        		layer.msg('暂未获取到当前已关联知识点信息，请稍后重试',{icon:5,anim:6,time:1500});
+		        	}
+		        }
+			});
+    	},
+    	//知识点关联知识点添加至右侧
     	addRelateLoreAction : function(loreId,editInpVal){
     		var field = null,_this = this;
     		if(editInpVal == 1){//通用版 不传升序和降序
@@ -103,11 +145,20 @@ layui.define(['table','form','scrollBar'],function(exports){
     	renderHasAddRelationRes : function(lrList){
     		var lrStr = '';
     		if(lrList.length > 0){
-    			for(var i=0;i<lrList.length;i++){
-        			lrStr += '<li>';
-        			lrStr += '<p class="widOne ellip">'+ lrList[i].rootLoreName +'</p>';
-        			lrStr += '<p class="widTwo"><i class="delRelLoreBtn layui-icon layui-icon-delete" lrId="'+ lrList[i].lrId +'"></i></p>';
-        			lrStr += '</li>';
+    			if(currPage == 'relatePage'){
+    				for(var i=0;i<lrList.length;i++){
+            			lrStr += '<li>';
+            			lrStr += '<p class="widOne ellip">'+ lrList[i].rootLoreName +'</p>';
+            			lrStr += '<p class="widTwo"><i class="delRelLoreBtn layui-icon layui-icon-delete" lrId="'+ lrList[i].lrId +'"></i></p>';
+            			lrStr += '</li>';
+            		}
+        		}else if(currPage == 'lexRelatePage'){
+        			for(var i=0;i<lrList.length;i++){
+        				lrStr += '<li>';
+            			lrStr += '<p class="widOne ellip">'+ lrList[i].loreName +'</p>';
+            			lrStr += '<p class="widTwo"><i class="delRelLoreBtn layui-icon layui-icon-delete" lrId="'+ lrList[i].llrId +'"></i></p>';
+            			lrStr += '</li>';
+        			}
         		}
         		$('#hasAddResUl').html(lrStr);
         		$('#hasAddResUl li:odd').addClass('oddBgColor');
@@ -129,19 +180,34 @@ layui.define(['table','form','scrollBar'],function(exports){
   				  btn: ['确定','取消'] //按钮
   				},function(index){
   					layer.load('1');
+  					var field = null,url='';
+  					if(currPage == 'relatePage'){
+  						field = {lrId:lrId};
+  						url = '/loreRelate.do?action=delRelate';
+  					}else if(currPage == 'lexRelatePage'){
+  						field = {llrId:lrId};
+  						url = '/lex.do?action=delLLR';
+  					}
   					$.ajax({
   						type:'post',
   				        dataType:'json',
-  				        data:{lrId:lrId},
-  				        url:'/loreRelate.do?action=delRelate',
+  				        data:field,
+  				        url:url,
   				        success:function (json){
   				        	layer.closeAll('loading');
   				        	if(json['result'] == 'success'){
-  				        		var editInpVal = $('#editInp').val();
-  				        		layer.msg('删除成功',{icon:1,time:1000},function(){
-  				        			_this.addRelateLoreAction(loreId, editInpVal);
-  				        			layer.close(index);
-	   				        	});
+  				        		if(currPage == 'relatePage'){
+  				        			var editInpVal = $('#editInp').val();
+  	  				        		layer.msg('删除成功',{icon:1,time:1000},function(){
+  	  				        			_this.addRelateLoreAction(loreId, editInpVal);
+  	  				        			layer.close(index);
+  		   				        	});
+  				        		}else if(currPage == 'lexRelatePage'){
+  				        			layer.msg('删除成功',{icon:1,time:1000},function(){
+  	  				        			_this.addLexRelateLoreAction(lexId);
+  	  				        			layer.close(index);
+  		   				        	});
+  				        		}
   				        	}else if(json['result'] == 'noInfo'){
   				        		layer.msg('暂未获取到当前已关联知识点信息，请稍后重试',{icon:5,anim:6,time:1500});
   				        	}else if(json['result'] == 'error'){
@@ -173,7 +239,7 @@ layui.define(['table','form','scrollBar'],function(exports){
     		var _this = this;
     		var zsd_py = $('#zsd_py').val(),
 				zsd_txt = $('#zsd_txt').val();
-    		if(searOpt == 'loreManager'){
+    		if(searOpt == 'loreManager' || searOpt == 'lexRelate'){
     			var ediId = 1;//只查通用版的
     		}else if(searOpt == 'relate'){
     			var ediId = $('#editInp').val();//只查当前指定出版社的
@@ -218,7 +284,7 @@ layui.define(['table','form','scrollBar'],function(exports){
 		        				limits:[10,20,30,40],
 		        				text: {none : '暂无相关数据'},
 		        				cols : [[
-		        					{field : '', title: '序号', type:'numbers',fixed: 'left' , align:'center'},
+		        					{field : '', title: '序号', type:'numbers', align:'center'},
 		        					{field : 'subName', title: '学科', width:'120', align:'center' },
 		        					{field : 'gradeName', title: '年级',width:'120',align:'center'},
 		        					{field : 'eduName', title: '教材',width:'120',align:'center'},
@@ -229,7 +295,7 @@ layui.define(['table','form','scrollBar'],function(exports){
 		        						d.inUse == '启用'? str='<span class="sucColor">启用</span>' : str='<span class="warningCol">未启用</span>';
 		        						return str;
 		        					}},
-		        					{field : '', title: '操作', fixed: 'right',width:'375', align:'center',templet : function(d){
+		        					{field : '', title: '操作',width:'375', align:'center',templet : function(d){
 		        						var fixStr = '';
 		        						fixStr += '<a class="layui-btn layui-btn-xs addTikuBtn" opts="add" lay-event="addFun" loreName="'+ d.loreName +'" loreId="'+ d.loreId +'"><i class="layui-icon layui-icon-add-circle"></i>添加</a>';
 	        							fixStr += '<a class="layui-btn layui-btn-xs layui-btn-primary editBtn" opts="edit" lay-event="editFun" loreName="'+ d.loreName +'" loreId="'+ d.loreId +'"><i class="layui-icon layui-icon-edit"></i>编辑</a>';
@@ -244,10 +310,7 @@ layui.define(['table','form','scrollBar'],function(exports){
 		        					layer.closeAll('loading');
 		        				}
 		        			});
-		            		
-		            		
-		            		
-		        		}else if(searOpt == 'relate'){
+		        		}else if(searOpt == 'relate' || searOpt == 'lexRelate'){
 		        			_this.renderLoreSmList(json.loreList);
 		        		}
 		        	}else if(json.result == 'noInfo'){

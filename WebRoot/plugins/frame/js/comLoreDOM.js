@@ -67,8 +67,9 @@ layui.define(['form','element','upLoadFiles'],function(exports){
     		if(globalOpts == 'add'){
     			tiganStr += '<div class="tiganType typeCon" style="width:140px;">';
     			tiganStr += '<select id="tiganTypeSel" lay-filter="tiganTypeSel">';
+    			//<option value="问答题">问答题</option>
     			tiganStr += '<option value="">请选择题干类型</option><option value="单选题">单选题</option><option value="多选题">多选题</option>';
-        		tiganStr += '<option value="判断题">判断题</option><option value="问答题">问答题</option><option value="填空选择题">填空选择题</option>';
+        		tiganStr += '<option value="判断题">判断题</option><option value="填空选择题">填空选择题</option>';
         		tiganStr += '</select>';
     		}else{
     			tiganStr += '<div class="typeCon">';

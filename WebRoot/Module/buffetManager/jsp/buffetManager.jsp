@@ -2,15 +2,13 @@
 <!DOCTYPE html> 
 <html>
   <head>
-    <title>关联知识点</title>
+    <title>自助餐管理</title>
 	<meta http-equiv="pragma" content="no-cache">
 	<meta http-equiv="cache-control" content="no-cache"> 
-	<meta http-equiv="keywords" content="知识典管理系统,关联知识点">
-	<meta http-equiv="description" content="关联知识点">
+	<meta http-equiv="keywords" content="知识典管理系统,自助餐管理">
+	<meta http-equiv="description" content="自助餐管理">
 	<link href="/plugins/layui/css/layui.css" rel="stylesheet" type="text/css"/>
-	<link rel="stylesheet" type="text/css" href="/plugins/jquery-easyui/themes/default/easyui.css"/>
-	<link rel="stylesheet" type="text/css" href="/plugins/jquery-easyui/themes/icon.css"/>   
-	<link href="/Module/loreRelateManager/css/relateManager.css" rel="stylesheet" type="text/css"/>
+	<link href="/Module/buffetManager/css/buffet.css" rel="stylesheet" type="text/css"/>
 	<link href="/plugins/pace/pace-theme-flash.min.css" rel="stylesheet" type="text/css"/>
 	<script src="/plugins/pace/pace.min.js" type="text/javascript"></script>	
     </head>
@@ -20,7 +18,7 @@
 				<div class="layui-col-md12 layui-col-lg12">
 					<div class="layui-card">
 						<div class="layui-card-header loreHeader">
-	  						<span style="float:left">关联知识点</span>
+	  						<span style="float:left">自助餐管理</span>
 	  						<div class="layui-form" style="float:right;margin:3px 15px 0 35px;">
 								<div class="itemDivs" style="width:130px;">
 									<div class="layui-input-inline">
@@ -72,10 +70,6 @@
 	<script type="text/javascript" src="/plugins/jquery-easyui/jquery.easyui.min.js"></script>
    	<script src="/plugins/layui/layui.js"></script>
 	<script type="text/javascript">
-		var infoBySubOpt = 'getGradeOpt',editAll='',//根据学科获取年级的信息
-			infoByGsEdOpt='geteduC',//根据年级出版社获取教材信息 need
-			addEditFlag  = false,
-			cptId=0,currPage='relateManager',loreBigId=0,loreBigName='',isRelatePage='relate';
 		layui.config({
 			base: '/plugins/frame/js/'
 		}).use(['layer','form','baseDataMet'], function() {
@@ -95,46 +89,7 @@
 					baseDataMet.getEditionList('editionSel');
 				},
 				bindEvent : function(){
-					//onClick:function(node){showDetailView(node.attributes);}
-					$('#queryBtn').on('click',function(){
-						var eduId = $('#eduColumeInp').val(),
-							ediId = $('#editInp').val();
-						if(eduId == ''){
-							layer.msg('请选择教材',{icon:5,anim:6,time:2200});
-		    				return;
-						}
-						layer.load('1');
-						$('#loreTree').tree({  
-							url: '/loreRelate.do?action=showLoreSimpleTree&eduId=' + eduId + '&ediId=' + ediId,
-							loadFilter: function(data){ 
-								layer.closeAll('loading');
-								if(data.length > 0){
-									$('.tipsTxt_rel').hide();
-									if (data.d){  
-										return data.d;  
-									} else {  
-										return data;  
-									}   
-								}else{
-									$('.tipsTxt_rel').show().html('暂无此教材的章节知识点信息');
-								}
-							},
-							onClick :function(node){
-								loreBigId = node.attributes.loreId,
-								loreBigName = node.attributes.loreName;
-								layer.open({
-									title:'',
-									type: 2, 
-								  	area: ['1000px', '560px'],
-								  	fixed: true, //不固定
-								  	maxmin: false, 
-								  	shadeClose :false,
-								  	closeBtn:0,
-								  	content: '/Module/loreManager/jsp/loreRelate.html'
-								});	
-							}
-					 	});
-					});
+					
 				}
 			};
 			page.init();

@@ -54,7 +54,7 @@
     </action>
     <!-- 自助餐管理 -->
     <action path="/buffet" parameter="action" scope="request"  type="com.zsd.action.buffet.BuffetAction">
-      <set-property property="cancellable" value="true" />
+      <forward name="buffetPage" path="/Module/buffetManager/jsp/buffetManager.jsp"></forward><!-- 知识点管理首页 -->
     </action>
     <!-- 自助餐关联知识点 -->
     <action path="/blr" parameter="action" scope="request"  type="com.zsd.action.buffet.BuffetLoreRelateAction">

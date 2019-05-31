@@ -102,6 +102,16 @@
 						pos = document.getElementById(currPos).offsetTop;
 						$('.loreDetCon').stop().animate({scrollTop:pos},900);
 					});
+					$('.loreDetCon').on('scroll',function(){
+						var scrollTop = $(this).scrollTop();
+						var posTop = document.querySelectorAll('.titStrong');
+						for(var i=0;i<posTop.length;i++){
+							if(posTop[i].offsetTop <= scrollTop){
+								$('.loreNav li').removeClass('active');
+								$('.loreNav li').eq(i).addClass('active');
+							}
+						}
+					});
 				},
 				//知识讲解
 				renderZsjjInfo : function(zsjjList){
@@ -109,10 +119,32 @@
 					for(var i=0;i<zsjjList.length;i++){
 						zsjjStr += '<div class="listLore">';
 						zsjjStr += '<div class="con hasMargBot"><p class="titP">题干：</p><div>'+ zsjjList[i].queSub +'</div></div>';
-						zsjjStr += '<div class="con"><p class="titP">视频：</p><div><img alt="'+ zsjjList[i].videoPath +'" src="../images/video.jpg"/></div></div>';
+						zsjjStr += '<div class="con"><p class="titP">视频：</p><div><img class="showVideoBtn" alt="'+ zsjjList[i].videoPath +'" src="../images/video.jpg"/></div></div>';
 						zsjjStr += '</div>';
 					}
 					$('#zsjjLore').html(zsjjStr);
+					$('.showVideoBtn').on('click',function(){
+						window.localStorage.removeItem("videoPath");
+						var videoPath = $(this).attr('alt');
+						window.localStorage.setItem("videoPath",videoPath);
+						if(videoPath.indexOf('flv') > 0){
+							window.top.layer.open({
+								title:'视频文件播放窗口',
+								type: 2,
+							  	area: ['700px', '500px'],
+							  	fixed: true, //不固定
+							  	maxmin: false,
+							  	shadeClose :false,
+							  	content: '/Module/loreManager/jsp/playVideo.html',
+							  	end : function(){
+							  		window.localStorage.removeItem("videoPath");
+							  	}
+							});	
+						}else{
+							layer.msg('暂不支持该视频格式播放',{icon:5,anim:6,time:2000});
+						}
+						
+					});
 				},
 				//再次诊断
 				renderZczdInfo : function(zczdList){
