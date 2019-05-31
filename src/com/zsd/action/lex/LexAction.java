@@ -257,8 +257,15 @@ public class LexAction extends DispatchAction {
 		Integer lexId = CommonTools.getFinalInteger("lexId", request);
 		Integer loreId = CommonTools.getFinalInteger("loreId", request);
 		Map<String,Object> map = new HashMap<String,Object>();
-		lexm.addLLR(lexId, loreId);
-		map.put("result", "success");
+		String msg = "error";
+		//不能重复关联知识点
+		if(lexm.listInfoByOpt(lexId, loreId).size() == 0){
+			lexm.addLLR(lexId, loreId);
+			msg = "success";
+		}else{
+			msg = "existInfo";
+		}
+		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
