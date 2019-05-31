@@ -104,7 +104,10 @@ public class LoreTreeMenuJson {
 	    	l = this.getNoTreeMenuList(lm.getEntityById(loreId));
 	    }
 	    for (LoreTreeMenu t : l) {
-	        tree.add(tree1(t,t.getMenus(),true,studyLogId));
+	    	MyTreeNode node = tree1(t,t.getMenus(),true,studyLogId);
+	    	if(node != null){
+	    		tree.add(node);
+	    	}
 	    }
 	    return tree;
 	}
@@ -125,10 +128,11 @@ public class LoreTreeMenuJson {
 	private MyTreeNode tree1(LoreTreeMenu t, List<LoreTreeMenu> n, boolean recursive,Integer studyLogId) throws Exception {
 		
 	    MyTreeNode node = new MyTreeNode(); 
-	    node.setId(t.getId());
+//	    node.setId(t.getId());
 	    if(this.existFlag){
-	    	node.setText("<font color=red>"+t.getName()+"</font>");
-	    	node.setRepeatFlag(true);
+//	    	node.setText("<font color=red>"+t.getName()+"</font>");
+//	    	node.setRepeatFlag(true);
+	    	return null;
 	    }else{
 		    node.setId(t.getId());
 	    	node.setText(t.getName());
@@ -158,39 +162,39 @@ public class LoreTreeMenuJson {
 		    		node.setZczdTimes(0);
 	    		}
 	    	}
-	    }
-	    List<MyTreeNode> children = new ArrayList<MyTreeNode>();
-    	LoreRelateManager lrm = (LoreRelateManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_RELATE_INFO);
-    	if(n != null){
-    		for(Iterator<LoreTreeMenu> it = n.iterator() ; it.hasNext();){
-		    	LoreTreeMenu ltMenu = it.next();
-		    	Integer loreId = ltMenu.getId();
-		    	List<LoreRelateInfo> lrList_new = new ArrayList<LoreRelateInfo>();
-		    	if(this.checkExistLore(this.loreList, loreId) == false){//不存在相同节点
-		    		this.loreList.add(this.num++,loreId);
-		    		lrList_new = lrm.listRelateInfoByOpt(loreId, 0, -1, "");//找下一级子节点
-		    		this.existFlag = false;
-	    		}else{//存在相同节点(直接终止查询，并让下一级子节点为空)
-	    			this.existFlag = true;
-	    		}
-		    	List<LoreTreeMenu> menuList = new ArrayList<LoreTreeMenu>();
-		    	if(lrList_new.size() > 0){
-		    		menuList = this.getTreeMenuList(lrList_new);
-		    	}else{
-		    		menuList = this.getLoreTreeMenuList(ltMenu);
-		    	}
-		    	if (menuList != null && menuList.size() > 0) {
-		    		
-		    		List<LoreTreeMenu> nextMenuList = menuList.get(0).getMenus();
-		    		node.setState("open");
-		    		if (recursive) {// 递归查询子节点
-		    			List<LoreTreeMenu> l = new ArrayList<LoreTreeMenu>(menuList);
-			            for (LoreTreeMenu r : l) {
-			                MyTreeNode tn = tree1(r, nextMenuList, true,studyLogId);
-			                children.add(tn);
-			            }
-			            node.setChildren(children);
-		    		}  
+	    	List<MyTreeNode> children = new ArrayList<MyTreeNode>();
+	    	LoreRelateManager lrm = (LoreRelateManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_RELATE_INFO);
+	    	if(n != null){
+	    		for(Iterator<LoreTreeMenu> it = n.iterator() ; it.hasNext();){
+			    	LoreTreeMenu ltMenu = it.next();
+			    	Integer loreId = ltMenu.getId();
+			    	List<LoreRelateInfo> lrList_new = new ArrayList<LoreRelateInfo>();
+			    	if(this.checkExistLore(this.loreList, loreId) == false){//不存在相同节点
+			    		this.loreList.add(this.num++,loreId);
+			    		lrList_new = lrm.listRelateInfoByOpt(loreId, 0, -1, "");//找下一级子节点
+			    		this.existFlag = false;
+			    		List<LoreTreeMenu> menuList = new ArrayList<LoreTreeMenu>();
+				    	if(lrList_new.size() > 0){
+				    		menuList = this.getTreeMenuList(lrList_new);
+				    	}else{
+				    		menuList = this.getLoreTreeMenuList(ltMenu);
+				    	}
+				    	if (menuList != null && menuList.size() > 0) {
+				    		
+				    		List<LoreTreeMenu> nextMenuList = menuList.get(0).getMenus();
+				    		node.setState("open");
+				    		if (recursive) {// 递归查询子节点
+				    			List<LoreTreeMenu> l = new ArrayList<LoreTreeMenu>(menuList);
+					            for (LoreTreeMenu r : l) {
+					                MyTreeNode tn = tree1(r, nextMenuList, true,studyLogId);
+					                children.add(tn);
+					            }
+					            node.setChildren(children);
+				    		}  
+					    }
+		    		}else{//存在相同节点(直接终止查询，并让下一级子节点为空)
+		    			this.existFlag = true;
+		    		}
 			    }
 		    }
 	    }

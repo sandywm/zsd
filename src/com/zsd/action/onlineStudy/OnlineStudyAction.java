@@ -551,12 +551,14 @@ public class OnlineStudyAction extends DispatchAction {
 					StringBuilder buff = new StringBuilder();
 					ltmj.getPath(ltList, buff);
 					path = buff.delete(buff.length() - 1, buff.length()).toString();//当step为1,2的时候就是诊断路线图，当为3,4,5时就是学习路线图
+					studyPath = ltmj.getStudyPath(path);
 				}else{
 					msg = "inUseError";//知识点无效，不能继续11
 				}
 			}
 		}
 		System.out.println(path);
+		System.out.println(studyPath);
 		if(studyLogId > 0){//存在学习记录，继续学习
 			
 		}else{//刚开始学习，没学习记录
