@@ -64,7 +64,7 @@
 				</div -->
 			</div>
 			<!-- 搜索知识点 -->
-			<!-- div class="searchZsd">
+			<div class="searchZsd">
 				<div class="itemDivs" style="width:90px;margin-right:10px;">
 					<div class="layui-input-inline layui-form">
 						<select id="zsdSel" lay-filter="zsdSel">
@@ -84,7 +84,7 @@
 						<button id="queryBtn" class="layui-btn"><i class="layui-icon layui-icon-search"></i></button>
 					</div>
 				</div>
-			</div -->
+			</div>
 		</div>
 		<div class="layui-fluid" style="margin-top:50px;padding:0;">
 			<div class="layui-row">
