@@ -2,22 +2,13 @@
  * @Description: 知识点管理 公共DOM结构 增加知识点题库 以及对题库编辑的公共DOM
  * @author: hlf
  */
-var loreType = 'zsqd';//点拨知道题型
-var tmpGuideType = '';//用于判定点拨指导下不是主题情况下添加按钮显示的判断
-var isAddClickFlag = false;//用于判断是否是通过增加按钮来添加的flag
-var answerSelectImg = null,imgLayerIndex = 0,editor_answer_select = null;
 //自定义模块
-layui.define(['form','element','upLoadFiles'],function(exports){
-	var $ = layui.jquery,form=layui.form,element = layui.element,globalUpload=layui.upLoadFiles;
+layui.define(['form','element','upLoadFiles','buffetLoreDOM','buffetLoreMet'],function(exports){
+	var $ = layui.jquery,form=layui.form,element = layui.element,
+		globalUpload=layui.upLoadFiles,blDOM = layui.buffetLoreDOM
+		blMet = layui.buffetLoreMet;
     var obj = {
-    	data : {
-    		tkOriginAnsTxt : '',
-    		tiganTypeFlag : true//是否创建了题干类型
-    	},
-    	getId : function(id){
-    		return document.getElementById(id);
-    	},
-    	//初始化创建富文本编辑器
+		//初始化创建富文本编辑器
 		initUeditor : function(id){
     		UE.getEditor(id,{
 				initialFrameWidth : '100%',
@@ -56,79 +47,6 @@ layui.define(['form','element','upLoadFiles'],function(exports){
     		loreTopStr += '<div class="tiganTypeBox"></div>';
     		loreTopStr += '<div class="lexTypeBox"></div>';
     		return loreTopStr;
-    	},
-    	//题干类型 以及了解 理解...
-    	createTiganType : function(){
-    		//题干类型 以及了解 理解...
-    		var tiganStr='';
-    		//<option value="填空题">填空题</option>
-    		tiganStr += '<div class="typeBox tiganTypeWrap layui-clear"><span>题干类型：</span>';
-    		tiganStr += '<input id="tiganTypeInp" type="hidden" value="0"/>';
-    		if(globalOpts == 'add'){
-    			tiganStr += '<div class="tiganType typeCon" style="width:140px;">';
-    			tiganStr += '<select id="tiganTypeSel" lay-filter="tiganTypeSel">';
-    			//<option value="问答题">问答题</option>
-    			tiganStr += '<option value="">请选择题干类型</option><option value="单选题">单选题</option><option value="多选题">多选题</option>';
-        		tiganStr += '<option value="判断题">判断题</option><option value="填空选择题">填空选择题</option>';
-        		tiganStr += '</select>';
-    		}else{
-    			tiganStr += '<div class="typeCon">';
-    			tiganStr += '<p id="tiganTypeTxt"></p>';
-    			tiganStr += '<div class="switchTgGanTypeBox" style="display:none;"><a href="javascript:void(0)" class="switchTiganBtn"><i class="iconfont layui-extend-qiehuan"></i>切换题型</a>';
-    			tiganStr += '<a class="resetBtn" href="javascript:void(0)">还原</a></div>';
-    		}
-    		tiganStr += '</div>';
-    		tiganStr += '<div class="tiganType1 typeCon"><input id="tiganType1Inp" type="hidden" value="了解"/><select id="tiganType1Sel" lay-filter="tiganType1Sel">';
-    		tiganStr += '<option value="了解">了解</option><option value="理解">理解</option><option value="应用">应用</option><option value="综合">综合</option></select></div>';
-    		tiganStr += '<div class="maxChoice typeCon"></div>';
-    		tiganStr += '<div class="spaceBox typeCon"></div>';
-    		tiganStr += '</div>';
-    		return tiganStr;
-    	},
-    	//巩固训练 针对性诊断 再次诊断根据题干类型对应不同的select
-    	creaMaxSel : function(){
-    		var maxSel = '';
-    		maxSel += '<span>最大选项：</span><input id="maxSelInpNum" type="hidden" value="4"/>';
-    		maxSel += '<div class="choiceSelDiv"><select id="maxChoiceNumSel" lay-filter="maxChoiceNumSel">';
-    		for(var i=2;i<=6;i++ ){
-    			if(i == 4){
-    				maxSel += '<option value="'+ i +'" selected>'+ i +'个选项</option>';
-    			}else{
-    				maxSel += '<option value="'+ i +'">'+ i +'个选项</option>';
-    			}
-    		}
-    		maxSel += '</select></div>';
-    		return maxSel;
-    	},
-    	//创建多少空
-    	creaMaxSpace : function(){
-    		var spaceStr = '';
-    		spaceStr += '<span>填空数量：</span><input id="spaceNumInp" type="hidden" value="2"/>';
-    		spaceStr += '<div class="spaceDiv"><select id="spaceNumSel" lay-filter="spaceNumSel">';
-    		for(var i = 2 ; i <= 20; i++){
-    			if(i == 2){
-    				if(globalOpts == 'add'){
-    					spaceStr += '<option value="'+ i +'" selected>'+ i +'空</option>';
-    				}else{
-    					//编辑时根据后台传来的answerNum来匹配对应的填空数量
-    					spaceStr += '<option value="'+ i +'">'+ i +'空</option>';
-    				}
-    			}else{
-    				spaceStr += '<option value="'+ i +'">'+ i +'空</option>';
-    			}
-    		}
-    		spaceStr += '</select></div>';
-    		return spaceStr;
-    	},
-    	//创建关联此条
-    	createLexDOM : function(loreType){
-    		var lexStr = '';
-    		lexStr += '<div class="typeBox lexWrap layui-clear"><span style="float:left;">关联词条：</span>';
-    		lexStr += '<div style="float:left;width:92%;"><input type="hidden" id="'+ loreType +'_lexId"/><input type="text" id="'+ loreType +'_lexInp" class="layui-input lexInput" readonly/>';
-    		lexStr += '<a href="javascript:void(0)" class="layui-btn layui-xs addLexBtn">添加编辑词条</a>';
-    		lexStr += '<i onclick="delLex(this)" currType="'+ loreType +'" class="layui-icon layui-icon-delete delLextBtn" title="删除关联词条"></i>';
-    		lexStr += '</div></div>';
-    		return lexStr;
     	},
     	//创建对应主要内容 
     	creaLoreConDOM : function(nowType){
@@ -223,23 +141,6 @@ layui.define(['form','element','upLoadFiles'],function(exports){
     		loreConStr += '</div>';
     		return loreConStr;
     	},
-    	//根据不同的题干类型创建不同的单选 多选 判断 填空...
-    	//01:创建答案类型 是文字还是图片结构
-    	createAnsType : function(){
-    		var ansTypeStr = '';
-    		//问题选项
-    		ansTypeStr += '<div class="answSelType layui-form layui-clear"><span class="selTypeSpan">问题选项</span><input id="answSelTypeInp" value="1" type="hidden"/>';
-    		if(globalOpts == 'add'){
-    			ansTypeStr += '<div class="answSelTypeBox"><input type="radio" name="answSelTypeInp" lay-filter="answSelTypeInp" value="1" isSelFlag="false"  title="文字" checked/>';
-        		ansTypeStr += '<input type="radio" name="answSelTypeInp" lay-filter="answSelTypeInp" value="2" isSelFlag="false" title="图片"/>';
-        		ansTypeStr += '<span class="note">注：切换问题类型后之前选择的答案将被清空</span></div>';
-    		}else{
-    			ansTypeStr += '<span id="currAnsSelTypeTxt"></span>';
-    		}
-    		
-    		ansTypeStr += '</div>';
-    		return ansTypeStr;
-    	},
     	//创建知识讲解上传DOM
     	createUpVideoDOM : function(){
     		var zsjjVideo = '';
@@ -274,597 +175,27 @@ layui.define(['form','element','upLoadFiles'],function(exports){
 				});
     		});
     	},
-    	//根据num->ABC
-    	switchABCByNum : function(i){
-    		var currWord = '';
-    		if(i==1){currWord='A';}
-			else if(i==2){currWord='B';}
-			else if(i==3){currWord='C';}
-			else if(i==4){currWord='D';}
-			else if(i==5){currWord='E';}
-			else if(i==6){currWord='F';}
-    		return currWord;
-    	},
-    	//02:创建答案选项 文字类型
-    	createSelAnsTxt : function(){
-    		var ansTypeTxt = '';
-    		//对应选项文字
-    		ansTypeTxt += '<div class="answerSelectTxt layui-clear">';
-    		for(var i=1;i<=6;i++){
-    			if(i<=4){
-    				ansTypeTxt += '<div id="inpTxt_answ_'+ i +'" class="txtAnsw"><span>'+ this.switchABCByNum(i) +'</span><input title="禁止使用空格符!" id="answSelInpTxt'+ i +'" class="answerSelInp" type="text" placeholder="请输入选项答案"/></div>';
-    			}else{
-    				ansTypeTxt += '<div id="inpTxt_answ_'+ i +'" class="txtAnsw" style="display:none;"><span>'+ this.switchABCByNum(i) +'</span><input title="禁止使用空格符!" id="answSelInpTxt'+ i +'" class="answerSelInp" type="text" placeholder="请输入选项答案"/></div>';
-    			}
-    		}
-    		ansTypeTxt += '</div>';
-    		return ansTypeTxt;
-    	},
-    	//03:创建答案选项 图片类型
-    	createSelAnsImg : function(){
-    		var ansTypeImg = '';
-    		//对应选项图片
-    		ansTypeImg += '<div class="answerSelectImg layui-clear" style="display:none;">';
-    		for(var i=1;i<=6;i++){
-    			if(i<=4){
-    				ansTypeImg += '<div id="answerSelImg_'+ i +'" class="comImgBox"><img id="answerSelect'+ i +'" class="ansImgSel" title="点击添加图片" width="100" height="100" currSrc="" src="Module/loreManager/images/defImg.png"/><p>'+ this.switchABCByNum(i) +'</p></div>';
-    			}else{
-    				ansTypeImg += '<div id="answerSelImg_'+ i +'" class="comImgBox" style="display:none;"><img id="answerSelect'+ i +'" class="ansImgSel" title="点击添加图片" width="100" height="100" currSrc="" src="Module/loreManager/images/defImg.png"/><p>'+ this.switchABCByNum(i) +'</p></div>';
-    			}
-    		}
-    		ansTypeImg += '</div>';
-    		return ansTypeImg;
-    	},
-    	//04：创建答案 单选
-    	createAnsSingle : function(){
-    		var ansSingle = '';
-    		//对应答案 单选
-    		ansSingle += '<div class="singleAns layui-clear"><span>答案：</span>';
-    		ansSingle += '<div class="singleAnsBox layui-form">';
-    		ansSingle += '<input type="hidden" id="ans_singleInp"/>';
-    		for(var i=1;i<=6;i++){
-    			if(i<=4){
-    				ansSingle += '<div id="answerBox_singel_'+ i +'" class="comPartAns"><input type="radio" name="answer_singel" value="" id="answer_singel_'+ i +'" lay-filter="answer_singel" title="'+ this.switchABCByNum(i) +'"/></div>';
-    			}else{
-    				ansSingle += '<div id="answerBox_singel_'+ i +'" class="comPartAns" style="display:none;"><input type="radio" name="answer_singel" value="" id="answer_singel_'+ i +'" lay-filter="answer_singel" title="'+ this.switchABCByNum(i) +'"/></div>';
-    			}
-    		}
-    		ansSingle += '</div>';
-    		ansSingle += '</div>';
-    		return ansSingle;
-    	},
-    	//05:创建答案 多选
-    	createAnsMulti : function(){
-    		var ansMulti = '';
-    		//对应答案 多选
-    		ansMulti += '<div class="multiAns layui-clear"><span>答案：</span>';
-    		ansMulti += '<div class="multiAnsBox layui-form">';
-    		for(var i=1;i<=6;i++){
-    			if(i<=4){
-    				ansMulti += '<div id="answerBox_multi_'+ i +'" class="comPartAns_multi"><input type="checkbox" lay-skin="primary" name="answer_multi" value="" id="'+ this.switchABCByNum(i) +'" lay-filter="answer_multi" title="'+ this.switchABCByNum(i) +'"/></div>';
-    			}else{
-    				ansMulti += '<div id="answerBox_multi_'+ i +'" class="comPartAns_multi" style="display:none;"><input type="checkbox" lay-skin="primary" name="answer_multi" value="" id="'+ this.switchABCByNum(i) +'" lay-filter="answer_multi" title="'+ this.switchABCByNum(i) +'"/></div>';
-    			}	
-    		}
-    		ansMulti += '<p class="hasChoiceAns">已选答案：<em id="result_answer_new" class="noSel">暂未选择答案</em></p>';
-    		ansMulti += '</div>';
-    		ansMulti += '</div>';
-    		return ansMulti;
-    	},
-    	//题型为问答题
-    	wendaTypeDOM : function(nowType){
-    		var wendaStr = '';
-    		wendaStr += '<div id="wenda_'+ nowType +'_'+ currNum +'"></div>';
-    		return wendaStr;
-    	},
-    	//题型为判断题
-    	judgeQueType : function(){
-    		var judgeStr = '';
-    		//题型 判断题
-    		judgeStr += '<div class="answSelType layui-form layui-clear"><span class="selTypeSpan">答案</span><div class="judgeTypeBox">';
-    		judgeStr += '<input id="judgeInp" type="hidden" value="对"/>';
-    		judgeStr += '<input type="radio" name="answer_judge" id="ansSelJudgeInp1" lay-filter="answer_judge" value="对" title="对" checked/>';
-    		judgeStr += '<input type="radio" name="answer_judge" id="ansSelJudgeInp2" lay-filter="answer_judge" value="错" title="错"/>';
-    		judgeStr += '</div></div>';
-    		return judgeStr;
-    	},
-    	//题型为填空题
-    	createTkTypeDOM : function(loreType){
-    		var tkStr = '';
-    		tkStr += '<input id="tkInp_'+ loreType +'" type="text" class="layui-input" placeholder="请输入填空题答案，多个空之间使用英文‘,’分割"/>';
-    		tkStr += '<p class="zhutiNote tkNote">注：多个空之间使用英文‘,’分割</p>';
-    		return tkStr;
-    	},
-    	//题型为填空选择题
-    	createTkSelDOM : function(){
-    		var ansTkSel = '';
-    		//对应答案 多选
-    		ansTkSel += '<div class="multiAns layui-clear"><span>答案：</span>';
-    		ansTkSel += '<div class="multiAnsBox layui-form">';
-    		for(var i=1;i<=6;i++){
-    			if(i<=4){
-    				ansTkSel += '<div id="ansBox_multiTk_'+ i +'" class="comPartAns_multi"><input type="button" class="multiTkBtn" alt="" name="answer_multiTk" value="'+ this.switchABCByNum(i) +'"/></div>';
-    			}else{
-    				ansTkSel += '<div id="ansBox_multiTk_'+ i +'" class="comPartAns_multi" style="display:none;"><input type="button" class="multiTkBtn" alt="" name="answer_multiTk" value="'+ this.switchABCByNum(i) +'"/></div>';
-    			}
-    		}
-    		ansTkSel += '<p class="hasChoiceAns noSel">已选答案：<em id="result_answer_new_tk" class="noSel">暂未选择答案</em></p>';
-    		ansTkSel += '<a class="clearSelAnsBtn" href="javascript:void(0)">清空已选答案</a>';
-    		ansTkSel += '</div>';
-    		ansTkSel += '</div>';
-    		return ansTkSel;
-    	},
-    	//清空单选中value值(startNumber为起始number)
-    	clearRadioValue : function(startNumber){
-    		var options = document.getElementsByName("answer_singel");
-    		for(var i = startNumber; i < options.length ; i++){
-    			options[i].value = "";
-    			options[i].checked = false;
-    			$('#ans_singleInp').val('');
-    			form.render();
-    		}
-    		if(globalOpts == 'edit'){//编辑时小于startNum的所有raido的状态重置
-    			for(var i=1;i<=startNumber;i++){
-    				options[i].checked = false;
-    				form.render();
-    			}
-    		}
-    	},
-    	//清空复选框中value值(startNumber为起始number)
-    	clearCheckBoxValue : function(startNumber){
-    		var options = document.getElementsByName("answer_multi"),
-    			currResultAns = $('#result_answer_new').html().split(',');
-    		
-    		//multiAnsArr.length = 0;//清空当前存有答案数组的length
-    		for(var i = startNumber; i < options.length ; i++){
-				for(var j=0;j<currResultAns.length;j++){
-    				if(currResultAns[j] == options[i].id){
-    					currResultAns.splice(j,1);
-    					break;
-    				}
-    			}
-    			options[i].value = "";
-    			options[i].checked = false;
-    		}
-    		
-			var tmpResultAns = currResultAns.join(',');
-			if(tmpResultAns == '' || tmpResultAns == '暂未选择答案'){
-				$('#result_answer_new').removeClass('hasSel').addClass('noSel').html('暂未选择答案');
-				result_answer = '';
-			}else{
-				$('#result_answer_new').html(tmpResultAns);
-				//重新拼接
-				result_answer = tmpResultAns + ",";
+    	//loreType->CHN
+		swithLoreTypeToCHN : function(loreType){
+			var loreTypeCHN = '';
+			if(loreType == 'zsqd'){
+				loreTypeCHN = '知识清单';
+			}else if(loreType == 'zhuti' || loreType == 'zd' || loreType=='nd' || loreType=='gjd' || loreType=='yhd'){
+				loreTypeCHN = '点拨指导';
+			}else if(loreType == 'jtsf'){
+				loreTypeCHN = '解题示范';
+			}else if(loreType == 'ggxl'){
+				loreTypeCHN = '巩固训练';
+			}else if(loreType == 'zdxzd'){
+				loreTypeCHN = '针对性诊断';
+			}else if(loreType == 'zczd'){
+				loreTypeCHN = '再次诊断';
+			}else if(loreType == 'zsjj'){
+				loreTypeCHN = '知识讲解';
 			}
-			
-			if(globalOpts == 'edit'){//编辑时小于startNum的所有checkbox的状态重置
-    			for(var i=0;i<startNumber;i++){
-    				options[i].checked = false;
-    				form.render();
-    			}
-    			$('#result_answer_new').removeClass('hasSel').addClass('noSel').html('暂未选择答案');
-				result_answer = '';
-    		}
-    		form.render();
-    	},
-    	//清空答案选项文本框中内容
-    	clearInputTextValue : function(startNumber){
-    		for(var i = startNumber; i < 7 ; i++){
-    			this.getId("answSelInpTxt"+i).value = "";
-    		}
-    	},
-    	//清空答案选项图像中内容（初始化为Module/loreManager/images/defImg.png）
-    	clearAnsSelImgSrc : function(startNumber){
-    		for(var i = startNumber; i < 7 ; i++){
-    			$('#answerSelect'+i).attr('src','Module/loreManager/images/defImg.png');
-    			$('#answerSelect'+i).attr('currSrc','');
-    		}
-    	},
-    	//清空单选框选中状态
-    	clearSelectStatus : function(obj){
-    		var selectOptions = document.getElementsByName(obj);
-    		for(var i = 0 ; i < selectOptions.length ; i++){
-    			selectOptions[i].checked = false;
-    		}
-    	},
-    	//单选多选框填空选择数量
-    	setAnswerType : function(name,value,tiganTypeVal){
-    		var _this = this;
-    		var msg = '当前选择的最大选项小于原数据库中最大选项，少出去的那部分数据将被清空!是否继续?';
-    		if(globalOpts == 'add'){
-    			for(var j = 1 ; j <= parseInt(value); j++){
-        			this.getId(name+"_"+j).style.display = "block";
-        		}
-        		for(var i = parseInt(value)+ 1; i < 7;i++){
-        			this.getId(name+"_"+i).style.display = "none";
-        		}
-    		}else{
-				if(value < answerNum){
-					layer.confirm(msg, {
-					  title:'提示',
-					  skin: 'layui-layer-molv',
-					  btn: ['确定','取消'] //按钮
-					},function(index){
-						//一旦确定后更新answerNum
-						answerNum = value;
-						_this.clearAnswerSelect(name, value, tiganTypeVal);
-						//答案选项图片上传个数/答案选项文字输入框上传个数
-						_this.setAnswerSelect(value);
-						layer.close(index);
-					},function(){
-						$('#maxSelInpNum').val(answerNum);
-						$('#maxChoiceNumSel').val(answerNum);
-						form.render();
-					});
-				}else{
-					answerNum = value;//更新answerNum
-					for(var j = 1 ; j <= parseInt(value); j++){
-	        			this.getId(name+"_"+j).style.display = "block";
-	        		}
-					if(tiganTypeVal == '单选题'){
-						for(var i = parseInt(value)+ 1; i <= 6;i++){
-    	        			this.getId(name+"_"+i).style.display = "none";
-    	        			document.getElementsByName("answer_singel")[i - 1].checked = false;;
-    	        		}
-					}else if(tiganTypeVal == '多选题'){
-						for(var i = parseInt(value)+ 1; i <= 6;i++){
-    	        			this.getId(name+"_"+i).style.display = "none";
-    	        			document.getElementsByName("answer_multi")[i - 1].checked = false;;
-    	        		}
-					}else if(tiganTypeVal == '填空选择题'){
-						$('#result_answer_new_tk').removeClass('hasSel').addClass('noSel').html('暂未选择答案');
-	        			result_answer = '';
-	        			result_answer_text = '';
-					}
-	        		
-	        		//答案选项图片上传个数/答案选项文字输入框上传个数
-					_this.setAnswerSelect(value);
-				}
-    		}
-    	},
-    	//当前选择的最大选项引起的动作
-    	//少出去的部分将被清空，状态，数据将被清空 编辑的时候运用
-    	clearAnswerSelect : function(name,newMaxNumber,questionType){
-    		//设置少出去的那部分为隐藏
-    		for(var j = 1 ; j <= parseInt(newMaxNumber); j++){
-    			this.getId(name+"_"+j).style.display = "block";
-    		}
-    		for(var i = parseInt(newMaxNumber) + 1; i < 7;i++){
-    			this.getId(name+"_"+i).style.display = "none";
-    		}
-    		if(answerType == "pic"){
-    			//清空图片答案的src
-    			this.clearAnsSelImgSrc(parseInt(newMaxNumber)+1);
-    		}else{
-    			//清空文字答案的value
-    			this.clearInputTextValue(parseInt(newMaxNumber)+1);
-    		}
-    		//清空少出去的那部分单选按框/多选框中的value值
-    		if(questionType == "单选题"){
-    			this.clearRadioValue(newMaxNumber);
-    		}else if(questionType == '多选题'){//清除当前新的最大选项之后的chekcbox value
-    			this.clearCheckBoxValue(newMaxNumber);
-    		}else if(questionType == "填空选择题"){
-    			//清空input的value值，清空当前已选的所有答案->暂未选择答案，清空result_answer_text的值
-				for(var i = parseInt(newMaxNumber)+ 1; i <= 6;i++){
-        			this.getId(name+"_"+i).style.display = "none";
-        			$('input[name=answer_multiTk]').eq(i-1).attr('alt','');
-        			$('#result_answer_new_tk').removeClass('hasSel').addClass('noSel').html('暂未选择答案');
-        			result_answer = '';
-        			result_answer_text = '';
-        		}
-    		}
-    	},
-    	//答案选项图片上传个数/答案选项文字输入框上传个数
-    	setAnswerSelect : function(value){
-    		for(var j = 1 ; j <= parseInt(value); j++){
-    			this.getId("answerSelImg_"+j).style.display="block";
-    			this.getId("inpTxt_answ_"+j).style.display = "block";
-    		}
-    		for(var i = parseInt(value) + 1; i < 7;i++){
-    			this.getId("answerSelImg_"+i).style.display="none";
-    			this.getId("inpTxt_answ_"+i).style.display = "none";
-    		}
-    		if(globalOpts == 'add'){
-    			this.clearAll();//增加时切换最多选项清空之前所填写的
-    		}
-    	},
-    	//编辑初始化时根据当前的最大选项显示对应数量的文本框 img和对应数量的答案选项
-    	initShowInpByMaxOptNum : function(maxOptNum,name){
-    		for(var j = 1 ; j <= parseInt(maxOptNum); j++){
-    			this.getId("answerSelImg_"+j).style.display="block";
-    			this.getId("inpTxt_answ_"+j).style.display = "block";
-    		}
-    		for(var i = parseInt(maxOptNum) + 1; i < 7;i++){
-    			this.getId("answerSelImg_"+i).style.display="none";
-    			this.getId("inpTxt_answ_"+i).style.display = "none";
-    		}
-    		for(var j = 1 ; j <= parseInt(maxOptNum); j++){
-    			this.getId(name+"_"+j).style.display = "block";
-    		}
-    		for(var i = parseInt(maxOptNum)+ 1; i < 7;i++){
-    			this.getId(name+"_"+i).style.display = "none";
-    		}
-    	},
-    	//切换题干类型清空初始所有值
-    	clearAll : function(questionType){
-    		var tiganTypeVal = $('#tiganTypeInp').val();
-    		//清空答案选项
-    		this.clearInputTextValue(1); 
-    		this.clearAnsSelImgSrc(1);
-    		if(tiganTypeVal == '单选题'){
-    			//清空答案
-        		this.clearRadioValue(0);
-        		//清空选中状态
-        		this.clearSelectStatus("answer_singel");
-    		}
-    		if(tiganTypeVal == '多选题'){
-    			this.clearCheckBoxValue(0);
-    			this.clearSelectStatus("answer_multi");
-    			//清空复选框选择答案结果
-    			$('#result_answer_new').removeClass('hasSel').addClass('noSel').html('暂未选择答案');
-    		}else if(tiganTypeVal == '填空选择题'){
-    			$('#result_answer_new_tk').removeClass('hasSel').addClass('noSel').html('暂未选择答案');
-    			//清空每个input上的alt属性值
-    			$('input[name=answer_multiTk]').attr('alt','');
-    			result_answer = '';
-    			result_answer_text = '';
-    		}
-    		//this.getId("content_answer").value = "";
-    	},
-    	//图片方式下的截屏
-    	upAnsloadImg : function(){
-    		var _this = this,imgId='';
-    		$('.ansImgSel').on('click',function(){
-    			imgId = $(this).attr('id');
-    			$('.getSrcLayer').stop().show().animate({opacity:1},300,function(){
-    				$('.getImgSrcBox').show();
-    			});
-    			
-        	    answerSelectImg = imgId;
-    	    	var oldImgSrc = "defImg.png";
-    	    	var currentImgSrc = document.getElementById(answerSelectImg).src;
-    	    	var currentImgSrcArray = currentImgSrc.split("/");
-    	    	var currentImgEndSrc = currentImgSrcArray[currentImgSrcArray.length - 1];
-    	    	var content_img = "<p><img src='"+ currentImgSrc +"'></p>";
-    	    	
-    	    	if(currentImgEndSrc == oldImgSrc){
-    	    		//清空编辑器内容
-    	    		UE.getEditor("myEditor_answer_select").setContent("",null);
-    	    	}else{
-    	    		UE.getEditor("myEditor_answer_select").setContent(content_img,null);
-    	    	}
-        	    
-    		});
-    		//调用选择确定图片到img src中
-	    	_this.addAnswerSelect(imgId);
-    	},
-    	//选择截图到对应的img src中
-    	addAnswerSelect : function(imgId){
-    		var _this = this;
-    		$('.selImgSrc').on('click',function(){
-    	    	var answerSelectImgContent = editor_answer_select.getContent();
-    	    	var hasContents = editor_answer_select.hasContents();
-    	    	var startIndex = answerSelectImgContent.indexOf("Module");
-    	    	var endIndex = answerSelectImgContent.indexOf(".jpg")+4;
-    	    	var endIndex_new = answerSelectImgContent.lastIndexOf(".jpg")+4;
-    	    	var realEndIndex = 0;
-    	    	if(endIndex > startIndex){
-    	    		realEndIndex = endIndex;
-    	    	}else{
-    	    		realEndIndex = endIndex_new;
-    	    	}
-    	    	var answerSelectImgSrc = answerSelectImgContent.substring(startIndex,realEndIndex);
-    	    	var successFlag = answerSelectImgContent.indexOf("img") > 0;
-    	    	var simplification_answer_select = answerSelectImgSrc.substring(answerSelectImgSrc.indexOf("lore/")+5,realEndIndex);
-    	    	var question_type = $("#tiganTypeInp").val();
-    	    	var i = answerSelectImg.substring(answerSelectImg.length - 1,answerSelectImg.length);
-    	    	if(hasContents && successFlag){
-    	    		//替换src地址
-    	    		_this.getId(answerSelectImg).src = answerSelectImgSrc;
-    	    		_this.getId(answerSelectImg).setAttribute('currSrc',answerSelectImgSrc);
-    	    		//修改答案的value值
-    	    		//判断答案是单选框还是复选框
-    	    		if(question_type == "单选题"){
-    	    			var options = document.getElementsByName("answer_singel");
-    	    			options[i-1].value = simplification_answer_select;
-    	    		}else if(question_type == "多选题"){
-    	    			var options1 = document.getElementsByName("answer_multi");
-    	    			options1[i-1].value = simplification_answer_select;
-    	    		}else if(question_type == "填空选择题"){
-    	    			var options2 = document.getElementsByName("answer_multiTk");
-    	    			options2[i-1].alt = simplification_answer_select;
-    	    		}
-    	    	}else{
-    	    		_this.getId(answerSelectImg).src = "Module/loreManager/images/defImg.png";
-    	    		_this.getId(answerSelectImg).setAttribute('currSrc','');
-    	    		if(question_type == "单选题"){
-    	    			var options = document.getElementsByName("answer_singel");
-    	    			if($('#ans_singleInp').val() == options[i-1].value){
-    	    				$('#ans_singleInp').val('');
-    	    			}
-    	    			options[i-1].value = "";
-    	    			options[i-1].checked = false;
-    	    			form.render();
-    	    		}else if(question_type == "多选题"){
-    	    			var options1 = document.getElementsByName("answer_multi");
-    	    			if(options1[i-1].checked){
-    	    				var currResultAns = $('#result_answer_new').html().split(','),
-    							cancelOptId = options1[i-1].id;//取消选择的ID
-	    					for(var j=0;j<currResultAns.length;j++){
-	    						if(cancelOptId == currResultAns[j]){
-	    							currResultAns.splice(j,1);
-	    							break;
-	    						}
-	    					}
-	    					var tmpResultAns = currResultAns.join(',');
-	    					if(tmpResultAns == ''){
-	    						$('#result_answer_new').removeClass('hasSel').addClass('noSel').html('暂未选择答案');
-	    						result_answer = '';
-	    					}else{
-	    						$('#result_answer_new').html(tmpResultAns);
-	    						//重新拼接
-	        					result_answer = tmpResultAns + ",";
-	    					}
-	    					options1[i-1].value = "";
-	    	    			options1[i-1].checked = false;
-	    	    			form.render();
-    	    			}
-    	    			
-    	    		}else if(question_type == "填空选择题"){
-    	    			var options2 = document.getElementsByName("answer_multiTk");
-    	    			$('#result_answer_new_tk').removeClass('hasSel').addClass('noSel').html('暂未选择答案');
-    	    			options2[i-1].alt = "";
-    	    			result_answer = '';
-    	    			result_answer_text = '';
-    	    		}
-    	    		
-    	    	}
-    	    	$('.getImgSrcBox').hide();
-    	    	$('.getSrcLayer').stop().animate({opacity:0},300,function(){
-    	    		$('.getSrcLayer').hide();
-    			});
-    		});
-    		$('.closeImgLayer').on('click',function(){
-    			$('.getImgSrcBox').hide();
-    	    	$('.getSrcLayer').stop().animate({opacity:0},300,function(){
-    	    		$('.getSrcLayer').hide();
-    			});
-    		});
-    	},
-    	//替换选项中存在单引号为自定义字符，双引号为中文状态下的双引号,并去除空格
-    	convertEngToChi : function(value){
-    		return value.replace(/,/g,"，").replace(/\s+/g,"").replace(/"/g,"”").replace(/'/g,"&#wmd;");
-    	},
-    	//单选 多选 填空选择题型下 文字类型下input选项blur事件
-    	inputBlur : function(){
-    		var _this = this;
-    		$('.answerSelInp').on('blur',function(){
-    			var id = $(this).attr('id');
-    			var i = id.substring(id.length-1,id.length);
-    			var question_type = $('#tiganTypeInp').val();
-    			if(question_type == '单选题'){
-    				var options = document.getElementsByName('answer_singel');
-    				options[i-1].value = _this.convertEngToChi($.trim($(this).val()));
-    				if(options[i-1].checked){//如果当前选项处于选中状态，input blur的时候需要更新下隐藏变量 ans_singleInp的值
-    					$('#ans_singleInp').val($.trim($(this).val()));
-    				}
-    				if($(this).val() == ''){
-    					options[i-1].checked = false;
-    					form.render();
-    				}
-    			}else if(question_type == '多选题'){
-    				var options1 = document.getElementsByName('answer_multi');
-    				options1[i-1].value = _this.convertEngToChi($.trim($(this).val()));
-    				//如果blur时当input文本框的value值是空，那么取消其对应多选checkbox的选中状态
-    				if($(this).val() == '' && options1[i-1].checked){
-    					var currResultAns = $('#result_answer_new').html().split(','),
-    						cancelOptId = options1[i-1].id;//取消选择的ID
-    					for(var j=0;j<currResultAns.length;j++){
-    						if(cancelOptId == currResultAns[j]){
-    							currResultAns.splice(j,1);
-    							break;
-    						}
-    					}
-    					var tmpResultAns = currResultAns.join(',');
-    					if(tmpResultAns == ''){
-    						$('#result_answer_new').removeClass('hasSel').addClass('noSel').html('暂未选择答案');
-    						result_answer = '';
-    					}else{
-    						$('#result_answer_new').html(tmpResultAns);
-    						//重新拼接
-        					result_answer = tmpResultAns + ",";
-    					}
-            			
-    					options1[i-1].checked = false;
-    					form.render();
-    				}
-    			}else if(question_type == '填空选择题'){
-    				$("input[name='answer_multiTk']").eq(i-1).attr("alt",_this.convertEngToChi($.trim($(this).val())));
-    			}
-    		});
-    		
-    	},	
-    	//检查填空数量是否大于/等于你选择的答案
-    	checkSelectNum : function(){
-    		var selectMaxNum = $("#spaceNumInp").val(),
-    			tkNewVal = $('#result_answer_new_tk').text();
-    		if(tkNewVal.value != "暂未选择答案"){
-    			if(tkNewVal.split(",").length < selectMaxNum){
-    				return true;
-    			}else{
-    				return false;
-    			}
-    		}else{
-    			return true;
-    		}
-    	},
-    	//答案选择框返回值（填空选择题）
-    	addItemTk : function(){
-    		var _this = this;
-    		$('.multiTkBtn').on('click',function(){
-    			var selectMaxNum = $("#spaceNumInp").val(),
-					alt = $(this).attr('alt'),
-					questionType = $('#tiganTypeInp').val();
-    			if(globalOpts == 'add'){
-    				if(alt == ""){
-            			layer.msg('请先填写答案选项，然后再选择答案!',{icon:5,anim:6,time:2000});
-            			return;
-            		}else{
-            			if(_this.checkSelectNum()){
-            				result_answer_text += alt + ",";
-            				result_answer += $(this).val() + ",";
-            			}else{
-            				layer.msg('当前所选答案累计数超过所选填空数量!',{icon:5,anim:6,time:2000});
-            				return;
-            			}
-            		}
-            		$('#result_answer_new_tk').removeClass('noSel').addClass('hasSel').html(result_answer.substring(0,result_answer.length - 1));
-    			}else{//编辑时采用
-    				if(alt == ""){
-    					layer.msg('请先填写答案选项，然后再选择答案!',{icon:5,anim:6,time:2000});
-            			return;
-    				}else{
-    					if(_this.checkSelectNum()){
-							if(result_answer == ""){
-								result_answer_text += alt + ",";
-								result_answer += $(this).val() + ",";
-							}else{
-								if(result_answer.substring(result_answer.length - 1,result_answer.length) == ","){
-									result_answer_text += alt + ",";
-									result_answer += $(this).val() + ",";
-								}else{
-									result_answer_text += "," + alt + ",";
-									result_answer += "," + $(this).val() + ",";
-								}
-							}
-						}else{
-							layer.msg('当前所选答案累计数超过所选填空数量!',{icon:5,anim:6,time:2000});
-            				return;
-						}
-    					
-    				}
-    				if(result_answer.substring(result_answer.length - 1,result_answer.length) == ","){
-    					$('#result_answer_new_tk').removeClass('noSel').addClass('hasSel').html(result_answer.substring(0,result_answer.length - 1));
-    					//getId("content_answer").value = result_answer.substring(0,result_answer.length - 1);
-    				}else{
-    					$('#result_answer_new_tk').removeClass('noSel').addClass('hasSel').html(result_answer);
-    					//getId("content_answer").value = result_answer;
-    				}
-    			}
-        		
-    		});
-    	},
-    	//清空已选择答案 填空选择题使用
-    	clearAllAnswer : function(){
-    		$('.clearSelAnsBtn').on('click',function(){
-    			$('#result_answer_new_tk').html('暂未选择答案').addClass('noSel').removeClass('hasSel');
-    			//getId("content_answer").value = "";
-    			result_answer = "";//复选框value
-    			result_answer_text = "";//复选框text
-    		});
-    	},
-    	//添加按钮文字内容的切换
+			return loreTypeCHN;
+		},
+		//添加按钮文字内容的切换
     	switchTxt : function(currType){
     		if(currType == 'zsqd'){
     			$('.addLoreCon span').html('知识清单');
@@ -878,99 +209,27 @@ layui.define(['form','element','upLoadFiles'],function(exports){
 				$('.addLoreCon span').html('易混点');
 			}
     	},
-    	tiganTypeTxt : function(tiganType){
-			var tiganTypeTxtg = '';
-			if(tiganType == '单选题'){
-				tiganTypeTxtg = '单选题';
-			}else if(tiganType == '多选题'){
-				tiganTypeTxtg = '多选题';
-			}else if(tiganType == '判断题'){
-				tiganTypeTxtg = '判断题';
-			}else if(tiganType == '问答题'){
-				tiganTypeTxtg = '问答题';
-			}else if(tiganType == '填空题'){
-				tiganTypeTxtg = '填空题';
-			}else if(tiganType == '填空选题题'){
-				tiganTypeTxtg = '填空选题题';
-			}
-			return tiganTypeTxtg;
-		},
-		//切换不同题型对应显示不同结构的方法
-		swithTiGanType : function(value){
-			var maxSelBox = this.creaMaxSel(),
-				spaceSelBox = this.creaMaxSpace(),
-				ansType = this.createAnsType(),
-				selAnsTxt = this.createSelAnsTxt(),
-				selAnsImg = this.createSelAnsImg(),
-				ansSingle = this.createAnsSingle(),
-				ansMulti = this.createAnsMulti(),
-				wendaStr = this.wendaTypeDOM(loreType),
-				judgeStr = this.judgeQueType(),
-				tkSelStr = this.createTkSelDOM(),
-				tkTypeStr = this.createTkTypeDOM(loreType);
-			if(value != ''){
-				$('#tiganTypeInp').val(value);
-				$('#ansSelWrap_' + loreType).show();
-				$('#nowTxt_'+loreType).html('');
-				result_answer = ""; //ABCD
-				result_answer_text = "";
-				if(value == '单选题' || value == '多选题'){
-					result_answer = '';
-					$('.spaceBox').html('');
-					$('#nowTxt_'+loreType).html('');
-					$('.maxChoice').html(maxSelBox);
-					$('#wendaTypeWrap_'+loreType).hide();
-					$('#tkTypeWrap_' + loreType).hide().html('');
-					if(value == '单选题'){
-						$('#answerSelectDiv_' + loreType).show().html(ansType + selAnsTxt + selAnsImg + ansSingle);
-					}else if(value == '多选题'){
-						//multiAnsArr.length = 0;//每次切换至多选题清空多选题答案length
-						$('#answerSelectDiv_' + loreType).show().html(ansType + selAnsTxt + selAnsImg + ansMulti);
-					}
-					this.inputBlur();
-				}else if(value == '填空题'){
-					$('.maxChoice').html('');
-					$('#wendaTypeWrap_'+loreType).hide();
-					$('.spaceBox').html(spaceSelBox);
-					$('#answerSelectDiv_' + loreType).hide().html('');
-					$('#nowTxt_'+loreType).html('答案：');
-					$('#tkTypeWrap_' + loreType).show().html(tkTypeStr);
-					$('#tkInp_' + loreType).val(this.data.tkOriginAnsTxt);
-					
-				}else if(value == '填空选择题'){
-					$('.maxChoice').html(maxSelBox);
-					$('.spaceBox').html(spaceSelBox);
-					$('#wendaTypeWrap_'+loreType).hide();
-					$('#tkTypeWrap_' + loreType).hide().html('');
-					$('#answerSelectDiv_' + loreType).show().html(ansType + selAnsTxt + selAnsImg + tkSelStr);
-					this.inputBlur();
-					this.addItemTk();
-					this.clearAllAnswer();
-				}else if(value == '问答题'){
-					$('.maxChoice').html('');
-					$('.spaceBox').html('');
-					$('#answerSelectDiv_' + loreType).hide().html('');
-					$('#tkTypeWrap_' + loreType).hide().html('');
-					$('#nowTxt_'+loreType).html('答案：');
-					$('#wendaTypeWrap_'+loreType).show();
-					if($('#wenda_'+loreType +'_' + currNum).length == 0){
-						$('#wendaTypeWrap_'+loreType).html(wendaStr);
-						UE.delEditor('wenda_'+loreType +'_' + currNum);
-						obj.initUeditor('wenda_'+loreType +'_' + currNum);
-					}
-				}else if(value == '判断题'){
-					$('.maxChoice').html('');
-					$('.spaceBox').html('');
-					$('#wendaTypeWrap_'+loreType).hide();
-					$('#tkTypeWrap_' + loreType).hide().html('');
-					$('#answerSelectDiv_' + loreType).show().html(judgeStr);
-				}
-				form.render();
-			}else{
-				$('#tiganTypeInp').val(0);
-				$('.maxChoice').html('');
-				$('.spaceBox').html('');
-			}
+		//初始化点拨指导结构
+		initDbzdDOM : function(currNum){
+			$('#zhuti').html(this.creaLoreConDOM('zhuti'));
+			$('#zd').html(this.creaLoreConDOM('zd'));
+			$('#nd').html(this.creaLoreConDOM('nd'));
+			$('#gjd').html(this.creaLoreConDOM('gjd'));
+			$('#yhd').html(this.creaLoreConDOM('yhd'));
+			UE.delEditor('con_zhuti_' + currNum);
+			this.initUeditor('con_zhuti_' + currNum);
+			
+			UE.delEditor('con_zd_' + currNum);
+			this.initUeditor('con_zd_' + currNum);
+			
+			UE.delEditor('con_nd_' + currNum);
+			this.initUeditor('con_nd_' + currNum);
+			
+			UE.delEditor('con_gjd_' + currNum);
+			this.initUeditor('con_gjd_' + currNum);
+			
+			UE.delEditor('con_yhd_' + currNum);
+			this.initUeditor('con_yhd_' + currNum);
 		},
 		//增加点拨指导时获取能否增加主题或者4个标签点的能力
 		isHasAddAbility : function(loreId,loreType){
@@ -1006,155 +265,281 @@ layui.define(['form','element','upLoadFiles'],function(exports){
 			});
 			return currSta;
 		},
-		//获取当前最大的题库数(解题示范，巩固训练,针对性诊断,再次诊断时调用)
-		getCurrMaxQueNum : function(loreType,loreId){
+		//浏览知识点DOM
+		createViewLoreDOM : function(){
+			var strLore = '<div class="viewLoreWrap">';
+			strLore += '<ul class="loreNav"><li class="active" currPos="zsqdTit">知识清单</li><li currPos="dbzdTit">点拨指导</li>';
+			strLore += '<li currPos="jtsfTit">解题示范</li><li currPos="ggxlTit">巩固训练</li><li currPos="zdxzdTit">针对性诊断</li>';
+			strLore += '<li currPos="zczdTit">再次诊断</li><li currPos="zsjjTit">知识讲解</li></ul>';
+			strLore += '<div class="loreDetCon">';
+			//知识清单
+			strLore += '<div class="comLoreCon zsqdLore"><strong id="zsqdTit" class="titStrong">知识清单</strong><div id="zsqdLore"></div></div>';
+			//点拨指导
+			strLore += '<div class="comLoreCon dbzdLore"><strong id="dbzdTit" class="titStrong">点拨指导</strong><div id="dbzdLore"></div></div>';
+			//解题示范
+			strLore += '<div class="comLoreCon jtsfLore"><strong id="jtsfTit" class="titStrong">解题示范</strong><div id="jtsfLore"></div></div>';
+			//巩固训练
+			strLore += '<div class="comLoreCon ggxlLore"><strong id="ggxlTit" class="titStrong">巩固训练</strong><div id="ggxlLore"></div></div>';
+			//针对性诊断
+			strLore += '<div class="comLoreCon zdxzdLore"><strong id="zdxzdTit" class="titStrong">针对性诊断</strong><div id="zdxzdLore"></div></div>';
+			//再次诊断
+			strLore += '<div class="comLoreCon zczdLore"><strong id="zczdTit" class="titStrong">再次诊断</strong><div id="zczdLore"></div></div>';
+			//知识讲解
+			strLore += '<div class="comLoreCon zsjjLore"><strong id="zsjjTit" class="titStrong">知识讲解</strong><div id="zsjjLore"></div></div>';
+			strLore += '</div></div>';
+			return strLore;
+		},
+		//浏览知识点加载信息
+		loadLoreDetail : function(){
 			layer.load('1');
-			var field={loreType:loreType,loreId:loreId},queNum = 0;
+			var _this = this;
 			$.ajax({
 				type:'post',
-		        dataType:'json',
-		        data:field,
-		        async:false,
-		        url:'/lore.do?action=getCurrMaxQueNum',
-		        success:function (json){
-		        	layer.closeAll('loading');	
-		        	queNum = json.queNum;
-		        }
+			    dataType:'json',
+			    data:{loreId:loreId},
+			    url:'/lore.do?action=getLoreQuestionData',
+			    success:function (json){
+			    	layer.closeAll('loading');	
+			    	if(json.result == 'success'){
+			    		console.log(json)
+				    	_this.renderZsqdInfo(json.zsqdList);
+				    	_this.renderDbzdInfo(json.dbzdList);
+				    	_this.renderJtsfInfo(json.jtsfList);
+				    	_this.renderGgxlInfo(json.ggxlList);
+				    	_this.renderZdxzdInfo(json.zdxList);
+				    	_this.renderZczdInfo(json.zczdList);
+				    	_this.renderZsjjInfo(json.zsjjList);
+				    	_this.goTarget();
+			    	}else if(json.result == 'noInfo'){
+			    		layer.msg('暂无此知识点的题库信息',{icon:5,anim:6,time:2000});
+			    	}
+			    	
+			    }
 			});
-			return queNum;
 		},
-		//loreType->CHN
-		swithLoreTypeToCHN : function(loreType){
-			var loreTypeCHN = '';
-			if(loreType == 'zsqd'){
-				loreTypeCHN = '知识清单';
-			}else if(loreType == 'zhuti' || loreType == 'zd' || loreType=='nd' || loreType=='gjd' || loreType=='yhd'){
-				loreTypeCHN = '点拨指导';
-			}else if(loreType == 'jtsf'){
-				loreTypeCHN = '解题示范';
-			}else if(loreType == 'ggxl'){
-				loreTypeCHN = '巩固训练';
-			}else if(loreType == 'zdxzd'){
-				loreTypeCHN = '针对性诊断';
-			}else if(loreType == 'zczd'){
-				loreTypeCHN = '再次诊断';
-			}else if(loreType == 'zsjj'){
-				loreTypeCHN = '知识讲解';
+		goTarget : function(){
+			$('.loreNav').on('click','li',function(){
+				var currPos = $(this).attr('currPos'),pos = 0;
+				$(this).addClass('active').siblings().removeClass('active');
+				pos = document.getElementById(currPos).offsetTop;
+				$('.loreDetCon').stop().animate({scrollTop:pos},300);
+			});
+			$('.loreDetCon').on('scroll',function(){
+				var scrollTop = $(this).scrollTop();
+				var posTop = document.querySelectorAll('.titStrong');
+				for(var i=0;i<posTop.length;i++){
+					if(posTop[i].offsetTop <= scrollTop){
+						$('.loreNav li').removeClass('active');
+						$('.loreNav li').eq(i).addClass('active');
+					}
+				}
+			});
+		},
+		//知识讲解
+		renderZsjjInfo : function(zsjjList){
+			var zsjjStr = '';
+			for(var i=0;i<zsjjList.length;i++){
+				zsjjStr += '<div class="listLore">';
+				zsjjStr += '<div class="con hasMargBot"><p class="titP">题干：</p><div>'+ zsjjList[i].queSub +'</div></div>';
+				zsjjStr += '<div class="con"><p class="titP">视频：</p><div><img class="showVideoBtn" alt="'+ zsjjList[i].videoPath +'" src="Module/loreManager/images/video.jpg"/></div></div>';
+				zsjjStr += '</div>';
 			}
-			return loreTypeCHN;
-		},
-		//获取当前知识点下的提示列表（知识清单、点拨指导）--增加时用
-		getCurrLoreTips : function(loreId,asyncFlag){
-			layer.load('1');
-			queTipsArr.length = 0;
-			$('.tipsCon').html('');
-			$('.tipsInp').val('');
-			var field = {loreId:loreId},_this = this;
-			$.ajax({
-				type:'post',
-		        dataType:'json',
-		        data:field,
-		        async:asyncFlag,
-		        url:'/lore.do?action=getCurrLoreTipsJson',
-		        success:function (json){
-		        	layer.closeAll('loading');
-		        	if(json['result'] == 'success'){
-		        		var tipsList = json['tipsList'];
-		        		queTipsArr = tipsList;
-		        		_this.renderTipsSelect(tipsList);
-		        	}else if(json['result'] == 'noInfo'){
-		        		
-		        	}
-		        }
-			});
-		},
-		//渲染提示列表select
-		renderTipsSelect : function(tipsList){
-			var optStr='<option value="">请选择提示标题</option>';
-			for(var i=0;i<tipsList.length;i++){
-				if(tipsList[i].lqsType == '主题'){
-					optStr += '<option value="'+ tipsList[i].lqsId +'">[点拨指导--]'+ tipsList[i].lqsType +'</option>';
+			$('#zsjjLore').html(zsjjStr);
+			$('.showVideoBtn').on('click',function(){
+				window.localStorage.removeItem("videoPath");
+				var videoPath = $(this).attr('alt');
+				window.localStorage.setItem("videoPath",videoPath);
+				if(videoPath.indexOf('flv') > 0){
+					window.top.layer.open({
+						title:'视频文件播放窗口',
+						type: 2,
+					  	area: ['700px', '500px'],
+					  	fixed: true, //不固定
+					  	maxmin: false,
+					  	shadeClose :false,
+					  	content: '/Module/loreManager/jsp/playVideo.html',
+					  	end : function(){
+					  		window.localStorage.removeItem("videoPath");
+					  	}
+					});	
 				}else{
-					optStr += '<option value="'+ tipsList[i].lqsId +'">['+ tipsList[i].lqsType +']--'+ tipsList[i].lqsTitle +'</option>';
+					layer.msg('暂不支持该视频格式播放',{icon:5,anim:6,time:2000});
 				}
+				
+			});
+		},
+		//再次诊断
+		renderZczdInfo : function(zczdList){
+			this.commonRenderInfo(zczdList,'zczdLore');
+		},
+		//针对性诊断
+		renderZdxzdInfo : function(zdxList){
+			this.commonRenderInfo(zdxList,'zdxzdLore');
+		},
+		//巩固训练
+		renderGgxlInfo : function(ggxlList){
+			this.commonRenderInfo(ggxlList,'ggxlLore');
+		},
+		//巩固训练 针对性诊断 再次诊公共方法
+		commonRenderInfo : function(list,obj){
+			var rootPath = this.getRootPath();
+			console.log('rootPath==' + rootPath)
+			if(list != null){
+				var listStr = '';
+				for(var i=0;i<list.length;i++){
+					listStr += '<div class="listLore">';
+					listStr += '<strong class="smTit">标题：'+ list[i].queTitle +'  <span class="queType">'+ list[i].queType +'</span><span class="queType1">'+ list[i].queType2 +'</span></strong>';
+					//题干
+					listStr += '<div class="con"><p class="titP">题干：</p><div>'+ list[i].queSub +'</div></div>';
+					//选项
+					listStr += '<div class="conSelOpt">';
+						if(list[i].answerA != ''){
+							listStr += '<div class="comOpt layui-clear"><span class="queSelWord">A：</span>';
+								if(this.checkAnswerImg(list[i].answerA)){
+									listStr += '<p><img src="'+ list[i].answerA +'"/></p>';
+								}else{
+									listStr += '<p>'+ list[i].answerA.replace("<","&lt") +'</p>';
+								}
+							listStr += '</div>';
+						}
+						if(list[i].answerB != ''){
+							listStr += '<div class="comOpt layui-clear"><span class="queSelWord">B：</span>';
+								if(this.checkAnswerImg(list[i].answerB)){
+									listStr += '<p><img src="'+ list[i].answerB +'"/></p>';
+								}else{
+									listStr += '<p>'+ list[i].answerB.replace("<","&lt") +'</p>';
+								}
+							listStr += '</div>';
+						}
+						if(list[i].answerC != ''){
+							listStr += '<div class="comOpt layui-clear"><span class="queSelWord">C：</span>';
+								if(this.checkAnswerImg(list[i].answerC)){
+									listStr += '<p><img src="'+ list[i].answerC +'"/></p>';
+								}else{
+									listStr += '<p>'+ list[i].answerC.replace("<","&lt") +'</p>';
+								}
+							listStr += '</div>';
+						}
+						if(list[i].answerD != ''){
+							listStr += '<div class="comOpt layui-clear"><span class="queSelWord">D：</span>';
+								if(this.checkAnswerImg(list[i].answerD)){
+									listStr += '<p><img src="'+ list[i].answerD +'"/></p>';
+								}else{
+									listStr += '<p>'+ list[i].answerD.replace("<","&lt") +'</p>';
+								}
+							listStr += '</div>';
+						}
+						if(list[i].answerE != ''){
+							listStr += '<div class="comOpt layui-clear"><span class="queSelWord">E：</span>';
+								if(this.checkAnswerImg(list[i].answerE)){
+									listStr += '<p><img src="'+ list[i].answerE +'"/></p>';
+								}else{
+									listStr += '<p>'+ list[i].answerE.replace("<","&lt") +'</p>';
+								}
+							listStr += '</div>';
+						}
+						if(list[i].answerF != ''){
+							listStr += '<div class="comOpt layui-clear"><span class="queSelWord">F：</span>';
+								if(this.checkAnswerImg(list[i].answerF)){
+									listStr += '<p><img src= "'+ list[i].answerF +'"/></p>';
+								}else{
+									listStr += '<p>'+ list[i].answerF.replace("<","&lt") +'</p>';
+								}
+							listStr += '</div>';
+						}
+					listStr += '</div>';
+					//答案
+					listStr += '<div class="conAns"><span class="ansTit">答案：</span>';
+					listStr += '<span class="ansTxtSpan">'+ list[i].queAnswer +'</span>';
+					listStr += '</div>';
+					//解析
+					if(list[i].queResolution != ''){
+						listStr += '<div class="con hasMargTop"><p class="titP">解析：</p><div>'+ list[i].queResolution +'</div></div>';
+					}
+					//关联此条
+					if(list[i].lexTitle != '' && list[i].lexTitle != undefined){
+						listStr += '<div class="queTips"><p class="titP">关联词条：</p><p class="tipsConView">'+ list[i].lexTitle +'</p></div>';
+					}
+					//提示
+					if(list[i].queTipTitle != '' && list[i].queTipTitle != undefined){
+						listStr += '<div class="queTips"><p class="titP">提示：</p><p class="tipsConView">'+ list[i].queTipTitle +'</p></div>';
+					}
+					listStr += '</div>';
+				}
+				$('#'+obj).html(listStr);
 			}
-			$('#selTipsSel_' + loreType).html(optStr);
-			form.render();
 		},
-		addEditLex : function(){
-			$('.addLexBtn').on('click',function(){
-				addEditFlag = false;
-				layer.open({
-					title:'添加编辑词条',
-					type: 2,
-				  	area: ['750px', '500px'],
-				  	fixed: true, //不固定
-				  	maxmin: false,
-				  	shadeClose :false,
-				  	content: '/Module/loreManager/jsp/addEditLex.html',
-				  	end : function(){
-				  		if(addEditFlag){
-				  			
-				  		}
-				  	}
-				});	
-			});
+		getRootPath : function(){
+			//获取当前网址，如： http://localhost:8088/test/test.jsp
+		    var curPath = window.document.location.href;
+		    //获取主机地址之后的目录，如： test/test.jsp
+		    var pathName = window.document.location.pathname;
+		    var pos = curPath.indexOf(pathName);
+		    //获取主机地址，如： http://localhost:8088
+		    var localhostPath = curPath.substring(0, pos);
+		    //获取带"/"的项目名，如：/test
+		    var projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
+		    return (localhostPath + '/');//发布前用此
 		},
-		//获取lqsId
-		getLqsId : function(loreType){
-			//var tmpArr = [];
-			var tmpObj = {lqsIdArr:[],zeroFlag:false};
-			$('.delEdiBtn_' + loreType).each(function(i){
-				if($(this).attr('lqsid') == 0){
-					tmpObj.zeroFlag = true;
+		//检查答案是否为图片
+		checkAnswerImg : function(answer){
+			if(answer.indexOf("jpg") > 0 || answer.indexOf("gif") > 0 || answer.indexOf("bmp") > 0 || answer.indexOf("png") > 0){
+				return true;
+			}
+			return false;
+		},
+		//解题示范
+		renderJtsfInfo : function(jtsfList){
+			var jtsfStr = '';
+			for(var i=0;i<jtsfList.length;i++){
+				jtsfStr += '<div class="listLore">';
+				jtsfStr += '<div class="con hasMargBot"><strong class="queTit">题干：</strong><div>'+ jtsfList[i].queSub +'</div></div>';
+				jtsfStr += '<div class="con hasMargBot"><strong class="queTit">答案：</strong><div>'+ jtsfList[i].queAnswer +'</div></div>';
+				jtsfStr += '<div class="con"><strong class="queTit">解析：</strong><div>'+ jtsfList[i].queResolution +'</div></div>';
+				jtsfStr += '</div>';
+			}
+			$('#jtsfLore').html(jtsfStr);
+		},
+		//点拨指导
+		renderDbzdInfo : function(dbzdList){
+			var dbzdStr = '';
+			for(var i=0;i<dbzdList.length;i++){
+				if(i == 0){
+					dbzdStr += '<div class="smModPart zhutiPart"><strong class="dbzdSmTit"><img src="../images/lubiao.png"/>';
+					dbzdStr += '<span>'+ dbzdList[i].lqsType +'</span></strong>';
+					dbzdStr += '<div class="listLore"><strong class="smTit">标题：'+ dbzdList[i].lqsTitle.replace("<","&lt") +'</strong>';
+					dbzdStr += '<div class="con"><p class="titP">内容：</p><div>'+ dbzdList[i].lqsCon +'</div></div>';
+					
+				}else{
+					if(dbzdList[i-1].lqsType == dbzdList[i].lqsType){
+						dbzdStr += '<div class="listLore"><strong class="smTit">标题：'+ dbzdList[i].lqsTitle.replace("<","&lt") +'</strong>';
+						dbzdStr += '<div class="con"><p class="titP">内容：</p><div>'+ dbzdList[i].lqsCon +'</div></div>';
+					}else{
+						dbzdStr += '<div class="smModPart zhutiPart"><strong class="dbzdSmTit"><img src="../images/lubiao.png"/>';
+						dbzdStr += '<span>'+ dbzdList[i].lqsType +'</span></strong>';
+						dbzdStr += '<div class="listLore"><strong class="smTit">标题：'+ dbzdList[i].lqsTitle.replace("<","&lt") +'</strong>';
+						dbzdStr += '<div class="con"><p class="titP">内容：</p><div>'+ dbzdList[i].lqsCon +'</div></div>';
+					}
 				}
-				tmpObj.lqsIdArr.push($(this).attr('lqsid'));
-			});
-			return tmpObj;
+				dbzdStr += '</div>';
+			}
+			$('#dbzdLore').html(dbzdStr);
 		},
-		//初始化点拨指导结构
-		initDbzdDOM : function(currNum){
-			$('#zhuti').html(this.creaLoreConDOM('zhuti'));
-			$('#zd').html(this.creaLoreConDOM('zd'));
-			$('#nd').html(this.creaLoreConDOM('nd'));
-			$('#gjd').html(this.creaLoreConDOM('gjd'));
-			$('#yhd').html(this.creaLoreConDOM('yhd'));
-			UE.delEditor('con_zhuti_' + currNum);
-			this.initUeditor('con_zhuti_' + currNum);
-			
-			UE.delEditor('con_zd_' + currNum);
-			this.initUeditor('con_zd_' + currNum);
-			
-			UE.delEditor('con_nd_' + currNum);
-			this.initUeditor('con_nd_' + currNum);
-			
-			UE.delEditor('con_gjd_' + currNum);
-			this.initUeditor('con_gjd_' + currNum);
-			
-			UE.delEditor('con_yhd_' + currNum);
-			this.initUeditor('con_yhd_' + currNum);
+		//知识清单
+		renderZsqdInfo : function(zsqdList){
+			var zsqdStr = '';
+			for(var i=0;i<zsqdList.length;i++){
+				zsqdStr += '<div class="listLore"><strong class="smTit">标题：'+ zsqdList[i].lqsTitle +'</strong>';
+				zsqdStr += '<div class="con"><p class="titP">内容：</p><div>'+ zsqdList[i].lqsCon +'</div></div></div>';
+			}
+			$('#zsqdLore').html(zsqdStr);
 		}
     };
-    //选择提示标题
-    form.on('select(selTipsSel)',function(data){
-    	var value = data.value;
-    	$('#tipsInp_' + loreType).val(value);
-    	if(value != ''){
-    		for(var i=0;i<queTipsArr.length;i++){
-        		if(value == queTipsArr[i].lqsId){
-        			$('#tipsCon_' + loreType).html(queTipsArr[i].lqsContent);
-        		}
-        	}
-    	}else{
-    		$('#tipsCon_' + loreType).html('');
-    	}
-    	
-    });
     //基础题型的切换
     form.on('radio(qusTypeFilter)', function(data){
 		var value = data.value;
-		var tiganTypeDOM = obj.createTiganType(),
-			lexStrDOM = obj.createLexDOM($(this).attr('inpType')),
+		var tiganTypeDOM = blDOM.createTiganType(),
+			lexStrDOM = blDOM.createLexDOM($(this).attr('inpType')),
 			tmpLoreType = $(this).attr('inpType'),isCreateInp = $(this).attr('isCreateInp');
 		loreType = $(this).attr('inpType');
 		isAddClickFlag = false;//每次点击基础题型将增加按钮的flag变为false true情况只有通过添加按钮动作来改变
@@ -1169,7 +554,7 @@ layui.define(['form','element','upLoadFiles'],function(exports){
 			
 		}
 		if(tmpLoreType == 'jtsf' || tmpLoreType == 'ggxl' || tmpLoreType == 'zdxzd' || tmpLoreType == 'zczd'){
-			maxQueNum = obj.getCurrMaxQueNum(loreTypeZHN,loreBigId);
+			maxQueNum = blMet.getCurrMaxQueNum(loreTypeZHN,loreBigId);
 		}
 		//添加题干类型
 		if(tmpLoreType == 'ggxl' || tmpLoreType == 'zdxzd' || tmpLoreType == 'zczd' ){//巩固训练 针对性诊断 再次诊断增加题干类型以及了解...
@@ -1179,9 +564,9 @@ layui.define(['form','element','upLoadFiles'],function(exports){
 			$('.answerSelectDiv').hide().html('');
 			$('#nowTxtLabel').html('');
 			$('.wendaTypeWrap').hide().html('');
-			obj.getCurrLoreTips(loreBigId,true);//获取提示列表
+			blMet.getCurrLoreTips(loreBigId,true);//获取提示列表
 			//添加编辑词条
-			obj.addEditLex();
+			blMet.addEditLex();
 			form.render();
 		}else{
 			if($('.tiganTypeWrap').length > 0){
@@ -1217,7 +602,6 @@ layui.define(['form','element','upLoadFiles'],function(exports){
 				obj.initUeditor('con_'+tmpLoreType +'_' + currNum);
 				if(tmpLoreType == 'zsjj'){//知识讲解
 					isCanAdd = obj.isHasAddAbility(loreBigId, loreTypeZHN);
-					alert(isCanAdd)
 					if(isCanAdd == 'add'){
 						var upStr = obj.createUpVideoDOM();
 						$('#zsjjWrap').append(upStr);
@@ -1248,50 +632,6 @@ layui.define(['form','element','upLoadFiles'],function(exports){
 		}
 		
 	}); 
-    //单选radio的切换
-    form.on('radio(answer_singel)',function(data){
-    	var value = data.value;
-    	$('#ans_singleInp').val(value);
-    	if(data.elem.checked == true){
-    		if(value == ""){
-    			layer.msg('请先填写答案选项，然后再选择答案!',{icon:5,anim:6,time:2000});
-    			$(this).prop('checked',false);
-    			form.render();
-    			return;
-    		}
-    	}
-    	//每次切换单选项需要重新调用下input的blur事件
-    	//obj.inputBlur();
-    });
-    //多选checkbox的切换 复选框答案返回值
-    form.on('checkbox(answer_multi)',function(data){
-    	var value = data.value,question_type = $('#tiganTypeInp').val(),maxSelInpVal = $('#maxSelInpNum').val();
-    	var id = $(this).attr('id');
-    	if(data.elem.checked == true){
-    		if(value == ""){
-    			layer.msg('请先填写答案选项，然后再选择答案!',{icon:5,anim:6,time:2000});
-    			if($('#result_answer_new').html() == ''){
-    				result_answer = '';
-        			$('#result_answer_new').removeClass('hasSel').addClass('noSel').html('暂未选择答案');
-    			}
-    			$(this).prop('checked',false);
-    			form.render();
-    			return;
-    		}else{ 
-    			result_answer += id + ",";
-    		}
-    		result_answer = result_answer.replace(id + ",","");
-			if(result_answer == ''){
-				$('#result_answer_new').removeClass('hasSel').addClass('noSel').html('暂未选择答案');
-    			return;
-			}
-    		if(result_answer.length == 0){
-    			$('#result_answer_new').removeClass('hasSel').addClass('noSel').html('暂未选择答案');
-    			return;
-    		}
-    	}    	
-    	$('#result_answer_new').removeClass('noSel').addClass('hasSel').html(result_answer.substring(0,result_answer.length - 1));
-    });
     //tab点击事件的监听 点拨指导 重点 难点 关键点 易混点
 	element.on('tab(guideNavFilter)', function(data){
 		//if(globalOpts == 'add'){
@@ -1333,80 +673,6 @@ layui.define(['form','element','upLoadFiles'],function(exports){
 			$(this).attr('isCreaFlag','1');*/
 		//}
 		
-	});
-	//题干类型选择
-	form.on('select(tiganTypeSel)', function(data){
-		var value = data.value;
-		obj.swithTiGanType(value);
-	}); 
-	//问题选项类型 文字或图片radio单选事件
-	form.on('radio(answSelTypeInp)', function(data){
-		var value = data.value,isSelFlag = $(this).attr('isSelFlag');
-		var tiganTypeVal = $('#tiganTypeInp').val(),
-			ansType = obj.createAnsType(),
-			selAnsTxt = obj.createSelAnsTxt(),
-			selAnsImg = obj.createSelAnsImg(),
-			ansSingle = obj.createAnsSingle(),
-			ansMulti = obj.createAnsMulti();
-		$('#answSelTypeInp').val(value);
-		//multiAnsArr.length = 0;//清空多选题已经选择的答案
-		if(value == 1){//文字类型的问题
-			$('.answerSelectImg').hide();
-			$('.answerSelectTxt ').show();
-		}else if(value == 2){//图片类型的问题
-			$('.answerSelectImg').show();
-			$('.answerSelectTxt ').hide();
-			if(isSelFlag == 'false'){
-				//调用截屏方法
-				obj.upAnsloadImg();
-			}
-			$(this).attr('isSelFlag','true');
-		}
-		obj.clearAll();
-	});
-	//最大选项select
-	form.on('select(maxChoiceNumSel)',function(data){
-		var value = data.value,
-			tiganTypeVal = $('#tiganTypeInp').val();
-		
-		$('#maxSelInpNum').val(value);
-		if(tiganTypeVal == '单选题'){
-			obj.setAnswerType("answerBox_singel",value,tiganTypeVal);
-			if(globalOpts == 'add'){
-				obj.setAnswerSelect(value);
-			}
-		}else if(tiganTypeVal == '多选题'){
-			obj.setAnswerType("answerBox_multi",value,tiganTypeVal);
-			if(globalOpts == 'add'){
-				result_answer = '';//每次切换最大选项清空当前值
-				obj.setAnswerSelect(value);
-			}
-		}else if(tiganTypeVal == '填空选择题'){
-			obj.setAnswerType("ansBox_multiTk",value,tiganTypeVal);
-			if(globalOpts == 'add'){
-				obj.setAnswerSelect(value);
-			}
-		}
-	});
-	//填空数量 select
-	form.on('select(spaceNumSel)',function(data){
-		var value = data.value;
-		$('#spaceNumInp').val(value);
-		//清空当前已选的所有答案->暂未选择答案，清空result_answer_text的值
-		$('#result_answer_new_tk').removeClass('hasSel').addClass('noSel').html('暂未选择答案');
-		result_answer = '';
-		result_answer_text = '';
-		/*for(var i = parseInt(value)+ 1; i <= 6;i++){
-			
-		}*/
-	});
-	//了解 理解 应用 综合form select
-	form.on('select(tiganType1Sel)',function(data){
-		$('#tiganType1Inp').val(data.value);
-	});
-	//判断题radio
-	form.on('radio(answer_judge)',function(data){
-		$('#judgeInp').val(data.value);
 	});
     //输出接口
     exports('comLoreDOM', obj);

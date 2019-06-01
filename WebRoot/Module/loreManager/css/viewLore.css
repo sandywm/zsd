@@ -1,7 +1,7 @@
 .loreNav{
 	width:100%;
 	height:40px;
-	position:fixed;
+	position:absolute;
 	left:0;
 	top:0;
 	background:#fff;
@@ -74,6 +74,13 @@
 .listLore .con div{
 	color:#666;
 }
+.listLore .con div img{
+	width:80%;
+}
+.listLore .con div img.showVideoBtn{
+	width:100px;
+	height:100px;
+}
 .dbzdSmTit{
 	margin-bottom:5px;
 	display:block;
@@ -120,7 +127,7 @@
 	font-weight:600;
 	color:#F47837;
 }
-.tipsCon{
+.tipsConView{
 	color:#666;
 	margin-top:5px;
 }

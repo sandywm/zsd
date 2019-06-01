@@ -3,8 +3,8 @@
  * @author: hlf
  */
 //自定义模块
-layui.define(['form','comLoreDOM'],function(exports){
-	var $ = layui.jquery,form=layui.form,loreDOM = layui.comLoreDOM;
+layui.define(['form','buffetLoreMet'],function(exports){
+	var $ = layui.jquery,form=layui.form,blMet=layui.buffetLoreMet;
     var obj = {
     	getId : function(id){
     		return document.getElementById(id);
@@ -116,6 +116,8 @@ layui.define(['form','comLoreDOM'],function(exports){
         		}else{
         			if(answer1 != ""){
         				this.getId("answerSelect1").src = answer1;
+        				$('#answerSelect1').attr('currSrc',answer1);
+        				//this.getId("answerSelect1").setAttribut()
         				var newAnswer = answer1.split("/");
         				var newAnswerLength = newAnswer.length;
         				if(questionType == "填空选择题"){
@@ -123,10 +125,10 @@ layui.define(['form','comLoreDOM'],function(exports){
         				}else{
         					options[0].value = newAnswer[newAnswerLength-2]+"/"+newAnswer[newAnswerLength-1];
         				}
-        				
         			}
         			if(answer2 != ""){
         				this.getId("answerSelect2").src = answer2;
+        				$('#answerSelect2').attr('currSrc',answer2);
         				var newAnswer = answer2.split("/");
         				var newAnswerLength = newAnswer.length;
         				if(questionType == "填空选择题"){
@@ -137,6 +139,7 @@ layui.define(['form','comLoreDOM'],function(exports){
         			}
         			if(answer3 != ""){
         				this.getId("answerSelect3").src = answer3;
+        				$('#answerSelect3').attr('currSrc',answer3);
         				var newAnswer = answer3.split("/");
         				var newAnswerLength = newAnswer.length;
         				if(questionType == "填空选择题"){
@@ -147,6 +150,7 @@ layui.define(['form','comLoreDOM'],function(exports){
         			}
         			if(answer4 != ""){
         				this.getId("answerSelect4").src = answer4;
+        				$('#answerSelect4').attr('currSrc',answer4);
         				var newAnswer = answer4.split("/");
         				var newAnswerLength = newAnswer.length;
         				if(questionType == "填空选择题"){
@@ -157,6 +161,7 @@ layui.define(['form','comLoreDOM'],function(exports){
         			}
         			if(answer5 != ""){
         				this.getId("answerSelect5").src = answer5;
+        				$('#answerSelect5').attr('currSrc',answer5);
         				var newAnswer = answer5.split("/");
         				var newAnswerLength = newAnswer.length;
         				if(questionType == "填空选择题"){
@@ -167,6 +172,7 @@ layui.define(['form','comLoreDOM'],function(exports){
         			}
         			if(answer6 != ""){
         				this.getId("answerSelect6").src = answer6;
+        				$('#answerSelect6').attr('currSrc',answer6);
         				var newAnswer = answer6.split("/");
         				var newAnswerLength = newAnswer.length;
         				if(questionType == "填空选择题"){
@@ -176,7 +182,7 @@ layui.define(['form','comLoreDOM'],function(exports){
         				}
         			}
         			//调用截屏方法
-        			loreDOM.upAnsloadImg();
+        			blMet.upAnsloadImg();
         		}
     		}
     		
@@ -223,7 +229,6 @@ layui.define(['form','comLoreDOM'],function(exports){
     				}
     			}
     			
-    			
     			if(questionType == "多选题"){
     				var newRealAns = result_answer.substring(0,result_answer.length - 1);
     				//一进来先不去除最后的逗号
@@ -232,8 +237,8 @@ layui.define(['form','comLoreDOM'],function(exports){
     				var newRealAns = result_answer.substring(0,result_answer.length - 1);
     				$('#result_answer_new_tk').html(newRealAns).removeClass('noSel').addClass('hasSel');
         			//重新选择几个空的时候是否有必要将当前的已选择的选项答案清空，假如起初是四个空的答案，当选择的是两个空的时候，是否要清空？
-        			loreDOM.addItemTk();
-        			loreDOM.clearAllAnswer();
+        			blMet.addItemTk();
+        			blMet.clearAllAnswer();
     			}
     		}else if(questionType == "判断题"){
     			if(realAnswer == "对"){

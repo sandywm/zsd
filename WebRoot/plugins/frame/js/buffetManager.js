@@ -3,22 +3,22 @@
  * @author: hlf
  */
 //自定义模块
-layui.define(['form','table','buffetLoreMet'],function(exports){
+layui.define(['form','table','buffetDOM'],function(exports){
 	var $ = layui.jquery,form=layui.form,table=layui.table,
-		blMet = layui.buffetLoreMet;
+		buffetDOM = layui.buffetDOM;
     var obj = {
     	data : {
     		originTypeTxt : '',//点击切换题型起原来题型
     		hasSwitchTxt : '',
     		isSwitchFlag : false//对于填空题 问答题是否切换其他题型的flag
     	},
-    	//根据知识点loreId获取对应题库列表
-    	getQuesList : function(loreId){
+    	//根据知识点loreId获取自助餐对应题库列表
+    	getBuffetList : function(loreId){
     		layer.load('1');
     		table.render({
 				elem: '#loreQuesTable',
 				height: 'full-150',
-				url :'/lore.do?action=getPageLoreQuesionData',
+				url :'/buffet.do?action=getPageBuffetInfo',
 				method : 'post',
 				where:{loreId:loreId},
 				page : true,
@@ -29,21 +29,26 @@ layui.define(['form','table','buffetLoreMet'],function(exports){
 				text: {none : '暂无相关数据'},
 				cols : [[
 					{field : '', title: '序号', type:'numbers', align:'center'},
-					{field : 'lqTitle', title: '名称', align:'center' },
-					{field : 'lqType', title: '题型',align:'center'},
+					{field : 'btName', title: '类型', align:'center' },
+					{field : 'loreName', title: '知识点', align:'center' },
+					{field : 'loreTitle', title: '名称',align:'center'},
+					{field : 'mindStr', title: '思维',align:'center'},
+					{field : 'abilityStr', title: '能力',align:'center'},
 					{field : 'inUse', title: '是否有效',align:'center',templet:function(d){
 						var str = '';
 						d.inUse == '有效'? str='<span class="sucColor">有效</span>' : str='<span class="warningCol">无效</span>';
 						return str;
 					}},
-					{field : '', title: '操作',align:'center',templet : function(d){
+					{field : '', title: '操作',align:'center',fixed:'right',width:'350',templet : function(d){
 						var fixStr = '';
-						fixStr += '<a class="layui-btn layui-btn-xs editBtn" opts="edit" lay-event="editFun" lqTitle="'+ d.lqTitle +'" lqType="'+ d.lqType +'" lqId="'+ d.lqId +'"><i class="layui-icon layui-icon-edit"></i>修改</a>';
+						fixStr += '<a class="layui-btn layui-btn-xs editBtn" opts="edit" lay-event="editFun"><i class="layui-icon layui-icon-edit"></i>修改</a>';
+						fixStr += '<a class="layui-btn layui-btn-xs layui-btn-primary" opts="relateLore" lay-event="relateLoreFun"><i class="iconfont layui-extend-guanlian"></i>关联知识点</a>';
 						if(d.inUse == '有效'){
-							fixStr += '<a class="layui-btn layui-btn-xs layui-btn-danger setBtn" opts="set" lay-event="setIsInUseFun" inUse="1" inUseTxt="无效" lqTitle="'+ d.lqTitle +'" lqId="'+ d.lqId +'"><i class="layui-icon layui-icon-set"></i>设为无效</a>';
+							fixStr += '<a class="layui-btn layui-btn-xs layui-btn-danger setBtn" opts="set" lay-event="setIsInUseFun" inUse="1" inUseTxt="无效" buffetTit="'+ d.loreTitle +'" buffetId="'+ d.id +'"><i class="layui-icon layui-icon-set"></i>设为无效</a>';
 						}else{
-							fixStr += '<a class="layui-btn layui-btn-xs layui-btn-normal setBtn" opts="set" lay-event="setIsInUseFun" inUse="0" inUseTxt="有效" lqTitle="'+ d.lqTitle +'" lqId="'+ d.lqId +'"><i class="layui-icon layui-icon-set"></i>设为有效</a>';
+							fixStr += '<a class="layui-btn layui-btn-xs layui-btn-normal setBtn" opts="set" lay-event="setIsInUseFun" inUse="0" inUseTxt="有效" buffetTit="'+ d.loreTitle +'" buffetId="'+ d.id +'"><i class="layui-icon layui-icon-set"></i>设为有效</a>';
 						}
+						fixStr += '<a class="layui-btn layui-btn-xs" opts="relateLex" lay-event="relateLoreFun"><i class="iconfont layui-extend-guanlian"></i>关联词条</a>';
 						return fixStr;
 					}},
 				]],
@@ -51,16 +56,16 @@ layui.define(['form','table','buffetLoreMet'],function(exports){
 					layer.closeAll('loading');
 				}
 			});
-    		/*$.ajax({
+    		$.ajax({
 				type:'post',
 		        dataType:'json',
 		        data:{loreId:loreId},
-		        url:'/lore.do?action=getPageLoreQuesionData',
+		        url:'/buffet.do?action=getPageBuffetInfo',
 		        success:function (json){
 		        	layer.closeAll('loading');	
 		        	console.log(json)
 		        }
-			});*/
+			});
     	},
     	//填空题 问答题 切换题型(单选 多选 判断 填空选择题)方法
     	switchTiganFun : function(){
@@ -99,7 +104,7 @@ layui.define(['form','table','buffetLoreMet'],function(exports){
 					_this.data.hasSwitchTxt = otherInpVal;
 					_this.data.isSwitchFlag = true;
 					//确认切换动作后将globalOpts变为add
-					blMet.swithTiGanType(otherInpVal);
+					buffetDOM.swithTiGanType(otherInpVal);
 					layer.close(tmpLayerIndex);
 	    		});
     		});
@@ -116,7 +121,7 @@ layui.define(['form','table','buffetLoreMet'],function(exports){
 				},function(index){
 					$('#tiganTypeTxt').html(_this.data.originTypeTxt);
 					//还原至原题型后globalOpts为edit
-					blMet.swithTiGanType(_this.data.originTypeTxt);
+					buffetDOM.swithTiGanType(_this.data.originTypeTxt);
 					$('.switchTiganBtn').show();
 					$('.resetBtn').hide().html('');
 					layer.close(index);
@@ -146,5 +151,5 @@ layui.define(['form','table','buffetLoreMet'],function(exports){
     	$('#otherTiganInp').val(value);
     });
     //输出接口
-    exports('loreManager', obj);
+    exports('buffetManager', obj);
 });

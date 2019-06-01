@@ -28,24 +28,26 @@ layui.define(['table','form','scrollBar'],function(exports){
     	},
     	//公共返回方法
     	comBackFun : function(){
-    		$('.queType').hide().html('');
-			$('.quesAddEditBox').hide();
-			$('.addLoreCon').hide();
-			$('.comQuesBox').html('').hide();
-			$('.guideWrap').hide();
-			$('.guideBox').html('').hide();
-			$('.guideNavLi').attr('iscreaFlag','0');
-			$('.guideNavLi').removeClass('layui-this').eq(0).addClass('layui-this');
-			$('.guideBox').removeClass('layui-show').eq(0).addClass('layui-show');
-			$('.addLoreCon').hide();
-			tmpGuideType = '';
-			loreType = 'zsqd';
-			loreTypeZHN = '知识清单';
-			smLoreTypeZHN = '主题';
-			result_answer = '';
-			result_answer_text = '';
-			isAddClickFlag = false;
-			currNum = 0;//每次返回重置currNum 便于回显的一个匹配
+    		if(currPage == 'lorePage'){
+    			$('.queType').hide().html('');
+    			$('.quesAddEditBox').hide();
+    			$('.addLoreCon').hide();
+    			$('.comQuesBox').html('').hide();
+    			$('.guideWrap').hide();
+    			$('.guideBox').html('').hide();
+    			$('.guideNavLi').attr('iscreaFlag','0');
+    			$('.guideNavLi').removeClass('layui-this').eq(0).addClass('layui-this');
+    			$('.guideBox').removeClass('layui-show').eq(0).addClass('layui-show');
+    			$('.addLoreCon').hide();
+    			tmpGuideType = '';
+    			loreType = 'zsqd';
+    			loreTypeZHN = '知识清单';
+    			smLoreTypeZHN = '主题';
+    			result_answer = '';
+    			result_answer_text = '';
+    			isAddClickFlag = false;
+    			currNum = 0;//每次返回重置currNum 便于回显的一个匹配
+    		}
     	},
     	//添加关联知识点
     	addLoreRelate : function(){

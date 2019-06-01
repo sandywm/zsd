@@ -11,6 +11,7 @@
 	<link href="/plugins/layui/css/modules/layui-icon-extend/iconfont.css" rel="stylesheet" type="text/css"/>
 	<link href="/Module/commonJs/ueditor/themes/default/css/ueditor.min.css" type="text/css" rel="stylesheet" />
 	<link href="/Module/loreManager/css/loreManager.css" rel="stylesheet" type="text/css"/>
+	<link href="/Module/loreManager/css/viewLore.css" rel="stylesheet" type="text/css"/>
 	<link href="/plugins/pace/pace-theme-flash.min.css" rel="stylesheet" type="text/css"/>
 	<script src="/plugins/pace/pace.min.js" type="text/javascript"></script>	
     </head>
@@ -63,7 +64,7 @@
 				</div -->
 			</div>
 			<!-- 搜索知识点 -->
-			<div class="searchZsd">
+			<!-- div class="searchZsd">
 				<div class="itemDivs" style="width:90px;margin-right:10px;">
 					<div class="layui-input-inline layui-form">
 						<select id="zsdSel" lay-filter="zsdSel">
@@ -83,7 +84,7 @@
 						<button id="queryBtn" class="layui-btn"><i class="layui-icon layui-icon-search"></i></button>
 					</div>
 				</div>
-			</div>
+			</div -->
 		</div>
 		<div class="layui-fluid" style="margin-top:50px;padding:0;">
 			<div class="layui-row">
@@ -153,6 +154,10 @@
 	<script src="/Module/commonJs/ueditor/ueditor.all.min.js"></script>
 	
 	<script type="text/javascript">
+		var loreType = 'zsqd';//点拨知道题型
+		var tmpGuideType = '';//用于判定点拨指导下不是主题情况下添加按钮显示的判断
+		var isAddClickFlag = false;//用于判断是否是通过增加按钮来添加的flag
+	
 		var infoBySubOpt = 'getGradeOpt',nowSearType=1,searOpt='loreManager',//根据学科获取年级的信息
 			infoByGsEdOpt='geteduC',//根据年级出版社获取教材信息 need
 			addEditFlag  = false,editAll='',//出版社全拼id:name
@@ -165,13 +170,14 @@
 		
 		layui.config({
 			base: '/plugins/frame/js/'
-		}).use(['layer','table','form','baseDataMet','relate','uploadPro','loreManager','comLoreDOM','lorePractice'], function() {
+		}).use(['layer','table','form','baseDataMet','relate','uploadPro','loreManager','comLoreDOM','buffetLoreDOM','buffetLoreMet','lorePractice'], function() {
 			var layer = layui.layer,
 				table = layui.table,
 				form = layui.form,
 				baseDataMet = layui.baseDataMet,
 				uploadPro = layui.uploadPro,
 				lore = layui.loreManager,loreDOM = layui.comLoreDOM,
+				blDOM = layui.buffetLoreDOM,blMet = layui.buffetLoreMet,
 				lorePrac = layui.lorePractice,relate=layui.relate;
 			var page = {
 				init : function(){
@@ -417,7 +423,7 @@
 									}
 								}else if(answSelTypeInpVal == 2){//图片
 									for(var i = 1 ; i <= maxSelNum ; i++){
-										if(loreDOM.getId('answerSelect'+i).src.indexOf('defImg.png') > 0){
+										if(blMet.getId('answerSelect'+i).src.indexOf('defImg.png') > 0){
 											layer.msg('请将答案选项填写完整', {icon:5,anim:6,time:2000});
 											ansSelFlag = false;
 											return;
@@ -523,7 +529,7 @@
 									if(globalOpts == 'add'){
 										field = {loreId:loreBigId,loreType:loreTypeZHN,queTitle:resTit,queSub:resCon};
 									}else{
-										tmpLqsIdUpObj = loreDOM.getLqsId('zsqd');
+										tmpLqsIdUpObj = blMet.getLqsId('zsqd');
 										if(tmpLqsIdUpObj.lqsIdArr.length > 0){
 											lqsIdStr_up = tmpLqsIdUpObj.lqsIdArr.length == 1 ? tmpLqsIdUpObj.lqsIdArr[0] : tmpLqsIdUpObj.lqsIdArr.join('&zsd&');//当一个都没删除当前存在页面的id就是数组的所有项
 										}else{
@@ -535,7 +541,7 @@
 									if(globalOpts == 'add'){
 										field = {loreId:loreBigId,loreType:loreTypeZHN,titleZd:resTit,contentZd:resCon};
 									}else{
-										tmpLqsIdUpObj = loreDOM.getLqsId('zd');
+										tmpLqsIdUpObj = blMet.getLqsId('zd');
 										if(tmpLqsIdUpObj.lqsIdArr.length > 0){
 											lqsIdStr_up = tmpLqsIdUpObj.lqsIdArr.length == 1 ? tmpLqsIdUpObj.lqsIdArr[0] : tmpLqsIdUpObj.lqsIdArr.join('&zsd&');//当一个都没删除当前存在页面的id就是数组的所有项
 										}else{
@@ -551,7 +557,7 @@
 									if(globalOpts == 'add'){
 										field = {loreId:loreBigId,loreType:loreTypeZHN,titleNd:resTit,contentNd:resCon};
 									}else{
-										tmpLqsIdUpObj = loreDOM.getLqsId('nd');
+										tmpLqsIdUpObj = blMet.getLqsId('nd');
 										if(tmpLqsIdUpObj.lqsIdArr.length > 0){
 											lqsIdStr_up = tmpLqsIdUpObj.lqsIdArr.length == 1 ? tmpLqsIdUpObj.lqsIdArr[0] : tmpLqsIdUpObj.lqsIdArr.join('&zsd&');//当一个都没删除当前存在页面的id就是数组的所有项
 										}else{
@@ -568,7 +574,7 @@
 									if(globalOpts == 'add'){
 										field = {loreId:loreBigId,loreType:loreTypeZHN,titleGjd:resTit,contentGjd:resCon};
 									}else{
-										tmpLqsIdUpObj = loreDOM.getLqsId('gjd');
+										tmpLqsIdUpObj = blMet.getLqsId('gjd');
 										if(tmpLqsIdUpObj.lqsIdArr.length > 0){
 											lqsIdStr_up = tmpLqsIdUpObj.lqsIdArr.length == 1 ? tmpLqsIdUpObj.lqsIdArr[0] : tmpLqsIdUpObj.lqsIdArr.join('&zsd&');//当一个都没删除当前存在页面的id就是数组的所有项
 										}else{
@@ -584,7 +590,7 @@
 									if(globalOpts == 'add'){
 										field = {loreId:loreBigId,loreType:loreTypeZHN,titleYhd:resTit,contentYhd:resCon};
 									}else{
-										tmpLqsIdUpObj = loreDOM.getLqsId('yhd');
+										tmpLqsIdUpObj = blMet.getLqsId('yhd');
 										if(tmpLqsIdUpObj.lqsIdArr.length > 0){
 											lqsIdStr_up = tmpLqsIdUpObj.lqsIdArr.length == 1 ? tmpLqsIdUpObj.lqsIdArr[0] : tmpLqsIdUpObj.lqsIdArr.join('&zsd&');//当一个都没删除当前存在页面的id就是数组的所有项
 										}else{
@@ -602,7 +608,7 @@
 								if(globalOpts == 'add'){
 									field = {loreId:loreBigId,loreType:loreTypeZHN,contentZt:resCon};
 								}else{
-									tmpLqsIdUpObj = loreDOM.getLqsId('zhuti');
+									tmpLqsIdUpObj = blMet.getLqsId('zhuti');
 									if(tmpLqsIdUpObj.lqsIdArr.length > 0){
 										lqsIdStr_up = tmpLqsIdUpObj.lqsIdArr.length == 1 ? tmpLqsIdUpObj.lqsIdArr[0] : tmpLqsIdUpObj.lqsIdArr.join('&zsd&');//当一个都没删除当前存在页面的id就是数组的所有项
 									}else{
@@ -693,7 +699,6 @@
 								}
 								
 							}
-							
 							if(globalOpts == 'add'){
 								var url = '/lore.do?action=addLoreQuesion';
 							}else if(globalOpts == 'edit'){
@@ -731,7 +736,7 @@
 						        	}
 						        	
 						        }
-							});	
+							});
 						}
 					});
 				},
@@ -801,19 +806,19 @@
 					isAddClickFlag = true;//编辑时打开删除按钮
 					var tmpQueTipId = '';
 					if(loreType == 'ggxl' || loreType == 'zdxzd' || loreType == 'zczd'){
-						var tiganTypeDOM = loreDOM.createTiganType(), 
-							maxSelBox = loreDOM.creaMaxSel(),
-							spaceSelBox = loreDOM.creaMaxSpace(),
-							ansType = loreDOM.createAnsType(),//问题类型
-							selAnsTxt = loreDOM.createSelAnsTxt(),
-							selAnsImg = loreDOM.createSelAnsImg(),
-							ansSingle = loreDOM.createAnsSingle(),
-							ansMulti = loreDOM.createAnsMulti(),
-							wendaStr = loreDOM.wendaTypeDOM(loreType),
-							judgeStr = loreDOM.judgeQueType(),
-							tkSelStr = loreDOM.createTkSelDOM(),
-							tkTypeStr = loreDOM.createTkTypeDOM(loreType),
-							lexStrDOM = loreDOM.createLexDOM(loreType);
+						var tiganTypeDOM = blDOM.createTiganType(), 
+							maxSelBox = blDOM.creaMaxSel(),
+							spaceSelBox = blDOM.creaMaxSpace(),
+							ansType = blDOM.createAnsType(),//问题类型
+							selAnsTxt = blDOM.createSelAnsTxt(),
+							selAnsImg = blDOM.createSelAnsImg(),
+							ansSingle = blDOM.createAnsSingle(),
+							ansMulti = blDOM.createAnsMulti(),
+							wendaStr = blDOM.wendaTypeDOM(loreType),
+							judgeStr = blDOM.judgeQueType(),
+							tkSelStr = blDOM.createTkSelDOM(),
+							tkTypeStr = blDOM.createTkTypeDOM(loreType),
+							lexStrDOM = blDOM.createLexDOM(loreType);
 						
 						//增加关联词条
 						$('.queType').append(tiganTypeDOM + lexStrDOM);
@@ -822,6 +827,7 @@
 					}
 					if(listInfo.length > 0){
 						currNumLen = listInfo.length;
+						console.log(listInfo)
 						for(var i=0;i<listInfo.length;i++){
 							currNum = i;
 							loreTypeZHN = listInfo[i].lqType;
@@ -906,7 +912,7 @@
 									loreDOM.initUeditorContent('conAns_jtsf_' + currNum,listInfo[i].lqAnswer);//答案
 									loreDOM.initUeditorContent('conAnaly_jtsf_' + currNum,listInfo[i].lqResolution);//解析
 								}else if(listInfo[i].lqType == '巩固训练' || listInfo[i].lqType == '针对性诊断' || listInfo[i].lqType == '再次诊断'){
-									var tiganType = loreDOM.tiganTypeTxt(listInfo[i].queType);
+									var tiganType = blDOM.tiganTypeTxt(listInfo[i].queType);
 									$('#tiganTypeInp').val(listInfo[i].queType);
 									lore.data.originTypeTxt = listInfo[i].queType;//用于填空题切换其它题型时做个原来题型的存储
 									$('#tiganType1Inp').val(listInfo[i].queType2);//了解 理解 应用 综合匹配
@@ -937,16 +943,16 @@
 											result_answer = listInfo[i].lqAnswer + ",";
 											$('#answerSelectDiv_' + loreType).show().html(ansType + selAnsTxt + selAnsImg + ansSingle);
 											$('#ans_singleInp').val(listInfo[i].lqAnswer);
-											loreDOM.initShowInpByMaxOptNum(listInfo[i].queOptNum,'answerBox_singel');
-						        			loreDOM.inputBlur();
+											blMet.initShowInpByMaxOptNum(listInfo[i].queOptNum,'answerBox_singel');
+						        			blMet.inputBlur();
 											form.render();
 										}else if(listInfo[i].queType == '多选题'){
 											$('#maxChoiceNumSel').val(listInfo[i].queOptNum);
 											answerNum = listInfo[i].queOptNum; //将当前选择的最大选项赋给answerNum
 											
 											$('#answerSelectDiv_' + loreType).show().html(ansType + selAnsTxt + selAnsImg + ansMulti);
-											loreDOM.initShowInpByMaxOptNum(listInfo[i].queOptNum,'answerBox_multi');
-											loreDOM.inputBlur();
+											blMet.initShowInpByMaxOptNum(listInfo[i].queOptNum,'answerBox_multi');
+											blMet.inputBlur();
 											//multiAnsArr = listInfo[i].lqAnswer.split(',');
 											form.render();
 										}else if(listInfo[i].queType == '填空选择题'){
@@ -957,9 +963,9 @@
 											//匹配填空数量
 											$('#spaceNumSel').val(listInfo[i].answerNum);
 											$('#answerSelectDiv_' + loreType).show().html(ansType + selAnsTxt + selAnsImg + tkSelStr);
-											loreDOM.initShowInpByMaxOptNum(listInfo[i].queOptNum,'ansBox_multiTk');
+											blMet.initShowInpByMaxOptNum(listInfo[i].queOptNum,'ansBox_multiTk');
 											//文字类型的 调用input的blur事件
-						        			loreDOM.inputBlur();
+						        			blMet.inputBlur();
 											form.render();
 										}else if(listInfo[i].queType == '判断题'){
 											$('.maxChoice').html('');
@@ -996,7 +1002,7 @@
 										$('#nowTxt_'+loreType).html('答案：');
 										$('#tkTypeWrap_' + loreType).show().html(tkTypeStr);
 										$('#tkInp_' + loreType).val(listInfo[i].lqAnswer);
-										loreDOM.data.tkOriginAnsTxt = listInfo[i].lqAnswer;
+										blMet.data.tkOriginAnsTxt = listInfo[i].lqAnswer;
 									}
 									$('#'+loreType + 'Inp_' + currNum).val(listInfo[i].lqTitle).attr('disabled',true);
 									loreDOM.initUeditorContent('con_'+ loreType +'_' + currNum,listInfo[i].lqSub);//题干
@@ -1020,9 +1026,9 @@
 						}else if(loreType == 'zhuti' || loreType == 'zd' || loreType == 'nd' || loreType == 'gjd' || loreType== 'yhd'){
 							isCanAdd = loreDOM.isHasAddAbility(loreBigId, loreTypeZHN);//初始化当前点拨指导下的增加权限
 						}else if(loreType == 'ggxl' || loreType == 'zdxzd' || loreType == 'zczd'){
-							loreDOM.getCurrLoreTips(loreBigId,false);//获取提示列表
+							blMet.getCurrLoreTips(loreBigId,false);//获取提示列表
 							//添加编辑词条
-							loreDOM.addEditLex();
+							blMet.addEditLex();
 							$('#selTipsSel_' + loreType).val(tmpQueTipId);
 							$('#tipsInp_ggxl').val(tmpQueTipId);
 							for(var i=0;i<listInfo[0].tipsList.length;i++){
@@ -1158,7 +1164,7 @@
 				}else if(obj.event == 'viewFun'){//浏览知识点
 					var loreName = $(this).attr('loreName');
 					loreId = $(this).attr('loreId');
-					layer.open({
+					/*layer.open({
 						title:'浏览知识点[<span style="color:#F47837;">'+ loreName +'</span>]',
 						type: 2,
 					  	area: ['700px', '500px'],
@@ -1166,7 +1172,18 @@
 					  	maxmin: false,
 					  	shadeClose :false,
 					  	content: '/Module/loreManager/jsp/viewLore.html'
-					});	
+					});*/
+					var viewLore = loreDOM.createViewLoreDOM();
+					layer.open({
+						title:'浏览知识点[<span style="color:#F47837;">'+ loreName +'</span>]',
+						type: 1,
+					  	area: ['750px', '500px'],
+					  	fixed: true, //不固定
+					  	maxmin: false,
+					  	shadeClose :false,
+					  	content: viewLore
+					});
+					loreDOM.loadLoreDetail();
 				}else if(obj.event == 'viewLoreTree'){//查看知识树
 					var loreName = $(this).attr('loreName');
 					loreBigId = $(this).attr('loreId');
