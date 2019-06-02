@@ -43,7 +43,8 @@ public class StudyDetailDaoImpl implements StudyDetailDao{
 	public List<StudyDetailInfo> findInfoByLogId(Session sess,
 			Integer studyLogId) {
 		// TODO Auto-generated method stub
-		return null;
+		String hq =" from StudyDetailInfo as sd where sd.studyLogInfo.id = "+studyLogId;
+		return sess.createQuery(hq).list();
 	}
 
 }

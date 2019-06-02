@@ -542,16 +542,12 @@ public class BuffetAction extends DispatchAction {
 		String answerD = Transcode.unescape_new1("answerD", request);
 		String answerE = Transcode.unescape_new1("answerE", request);
 		String answerF = Transcode.unescape_new1("answerF", request);
-		if(!mindIdStr.equals("") && abilityIdStr.equals("")){
+		if(!mindIdStr.equals("") && !abilityIdStr.equals("")){
 			Integer buffetId = bm.addBQ(btId, loreId, num, title, queSub, queAnswer, lexId, tipsId, queResolution, queType, order, answerA, 
 					answerB, answerC, answerD, answerE, answerF, CommonTools.getLoginAccount(request), CurrentTime.getCurrentTime());
 			if(buffetId > 0){
-				if(!mindIdStr.equals("")){
-					bam.addBMR(buffetId, mindIdStr);
-				}
-				if(!abilityIdStr.equals("")){
-					bam.addBAR(buffetId, abilityIdStr);
-				}
+				bam.addBMR(buffetId, mindIdStr);
+				bam.addBAR(buffetId, abilityIdStr);
 				msg = "success";
 			}
 		}
