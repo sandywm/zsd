@@ -505,7 +505,7 @@ public class BuffetAction extends DispatchAction {
 		Integer btId = CommonTools.getFinalInteger("btId", request);//基础类型编号
 		String mindIdStr = CommonTools.getFinalStr("mindStr", request);//思维类型编号逗号拼接
 		String abilityIdStr = CommonTools.getFinalStr("abilityIdStr", request);//能力类型编号逗号拼接
-		Integer tipsId = CommonTools.getFinalInteger("tipsId", request);//提示
+		Integer tipsId = CommonTools.getFinalInteger("queTipId", request);//提示
 		Integer lexId =  CommonTools.getFinalInteger("lexId", request);//词条
 		Integer loreId = CommonTools.getFinalInteger("loreId", request);//知识点编号
 		String title = "";//标题

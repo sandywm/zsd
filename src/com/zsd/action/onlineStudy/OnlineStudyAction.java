@@ -24,6 +24,7 @@ import com.zsd.module.Edition;
 import com.zsd.module.Education;
 import com.zsd.module.GradeSubject;
 import com.zsd.module.LoreInfo;
+import com.zsd.module.LoreQuestion;
 import com.zsd.module.StuSubjectEduInfo;
 import com.zsd.module.StudyLogInfo;
 import com.zsd.module.StudyTaskInfo;
@@ -38,6 +39,7 @@ import com.zsd.service.EditionManager;
 import com.zsd.service.EducationManager;
 import com.zsd.service.GradeSubjectManager;
 import com.zsd.service.LoreInfoManager;
+import com.zsd.service.LoreQuestionManager;
 import com.zsd.service.StuSubjectEduManager;
 import com.zsd.service.StudyLogManager;
 import com.zsd.service.StudyTaskManager;
@@ -517,63 +519,71 @@ public class OnlineStudyAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		StudyLogManager slm = (StudyLogManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_LOG_INFO);
 		LoreInfoManager lm = (LoreInfoManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
-		Integer loreId =  CommonTools.getFinalInteger("loreId", request);
-		Integer studyLogId = CommonTools.getFinalInteger("studyLogId", request);
+		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
+		Integer loreId =  CommonTools.getFinalInteger("loreId", request);//知识点最初的编号
+		Integer studyLogId = CommonTools.getFinalInteger("studyLogId", request);//学习记录编号
+		Integer currentLoreId =  0;//当前知识点编号
+		Integer nextLoreId = 0;//下级子知识点编号
 		Integer stuId = CommonTools.getLoginUserId(request);
 		String msg = "error";
 		String path = "";//针对性诊断的路线
 		String studyPath = "";//学习的路线
-		String orderOpt = "";
+		Integer stepCount = 0;//知识点有多少级
+		Integer loreCount = 0;//有多少知识点
+		Integer isFinish = 0;//该知识点完成状态（1:未完成,2:已完成）
+		Integer task = 1;//第几个任务数（课后复习任务数）
+		Integer money = 10;
+		String loreTaskName = "";
+		String buttonValue = "开始挑战";
+		String pathType = "diagnosis";//类型:diagnosis--诊断，study--学习
+		String loreTypeName = "针对性诊断";
+		Integer access = -1;//本级知识点完成状态
+		Integer quoteLoreId = 0;//通用知识点
 		if(loreId > 0){
 			LoreInfo lore = lm.getEntityById(loreId);
 			if(lore != null){
 				if(lore.getInUse().equals(0)){//知识点有效才能继续
-					orderOpt = "desc";
+					quoteLoreId = lore.getMainLoreId();//通用知识点才有题
+					LoreTreeMenuJson ltmj = new LoreTreeMenuJson();
+					List<MyTreeNode> ltList = ltmj.showTree(loreId, 0,"desc");
+					StringBuilder buff = new StringBuilder();
+					ltmj.getPath(ltList, buff);
+					path = buff.delete(buff.length() - 1, buff.length()).toString();
+					if(!path.equals("")){
+						stepCount = path.split(":").length;//多少级
+						loreCount = ltmj.getLoreNum(path);//多少个知识点
+					}
+					studyPath = ltmj.getStudyPath(path);
 					StudyLogInfo sl = null;
 					if(studyLogId.equals(0)){//新诊断
 						List<StudyLogInfo> slList = slm.listLastStudyInfoByOpt(stuId, loreId, 1);
 						if(slList.size() > 0){
 							sl = slList.get(0);
 						}
-					}else{//之前为完成
-						//判断是诊断时还是学习时
+					}else{//之前有记录
 						sl = slm.getEntityById(studyLogId);
-						if(sl != null){
-							if(sl.getStep() >= 3){//关联知识点学习-3，本知识点学习-4、再次诊断-5
-								orderOpt = "asc";
-							}else{//针对性诊断-1、关联性诊断-2
-								orderOpt = "desc";
-							}
+					}
+					if(sl != null){//表示存在记录
+						List<LoreQuestion> lqList = new ArrayList<LoreQuestion>();
+						isFinish = sl.getIsFinish();
+						if(isFinish == 2){//为学习和已经掌握都表示要重新开始
+							task = 1;
+							loreTaskName = "针对性诊断";
+							loreTypeName = "针对性诊断";
+							lqList = lqm.listInfoByLoreId(quoteLoreId, loreTypeName, 0);
+							money *= lqList.size();
+							currentLoreId = loreId;
+						}else{//未通过，需要定位到现在需要学习的地方
+							Integer step = sl.getStep();//答题阶段--（针对性诊断-1、关联性诊断-2、关联知识点学习-3、本知识点学习-4、再次诊断-5）
+							Integer stepComplete = sl.getStepComplete();//本阶段整体完成情况--0:未完成,1:已完成
+							access = sl.getAccess();//本阶段详细完成情况（溯源诊断时分级完成情况）
+							
 						}
 					}
-					System.out.println("开始时间--"+CurrentTime.getStringTime1());
-					LoreTreeMenuJson ltmj = new LoreTreeMenuJson();
-					List<MyTreeNode> ltList = ltmj.showTree(loreId, 0,orderOpt);
-					StringBuilder buff = new StringBuilder();
-					ltmj.getPath(ltList, buff);
-					path = buff.delete(buff.length() - 1, buff.length()).toString();//当step为1,2的时候就是诊断路线图，当为3,4,5时就是学习路线图
-					System.out.println(path);
-					System.out.println("结束时间--"+CurrentTime.getStringTime1());
-					studyPath = ltmj.getStudyPath(path);
-					System.out.println(studyPath);
-					System.out.println("结束时间--"+CurrentTime.getStringTime1());
-					
-					List<MyTreeNode> ltList_1 = ltmj.showTree(loreId, 0,"asc");
-					StringBuilder buff_1 = new StringBuilder();
-					ltmj.getPath(ltList_1, buff_1);
-					String studyPath_1 = buff_1.delete(buff_1.length() - 1, buff_1.length()).toString();
-					System.out.println(studyPath_1);
-					System.out.println("结束时间--"+CurrentTime.getStringTime1());
-					
 				}else{
 					msg = "inUseError";//知识点无效，不能继续11
 				}
 			}
-		}
-		if(studyLogId > 0){//存在学习记录，继续学习
-			
-		}else{//刚开始学习，没学习记录
-			
 		}
 		return null;
 	}

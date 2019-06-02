@@ -341,4 +341,20 @@ public class LoreTreeMenuJson {
 	    return tree;
 	}
 	
+	/**
+	 * 获取有多少个知识点
+	 * @author wm
+	 * @date 2019-6-2 上午10:07:04
+	 * @param path
+	 * @return
+	 */
+	public Integer getLoreNum(String path){
+		Integer loreNum = 0;
+		if(!path.equals("")){
+			path = path.replace(":", "|");
+			String[] pathArray = path.split("\\|");
+			loreNum = pathArray.length;
+		}
+		return loreNum;
+	}
 }
