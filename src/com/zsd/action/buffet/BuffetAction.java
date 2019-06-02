@@ -457,6 +457,34 @@ public class BuffetAction extends DispatchAction {
 	}
 	
 	/**
+	 * 获取当前题型的题数
+	 * @author wm
+	 * @date 2019-6-2 上午09:31:36
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getCurrMaxNum(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		BuffetQueInfoManager bm = (BuffetQueInfoManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_QUE_INFO);
+		Integer btId = CommonTools.getFinalInteger("btId", request);//基础类型编号
+		Integer loreId = CommonTools.getFinalInteger("loreId", request);//知识点编号
+		Map<String,Integer> map = new HashMap<String,Integer>();
+		BuffetQueInfo bq = bm.getCurrMaxNumAndOrderByOpt(loreId, btId);
+		Integer num = 1;
+		if(bq != null){
+			num = bq.getBuffetNum() + 1;
+		}
+		map.put("currNum", num);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
 	 * 增加自助餐
 	 * @author wm
 	 * @date 2019-5-23 上午10:59:36
@@ -514,16 +542,18 @@ public class BuffetAction extends DispatchAction {
 		String answerD = Transcode.unescape_new1("answerD", request);
 		String answerE = Transcode.unescape_new1("answerE", request);
 		String answerF = Transcode.unescape_new1("answerF", request);
-		Integer buffetId = bm.addBQ(btId, loreId, num, title, queSub, queAnswer, lexId, tipsId, queResolution, queType, order, answerA, 
-				answerB, answerC, answerD, answerE, answerF, CommonTools.getLoginAccount(request), CurrentTime.getCurrentTime());
-		if(buffetId > 0){
-			if(!mindIdStr.equals("")){
-				bam.addBMR(buffetId, mindIdStr);
+		if(!mindIdStr.equals("") && abilityIdStr.equals("")){
+			Integer buffetId = bm.addBQ(btId, loreId, num, title, queSub, queAnswer, lexId, tipsId, queResolution, queType, order, answerA, 
+					answerB, answerC, answerD, answerE, answerF, CommonTools.getLoginAccount(request), CurrentTime.getCurrentTime());
+			if(buffetId > 0){
+				if(!mindIdStr.equals("")){
+					bam.addBMR(buffetId, mindIdStr);
+				}
+				if(!abilityIdStr.equals("")){
+					bam.addBAR(buffetId, abilityIdStr);
+				}
+				msg = "success";
 			}
-			if(!abilityIdStr.equals("")){
-				bam.addBAR(buffetId, abilityIdStr);
-			}
-			msg = "success";
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);

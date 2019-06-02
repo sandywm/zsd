@@ -154,6 +154,7 @@ public class LoreRelateAction extends DispatchAction {
 			map.put("loreId", lore.getId());
 			map.put("loreName", lore.getLoreName());
 			map.put("eduVolume", edu.getEduVolume());
+			map.put("eduId", edu.getId());
 			map.put("gsId", edu.getGradeSubject().getId());
 			map.put("subId", edu.getGradeSubject().getSubject().getId());
 			map.put("ediId", ediId);

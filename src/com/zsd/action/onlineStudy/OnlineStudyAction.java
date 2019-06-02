@@ -546,19 +546,30 @@ public class OnlineStudyAction extends DispatchAction {
 							}
 						}
 					}
+					System.out.println("开始时间--"+CurrentTime.getStringTime1());
 					LoreTreeMenuJson ltmj = new LoreTreeMenuJson();
 					List<MyTreeNode> ltList = ltmj.showTree(loreId, 0,orderOpt);
 					StringBuilder buff = new StringBuilder();
 					ltmj.getPath(ltList, buff);
 					path = buff.delete(buff.length() - 1, buff.length()).toString();//当step为1,2的时候就是诊断路线图，当为3,4,5时就是学习路线图
+					System.out.println(path);
+					System.out.println("结束时间--"+CurrentTime.getStringTime1());
 					studyPath = ltmj.getStudyPath(path);
+					System.out.println(studyPath);
+					System.out.println("结束时间--"+CurrentTime.getStringTime1());
+					
+					List<MyTreeNode> ltList_1 = ltmj.showTree(loreId, 0,"asc");
+					StringBuilder buff_1 = new StringBuilder();
+					ltmj.getPath(ltList_1, buff_1);
+					String studyPath_1 = buff_1.delete(buff_1.length() - 1, buff_1.length()).toString();
+					System.out.println(studyPath_1);
+					System.out.println("结束时间--"+CurrentTime.getStringTime1());
+					
 				}else{
 					msg = "inUseError";//知识点无效，不能继续11
 				}
 			}
 		}
-		System.out.println(path);
-		System.out.println(studyPath);
 		if(studyLogId > 0){//存在学习记录，继续学习
 			
 		}else{//刚开始学习，没学习记录

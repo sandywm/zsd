@@ -104,7 +104,7 @@ public class LoreTreeMenuJson {
 	    	l = this.getNoTreeMenuList(lm.getEntityById(loreId));
 	    }
 	    for (LoreTreeMenu t : l) {
-	    	MyTreeNode node = tree1(t,t.getMenus(),true,studyLogId);
+	    	MyTreeNode node = tree1(t,t.getMenus(),true,studyLogId,orderOpt);
 	    	if(node != null){
 	    		tree.add(node);
 	    	}
@@ -125,7 +125,7 @@ public class LoreTreeMenuJson {
 		return flag;
 	}
 	
-	private MyTreeNode tree1(LoreTreeMenu t, List<LoreTreeMenu> n, boolean recursive,Integer studyLogId) throws Exception {
+	private MyTreeNode tree1(LoreTreeMenu t, List<LoreTreeMenu> n, boolean recursive,Integer studyLogId,String orderOpt) throws Exception {
 		
 	    MyTreeNode node = new MyTreeNode(); 
 //	    node.setId(t.getId());
@@ -171,7 +171,7 @@ public class LoreTreeMenuJson {
 			    	List<LoreRelateInfo> lrList_new = new ArrayList<LoreRelateInfo>();
 			    	if(this.checkExistLore(this.loreList, loreId) == false){//不存在相同节点
 			    		this.loreList.add(this.num++,loreId);
-			    		lrList_new = lrm.listRelateInfoByOpt(loreId, 0, -1, "");//找下一级子节点
+			    		lrList_new = lrm.listRelateInfoByOpt(loreId, 0, -1, orderOpt);//找下一级子节点
 			    		this.existFlag = false;
 			    		List<LoreTreeMenu> menuList = new ArrayList<LoreTreeMenu>();
 				    	if(lrList_new.size() > 0){
@@ -186,7 +186,7 @@ public class LoreTreeMenuJson {
 				    		if (recursive) {// 递归查询子节点
 				    			List<LoreTreeMenu> l = new ArrayList<LoreTreeMenu>(menuList);
 					            for (LoreTreeMenu r : l) {
-					                MyTreeNode tn = tree1(r, nextMenuList, true,studyLogId);
+					                MyTreeNode tn = tree1(r, nextMenuList, true,studyLogId,orderOpt);
 					                children.add(tn);
 					            }
 					            node.setChildren(children);
