@@ -88,18 +88,9 @@ public interface BuffetAllDao {
 	 * @author wm
 	 * @date 2019-5-17 下午04:34:42
 	 * @param sess
-	 * @param bmrInfo
+	 * @param bmrId
 	 */
-	void delBMRById(Session sess,BuffetMindRelationInfo bmrInfo);
-	
-	/**
-	 * 删除指定自助餐编号的自助餐思维关联信息
-	 * @author wm
-	 * @date 2019-5-17 下午04:53:47
-	 * @param sess
-	 * @param buffetId 自助餐编号
-	 */
-	void delBMRByBuddetId(Session sess,Integer buffetId);
+	void delBMRById(Session sess,Integer bmrId);
 	
 	/**
 	 * 根据自助餐编号获取自助餐思维关联信息
@@ -125,18 +116,9 @@ public interface BuffetAllDao {
 	 * @author wm
 	 * @date 2019-5-17 下午04:38:22
 	 * @param sess
-	 * @param barInfo
+	 * @param barId
 	 */
-	void delBARById(Session sess,BuffetAbilityRelationInfo barInfo);
-	
-	/**
-	 * 删除指定自助餐编号的思维关联信息
-	 * @author wm
-	 * @date 2019-5-17 下午04:54:35
-	 * @param sess
-	 * @param buffetId 自助餐编号
-	 */
-	void delBARByBuffetId(Session sess,Integer buffetId);
+	void delBARById(Session sess,Integer barId);
 	
 	/**
 	 * 根据自助餐编号获取自助餐能力关联信息

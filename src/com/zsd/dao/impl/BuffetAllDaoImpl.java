@@ -75,9 +75,9 @@ public class BuffetAllDaoImpl implements BuffetAllDao{
 	}
 
 	@Override
-	public void delBMRById(Session sess, BuffetMindRelationInfo bmrInfo) {
+	public void delBMRById(Session sess, Integer bmrId) {
 		// TODO Auto-generated method stub
-		sess.delete(bmrInfo);
+		sess.delete((BuffetMindRelationInfo) sess.load(BuffetMindRelationInfo.class, bmrId));
 	}
 
 	@Override
@@ -95,9 +95,9 @@ public class BuffetAllDaoImpl implements BuffetAllDao{
 	}
 
 	@Override
-	public void delBARById(Session sess, BuffetAbilityRelationInfo barInfo) {
+	public void delBARById(Session sess, Integer barId) {
 		// TODO Auto-generated method stub
-		sess.delete(barInfo);
+		sess.delete((BuffetAbilityRelationInfo) sess.load(BuffetAbilityRelationInfo.class, barId));
 	}
 
 	@Override
@@ -106,20 +106,6 @@ public class BuffetAllDaoImpl implements BuffetAllDao{
 		// TODO Auto-generated method stub
 		String hql = " from BuffetAbilityRelationInfo as bar where bar.buffetQueInfo.id = "+buffetId + " order by bar.buffetAbilityTypeInfo.id asc";
 		return sess.createQuery(hql).list();
-	}
-
-	@Override
-	public void delBMRByBuddetId(Session sess, Integer buffetId) {
-		// TODO Auto-generated method stub
-		String hql = "delete from BuffetMindRelationInfo as bmr where bmr.buffet.id = "+buffetId;
-		sess.createQuery(hql).executeUpdate();
-	}
-
-	@Override
-	public void delBARByBuffetId(Session sess, Integer buffetId) {
-		// TODO Auto-generated method stub
-		String hql = "delete from BuffetAbilityRelationInfo as bar where bar.buffet.id = "+buffetId;
-		sess.createQuery(hql).executeUpdate();
 	}
 
 }
