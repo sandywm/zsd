@@ -776,7 +776,7 @@ public class BuffetAction extends DispatchAction {
 		String queResolution = Transcode.unescape_new1("queResolution", request);//解析
 		if(buffetId > 0){
 			BuffetQueInfo bq = bm.getEntityById(buffetId);
-			if(bq != null && !mindIdStr.equals("") && abilityIdStr.equals("")){
+			if(bq != null && !mindIdStr.equals("") && !abilityIdStr.equals("")){
 				boolean flag = bm.updateInfoById(buffetId, queSub, queAnswer, queTipId, lexId, queResolution, 
 						queType, answerA, answerB, answerC, answerD, answerE, answerF, CommonTools.getLoginAccount(request), CurrentTime.getCurrentTime());
 				if(flag){

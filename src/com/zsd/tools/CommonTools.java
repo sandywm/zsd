@@ -21,6 +21,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson.JSON;
+import com.zsd.factory.AppFactory;
+import com.zsd.module.LoreInfo;
+import com.zsd.service.LoreInfoManager;
 import com.zsd.util.Constants;
 
 public class CommonTools {
@@ -436,6 +439,32 @@ public class CommonTools {
 			}
 		}
 		return currentI;
+	}
+	
+	
+	/**
+	 * 获取本知识点对应的被引用的知识点编号
+	 * @author wm
+	 * @date 2019-6-2 下午04:56:50
+	 * @param loreId
+	 * @return
+	 */
+	public static Integer getQuoteLoreId(Integer loreId){
+		Integer realLoreId = 0;
+		try {
+			LoreInfoManager lm = (LoreInfoManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
+			LoreInfo lore = lm.getEntityById(loreId);
+			Integer quoteLoreId = lore.getMainLoreId();
+			if(quoteLoreId == 0){
+				realLoreId = loreId;
+			}else{
+				realLoreId = quoteLoreId;
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return realLoreId;
 	}
 	
 	public static void main(String[] args){

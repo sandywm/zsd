@@ -597,7 +597,7 @@ public class OnlineStudyAction extends DispatchAction {
 										currentLoreId = loreId;
 										nextLoreIdArray = currentLoreId + "";
 									}else if(step == 2){//表示已经开始下级关联子知识点的诊断loreId不等于currentLoreId
-										Integer answerNumber = 0;
+										Integer answerNumber = 0;//题数
 										String[] pathArray = path.split(":");
 										Integer currentI = CommonTools.getCurrentStep(pathArray,currentLoreId);
 										String[] currentPathArray = null;
@@ -612,6 +612,13 @@ public class OnlineStudyAction extends DispatchAction {
 										buttonValue = "继续诊断";
 										loreTypeName = "针对性诊断";
 										loreTaskName = task - 1+"级关联知识点诊断";
+										for(Integer k = 0 ; k < currentPathLength ; k++){
+											nextLoreIdArray += currentPathArray[k] + ",";
+											lqList = lqm.listInfoByLoreId(CommonTools.getQuoteLoreId(Integer.parseInt(currentPathArray[k])), loreTypeName, 0);
+											answerNumber += lqList.size();
+										}
+										money *= answerNumber;
+										nextLoreIdArray = nextLoreIdArray.substring(0, nextLoreIdArray.length() - 1);
 									}
 								}
 							}
