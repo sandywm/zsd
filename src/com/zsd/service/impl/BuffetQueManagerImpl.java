@@ -36,8 +36,8 @@ public class BuffetQueManagerImpl implements BuffetQueInfoManager{
 			Session sess = HibernateUtil.currentSession();
 			tran = sess.beginTransaction();
 			BuffetQueInfo bq = new BuffetQueInfo(baDao.getBTEntityById(sess, btId),lDao.getEntityById(sess, loreId), num,
-					title, subject, answer, lexId,tipsId, resolution, queType, order, answerA, answerA, answerA,
-					answerA, answerA, answerA, 0,operateUserName, operateDate);
+					title, subject, answer, lexId,tipsId, resolution, queType, order, answerA, answerB, answerC,
+					answerD, answerE, answerF, 0,operateUserName, operateDate);
 			bqDao.save(sess, bq);
 			tran.commit();
 			return bq.getId();

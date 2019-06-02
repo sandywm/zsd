@@ -515,7 +515,7 @@ public class BuffetAction extends DispatchAction {
 		String btName = bam.getEntityByBtId(btId).getTypes();
 		if(bq != null){
 			num = bq.getBuffetNum() + 1;
-			order = bq.getOrder() + 1;
+			order = bq.getQueOrder() + 1;
 		}else{
 			if(btName.equals("兴趣激发")){
 				order = 1;

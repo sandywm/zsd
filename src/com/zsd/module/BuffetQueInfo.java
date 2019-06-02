@@ -23,7 +23,7 @@ public class BuffetQueInfo implements java.io.Serializable {
 	private Integer tips;
 	private String resolution;
 	private String queType;
-	private Integer order;
+	private Integer queOrder;
 	private String a;
 	private String b;
 	private String c;
@@ -43,7 +43,7 @@ public class BuffetQueInfo implements java.io.Serializable {
 	/** full constructor */
 	public BuffetQueInfo(BuffetTypeInfo buffetTypeInfo,LoreInfo loreInfo, Integer buffetNum,
 			String title, String subject, String answer, Integer lexId,
-			Integer tips, String resolution, String queType, Integer order, String a, String b, String c,
+			Integer tips, String resolution, String queType, Integer queOrder, String a, String b, String c,
 			String d, String e, String f, Integer inUse,
 			String operateUserName, String operateDate) {
 		this.buffetTypeInfo = buffetTypeInfo;
@@ -56,7 +56,7 @@ public class BuffetQueInfo implements java.io.Serializable {
 		this.tips = tips;
 		this.resolution = resolution;
 		this.queType = queType;
-		this.order = order;
+		this.queOrder = queOrder;
 		this.a = a;
 		this.b = b;
 		this.c = c;
@@ -150,12 +150,12 @@ public class BuffetQueInfo implements java.io.Serializable {
 		this.queType = queType;
 	}
 
-	public Integer getOrder() {
-		return this.order;
+	public Integer getQueOrder() {
+		return this.queOrder;
 	}
 
-	public void setOrder(Integer order) {
-		this.order = order;
+	public void setQueOrder(Integer queOrder) {
+		this.queOrder = queOrder;
 	}
 
 	public String getA() {

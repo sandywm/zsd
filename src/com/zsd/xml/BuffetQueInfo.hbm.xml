@@ -60,8 +60,8 @@
                 <comment>题型一</comment>
             </column>
         </property>
-        <property name="order" type="java.lang.Integer">
-            <column name="order" not-null="true">
+        <property name="queOrder" type="java.lang.Integer">
+            <column name="que_order" not-null="true">
                 <comment>题库整体顺序(从1开始)</comment>
             </column>
         </property>
