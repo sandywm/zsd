@@ -38,7 +38,7 @@ public class BuffetQueInfoDaoImpl implements BuffetQueInfoDao{
 	public List<BuffetQueInfo> findPageInfoByLoreId(Session sess,
 			Integer loreId, Integer pageNo, Integer pageSize) {
 		// TODO Auto-generated method stub
-		String hql = " from BuffetQueInfo as bq where bq.loreInfo.id = "+loreId + " order by bq.order asc";
+		String hql = " from BuffetQueInfo as bq where bq.loreInfo.id = "+loreId + " order by bq.queOrder asc";
 		int offset = (pageNo - 1) * pageSize;
 		if (offset < 0) {
 			offset = 0;
@@ -69,7 +69,7 @@ public class BuffetQueInfoDaoImpl implements BuffetQueInfoDao{
 			hql += " order by bq.buffetNum desc";
 			return sess.createQuery(hql).setFirstResult(0).setMaxResults(1).list();
 		}else{
-			hql += " order by bq.order asc";
+			hql += " order by bq.queOrder asc";
 		}
 		return sess.createQuery(hql).list();
 	}

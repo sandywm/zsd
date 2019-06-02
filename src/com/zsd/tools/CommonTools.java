@@ -411,6 +411,33 @@ public class CommonTools {
 	}
 
 	
+	/**
+	 * 获取当前知识点编号的所在级数
+	 * @author wm
+	 * @date 2019-6-2 下午04:24:39
+	 * @param pathArray
+	 * @param currentLoreId
+	 * @return
+	 */
+	public static Integer getCurrentStep(String[] pathArray,Integer currentLoreId){
+		Integer currentI = 0;
+		boolean flag = false;
+		for(Integer i = 0 ; i < pathArray.length ; i++){
+			String[] currentPathArray = pathArray[i].split("\\|");
+			for(Integer j = 0 ; j < currentPathArray.length ; j++){
+				if(currentPathArray[j].equals(String.valueOf(currentLoreId))){
+					flag = true;
+					currentI = i;
+					break;
+				}
+			}
+			if(flag){
+				break;
+			}
+		}
+		return currentI;
+	}
+	
 	public static void main(String[] args){
 		Integer items[] = {1,2,3,4,5,11,12,21};
 		Integer[] need_del_items =  {2,11,4};

@@ -26,6 +26,7 @@ import com.zsd.module.GradeSubject;
 import com.zsd.module.LoreInfo;
 import com.zsd.module.LoreQuestion;
 import com.zsd.module.StuSubjectEduInfo;
+import com.zsd.module.StudyDetailInfo;
 import com.zsd.module.StudyLogInfo;
 import com.zsd.module.StudyTaskInfo;
 import com.zsd.module.Subject;
@@ -41,6 +42,7 @@ import com.zsd.service.GradeSubjectManager;
 import com.zsd.service.LoreInfoManager;
 import com.zsd.service.LoreQuestionManager;
 import com.zsd.service.StuSubjectEduManager;
+import com.zsd.service.StudyDetailManager;
 import com.zsd.service.StudyLogManager;
 import com.zsd.service.StudyTaskManager;
 import com.zsd.service.UserClassInfoManager;
@@ -520,6 +522,7 @@ public class OnlineStudyAction extends DispatchAction {
 		StudyLogManager slm = (StudyLogManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_LOG_INFO);
 		LoreInfoManager lm = (LoreInfoManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
 		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
+		StudyDetailManager sdm = (StudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_STUDY_DETAIL_INFO);
 		Integer loreId =  CommonTools.getFinalInteger("loreId", request);//知识点最初的编号
 		Integer studyLogId = CommonTools.getFinalInteger("studyLogId", request);//学习记录编号
 		Integer currentLoreId =  0;//当前知识点编号
@@ -539,6 +542,7 @@ public class OnlineStudyAction extends DispatchAction {
 		String loreTypeName = "针对性诊断";
 		Integer access = -1;//本级知识点完成状态
 		Integer quoteLoreId = 0;//通用知识点
+		String nextLoreIdArray = "";//下级知识典编号数组
 		if(loreId > 0){
 			LoreInfo lore = lm.getEntityById(loreId);
 			if(lore != null){
@@ -577,7 +581,40 @@ public class OnlineStudyAction extends DispatchAction {
 							Integer step = sl.getStep();//答题阶段--（针对性诊断-1、关联性诊断-2、关联知识点学习-3、本知识点学习-4、再次诊断-5）
 							Integer stepComplete = sl.getStepComplete();//本阶段整体完成情况--0:未完成,1:已完成
 							access = sl.getAccess();//本阶段详细完成情况（溯源诊断时分级完成情况）
-							
+							//从detail表中获取指定logId的最后一条详情
+							List<StudyDetailInfo> sdList = sdm.listInfoByLogId(studyLogId);
+							if(sdList.size() > 0){
+								//获取该题对应的知识点编号
+								currentLoreId = sdList.get(sdList.size() - 1).getLoreInfo().getId();
+								if(stepComplete == 0){//0:表示本阶段未完成（未做完题标记）
+									if(step == 1){//诊断题未做完---loreId==currentLoreId
+										buttonValue = "继续诊断";
+										loreTaskName = "针对性诊断";
+										loreTypeName = "针对性诊断";
+										lqList = lqm.listInfoByLoreId(quoteLoreId, loreTypeName, 0);
+										money *= lqList.size();
+										task = 1;
+										currentLoreId = loreId;
+										nextLoreIdArray = currentLoreId + "";
+									}else if(step == 2){//表示已经开始下级关联子知识点的诊断loreId不等于currentLoreId
+										Integer answerNumber = 0;
+										String[] pathArray = path.split(":");
+										Integer currentI = CommonTools.getCurrentStep(pathArray,currentLoreId);
+										String[] currentPathArray = null;
+										if(access == 0){//表示关联性诊断当前级还未完成。
+											currentPathArray = pathArray[currentI].split("\\|");
+										}else{//表示关联性诊断当前级已经完成，需要进行关联性诊断的下一级子知识点的关联性诊断
+											currentPathArray = pathArray[currentI + 1].split("\\|");
+											currentI = currentI + 1;
+										}
+										Integer currentPathLength = currentPathArray.length;
+										task = currentI + 1;
+										buttonValue = "继续诊断";
+										loreTypeName = "针对性诊断";
+										loreTaskName = task - 1+"级关联知识点诊断";
+									}
+								}
+							}
 						}
 					}
 				}else{

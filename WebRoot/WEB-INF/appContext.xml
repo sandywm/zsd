@@ -32,4 +32,5 @@
 	<app id="study_log_Web" class="com.zsd.service.impl.StudyLogManagerImpl"/>
 	<app id="study_task_Web" class="com.zsd.service.impl.StudyTaskManagerImpl"/>
 	<app id="relation_zd_result_Web" class="com.zsd.service.impl.RelationZdResultManagerImpl"/>
+	<app id="study_detail_Web" class="com.zsd.service.impl.StudyDetailManagerImpl"/>
 </appContext>
