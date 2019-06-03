@@ -29,6 +29,7 @@ public class BuffetLoreRelateManagerImpl implements BuffetLoreRelateInfoManager{
 		try {
 			bDao = (BuffetQueInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_BUFFET_QUE_INFO);
 			lDao = (LoreInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_LORE_INFO);
+			eDao = (EditionDao) DaoFactory.instance(null).getDao(Constants.DAO_EDITION_INFO);
 			blrDao = (BuffetLoreRelateInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_BUFFET_LORE_RELATE_INFO);
 			Session sess = HibernateUtil.currentSession();
 			tran = sess.beginTransaction();

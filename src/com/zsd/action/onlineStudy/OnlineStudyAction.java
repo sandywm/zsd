@@ -17,6 +17,9 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
 
+import com.kpoint.vo.LoreQuestionVO;
+import com.kpoint.vo.LoreVO;
+import com.kpoint.vo.StudyDetailVO;
 import com.zsd.factory.AppFactory;
 import com.zsd.module.Chapter;
 import com.zsd.module.ClassInfo;
@@ -619,6 +622,55 @@ public class OnlineStudyAction extends DispatchAction {
 										}
 										money *= answerNumber;
 										nextLoreIdArray = nextLoreIdArray.substring(0, nextLoreIdArray.length() - 1);
+									}else if(step == 3){//关联知识点学习
+										if(access == 4){//第一次进入再次诊断(列出再次诊断的全部试题)
+											task = sl.getTaskNumber();
+											pathType = "diagnosis";
+											buttonValue = "再次诊断";
+											loreTypeName = "再次诊断";
+											String[] pathArray = path.split(":");
+											Integer currentStep = CommonTools.getCurrentStep(pathArray, currentLoreId);
+											Integer stepNumber = currentStep;
+											LoreInfo lore_temp = lm.getEntityById(currentLoreId);
+											loreTaskName = stepNumber +"级关联知识点("+lore_temp.getLoreName()+")诊断";
+											//2014-10-22日修改（获取该知识典所有类型为loreTypeName的题型[0为题状态为有效状态]）
+											List<LoreQuestion> zcList = lqm.listInfoByLoreId(CommonTools.getQuoteLoreId(currentLoreId), loreTypeName, 0);
+											money *= zcList.size();
+											nextLoreIdArray = String.valueOf(currentLoreId);
+										}else if(access == 41){//开始学习
+											task = sl.getTaskNumber();
+											pathType = "study";
+											buttonValue = "开始学习";
+											loreTypeName = "再次诊断";
+											String[] pathArray = path.split(":");
+											
+											Integer currentStep = CommonTools.getCurrentStep(pathArray, currentLoreId);
+											Integer stepNumber = currentStep;
+
+											LoreInfo lore_temp = lm.getEntityById(currentLoreId);
+											loreTaskName = stepNumber +"级关联知识点("+lore_temp.getLoreName()+")学习";
+											money = 0;
+											nextLoreIdArray = String.valueOf(currentLoreId);
+										}else if(access == 3){//之前有做过再次诊断，但未全部正确（做错题的不重复列表）
+											task = sl.getTaskNumber();
+											pathType = "diagnosis";
+											buttonValue = "继续诊断";
+											loreTypeName = "再次诊断";
+											String[] pathArray = path.split(":");
+											
+											Integer currentStep = CommonTools.getCurrentStep(pathArray, currentLoreId);
+											Integer  stepNumber = currentStep;
+											LoreInfo lore_temp = lm.getEntityById(currentLoreId);
+											loreTaskName = stepNumber +"级关联知识点("+lore_temp.getLoreName()+")诊断";
+											//2014-10-22日修改（获取该知识典所有类型为loreTypeName的题型[0为题状态为有效状态]）
+											//最对的题
+//											List<StudyDetailVO> sdList_current_right = sdManager.listCurrentRightInfoByLogId(studyLogId, currentLoreId, loreTypeName);
+//											//该知识点类型为再次诊断的全部题
+//											List<LoreQuestionVO> zcList = lqm.listInfoByOption(this.getQuoteLoreId(currentLoreId), loreTypeName, 0);
+//											//该知识点答对的题
+//											money *= zcList.size() - sdList_current_right.size();
+//											nextLoreIdArray = String.valueOf(currentLoreId);
+										}
 									}
 								}
 							}
