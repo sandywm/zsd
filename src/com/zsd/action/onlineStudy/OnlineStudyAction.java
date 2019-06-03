@@ -676,7 +676,7 @@ public class OnlineStudyAction extends DispatchAction {
 											Integer currentStep = CommonTools.getCurrentStep(pathArray, currentLoreId);
 											Integer  stepNumber = currentStep;
 											LoreInfo lore_temp = lm.getEntityById(currentLoreId);
-											loreTaskName = stepNumber +"级关联知识点("+lore.getLoreName()+")学习";
+											loreTaskName = stepNumber +"级关联知识点("+lore_temp.getLoreName()+")学习";
 											money = 0;//学习的没金币
 											nextLoreIdArray = String.valueOf(currentLoreId);
 										}else if(access == 2){//5部学习法(金币为0)
@@ -690,7 +690,7 @@ public class OnlineStudyAction extends DispatchAction {
 											Integer stepNumber = currentStep;
 
 											LoreInfo lore_temp = lm.getEntityById(currentLoreId);
-											loreTaskName = stepNumber +"级关联知识点("+lore.getLoreName()+")学习";
+											loreTaskName = stepNumber +"级关联知识点("+lore_temp.getLoreName()+")学习";
 											money = 0;
 											nextLoreIdArray = String.valueOf(currentLoreId);
 										}else if(access == 1){//当前知识点的再次诊断完成，需要定位到下一个知识
@@ -698,23 +698,97 @@ public class OnlineStudyAction extends DispatchAction {
 											pathType = "study";
 											loreTypeName = "再次诊断";
 											String[] pathArray = path.split(":");
-//											String studyPath_new = this.getCurrentStudyPath_new(studyPath, currentLoreId);//获取当前知识点以后的知识点
-//											if(studyPath_new.split(":").length == 1){
-//												buttonValue = "本知识点学习";
-//												loreTaskName = "学习本知识点";
-//												money = 0;
-//												nextLoreIdArray = String.valueOf(loreId);
-//											}else{
-//												buttonValue = "开始学习";
-//												Integer currentLoreId_new = Integer.parseInt(studyPath_new.split(":")[0].split("\\|")[0]);
-//												Integer currentStep = this.getCurrentStep(pathArray, currentLoreId_new);
-//												Integer stepNumber = currentStep;
-//												List<LoreVO> loreList = lm.listLoreById(currentLoreId_new);
-//												loreTaskName = stepNumber +"级关联知识点("+loreList.get(0).getLoreName()+")学习";
-//												money = 0;
-//												nextLoreIdArray = String.valueOf(currentLoreId_new);
-//											}
+											String studyPath_new = CommonTools.getCurrentStudyPath_new(studyPath, currentLoreId);//获取当前知识点以后的知识点
+											if(studyPath_new.split(":").length == 1){
+												buttonValue = "本知识点学习";
+												loreTaskName = "学习本知识点";
+												money = 0;
+												nextLoreIdArray = String.valueOf(loreId);
+											}else{
+												buttonValue = "开始学习";
+												Integer currentLoreId_new = Integer.parseInt(studyPath_new.split(":")[0].split("\\|")[0]);
+												Integer currentStep = CommonTools.getCurrentStep(pathArray, currentLoreId_new);
+												Integer stepNumber = currentStep;
+												LoreInfo lore_temp = lm.getEntityById(currentLoreId_new);
+												loreTaskName = stepNumber +"级关联知识点("+lore_temp.getLoreName()+")学习";
+												money = 0;
+												nextLoreIdArray = String.valueOf(currentLoreId_new);
+											}
+										}else if(access == 0){//表示题没做完,继续诊断
+											task = sl.getTaskNumber();
+											pathType = "diagnosis";
+											buttonValue = "继续诊断";
+											loreTypeName = "再次诊断";
+											String[] pathArray = path.split(":");
 											
+											Integer currentStep = CommonTools.getCurrentStep(pathArray, currentLoreId);
+											Integer stepNumber = currentStep;//因为是当前知识点的下一级
+
+											LoreInfo lore_temp = lm.getEntityById(currentLoreId);
+											loreTaskName = stepNumber +"级关联知识点("+lore_temp.getLoreName()+")学习";
+											//做过的题和剩下的题拼装
+											//全部题
+											//根据全部再次诊断题除去该知识典做对的题就是目前需要在测试的再次诊断题
+											//2014-10-22日修改（获取该知识典所有类型为loreTypeName的题型[0为题状态为有效状态]）
+											List<LoreQuestion> lqList_all = lqm.listInfoByLoreId(CommonTools.getQuoteLoreId(currentLoreId), loreTypeName, 0);
+//											已做的题（这个时候肯定没有重复的题）
+											//获取最后一道已做过的题
+											 List<StudyDetailInfo> lastList = sdm.listLastInfoByLogId(studyLogId, currentLoreId, "");
+											 List<StudyDetailInfo> sdList_pre_right = new ArrayList<StudyDetailInfo>();
+											 if(lastList.size() > 0){//表示存在最后一次诊断记录(列出的题为)
+												 if(lastList.get(0).getLoreQuestion().getLoreTypeName().equals("再次诊断")){//说明最后做的一道题是再次诊断题，表示题还未做完
+													 //当前阶段刚做过的再次诊断题列表
+													 Integer completeTimes = lastList.get(0).getCompleteTimes();
+													 //获取不是当前级别所有做正确的再次诊断题
+													 sdList_pre_right = sdm.listPretRightInfoByLogId(studyLogId, currentLoreId, loreTypeName, completeTimes);
+												 }
+											 }
+											money *= (lqList_all.size() - sdList_pre_right.size());//一直显示全部题的金币数
+											nextLoreIdArray = String.valueOf(currentLoreId);
+										}
+									}else if(step == 4){//本知识点学习
+										if(access == 4){//学习完还没再次诊断
+											task = sl.getTaskNumber();
+											pathType = "diagnosis";
+											buttonValue = "本知识点诊断";
+											loreTypeName = "再次诊断";
+											loreTaskName = "本知识点诊断";
+											//根据全部再次诊断题除去该知识典做对的题就是目前需要在测试的再次诊断题
+											//2014-10-22日修改（获取该知识典所有类型为loreTypeName的题型[0为题状态为有效状态]）
+											List<LoreQuestion> zcList = lqm.listInfoByLoreId(CommonTools.getQuoteLoreId(currentLoreId), loreTypeName, 0);
+											money *= zcList.size();
+											nextLoreIdArray = String.valueOf(loreId);
+										}else if(access == 41){//还没学习
+											task = sl.getTaskNumber();
+											pathType = "study";
+											buttonValue = "开始学习";
+											loreTypeName = "再次诊断";
+											loreTaskName = "学习本知识点";
+											money = 0;
+											nextLoreIdArray = String.valueOf(loreId);
+										}else if(access == 3){//之前有做过再次诊断，但未全部正确（做错题的不重复列表）
+											task = sl.getTaskNumber();
+											pathType = "diagnosis";
+											buttonValue = "继续诊断";
+											loreTypeName = "再次诊断";
+											loreTaskName = "本知识点诊断";
+											//根据全部再次诊断题除去该知识典做对的题就是目前需要在测试的再次诊断题
+											//2014-10-22日修改（获取该知识典所有类型为loreTypeName的题型[0为题状态为有效状态]）
+											//做对的题
+											List<StudyDetailInfo> sdList_current_right = sdm.listCurrentRightInfoByLogId(studyLogId, quoteLoreId, loreTypeName);
+											//该知识点类型为再次诊断的全部题
+											List<LoreQuestion> zcList = lqm.listInfoByLoreId(CommonTools.getQuoteLoreId(currentLoreId), loreTypeName, 0);
+											//该知识点答对的题
+											money *= zcList.size() - sdList_current_right.size();
+											nextLoreIdArray = String.valueOf(loreId);
+										}else if(access == 31){//继续学习
+											task = sl.getTaskNumber();
+											pathType = "study";
+											buttonValue = "继续学习";
+											loreTypeName = "再次诊断";
+											loreTaskName = "学习本知识点";
+											money = 0;//学习的没金币
+											nextLoreIdArray = String.valueOf(currentLoreId);
 										}
 									}
 								}

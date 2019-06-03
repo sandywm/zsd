@@ -467,6 +467,39 @@ public class CommonTools {
 		return realLoreId;
 	}
 	
+	/**
+	 * 根据当前currentLoreId截取studyPath(当前知识典除去)获取当前知识点以后的知识点
+	 * @author wm
+	 * @date 2019-6-3 下午04:38:35
+	 * @param studyPath 学习路线
+	 * @param currentLoreId 当前知识点
+	 * @return
+	 */
+	public static String getCurrentStudyPath_new(String studyPath,Integer currentLoreId){
+		String studyPath_new = "";
+		boolean flag = false;
+		for(int i = 0 ; i < studyPath.split(":").length; i++){
+			String[] path1 = studyPath.split(":")[i].split("\\|");
+			for(int j = 0 ; j < path1.length ; j++){
+				if(path1[j].equals(String.valueOf(currentLoreId))){
+					flag = true;
+				}else{
+					if(flag == true){
+						studyPath_new += path1[j] + "|";
+					}
+				}
+			}
+			if(studyPath_new.length() > 0 ){
+				studyPath_new = studyPath_new.substring(0, studyPath_new.length() - 1);
+				studyPath_new += ":";
+			}
+		}
+		if(studyPath_new.length() > 0 ){
+			studyPath_new = studyPath_new.substring(0, studyPath_new.length() - 1);
+		}
+		return studyPath_new;
+	}
+	
 	public static void main(String[] args){
 		Integer items[] = {1,2,3,4,5,11,12,21};
 		Integer[] need_del_items =  {2,11,4};

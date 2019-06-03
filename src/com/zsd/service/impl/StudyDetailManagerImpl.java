@@ -89,4 +89,39 @@ public class StudyDetailManagerImpl implements StudyDetailManager{
 		}
 	}
 
+	@Override
+	public List<StudyDetailInfo> listLastInfoByLogId(Integer studyLogId,
+			Integer loreId, String loreTypeName) throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			sdDao = (StudyDetailDao) DaoFactory.instance(null).getDao(Constants.DAO_STUDY_DETAIL_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return sdDao.findLastInfoByLogId(sess, studyLogId, loreId, loreTypeName);
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			throw new WEBException("根据学习记录编号和知识点编号和知识点诊断类型获取最后一条数据列表时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public List<StudyDetailInfo> listPretRightInfoByLogId(Integer studyLogId,
+			Integer loreId, String loreTypeName, Integer completeTimes)
+			throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			sdDao = (StudyDetailDao) DaoFactory.instance(null).getDao(Constants.DAO_STUDY_DETAIL_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return sdDao.findPretRightInfoByLogId(sess, studyLogId, loreId, loreTypeName, completeTimes);
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			throw new WEBException("根据学习记录编号获取当前级知识点所有答对的再次诊断并且不是当前阶段所做的记录列表时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
 }
