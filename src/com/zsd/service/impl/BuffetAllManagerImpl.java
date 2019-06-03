@@ -119,17 +119,16 @@ public class BuffetAllManagerImpl implements BuffetAllManager{
 	}
 
 	@Override
-	public void delBMR(String bmrIdStr) throws WEBException {
+	public void delBMR(Integer buffetId) throws WEBException {
 		// TODO Auto-generated method stub
 		try {
 			baDao = (BuffetAllDao) DaoFactory.instance(null).getDao(Constants.DAO_BUFFET_ALL_INFO);
 			Session sess = HibernateUtil.currentSession();
 			tran = sess.beginTransaction();
-			if(!bmrIdStr.equals("")){
-				String[] bmrIdArr = bmrIdStr.split(",");
-				for(int i = 0 ; i < bmrIdArr.length ; i++){
-					Integer bmrId = Integer.parseInt(bmrIdArr[i]);
-					baDao.delBMRById(sess, bmrId);
+			List<BuffetMindRelationInfo> bmrList = baDao.findBMRInfoByBuffetId(sess, buffetId);
+			if(bmrList.size() > 0){
+				for(int i = 0 ; i < bmrList.size() ; i++){
+					baDao.delBMR(sess, bmrList.get(i));
 					if(i % 10 == 0){//批插入的对象立即写入数据库并释放内存
 						sess.flush();
 						sess.clear();
@@ -194,17 +193,16 @@ public class BuffetAllManagerImpl implements BuffetAllManager{
 	}
 
 	@Override
-	public void delBAR(String barIdStr) throws WEBException {
+	public void delBAR(Integer buffetId) throws WEBException {
 		// TODO Auto-generated method stub
 		try {
 			baDao = (BuffetAllDao) DaoFactory.instance(null).getDao(Constants.DAO_BUFFET_ALL_INFO);
 			Session sess = HibernateUtil.currentSession();
 			tran = sess.beginTransaction();
-			if(!barIdStr.equals("")){
-				String[] barIdArr = barIdStr.split(",");
-				for(int i = 0 ; i < barIdArr.length ; i++){
-					Integer bmrId = Integer.parseInt(barIdArr[i]);
-					baDao.delBMRById(sess, bmrId);
+			List<BuffetAbilityRelationInfo> barList = baDao.findBARInfoByBuffetId(sess, buffetId);
+			if(barList.size() > 0){
+				for(int i = 0 ; i < barList.size() ; i++){
+					baDao.delBAR(sess, barList.get(i));
 					if(i % 10 == 0){//批插入的对象立即写入数据库并释放内存
 						sess.flush();
 						sess.clear();

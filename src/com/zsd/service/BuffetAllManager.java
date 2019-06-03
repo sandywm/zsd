@@ -68,10 +68,10 @@ public interface BuffetAllManager {
 	 * 删除指定自助餐下所有的思维关联信息
 	 * @author wm
 	 * @date 2019-5-17 下午06:22:09
-	 * @param bmrIdStr 关联编号-逗号分隔
+	 * @param buffetId 自助餐编号
 	 * @throws WEBException
 	 */
-	void delBMR(String bmrIdStr) throws WEBException;
+	void delBMR(Integer buffetId) throws WEBException;
 	
 	/**
 	 * 获取指定自助餐下的思维关联信息列表
@@ -98,10 +98,10 @@ public interface BuffetAllManager {
 	 * 删除指定自助餐下所有的能力类型关联信息
 	 * @author wm
 	 * @date 2019-5-17 下午06:23:03
-	 * @param barIdStr 关联编号-逗号分隔
+	 * @param buffetId 自助餐编号
 	 * @throws WEBException
 	 */
-	void delBAR(String barIdStr) throws WEBException;
+	void delBAR(Integer buffetId) throws WEBException;
 	
 	/**
 	 * 获取指定自助餐下的能力关联信息列表

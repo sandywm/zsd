@@ -75,9 +75,9 @@ public class BuffetAllDaoImpl implements BuffetAllDao{
 	}
 
 	@Override
-	public void delBMRById(Session sess, Integer bmrId) {
+	public void delBMR(Session sess, BuffetMindRelationInfo bmrInfo) {
 		// TODO Auto-generated method stub
-		sess.delete((BuffetMindRelationInfo) sess.load(BuffetMindRelationInfo.class, bmrId));
+		sess.delete(bmrInfo);
 	}
 
 	@Override
@@ -95,9 +95,9 @@ public class BuffetAllDaoImpl implements BuffetAllDao{
 	}
 
 	@Override
-	public void delBARById(Session sess, Integer barId) {
+	public void delBAR(Session sess, BuffetAbilityRelationInfo barInfo) {
 		// TODO Auto-generated method stub
-		sess.delete((BuffetAbilityRelationInfo) sess.load(BuffetAbilityRelationInfo.class, barId));
+		sess.delete(barInfo);
 	}
 
 	@Override

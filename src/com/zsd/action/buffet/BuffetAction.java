@@ -781,24 +781,8 @@ public class BuffetAction extends DispatchAction {
 						queType, answerA, answerB, answerC, answerD, answerE, answerF, CommonTools.getLoginAccount(request), CurrentTime.getCurrentTime());
 				if(flag){
 					//修改能力、思维关联信息
-					List<BuffetAbilityRelationInfo>  barList = bam.listBARInfoByBuffetId(buffetId);
-					List<BuffetMindRelationInfo> bmrList = bam.listBMRInfoByBuffetId(buffetId);
-					String barIdStr = "";
-					String bmrIdStr = "";
-					for(BuffetAbilityRelationInfo bar : barList){
-						barIdStr += bar.getId() + ",";
-					}
-					for(BuffetMindRelationInfo bmr : bmrList){
-						bmrIdStr += bmr.getId() + ",";
-					}
-					if(!barIdStr.equals("")){
-						barIdStr = barIdStr.substring(0,barIdStr.length() - 1);
-						bam.delBAR(barIdStr);
-					}
-					if(!bmrIdStr.equals("")){
-						bmrIdStr = bmrIdStr.substring(0,bmrIdStr.length() - 1);
-						bam.delBMR(bmrIdStr);
-					}
+					bam.delBAR(buffetId);
+					bam.delBMR(buffetId);
 					bam.addBAR(buffetId, abilityIdStr);
 					bam.addBMR(buffetId, mindIdStr);
 					msg = "success";
