@@ -19,6 +19,7 @@ import org.apache.struts.actions.DispatchAction;
 import com.zsd.factory.AppFactory;
 import com.zsd.module.BuffetLoreRelateInfo;
 import com.zsd.module.BuffetQueInfo;
+import com.zsd.module.Education;
 import com.zsd.module.json.LoreBuffetTreeMenuJson;
 import com.zsd.module.json.MySimpleTreeNode;
 import com.zsd.service.BuffetLoreRelateInfoManager;
@@ -95,22 +96,35 @@ public class BuffetLoreRelateAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
 		BuffetLoreRelateInfoManager blrm = (BuffetLoreRelateInfoManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_LORE_RELATE_INFO);
+		BuffetQueInfoManager bm = (BuffetQueInfoManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_QUE_INFO);
 		Integer buffetId = CommonTools.getFinalInteger("buffetId", request);
 		List<BuffetLoreRelateInfo> blrList = blrm.listInfoByBuffetId(buffetId);
 		Integer blrSize = blrList.size();
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "noInfo";
-		if(blrSize > 0){
-			msg = "success";
-			List<Object> list_d = new ArrayList<Object>();
-			for(Integer i = 0 ; i < blrSize ; i++){
-				BuffetLoreRelateInfo blr = blrList.get(i);
-				Map<String,Object> map_d = new HashMap<String,Object>();
-				map_d.put("blrId", blr.getId());
-				map_d.put("relateLoreName", blr.getLoreInfoByLoreId().getLoreName());
-				list_d.add(map_d);
+		BuffetQueInfo bq = bm.getEntityById(buffetId);
+		if(bq != null){
+			Education edu = bq.getLoreInfo().getChapter().getEducation();
+			Integer subId = edu.getGradeSubject().getSubject().getId();
+			Integer gsId = edu.getGradeSubject().getId();
+			Integer ediId = edu.getEdition().getId();
+			Integer eduId = edu.getId();
+			map.put("subId", subId);
+			map.put("gsId", gsId);
+			map.put("ediId", ediId);
+			map.put("eduId", eduId);
+			if(blrSize > 0){
+				msg = "success";
+				List<Object> list_d = new ArrayList<Object>();
+				for(Integer i = 0 ; i < blrSize ; i++){
+					BuffetLoreRelateInfo blr = blrList.get(i);
+					Map<String,Object> map_d = new HashMap<String,Object>();
+					map_d.put("blrId", blr.getId());
+					map_d.put("relateLoreName", blr.getLoreInfoByLoreId().getLoreName());
+					list_d.add(map_d);
+				}
+				map.put("loreList", list_d);
 			}
-			map.put("loreList", list_d);
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
