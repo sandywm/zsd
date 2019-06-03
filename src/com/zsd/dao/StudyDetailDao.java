@@ -55,5 +55,17 @@ public interface StudyDetailDao {
 	 */
 	List<StudyDetailInfo> findInfoByLogId(Session sess,Integer studyLogId);
 	
+	/**
+	 * 根据学习记录编号获取当前级知识点所有答对的再次诊断记录列表
+	 * @author wm
+	 * @date 2019-6-3 上午11:52:43
+	 * @param sess
+	 * @param studyLogId 学习记录编号
+	 * @param loreId 当前知识典编号
+	 * @param loreTypeName 答题类型
+	 * @return
+	 */
+	List<StudyDetailInfo> findCurrentRightInfoByLogId(Session sess,Integer studyLogId,Integer loreId,String loreTypeName);
+	
 	
 }

@@ -793,4 +793,78 @@ public class BuffetAction extends DispatchAction {
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
+	
+	/**
+	 * 获取指定自助餐关联的词条信息
+	 * @author wm
+	 * @date 2019-6-3 下午04:13:08
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getRelationLexInfo(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		BuffetQueInfoManager bm = (BuffetQueInfoManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_QUE_INFO);
+		LexInfoManager lexm = (LexInfoManager) AppFactory.instance(null).getApp(Constants.WEB_LEX_INFO);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "error";
+		Integer buffetId =  CommonTools.getFinalInteger("buffetId", request);
+		if(buffetId > 0){
+			BuffetQueInfo bq = bm.getEntityById(buffetId);
+			if(bq != null){
+				Integer lexId = bq.getLexId();
+				if(lexId > 0){
+					LexInfo lex = lexm.getEntityById(lexId);
+					if(lex != null){
+						msg = "success";
+						map.put("lexTitle", lex.getLexTitle());
+						map.put("lexContent", lex.getLexContent());
+					}
+				}else{
+					msg = "noInfo";
+				}
+			}
+		}
+		map.put("result", msg);
+		map.put("buffetId", buffetId);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 修改指定自助餐的关联词条
+	 * @author wm
+	 * @date 2019-6-3 下午04:19:50
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward updateRelationLexInfo(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		BuffetQueInfoManager bm = (BuffetQueInfoManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_QUE_INFO);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "error";
+		Integer buffetId =  CommonTools.getFinalInteger("buffetId", request);
+		Integer lexId =  CommonTools.getFinalInteger("lexId", request);
+		if(buffetId > 0 && lexId >= 0){
+			BuffetQueInfo bq = bm.getEntityById(buffetId);
+			if(bq != null){
+				if(!lexId.equals(bq.getLexId())){//不相同执行数据库操作
+					bm.updateLexInfoById(buffetId, lexId);
+				}
+				msg = "success";
+			}
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
 }

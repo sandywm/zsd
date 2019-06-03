@@ -17,9 +17,6 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
 
-import com.kpoint.vo.LoreQuestionVO;
-import com.kpoint.vo.LoreVO;
-import com.kpoint.vo.StudyDetailVO;
 import com.zsd.factory.AppFactory;
 import com.zsd.module.Chapter;
 import com.zsd.module.ClassInfo;
@@ -35,7 +32,6 @@ import com.zsd.module.StudyTaskInfo;
 import com.zsd.module.Subject;
 import com.zsd.module.User;
 import com.zsd.module.UserClassInfo;
-import com.zsd.module.json.LoreTreeMenu;
 import com.zsd.module.json.LoreTreeMenuJson;
 import com.zsd.module.json.MyTreeNode;
 import com.zsd.service.ChapterManager;
@@ -663,13 +659,62 @@ public class OnlineStudyAction extends DispatchAction {
 											LoreInfo lore_temp = lm.getEntityById(currentLoreId);
 											loreTaskName = stepNumber +"级关联知识点("+lore_temp.getLoreName()+")诊断";
 											//2014-10-22日修改（获取该知识典所有类型为loreTypeName的题型[0为题状态为有效状态]）
-											//最对的题
-//											List<StudyDetailVO> sdList_current_right = sdManager.listCurrentRightInfoByLogId(studyLogId, currentLoreId, loreTypeName);
+											//做对的题
+											List<StudyDetailInfo> sdList_current_right = sdm.listCurrentRightInfoByLogId(studyLogId, quoteLoreId, loreTypeName);
 //											//该知识点类型为再次诊断的全部题
-//											List<LoreQuestionVO> zcList = lqm.listInfoByOption(this.getQuoteLoreId(currentLoreId), loreTypeName, 0);
+											List<LoreQuestion> zcList = lqm.listInfoByLoreId(CommonTools.getQuoteLoreId(currentLoreId), loreTypeName, 0);
 //											//该知识点答对的题
-//											money *= zcList.size() - sdList_current_right.size();
-//											nextLoreIdArray = String.valueOf(currentLoreId);
+											money *= zcList.size() - sdList_current_right.size();
+											nextLoreIdArray = String.valueOf(currentLoreId);
+										}else if(access == 31){//继续学习
+											task = sl.getTaskNumber();
+											pathType = "study";
+											buttonValue = "继续学习";
+											loreTypeName = "再次诊断";
+											String[] pathArray = path.split(":");
+											
+											Integer currentStep = CommonTools.getCurrentStep(pathArray, currentLoreId);
+											Integer  stepNumber = currentStep;
+											LoreInfo lore_temp = lm.getEntityById(currentLoreId);
+											loreTaskName = stepNumber +"级关联知识点("+lore.getLoreName()+")学习";
+											money = 0;//学习的没金币
+											nextLoreIdArray = String.valueOf(currentLoreId);
+										}else if(access == 2){//5部学习法(金币为0)
+											task = sl.getTaskNumber();
+											pathType = "diagnosis";
+											buttonValue = "开始学习";
+											loreTypeName = "再次诊断";
+											String[] pathArray = path.split(":");
+											
+											Integer currentStep = CommonTools.getCurrentStep(pathArray, currentLoreId);
+											Integer stepNumber = currentStep;
+
+											LoreInfo lore_temp = lm.getEntityById(currentLoreId);
+											loreTaskName = stepNumber +"级关联知识点("+lore.getLoreName()+")学习";
+											money = 0;
+											nextLoreIdArray = String.valueOf(currentLoreId);
+										}else if(access == 1){//当前知识点的再次诊断完成，需要定位到下一个知识
+											task = sl.getTaskNumber();
+											pathType = "study";
+											loreTypeName = "再次诊断";
+											String[] pathArray = path.split(":");
+//											String studyPath_new = this.getCurrentStudyPath_new(studyPath, currentLoreId);//获取当前知识点以后的知识点
+//											if(studyPath_new.split(":").length == 1){
+//												buttonValue = "本知识点学习";
+//												loreTaskName = "学习本知识点";
+//												money = 0;
+//												nextLoreIdArray = String.valueOf(loreId);
+//											}else{
+//												buttonValue = "开始学习";
+//												Integer currentLoreId_new = Integer.parseInt(studyPath_new.split(":")[0].split("\\|")[0]);
+//												Integer currentStep = this.getCurrentStep(pathArray, currentLoreId_new);
+//												Integer stepNumber = currentStep;
+//												List<LoreVO> loreList = lm.listLoreById(currentLoreId_new);
+//												loreTaskName = stepNumber +"级关联知识点("+loreList.get(0).getLoreName()+")学习";
+//												money = 0;
+//												nextLoreIdArray = String.valueOf(currentLoreId_new);
+//											}
+											
 										}
 									}
 								}

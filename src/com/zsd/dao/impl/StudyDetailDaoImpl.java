@@ -43,8 +43,16 @@ public class StudyDetailDaoImpl implements StudyDetailDao{
 	public List<StudyDetailInfo> findInfoByLogId(Session sess,
 			Integer studyLogId) {
 		// TODO Auto-generated method stub
-		String hq =" from StudyDetailInfo as sd where sd.studyLogInfo.id = "+studyLogId;
-		return sess.createQuery(hq).list();
+		String hql =" from StudyDetailInfo as sd where sd.studyLogInfo.id = "+studyLogId;
+		return sess.createQuery(hql).list();
+	}
+
+	@Override
+	public List<StudyDetailInfo> findCurrentRightInfoByLogId(Session sess,
+			Integer studyLogId, Integer loreId, String loreTypeName) {
+		// TODO Auto-generated method stub
+		String hql = " from StudyDetailInfo as sd where sd.studyLogInfo.id = "+studyLogId + " and sd.loreQuestion.loreTypeName = '"+loreTypeName+"' and sd.result = 1 and sd.loreInfo.id = "+loreId;
+		return sess.createQuery(hql).list();
 	}
 
 }

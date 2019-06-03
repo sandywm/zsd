@@ -207,4 +207,29 @@ public class BuffetQueManagerImpl implements BuffetQueInfoManager{
 		}
 	}
 
+	@Override
+	public boolean updateLexInfoById(Integer buffetId, Integer lexId)
+			throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			bqDao = (BuffetQueInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_BUFFET_QUE_INFO);
+			Session sess = HibernateUtil.currentSession();
+			tran = sess.beginTransaction();
+			BuffetQueInfo bq = bqDao.getEntityById(sess, buffetId);
+			if(bq != null){
+				bq.setLexId(lexId);
+				bqDao.update(sess, bq);
+				tran.commit();
+				return true;
+			}
+			return false;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new WEBException("修改自助餐的关联词条信息时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
 }

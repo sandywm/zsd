@@ -72,4 +72,21 @@ public class StudyDetailManagerImpl implements StudyDetailManager{
 		}
 	}
 
+	@Override
+	public List<StudyDetailInfo> listCurrentRightInfoByLogId(Integer studyLogId, Integer loreId, String loreTypeName)
+			throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			sdDao = (StudyDetailDao) DaoFactory.instance(null).getDao(Constants.DAO_STUDY_DETAIL_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return sdDao.findCurrentRightInfoByLogId(sess, studyLogId, loreId, loreTypeName);
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			throw new WEBException("根据学习记录编号获取当前级知识点所有答对的指定答题类型记录列表时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
 }

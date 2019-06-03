@@ -96,6 +96,17 @@ public interface BuffetQueInfoManager {
 	boolean updateInUseStatusById(Integer buffetId,Integer inUse,String operateUserName,String operateDate)throws WEBException;
 	
 	/**
+	 * 修改自助餐的关联词条信息
+	 * @author wm
+	 * @date 2019-6-3 下午04:23:43
+	 * @param buffetId 自助餐编号
+	 * @param lexId 词条编号
+	 * @return
+	 * @throws WEBException
+	 */
+	boolean updateLexInfoById(Integer buffetId,Integer lexId)throws WEBException;
+	
+	/**
 	 * 获取指定知识点编号和指定基础类型下的最后一个巴菲特题记录(获取下一个最大的的num和order)
 	 * @author wm
 	 * @date 2019-5-17 下午07:06:14

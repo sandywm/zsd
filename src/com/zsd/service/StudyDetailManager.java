@@ -2,6 +2,8 @@ package com.zsd.service;
 
 import java.util.List;
 
+import org.hibernate.Session;
+
 import com.zsd.exception.WEBException;
 import com.zsd.module.StudyDetailInfo;
 
@@ -43,4 +45,17 @@ public interface StudyDetailManager {
 	 * @throws WEBException
 	 */
 	List<StudyDetailInfo> listInfoByLogId(Integer studyLogId) throws WEBException;
+	
+	/**
+	 * 根据学习记录编号获取当前级知识点所有答对的指定答题类型的记录列表
+	 * @author wm
+	 * @date 2019-6-3 上午11:56:23
+	 * @param sess
+	 * @param studyLogId 学习记录编号
+	 * @param loreId 当前知识典编号
+	 * @param loreTypeName 答题类型
+	 * @return
+	 * @throws WEBException
+	 */
+	List<StudyDetailInfo> listCurrentRightInfoByLogId(Integer studyLogId, Integer loreId, String loreTypeName) throws WEBException;
 }
