@@ -522,6 +522,7 @@ public class OnlineStudyAction extends DispatchAction {
 		LoreInfoManager lm = (LoreInfoManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
 		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
 		StudyDetailManager sdm = (StudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_STUDY_DETAIL_INFO);
+		Map<String,Object> map = new HashMap<String,Object>();
 		Integer loreId =  CommonTools.getFinalInteger("loreId", request);//知识点最初的编号
 		Integer studyLogId = CommonTools.getFinalInteger("studyLogId", request);//学习记录编号
 		Integer currentLoreId =  0;//当前知识点编号
@@ -542,9 +543,11 @@ public class OnlineStudyAction extends DispatchAction {
 		Integer access = -1;//本级知识点完成状态
 		Integer quoteLoreId = 0;//通用知识点
 		String nextLoreIdArray = "";//下级知识典编号数组
+		String loreName = "";
 		if(loreId > 0){
 			LoreInfo lore = lm.getEntityById(loreId);
 			if(lore != null){
+				loreName = lore.getLoreName();
 				msg = "success";
 				if(lore.getInUse().equals(0)){//知识点有效才能继续
 					quoteLoreId = lore.getMainLoreId();//通用知识点才有题
@@ -915,8 +918,37 @@ public class OnlineStudyAction extends DispatchAction {
 				}else{
 					msg = "inUseError";//知识点无效，不能继续11
 				}
+				map.put("loreTaskName", loreTaskName);
+				map.put("coin", money);
+				map.put("stepCount", stepCount);
+				map.put("loreCount", loreCount);
+				map.put("buttonValue", buttonValue);
+				map.put("task", task);
+				map.put("nextLoreIdArray", nextLoreIdArray);
+				map.put("currentLoreId", currentLoreId);
+				map.put("pathType", pathType);
+				map.put("loreName", loreName);
 			}
 		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
 		return null;
+	}
+	
+	/**
+	 * 导向溯源路线图页面
+	 * @author wm
+	 * @date 2019-6-4 下午05:01:05
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward goTracebackPage(ActionMapping mapping ,ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+	
+		return mapping.findForward("tracePage");
 	}
 }

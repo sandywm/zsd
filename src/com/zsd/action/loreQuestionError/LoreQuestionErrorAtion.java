@@ -27,6 +27,7 @@ import com.zsd.service.LexInfoManager;
 import com.zsd.service.LoreQuestionErrorManager;
 import com.zsd.service.LoreQuestionManager;
 import com.zsd.tools.CommonTools;
+import com.zsd.tools.CurrentTime;
 import com.zsd.util.Constants;
 
 /** 
@@ -39,7 +40,7 @@ import com.zsd.util.Constants;
 public class LoreQuestionErrorAtion extends DispatchAction {
 	
 	/**
-	 * 导向知识点错题修改页面
+	 * 导向知识点错题修改页面(默认最近30天)
 	 * @author wm
 	 * @date 2019-5-23 下午05:54:42
 	 * @param mapping
@@ -51,6 +52,10 @@ public class LoreQuestionErrorAtion extends DispatchAction {
 	public ActionForward goLqePage(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
 		// TODO Auto-generated method stub
+		String eDate = CurrentTime.getStringDate();
+		String sDate = CurrentTime.getFinalDate(eDate,-30);
+		request.setAttribute("sDate", sDate);
+		request.setAttribute("eDate", eDate);
 		return mapping.findForward("lqePage");
 	}
 	
