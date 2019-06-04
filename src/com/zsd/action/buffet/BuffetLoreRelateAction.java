@@ -147,13 +147,9 @@ public class BuffetLoreRelateAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
 		LoreBuffetTreeMenuJson ltmj = new LoreBuffetTreeMenuJson();
-		Integer buffetId = Integer.parseInt(request.getParameter("buffetId"));
-		Map<String,Object> map = new HashMap<String,Object>();
-		String msg = "success";
+		Integer buffetId = CommonTools.getFinalInteger("buffetId", request);
 		List<MySimpleTreeNode> result = ltmj.showBuffetTree_1(buffetId);
-		map.put("result", msg);
-		map.put("relateList", result);
-		CommonTools.getJsonPkg(map, response);
+		CommonTools.getJsonPkg(result, response);
 	    return null;
 	}
 }
