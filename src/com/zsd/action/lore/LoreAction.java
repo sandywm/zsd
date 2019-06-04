@@ -812,6 +812,7 @@ public class LoreAction extends DispatchAction {
 				}
 				map_d.put("tipsList", list_d_1);
 				map_d.put("lqType", loreType);
+				map_d.put("lqeId", 0);
 				list_d.add(map_d);
 				map.put("listIfo", list_d);
 			}

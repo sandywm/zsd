@@ -500,16 +500,58 @@ public class CommonTools {
 		return studyPath_new;
 	}
 	
+	/**
+	 * 根据当前currentLoreId截取studyPath(包含当前知识点所在的)
+	 * @author wm
+	 * @date 2019-6-4 上午11:24:07
+	 * @param studyPath
+	 * @param currentLoreId
+	 * @return
+	 */
+	public static String getStudyPath_new(String studyPath,Integer currentLoreId){
+		String studyPath_new = "";
+		Integer currentI = 0;
+		boolean flag = false;
+		if(!studyPath.equals("") && currentLoreId > 0){
+			String[] studyPath_array = studyPath.split(":");
+			for(Integer i = 0 ; i < studyPath_array.length ; i++){
+				String[] currentPathArray = studyPath_array[i].split("\\|"); 
+				for(Integer j = 0 ; j < currentPathArray.length ; j++){
+					if(currentPathArray[j].equals(String.valueOf(currentLoreId))){
+						flag = true;
+						currentI = i;
+						break;
+					}
+				}
+				if(flag){
+					break;
+				}
+			}
+			for(Integer i = currentI ; i < studyPath_array.length ; i++){
+				studyPath_new += studyPath_array[i] + ":";
+			}
+			if(!studyPath_new.equals("")){
+				studyPath_new = studyPath_new.substring(0, studyPath_new.length() - 1);
+			}
+		}
+		return studyPath_new;
+		
+	}
+	
 	public static void main(String[] args){
-		Integer items[] = {1,2,3,4,5,11,12,21};
-		Integer[] need_del_items =  {2,11,4};
-	    List<Integer> list1=Arrays.asList(items);
-	    List<Integer> arrList = new ArrayList<Integer>(list1); //这句话的重要性在上一节blog中有讲到
-	    for(Integer c : need_del_items){
-	    	Integer b = c;
-	        arrList.remove(b);
-	    }
-	    arrList.toArray();
-	    System.out.println(arrList);
+//		Integer items[] = {1,2,3,4,5,11,12,21};
+//		Integer[] need_del_items =  {2,11,4};
+//	    List<Integer> list1=Arrays.asList(items);
+//	    List<Integer> arrList = new ArrayList<Integer>(list1); //这句话的重要性在上一节blog中有讲到
+//	    for(Integer c : need_del_items){
+//	    	Integer b = c;
+//	        arrList.remove(b);
+//	    }
+//	    arrList.toArray();
+//	    System.out.println(arrList);
+	    
+	    String bb = "7389:7392:7394|7396|7390|7393:7397|7405:7406|7407:7431|7432:7433:7436|7446:7448";
+	    System.out.println(CommonTools.getCurrentStudyPath_new(bb, 7397));
+	    System.out.println(CommonTools.getStudyPath_new(bb, 7397));
 	}
 }
