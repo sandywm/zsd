@@ -5,7 +5,7 @@
 //自定义模块
 layui.define(['form','element','upLoadFiles','buffetLoreDOM','buffetLoreMet'],function(exports){
 	var $ = layui.jquery,form=layui.form,element = layui.element,
-		globalUpload=layui.upLoadFiles,blDOM = layui.buffetLoreDOM
+		globalUpload=layui.upLoadFiles,blDOM = layui.buffetLoreDOM,
 		blMet = layui.buffetLoreMet;
     var obj = {
 		//初始化创建富文本编辑器
@@ -58,7 +58,6 @@ layui.define(['form','element','upLoadFiles','buffetLoreDOM','buffetLoreMet'],fu
     				currNum ++;
     			}
     		}
-    	
     		//loreConStr += '<div class="queTypeCon layui-form">';
     		loreConStr += '<div id="queCon_'+ nowType +'_'+ currNum +'" class="typeCon">';
     		    		
@@ -116,7 +115,7 @@ layui.define(['form','element','upLoadFiles','buffetLoreDOM','buffetLoreMet'],fu
     			loreConStr += '<div class="layui-form-item"><label class="layui-form-label">解析：</label>';
     			loreConStr += '<div class="layui-input-block"><div id="conAnaly_'+ nowType +'_'+ currNum +'"></div></div></div>';
     		}else if(nowType == 'ggxl' || nowType == 'zdxzd' || nowType == 'zczd'){//巩固训练 针对性诊断 再次诊断增加  问题选项 选择答案 以及 解析和提示
-    			
+    			//对应各种题型
     			loreConStr += '<div id="ansSelWrap_'+ nowType +'"  class="ansSelWrap layui-form-item"><label id="nowTxt_'+ nowType +'" class="layui-form-label"></label>';
     			loreConStr += '<div id="answerSelectDiv_'+ nowType +'" class="layui-input-block answerSelectDiv"></div>';
     			loreConStr += '<div id="wendaTypeWrap_'+ nowType +'" class="layui-input-block wendaTypeWrap"></div>';
@@ -301,38 +300,19 @@ layui.define(['form','element','upLoadFiles','buffetLoreDOM','buffetLoreMet'],fu
 			    success:function (json){
 			    	layer.closeAll('loading');	
 			    	if(json.result == 'success'){
-			    		console.log(json)
-				    	_this.renderZsqdInfo(json.zsqdList);
+			    		_this.renderZsqdInfo(json.zsqdList);
 				    	_this.renderDbzdInfo(json.dbzdList);
 				    	_this.renderJtsfInfo(json.jtsfList);
 				    	_this.renderGgxlInfo(json.ggxlList);
 				    	_this.renderZdxzdInfo(json.zdxList);
 				    	_this.renderZczdInfo(json.zczdList);
 				    	_this.renderZsjjInfo(json.zsjjList);
-				    	_this.goTarget();
+				    	blMet.goTarget();
 			    	}else if(json.result == 'noInfo'){
 			    		layer.msg('暂无此知识点的题库信息',{icon:5,anim:6,time:2000});
 			    	}
 			    	
 			    }
-			});
-		},
-		goTarget : function(){
-			$('.loreNav').on('click','li',function(){
-				var currPos = $(this).attr('currPos'),pos = 0;
-				$(this).addClass('active').siblings().removeClass('active');
-				pos = document.getElementById(currPos).offsetTop;
-				$('.loreDetCon').stop().animate({scrollTop:pos},300);
-			});
-			$('.loreDetCon').on('scroll',function(){
-				var scrollTop = $(this).scrollTop();
-				var posTop = document.querySelectorAll('.titStrong');
-				for(var i=0;i<posTop.length;i++){
-					if(posTop[i].offsetTop <= scrollTop){
-						$('.loreNav li').removeClass('active');
-						$('.loreNav li').eq(i).addClass('active');
-					}
-				}
 			});
 		},
 		//知识讲解
@@ -382,20 +362,18 @@ layui.define(['form','element','upLoadFiles','buffetLoreDOM','buffetLoreMet'],fu
 		},
 		//巩固训练 针对性诊断 再次诊公共方法
 		commonRenderInfo : function(list,obj){
-			var rootPath = this.getRootPath();
-			console.log('rootPath==' + rootPath)
 			if(list != null){
 				var listStr = '';
 				for(var i=0;i<list.length;i++){
 					listStr += '<div class="listLore">';
-					listStr += '<strong class="smTit">标题：'+ list[i].queTitle +'  <span class="queType">'+ list[i].queType +'</span><span class="queType1">'+ list[i].queType2 +'</span></strong>';
+					listStr += '<strong class="smTit">标题：'+ list[i].queTitle +'  <span class="queTypeTxt">'+ list[i].queType +'</span><span class="queType1">'+ list[i].queType2 +'</span></strong>';
 					//题干
 					listStr += '<div class="con"><p class="titP">题干：</p><div>'+ list[i].queSub +'</div></div>';
 					//选项
 					listStr += '<div class="conSelOpt">';
 						if(list[i].answerA != ''){
 							listStr += '<div class="comOpt layui-clear"><span class="queSelWord">A：</span>';
-								if(this.checkAnswerImg(list[i].answerA)){
+								if(blMet.checkAnswerImg(list[i].answerA)){
 									listStr += '<p><img src="'+ list[i].answerA +'"/></p>';
 								}else{
 									listStr += '<p>'+ list[i].answerA.replace("<","&lt") +'</p>';
@@ -404,7 +382,7 @@ layui.define(['form','element','upLoadFiles','buffetLoreDOM','buffetLoreMet'],fu
 						}
 						if(list[i].answerB != ''){
 							listStr += '<div class="comOpt layui-clear"><span class="queSelWord">B：</span>';
-								if(this.checkAnswerImg(list[i].answerB)){
+								if(blMet.checkAnswerImg(list[i].answerB)){
 									listStr += '<p><img src="'+ list[i].answerB +'"/></p>';
 								}else{
 									listStr += '<p>'+ list[i].answerB.replace("<","&lt") +'</p>';
@@ -413,7 +391,7 @@ layui.define(['form','element','upLoadFiles','buffetLoreDOM','buffetLoreMet'],fu
 						}
 						if(list[i].answerC != ''){
 							listStr += '<div class="comOpt layui-clear"><span class="queSelWord">C：</span>';
-								if(this.checkAnswerImg(list[i].answerC)){
+								if(blMet.checkAnswerImg(list[i].answerC)){
 									listStr += '<p><img src="'+ list[i].answerC +'"/></p>';
 								}else{
 									listStr += '<p>'+ list[i].answerC.replace("<","&lt") +'</p>';
@@ -422,7 +400,7 @@ layui.define(['form','element','upLoadFiles','buffetLoreDOM','buffetLoreMet'],fu
 						}
 						if(list[i].answerD != ''){
 							listStr += '<div class="comOpt layui-clear"><span class="queSelWord">D：</span>';
-								if(this.checkAnswerImg(list[i].answerD)){
+								if(blMet.checkAnswerImg(list[i].answerD)){
 									listStr += '<p><img src="'+ list[i].answerD +'"/></p>';
 								}else{
 									listStr += '<p>'+ list[i].answerD.replace("<","&lt") +'</p>';
@@ -431,7 +409,7 @@ layui.define(['form','element','upLoadFiles','buffetLoreDOM','buffetLoreMet'],fu
 						}
 						if(list[i].answerE != ''){
 							listStr += '<div class="comOpt layui-clear"><span class="queSelWord">E：</span>';
-								if(this.checkAnswerImg(list[i].answerE)){
+								if(blMet.checkAnswerImg(list[i].answerE)){
 									listStr += '<p><img src="'+ list[i].answerE +'"/></p>';
 								}else{
 									listStr += '<p>'+ list[i].answerE.replace("<","&lt") +'</p>';
@@ -440,7 +418,7 @@ layui.define(['form','element','upLoadFiles','buffetLoreDOM','buffetLoreMet'],fu
 						}
 						if(list[i].answerF != ''){
 							listStr += '<div class="comOpt layui-clear"><span class="queSelWord">F：</span>';
-								if(this.checkAnswerImg(list[i].answerF)){
+								if(blMet.checkAnswerImg(list[i].answerF)){
 									listStr += '<p><img src= "'+ list[i].answerF +'"/></p>';
 								}else{
 									listStr += '<p>'+ list[i].answerF.replace("<","&lt") +'</p>';
@@ -480,13 +458,6 @@ layui.define(['form','element','upLoadFiles','buffetLoreDOM','buffetLoreMet'],fu
 		    //获取带"/"的项目名，如：/test
 		    var projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
 		    return (localhostPath + '/');//发布前用此
-		},
-		//检查答案是否为图片
-		checkAnswerImg : function(answer){
-			if(answer.indexOf("jpg") > 0 || answer.indexOf("gif") > 0 || answer.indexOf("bmp") > 0 || answer.indexOf("png") > 0){
-				return true;
-			}
-			return false;
 		},
 		//解题示范
 		renderJtsfInfo : function(jtsfList){

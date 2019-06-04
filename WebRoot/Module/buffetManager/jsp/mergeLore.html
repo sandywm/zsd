@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+ 	<meta charset="utf-8"/>
+ 	<link href="/plugins/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+ 	<link href="/Module/buffetManager/css/mergeLore.css" rel="stylesheet" type="text/css"/>
+ 	<link href="/plugins/pace/pace-theme-flash.min.css" rel="stylesheet" type="text/css"/>
+	<script src="/plugins/pace/pace.min.js" type="text/javascript"></script>	
+  	<title>合并知识点</title>
+</head>
+<body style="background:#fff;">
+	<div id="mergeLoreBox" class="mergeBox layui-clear">
+		<ul id="mergeLoreUl"></ul>
+	</div>	
+	<div class="mergBot">
+		<button id="setMergeBtn" class="layui-btn">保存</button>
+	</div>
+	
+	<script src="/plugins/jquery/jquery.min.js"></script>
+	<script src="/plugins/layui/layui.js"></script>
+	<script type="text/javascript">
+		var cptId = parent.$('#chapterInp').val(),
+			loreId = parent.loreBigId,loreIdArr=[];
+		layui.config({
+			base: '/plugins/frame/js/'
+		}).use(['layer','scrollBar'],function(){
+			var comScrollBar = layui.scrollBar;
+			var page = {
+				init : function(){
+					this.bindEvent();
+					this.loadMergeLoreInfo();
+				},
+				loadMergeLoreInfo : function(){
+					var _this = this;
+					layer.load('1');
+					$.ajax({
+						type:'post',
+				        dataType:'json',
+				        data:{loreId:loreId,cptId:cptId},
+				        url:'/buffet.do?action=getJLRLiSt',
+				        success:function (json){
+				        	layer.closeAll('loading');	
+				        	if(json.result == 'success'){
+				        		var list = json.remainLoreList;
+					        	_this.renderMergeList(list);
+				        	}
+				        }
+					});
+				},
+				bindEvent : function(){
+					$('#setMergeBtn').on('click',function(){
+						var jlrId = $('#defJsrId').val();
+						loreIdArr.length = 0;
+						$('input[name=loreInp]').each(function(i){
+							var checkStatus = $('input[name=loreInp]').eq(i).prop('checked');
+							if(checkStatus){
+								loreIdArr.push($('input[name=loreInp]').eq(i).val());
+							}
+						});
+						var loreIdStr = loreIdArr.join(',');
+						layer.load('1');
+						$.ajax({
+							type:'post',
+					        dataType:'json',
+					        data:{jlrId:jlrId,loreIdStr:loreIdStr},
+					        url:'/buffet.do?action=setJLR',
+					        success:function (json){
+					        	layer.closeAll('loading');	
+					        	if(json.result == 'success'){
+					        		layer.msg('添加成功',{icon:1,time:1000},function(){
+					        			var index= parent.layer.getFrameIndex(window.name);
+  	  				        			parent.layer.close(index);
+  		   				        	});
+					        	}else if(json.result == 'error'){
+					        		layer.msg('添加失败，请重试',{icon:5,anim:6,time:2000});
+					        	}else if(json.result == 'outNum'){
+					        		layer.msg('合并知识点只能有一种题库',{icon:5,anim:6,time:2000});
+					        	}
+					        }
+						});
+					});
+				},
+				renderMergeList : function(list){
+					var mergeStr = '';
+					for(var i=0;i<list.length;i++){
+						mergeStr += '<li>';
+						if(list[i].currLoreStatus){
+							mergeStr += '<label for="loreInp_'+ list[i].loreId +'">';
+						}else{
+							mergeStr += '<label class="mergeLabel" for="loreInp_'+ list[i].loreId +'">';
+						}
+						if(list[i].currLoreStatus){
+							mergeStr += '<input type="hidden" id="defJsrId" value="'+ list[i].jlrId+'"/>';
+							mergeStr += '<span class="checkSpan hasActive"><i class="layui-icon layui-icon-ok"></i></span><input id="loreInp_'+ list[i].loreId +'" type="checkbox" checked disabled name="loreInp" value="'+ list[i].loreId +'"/>';
+						}else{
+							if(list[i].selFlag){
+								mergeStr += '<span class="checkSpan hasActive"><i class="layui-icon layui-icon-ok"></i></span><input id="loreInp_'+ list[i].loreId +'" type="checkbox" checked name="loreInp" value="'+ list[i].loreId +'"/>';
+							}else{
+								mergeStr += '<span class="checkSpan"><i class="layui-icon layui-icon-ok"></i></span><input id="loreInp_'+ list[i].loreId +'" type="checkbox"  name="loreInp" value="'+ list[i].loreId +'"/>';
+							}
+						}
+						mergeStr += '<p>'+ list[i].loreName +'</p><label></li>';
+					}
+					$('#mergeLoreUl').html(mergeStr);
+					$('#mergeLoreUl li:odd').addClass('oddBgColor');
+					this.actCreateScrollBar('mergeLoreBox','mergeLoreUl',1);
+					this.addInpAct();
+				},
+				addInpAct : function(){
+					$('.mergeLabel').on('click',function(){
+						var checkSta = $(this).find('input').prop('checked');
+						if(checkSta){
+							$(this).find('.checkSpan').addClass('hasActive');
+						}else{
+							$(this).find('.checkSpan').removeClass('hasActive');
+						}
+					});
+				},
+				actCreateScrollBar : function(parObj,sonObj,scrollNum){
+					if($('#'+parObj).height() < $('#'+sonObj).height()){//创建模拟滚动条
+		    			var oScroll = '<div id="parScroll_'+ scrollNum +'" class="parentScroll"><div id="sonScroll_'+ scrollNum +'" class="scrollBar"></div></div>';
+		    			//创建动态模拟滚动条
+						$('#'+parObj).append(oScroll);
+						comScrollBar.scrollBar(parObj,sonObj,'parScroll_'+scrollNum,'sonScroll_'+scrollNum,15);
+					}
+				}
+			};
+			page.init();
+		});
+	</script>
+</body> 
+</html>

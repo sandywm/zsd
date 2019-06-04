@@ -34,24 +34,24 @@
 		<div class="lexList">
 			<table id="lexTable" lay-filter="lexTable" class="layui-table"></table>
 		</div>
-		<div id="lexCon" class="lexCon">
-			<div id="innerLexCon"></div>
+		<div class="lexCon">
+			<div id="hasChoice"></div>
+			<div id="lexCon">
+				<div id="innerLexCon"></div>
+			</div>
 		</div>
 	</div>	
 	<div class="lexBot">
-		<button id="addLexBtn" class="layui-btn">添加</button>
+		<button id="addLexBtn" class="layui-btn">保存</button>
 	</div>
-	
-	
-	
 	<script src="/plugins/jquery/jquery.min.js"></script>
 	<script src="/plugins/layui/layui.js"></script>
 	<script type="text/javascript">
-		var loreType = parent.loreType;
+		var loreType = parent.loreType,lexOpts = parent.lexOpts;
 		layui.config({
 			base: '/plugins/frame/js/'
-		}).use(['layer','table','form','scrollBar'],function(){
-			var table = layui.table,form=layui.form,commonScrollBar = layui.scrollBar;
+		}).use(['layer','table','form'],function(){
+			var table = layui.table,form=layui.form;
 			
 			form.on('select(ciTiaoSel)',function(data){
 				var value = data.value;
@@ -71,19 +71,93 @@
 				},
 				init : function(){
 					this.bindEvent();
+					if(lexOpts == 'innerQues'){//具体到题库内的一个关联
+						var hasAddLex = parent.$('#' + loreType + '_lexInp').val();
+						if(hasAddLex == ''){
+							$('#hasChoice').addClass('noAddTxt').html('暂未添加词条');
+						}else{
+							$('#hasChoice').html('已添加词条：<span class="hasAdd">' + hasAddLex + '</span>');
+							$('#innerLexCon').html(parent.lexContent);
+							var hasImgLen = $('#innerLexCon').find('img').length;
+							if(hasImgLen > 0){
+								$('#innerLexCon').find('img').each(function(i){
+									$('#innerLexCon').find('img').eq(i).attr('src','/' + $('#innerLexCon').find('img').eq(i).attr('src'));
+								});
+							}
+						}
+					}else{//通过buffet题库列表进来的关联词条->bfRelLex
+						layer.load('1');
+						var _this = this;
+						$.ajax({
+							type:'post',
+					        dataType:'json',
+					        data:{buffetId:parent.bigBuffetId},
+					        url:'/buffet.do?action=getRelationLexInfo',
+					        success:function (json){
+					        	layer.closeAll('loading');	
+					        	console.log(json)
+					        	if(json.result == 'success'){
+					        		$('#hasChoice').addClass('hasCon').html('<p>已添加词条：<span class="hasAdd">' + json.lexTitle + '</span></p><a class="delLexBtn" href="javascript:void(0)"><i class="layui-icon layui-icon-delete"></i></a>');
+									$('#innerLexCon').html(json.lexContent);
+									var hasImgLen = $('#innerLexCon').find('img').length;
+									if(hasImgLen > 0){
+										$('#innerLexCon').find('img').each(function(i){
+											$('#innerLexCon').find('img').eq(i).attr('src','/' + $('#innerLexCon').find('img').eq(i).attr('src'));
+										});
+									}
+									_this.deleteHasRelLex();
+					        	}else if(json.result == 'error'){
+					        		layer.msg('获取失败，请稍后重试', {icon:5,anim:6,time:2000});
+					        	}else if(json.result == 'noInfo'){
+					        		layer.msg('暂未添加词条，请添加词条', {time:2000});
+					        		$('#hasChoice').addClass('noAddTxt').html('暂未添加词条');
+					        	}
+					        	
+					        }
+						});
+					}
+				},
+				deleteHasRelLex : function(){
+					var _this = this;
+					$('.delLexBtn').on('click',function(){
+						_this.data.selLexId = 0;
+						$('#hasChoice').addClass('noAddTxt').html('暂未添加词条');
+						$('#innerLexCon').html('');
+					});
 				},
 				bindEvent : function(){
 					var _this = this;
 					$('#addLexBtn').on('click',function(){
 						var index= parent.layer.getFrameIndex(window.name);
-						if(_this.data.selLexTit == ''){
-							layer.msg('请选择您要添加的词条', {icon:5,anim:6,time:2000});
-							return;
+						if(lexOpts == 'innerQues'){
+							if(_this.data.selLexTit == ''){
+								layer.msg('请选择您要添加的词条', {icon:5,anim:6,time:2000});
+								return;
+							}
+							
+							parent.$('#' + loreType +'_lexInp').val(_this.data.selLexTit);
+							parent.$('#' + loreType + '_lexId').val(_this.data.selLexId);
+							parent.layer.close(index);
+						}else{
+							layer.load('1');
+							alert(_this.data.selLexId)
+							$.ajax({
+								type:'post',
+						        dataType:'json',
+						        data:{lexId:_this.data.selLexId,buffetId:parent.bigBuffetId},
+						        url:'/buffet.do?action=updateRelationLexInfo',
+						        success:function (json){
+						        	layer.closeAll('loading');	
+						        	if(json.result == 'success'){
+						        		layer.msg('保存成功',{icon:1,time:1000},function(){
+	  	  				        			parent.layer.close(index);
+	  		   				        	});
+						        	}else if(json.result == 'error'){
+						        		layer.msg('保存失败，请稍后重试', {icon:5,anim:6,time:2000});
+						        	}
+						        }
+							});
 						}
-						
-						parent.$('#' + loreType +'_lexInp').val(_this.data.selLexTit);
-						parent.$('#' + loreType + '_lexId').val(_this.data.selLexId);
-						parent.layer.close(index);
 					});
 					$('#queryBtn').on('click',function(){
 						var lexVal_txt = $.trim($('#lexTitInp_txt').val()),
@@ -112,6 +186,7 @@
 								}},
 							]],
 							done : function(res, curr, count){
+								console.log(res)
 								layer.closeAll('loading');
 							}
 						});
@@ -125,31 +200,13 @@
 							
 				    		$(this).find('.likeCheckSpan').addClass('hasActive');
 				    		$('#scrollParent').remove();
-				    		
 							$('#innerLexCon').html(data.lexContent);
-							if($('#lexCon').height() < $('#innerLexCon').height()){//创建模拟滚动条
-								var oScroll = '<div id="scrollParent" class="parentScroll"><div id="scrollSon" class="scrollBar"></div></div>';
-								//创建动态模拟滚动条
-								$('#lexCon').append(oScroll);
-								commonScrollBar.scrollBar('lexCon','innerLexCon','scrollParent','scrollSon',25);
-							}else{
-								$('#innerLexCon').animate({"top":'1%'});
-								document.getElementById("lexCon").onmousewheel = function(){
-									return false;
-								};
+							var hasImgLen = $('#innerLexCon').find('img').length;
+							if(hasImgLen > 0){
+								$('#innerLexCon').find('img').each(function(i){
+									$('#innerLexCon').find('img').eq(i).attr('src','/' + $('#innerLexCon').find('img').eq(i).attr('src'));
+								});
 							}
-						});
-						
-						$.ajax({
-							type:'post',
-					        dataType:'json',
-					        data:field,
-					        url:'/lex.do?action=getPageLexInfo',
-					        success:function (json){
-					        	layer.closeAll('loading');
-					        	console.log(json)
-					        	
-					        }
 						});
 					});
 				}

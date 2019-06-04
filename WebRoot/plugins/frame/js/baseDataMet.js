@@ -9,6 +9,9 @@ layui.define(['form','table','relate'],function(exports){
 	var $ = layui.jquery,form=layui.form,table=layui.table,relate=layui.relate;
 	var yearSyStr = '',gradeStr='';
     var obj = {
+    	data : {
+    		eduId : 0//用于匹配教材 关联知识点时用
+    	},
     	//获取学段
     	getSchoolTye : function(){
     		var strHtml = '';
@@ -51,6 +54,27 @@ layui.define(['form','table','relate'],function(exports){
     			strHtml += '<option value="高三">高三</option>';
     		}
     		return strHtml;
+    	},
+    	//打开关联知识点通过storage来匹配select
+    	matchSelctedOptions : function(){
+    		var relateObj = JSON.parse(window.localStorage.getItem("relateObj"));
+    		//获取科目
+    		this.getSubjectList('subjectSel');
+			$('#subInp').val(relateObj.subId);
+			$('#subjectSel').val(relateObj.subId);
+			
+			this.getGradeBySubId(relateObj.subId);
+			
+			$('#gradeInp').val(relateObj.gsId);
+			$('#gradeSel').val(relateObj.gsId);
+			
+			if(parent.currPage == 'buffetPage'){
+				$('#subjectSel').attr('disabled',true);
+				$('#gradeSel').attr('disabled',true);
+			}
+			this.data.eduId = relateObj.eduId;
+			this.getEduColumeByGsEdId(relateObj.ediId,relateObj.gsId);
+			form.render();
     	},
 		//获取所有出版社列表
 		getEditionList : function(selObj){
@@ -101,6 +125,7 @@ layui.define(['form','table','relate'],function(exports){
 			$.ajax({
 				type:'post',
 		        dataType:'json',
+		        async:false,
 		        url:'/common.do?action=getSubjectData',
 		        data : {showStatus:0},
 		        success:function (json){
@@ -112,13 +137,6 @@ layui.define(['form','table','relate'],function(exports){
 						}
 						$('#' + selObj).append(str_sub);
 						form.render();
-						//暂时关闭关联知识点匹配
-						/*if(currPage == 'relatePage'){
-							var subVal = parent.$('#subInp').val();
-							$('#subjectSel').val(subVal);
-							$('#subInp').val(subVal);
-							_this.getGradeBySubId(subVal);
-						}*/
 		        	}else if(json['msg'] == 'noInfo'){
 		        		layer.msg('暂无科目信息',{icon:5,anim:6,time:2000});
 		        	}
@@ -145,13 +163,6 @@ layui.define(['form','table','relate'],function(exports){
 		        			str_grad += '<option value="'+ json.gList[i].gsId +'">'+ json.gList[i].gName +'</option>';
 						}
 		        		$('#gradeSel').html(str_grad);
-		        		/*if(currPage == 'relatePage'){
-		        			var gradVal = parent.$('#gradeInp').val(),
-		        				ediIdVal = parent.$('#editInp').val();
-		        			$('#gradeSel').val(gradVal);
-		        			$('#gradeInp').val(gradVal);
-		        			_this.getEduColumeByGsEdId(ediIdVal,gradVal);
-		        		}*/
 		        	}else if(json['result'] == 'noInfo'){
 		        		//layer.msg('暂无此科目对应的年级',{icon:5,anim:6,time:2000});
 		        		layer.msg('暂无此科目对应的年级',{time:1200});
@@ -200,11 +211,11 @@ layui.define(['form','table','relate'],function(exports){
 						$('#eduColumeSel').html(strHtml);
 						form.render();
 						if(currPage == 'lorePage' || currPage == 'buffetPage' || currPage == 'loreCataPage' || currPage == 'chapterPage' || currPage == 'relatePage'||currPage=='lexRelatePage'){//不是关联知识点模块的统一加载章节列表
-							/*if(currPage == 'relatePage'){
-								var educVal = parent.$('#eduColumeInp').val();
-								$('#eduColumeSel').val(educVal);
-								$('#eduColumeInp').val(educVal);
-							}*/
+							if(currPage == 'relatePage'){
+								$('#eduColumeInp').val(_this.data.eduId);
+								$('#eduColumeSel').val(_this.data.eduId);
+								form.render();
+							}
 							_this.getChapterList($('#eduColumeInp').val());
 						}
 						if(currPage == 'chapterPage'){
@@ -251,7 +262,7 @@ layui.define(['form','table','relate'],function(exports){
         		if(editVal == 1){
         			currPage == 'lorePage' ? loreSetWid = '375' : loreSetWid = '300';
         		}else{
-        			loreSetWid = '220';
+        			currPage == 'lorePage' ? loreSetWid = '220' : loreSetWid = '100';
         		}
         		//每次加载调用下清除返回方法
         		relate.comBackFun();

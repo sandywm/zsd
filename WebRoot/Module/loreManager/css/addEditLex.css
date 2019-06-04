@@ -8,10 +8,10 @@
 	margin-right:10px;
 }
 .lexBox{
-	height:338px;
+	height:385px;
 }
 .lexList{
-	width:53%;
+	width:46%;
 	height:100%;
 	float:left;
 	border-right:1px solid #ccc;
@@ -24,11 +24,53 @@
 	display:none;
 }
 .lexCon{
-	width:44%;
+	width:51%;
 	height:100%;
 	float:right;
 	position:relative;
+}
+.lexCon #hasChoice{
+	height:40px;
+	line-height:40px;
+	border-bottom:1px solid #ccc;
+	max-width:100%;
+	text-overflow:ellipsis;
 	overflow:hidden;
+	white-space:nowrap;
+	background:#fff;
+	z-index:10;
+}
+.lexCon #hasChoice.hasCon p{
+	width:90%;
+	text-overflow:ellipsis;
+	overflow:hidden;
+	white-space:nowrap;
+	float:left;
+}
+.lexCon #hasChoice.hasCon a{
+	width:10%;
+	height:100%;
+	float:left;
+	text-align:center;
+}
+.lexCon #hasChoice.hasCon a i{
+	color:#f00;
+	font-size:26px;
+}
+.lexCon #hasChoice.noAddTxt{
+	color:#999;
+}
+.lexCon #hasChoice span{
+	color:#F47837;
+}
+.lexCon #lexCon{
+	position:absolute;
+	left:0;
+	right:0;
+	top:41px;
+	bottom:0;
+	overflow:hidden;
+	overflow-y:auto;
 }
 .lexCon #innerLexCon{
 	position:absolute;
@@ -36,6 +78,10 @@
 	top:1%;
 	right:1.5%;
 	color:#666;
+}
+.lexCon #innerLexCon img{
+	width:80%;
+	margin:10px 0;
 }
 .lexBot{
 	text-align:center;
@@ -102,7 +148,6 @@
 	background:#009688;
 	opacity:.6;
 }
-/* 查看简单知识树 */
 #loreTree{
 	padding:10px 0;
 }

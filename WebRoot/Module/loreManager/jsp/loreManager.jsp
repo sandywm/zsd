@@ -164,7 +164,7 @@
 			globalOpts='',cptId=0,currPage='lorePage',
 			loreId=0,currNum=0,loreNameBig='',loreBigId=0,lqBigId=0,maxQueNum=0,loreTypeZHN='知识清单',realAnswer='',isCanAdd='';//是否可以增加点拨指导和知识讲解;
 		var result_answer = "";//ABCD
-		var result_answer_text = "",answerNum=0,answerType='',
+		var result_answer_text = "",answerNum=0,answerType='',lexContent='',
 			smLoreTypeZHN='主题',//用于点拨指导类型的判断
 			multiAnsArr=[],queTipsArr=[],currNumLen=0;//复选框text
 		
@@ -642,10 +642,10 @@
 								
 								}else if(tiganTypeInpVal == '判断题'){
 									var fieldCom = {queType:tiganTypeInpVal,queType2:tiganType1InpVal,queSub:currUeEditCon,queTipId:queTipsId,queResolution:currUeEditAnaly,
-											lexId:0,answerA:$('#ansSelJudgeInp1').val(),answerB:$('#ansSelJudgeInp2').val()};
+											lexId:lexId,answerA:$('#ansSelJudgeInp1').val(),answerB:$('#ansSelJudgeInp2').val()};
 								}else if(tiganTypeInpVal == '填空题' || tiganTypeInpVal == '问答题'){
 									var fieldCom = {queType:tiganTypeInpVal,queType2:tiganType1InpVal,queSub:currUeEditCon,queTipId:queTipsId,queResolution:currUeEditAnaly,
-											lexId:0};
+											lexId:lexId};
 								}
 								if(tiganTypeInpVal == '单选题'){
 									if(globalOpts == 'add'){
@@ -827,7 +827,6 @@
 					}
 					if(listInfo.length > 0){
 						currNumLen = listInfo.length;
-						console.log(listInfo)
 						for(var i=0;i<listInfo.length;i++){
 							currNum = i;
 							loreTypeZHN = listInfo[i].lqType;
@@ -920,6 +919,7 @@
 									//渲染关联此条内容
 									$('#'+loreType + '_lexId').val(listInfo[i].lexId);
 									$('#'+loreType + '_lexInp').val(listInfo[i].lexTitle);
+									lexContent = listInfo[i].lexContent;
 									//匹配 了解 理解 应用 综合匹配
 									$('#tiganType1Sel').val(listInfo[i].queType2);
 									//匹配最大选项（单选题 多选题 填空选择题）
@@ -1088,7 +1088,8 @@
 				        		var listInfo = json.listIfo;
 				        		$('.loreQuesList').hide();//隐藏知识点对应题库列表
 				        		$('#currLoc').html('<em style="font-style:normal;float:right;">返回[<a class="backBtn_tiku" href="javascript:void(0)">'+ loreNameBig +'</a>]题库列表</em>');
-								page.bindEvent();
+				        		lexContent = '';
+				        		page.bindEvent();
 								page.addLoreQuesInit();
 				        		page.renderLoreTypeInfo(listInfo);
 				        		//page.subLore();
@@ -1164,15 +1165,6 @@
 				}else if(obj.event == 'viewFun'){//浏览知识点
 					var loreName = $(this).attr('loreName');
 					loreId = $(this).attr('loreId');
-					/*layer.open({
-						title:'浏览知识点[<span style="color:#F47837;">'+ loreName +'</span>]',
-						type: 2,
-					  	area: ['700px', '500px'],
-					  	fixed: true, //不固定
-					  	maxmin: false,
-					  	shadeClose :false,
-					  	content: '/Module/loreManager/jsp/viewLore.html'
-					});*/
 					var viewLore = loreDOM.createViewLoreDOM();
 					layer.open({
 						title:'浏览知识点[<span style="color:#F47837;">'+ loreName +'</span>]',
@@ -1208,7 +1200,10 @@
 					  	maxmin: false,
 					  	shadeClose :false,
 					  	closeBtn:0,
-					  	content: '/Module/loreManager/jsp/loreRelate.html'
+					  	content: '/Module/loreManager/jsp/loreRelate.html',
+					  	end : function(){
+					  		window.localStorage.removeItem('relateObj');
+					  	}
 					});	
 				}
 			});

@@ -1,5 +1,5 @@
 /**
- * @Description: 知识点管理 01：根据章节cptId获取对应章节知识点列表 
+ * @Description: 知识点管理 关联知识点管理 自助餐管理下通用关联知识点方法
  * @author: hlf
  */
 //自定义模块
@@ -47,13 +47,17 @@ layui.define(['table','form','scrollBar'],function(exports){
     			result_answer_text = '';
     			isAddClickFlag = false;
     			currNum = 0;//每次返回重置currNum 便于回显的一个匹配
+    		}else if(currPage == 'buffetPage'){
+    			$('.queType').hide().html('');
+    			$('.quesAddEditBox').hide();
+    			$('.comQuesBox').html('').hide();
     		}
     	},
     	//添加关联知识点
     	addLoreRelate : function(){
     		var _this=this;
     		$('.addRelateBtn').on('click',function(){
-    			if(currPage == 'relatePage'){
+    			if(parent.currPage == 'lorePage' || parent.currPage=='relateManager'){
     				var rootLoreId = $(this).attr('rootLoreId'),
     					editInpVal = $('#editInp').val();
 	    			if(loreId == rootLoreId){
@@ -96,11 +100,31 @@ layui.define(['table','form','scrollBar'],function(exports){
 	    		        	}
 	    		        }
 	    			});
+    			}else if(parent.currPage == 'buffetPage'){//自助餐关联知识点增加
+    				layer.load('1');
+    				var rootLoreId = $(this).attr('rootLoreId');
+	    			$.ajax({
+	    				type:'post',
+	    		        dataType:'json',
+	    		        data:{opt:'add',loreId:rootLoreId,buffetId:parent.bigBuffetId},
+	    		        url:'/blr.do?action=addRelateLore',
+	    		        success:function (json){
+	    		        	layer.closeAll('loading');
+	    		        	if(json['result'] == 'success'){
+	    		        		//执行增加动作
+	    		        		_this.addBfRelateLoreAction(parent.bigBuffetId);
+	    		        	}else if(json['result'] == 'exist'){
+	    		        		layer.msg('当前知识点已被关联，请重新选择',{icon:5,anim:6,time:2000});
+	    		        	}else if(json['result'] == 'error'){
+	    		        		layer.msg('添加失败，请稍后重试',{icon:5,anim:6,time:2000});
+	    		        	}
+	    		        }
+	    			});
     			}
     			
     		});
     	},
-    	//词库关联知识点添加至右侧列表
+    	//词库关联知识点添加至右下侧列表
     	addLexRelateLoreAction : function(lexId){
     		var _this = this;
     		$.ajax({
@@ -111,16 +135,39 @@ layui.define(['table','form','scrollBar'],function(exports){
 		        success:function (json){
 		        	layer.closeAll('loading');
 		        	if(json['result'] == 'success'){
-		        		console.log(json)
 		        		var lrList = json.loreList;
 		        		_this.renderHasAddRelationRes(lrList);
 		        	}else if(json['result'] == 'noInfo'){
-		        		layer.msg('暂未获取到当前已关联知识点信息，请稍后重试',{icon:5,anim:6,time:1500});
+		        		$('#hasAddResUl').html('<p class="noDataTxt">暂无关联知识点</p>');
+		        		//layer.msg('暂未获取到当前已关联知识点信息，请稍后重试',{icon:5,anim:6,time:1500});
 		        	}
 		        }
 			});
     	},
-    	//知识点关联知识点添加至右侧
+    	//自助餐关联知识点添加至右下侧列表
+    	addBfRelateLoreAction : function(buffetId){
+    		var _this = this;
+    		$.ajax({
+				type:'post',
+		        dataType:'json',
+		        data:{buffetId:buffetId},
+		        async:false,
+		        url:'/blr.do?action=getRelateLoreInfo',
+		        success:function (json){
+		        	layer.closeAll('loading');
+		        	window.localStorage.removeItem("relateObj");
+	        		window.localStorage.setItem("relateObj",JSON.stringify(json));
+		        	if(json['result'] == 'success'){
+		        		var lrList = json.loreList;
+		        		_this.renderHasAddRelationRes(lrList);
+		        	}else if(json['result'] == 'noInfo'){
+		        		//layer.msg('暂未获取到当前已关联知识点信息');
+		        		$('#hasAddResUl').html('<p class="noDataTxt">暂无关联知识点</p>');
+		        	}
+		        }
+			});
+    	},
+    	//知识点关联知识点添加至右下侧
     	addRelateLoreAction : function(loreId,editInpVal){
     		var field = null,_this = this;
     		if(editInpVal == 1){//通用版 不传升序和降序
@@ -132,13 +179,17 @@ layui.define(['table','form','scrollBar'],function(exports){
 				type:'post',
 		        dataType:'json',
 		        data:field,
+		        async:false,
 		        url:'/loreRelate.do?action=showRelationList',
 		        success:function (json){
+		        	window.localStorage.removeItem("relateObj");
+	        		window.localStorage.setItem("relateObj",JSON.stringify(json));
 		        	if(json['result'] == 'success'){
 		        		var lrList = json.lrList != undefined ? json.lrList : [];
 		        		_this.renderHasAddRelationRes(lrList);
 		        	}else if(json['result'] == 'noInfo'){
-		        		layer.msg('暂未获取到当前已关联知识点信息，请稍后重试',{icon:5,anim:6,time:1500});
+		        		//layer.msg('暂未获取到当前已关联知识点信息，请稍后重试',{icon:5,anim:6,time:1500});
+		        		$('#hasAddResUl').html('<p class="noDataTxt">暂无关联知识点</p>');
 		        	}
 		        }
 			});
@@ -147,7 +198,7 @@ layui.define(['table','form','scrollBar'],function(exports){
     	renderHasAddRelationRes : function(lrList){
     		var lrStr = '';
     		if(lrList.length > 0){
-    			if(currPage == 'relatePage'){
+    			if(parent.currPage == 'lorePage' || parent.currPage == 'relateManager'){
     				for(var i=0;i<lrList.length;i++){
             			lrStr += '<li>';
             			lrStr += '<p class="widOne ellip">'+ lrList[i].rootLoreName +'</p>';
@@ -159,6 +210,13 @@ layui.define(['table','form','scrollBar'],function(exports){
         				lrStr += '<li>';
             			lrStr += '<p class="widOne ellip">'+ lrList[i].loreName +'</p>';
             			lrStr += '<p class="widTwo"><i class="delRelLoreBtn layui-icon layui-icon-delete" lrId="'+ lrList[i].llrId +'"></i></p>';
+            			lrStr += '</li>';
+        			}
+        		}else if(parent.currPage == 'buffetPage'){
+        			for(var i=0;i<lrList.length;i++){
+        				lrStr += '<li>';
+            			lrStr += '<p class="widOne ellip">'+ lrList[i].relateLoreName +'</p>';
+            			lrStr += '<p class="widTwo"><i class="delRelLoreBtn layui-icon layui-icon-delete" lrId="'+ lrList[i].blrId +'"></i></p>';
             			lrStr += '</li>';
         			}
         		}
@@ -183,12 +241,15 @@ layui.define(['table','form','scrollBar'],function(exports){
   				},function(index){
   					layer.load('1');
   					var field = null,url='';
-  					if(currPage == 'relatePage'){
+  					if(parent.currPage == 'lorePage' || parent.currPage == 'relateManager'){
   						field = {lrId:lrId};
   						url = '/loreRelate.do?action=delRelate';
   					}else if(currPage == 'lexRelatePage'){
   						field = {llrId:lrId};
   						url = '/lex.do?action=delLLR';
+  					}else if(parent.currPage == 'buffetPage'){
+  						field = {opt:'del',blrId:lrId};
+  						url = '/blr.do?action=addRelateLore';
   					}
   					$.ajax({
   						type:'post',
@@ -198,7 +259,7 @@ layui.define(['table','form','scrollBar'],function(exports){
   				        success:function (json){
   				        	layer.closeAll('loading');
   				        	if(json['result'] == 'success'){
-  				        		if(currPage == 'relatePage'){
+  				        		if(parent.currPage == 'lorePage' || parent.currPage == 'relateManager'){
   				        			var editInpVal = $('#editInp').val();
   	  				        		layer.msg('删除成功',{icon:1,time:1000},function(){
   	  				        			_this.addRelateLoreAction(loreId, editInpVal);
@@ -207,6 +268,11 @@ layui.define(['table','form','scrollBar'],function(exports){
   				        		}else if(currPage == 'lexRelatePage'){
   				        			layer.msg('删除成功',{icon:1,time:1000},function(){
   	  				        			_this.addLexRelateLoreAction(lexId);
+  	  				        			layer.close(index);
+  		   				        	});
+  				        		}else if(parent.currPage == 'buffetPage'){
+  				        			layer.msg('删除成功',{icon:1,time:1000},function(){
+  	  				        			_this.addBfRelateLoreAction(parent.bigBuffetId);
   	  				        			layer.close(index);
   		   				        	});
   				        		}

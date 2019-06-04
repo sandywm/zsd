@@ -57,7 +57,7 @@
 .layui-card-body .layui-table{
 	margin:0;
 }
-/* 增加编辑题型结构 */
+/* 澧炲姞缂栬緫棰樺瀷缁撴瀯 */
 .layui-field-title{
 	margin:10px 0 10px 0;
 }
@@ -204,7 +204,7 @@
 	float:left;
 	width:70px;
 }
-/* 问题选项 */
+/* 闂閫夐」 */
 .ansSelWrap{
 	display:none;
 }
@@ -406,11 +406,13 @@ input[name='answer_multiTk']:hover{
 }
 #basicTypeTxt,
 #tiganTypeTxt,
-#currAnsSelTypeTxt{
+#currAnsSelTypeTxt, 
+#baseTypeTxt{
 	color:#009688;
 	font-weight:600;
 }
-#tiganTypeTxt{
+#tiganTypeTxt,
+#baseTypeTxt{
 	float:left;
 }
 #currAnsSelTypeTxt{
@@ -445,7 +447,7 @@ input[name='answer_multiTk']:hover{
 	margin-left:10px;
 	display:none;
 }
-/* 切换至其他题型时的显示结构 */
+/* 鍒囨崲鑷冲叾浠栭鍨嬫椂鐨勬樉绀虹粨鏋�*/
 .otherDOMWrap{
 	width:410px;
 	height:110px;

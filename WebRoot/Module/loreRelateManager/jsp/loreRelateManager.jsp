@@ -130,7 +130,10 @@
 								  	maxmin: false, 
 								  	shadeClose :false,
 								  	closeBtn:0,
-								  	content: '/Module/loreManager/jsp/loreRelate.html'
+								  	content: '/Module/loreManager/jsp/loreRelate.html',
+								  	end : function(){
+								  		window.localStorage.removeItem("relateObj");
+								  	}
 								});	
 							}
 					 	});

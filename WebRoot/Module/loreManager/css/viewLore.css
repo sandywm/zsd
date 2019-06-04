@@ -18,6 +18,9 @@
 	cursor:pointer;
 	color:#333;
 }
+.loreNav.buffetNav li{
+	width:110px;
+}
 .loreNav li.active{
 	color:#F47837;
 }
@@ -52,7 +55,7 @@
 	display:block;
 	margin-bottom:5px;
 }
-.listLore strong.smTit .queType{
+.listLore strong.smTit .queTypeTxt{
 	color:#009688;
 	margin:0 5px;
 }

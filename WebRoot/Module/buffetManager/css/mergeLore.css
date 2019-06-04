@@ -1,0 +1,92 @@
+.mergeBox{
+	position:absolute;
+	left:10px;
+	top:10px;
+	right:10px;
+	bottom:50px;
+	overflow:hidden;
+}
+.mergeBox ul{
+	width:100%;
+	position:absolute;
+	left:0;
+	top:0;
+}
+.mergeBox ul li{
+	width:100%;
+	height:35px;
+	line-height:35px;
+	border-bottom:1px dashed #ccc;
+	max-width:100%;
+	text-overflow:ellipsis;
+	overflow:hidden;
+	white-space:nowrap;
+}
+.mergeBox ul li label{
+	width:100%;
+	height:100%;
+	display:block;
+	cursor:pointer;
+}
+.mergeBox ul li label .checkSpan{
+	float:left;
+	width:16px;
+	height:16px;
+	border:1px solid #d2d2d2;
+	border-radius:2px;
+	margin:9px 5px 0 0;
+}
+.mergeBox ul li label .checkSpan.hasActive{
+	background:#5fb878;
+	border:1px solid #5fb878;
+}
+.mergeBox ul li label .checkSpan i{
+	float:left;
+	display:none;
+	font-size:14px;
+	margin:-9px 0 0 1px;
+}
+.mergeBox ul li label .checkSpan.hasActive i{
+	display:block;
+	color:#fff;
+}
+.mergeBox ul li input[type=checkbox],
+.mergeBox ul li p{
+	float:left;
+}
+.mergeBox ul li input[type=checkbox]{
+	opacity:0;
+	display:none;
+}
+.mergeBox ul li p{
+	color:#333;
+}
+.parentScroll,
+.scrollBar{
+	width:3px;
+	height:100%;
+	border-radius:20px;
+	position:absolute;
+	right:0;
+	top:0;
+}
+.scrollBar{
+	background:#009688;
+	opacity:.6;
+}
+.oddBgColor{
+	background:#f1f1f1;
+}
+.mergBot{
+	height:50px;
+	position:absolute;
+	left:0;
+	right:0;
+	bottom:0;
+	text-align:center;
+}
+.mergBot button{
+	width:100px;
+	margin-top:5px;
+	display:inline-block;
+}

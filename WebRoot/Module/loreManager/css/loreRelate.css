@@ -176,14 +176,28 @@
 	background:#f1f1f1;
 	height:30px;
 	line-height:30px;
-	text-align:center;
 	color:#666;
 	border:1px solid #ccc;
 	border-top:none;
-	max-width:100%;
+}
+.hasAddResTit p.resTitP{
+	width:90%;
 	text-overflow:ellipsis;
 	white-space:nowrap;
 	overflow:hidden;
+	float:left;
+	text-indent:10px;
+}
+.hasAddResTit a{
+	width:10%;
+	height:100%;
+	float:left;
+	text-align:center;
+}
+.hasAddResTit a i{
+	font-size:20px;
+	color:#009688;
+	font-weight:600;
 }
 #hasAddRes ul li p.widOne{
 	width:90%;

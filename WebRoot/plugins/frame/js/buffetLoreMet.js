@@ -2,7 +2,7 @@
  * @Description: 知识点管理 自助餐管理 公共方法
  * @author: hlf
  */
-var answerSelectImg = null,imgLayerIndex = 0,editor_answer_select = null;
+var answerSelectImg = null,imgLayerIndex = 0,editor_answer_select = null,lexOpts='';
 //自定义模块
 layui.define(['form','buffetLoreDOM'],function(exports){
 	var $ = layui.jquery,form=layui.form,blDOM = layui.buffetLoreDOM;
@@ -654,11 +654,12 @@ layui.define(['form','buffetLoreDOM'],function(exports){
 		},
 		addEditLex : function(){
 			$('.addLexBtn').on('click',function(){
+				lexOpts = $(this).attr('opts');
 				addEditFlag = false;
 				layer.open({
 					title:'添加编辑词条',
 					type: 2,
-				  	area: ['750px', '500px'],
+				  	area: ['850px', '550px'],
 				  	fixed: true, //不固定
 				  	maxmin: false,
 				  	shadeClose :false,
@@ -682,6 +683,32 @@ layui.define(['form','buffetLoreDOM'],function(exports){
 				tmpObj.lqsIdArr.push($(this).attr('lqsid'));
 			});
 			return tmpObj;
+		},
+		//浏览知识点和自助餐时判断当前选项是否为图片
+		checkAnswerImg : function(answer){
+			if(answer.indexOf("jpg") > 0 || answer.indexOf("gif") > 0 || answer.indexOf("bmp") > 0 || answer.indexOf("png") > 0){
+				return true;
+			}
+			return false;
+		},
+		//浏览知识点和自助餐时的公共锚点方法
+		goTarget : function(){
+			$('.loreNav').on('click','li',function(){
+				var currPos = $(this).attr('currPos'),pos = 0;
+				$(this).addClass('active').siblings().removeClass('active');
+				pos = document.getElementById(currPos).offsetTop;
+				$('.loreDetCon').stop().animate({scrollTop:pos},300);
+			});
+			$('.loreDetCon').on('scroll',function(){
+				var scrollTop = $(this).scrollTop();
+				var posTop = document.querySelectorAll('.titStrong');
+				for(var i=0;i<posTop.length;i++){
+					if(posTop[i].offsetTop <= scrollTop){
+						$('.loreNav li').removeClass('active');
+						$('.loreNav li').eq(i).addClass('active');
+					}
+				}
+			});
 		}
     };
     //选择提示标题

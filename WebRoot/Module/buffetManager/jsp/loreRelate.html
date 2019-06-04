@@ -4,8 +4,8 @@
  	<meta charset="utf-8"/>
  	<link href="/plugins/layui/css/layui.css" rel="stylesheet" type="text/css"/>
  	<link href="/Module/loreManager/css/loreRelate.css" rel="stylesheet" type="text/css"/>
- 	<link href="/plugins/pace/pace-theme-flash.min.css" rel="stylesheet" type="text/css"/>
  	<link href="/plugins/layui/css/modules/layui-icon-extend/iconfont.css" rel="stylesheet" type="text/css"/>
+ 	<link href="/plugins/pace/pace-theme-flash.min.css" rel="stylesheet" type="text/css"/>
 	<script src="/plugins/pace/pace.min.js" type="text/javascript"></script>	
   	<title>关联知识点</title>
 </head>
@@ -117,7 +117,7 @@
 	<script src="/plugins/jquery/jquery.min.js"></script>
 	<script src="/plugins/layui/layui.js"></script>
 	<script type="text/javascript">
-		var loreId = parent.loreBigId,loreName = parent.loreBigName,loreBigId = parent.loreBigId;
+		var buffetId = parent.bigBuffetId,loreName = parent.loreBigTit;
 		var infoBySubOpt = 'getGradeOpt',nowSearType=1,searOpt='relate',//根据学科获取年级的信息
 			infoByGsEdOpt='geteduC',currPage='relatePage',ediId = parent.$('#editInp').val();//根据年级出版社获取教材信息 need
 		layui.config({
@@ -130,13 +130,14 @@
 					//获取出版社
 					baseDataMet.getEditionList('editionSel');
 					$('#editInp').val(ediId);
+					//$('.hasAddResTit').html('<span style="color:#F47837;">'+ loreName +'</span>已关联知识点');
 					$('.hasAddResTit').html('<p class="resTitP"><span style="color:#F47837;">'+ loreName +'</span>已关联知识点</p><a class="viewLoreTreeBtn" href="javascript:void(0)" title="查看知识树"><i class="iconfont layui-extend-tree"></i></a>');
 					form.render();
 					this.initHasAddRelation();
 				},
 				//加载已经添加的关联知识点
 				initHasAddRelation : function(){
-					relate.addRelateLoreAction(loreId,ediId);
+					relate.addBfRelateLoreAction(buffetId);
 					baseDataMet.matchSelctedOptions();
 					$('.viewLoreTreeBtn').on('click',function(){
 						layer.open({
@@ -146,7 +147,7 @@
 						  	fixed: true, //不固定
 						  	maxmin: false,
 						  	shadeClose :false,
-						  	content: '/Module/loreManager/jsp/viewLoreTree.html'
+						  	content: '/Module/buffetManager/jsp/viewLoreTree.html'
 						});	
 					});
 				},

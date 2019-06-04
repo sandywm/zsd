@@ -27,8 +27,10 @@ layui.define(['form'],function(exports){
     			tiganStr += '<a class="resetBtn" href="javascript:void(0)">还原</a></div>';
     		}
     		tiganStr += '</div>';
-    		//tiganStr += '<div class="tiganType1 typeCon"><input id="tiganType1Inp" type="hidden" value="了解"/><select id="tiganType1Sel" lay-filter="tiganType1Sel">';
-    		//tiganStr += '<option value="了解">了解</option><option value="理解">理解</option><option value="应用">应用</option><option value="综合">综合</option></select></div>';
+    		if(currPage == 'lorePage'){
+    			tiganStr += '<div class="tiganType1 typeCon"><input id="tiganType1Inp" type="hidden" value="了解"/><select id="tiganType1Sel" lay-filter="tiganType1Sel">';
+        		tiganStr += '<option value="了解">了解</option><option value="理解">理解</option><option value="应用">应用</option><option value="综合">综合</option></select></div>';
+    		}
     		tiganStr += '<div class="maxChoice typeCon"></div>';
     		tiganStr += '<div class="spaceBox typeCon"></div>';
     		tiganStr += '</div>';
@@ -74,7 +76,7 @@ layui.define(['form'],function(exports){
     		var lexStr = '';
     		lexStr += '<div class="typeBox lexWrap layui-clear"><span style="float:left;">关联词条：</span>';
     		lexStr += '<div style="float:left;width:92%;"><input type="hidden" id="'+ loreType +'_lexId"/><input type="text" id="'+ loreType +'_lexInp" class="layui-input lexInput" readonly/>';
-    		lexStr += '<a href="javascript:void(0)" class="layui-btn layui-xs addLexBtn">添加编辑词条</a>';
+    		lexStr += '<a href="javascript:void(0)" opts="innerQues" class="layui-btn layui-xs addLexBtn">添加编辑词条</a>';
     		lexStr += '<i onclick="delLex(this)" currType="'+ loreType +'" class="layui-icon layui-icon-delete delLextBtn" title="删除关联词条"></i>';
     		lexStr += '</div></div>';
     		return lexStr;
