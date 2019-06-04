@@ -134,6 +134,7 @@ public class BuffetLoreRelateAction extends DispatchAction {
 	/**
 	 * 关联只在通用版里面完成
 	 * 获取当前知识点下（通用版）指定巴菲特题所关联的知识点列表(显示知识树)
+	 * 通用版不排序，只有到具体出版社的时候才排序
 	 * @author wm
 	 * @date 2019-5-22 上午09:34:10
 	 * @param mapping

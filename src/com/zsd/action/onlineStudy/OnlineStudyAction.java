@@ -789,6 +789,39 @@ public class OnlineStudyAction extends DispatchAction {
 											loreTaskName = "学习本知识点";
 											money = 0;//学习的没金币
 											nextLoreIdArray = String.valueOf(currentLoreId);
+										}else if(access == 2){//本知识点学习
+											task = sl.getTaskNumber();
+											pathType = "study";
+											buttonValue = "本知识点学习";
+											loreTypeName = "再次诊断";
+											loreTaskName = "学习本知识点";
+											money = 0;
+											nextLoreIdArray = String.valueOf(loreId);
+										}else if(access == 0){//再次诊断没做完，继续诊断
+//											task = sl.getTaskNumber();
+//											pathType = "diagnosis";
+//											buttonValue = "继续诊断";
+//											loreTypeName = "再次诊断";
+//											loreTaskName = "本知识点诊断";
+//											//做过的题和剩下的题拼装
+//											//全部题
+//											//2014-10-22日修改（获取该知识典所有类型为loreTypeName的题型[0为题状态为有效状态]）
+//											List<LoreQuestion> lqList_all = lqm.listInfoByLoreId(CommonTools.getQuoteLoreId(loreId), loreTypeName, 0);
+//											
+//											//获取最后一道已做过的题
+//											List<StudyDetailInfo> lastList = sdm.listLastInfoByLogId(studyLogId, loreId, "");
+//											 List<StudyDetailInfo> sdList_pre_right = new ArrayList<StudyDetail>();
+//											 if(lastList.size() > 0){//表示存在最后一次诊断记录(列出的题为)
+//												 if(lastList.get(0).getLoreQuestion().getLoreTypeName().equals("再次诊断")){//说明最后做的一道题是再次诊断题，表示题还未做完
+//													 //当前阶段刚做过的再次诊断题列表
+//													 Integer completeTimes = lastList.get(0).getCompleteTimes();
+//													 //获取不是当前级别所有做正确的再次诊断题
+//													 sdList_pre_right = sdManager.listPreRightInfoByOption(studyLogId, loreId, loreTypeName, completeTimes);
+//												 }
+//											 }
+//											
+//											money *= (lqList_all.size() - sdList_pre_right.size());//一直显示全部题的金币数
+//											nextLoreIdArray = String.valueOf(loreId);
 										}
 									}
 								}
