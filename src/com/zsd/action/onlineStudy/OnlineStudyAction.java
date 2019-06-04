@@ -948,7 +948,36 @@ public class OnlineStudyAction extends DispatchAction {
 	 */
 	public ActionForward goTracebackPage(ActionMapping mapping ,ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
-	
+		Integer loreId =  CommonTools.getFinalInteger("loreId", request);//知识点最初的编号
+		Integer studyLogId = CommonTools.getFinalInteger("studyLogId", request);//学习记录编号
+		request.setAttribute("loreId", loreId);
+		request.setAttribute("studyLogId", studyLogId);
 		return mapping.findForward("tracePage");
+	}
+	
+	/**
+	 * 获取溯源路线图数据
+	 * @author wm
+	 * @date 2019-6-4 下午05:26:09
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getTracebackData(ActionMapping mapping ,ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		Integer loreId =  CommonTools.getFinalInteger("loreId", request);//知识点最初的编号
+		Integer studyLogId = CommonTools.getFinalInteger("studyLogId", request);//学习记录编号
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "error";
+		Integer stuId = CommonTools.getLoginUserId(request);
+		if(studyLogId > 0){
+			
+		}else{//第一次
+			List<>
+		}
+		return null;
 	}
 }
