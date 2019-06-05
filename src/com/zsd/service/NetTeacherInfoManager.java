@@ -99,5 +99,16 @@ public interface NetTeacherInfoManager {
 	 * @throws WEBException
 	 */
 	boolean updateNtInfoByCheckSta(Integer id,Integer checkStatus) throws WEBException;
+	/**
+	 * 根据用户编号更新银行卡信息
+	 * @author zong
+	 * 2019-5-24上午11:13:08
+	 * @param uid 用户编号
+	 * @param bName 银行名
+	 * @param bNum 银行卡号
+	 * @return
+	 * @throws WEBException
+	 */
+	boolean updateNtByBankCard(Integer uid,String bName,String bNum) throws WEBException;
 
 }

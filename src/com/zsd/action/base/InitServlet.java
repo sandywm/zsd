@@ -32,7 +32,7 @@ public class InitServlet extends HttpServlet
     	
         WebUrl.PERSONAL_HONOR = getServletContext().getRealPath("/Module/commonJs/ueditor/jsp/honor");
         
-        WebUrl.NEW_PERSONAL_HONOR = getServletContext().getRealPath("/Module/commonJs/ueditor/jsp/honor/small");
+        WebUrl.NEW_PERSONAL_HONOR = "Module/commonJs/ueditor/jsp/honor/";
     	
     	WebUrl.DIAGNOSIS_DATA_URL = getServletContext().getRealPath("/Module/commonJs/ueditor/jsp/video");
     	
@@ -41,5 +41,9 @@ public class InitServlet extends HttpServlet
         WebUrl.NEW_LORE_DATA_URL = "Module/commonJs/ueditor/jsp/lore/";
         
         WebUrl.LORE_DATA_URL = getServletContext().getRealPath("Module/commonJs/ueditor/jsp/lore/");
+        
+        WebUrl.DATA_URL = "Module/commonJs/ueditor/jsp/head/";
+        
+        WebUrl.NEW_DATA_URL = "Module/commonJs/ueditor/jsp/head/";
     }
 }

@@ -63,6 +63,7 @@ public class UserClassInfoManagerImpl implements UserClassInfoManager {
 			HibernateUtil.closeSession();
 		}
 	}
+
 	@Override
 	public UserClassInfo getEntityByOpt(Integer userId, Integer roleId)
 			throws WEBException {
@@ -74,6 +75,35 @@ public class UserClassInfoManagerImpl implements UserClassInfoManager {
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new WEBException("根据用户编号，角色编号获取用户班级信息实体时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public List<UserClassInfo> listUcInfoByOpt(Integer classId, Integer roleId,
+			Integer pageNo, Integer pageSize) throws WEBException {
+		 try {
+			 ucDao = (UserClassInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_USER_CLASS_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return ucDao.findUcInfoByOpt(sess, classId, roleId, pageNo, pageSize);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("根据班级编号,角色编号获取用户班级信息时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+	@Override
+	public Integer getUciByOpt(Integer classId, Integer roleId)
+			throws WEBException {
+		 try {
+			 ucDao = (UserClassInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_USER_CLASS_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return ucDao.getUciByOpt(sess, classId, roleId);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("根据班级编号,角色编号获取用户班级信息记录数时出现异常!");
 		} finally{
 			HibernateUtil.closeSession();
 		}

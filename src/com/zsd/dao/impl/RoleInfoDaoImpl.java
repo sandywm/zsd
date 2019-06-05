@@ -48,7 +48,7 @@ public class RoleInfoDaoImpl implements	RoleInfoDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<RoleInfo> findRoleInfo(Session sess, String roleName) {
-		String hql = " from RoleInfo as r where roleName = '"+roleName+"'";
+		String hql = " from RoleInfo as r where r.roleName = '"+roleName+"'";
 		return sess.createQuery(hql).list();
 	}
 

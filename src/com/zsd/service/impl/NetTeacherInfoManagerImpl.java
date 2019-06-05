@@ -162,4 +162,28 @@ public class NetTeacherInfoManagerImpl implements NetTeacherInfoManager {
 		}
 	}
 
+	@Override
+	public boolean updateNtByBankCard(Integer uid, String bName, String bNum)
+			throws WEBException {
+		try {
+			ntDao = (NetTeacherInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_NET_TEACHER_INFO);
+			Session sess  = HibernateUtil.currentSession();
+			tran = sess.beginTransaction();
+			List<NetTeacherInfo> ntList = ntDao.findntInfoByuserId(sess, uid);
+			NetTeacherInfo nt = ntList.get(0);
+			if(nt != null){
+				nt.setBankName(bName);
+				nt.setBankNumber(bName);
+				tran.commit();
+				return true;
+			}
+			return false;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("根据用户编号更新银行卡信息时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
 }

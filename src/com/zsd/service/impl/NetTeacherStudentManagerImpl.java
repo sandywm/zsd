@@ -112,4 +112,65 @@ public class NetTeacherStudentManagerImpl implements NetTeacherStudentManager {
 		}
 	}
 
+	@Override
+	public List<NetTeacherStudent> listNTByntId(Integer ntId, Integer bindSta)
+			throws WEBException {
+		try {
+			ntsDao = (NetTeacherStudentDao) DaoFactory.instance(null).getDao(Constants.DAO_NET_TEACHER_STUDENT);
+			Session sess  = HibernateUtil.currentSession();
+			return ntsDao.findNTByntId(sess, ntId, bindSta);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("根据网络导师编号,绑定状态获取绑定学生信息时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public List<NetTeacherStudent> listNTByStuNameOrBindSta(Integer ntId,
+			Integer paySta, Integer bindFlag, String stuName, Integer pageNo,
+			Integer pageSize)throws WEBException {
+		try {
+			ntsDao = (NetTeacherStudentDao) DaoFactory.instance(null).getDao(Constants.DAO_NET_TEACHER_STUDENT);
+			Session sess  = HibernateUtil.currentSession();
+			return ntsDao.findNTByStuNameOrBindSta(sess, ntId, paySta, bindFlag, stuName, pageNo, pageSize);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("根据网络导师编号,支付方式,绑定状态获取绑定学生信息时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public Integer getNtsBystunameOrBindSta(Integer ntId, Integer paySta,
+			Integer bindFlag, String stuName)throws WEBException {
+		try {
+			ntsDao = (NetTeacherStudentDao) DaoFactory.instance(null).getDao(Constants.DAO_NET_TEACHER_STUDENT);
+			Session sess  = HibernateUtil.currentSession();
+			return ntsDao.getNtsBystunameOrBindSta(sess, ntId, paySta, bindFlag, stuName);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("根据网络导师编号,支付方式,绑定状态获取绑定学生记录数时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public Integer getByStuNum(Integer ntId, Integer bindFlag)
+			throws WEBException {
+		try {
+			ntsDao = (NetTeacherStudentDao) DaoFactory.instance(null).getDao(Constants.DAO_NET_TEACHER_STUDENT);
+			Session sess  = HibernateUtil.currentSession();
+			return ntsDao.getByStuNum(sess, ntId, bindFlag);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("根据网络导师编号获取班内免费试用,付费学生人数时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
 }

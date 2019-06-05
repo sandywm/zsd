@@ -80,5 +80,49 @@ public interface NetTeacherStudentDao {
 	 * @return
 	 */
 	List<NetTeacherStudent> findNTByntId(Session sess,int ntId);
+	/**
+	 * 根据网络导师用户编号,绑定状态获取绑定学生
+	 * @author zong
+	 * 2019-5-27上午09:41:30
+	 * @param sess
+	 * @param ntId 用户编号
+	 * @param bindSta 绑定状态(1付费)
+	 * @return
+	 */
+	List<NetTeacherStudent> findNTByntId(Session sess,int ntId,Integer bindSta);
+	/**
+	 * 根据绑定状态,学生姓名查看网络导师学生绑定信息(我的班级)
+	 * @author zong
+	 * 2019-5-29上午11:33:39
+	 * @param sess
+	 * @param stuName 学生姓名
+	 * @param bindSta 绑定状态
+	 * @param ntId 网络导师(用户编号)
+	 * @param pageNo
+	 * @param pageSize
+	 * @return
+	 */
+	List<NetTeacherStudent> findNTByStuNameOrBindSta(Session sess,Integer ntId,Integer paySta,Integer bindFlag,String stuName,Integer pageNo,Integer pageSize);
+	/**
+	 * 根据绑定状态,学生姓名查看网络导师学生绑定信息记录数(我的班级)
+	 * @author zong
+	 * 2019-5-29下午04:24:42
+	 * @param sess
+	 * @param stuName 学生姓名
+	 * @param bindSta 绑定状态
+	 * @param ntId 网络导师(用户编号)
+	 * @return
+	 */
+	Integer getNtsBystunameOrBindSta(Session sess,Integer ntId,Integer paySta,Integer bindFlag, String stuName);
+	/**
+	 * 根据网络导师编号获取班内免费试用,付费学生人数
+	 * @author zong
+	 * 2019-5-31下午04:46:21
+	 * @param sess
+	 * @param ntId 网络导师编号
+	 * @param bindFlag 绑定状态
+	 * @return
+	 */
+	Integer getByStuNum(Session sess,Integer ntId,Integer bindFlag);
 		
 }

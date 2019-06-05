@@ -6,6 +6,7 @@ import org.hibernate.Session;
 
 import com.zsd.dao.UserClassInfoDao;
 import com.zsd.module.UserClassInfo;
+import com.zsd.tools.CommonTools;
 
 @SuppressWarnings("unchecked")
 public class UserClassInfoDaoImpl implements UserClassInfoDao {
@@ -63,6 +64,23 @@ public class UserClassInfoDaoImpl implements UserClassInfoDao {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<UserClassInfo> findUcInfoByOpt(Session sess, Integer classId,
+								Integer roleId,Integer pageNo,Integer pageSize) {
+		String hql = " from UserClassInfo as uci where uci.classInfo.id="+classId+" and uci.roleInfo.id="+roleId;
+		int offset = (pageNo - 1) * pageSize;
+		if (offset < 0) {
+			offset = 0;
+		}
+		return sess.createQuery(hql).setFirstResult(offset).setMaxResults(pageSize).list();
+	}
 
+	@Override
+	public Integer getUciByOpt(Session sess, Integer classId, Integer roleId) {
+		String hql = "select count(uci.id) from UserClassInfo as uci where uci.classInfo.id="+classId+" and uci.roleInfo.id="+roleId;
+		Object countObj = sess.createQuery(hql).uniqueResult();
+		return CommonTools.longToInt(countObj);
+	}
 
 }

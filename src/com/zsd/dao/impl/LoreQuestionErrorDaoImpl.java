@@ -55,7 +55,7 @@ public class LoreQuestionErrorDaoImpl implements LoreQuestionErrorDao{
 			hql += " and lqe.errorType = '"+errorType+"'";
 		}
 		if(!sDate.equals("") && !eDate.equals("")){
-			hql += " and lqe.addDate >= '"+sDate+"' and lqeDate <= '"+eDate+"'";
+			hql += " and lqe.addDate >= '"+sDate+"' and lqe.addDate <= '"+eDate+"'";
 		}
 		if(!updateStatus.equals(-1)){
 			hql += " and lqe.checkStatus = "+updateStatus;
@@ -76,7 +76,7 @@ public class LoreQuestionErrorDaoImpl implements LoreQuestionErrorDao{
 			hql += " and lqe.errorType = '"+errorType+"'";
 		}
 		if(!sDate.equals("") && !eDate.equals("")){
-			hql += " and lqe.addDate >= '"+sDate+"' and lqeDate <= '"+eDate+"'";
+			hql += " and lqe.addDate >= '"+sDate+"' and lqe.addDate <= '"+eDate+"'";
 		}
 		if(!updateStatus.equals(-1)){
 			hql += " and lqe.checkStatus = "+updateStatus;

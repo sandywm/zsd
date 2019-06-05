@@ -4,7 +4,9 @@
  */
 package com.zsd.action.nt;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -19,9 +21,20 @@ import org.apache.struts.actions.DispatchAction;
 import com.zsd.action.base.Transcode;
 import com.zsd.factory.AppFactory;
 import com.zsd.module.NetTeacherInfo;
+import com.zsd.module.NetTeacherReturnRecord;
+import com.zsd.module.NetTeacherStudent;
+import com.zsd.module.NetTeacherTxRecord;
+import com.zsd.module.StudentPayOrderInfo;
+import com.zsd.module.User;
+import com.zsd.page.PageConst;
 import com.zsd.service.NetTeacherBasicInfoManager;
 import com.zsd.service.NetTeacherInfoManager;
+import com.zsd.service.NetTeacherReturnRecordManager;
+import com.zsd.service.NetTeacherStudentManager;
+import com.zsd.service.NetTeacherTxRecordManager;
 import com.zsd.service.NtCertificateInfoManager;
+import com.zsd.service.StudentPayOrderInfoManager;
+import com.zsd.service.UserManager;
 import com.zsd.tools.CommonTools;
 import com.zsd.util.Constants;
 
@@ -129,9 +142,9 @@ public class NetTeacherAction extends DispatchAction {
 		String icardName = Transcode.unescape_new("icardName", request);//身份证姓名
 		String icardNum = Transcode.unescape_new("icardNum", request);//身份证号
 		String icardImgFrontBig = Transcode.unescape_new("icardImgFrontBig", request); //身份证正面大
-		String icardImgBackBig = Transcode.unescape("icardImgBackBig", request); //身份正背面大
-		String icardImgFrontSmall = Transcode.unescape("icardImgFrontSmall", request); //身份证正面小
-		String icardImgBackSmall = Transcode.unescape("icardImgBackSmall", request); //身份正背面小
+		String icardImgBackBig = Transcode.unescape_new("icardImgBackBig", request); //身份正背面大
+		String icardImgFrontSmall = Transcode.unescape_new("icardImgFrontSmall", request); //身份证正面小
+		String icardImgBackSmall = Transcode.unescape_new("icardImgBackSmall", request); //身份正背面小
 		if(id>0){
 			boolean ntcFlag = ntcManager.updateNtcInfo(id, icardImgFrontBig, icardImgBackBig, icardImgFrontSmall, icardImgBackSmall, icardName, icardNum, "", "", "", "");
 			if(ntcFlag){
@@ -171,8 +184,8 @@ public class NetTeacherAction extends DispatchAction {
 		List<NetTeacherInfo> ntList = ntManager.listntInfoByuserId(uId);
 		Integer ntId = ntList.get(0).getId();
 		Integer id = CommonTools.getFinalInteger("ntcId", request);// 主键
-		String xlzImgBig = Transcode.unescape("xlzImgBig", request); //学历证大
-		String xlzImgSmall = Transcode.unescape("xlzImgSmall", request); //学历证小
+		String xlzImgBig = Transcode.unescape_new("xlzImgBig", request); //学历证大
+		String xlzImgSmall = Transcode.unescape_new("xlzImgSmall", request); //学历证小
 		if(id>0){
 			boolean   ntcFlag = ntcManager.updateNtcInfo(id, "", "", "", "", "", "", "", "", xlzImgBig, xlzImgSmall);
 			if(ntcFlag){
@@ -212,8 +225,8 @@ public class NetTeacherAction extends DispatchAction {
 		List<NetTeacherInfo> ntList = ntManager.listntInfoByuserId(uId);
 		Integer ntId = ntList.get(0).getId();
 		Integer id = CommonTools.getFinalInteger("ntcId", request);// 主键
-		String zgzImgBig = Transcode.unescape("zgzImgBig", request); //学历证大
-		String zgzImgSmall = Transcode.unescape("zgzImgSmall", request); //学历证小
+		String zgzImgBig = Transcode.unescape_new("zgzImgBig", request); //学历证大
+		String zgzImgSmall = Transcode.unescape_new("zgzImgSmall", request); //学历证小
 		if(id>0){
 			boolean   ntcFlag = ntcManager.updateNtcInfo(id, "", "", "", "", "", "", zgzImgBig, zgzImgSmall, "", "");
 			if(ntcFlag){
@@ -232,5 +245,325 @@ public class NetTeacherAction extends DispatchAction {
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
-	
+	/**
+	 * 我的账号(网络导师)
+	 * @author zong
+	 * 2019-5-26上午10:18:46
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward myAcc(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response)throws Exception {
+		UserManager uManager = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
+		NetTeacherInfoManager ntManager = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
+		NetTeacherTxRecordManager ntxManager = (NetTeacherTxRecordManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_TX_RECORD);
+		StudentPayOrderInfoManager sOrdeManager = (StudentPayOrderInfoManager) AppFactory.instance(null).getApp(Constants.WEB_STUDENT_PAY_ORDER_INFO);
+		NetTeacherStudentManager ntsManager = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT);
+		Integer userId=CommonTools.getLoginUserId(request);
+		Map<String, Object> map = new HashMap<String, Object>();
+		List<User> ulist = uManager.listEntityById(userId);
+		List<NetTeacherInfo> ntlist = ntManager.listntInfoByuserId(userId);
+		Integer accMon = ulist.get(0).getAccountMoney();
+		String bName =ntlist.get(0).getBankName();
+		String bNum = ntlist.get(0).getBankNumber();
+		Integer ntId = ntlist.get(0).getId();
+		List<NetTeacherTxRecord> ntxlist =ntxManager.findnTxReCordByNtId(ntId,0);//预计提现金额
+		List<NetTeacherTxRecord> ntxs =ntxManager.findnTxReCordByNtId(ntId,1);//提现金额
+		Integer ytxCash=0;
+		Integer txCash =0;
+		for (Iterator<NetTeacherTxRecord> it = ntxlist.iterator(); it.hasNext();) {
+			NetTeacherTxRecord ntx = (NetTeacherTxRecord) it.next();
+			 ytxCash+=ntx.getTxMoney();
+		}
+		for (Iterator<NetTeacherTxRecord> itr = ntxs.iterator(); itr.hasNext();) {
+			NetTeacherTxRecord ntxRe = (NetTeacherTxRecord) itr.next();
+			txCash+=ntxRe.getTxMoney();
+		}
+		List<NetTeacherStudent> ntslist=ntsManager.listNTByntId(ntId, 1);
+		Integer tMoney=0;
+		for (Iterator<NetTeacherStudent> iter = ntslist.iterator(); iter.hasNext();) {
+			NetTeacherStudent nts = (NetTeacherStudent) iter.next();
+			Integer ntsId = nts.getId();
+			List<StudentPayOrderInfo> sordeList = sOrdeManager.findSpayOrderInfoByOpt(ntsId, 1);
+			for (Iterator<StudentPayOrderInfo> itrs = sordeList.iterator(); itrs.hasNext();) {
+				StudentPayOrderInfo sorder = (StudentPayOrderInfo) itrs.next();
+				tMoney +=sorder.getPayMoney();
+			}
+		}
+		map.put("tMoney", tMoney);//预计总收入
+		map.put("mCash", accMon);//可提现金额
+		map.put("bName", bName);//银行名称
+		map.put("bNum", bNum);//银行账号
+		map.put("ytxCash", ytxCash);//等待到账金额
+		map.put("txCash", txCash);//已提现金额
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	/**
+	 * 根据网络导师主键修改网络导师银行卡信息
+	 * @author zong
+	 * 2019-5-27上午10:34:03
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward updateNtBankCard(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response)throws Exception {
+		NetTeacherInfoManager ntManager = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
+		Integer userId=CommonTools.getLoginUserId(request);
+		String bName = Transcode.unescape("bName", request);
+		String bNum = CommonTools.getFinalStr("bNum",request);
+		boolean ntFlag=ntManager.updateNtByBankCard(userId, bName, bNum);
+		Map<String, String> map = new HashMap<String, String>();
+		if(ntFlag){
+			map.put("result", "success");
+		}else{
+			map.put("result", "fail");
+		}
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	/**
+	 * 获取网络导师的提现记录信息
+	 * @author zong
+	 * 2019-5-27下午03:40:02
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward listnTxReCord(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response)throws Exception {
+		NetTeacherTxRecordManager ntxManager = (NetTeacherTxRecordManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_TX_RECORD);
+		NetTeacherInfoManager ntManager = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
+		Integer userId=CommonTools.getLoginUserId(request);
+		List<NetTeacherInfo> ntlist = ntManager.listntInfoByuserId(userId);
+		Integer ntId = ntlist.get(0).getId();
+		Integer count = ntxManager.getnTxReCordCount(ntId);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg ="暂无记录";
+		if(count>0){
+			Integer pageSize = PageConst.getPageSize(String.valueOf(request.getParameter("limit")), 10);//等同于pageSize
+			Integer pageNo = CommonTools.getFinalInteger("page", request);//等同于pageNo
+			List<NetTeacherTxRecord> ntxlist= ntxManager.listnTxReCordByNtId(ntId, pageNo, pageSize);
+			List<Object> list_d = new ArrayList<Object>();
+			Map<String,Object> map_d = new HashMap<String,Object>();
+			for (Iterator<NetTeacherTxRecord> itr = ntxlist.iterator(); itr.hasNext();) {
+				NetTeacherTxRecord ntx = (NetTeacherTxRecord) itr.next();
+				map_d.put("id", ntx.getId());
+				map_d.put("txMoney", ntx.getTxMoney());
+				map_d.put("txDate", ntx.getTxDate());
+				map_d.put("operDate", ntx.getOperateDate());
+				list_d.add(map_d);
+			}
+			map.put("data", list_d);
+			map.put("count", count);
+			map.put("code", 0);
+			msg = "success";
+		}
+		map.put("msg", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	/**
+	 * 获取学生的购买订单信息
+	 * @author zong
+	 * 2019-5-27下午04:53:21
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward listStuPayOrder(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response)throws Exception {
+		NetTeacherInfoManager ntManager = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
+		StudentPayOrderInfoManager sOrdeManager = (StudentPayOrderInfoManager) AppFactory.instance(null).getApp(Constants.WEB_STUDENT_PAY_ORDER_INFO);
+		NetTeacherStudentManager ntsManager = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT);
+		Integer userId=CommonTools.getLoginUserId(request);
+		Map<String, Object> map = new HashMap<String, Object>();
+		List<NetTeacherInfo> ntlist = ntManager.listntInfoByuserId(userId);
+		Integer ntId = ntlist.get(0).getId();
+		List<NetTeacherStudent> ntslist=ntsManager.listNTByntId(ntId, 1);
+		List<Object> list_d = new ArrayList<Object>();
+		String  msg = "暂无记录";
+		Integer count =0;
+		if(!ntslist.isEmpty()){
+			for (Iterator<NetTeacherStudent> iter = ntslist.iterator(); iter.hasNext();) {
+				NetTeacherStudent nts = (NetTeacherStudent) iter.next();
+				 Integer ntsId = nts.getId();
+				 count = sOrdeManager.getspOrderInfoCount(ntsId);
+				 if(count>0){
+					 msg="success";
+					 Integer pageSize = PageConst.getPageSize(String.valueOf(request.getParameter("limit")), 10);//等同于pageSize
+					 Integer pageNo = CommonTools.getFinalInteger("page", request);//等同于pageNo
+					 List<StudentPayOrderInfo> sordeList = sOrdeManager.listSpayOrderInfoByOpt(ntsId, pageNo, pageSize);
+					 Map<String,Object> map_d = new HashMap<String,Object>();
+						for (Iterator<StudentPayOrderInfo> itrs = sordeList.iterator(); itrs.hasNext();) {
+							StudentPayOrderInfo sorder = (StudentPayOrderInfo) itrs.next();
+							map_d.put("stuName", sorder.getUser().getRealName());
+							map_d.put("payDate", sorder.getAddDate());
+							map_d.put("payMoney", sorder.getPayMoney());
+							map_d.put("endDate", sorder.getEndDate());
+							list_d.add(map_d);
+						}
+				 }
+			}
+			map.put("data", list_d);
+			map.put("count", count);
+			map.put("code", 0);
+		}
+		map.put("msg", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	/**
+	 * 根据网络导师编号获取返现信息列表
+	 * @author zong
+	 * 2019-5-28下午04:21:20
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward listnTrReCord(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response)throws Exception {
+		NetTeacherReturnRecordManager  ntrManager = (NetTeacherReturnRecordManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_RETURN_RECORD);
+		NetTeacherInfoManager ntManager = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
+		Integer userId=CommonTools.getLoginUserId(request);
+		List<NetTeacherInfo> ntlist = ntManager.listntInfoByuserId(userId);
+		Integer ntId = ntlist.get(0).getId();
+		Integer count = ntrManager.getnTrRecordCount(ntId);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg ="暂无记录";
+		if(count>0){
+			Integer pageSize = PageConst.getPageSize(String.valueOf(request.getParameter("limit")), 10);//等同于pageSize
+			Integer pageNo = CommonTools.getFinalInteger("page", request);//等同于pageNo
+			List<NetTeacherReturnRecord> ntrlist= ntrManager.listnTrRecordByNtId(ntId, pageNo, pageSize);
+			List<Object> list_d = new ArrayList<Object>();
+			Map<String,Object> map_d = new HashMap<String,Object>();
+			for (Iterator<NetTeacherReturnRecord> itr = ntrlist.iterator(); itr.hasNext();) {
+				NetTeacherReturnRecord ntr = (NetTeacherReturnRecord) itr.next();
+				map_d.put("id", ntr.getId());
+				map_d.put("stuName", ntr.getUser().getRealName());
+				map_d.put("reMoney", ntr.getReturnMoney());
+				map_d.put("reDate", ntr.getReturnMoney());
+				list_d.add(map_d);
+			}
+			map.put("data", list_d);
+			map.put("count", count);
+			map.put("code", 0);
+			msg = "success";
+		}
+		map.put("msg", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	/**
+	 * 获取班级成员列表(我的班级)
+	 * @author zong
+	 * 2019-5-31下午03:59:27
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward listUserClass(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response)throws Exception {
+		NetTeacherStudentManager ntsManager = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT);
+		NetTeacherInfoManager ntManager = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
+		Integer userId=CommonTools.getLoginUserId(request);
+		List<NetTeacherInfo> ntlist = ntManager.listntInfoByuserId(userId);
+		Integer ntId = ntlist.get(0).getId();
+		Integer paySta=CommonTools.getFinalInteger("paySta", request);
+		Integer bindFlag= CommonTools.getFinalInteger("bindFlag", request);
+		String stuName=Transcode.unescape("stuName", request);
+		Integer count = ntsManager.getNtsBystunameOrBindSta(ntId, paySta, bindFlag, stuName);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg ="暂无记录";
+		if(count>0){
+			Integer pageSize = PageConst.getPageSize(String.valueOf(request.getParameter("limit")), 10);//等同于pageSize
+			Integer pageNo = CommonTools.getFinalInteger("page", request);//等同于pageNo
+			List<NetTeacherStudent> ntslist = ntsManager.listNTByStuNameOrBindSta(ntId, paySta, bindFlag, stuName, pageNo, pageSize);
+			List<Object> list_d = new ArrayList<Object>();
+			Map<String,Object> map_d = new HashMap<String,Object>();
+			for (Iterator<NetTeacherStudent> itr = ntslist.iterator(); itr.hasNext();) {
+				NetTeacherStudent nts = (NetTeacherStudent) itr.next();
+				map_d.put("id", nts.getId());
+				map_d.put("stuNmae", nts.getUser().getRealName());
+				map_d.put("sectDate", nts.getBindDate()+"至"+nts.getEndDate());
+				Integer paysta = nts.getPayStatus();
+				if(paysta.equals(-1)){
+					map_d.put("payVal", "免费试用");
+				}else if(paysta.equals(1)){
+					map_d.put("payVal", "付费");
+				}else if(paysta.equals(0)){
+					map_d.put("payVal", "取消");
+				}else{
+					map_d.put("payVal", "免费");
+				}
+				list_d.add(map_d);
+			}
+			map.put("data", list_d);
+			map.put("count", count);
+			map.put("code", 0);
+			msg = "success";
+		}
+		map.put("msg", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	/**
+	 * 获取班级基本信息(我的班级)
+	 * @author zong
+	 * 2019-5-31下午05:03:05
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getClassInfo(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response)throws Exception {
+		NetTeacherStudentManager ntsManager = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT);
+		NetTeacherInfoManager ntManager = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
+		Integer userId=CommonTools.getLoginUserId(request);
+		Map<String,Object> map = new HashMap<String,Object>();
+		List<NetTeacherInfo> ntlist = ntManager.listntInfoByuserId(userId);
+		NetTeacherInfo ntInfo = ntlist.get(0);
+		Integer ntId = ntInfo.getId();
+		Integer trialNum = ntsManager.getByStuNum(ntId, -1);//免费试用人员
+		Integer freeNum = ntsManager.getByStuNum(ntId, 2);//免费人员
+		Integer payNum = ntsManager.getByStuNum(ntId, 1);//付费人员
+		String schType ="";
+		if(ntInfo.getSchoolType()==1){
+			schType="小学";
+		}else if(ntInfo.getSchoolType()==2){
+			schType="初中";
+		}else if(ntInfo.getSchoolType()==3){
+			schType="高中";
+		}
+		map.put("subName", schType+ntInfo.getSubject().getSubName());
+		map.put("bmoney", ntInfo.getBaseMoney());
+		map.put("trialNum", trialNum);
+		map.put("freeNum", freeNum);
+		map.put("payNum", payNum);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
 }

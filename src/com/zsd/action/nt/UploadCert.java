@@ -5,19 +5,18 @@
 package com.zsd.action.nt;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.RequestContext;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.commons.fileupload.servlet.ServletRequestContext;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -25,6 +24,7 @@ import org.apache.struts.action.ActionMapping;
 
 import com.zsd.tools.CheckImage;
 import com.zsd.tools.CommonTools;
+import com.zsd.tools.CurrentTime;
 import com.zsd.tools.Upload;
 import com.zsd.util.WebUrl;
 
@@ -46,71 +46,59 @@ public class UploadCert extends Action {
 	 * @param response
 	 * @return ActionForward
 	 */
-	@SuppressWarnings("unchecked")
 	public ActionForward execute(ActionMapping mapping,ActionForm form,
 			HttpServletRequest request,HttpServletResponse response)throws Exception{
 		Map<String,Object> map = new HashMap<String,Object>();
-		RequestContext ctx = new ServletRequestContext(request);
 		DiskFileItemFactory factory = new DiskFileItemFactory();
 		factory.setSizeThreshold(2048*1024);
-		ServletFileUpload sfUpload = new ServletFileUpload(factory);
-		
-		List formList = sfUpload.parseRequest(ctx);
-		Iterator<Object> formItem = formList.iterator();
-		
+		ServletFileUpload fileUpload = new ServletFileUpload(factory);
+		List<FileItem> filelist = fileUpload.parseRequest(request);
+		ListIterator<FileItem> iterator = filelist.listIterator();
 		String userPath = WebUrl.PERSONAL_HONOR;
-		String imagePath = null;
-		while(formItem.hasNext()){
-			FileItem item = (FileItem)formItem.next();
-			if(item.isFormField()){
-				System.out.println("Field Name:"+item.getFieldName());
-			}else {
-				String fileName = item.getName().substring(item.getName().lastIndexOf("\\")+1);
-				if(fileName!=""){
-					Integer lastIndex = fileName.lastIndexOf(".");
-					if(lastIndex < 0){//没有文件格式
-						imagePath = "0";
-						map.put("imagePath", imagePath);
-						map.put("zoomImagePath", imagePath);
-						CommonTools.getJsonPkg(map, response);
-					}else{
-//							String filePreName = fileName.substring(0, lastIndex);
-						String suffix = fileName.substring(lastIndex);
-						CheckImage ci = new CheckImage();
-						if(!ci.checkImageStuffix(suffix)){
-							imagePath = "0";
-							map.put("imagePath", imagePath);
-							map.put("zoomImagePath", imagePath);
-							CommonTools.getJsonPkg(map, response);
-						}
-						if(!ci.checkItemSize(item, 5242880)){
-							imagePath = "1";
-							map.put("imagePath", imagePath);
-							map.put("zoomImagePath", imagePath);
-							CommonTools.getJsonPkg(map, response);
-						}
-						String fName = null;
-						Upload upload = new Upload();
-						//执行上传文件
-						fName = upload.uploadItem(item, userPath, suffix);
-						if(fName!=null){
-							String filePath = WebUrl.PERSONAL_HONOR + "\\" + fName;
-							File file = new File(filePath);
-							imagePath = WebUrl.NEW_PERSONAL_HONOR + upload.makeImage(userPath+"\\"+fName, 130, -1, upload.makeNewUrl(userPath, suffix, "_zoom"), suffix.substring(1))+"_zoom"+suffix;
-							
-							map.put("imagePath", filePath);
-							map.put("zoomImagePath", imagePath);
-							CommonTools.getJsonPkg(map, response);
-						}else {
-							imagePath = "2";
-							map.put("imagePath", imagePath);
-							map.put("zoomImagePath", imagePath);
-							CommonTools.getJsonPkg(map, response);
-						}
-					}
+		String smallUrl = "";
+		boolean upFlag = false;
+		String msg ="";
+		String fileUrl="";
+		Upload upload = new Upload();
+		while(iterator.hasNext()){
+			FileItem item = (FileItem)iterator.next();
+			// 处理文件上传
+			String filename = item.getName();// 获取名字
+			Integer lastIndex = filename.lastIndexOf(".");
+			String suffix = filename.substring(lastIndex+1);
+			String filePre = filename.substring(0, lastIndex);
+			filename = filePre + "_" + CurrentTime.getRadomTime() + "." + suffix;
+			CheckImage ci = new CheckImage();
+			//doc,docx,wps,xls,xlsx,txt,pdf,pptx,ppt,zip,rar,dwg,eml,jpg,png,bmp,gif,vsd,vsdx如果文件格式不在上述范围内请压缩成zip格式后上传
+			String checkFileSuffixInfo = ci.getUpFileStuffix(suffix);
+			if(checkFileSuffixInfo.equals("img")){//图片限制5M
+				upFlag = ci.checkItemSize(item, 5 * 1024 * 1024);
+				if(!upFlag){
+					msg = "outSize";
 				}
+			}else{
+				msg = "suffixError";
+			}
+			if(upFlag){
+				byte[] data = item.get();// 获取数据
+				//没有该文件夹先创建文件夹
+	    		File file = new File(userPath);
+	    		if(!file.exists()){
+	    			file.mkdirs();
+	    		}
+	    		FileOutputStream fileOutputStream = new FileOutputStream(userPath + "/" + filename);
+				fileOutputStream.write(data);// 写入文件
+				fileOutputStream.close();// 关闭文件流
+				msg = "success";
+				fileUrl +=  WebUrl.NEW_PERSONAL_HONOR  + "\\" + filename ;
+				
+				smallUrl = WebUrl.NEW_PERSONAL_HONOR + upload.makeImage(userPath+"\\"+filename, 130, -1, upload.makeNewUrl(userPath, suffix, "_zoom"), suffix.substring(1))+"_zoom"+suffix;
 			}
 		}
+		map.put("result", msg);
+		map.put("imgUrl",fileUrl);
+		map.put("simgUrl", smallUrl);
+		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
 }

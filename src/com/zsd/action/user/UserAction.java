@@ -40,9 +40,11 @@ import com.zsd.service.UserManager;
 import com.zsd.tools.CommonTools;
 import com.zsd.tools.Convert;
 import com.zsd.tools.CurrentTime;
+import com.zsd.tools.FileOpration;
 import com.zsd.tools.InviteCode;
 import com.zsd.tools.MD5;
 import com.zsd.util.Constants;
+import com.zsd.util.WebUrl;
 
 
 /** 
@@ -228,7 +230,7 @@ public class UserAction extends DispatchAction {
 		Integer gradeNo=CommonTools.getFinalInteger("gradeNo", request);
 		Integer classId=CommonTools.getFinalInteger("classId", request);
 		Integer count = uManager.getUserByoptionCount(accName, realName, schoolId, roleId, prov, city, county, schoolType, gradeNo, classId);
-		String msg = "noinfo";
+		String msg = "暂无记录";
 		Map<String,Object> map = new HashMap<String,Object>();
 		if(count>0){
 			Integer pageSize = PageConst.getPageSize(String.valueOf(request.getParameter("limit")), 10);//等同于pageSize
@@ -422,6 +424,173 @@ public class UserAction extends DispatchAction {
 		String password=new MD5().calcMD5(CommonTools.getFinalStr("password", request));
 		boolean flag = uManager.checkCurrpwd(userId, password);
 		map.put("msg", flag);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	/**
+	 * 修改学生用户个人中心基本信息
+	 * @author zong
+	 * 2019-6-3上午10:21:14
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward updateUserByStuInfo(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		UserManager uManager = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
+		Integer userId=CommonTools.getLoginUserId(request);
+		String sex=CommonTools.getFinalStr("sex",request);
+		String birthday=CommonTools.getFinalStr("birthday",request);
+		String qq=CommonTools.getFinalStr("qq",request);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String nickName = Transcode.unescape_new1("nickName",request);
+		String realName = Transcode.unescape_new1("realName",request);
+		String msg = "fail";
+		boolean uflag = uManager.updateUserStu(userId, nickName, realName, sex, birthday, qq);
+		if(uflag){
+			msg ="success";
+		}
+		map.put("msg", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+		
+	}
+	/**
+	 * 保存用户头像
+	 * @author zong
+	 * 2019-6-3下午04:48:32
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward updateUserByPortrait(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		UserManager uManager = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
+		Integer userId=CommonTools.getLoginUserId(request);
+		String portrait=CommonTools.getFinalStr("portrait",request);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "fail";
+		
+		List<User> uList = uManager.listEntityById(userId);
+		String portrait1 = uList.get(0).getPortrait();
+		
+		boolean uflag = uManager.updateUserByHead(userId, portrait);
+		//删除更新前的原头像文件 
+	    if(portrait1!=""){
+	    	portrait1 = WebUrl.DATA_URL +"\\"+portrait1.replace("Module/commonJs/ueditor/jsp/head/", "");
+	    	FileOpration.deleteFile(portrait1);
+	    }
+		if(uflag){
+			msg ="success";
+		}
+		map.put("msg", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;	
+	}
+	/**
+	 * 基本资料(学生个人中心)
+	 * @author zong
+	 * 2019-6-4下午04:43:25
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getStuInfo(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		UserManager uManager = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
+		Map<String,Object> map = new HashMap<String,Object>();
+		Integer userId=CommonTools.getLoginUserId(request);
+		List<User> uList = uManager.listEntityById(userId);
+		User user = uList.get(0);
+		map.put("id", user.getId());
+		map.put("account", user.getUserAccount());
+		map.put("nickName", user.getNickName());
+		map.put("realName", user.getRealName());
+		map.put("birthDay", user.getBirthday());
+		map.put("sex", user.getSex());
+		map.put("email",user.getEmail());
+		map.put("mobile", user.getMobile());
+		map.put("qq", user.getQq());
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	/**
+	 * 头像信息(学生个人中心)
+	 * @author zong
+	 * 2019-6-4下午05:01:41
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getStuPortrait(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		UserManager uManager = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
+		Map<String,Object> map = new HashMap<String,Object>();
+		Integer userId=CommonTools.getLoginUserId(request);
+		List<User> uList = uManager.listEntityById(userId);
+		User user = uList.get(0);
+		map.put("id", user.getId());
+		map.put("portrait", user.getPortrait());
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	/**
+	 * 安全设置(学生个人中心)
+	 * @author zong
+	 * 2019-6-4下午05:16:09
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getStuScy(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		UserManager uManager = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
+		Map<String,Object> map = new HashMap<String,Object>();
+		Integer userId=CommonTools.getLoginUserId(request);
+		List<User> uList = uManager.listEntityById(userId);
+		User user = uList.get(0);
+		map.put("id", user.getId());
+		map.put("lastLoginIp", user.getLastLoginIp());
+		map.put("email",user.getEmail());
+		map.put("mobile", user.getMobile());
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	/**
+	 * 学生家长账户信息(学生个人中心)
+	 * @author zong
+	 * 2019-6-4下午05:20:20
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getStuParentaccInfo(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		UserManager uManager = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
+		Map<String,Object> map = new HashMap<String,Object>();
+		Integer userId=CommonTools.getLoginUserId(request);
+		List<User> uList = uManager.listEntityById(userId);
+		User user = uList.get(0);
+		map.put("parentAcc", user.getUserAccount()+"_jz");
+		map.put("password",123456);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}

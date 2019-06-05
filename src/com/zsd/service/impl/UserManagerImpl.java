@@ -41,9 +41,8 @@ public class UserManagerImpl implements UserManager {
 	}
 
 	@Override
-	public boolean updateUser(Integer id , String nickName, String realName,
-			String sex, String password, String email, String mobile,
-			String portrait, String birthday, String qq) throws WEBException {
+	public boolean updateUserStu(Integer id , String nickName, String realName,
+			String sex,String birthday, String qq) throws WEBException {
 		try {
 			userDao = (UserDao) DaoFactory.instance(null).getDao(Constants.DAO_USER_INFO);
 			Session sess  = HibernateUtil.currentSession();
@@ -53,10 +52,6 @@ public class UserManagerImpl implements UserManager {
 				user.setNickName(nickName);
 				user.setRealName(realName);
 				user.setSex(sex);
-				user.setPassword(password);
-				user.setEmail(email);
-				user.setMobile(mobile);
-				user.setPortrait(portrait);
 				user.setBirthday(birthday);
 				user.setQq(qq);
 				tran.commit();
@@ -72,7 +67,7 @@ public class UserManagerImpl implements UserManager {
 	}
 
 	@Override
-	public boolean updateUser(Integer id, String lastLoginDate,
+	public boolean updateUserLogin(Integer id, String lastLoginDate,
 			String lastLoginIp, Integer loginTimes, Integer loginStatus)
 			throws WEBException {
 		try {
@@ -343,6 +338,28 @@ public class UserManagerImpl implements UserManager {
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new WEBException("根据账户名,真实姓名,学校编号,角色编号,省市县,班级,年级获取用户信息记录数时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public boolean updateUserByHead(Integer id, String portrait)
+			throws WEBException {
+		try {
+			userDao = (UserDao) DaoFactory.instance(null).getDao(Constants.DAO_USER_INFO);
+			Session sess  = HibernateUtil.currentSession();
+			tran = sess.beginTransaction();
+			User user = userDao.get(sess, id);
+			if(user != null){
+				user.setPortrait(portrait);
+				tran.commit();
+				return true;
+			}
+			return false;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("修改指定用户头像信息时出现异常!");
 		} finally{
 			HibernateUtil.closeSession();
 		}

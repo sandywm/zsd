@@ -37,4 +37,27 @@ public interface UserClassInfoManager {
 	 * @throws WEBException
 	 */
 	UserClassInfo getEntityByOpt(Integer userId,Integer roleId)throws WEBException;
+	
+	/**
+	 * 根据班级编号,角色编号获取用户班级信息
+	 * @author zong
+	 * 2019-6-2上午09:09:49
+	 * @param sess
+	 * @param classId 班级编号
+	 * @param roleId 角色编号
+	 * @param pageNo
+	 * @param pageSize
+	 * @return
+	 */
+	List<UserClassInfo> listUcInfoByOpt(Integer classId,Integer roleId,Integer pageNo,Integer pageSize)throws WEBException;
+	/**
+	 * 根据班级编号,角色编号获取用户班级信息记录数
+	 * @author zong
+	 * 2019-6-2上午09:09:49
+	 * @param sess
+	 * @param classId 班级编号
+	 * @param roleId 角色编号
+	 * @return
+	 */
+	Integer getUciByOpt(Integer classId,Integer roleId)throws WEBException;
 }

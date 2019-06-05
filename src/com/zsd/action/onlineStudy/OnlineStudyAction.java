@@ -976,7 +976,7 @@ public class OnlineStudyAction extends DispatchAction {
 		if(studyLogId > 0){
 			
 		}else{//第一次
-			List<>
+//			List<>
 		}
 		return null;
 	}

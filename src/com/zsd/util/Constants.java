@@ -64,6 +64,9 @@ public class Constants {
 	public static final String WEB_STUDY_TASK_INFO = "study_task_Web";
 	public static final String WEB_RELATION_ZD_RESULT_INFO = "relation_zd_result_Web";
 	public static final String WEB_STUDY_DETAIL_INFO = "study_detail_Web";
+	public static final String WEB_NET_TEACHER_TX_RECORD = "net_teacher_tx_record_Web";
+	public static final String WEB_STUDENT_PAY_ORDER_INFO = "student_pay_order_Web";
+	public static final String WEB_NET_TEACHER_RETURN_RECORD = "net_teacher_return_record_Web";
 	
 	//-------------------DAO-------------------------//
 	public static final String DAO_EDITION_INFO = "edition_Dao";
@@ -102,5 +105,8 @@ public class Constants {
 	public static final String DAO_STUDY_TASK_INFO = "study_task_Dao";
 	public static final String DAO_RELATION_ZD_RESULT_INFO = "relation_zd_result_Dao";
 	public static final String DAO_STUDY_DETAIL_INFO = "study_detail_Dao";
+	public static final String DAO_NET_TEACHER_TX_RECORD = "net_teacher_tx_record_Dao";
+	public static final String DAO_STUDENT_PAY_ORDER_INFO = "student_pay_order_Dao";
+	public static final String DAO_NET_TEACHER_RETURN_RECORD = "net_teacher_return_record_Dao";
 }
 

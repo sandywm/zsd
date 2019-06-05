@@ -40,6 +40,7 @@ public class ClassInfoManagerImpl implements ClassInfoManager {
 			String buildeClassDate) throws WEBException {
 		try {
 			ciDao = (ClassInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_CLASS_INFO);
+			sDao = (SchoolDao) DaoFactory.instance(null).getDao(Constants.DAO_SCHOOL_INFO);
 			Session sess  = HibernateUtil.currentSession();
 			tran = sess.beginTransaction();
 			School school = sDao.get(sess, scId);

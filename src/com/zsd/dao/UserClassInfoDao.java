@@ -83,4 +83,28 @@ public interface UserClassInfoDao {
 	 * @return
 	 */
 	UserClassInfo getEntityByOpt(Session sess,Integer userId,Integer roleId);
+
+	/**
+	 * 根据班级编号,角色编号获取用户班级信息
+	 * @author zong
+	 * 2019-6-2上午09:09:49
+	 * @param sess
+	 * @param classId 班级编号
+	 * @param roleId 角色编号
+	 * @param pageNo
+	 * @param pageSize
+	 * @return
+	 */
+	List<UserClassInfo> findUcInfoByOpt(Session sess,Integer classId,Integer roleId,Integer pageNo,Integer pageSize);
+	/**
+	 * 根据班级编号,角色编号获取用户班级信息记录数
+	 * @author zong
+	 * 2019-6-2上午09:09:49
+	 * @param sess
+	 * @param classId 班级编号
+	 * @param roleId 角色编号
+	 * @return
+	 */
+	Integer getUciByOpt(Session sess,Integer classId,Integer roleId);
+
 }

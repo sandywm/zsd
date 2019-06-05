@@ -20,7 +20,7 @@ public class WebUrl {
     //上传文件留存地(绝对路径)
     public static String DATA_URL_UP_FILE_UPLOAD;
     
-  //上传文件留存地(相对路径)
+    //上传文件留存地(相对路径)
     public static String NEW_DATA_URL_UP_FILE_UPLOAD;
     //上传网络导师个人中心(大图)
     public static String PERSONAL_HONOR;
@@ -37,6 +37,8 @@ public class WebUrl {
     
     //上传课堂诊断视频/音频资源用相对地址
     public static String NEW_DIAGNOSIS_DATA_URL;
-    
+    //上传头像用
+    public static String DATA_URL;
+    public static String NEW_DATA_URL;
     
 }

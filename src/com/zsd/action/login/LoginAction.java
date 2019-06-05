@@ -124,7 +124,7 @@ public class LoginAction extends DispatchAction {
 						loginStatus = 0;
 					}
 					//修改用户的登录IP、登录时间、登录次数
-					uManager.updateUser(uid, currdate, CommonTools.getIpAddress(request), uList.get(0).getLoginTimes() + 1, loginStatus);
+					uManager.updateUserLogin(uid, currdate, CommonTools.getIpAddress(request), uList.get(0).getLoginTimes() + 1, loginStatus);
 					session.setAttribute("userId",uid);
 					session.setAttribute("userAcc",userAcc);
 					msg = "success";

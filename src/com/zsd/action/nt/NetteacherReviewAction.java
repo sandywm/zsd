@@ -58,7 +58,7 @@ public class NetteacherReviewAction extends DispatchAction {
 		String sDate = Transcode.unescape_new("sDate", request);//注册时间(开始)
 		String eDate = Transcode.unescape_new("eDate", request);//注册时间(结束)
 		Integer ntcCount = ntcManager.getNtcByOptionCount(accName, realName, checkSta, sDate, eDate);
-		String msg = "noinfo";
+		String msg = "暂无记录";
 		Map<String,Object> map = new HashMap<String,Object>();
 		if(ntcCount>0){
 			Integer pageSize = PageConst.getPageSize(String.valueOf(request.getParameter("limit")), 10);//等同于pageSize
@@ -115,7 +115,7 @@ public class NetteacherReviewAction extends DispatchAction {
 		NtCertificateInfoManager ntcManager = (NtCertificateInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_CERTIFICATE_INFO);
 		Integer id = CommonTools.getFinalInteger("id", request);//网络导师证件主键
 		List<NetTeacherCertificateInfo> ntcList  = ntcManager.listEntityByid(id);
-		String msg = "noInfo";
+		String msg = "暂无记录";
 		Map<String,Object> map = new HashMap<String,Object>();
 		if(!ntcList.isEmpty()){
 			msg = "success";

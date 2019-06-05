@@ -44,7 +44,7 @@ public interface UserManager {
 			Integer yearSystem, String prov, String city) throws WEBException;
 
 	/**
-	 * 更新用户信息实体
+	 * 更新用户信息实体(学生个人中心)
 	 * 
 	 * @author zong
 	 * @date 2019-4-29 上午11:57:25
@@ -56,14 +56,6 @@ public interface UserManager {
 	 *            真实姓名
 	 * @param sex
 	 *            性别
-	 * @param password
-	 *            密码
-	 * @param email
-	 *            电子邮箱
-	 * @param mobile
-	 *            电话号码
-	 * @param portrait
-	 *            头像
 	 * @param birthday
 	 *            出生日期
 	 * @param qq
@@ -71,9 +63,8 @@ public interface UserManager {
 	 * @return
 	 * @throws WEBException
 	 */
-	boolean updateUser(Integer id, String nickName, String realName,
-			String sex, String password, String email, String mobile,
-			String portrait, String birthday, String qq) throws WEBException;
+	boolean updateUserStu(Integer id, String nickName, String realName,
+			String sex,  String birthday, String qq) throws WEBException;
 
 	/**
 	 * 每次登录账户是修改用户信息
@@ -93,7 +84,7 @@ public interface UserManager {
 	 * @return
 	 * @throws WEBException
 	 */
-	boolean updateUser(Integer id, String lastLoginDate, String lastLoginIp,
+	boolean updateUserLogin(Integer id, String lastLoginDate, String lastLoginIp,
 			Integer loginTimes, Integer loginStatus) throws WEBException;
 	/**
 	 * 修改指定用户的账户状态,截止时间
@@ -240,4 +231,14 @@ public interface UserManager {
 			String realName, Integer schoolId, Integer roleId, String prov,
 			String city, String county, Integer schoolType, Integer gradeNo,
 			Integer classId)throws WEBException;
+	/**
+	 * 更新用户头像信息
+	 * @author zong
+	 * 2019-6-3下午04:40:23
+	 * @param id 用户编号
+	 * @param portrait 头像地址
+	 * @return
+	 * @throws WEBException
+	 */
+	boolean updateUserByHead(Integer id ,String portrait) throws WEBException;
 }

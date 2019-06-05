@@ -47,9 +47,9 @@ public class RoleUserInfoDaoImpl implements RoleUserInfoDao {
 	public List<RoleUserInfo> findUserRoleInfoByPosition(Session sess,
 			String prov, String city, String county,Integer schoolType,
 			Integer schoolId,Integer gradeNo,Integer classId) {
-		String hql = " from RoleUserInfo as ru where ru.prov =‘"+prov+"'";
+		String hql = " from RoleUserInfo as ru where ru.prov ='"+prov+"'";
 		if(city!=""){
-			hql+=" and ru.city='"+city+",";
+			hql+=" and ru.city='"+city+"'";
 		}
 		if(county!=""){
 			hql+=" and ru.county='"+county+"'";

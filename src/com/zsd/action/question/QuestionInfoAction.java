@@ -96,7 +96,7 @@ public class QuestionInfoAction extends DispatchAction {
 		Integer subId = CommonTools.getFinalInteger("subId", request);
 		Integer readStatus = CommonTools.getFinalInteger("readStatus", request);
 		Integer count = qManager.getInfoByOptCount(subId, readStatus);
-		String msg = "noinfo";
+		String msg = "暂无记录";
 		Map<String, Object> map = new HashMap<String, Object>();
 		if (count > 0) {
 			Integer pageSize = PageConst.getPageSize(
@@ -284,7 +284,7 @@ public class QuestionInfoAction extends DispatchAction {
 		Integer stuId = CommonTools.getFinalInteger("stuId", request);
 		Integer readStatus = CommonTools.getFinalInteger("readStatus", request);
 		Integer count = qManager.getInfoByStuCount(stuId, readStatus);
-		String msg = "noinfo";
+		String msg = "暂无记录";
 		Map<String, Object> map = new HashMap<String, Object>();
 		if (count > 0) {
 			Integer pageSize = PageConst.getPageSize(
