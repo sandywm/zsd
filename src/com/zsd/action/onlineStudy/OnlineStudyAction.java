@@ -968,15 +968,49 @@ public class OnlineStudyAction extends DispatchAction {
 	 */
 	public ActionForward getTracebackData(ActionMapping mapping ,ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		StudyLogManager slm = (StudyLogManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_LOG_INFO);
+		LoreInfoManager lm = (LoreInfoManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
+		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
+		StudyDetailManager sdm = (StudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_STUDY_DETAIL_INFO);
+		StudyTaskManager stm = (StudyTaskManager) AppFactory.instance(null).getApp(Constants.WEB_STUDY_TASK_INFO);
 		Integer loreId =  CommonTools.getFinalInteger("loreId", request);//知识点最初的编号
 		Integer studyLogId = CommonTools.getFinalInteger("studyLogId", request);//学习记录编号
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "error";
+		Integer currentLoreId = 0;//当前知识点编号
 		Integer stuId = CommonTools.getLoginUserId(request);
+		String loreName = "";
+		Integer totalMoney = -1;
+		Integer step = 0;//答题阶段--（针对性诊断-1、关联性诊断-2、关联知识点学习-3、本知识点学习-4、再次诊断-5）
+		Integer stepComplete = 0;
+		Integer access = 0;//access:0:未做完，1--当前级全部正确，2:当前级部分正确或者无正确
+		Integer isFinish = 0;//该知识点完成状态（1:未完成,2:已完成）
 		if(studyLogId > 0){
-			
+			StudyLogInfo sl = slm.getEntityById(studyLogId);
+			if(sl != null){
+				loreName = sl.getLoreInfo().getLoreName();
+				StudyTaskInfo st = stm.getLastInfoByLogId(studyLogId);
+				if(st != null){
+					totalMoney = st.getCoin();
+					stepComplete = sl.getStepComplete();
+					step = sl.getStep();
+					access = sl.getAccess();
+					isFinish = sl.getIsFinish();
+					if(isFinish == 1){//表示未全部完成
+						//获取最后（最近）的一条答题详情
+						List<StudyDetailInfo> sdList = sdm.listLastInfoByLogId(studyLogId, 0, "");
+						if(sdList.size() > 0){
+							//获取该题对应的知识点编号
+							currentLoreId = sdList.get(0).getLoreInfo().getId();
+						}
+					}
+				}
+			}
 		}else{//第一次
-//			List<>
+			LoreInfo lore = lm.getEntityById(loreId);
+			if(lore != null){
+				loreName = lore.getLoreName();
+			}
 		}
 		return null;
 	}

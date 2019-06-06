@@ -77,7 +77,7 @@ public class LoreQuestionErrorAtion extends DispatchAction {
 		String errorType = CommonTools.getFinalStr("errorType", request);
 		String sDate = CommonTools.getFinalStr("sDate", request);
 		String eDate = CommonTools.getFinalStr("eDate", request);
-		Integer updateStatus = CommonTools.getFinalInteger("updateStatus", request);//-1:全部,0:未修改,1:已修改
+		Integer checkStatus = CommonTools.getFinalInteger("checkStatus", request);//-1:全部,0:未修改,1:已修改
 		String opt = CommonTools.getFinalStr("opt", request);//类型(stu,admin)
 		Integer addUserId = 0;
 		Map<String,Object> map = new HashMap<String,Object>();
@@ -85,12 +85,12 @@ public class LoreQuestionErrorAtion extends DispatchAction {
 		if(opt.equals("stu")){
 			addUserId = CommonTools.getLoginUserId(request);
 		}
-		Integer count = lqem.getCountByOptions(addUserId, sDate, eDate, errorType,updateStatus);
+		Integer count = lqem.getCountByOptions(addUserId, sDate, eDate, errorType,checkStatus);
 		if(count > 0){
 			msg = "success";
 			Integer pageSize = PageConst.getPageSize(String.valueOf(request.getParameter("limit")), 10);//等同于pageSize
 			Integer pageNo = CommonTools.getFinalInteger("page", request);//等同于pageNo
-			List<LoreQuestionErrorInfo> lqeList = lqem.listPageInfoByOptions(addUserId, sDate, eDate, errorType, updateStatus, pageNo, pageSize);
+			List<LoreQuestionErrorInfo> lqeList = lqem.listPageInfoByOptions(addUserId, sDate, eDate, errorType, checkStatus, pageNo, pageSize);
 			List<Object> list_d = new ArrayList<Object>();
 			for(Iterator<LoreQuestionErrorInfo> it = lqeList.iterator() ; it.hasNext();){
 				LoreQuestionErrorInfo lqe = it.next();
@@ -112,7 +112,7 @@ public class LoreQuestionErrorAtion extends DispatchAction {
 				map_d.put("errorType", errorType_text);
 				map_d.put("addate", lqe.getAddDate());
 				map_d.put("addUserName", lqe.getUser().getRealName());
-				map_d.put("updateStatuc", lqe.getCheckStatus().equals(0) ? "未修改" : "已修改");
+				map_d.put("updateStatus", lqe.getCheckStatus().equals(0) ? "未修改" : "已修改");
 				map_d.put("updateUserName", lqe.getOperateUserName());
 				map_d.put("updateDate", lqe.getOperateDate());
 				map_d.put("remark", lqe.getRemark());

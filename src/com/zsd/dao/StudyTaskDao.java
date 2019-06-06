@@ -46,4 +46,14 @@ public interface StudyTaskDao {
 	 * @return
 	 */
 	List<StudyTaskInfo> findInfoByOpt(Session sess,Integer sLogId,String taskName);
+	
+	/**
+	 * 获取最后一次的任务
+	 * @author wm
+	 * @date 2019-6-5 下午04:38:32
+	 * @param sess
+	 * @param sLogId 学习记录编号
+	 * @return
+	 */
+	StudyTaskInfo getLastInfoByLogId(Session sess,Integer sLogId);
 }

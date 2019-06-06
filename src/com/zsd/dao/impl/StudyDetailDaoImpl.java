@@ -59,7 +59,10 @@ public class StudyDetailDaoImpl implements StudyDetailDao{
 	public List<StudyDetailInfo> findLastInfoByLogId(Session sess,
 			Integer studyLogId, Integer loreId, String loreTypeName) {
 		// TODO Auto-generated method stub
-		String hql = " from StudyDetailInfo as sd where sd.studyLogInfo.id = "+studyLogId + " and sd.loreInfo.id = "+loreId;
+		String hql = " from StudyDetailInfo as sd where sd.studyLogInfo.id = "+studyLogId;
+		if(loreId > 0){
+			hql += " and sd.loreInfo.id = "+loreId; 
+		}
 		if(!loreTypeName.equals("")){
 			hql += " and sd.loreQuestion.loreTypeName = '"+loreTypeName+"'";
 		}

@@ -41,4 +41,14 @@ public interface StudyTaskManager {
 	 * @throws WEBException
 	 */
 	List<StudyTaskInfo> listTaskInfoByOpt(Integer sLogId,String taskName) throws WEBException;
+	
+	/**
+	 * 获取最后一次的任务
+	 * @author wm
+	 * @date 2019-6-5 下午04:40:38
+	 * @param studyLogId 学习记录编号
+	 * @return
+	 * @throws WEBException
+	 */
+	StudyTaskInfo  getLastInfoByLogId(Integer studyLogId) throws WEBException;
 }

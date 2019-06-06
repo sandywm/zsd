@@ -73,7 +73,7 @@ public interface StudyDetailDao {
 	 * @date 2019-6-3 下午04:45:49
 	 * @param sess
 	 * @param studyLogId 学习记录编号
-	 * @param loreId 知识点编号
+	 * @param loreId 知识点编号(0不查询)
 	 * @param loreTypeName 答题类型(""不查询)
 	 * @return
 	 */

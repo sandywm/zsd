@@ -87,5 +87,22 @@ public class StudyTaskManagerImpl implements StudyTaskManager{
 		}
 	}
 
+	@Override
+	public StudyTaskInfo getLastInfoByLogId(Integer studyLogId)
+			throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			stDao = (StudyTaskDao) DaoFactory.instance(null).getDao(Constants.DAO_STUDY_TASK_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return stDao.getLastInfoByLogId(sess, studyLogId);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new WEBException("获取最后一次的任务记录列表时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
 
 }
