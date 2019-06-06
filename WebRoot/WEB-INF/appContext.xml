@@ -22,6 +22,8 @@
 	<app id="lore_question_error_Web" class="com.zsd.service.impl.LoreQuestionErrorManagerImpl"/>
 	<app id="invite_code_Web" class="com.zsd.service.impl.InviteCodeInfoManagerImpl"/>
 	<app id="net_teacher_basic_Web" class="com.zsd.service.impl.NetTeacherBasicInfoManagerImpl"/>
+	<app id="net_teacher_certificate_Web" class="com.zsd.service.impl.NtCertificateInfoManagerImpl"/>
+	<app id="question_info_Web" class="com.zsd.service.impl.QuestionInfoManagerImpl"/>
 	<app id="lore_relate_Web" class="com.zsd.service.impl.LoreRelateManagerImpl"/>
 	<app id="buffet_all_Web" class="com.zsd.service.impl.BuffetAllManagerImpl"/>
 	<app id="buffet_que_Web" class="com.zsd.service.impl.BuffetQueManagerImpl"/>
@@ -33,4 +35,7 @@
 	<app id="study_task_Web" class="com.zsd.service.impl.StudyTaskManagerImpl"/>
 	<app id="relation_zd_result_Web" class="com.zsd.service.impl.RelationZdResultManagerImpl"/>
 	<app id="study_detail_Web" class="com.zsd.service.impl.StudyDetailManagerImpl"/>
+	<app id="net_teacher_tx_record_Web" class="com.zsd.service.impl.NetTeacherTxRecordManagerImpl"/>
+	<app id="student_pay_order_Web" class="com.zsd.service.impl.StudentPayOrderInfoManagerImpl"/>
+	<app id="net_teacher_return_record_Web" class="com.zsd.service.impl.NetTeacherReturnRecordManagerImpl"/>
 </appContext>

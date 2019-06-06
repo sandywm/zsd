@@ -22,6 +22,9 @@
 	<dao id="lore_question_error_Dao" class="com.zsd.dao.impl.LoreQuestionErrorDaoImpl" />
 	<dao id="lore_question_sub_Dao" class="com.zsd.dao.impl.LoreQuestionSubDaoImpl" />
 	<dao id="invite_code_Dao" class="com.zsd.dao.impl.InviteCodeInfoDaoImpl" />
+	<dao id="net_teacher_basic_Dao" class="com.zsd.dao.impl.NetTeacherBasicInfoDaoImpl" />
+	<dao id="net_teacher_certificate_Dao" class="com.zsd.dao.impl.NetTeacherCertificateInfoDaoImpl" />
+	<dao id="question_info_Dao" class="com.zsd.dao.impl.QuestionInfoDaoImpl" />
 	<dao id="net_teacher_basic_Dao" class="com.zsd.dao.impl.NetTeacherInfoDaoImpl" />
 	<dao id="lore_relate_Dao" class="com.zsd.dao.impl.LoreRelateDaoImpl" />
 	<dao id="buffet_all_Dao" class="com.zsd.dao.impl.BuffetAllDaoImpl" />
@@ -34,4 +37,7 @@
 	<dao id="study_task_Dao" class="com.zsd.dao.impl.StudyTaskDaoImpl" />
 	<dao id="relation_zd_result_Dao" class="com.zsd.dao.impl.RelationZdResultDaoImpl" />
 	<dao id="study_detail_Dao" class="com.zsd.dao.impl.StudyDetailDaoImpl" />
+	<dao id="net_teacher_tx_record_Dao" class="com.zsd.dao.impl.NetTeacherTxRecordDaoImpl" />
+	<dao id="student_pay_order_Dao" class="com.zsd.dao.impl.StudentPayOrderInfoDaoImpl" />
+	<dao id="net_teacher_return_record_Dao" class="com.zsd.dao.impl.NetTeacherReturnRecordDaoImpl" />
 </daoContext>

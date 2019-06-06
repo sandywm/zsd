@@ -68,7 +68,21 @@
     <action path="/onlineStudy" parameter="action" scope="request"  type="com.zsd.action.onlineStudy.OnlineStudyAction">
       <set-property property="cancellable" value="true" />
     </action>
-
+    <!-- 网络老师个人中心证件上传-->
+    <action path="/uploadCert" parameter="action" scope="request" type="com.zsd.action.nt.UploadCert">
+      <set-property property="cancellable" value="true" />
+    </action>
+    <!--网络导师证件审核-->
+    <action path="/netTeacherReview" parameter="action" scope="request"  type="com.zsd.action.nt.NetteacherReviewAction">
+        <forward name="reviewPage" path="/###.jsp"></forward><!-- 老师审核页面 -->
+    </action>
+      <!--我的提问-->
+    <action path="/questionInfo"  parameter="action" scope="request" type="com.zsd.action.question.QuestionInfoAction">
+      <set-property property="cancellable" value="true" />
+    </action>
+    <action path="/upload"  parameter="action" scope="request" type="com.zsd.action.user.UploadAction">
+      <set-property property="cancellable" value="true" />
+    </action>
   </action-mappings>
 
   <message-resources parameter="com.yourcompany.struts.ApplicationResources" />
