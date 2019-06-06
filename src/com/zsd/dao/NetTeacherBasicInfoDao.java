@@ -1,5 +1,7 @@
 package com.zsd.dao;
 
+import java.util.List;
+
 import org.hibernate.Session;
 
 import com.zsd.module.NetTeacherBasicInfo;
@@ -59,6 +61,15 @@ public interface NetTeacherBasicInfoDao {
 	 * @param ntbInfo 需要更新的网络老师背景资料信息
 	 */
 	void update(Session sess,NetTeacherBasicInfo ntbInfo);
+	/**
+	 * 根据网络导师主键获取网络导师教学经历或成果分享
+	 * @author zong
+	 * 2019-6-5下午04:41:30
+	 * @param sess
+	 * @param teaId 网络导师主键
+	 * @return
+	 */
+	List<NetTeacherBasicInfo> findNtbByTeaId(Session sess,Integer teaId);
 	
 
 }

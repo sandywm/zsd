@@ -185,5 +185,34 @@ public class NetTeacherInfoManagerImpl implements NetTeacherInfoManager {
 			HibernateUtil.closeSession();
 		}
 	}
+	@Override
+	public List<NetTeacherInfo> listNtByOption(String accName,
+			String realName, Integer checkSta,String sDate,String eDate, Integer pageNo,
+			Integer pageSize) throws WEBException {
+		try {
+			ntDao = (NetTeacherInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_NET_TEACHER_INFO);
+			Session sess  = HibernateUtil.currentSession();
+			return ntDao.getNtByOption(sess, accName, realName, checkSta, sDate, eDate, pageNo, pageSize);
+		}catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("根据账户,真实姓名,审核状态,注册时间获取网络导师信息时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
 
+	@Override
+	public Integer getNtByOptionCount(String accName, String realName,
+			Integer checkSta, String sDate, String eDate) throws WEBException {
+		try {
+			ntDao = (NetTeacherInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_NET_TEACHER_INFO);
+			Session sess  = HibernateUtil.currentSession();
+			return ntDao.getNtByOptionCount(sess, accName, realName, checkSta, sDate, eDate);
+		}catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("根据账户,真实姓名,审核状态,注册时间获取网络导师记录数时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
 }

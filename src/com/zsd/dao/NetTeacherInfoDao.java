@@ -63,7 +63,33 @@ public interface NetTeacherInfoDao {
 	 * @return
 	 */
 	List<NetTeacherInfo> findntInfoByuserId(Session sess,Integer uid);
-	
+	/**
+	 * 根据条件获取网络导师信息
+	 * @author zong
+	 * 2019-5-16上午09:52:44
+	 * @param sess
+	 * @param accName 账户
+	 * @param realName 真实姓名
+	 * @param checkSta 审核状态
+	 * @param sDate 注册时间(开始)
+	 * @param eDate 注册时间(结束)
+	 * @return
+	 */
+	List<NetTeacherInfo> getNtByOption(Session sess,String accName,String realName,Integer checkSta,String sDate,String eDate, Integer pageNo,
+			Integer pageSize);
+	/**
+	 * 根据条件获取网络导师记录数
+	 * @author zong
+	 * 2019-5-16下午04:04:44
+	 * @param sess
+	 * @param accName 账户
+	 * @param realName 真实姓名
+	 * @param checkSta 审核状态
+	 * @param sDate 注册时间(开始)
+	 * @param eDate 注册时间(结束)
+	 * @return
+	 */
+	Integer  getNtByOptionCount (Session sess,String accName,String realName,Integer checkSta,String sDate,String eDate);
 	
 
 }

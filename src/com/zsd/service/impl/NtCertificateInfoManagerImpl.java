@@ -148,34 +148,17 @@ public class NtCertificateInfoManagerImpl implements NtCertificateInfoManager {
 	}
 
 	@Override
-	public List<NetTeacherCertificateInfo> listNtcByOption(String accName,
-			String realName, Integer checkSta,String sDate,String eDate, Integer pageNo,
-			Integer pageSize) throws WEBException {
+	public List<NetTeacherCertificateInfo> getNtcByTeaId(Integer teaId)
+			throws WEBException {
 		try {
 			ntcDao =(NetTeacherCertificateInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_NET_TEACHER_CERTIFICATE_INFO);
 			Session sess  = HibernateUtil.currentSession();
-			return ntcDao.getNtcByOption(sess, accName, realName, checkSta, sDate, eDate, pageNo, pageSize);
-		}catch (Exception e) {
+			return ntcDao.getNtcByTeaId(sess, teaId);
+		} catch (Exception e) {
 			e.printStackTrace();
-			throw new WEBException("根据账户,真实姓名,审核状态,注册时间获取网络导师证件信息时出现异常!");
+			throw new WEBException("根据网络导师主键获取网络导师证件信息时出现异常!");
 		} finally{
 			HibernateUtil.closeSession();
 		}
 	}
-
-	@Override
-	public Integer getNtcByOptionCount(String accName, String realName,
-			Integer checkSta, String sDate, String eDate) throws WEBException {
-		try {
-			ntcDao =(NetTeacherCertificateInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_NET_TEACHER_CERTIFICATE_INFO);
-			Session sess  = HibernateUtil.currentSession();
-			return ntcDao.getNtcByOptionCount(sess, accName, realName, checkSta, sDate, eDate);
-		}catch (Exception e) {
-			e.printStackTrace();
-			throw new WEBException("根据账户,真实姓名,审核状态,注册时间获取网络导师证件记录数时出现异常!");
-		} finally{
-			HibernateUtil.closeSession();
-		}
-	}
-
 }

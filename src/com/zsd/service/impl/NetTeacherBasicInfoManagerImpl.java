@@ -1,5 +1,7 @@
 package com.zsd.service.impl;
 
+import java.util.List;
+
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -39,6 +41,21 @@ public class NetTeacherBasicInfoManagerImpl implements
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new WEBException("增加老师背景资料时出现异常!");
+		}finally{
+			HibernateUtil.closeSession();
+		}
+	}
+	@Override
+	public List<NetTeacherBasicInfo> listNtbByTeaId(Integer teaId)
+			throws WEBException {
+		try {
+			ntbInfoDao = (NetTeacherBasicInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_NET_TEACHER_BASIC_INFO);
+			Session sess  = HibernateUtil.currentSession();
+			tran = sess.beginTransaction();
+			return ntbInfoDao.findNtbByTeaId(sess, teaId);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("根据网络导师主键获取老师背景资料时出现异常!");
 		}finally{
 			HibernateUtil.closeSession();
 		}

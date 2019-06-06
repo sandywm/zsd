@@ -1,5 +1,7 @@
 package com.zsd.dao.impl;
 
+import java.util.List;
+
 import org.hibernate.Session;
 
 import com.zsd.dao.NetTeacherBasicInfoDao;
@@ -35,6 +37,13 @@ public class NetTeacherBasicInfoDaoImpl implements NetTeacherBasicInfoDao {
 	@Override
 	public void update(Session sess, NetTeacherBasicInfo ntbInfo) {
 		sess.update(ntbInfo);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<NetTeacherBasicInfo> findNtbByTeaId(Session sess, Integer teaId) {
+		String hql="from NetTeacherBasicInfo as ntb where ntb.netTeacherInfo.id="+teaId;
+		return sess.createQuery(hql).list();
 	}
 
 }

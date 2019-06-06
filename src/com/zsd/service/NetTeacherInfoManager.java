@@ -110,5 +110,35 @@ public interface NetTeacherInfoManager {
 	 * @throws WEBException
 	 */
 	boolean updateNtByBankCard(Integer uid,String bName,String bNum) throws WEBException;
-
+	/**
+	 * 根据条件获取网络导师信息
+	 * @author zong
+	 * 2019-5-16上午10:18:05
+	 * @param accName 账户
+	 * @param realName 真实姓名
+	 * @param checkSta 审核状态
+	 * @param sDate 注册时间(开始)
+	 * @param eDate 注册时间(结束)
+	 * @param pageNo 多少页
+	 * @param pageSize 每页多少条
+	 * @return
+	 * @throws WEBException
+	 */
+	List<NetTeacherInfo> listNtByOption(String accName, String realName, Integer checkSta, String sDate,String eDate, Integer pageNo,
+			Integer pageSize) throws WEBException;
+	/**
+	 * 根据条件获取网络导师记录数
+	 * @author zong
+	 * 2019-5-16下午04:14:35
+	 * @param accName 账户
+	 * @param realName 真实姓名
+	 * @param checkSta 审核状态
+	 * @param sDate 注册时间(开始)
+	 * @param eDate 注册时间(结束)
+	 * @param pageNo 多少页
+	 * @param pageSize 每页多少条
+	 * @return
+	 * @throws WEBException
+	 */
+	Integer  getNtByOptionCount (String accName,String realName,Integer checkSta,String sDate,String eDate)throws WEBException;
 }

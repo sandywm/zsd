@@ -23,6 +23,8 @@ import javax.servlet.http.HttpServletResponse;
 import com.alibaba.fastjson.JSON;
 import com.zsd.factory.AppFactory;
 import com.zsd.module.LoreInfo;
+import com.zsd.module.json.LoreTreeMenuJson;
+import com.zsd.module.json.MyTreeNode;
 import com.zsd.service.LoreInfoManager;
 import com.zsd.util.Constants;
 
@@ -536,6 +538,29 @@ public class CommonTools {
 		}
 		return studyPath_new;
 		
+	}
+	
+	/**
+	 * 获取知识点全部路径(诊断/学习时)
+	 * @author wm
+	 * @date 2019-6-6 上午09:28:20
+	 * @param loreId
+	 * @param pathType diagnosis/study
+	 * @return
+	 * @throws Exception
+	 */
+	public static String getLorePath(Integer loreId,String pathType) throws Exception{
+		String path = "";
+		LoreTreeMenuJson ltmj = new LoreTreeMenuJson();
+		List<MyTreeNode> ltList = ltmj.showTree(loreId, 0,"desc");
+		StringBuilder buff = new StringBuilder();
+		ltmj.getPath(ltList, buff);
+		path = buff.delete(buff.length() - 1, buff.length()).toString();
+		if(pathType.equals("diagnosis")){//诊断
+			return path;
+		}else{//学习
+			return ltmj.getStudyPath(path);
+		}
 	}
 	
 	public static void main(String[] args){

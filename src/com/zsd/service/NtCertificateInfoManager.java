@@ -92,34 +92,12 @@ public interface NtCertificateInfoManager {
 	 */
 	List<NetTeacherCertificateInfo> listEntityByid(Integer id)throws WEBException;
 	/**
-	 * 根据条件获取网络导师证件信息
+	 * 根据网络导师编号获取证件信息
 	 * @author zong
-	 * 2019-5-16上午10:18:05
-	 * @param accName 账户
-	 * @param realName 真实姓名
-	 * @param checkSta 审核状态
-	 * @param sDate 注册时间(开始)
-	 * @param eDate 注册时间(结束)
-	 * @param pageNo 多少页
-	 * @param pageSize 每页多少条
+	 * 2019-6-5上午10:39:33
+	 * @param teaId 网络导师主键
 	 * @return
 	 * @throws WEBException
 	 */
-	List<NetTeacherCertificateInfo> listNtcByOption(String accName, String realName, Integer checkSta, String sDate,String eDate, Integer pageNo,
-			Integer pageSize) throws WEBException;
-	/**
-	 * 根据条件获取网络导师证件记录数
-	 * @author zong
-	 * 2019-5-16下午04:14:35
-	 * @param accName 账户
-	 * @param realName 真实姓名
-	 * @param checkSta 审核状态
-	 * @param sDate 注册时间(开始)
-	 * @param eDate 注册时间(结束)
-	 * @param pageNo 多少页
-	 * @param pageSize 每页多少条
-	 * @return
-	 * @throws WEBException
-	 */
-	Integer  getNtcByOptionCount (String accName,String realName,Integer checkSta,String sDate,String eDate)throws WEBException;
+	List<NetTeacherCertificateInfo> getNtcByTeaId(Integer teaId)throws WEBException;
 }

@@ -21,6 +21,7 @@ import org.apache.struts.actions.DispatchAction;
 import com.zsd.action.base.Transcode;
 import com.zsd.factory.AppFactory;
 import com.zsd.module.NetTeacherCertificateInfo;
+import com.zsd.module.NetTeacherInfo;
 import com.zsd.page.PageConst;
 import com.zsd.service.NetTeacherInfoManager;
 import com.zsd.service.NtCertificateInfoManager;
@@ -36,6 +37,21 @@ import com.zsd.util.Constants;
  * @struts.action validate="true"
  */
 public class NetteacherReviewAction extends DispatchAction {
+	/**
+	 * 导向网路导师审核页面
+	 * @author zong
+	 * 2019-6-6上午11:14:54
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward goNtReviewPage(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		return mapping.findForward("reviewPage");
+	}
 
 	/**
 	 * 根据条件获取网络导师证件审核信息
@@ -51,47 +67,57 @@ public class NetteacherReviewAction extends DispatchAction {
 	 */
 	public ActionForward getNtcReviewList(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response)throws Exception {
+		NetTeacherInfoManager ntManager = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
 		NtCertificateInfoManager ntcManager = (NtCertificateInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_CERTIFICATE_INFO);
 		Integer checkSta = CommonTools.getFinalInteger("checkSta", request);//审核状态
 		String accName = Transcode.unescape_new("accName", request);//账户名
 		String realName = Transcode.unescape_new("realName", request);//真实姓名
 		String sDate = Transcode.unescape_new("sDate", request);//注册时间(开始)
 		String eDate = Transcode.unescape_new("eDate", request);//注册时间(结束)
-		Integer ntcCount = ntcManager.getNtcByOptionCount(accName, realName, checkSta, sDate, eDate);
+		Integer ntCount = ntManager.getNtByOptionCount(accName, realName, checkSta, sDate, eDate);
 		String msg = "暂无记录";
 		Map<String,Object> map = new HashMap<String,Object>();
-		if(ntcCount>0){
+		if(ntCount>0){
 			Integer pageSize = PageConst.getPageSize(String.valueOf(request.getParameter("limit")), 10);//等同于pageSize
 			Integer pageNo = CommonTools.getFinalInteger("page", request);//等同于pageNo
-			List<NetTeacherCertificateInfo> ntcList = ntcManager.listNtcByOption(accName, realName, checkSta, sDate, eDate, pageNo, pageSize);
+			List<NetTeacherInfo> ntList = ntManager.listNtByOption(accName, realName, checkSta, sDate, eDate, pageNo, pageSize);
 			List<Object> list = new ArrayList<Object>();
-			for(Iterator<NetTeacherCertificateInfo> it = ntcList.iterator() ; it.hasNext();){
-				NetTeacherCertificateInfo ntcInfo = it.next();
-				Map<String,Object> map_ntc = new HashMap<String,Object>();
-				map_ntc.put("id", ntcInfo.getId());
-				map_ntc.put("accName", ntcInfo.getNetTeacherInfo().getUser().getUserAccount());
-				map_ntc.put("realName", ntcInfo.getNetTeacherInfo().getUser().getRealName());
-				map_ntc.put("sex", ntcInfo.getNetTeacherInfo().getUser().getSex());
-				map_ntc.put("subName", ntcInfo.getNetTeacherInfo().getSubject().getSubName());
-				map_ntc.put("lastLoginDate", ntcInfo.getNetTeacherInfo().getUser().getLastLoginDate());
-				map_ntc.put("lastLoginDate", ntcInfo.getNetTeacherInfo().getUser().getLastLoginDate());
-				if(ntcInfo.getIcardImgFrontBig().equals("")&&ntcInfo.getIcardImgFrontSmall().equals("")&&ntcInfo.getZgzImgSmall().equals("")&&ntcInfo.getZgzImgBig().equals("")&&ntcInfo.getXlzImgSmall().equals("")&&ntcInfo.getXlzImgBig().equals("")){
-					map_ntc.put("certSta", "暂无");
-				}else if(!ntcInfo.getIcardImgFrontBig().equals("")&& !ntcInfo.getIcardImgFrontSmall().equals("")&& !ntcInfo.getZgzImgSmall().equals("")&& !ntcInfo.getZgzImgBig().equals("")&& !ntcInfo.getXlzImgSmall().equals("")&& !ntcInfo.getXlzImgBig().equals("")){
-					map_ntc.put("certSta", "齐全");
+			for(Iterator<NetTeacherInfo> it = ntList.iterator() ; it.hasNext();){
+				NetTeacherInfo ntInfo = it.next();
+				Map<String,Object> map_nt = new HashMap<String,Object>();
+				map_nt.put("accName", ntInfo.getUser().getUserAccount());
+				map_nt.put("realName", ntInfo.getUser().getRealName());
+				map_nt.put("sex", ntInfo.getUser().getSex());
+				map_nt.put("mobile", ntInfo.getUser().getMobile());
+				map_nt.put("subName", ntInfo.getSubject().getSubName());
+				map_nt.put("lastLoginDate", ntInfo.getUser().getLastLoginDate());
+				List<NetTeacherCertificateInfo> ntcList = ntcManager.getNtcByTeaId(ntInfo.getId());
+				NetTeacherCertificateInfo ntcInfo = null;
+				Integer ntcId=0;
+				if(!ntcList.isEmpty()){
+					 ntcInfo = ntcList.get(0);
+					 ntcId = ntcInfo.getId();
+					if(!ntcInfo.getIcardImgFrontBig().equals("")&& !ntcInfo.getIcardImgFrontSmall().equals("")&& !ntcInfo.getZgzImgSmall().equals("")&& !ntcInfo.getZgzImgBig().equals("")&& !ntcInfo.getXlzImgSmall().equals("")&& !ntcInfo.getXlzImgBig().equals("")){
+						map_nt.put("certSta", "齐全");	
+					}else if(!ntcInfo.getIcardImgFrontBig().equals("")|| !ntcInfo.getIcardImgFrontSmall().equals("")|| !ntcInfo.getZgzImgSmall().equals("")||!ntcInfo.getZgzImgBig().equals("")|| !ntcInfo.getXlzImgSmall().equals("")|| !ntcInfo.getXlzImgBig().equals("")){
+						map_nt.put("certSta", "不全");
+					}
+					
 				}else{
-					map_ntc.put("certSta", "不全");
+					map_nt.put("certSta", "暂无");
 				}
-				if(ntcInfo.getCheckStatus()==0){
-					map_ntc.put("checkSta", "未审核");
-				}else if(ntcInfo.getCheckStatus()==1){
-					map_ntc.put("checkSta","未通过");
-				}else if(ntcInfo.getCheckStatus()==2){
-					map_ntc.put("checkSta","通过");
+				map_nt.put("ntcId",ntcId );
+				if(ntInfo.getCheckStatus()==0){
+					map_nt.put("checkSta", "未审核");
+				}else if(ntInfo.getCheckStatus()==1){
+					map_nt.put("checkSta","未通过");
+				}else if(ntInfo.getCheckStatus()==2){
+					map_nt.put("checkSta","通过");
 				}
+				list.add(map_nt);
 			}
 			map.put("data", list);
-			map.put("count", ntcCount);
+			map.put("count", ntCount);
 			map.put("code", 0);
 			msg = "success";
 		}

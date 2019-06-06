@@ -20,6 +20,8 @@ import org.apache.struts.actions.DispatchAction;
 
 import com.zsd.action.base.Transcode;
 import com.zsd.factory.AppFactory;
+import com.zsd.module.NetTeacherBasicInfo;
+import com.zsd.module.NetTeacherCertificateInfo;
 import com.zsd.module.NetTeacherInfo;
 import com.zsd.module.NetTeacherReturnRecord;
 import com.zsd.module.NetTeacherStudent;
@@ -62,7 +64,7 @@ public class NetTeacherAction extends DispatchAction {
 			throws Exception {
 		NetTeacherInfoManager ntInfoManager = (NetTeacherInfoManager) AppFactory
 				.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
-		Integer ntId = (Integer) request.getSession().getAttribute("userId");// 网络导师编号
+		Integer ntId = CommonTools.getFinalInteger("ntId", request);// 网络导师编号
 		String realName = Transcode.unescape_new("realName", request);
 		String nickName = Transcode.unescape_new("nickName", request);
 		String teaSign = Transcode.unescape_new("teaSign", request);
@@ -563,6 +565,81 @@ public class NetTeacherAction extends DispatchAction {
 		map.put("trialNum", trialNum);
 		map.put("freeNum", freeNum);
 		map.put("payNum", payNum);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	/**
+	 * 网络导师个人中心
+	 * @author zong
+	 * 2019-6-5下午03:39:21
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getNtperCenter(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response)throws Exception {
+		NetTeacherInfoManager ntManager = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
+		NetTeacherBasicInfoManager ntbManager = (NetTeacherBasicInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_BASIC_INFO);
+		NtCertificateInfoManager ntcManager = (NtCertificateInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_CERTIFICATE_INFO);
+		Integer userId=CommonTools.getLoginUserId(request);
+		Map<String,Object> map = new HashMap<String,Object>();
+		List<NetTeacherInfo> ntlist = ntManager.listntInfoByuserId(userId);
+		NetTeacherInfo ntInfo = ntlist.get(0);
+		Integer ntId = ntInfo.getId();
+		map.put("ntId", ntId);
+		map.put("realName", ntInfo.getUser().getRealName());
+		map.put("nickName", ntInfo.getUser().getNickName());
+		map.put("teaSign", ntInfo.getTeaSign());
+		map.put("teaEdu", ntInfo.getTeaEdu());
+		map.put("graduateSchool", ntInfo.getGraduateSchool());
+		map.put("major", ntInfo.getMajor());
+		map.put("schoolAge", ntInfo.getSchoolAge());
+		map.put("sex", ntInfo.getUser().getSex());
+		map.put("birtthday", ntInfo.getUser().getBirthday());
+		map.put("lastLoginDate", ntInfo.getUser().getLastLoginDate());
+		map.put("lastLoginIp", ntInfo.getUser().getLastLoginIp());
+		map.put("email", ntInfo.getUser().getEmail());
+		map.put("mobile", ntInfo.getUser().getMobile());
+		
+		List<Object> list_ntb = new ArrayList<Object>();
+		List<NetTeacherBasicInfo> ntblist = ntbManager.listNtbByTeaId(ntId);
+		for (Iterator<NetTeacherBasicInfo> itr = ntblist.iterator(); itr.hasNext();) {
+			NetTeacherBasicInfo ntbInfo = (NetTeacherBasicInfo) itr.next();
+			Map<String,Object> map_ntb = new HashMap<String,Object>();
+			map_ntb.put("ntbId", ntbInfo.getId());
+			map_ntb.put("title", ntbInfo.getTitle());
+			map_ntb.put("dataRange", ntbInfo.getDataRange());
+			map_ntb.put("description", ntbInfo.getDescription());
+			map_ntb.put("type", ntbInfo.getType());
+			map_ntb.put("addDate", ntbInfo.getAddData());
+			
+			list_ntb.add(map_ntb);
+		}
+		map.put("list_ntb", list_ntb);
+		
+		List<Object> list_ntc = new ArrayList<Object>();
+		List<NetTeacherCertificateInfo> ntclist = ntcManager.getNtcByTeaId(ntId);
+		for (Iterator<NetTeacherCertificateInfo> ittr = ntclist.iterator(); ittr.hasNext();) {
+			NetTeacherCertificateInfo ntcInfo = (NetTeacherCertificateInfo) ittr.next();
+			Map<String,Object> map_ntc = new HashMap<String,Object>();
+			map_ntc.put("ntcId", ntcInfo.getId());
+			map_ntc.put("icName", ntcInfo.getIcardName());
+			map_ntc.put("icNum", ntcInfo.getIcardNum());
+			map_ntc.put("icImgFrontBig", ntcInfo.getIcardImgFrontBig());
+			map_ntc.put("icImgFrontSmall", ntcInfo.getIcardImgFrontSmall());
+			map_ntc.put("icImgBackBig", ntcInfo.getIcardImgBackBig());
+			map_ntc.put("icImgBackSmall", ntcInfo.getIcardImgBackSmall());
+			map_ntc.put("zgzImgBig", ntcInfo.getZgzImgBig());
+			map_ntc.put("zgzImgSmall", ntcInfo.getZgzImgSmall());
+			map_ntc.put("xlzImgBig", ntcInfo.getXlzImgBig());
+			map_ntc.put("xlzImgSmall", ntcInfo.getXlzImgSmall());
+			
+			list_ntc.add(map_ntc);
+		}
+		map.put("list_ntc", list_ntc);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}

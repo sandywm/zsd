@@ -6,7 +6,6 @@ import org.hibernate.Session;
 
 import com.zsd.dao.NetTeacherCertificateInfoDao;
 import com.zsd.module.NetTeacherCertificateInfo;
-import com.zsd.tools.CommonTools;
 
 /** 
  * @author zong
@@ -47,58 +46,15 @@ public class NetTeacherCertificateInfoDaoImpl implements
 	@Override
 	public List<NetTeacherCertificateInfo> getEntityByid(Session sess,
 			Integer id) {
-		String hql ="from NetTeacherCertificateInfo as ntc where id= "+id;
+		String hql ="from NetTeacherCertificateInfo as ntc where ntc.id = "+id;
 		return sess.createQuery(hql).list();
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<NetTeacherCertificateInfo> getNtcByOption(Session sess,
-			String accName, String realName, Integer checkSta,String sDate,String eDate, Integer pageNo,
-			Integer pageSize) {
-		int offset = (pageNo - 1) * pageSize;
-		if (offset < 0) {
-			offset = 0;
-		}
-		String hql ="from NetTeacherCertificateInfo as ntc where 1=1 ";
-		if(!accName.equals("")){
-			hql+=" and ntc.netTeacherInfo.user.userAccount='"+accName+"'";
-		}
-		if(!realName.equals("")){
-			hql+=" and ntc.netTeacherInfo.user.realName='"+realName+"'";
-		}
-		if(checkSta > 0){
-			hql+=" and ntc.checkStatus="+checkSta;
-		}
-	
-		if(!sDate.equals("") && eDate.equals("")){
-			hql += " and substring(ntc.netTeacherInfo.user.signDate,1,10) >= '"+sDate+"'";
-			hql += " and substring(ntc.netTeacherInfo.user.signDate,1,10) <= '"+eDate+"'";
-		}
-		
-		return sess.createQuery(hql).setFirstResult(offset).setMaxResults(pageSize).list();
+	public List<NetTeacherCertificateInfo> getNtcByTeaId(Session sess,
+			Integer teaId) {
+		String hql ="from NetTeacherCertificateInfo as ntc where ntc.netTeacherInfo.id = "+teaId;
+		return sess.createQuery(hql).list();
 	}
-
-	@Override
-	public Integer getNtcByOptionCount(Session sess, String accName,
-			String realName, Integer checkSta, String sDate, String eDate) {
-		String hql ="from NetTeacherCertificateInfo as ntc where 1=1 ";
-		if(!accName.equals("")){
-			hql+=" and ntc.netTeacherInfo.user.userAccount='"+accName+"'";
-		}
-		if(!realName.equals("")){
-			hql+=" and ntc.netTeacherInfo.user.realName='"+realName+"'";
-		}
-		if(checkSta > 0){
-			hql+=" and ntc.checkStatus="+checkSta;
-		}
-	
-		if(!sDate.equals("") && eDate.equals("")){
-			hql += " and substring(ntc.netTeacherInfo.user.signDate,1,10) >= '"+sDate+"'";
-			hql += " and substring(ntc.netTeacherInfo.user.signDate,1,10) <= '"+eDate+"'";
-		}
-		Object countObj = sess.createQuery(hql).uniqueResult();
-		return CommonTools.longToInt(countObj);
-	}
-
 }

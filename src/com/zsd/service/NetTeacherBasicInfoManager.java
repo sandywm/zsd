@@ -1,6 +1,9 @@
 package com.zsd.service;
 
+import java.util.List;
+
 import com.zsd.exception.WEBException;
+import com.zsd.module.NetTeacherBasicInfo;
 
 /**
  * @author zong
@@ -23,5 +26,13 @@ public interface NetTeacherBasicInfoManager {
 	Integer addNtbInfo(Integer ntId, String title,
 			String dataRange, String description, Integer type, String addData)
 			throws WEBException;
-
+	/**
+	 * 根据网络导师主键获取网络导师教学经历或成果分享
+	 * @author zong
+	 * 2019-6-5下午04:49:50
+	 * @param teaId 网络导师主键
+	 * @return
+	 * @throws WEBException
+	 */
+	List<NetTeacherBasicInfo> listNtbByTeaId(Integer teaId)throws WEBException;
 }
