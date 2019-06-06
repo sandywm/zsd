@@ -87,7 +87,7 @@ layui.define(['form'],function(exports){
     		var ansTypeStr = '';
     		//问题选项
     		ansTypeStr += '<div class="answSelType layui-form layui-clear"><span class="selTypeSpan">问题选项</span><input id="answSelTypeInp" value="1" type="hidden"/>';
-    		if(globalOpts == 'add'){
+    		if(globalOpts == 'add' || switchFlag){
     			ansTypeStr += '<div class="answSelTypeBox"><input type="radio" name="answSelTypeInp" lay-filter="answSelTypeInp" value="1" isSelFlag="false"  title="文字" checked/>';
         		ansTypeStr += '<input type="radio" name="answSelTypeInp" lay-filter="answSelTypeInp" value="2" isSelFlag="false" title="图片"/>';
         		ansTypeStr += '<span class="note">注：切换问题类型后之前选择的答案将被清空</span></div>';
@@ -116,9 +116,9 @@ layui.define(['form'],function(exports){
     		ansTypeTxt += '<div class="answerSelectTxt layui-clear">';
     		for(var i=1;i<=6;i++){
     			if(i<=4){
-    				ansTypeTxt += '<div id="inpTxt_answ_'+ i +'" class="txtAnsw"><span>'+ this.switchABCByNum(i) +'</span><input title="禁止使用空格符!" id="answSelInpTxt'+ i +'" class="answerSelInp" type="text" placeholder="请输入选项答案"/></div>';
+    				ansTypeTxt += '<div id="inpTxt_answ_'+ i +'" class="txtAnsw"><span>'+ this.switchABCByNum(i) +'</span><input title="禁止使用空格符!" autocomplete="off" id="answSelInpTxt'+ i +'" class="answerSelInp" type="text" placeholder="请输入选项答案"/></div>';
     			}else{
-    				ansTypeTxt += '<div id="inpTxt_answ_'+ i +'" class="txtAnsw" style="display:none;"><span>'+ this.switchABCByNum(i) +'</span><input title="禁止使用空格符!" id="answSelInpTxt'+ i +'" class="answerSelInp" type="text" placeholder="请输入选项答案"/></div>';
+    				ansTypeTxt += '<div id="inpTxt_answ_'+ i +'" class="txtAnsw" style="display:none;"><span>'+ this.switchABCByNum(i) +'</span><input title="禁止使用空格符!" autocomplete="off" id="answSelInpTxt'+ i +'" class="answerSelInp" type="text" placeholder="请输入选项答案"/></div>';
     			}
     		}
     		ansTypeTxt += '</div>';
@@ -195,7 +195,7 @@ layui.define(['form'],function(exports){
     	//题型为填空题
     	createTkTypeDOM : function(loreType){
     		var tkStr = '';
-    		tkStr += '<input id="tkInp_'+ loreType +'" type="text" class="layui-input" placeholder="请输入填空题答案，多个空之间使用英文‘,’分割"/>';
+    		tkStr += '<input id="tkInp_'+ loreType +'" type="text" class="layui-input"  autocomplete="off" placeholder="请输入填空题答案，多个空之间使用英文‘,’分割"/>';
     		tkStr += '<p class="zhutiNote tkNote">注：多个空之间使用英文‘,’分割</p>';
     		return tkStr;
     	},

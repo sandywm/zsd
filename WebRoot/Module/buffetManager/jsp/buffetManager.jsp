@@ -21,7 +21,7 @@
 	<body>
 		<div class="layui-card-header loreHeader">
 			<span style="float:left;">自助餐管理</span>
-			<div class="layui-form" style="float:right;margin:3px 15px 0 35px;">
+			<div class="layui-form" style="float:left;margin:3px 15px 0 35px;">
 				<div class="itemDivs" style="width:130px;">
 					<div class="layui-input-inline">
 						<input type="hidden" id="subInp" value="0"/>
@@ -112,6 +112,7 @@
 		var infoBySubOpt = 'getGradeOpt',//根据学科获取年级的信息
 			infoByGsEdOpt='geteduC',//根据年级出版社获取教材信息 need
 			addEditFlag  = false,editAll='',//出版社全拼id:name
+			switchFlag=false,//用于填空题问答题这块切换题型时是否打开问题选项 true->打开 
 			globalOpts='',cptId=0,currPage='buffetPage',bigBuffetId=0,lexContent='',
 			loreId=0,currNum=0,loreNameBig='',loreBigTit='',loreBigId=0,lqBigId=0,realAnswer='';//是否可以增加点拨指导和知识讲解;
 		var result_answer = "";//ABCD
@@ -139,24 +140,6 @@
 					baseDataMet.getSubjectList('subjectSel');
 					//获取出版社
 					baseDataMet.getEditionList('editionSel');
-					
-					//搜索全局知识点根据拼音和标题
-	        	    $('#queryBtn').on('click',function(){
-	        	    	relate.searchZsdByTitOrPy();
-					});
-	        	    $('#zsd_py').on('keypress',function(){
-						_this.enterPress(event);
-					});
-					$('#zsd_txt').on('keypress',function(){
-						_this.enterPress(event);
-					});
-				},
-				//搜索的回车事件
-				enterPress : function(event){
-					var e = e || window.event;
-					if(e.keyCode == 13){
-						relate.searchZsdByTitOrPy();
-					}
 				},
 				initImgEditor : function(){
 					editor_answer_select = new baidu.editor.ui.Editor( {
@@ -206,8 +189,6 @@
 							baseTypeFlag = false;
 							return;
 						}
-						//mindResArr
-						
 						mindResArr.length = 0;
 						abilityResArr.length = 0;
 						$('input[name=mindType]').each(function(i){
@@ -336,8 +317,6 @@
 							resFlag = true;
 						}
 						if(resFlag){//ajax
-							var lqsIdStr_up='',tmpLqsIdUpObj = null;;
-							
 							var queTipsId = $('#tipsInp_' + loreType).val() == '' ? 0 : $('#tipsInp_' + loreType).val()	,
 									lexId  = $('#'+loreType+'_lexId').val(),mindResStr=mindResArr.join(','),abilityResStr=abilityResArr.join(',');
 							if(tiganTypeInpVal == '单选题' || tiganTypeInpVal == '多选题' || tiganTypeInpVal == '填空选择题'){
@@ -495,7 +474,6 @@
 				//回显题库列表每个对应的详情 （编辑)
 				renderbuffetTypeInfo : function(json){
 					console.log(json)
-					var tmpQueTipId = '';
 					var maxSelBox = blDOM.creaMaxSel(),
 					spaceSelBox = blDOM.creaMaxSpace(),
 					ansType = blDOM.createAnsType(),//问题类型
@@ -512,10 +490,10 @@
 					//$('.queType').append(tiganTypeDOM + lexStrDOM);
 					$('.maxChoice').hide().html(maxSelBox);
 					$('.spaceBox').hide().html(spaceSelBox);
-					for(var i=0;i<json.baList.length;i++){
-						if(json.baList[i].selFlag){
-							$('#baseTypeInp').val(json.baList[i].baId);
-							$('#baseTypeTxt').html(json.baList[i].baName);
+					for(var i=0;i<json.btList.length;i++){
+						if(json.btList[i].selFlag){
+							$('#baseTypeInp').val(json.btList[i].baId);
+							$('#baseTypeTxt').html(json.btList[i].btName);
 							
 						}
 					}
@@ -538,7 +516,7 @@
 						}
 					}	
 					$('#tiganTypeInp').val(json.queType);
-					//lore.data.originTypeTxt = listInfo[i].queType;//用于填空题切换其它题型时做个原来题型的存储
+					blMet.data.originTypeTxt = json.queType;//用于填空题切换其它题型时做个原来题型的存储
 					$('#tiganTypeTxt').html(json.queType);
 					//渲染关联此条内容
 					if(json.lexId == 0){
@@ -604,8 +582,8 @@
 					}else if(json.queType == '问答题'){
 						$('#ansSelWrap_' + loreType).show();
 						$('.switchTgGanTypeBox').show();//切换题型显示
-						//lore.switchTiganFun();//调用切换题型方法
-						//lore.resetOriginTiganType();//还原原题型方法
+						blMet.switchTiganFun();//调用切换题型方法
+						blMet.resetOriginTiganType();//还原原题型方法
 						$('#answerSelectDiv_' + loreType).hide().html('');
 						$('#nowTxt_'+loreType).html('答案：');
 						$('#wendaTypeWrap_'+loreType).show().html(wendaStr);
@@ -614,10 +592,10 @@
 						loreDOM.initUeditor('wenda_'+loreType +'_' + currNum);
 						loreDOM.initUeditorContent('wenda_'+ loreType +'_' + currNum,json.queAnswer);
 					}else if(json.queType == '填空题'){
-						//$('.switchTgGanTypeBox').show();//切换题型显示
+						$('.switchTgGanTypeBox').show();//切换题型显示
 						$('#ansSelWrap_' + loreType).show();
-						//lore.switchTiganFun();//调用切换题型方法
-						//lore.resetOriginTiganType();//还原原题型方法
+						blMet.switchTiganFun();//调用切换题型方法
+						blMet.resetOriginTiganType();//还原原题型方法
 						$('.maxChoice').html('');
 						$('#wendaTypeWrap_'+loreType).hide().html('');
 						$('#answerSelectDiv_' + loreType).hide().html('');
@@ -628,24 +606,24 @@
 						$('#nowTxt_'+loreType).html('答案：');
 						$('#tkTypeWrap_' + loreType).show().html(tkTypeStr);
 						$('#tkInp_' + loreType).val(json.queAnswer);
-						//loreDOM.data.tkOriginAnsTxt = json.queAnswer;
+						blMet.data.tkOriginAnsTxt = json.queAnswer;
 					}
 					$('#'+loreType + 'Inp_' + currNum).val(json.title).attr('disabled',true);
 					buffetDOM.initUeditorContent('con_'+ loreType +'_' + currNum,json.queSub);//题干
 					buffetDOM.initUeditorContent('conAnaly_'+ loreType +'_' + currNum,json.queResolution);//解析
+					//if(json.queTipId != 0){
+					blMet.renderTipsSelect(json.tipsList);
+					queTipsArr = json.tipsList;
 					if(json.queTipId != 0){
-						tmpQueTipId = json.queTipId;
-					}
-					blMet.getCurrLoreTips(loreBigId,false);//获取提示列表
-					//添加编辑提示
-					$('#selTipsSel_' + loreType).val(tmpQueTipId);
-					$('#tipsInp_zzc').val(tmpQueTipId);
-					for(var i=0;i<json.tipsList.length;i++){
-						if(json.tipsList[i].selStatus){
-							$('#tipsCon_' + loreType).html(json.tipsList[i].lqsContent);
+						//添加编辑提示
+						$('#selTipsSel_' + loreType).val(json.queTipId);
+						$('#tipsInp_zzc').val(json.queTipId);
+						for(var i=0;i<json.tipsList.length;i++){
+							if(json.tipsList[i].selStatus){
+								$('#tipsCon_' + loreType).html(json.tipsList[i].lqsContent);
+							}
 						}
 					}
-							
 					form.render();
 				}
 			};

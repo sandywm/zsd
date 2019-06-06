@@ -156,8 +156,8 @@
 	<script type="text/javascript">
 		var loreType = 'zsqd';//点拨知道题型
 		var tmpGuideType = '';//用于判定点拨指导下不是主题情况下添加按钮显示的判断
-		var isAddClickFlag = false;//用于判断是否是通过增加按钮来添加的flag
-	
+		var isAddClickFlag = false,//用于判断是否是通过增加按钮来添加的flag
+			switchFlag=false;//用于填空题问答题这块切换题型时是否打开问题选项 true->打开 
 		var infoBySubOpt = 'getGradeOpt',nowSearType=1,searOpt='loreManager',//根据学科获取年级的信息
 			infoByGsEdOpt='geteduC',//根据年级出版社获取教材信息 need
 			addEditFlag  = false,editAll='',//出版社全拼id:name
@@ -913,7 +913,7 @@
 								}else if(listInfo[i].lqType == '巩固训练' || listInfo[i].lqType == '针对性诊断' || listInfo[i].lqType == '再次诊断'){
 									var tiganType = blDOM.tiganTypeTxt(listInfo[i].queType);
 									$('#tiganTypeInp').val(listInfo[i].queType);
-									lore.data.originTypeTxt = listInfo[i].queType;//用于填空题切换其它题型时做个原来题型的存储
+									blMet.data.originTypeTxt = listInfo[i].queType;//用于填空题切换其它题型时做个原来题型的存储
 									$('#tiganType1Inp').val(listInfo[i].queType2);//了解 理解 应用 综合匹配
 									$('#tiganTypeTxt').html(listInfo[i].queType);
 									//渲染关联此条内容
@@ -978,8 +978,8 @@
 									}else if(listInfo[i].queType == '问答题'){
 										$('#ansSelWrap_' + loreType).show();
 										$('.switchTgGanTypeBox').show();//切换题型显示
-										lore.switchTiganFun();//调用切换题型方法
-										lore.resetOriginTiganType();//还原原题型方法
+										blMet.switchTiganFun();//调用切换题型方法
+										blMet.resetOriginTiganType();//还原原题型方法
 										$('#answerSelectDiv_' + loreType).hide().html('');
 										$('#nowTxt_'+loreType).html('答案：');
 										$('#wendaTypeWrap_'+loreType).show().html(wendaStr);
@@ -990,8 +990,8 @@
 									}else if(listInfo[i].queType == '填空题'){
 										$('.switchTgGanTypeBox').show();//切换题型显示
 										$('#ansSelWrap_' + loreType).show();
-										lore.switchTiganFun();//调用切换题型方法
-										lore.resetOriginTiganType();//还原原题型方法
+										blMet.switchTiganFun();//调用切换题型方法
+										blMet.resetOriginTiganType();//还原原题型方法
 										$('.maxChoice').html('');
 										$('#wendaTypeWrap_'+loreType).hide().html('');
 										$('#answerSelectDiv_' + loreType).hide().html('');
@@ -1026,14 +1026,17 @@
 						}else if(loreType == 'zhuti' || loreType == 'zd' || loreType == 'nd' || loreType == 'gjd' || loreType== 'yhd'){
 							isCanAdd = loreDOM.isHasAddAbility(loreBigId, loreTypeZHN);//初始化当前点拨指导下的增加权限
 						}else if(loreType == 'ggxl' || loreType == 'zdxzd' || loreType == 'zczd'){
-							blMet.getCurrLoreTips(loreBigId,false);//获取提示列表
 							//添加编辑词条
 							blMet.addEditLex();
-							$('#selTipsSel_' + loreType).val(tmpQueTipId);
-							$('#tipsInp_ggxl').val(tmpQueTipId);
-							for(var i=0;i<listInfo[0].tipsList.length;i++){
-								if(listInfo[0].tipsList[i].selStatus){
-									$('#tipsCon_' + loreType).html(listInfo[0].tipsList[i].lqsContent);
+							blMet.renderTipsSelect(listInfo[0].tipsList);
+							queTipsArr = listInfo[0].tipsList;
+							if(tmpQueTipId ){//表示已经关联提示
+								$('#selTipsSel_' + loreType).val(tmpQueTipId);
+								$('#tipsInp_ggxl').val(tmpQueTipId);
+								for(var i=0;i<listInfo[0].tipsList.length;i++){
+									if(listInfo[0].tipsList[i].selStatus){
+										$('#tipsCon_' + loreType).html(listInfo[0].tipsList[i].lqsContent);
+									}
 								}
 							}
 						}

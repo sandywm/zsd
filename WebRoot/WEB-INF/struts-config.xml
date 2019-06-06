@@ -62,7 +62,7 @@
     </action>
     <!-- 知识点错误信息 -->
     <action path="/lqe" parameter="action" scope="request"  type="com.zsd.action.loreQuestionError.LoreQuestionErrorAtion">
-      <set-property property="cancellable" value="true" />
+      <forward name="lqePage" path="/Module/errQuesManager/jsp/errQuesManager.jsp"></forward>
     </action>
     <!-- 在线答题 -->
     <action path="/onlineStudy" parameter="action" scope="request"  type="com.zsd.action.onlineStudy.OnlineStudyAction">

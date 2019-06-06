@@ -123,7 +123,6 @@ layui.define(['form','buffetLoreMet'],function(exports){
 			    data:{loreId:loreId},
 			    url:'/buffet.do?action=getBuffetQueData',
 			    success:function (json){
-			    	console.log(json)
 			    	layer.closeAll('loading');	
 			    	if(json.result == 'success'){
 			    		_this.renderXqjfInfo(json.xqjf);

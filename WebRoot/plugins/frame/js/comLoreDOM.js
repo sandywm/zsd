@@ -51,8 +51,6 @@ layui.define(['form','element','upLoadFiles','buffetLoreDOM','buffetLoreMet'],fu
     	//创建对应主要内容 
     	creaLoreConDOM : function(nowType){
     		var loreConStr = '';
-    		//alert('==currNum==' + currNum)
-    		//alert('==currNumLen==' + currNumLen)
     		if(isAddClickFlag){
     			if(globalOpts == 'add'){
     				currNum ++;

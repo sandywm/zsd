@@ -95,7 +95,6 @@
 					        url:'/buffet.do?action=getRelationLexInfo',
 					        success:function (json){
 					        	layer.closeAll('loading');	
-					        	console.log(json)
 					        	if(json.result == 'success'){
 					        		$('#hasChoice').addClass('hasCon').html('<p>已添加词条：<span class="hasAdd">' + json.lexTitle + '</span></p><a class="delLexBtn" href="javascript:void(0)"><i class="layui-icon layui-icon-delete"></i></a>');
 									$('#innerLexCon').html(json.lexContent);
@@ -140,7 +139,6 @@
 							parent.layer.close(index);
 						}else{
 							layer.load('1');
-							alert(_this.data.selLexId)
 							$.ajax({
 								type:'post',
 						        dataType:'json',
@@ -186,12 +184,9 @@
 								}},
 							]],
 							done : function(res, curr, count){
-								console.log(res)
 								layer.closeAll('loading');
 							}
 						});
-						
-						
 						table.on('row(lexTable)', function(obj){
 							var data = obj.data;
 							page.data.selLexTit = data.lexTitle;
@@ -201,6 +196,7 @@
 				    		$(this).find('.likeCheckSpan').addClass('hasActive');
 				    		$('#scrollParent').remove();
 							$('#innerLexCon').html(data.lexContent);
+							parent.lexContent = data.lexContent;
 							var hasImgLen = $('#innerLexCon').find('img').length;
 							if(hasImgLen > 0){
 								$('#innerLexCon').find('img').each(function(i){

@@ -9,7 +9,10 @@ layui.define(['form','buffetLoreDOM'],function(exports){
     var obj = {
     	data : {
     		tkOriginAnsTxt : '',
-    		tiganTypeFlag : true//是否创建了题干类型
+    		tiganTypeFlag : true,//是否创建了题干类型
+    		originTypeTxt : '',//点击切换题型起原来题型
+    		hasSwitchTxt : '',
+    		isSwitchFlag : false//对于填空题 问答题是否切换其他题型的flag
     	},
     	getId : function(id){
     		return document.getElementById(id);
@@ -709,7 +712,84 @@ layui.define(['form','buffetLoreDOM'],function(exports){
 					}
 				}
 			});
-		}
+		},
+		//填空题 问答题 切换题型(单选 多选 判断 填空选择题)方法
+    	switchTiganFun : function(){
+    		var _this = this;
+    		var tmpLayerIndex = 0;
+    		$('.switchTiganBtn').on('click',function(){
+    			_this.data.isSwitchFlag = false;
+    			var otherTiganType = _this.otherTgGanTypeDOM();
+    			tmpLayerIndex = layer.open({
+					title:'切换题型',
+					type: 1,
+				  	area: ['480px', '180px'],
+				  	fixed: true, //不固定
+				  	maxmin: false,
+				  	shadeClose :true,
+				  	closeBtn : 1,
+				  	content: otherTiganType,
+				  	end : function(){
+				  		if(_this.data.isSwitchFlag){
+				  			$('#tiganTypeTxt').html(_this.data.hasSwitchTxt);
+				  			$('.resetBtn').show().html('还原至' + _this.data.originTypeTxt);
+				  			$('.switchTiganBtn').hide();
+				  			if(_this.data.hasSwitchTxt != '判断题'){
+				  				$('.maxChoice').show();
+				  			}
+				  		}
+				  	}
+				});
+				form.render();
+				$('.switchSureBtn').on('click',function(){
+					var otherInpVal = $('#otherTiganInp').val();
+					if(otherInpVal == ''){
+						layer.msg('请选择要切换到的题型',{icon:5,anim:6,time:2000});
+						return;
+					}
+					_this.data.hasSwitchTxt = otherInpVal;
+					_this.data.isSwitchFlag = true;
+					//确认切换动作后将switchFlag变为true
+					switchFlag = true;//true 打开问题选项 文字或图片
+					_this.swithTiGanType(otherInpVal);
+					layer.close(tmpLayerIndex);
+	    		});
+    		});
+    	},
+    	//还原至原题型方法
+    	resetOriginTiganType : function(){
+    		var _this = this;
+    		//还原至原题题型
+			$('.resetBtn').on('click',function(){
+				layer.confirm('确认要将此题型再还原至' + _this.data.originTypeTxt + '题型', {
+				  title:'提示',
+				  skin: 'layui-layer-molv',
+				  btn: ['确定','取消'] //按钮
+				},function(index){
+					switchFlag = false;//还原至原题型后switchFlag为false
+					$('#tiganTypeTxt').html(_this.data.originTypeTxt);
+					_this.swithTiGanType(_this.data.originTypeTxt);
+					$('.switchTiganBtn').show();
+					$('.resetBtn').hide().html('');
+					layer.close(index);
+				});
+			});
+    	},
+    	//切换至其他题型结构
+    	otherTgGanTypeDOM : function(){
+    		var otherStr = '';
+    		otherStr += '<div class="otherDOMWrap layui-form">';
+    		otherStr += '<input type="hidden" id="otherTiganInp" value=""/>';
+    		otherStr += '<div>';
+    		otherStr += '<input type="radio" name="otherTigan" lay-filter="otherTigan" value="单选题" title="单选题">';
+    		otherStr += '<input type="radio" name="otherTigan" lay-filter="otherTigan" value="多选题" title="多选题">';
+    		otherStr += '<input type="radio" name="otherTigan" lay-filter="otherTigan" value="填空选择题" title="填空选择题">';
+    		otherStr += '<input type="radio" name="otherTigan" lay-filter="otherTigan" value="判断题" title="判断题">';
+    		otherStr += '</div>';
+    		otherStr += '<div class="saveBtnWrap"><button class="layui-btn switchSureBtn">切换</button></div>';
+    		otherStr += '</div>';
+    		return otherStr;
+    	}
     };
     //选择提示标题
     form.on('select(selTipsSel)',function(data){

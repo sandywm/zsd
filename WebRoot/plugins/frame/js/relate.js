@@ -363,14 +363,13 @@ layui.define(['table','form','scrollBar'],function(exports){
 		        						d.inUse == '启用'? str='<span class="sucColor">启用</span>' : str='<span class="warningCol">未启用</span>';
 		        						return str;
 		        					}},
-		        					{field : '', title: '操作',width:'375', align:'center',templet : function(d){
+		        					{field : '', title: '操作',width:'375',fixed:'right', align:'center',templet : function(d){
 		        						var fixStr = '';
 		        						fixStr += '<a class="layui-btn layui-btn-xs addTikuBtn" opts="add" lay-event="addFun" loreName="'+ d.loreName +'" loreId="'+ d.loreId +'"><i class="layui-icon layui-icon-add-circle"></i>添加</a>';
 	        							fixStr += '<a class="layui-btn layui-btn-xs layui-btn-primary editBtn" opts="edit" lay-event="editFun" loreName="'+ d.loreName +'" loreId="'+ d.loreId +'"><i class="layui-icon layui-icon-edit"></i>编辑</a>';
 	        							fixStr += '<a class="layui-btn layui-btn-xs layui-btn-normal viewBtn" opts="view" lay-event="viewFun" loreName="'+ d.loreName +'" loreId="'+ d.loreId +'"><i class="layui-icon layui-icon-search"></i>浏览</a>';
-		        						fixStr += '<a class="layui-btn layui-btn-xs layui-btn-primary viewBtn" lay-event="relateLore" loreName="'+ d.loreName +'" loreId="'+ d.loreId +'"><i class="iconfont layui-extend-guanlian"></i>关联知识点</a>';
+	        							fixStr += '<a class="layui-btn layui-btn-xs layui-btn-primary viewBtn" lay-event="relateLore" loreName="'+ d.loreName +'" loreId="'+ d.loreId +'"><i class="iconfont layui-extend-guanlian"></i>关联知识点</a>';
 		        						fixStr += '<a class="layui-btn layui-btn-xs viewBtn" lay-event="viewLoreTree" loreName="'+ d.loreName +'" loreId="'+ d.loreId +'"><i class="iconfont layui-extend-tree"></i>知识树</a>';
-		        						
 		        						return fixStr;
 		        					}},
 		        				]],

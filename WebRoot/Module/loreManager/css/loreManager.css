@@ -468,6 +468,8 @@ input[name='answer_multiTk']:hover{
 	box-shadow:0 0 4px #ccc;
 	margin-top:10px;
 	padding:10px;
+	overflow:hidden;
+	overflow-y:auto;
 }
 #guideTips{
 	position:absolute;
@@ -506,4 +508,25 @@ input[name='answer_multiTk']:hover{
 	top:0;
 	font-size:28px;
 	color:#f00;
+}
+.noFixTxt{
+	color:#F47837;
+}
+.hasFixTxt{
+	color:#009688;
+	font-weight:600;
+}
+.errBox{
+	padding:10px;
+	color:#333;
+}
+.errTypeBox,
+.errCon{
+	line-height:22px;
+	margin-bottom:5px;
+}
+.botSub{
+	text-align:right;
+	line-height:22px;
+	margin-bottom:5px;
 }

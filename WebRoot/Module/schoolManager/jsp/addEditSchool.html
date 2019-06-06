@@ -71,15 +71,6 @@
 				</div>
 			</div>
 		</div>
-		<div class="layui-clear">
-			<div class="itemDiv">
-				<label class="layui-form-label showStalabel" style="width:60px">是否显示</label>
-				<div id="showStaBox" class="layui-input-inline">
-					<input type="radio" name="showSta" lay-filter="showStaFilter" value="0" title="可见" checked>
-					<input type="radio" name="showSta" lay-filter="showStaFilter" value="1" title="不可见">
-				</div>
-			</div>
-		</div>
 		<div class="layui-clear" style="text-align:center;margin-top:20px;">
 			<button class="saveBtn layui-btn" style="width:100px;display:inline-block;">保存</button>
 		</div>
@@ -108,6 +99,7 @@
 					//创建学段
 					var schTypeHtml = baseDataMet.getSchoolTye();
 					$('#schTypeSel').append(schTypeHtml);
+					form.render();
 				},
 				checkSchNameIsExist : function(schoolName){
 					var existFlag = false;
@@ -115,6 +107,7 @@
 					$.ajax({
 						type:'post',
 				        dataType:'json',
+				        async:false,
 				        data : {schoolName : schoolName},
 				        url:'/school.do?action=checkExistSchoolName',
 				        success:function (json){
@@ -168,12 +161,11 @@
 								url = '/school.do?action=updateSchool';
 								var field = {schoolId:schId,schoolName:escape(schNameInpVal),
 											yearSystem:yearSysInpVal,schoolType:schTypeInpVal,prov:provInpVal,
-											city:cityInpVal,county:countyInpVal,town:'',showStatus:_this.data.showStatus};
+											city:cityInpVal,county:countyInpVal,town:''};
 							}else{
-								url = '/common.do?action=addEducationInfo';
-								var field = {ediId : editVal,gradeId:gradeVal,eduVolume:_this.data.eduVolume};
+								url = '/school.do?action=addSchool';
+								var field = {schoolName:escape(schNameInpVal),prov:provInpVal,city:cityInpVal,county:countyInpVal,town:'',yearSystem:yearSysInpVal,schoolType:schTypeInpVal};
 							}
-							//alert(url)
 							layer.load('1');
 							$.ajax({
 								type:'post',
@@ -240,6 +232,7 @@
 						});
 					}else{
 						//增加
+						layui.address();
 					}
 					
 				}

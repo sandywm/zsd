@@ -97,9 +97,11 @@
 					$('#schTypeSel').append(schTypeHtml);
 				},
 				bindEvent : function(){
+					var _this = this;
 					$('#addSchool').on('click',function(){
+						globalOpts = $(this).attr('opts');
 						addEditFlag = false;
-						layer.msg('后续开放', {icon:5,anim:6,time:1500});
+						_this.openEducLayer('添加学校');
 					});
 					//查询
 					var _this = this;
@@ -134,7 +136,6 @@
 							{field : 'prov', title: '省份',align:'center'},
 							{field : 'city', title: '城市',align:'center'},
 							{field : 'county', title: '县/区', align:'center'},
-							{field : 'showStatus', title: '是否显示',align:'center'},
 							{field : '', title: '操作',  fixed: 'right', align:'center',templet : function(d){
 								return '<a class="layui-btn layui-btn-xs editBtn" opts="edit" schoolName="'+ d.schoolName +'" lay-event="editSchool"  schId="'+ d.id +'"><i class="layui-icon layui-icon-edit"></i>编辑</a>';
 							}},
