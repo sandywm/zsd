@@ -96,7 +96,7 @@ public interface UserManager {
 	 * @return
 	 * @throws WEBException
 	 */
-	boolean updateUser(Integer id,  Integer accStatus, String endDate) throws WEBException;
+	boolean updateUser(Integer id,  Integer accStatus, Integer freeSta, String endDate) throws WEBException;
 
 	/**
 	 * 根据用户账户和密码获取用户信息
