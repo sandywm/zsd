@@ -312,9 +312,10 @@ public class UserAction extends DispatchAction {
 		Integer userId=CommonTools.getFinalInteger("userId", request);
 		String endDate=CommonTools.getFinalStr("endDate",request);
 		Integer accStatus=CommonTools.getFinalInteger("accStatus", request);
+		Integer freeStatus=CommonTools.getFinalInteger("freeStatus", request);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "fail";
-		boolean uflag = uManager.updateUser(userId, accStatus, endDate);
+		boolean uflag = uManager.updateUser(userId, accStatus,freeStatus, endDate);
 		if(uflag){
 			msg ="success";
 		}
