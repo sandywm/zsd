@@ -35,5 +35,13 @@ public interface RoleInfoManager {
 	 * @throws WEBException
 	 */
 	public List<RoleInfo> listRoleInfo(String roleName) throws WEBException;
+	/**
+	 * 获取所有角色信息
+	 * @author zong
+	 * 2019-6-6下午05:35:53
+	 * @return
+	 * @throws WEBException
+	 */
+	public List<RoleInfo> listAllRoleInfo() throws WEBException;
 
 }
