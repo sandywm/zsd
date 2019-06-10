@@ -108,10 +108,11 @@ public interface SchoolManager {
 	 * @param county 县
 	 * @param town 乡
 	 * @param schoolType 学段
+	 * @param yearSystem 学年制
 	 * @return
 	 * @throws WEBException
 	 */
-	List<School> listInfoByOpt(String prov,String city,String county,String town,Integer schoolType)throws WEBException;
+	List<School> listInfoByOpt(String prov,String city,String county,String town,Integer schoolType,Integer yearSystem)throws WEBException;
 	
 	/**
 	 * 根据学校名称获取学校列表

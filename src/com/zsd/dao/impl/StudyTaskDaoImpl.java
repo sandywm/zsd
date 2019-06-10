@@ -47,7 +47,7 @@ public class StudyTaskDaoImpl implements StudyTaskDao{
 	@Override
 	public StudyTaskInfo getLastInfoByLogId(Session sess, Integer sLogId) {
 		// TODO Auto-generated method stub
-		String hql = " from StudyTaskInfo as st where st.studyLogInfo.id = "+sLogId + " order by st.taskNum.desc";
+		String hql = " from StudyTaskInfo as st where st.studyLogInfo.id = "+sLogId + " order by st.taskNum desc";
 		List<StudyTaskInfo> stList = sess.createQuery(hql).setFirstResult(0).setMaxResults(1).list();
 		if(stList.size() > 0){
 			return stList.get(0);

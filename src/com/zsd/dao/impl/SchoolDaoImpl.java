@@ -116,7 +116,7 @@ public class SchoolDaoImpl implements SchoolDao{
 
 	@Override
 	public List<School> findInfoByOpt(Session sess, String prov, String city,
-			String county, String town, Integer schoolType) {
+			String county, String town, Integer schoolType,Integer yearSystem) {
 		// TODO Auto-generated method stub
 		String hql = " from School as sch where sch.showStatus = 0";
 		if(!prov.equals("")){
@@ -133,6 +133,9 @@ public class SchoolDaoImpl implements SchoolDao{
 		}
 		if(schoolType > 0){
 			hql += " and sch.schoolType = "+schoolType;
+		}
+		if(yearSystem >=0){
+			hql += " and sch.yearSystem = "+yearSystem;
 		}
 		return sess.createQuery(hql).list();
 	}

@@ -207,19 +207,23 @@ public class LoreTreeMenuJson {
 	 * @date 2019-5-30 上午10:39:46
 	 * @param nodeList
 	 * @param buff
+	 * @return loreId组合，loreName组合
 	 */
-	public void getPath(List<MyTreeNode> nodeList,StringBuilder buff){
+	public void getPath(List<MyTreeNode> nodeList,StringBuilder buff,StringBuilder buffChi){
 		if (nodeList == null || nodeList.size() == 0) {
 			return;
 		}
 		List<MyTreeNode> nodeList_1 = new ArrayList<MyTreeNode>();
+		List<MyTreeNode> nodeList_2 = new ArrayList<MyTreeNode>();
 		for(MyTreeNode node : nodeList){
 			// 记录当前层所有元素
 			if(node != null){
 				buff.append(node.getId()).append("|");
+				buffChi.append(node.getText()).append("|");
 				if(node.getChildren() != null){
 					// 把每个元素的下一层放到一个list中
 					nodeList_1.addAll(node.getChildren());
+					nodeList_2.addAll(node.getChildren());
 				}
 			}
 //			if(node.getRepeatFlag() == false){
@@ -232,10 +236,12 @@ public class LoreTreeMenuJson {
 		}
 		if(buff.length() > 0){
 			buff.delete(buff.length() - 1, buff.length());
+			buffChi.delete(buffChi.length() - 1, buffChi.length());
 		}
 		buff.append(":");
+		buffChi.append(":");
 		// 递归调用
-		getPath(nodeList_1, buff);
+		getPath(nodeList_1, buff,buffChi);
 	}
 	
 	/**
@@ -245,21 +251,29 @@ public class LoreTreeMenuJson {
 	 * @param path
 	 * @return
 	 */
-	public String getStudyPath(String path){
+	public String[] getStudyPath(String path,String pathChi){
 		StringBuffer studyPath = new StringBuffer();
+		StringBuffer studyChiPath = new StringBuffer();
+		String[] studyPathArr = new String[2];
 		if(!path.equals("")){
 			for(int i = path.split(":").length - 1 ; i >= 0 ; i--){
 				String[] reverseArray = path.split(":")[i].split("\\|");
+				String[] reverseChiArray = pathChi.split(":")[i].split("\\|");
 				for(int j = reverseArray.length - 1 ; j >= 0 ; j--){
 					studyPath.append(reverseArray[j]).append("|");
+					studyChiPath.append(reverseChiArray[j]).append("|");
 				}
 				studyPath.replace(studyPath.length() - 1, studyPath.length(), ":");
+				studyChiPath.replace(studyChiPath.length() - 1, studyChiPath.length(), ":");
 			}
 			if(studyPath.length() > 0){
 				studyPath = studyPath.delete(studyPath.length() - 1, studyPath.length());
+				studyChiPath = studyChiPath.delete(studyChiPath.length() - 1, studyChiPath.length());
 			}
 		}
-		return studyPath.toString();
+		studyPathArr[0] = studyPath.toString();
+		studyPathArr[1] = studyChiPath.toString();
+		return studyPathArr;
 	}
 	
 	/**

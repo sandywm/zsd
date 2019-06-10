@@ -12,6 +12,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -53,7 +54,8 @@ public class BaseInfoAction extends DispatchAction {
 		String county = Transcode.unescape_new("county", request);
 		String town = Transcode.unescape_new("town", request);
 		Integer schoolType = CommonTools.getFinalInteger("schoolType", request);
-		List<School> sList = sm.listInfoByOpt(prov, city, county, town, schoolType);
+		Integer yearSystem = CommonTools.getFinalInteger("yearSystem", request);
+		List<School> sList = sm.listInfoByOpt(prov, city, county, town, schoolType,yearSystem);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "noInfo";
 		if(sList.size() > 0){
@@ -67,6 +69,33 @@ public class BaseInfoAction extends DispatchAction {
 				list_d.add(map_d);
 			}
 			map.put("schList", list_d);
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 定位当前IP省市
+	 * @author wm
+	 * @date 2019-6-10 上午11:27:40
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getAreaJson(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		Map<String,String> map = new HashMap<String,String>();
+		String msg = "error";
+		String address = CommonTools.getSelfArea(CommonTools.getIpAddress(request));
+		if(!address.equals("un-know")){
+			msg = "success";
+			map.put("prov", address.split(":")[0]);
+			map.put("city", address.split(":")[1]);
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);

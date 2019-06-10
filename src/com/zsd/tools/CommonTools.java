@@ -300,6 +300,9 @@ public class CommonTools {
 							break;
 						}
 					}
+				}else if(address.equals("本地局域网")){
+					prov = "河南";
+					city = "濮阳";
 				}else{//直辖市
 					for(Integer i = 0 ; i < zxs.length ; i++){
 						if(address.contains(zxs[i])){
@@ -510,12 +513,15 @@ public class CommonTools {
 	 * @param currentLoreId
 	 * @return
 	 */
-	public static String getStudyPath_new(String studyPath,Integer currentLoreId){
+	public static String[] getStudyPath_new(String studyPath,String studyPathChi,Integer currentLoreId){
 		String studyPath_new = "";
+		String studyPathChi_new = "";
+		String[] studyPath_new_arr = new String[2];
 		Integer currentI = 0;
 		boolean flag = false;
 		if(!studyPath.equals("") && currentLoreId > 0){
 			String[] studyPath_array = studyPath.split(":");
+			String[] studyPathChi_array = studyPathChi.split(":");
 			for(Integer i = 0 ; i < studyPath_array.length ; i++){
 				String[] currentPathArray = studyPath_array[i].split("\\|"); 
 				for(Integer j = 0 ; j < currentPathArray.length ; j++){
@@ -531,12 +537,16 @@ public class CommonTools {
 			}
 			for(Integer i = currentI ; i < studyPath_array.length ; i++){
 				studyPath_new += studyPath_array[i] + ":";
+				studyPathChi_new += studyPathChi_array[i] + ":";
 			}
 			if(!studyPath_new.equals("")){
 				studyPath_new = studyPath_new.substring(0, studyPath_new.length() - 1);
+				studyPathChi_new = studyPathChi_new.substring(0, studyPathChi_new.length() - 1);
 			}
+			studyPath_new_arr[0] = studyPath_new;
+			studyPath_new_arr[1] = studyPathChi_new;
 		}
-		return studyPath_new;
+		return studyPath_new_arr;
 		
 	}
 	
@@ -546,20 +556,25 @@ public class CommonTools {
 	 * @date 2019-6-6 上午09:28:20
 	 * @param loreId
 	 * @param pathType diagnosis/study
-	 * @return
+	 * @return loreId组合,loreName组合
 	 * @throws Exception
 	 */
-	public static String getLorePath(Integer loreId,String pathType) throws Exception{
+	public static String[] getLorePath(Integer loreId,String pathType) throws Exception{
+		String[] pathArr = new String[2];
 		String path = "";
 		LoreTreeMenuJson ltmj = new LoreTreeMenuJson();
 		List<MyTreeNode> ltList = ltmj.showTree(loreId, 0,"desc");
 		StringBuilder buff = new StringBuilder();
-		ltmj.getPath(ltList, buff);
+		StringBuilder buffChi = new StringBuilder();
+		ltmj.getPath(ltList, buff,buffChi);
 		path = buff.delete(buff.length() - 1, buff.length()).toString();
+		String pathChi = buffChi.delete(buffChi.length() - 1, buffChi.length()).toString();
+		pathArr[0] = path;
+		pathArr[1] = pathChi;
 		if(pathType.equals("diagnosis")){//诊断
-			return path;
+			return pathArr;
 		}else{//学习
-			return ltmj.getStudyPath(path);
+			return ltmj.getStudyPath(path,pathChi);
 		}
 	}
 	
@@ -577,6 +592,6 @@ public class CommonTools {
 	    
 	    String bb = "7389:7392:7394|7396|7390|7393:7397|7405:7406|7407:7431|7432:7433:7436|7446:7448";
 	    System.out.println(CommonTools.getCurrentStudyPath_new(bb, 7397));
-	    System.out.println(CommonTools.getStudyPath_new(bb, 7397));
+//	    System.out.println(CommonTools.getStudyPath_new(bb, 7397));
 	}
 }

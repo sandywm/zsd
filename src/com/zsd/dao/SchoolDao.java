@@ -115,9 +115,10 @@ public interface SchoolDao {
 	 * @param county 县
 	 * @param town 乡
 	 * @param schoolType 学段
+	 * @param yearSystem 学年制[0(6-3-3),1(5-4-3)]
 	 * @return
 	 */
-	List<School> findInfoByOpt(Session sess,String prov,String city,String county,String town,Integer schoolType);
+	List<School> findInfoByOpt(Session sess,String prov,String city,String county,String town,Integer schoolType,Integer yearSystem);
 	
 	/**
 	 * 根据学校名称获取学校信息列表

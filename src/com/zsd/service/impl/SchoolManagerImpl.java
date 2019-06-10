@@ -134,9 +134,17 @@ public class SchoolManagerImpl implements SchoolManager{
 
 	@Override
 	public List<School> listInfoByOpt(String prov, String city, String county,
-			String town, Integer schoolType) throws WEBException {
-		// TODO Auto-generated method stub
-		return null;
+			String town, Integer schoolType,Integer yearSystem) throws WEBException {
+		try {
+			sDao = (SchoolDao) DaoFactory.instance(null).getDao(Constants.DAO_SCHOOL_INFO);
+			Session sess  = HibernateUtil.currentSession();
+			return sDao.findInfoByOpt(sess,prov,city,county,town,schoolType,yearSystem);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("根据条件获取学校列表信息列表时出现异常!(下拉列表使用)");
+		} finally{
+			HibernateUtil.closeSession();
+		}
 	}
 
 	@Override

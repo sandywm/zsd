@@ -66,6 +66,7 @@ public class StudyDetailDaoImpl implements StudyDetailDao{
 		if(!loreTypeName.equals("")){
 			hql += " and sd.loreQuestion.loreTypeName = '"+loreTypeName+"'";
 		}
+		hql += " order by sd.id desc";
 		return sess.createQuery(hql).setFirstResult(0).setMaxResults(1).list();
 	}
 
@@ -74,7 +75,7 @@ public class StudyDetailDaoImpl implements StudyDetailDao{
 			Integer studyLogId, Integer loreId, String loreTypeName,
 			Integer completeTimes) {
 		// TODO Auto-generated method stub
-		String hql = " from StudyDetail as sd where sd.studyLogInfo.id = "+studyLogId + " and sd.loreQuestion.loreTypeName = '"+loreTypeName+"' and sd.result = 1 and sd.loreInfo.id = "+loreId + " and sd.completeTimes != "+completeTimes;
+		String hql = " from StudyDetailInfo as sd where sd.studyLogInfo.id = "+studyLogId + " and sd.loreQuestion.loreTypeName = '"+loreTypeName+"' and sd.result = 1 and sd.loreInfo.id = "+loreId + " and sd.completeTimes != "+completeTimes;
 		return sess.createQuery(hql).list();
 	}
 

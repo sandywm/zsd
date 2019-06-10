@@ -259,27 +259,35 @@ public class LoreRelateAction extends DispatchAction {
 						//自动生成其他版本的关联记录
 						List<LoreInfo> lList_main = lm.listInfoByMainLoreId(loreId);//获取其他版本下的主知识点列表
 						List<LoreInfo> lList_root = lm.listInfoByMainLoreId(rootLoreId);//获取其他版本下的关联知识点列表
-						Integer num = 0;
-						if(lList_main.size() == lList_root.size()){
-							num = lList_main.size();//如果记录条数相等，随便取那个都可
-						}else{
-							//如果记录条数不等，取记录条数少的为准
-							if(lList_main.size() > lList_root.size()){
-								num = lList_root.size();
-							}else{
-								num = lList_main.size();
-							}
-						}
-						if(num > 0){
+						Integer num = lList_main.size();
+						Integer num1 = lList_root.size();
+//						if(lList_main.size() == lList_root.size()){
+//							num = lList_main.size();//如果记录条数相等，随便取那个都可
+//						}else{
+//							//如果记录条数不等，取记录条数少的为准
+//							if(lList_main.size() > lList_root.size()){
+//								num = lList_root.size();
+//							}else{
+//								num = lList_main.size();
+//							}
+//						}
+						if(num > 0 && num1 > 0){
 							for(Integer i = 0 ; i < num ; i++){
 								Integer mainLoreId_edi = lList_main.get(i).getId();
-								Integer rootLoreId_edi = lList_root.get(i).getId();
+								Integer mainLoreEdiId = lList_main.get(i).getChapter().getEducation().getEdition().getId();
 								Long mainLoreCode =  Long.parseLong(lList_main.get(i).getLoreCode().replace("-", ""));
-								Long rootLoreCode =  Long.parseLong(lList_root.get(i).getLoreCode().replace("-", ""));
-								if(mainLoreCode > rootLoreCode){//主知识点编码大于子知识点编码
-									List<LoreRelateInfo>  lrList = lrm.listRelateInfoByOpt(mainLoreId_edi, rootLoreId_edi, -1, "");
-									if(lrList.size() == 0){
-										lrm.addLoreRelate(mainLoreId_edi, rootLoreId_edi,"auto");
+								for(Integer j = 0 ; j < num1 ; j++){
+									Integer rootLoreId_edi = lList_root.get(j).getId();
+									Integer rootLoreEdiId = lList_root.get(j).getChapter().getEducation().getEdition().getId();
+									if(mainLoreEdiId.equals(rootLoreEdiId)){//相同出版社
+										Long rootLoreCode =  Long.parseLong(lList_root.get(j).getLoreCode().replace("-", ""));
+										if(mainLoreCode > rootLoreCode){//主知识点编码大于子知识点编码
+											List<LoreRelateInfo>  lrList = lrm.listRelateInfoByOpt(mainLoreId_edi, rootLoreId_edi, -1, "");
+											if(lrList.size() == 0){
+												lrm.addLoreRelate(mainLoreId_edi, rootLoreId_edi,"auto");
+											}
+											break;
+										}
 									}
 								}
 							}
