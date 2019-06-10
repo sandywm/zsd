@@ -68,5 +68,18 @@ public class RoleInfoManagerImpl implements RoleInfoManager {
 			HibernateUtil.closeSession();
 		}
 	}
+	@Override
+	public List<RoleInfo> listAllRoleInfo() throws WEBException {
+		try {
+			roleinfoDao = (RoleInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_ROLE_INFO);
+			Session sess  = HibernateUtil.currentSession();
+			return roleinfoDao.findRoleInfo(sess);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("获取角色信息列表时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
 
 }

@@ -144,7 +144,7 @@ public class UserManagerImpl implements UserManager {
 	}
 
 	@Override
-	public boolean updateUser(Integer id, Integer accStatus, String endDate)
+	public boolean updateUser(Integer id, Integer accStatus, Integer freeSta, String endDate)
 			throws WEBException {
 		try {
 			userDao = (UserDao) DaoFactory.instance(null).getDao(Constants.DAO_USER_INFO);
@@ -155,6 +155,9 @@ public class UserManagerImpl implements UserManager {
 				user.setAccountStatus(accStatus);
 				if(!endDate.equals("")){
 					user.setEndDate(endDate);
+				}
+				if(freeSta!=-1){
+					user.setFreeStatus(freeSta);
 				}
 				tran.commit();
 				return true;

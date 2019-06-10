@@ -350,6 +350,7 @@ public class UserAction extends DispatchAction {
 		Integer userId=CommonTools.getFinalInteger("userId", request);
 		String endDate=CommonTools.getFinalStr("endDate",request);
 		Integer accStatus=CommonTools.getFinalInteger("accStatus", request);
+<<<<<<< HEAD
 		Integer freeSta=CommonTools.getFinalInteger("freeSta", request);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "fail";
@@ -357,6 +358,15 @@ public class UserAction extends DispatchAction {
 //		if(uflag){
 //			msg ="success";
 //		}
+=======
+		Integer freeStatus=CommonTools.getFinalInteger("freeStatus", request);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "fail";
+		boolean uflag = uManager.updateUser(userId, accStatus,freeStatus, endDate);
+		if(uflag){
+			msg ="success";
+		}
+>>>>>>> 6fc161bca2a12813795992f9c5eca5ea9e3574e3
 		map.put("msg", msg);
 		CommonTools.getJsonPkg(map, response);
 		return null;
@@ -633,6 +643,7 @@ public class UserAction extends DispatchAction {
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
+<<<<<<< HEAD
 	/**
 	 * 检查是否为当前的用户密码
 	 * @author zong
@@ -655,3 +666,6 @@ public class UserAction extends DispatchAction {
 		return null;
 	}
 }
+=======
+}
+>>>>>>> 6fc161bca2a12813795992f9c5eca5ea9e3574e3

@@ -877,4 +877,36 @@ public class CommonAction extends DispatchAction {
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
+	/**
+	 * 获取全部角色信息列表
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getRoleData(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		RoleInfoManager rManager =(RoleInfoManager) AppFactory.instance(null).getApp(Constants.WEB_ROLE_INFO);
+		List<RoleInfo> rlist = rManager.listAllRoleInfo();
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "noInfo";
+		if (!rlist.isEmpty()){
+			msg = "success";
+			List<Object> list_d = new ArrayList<Object>();
+			for(Iterator<RoleInfo> it = rlist.iterator() ; it.hasNext();){
+				RoleInfo rinfo = it.next();
+				Map<String,Object> map_d = new HashMap<String,Object>();
+				map_d.put("id",rinfo.getId());
+				map_d.put("roleName",rinfo.getRoleName());
+
+				list_d.add(map_d);
+			}
+			map.put("rList", list_d);
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return  null;
+	}
 }
