@@ -45,14 +45,14 @@ public class UserDaoImpl implements UserDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<User> getEntityById(Session sess, Integer id) {
-		String hql = " from User as u where u.id='"+id;
+		String hql = " from User as u where u.id="+id;
 		return sess.createQuery(hql).list();
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<User> checkUserPwd(Session sess, Integer id, String password) {
-		String hql = " from User as u where u.id='"+id+" and u.password='"+password+"'";
+		String hql = " from User as u where u.id="+id+" and u.password='"+password+"'";
 		return sess.createQuery(hql).list();
 	}
 
@@ -142,6 +142,13 @@ public class UserDaoImpl implements UserDao {
 		hql+=")";
 		Object countObj = sess.createQuery(hql).uniqueResult();
 		return CommonTools.longToInt(countObj);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<User> checkUserMobile(Session sess, String mobile) {
+		String hql = " from User as u where u.mobile='"+mobile+"'";
+		return sess.createQuery(hql).list();
 	}
 
 }

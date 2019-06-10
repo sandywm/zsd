@@ -144,7 +144,7 @@ public class UserManagerImpl implements UserManager {
 	}
 
 	@Override
-	public boolean updateUser(Integer id, Integer accStatus, Integer freeSta, String endDate)
+	public boolean updateUser(Integer id, Integer accStatus,Integer freeSta, String endDate)
 			throws WEBException {
 		try {
 			userDao = (UserDao) DaoFactory.instance(null).getDao(Constants.DAO_USER_INFO);
@@ -363,6 +363,25 @@ public class UserManagerImpl implements UserManager {
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new WEBException("修改指定用户头像信息时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public boolean checkUserMobile(String mobile) throws WEBException {
+		try {
+			userDao = (UserDao) DaoFactory.instance(null).getDao(Constants.DAO_USER_INFO);
+			Session sess  = HibernateUtil.currentSession();
+			List<User> ulist = userDao.checkUserMobile(sess, mobile);
+			boolean flag = false;
+			if(!ulist.isEmpty()){
+				flag = true;
+			}
+			return flag;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("根据手机号码判断是否注册时出现异常!");
 		} finally{
 			HibernateUtil.closeSession();
 		}

@@ -241,4 +241,13 @@ public interface UserManager {
 	 * @throws WEBException
 	 */
 	boolean updateUserByHead(Integer id ,String portrait) throws WEBException;
+	/**
+	 * 判断手机号码是否存在
+	 * @author zong
+	 * 2019-6-10下午03:25:37
+	 * @param mobile 手机号码
+	 * @return
+	 * @throws WEBException
+	 */
+	boolean  checkUserMobile(String mobile) throws WEBException;
 }

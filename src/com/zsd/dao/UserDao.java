@@ -110,5 +110,13 @@ public interface UserDao {
 	 */
 	Integer getUserByoptionCount(Session sess,String accName,String realName,Integer schoolId,Integer roleId,String prov, String city, String county,Integer schoolType,
 			Integer gradeNo,Integer classId);
-
+	/**
+	 * 根据手机号码查询记录
+	 * @author zong
+	 * 2019-6-10下午03:20:36
+	 * @param sess
+	 * @param mobile 手机号码
+	 * @return
+	 */
+	List<User> checkUserMobile(Session sess,String mobile);
 }

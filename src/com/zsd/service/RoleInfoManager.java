@@ -44,4 +44,5 @@ public interface RoleInfoManager {
 	 */
 	public List<RoleInfo> listAllRoleInfo() throws WEBException;
 
+
 }

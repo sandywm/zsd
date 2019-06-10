@@ -12,6 +12,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -22,12 +23,14 @@ import com.zsd.module.ClassInfo;
 import com.zsd.module.Edition;
 import com.zsd.module.Education;
 import com.zsd.module.GradeSubject;
+import com.zsd.module.RoleInfo;
 import com.zsd.module.Subject;
 import com.zsd.module.UserClassInfo;
 import com.zsd.page.PageConst;
 import com.zsd.service.EditionManager;
 import com.zsd.service.EducationManager;
 import com.zsd.service.GradeSubjectManager;
+import com.zsd.service.RoleInfoManager;
 import com.zsd.service.SubjectManager;
 import com.zsd.service.UserClassInfoManager;
 import com.zsd.tools.CommonTools;
@@ -834,7 +837,38 @@ public class CommonAction extends DispatchAction {
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
-	
+	/**
+	 * 获取全部角色信息列表
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getRoleData(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		RoleInfoManager rManager =(RoleInfoManager) AppFactory.instance(null).getApp(Constants.WEB_ROLE_INFO);
+		List<RoleInfo> rlist = rManager.listAllRoleInfo();
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "noInfo";
+		if (!rlist.isEmpty()){
+			msg = "success";
+			List<Object> list_d = new ArrayList<Object>();
+			for(Iterator<RoleInfo> it = rlist.iterator() ; it.hasNext();){
+				RoleInfo rinfo = it.next();
+				Map<String,Object> map_d = new HashMap<String,Object>();
+				map_d.put("id",rinfo.getId());
+				map_d.put("roleName",rinfo.getRoleName());
+
+				list_d.add(map_d);
+			}
+			map.put("rList", list_d);
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return  null;
+	}
 	/**
 	 * 获取用户所在的年级
 	 * @author wm
@@ -876,37 +910,5 @@ public class CommonAction extends DispatchAction {
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
 		return null;
-	}
-	/**
-	 * 获取全部角色信息列表
-	 * @param mapping
-	 * @param form
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws Exception
-	 */
-	public ActionForward getRoleData(ActionMapping mapping, ActionForm form,
-			HttpServletRequest request, HttpServletResponse response) throws Exception {
-		RoleInfoManager rManager =(RoleInfoManager) AppFactory.instance(null).getApp(Constants.WEB_ROLE_INFO);
-		List<RoleInfo> rlist = rManager.listAllRoleInfo();
-		Map<String,Object> map = new HashMap<String,Object>();
-		String msg = "noInfo";
-		if (!rlist.isEmpty()){
-			msg = "success";
-			List<Object> list_d = new ArrayList<Object>();
-			for(Iterator<RoleInfo> it = rlist.iterator() ; it.hasNext();){
-				RoleInfo rinfo = it.next();
-				Map<String,Object> map_d = new HashMap<String,Object>();
-				map_d.put("id",rinfo.getId());
-				map_d.put("roleName",rinfo.getRoleName());
-
-				list_d.add(map_d);
-			}
-			map.put("rList", list_d);
-		}
-		map.put("result", msg);
-		CommonTools.getJsonPkg(map, response);
-		return  null;
 	}
 }

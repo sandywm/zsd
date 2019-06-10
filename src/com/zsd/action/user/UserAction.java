@@ -21,7 +21,6 @@ import org.apache.struts.actions.DispatchAction;
 import com.zsd.action.base.Transcode;
 import com.zsd.factory.AppFactory;
 import com.zsd.module.ClassInfo;
-import com.zsd.module.GradeSubject;
 import com.zsd.module.InviteCodeInfo;
 import com.zsd.module.RoleInfo;
 import com.zsd.module.RoleUserInfo;
@@ -29,7 +28,6 @@ import com.zsd.module.School;
 import com.zsd.module.User;
 import com.zsd.page.PageConst;
 import com.zsd.service.ClassInfoManager;
-import com.zsd.service.GradeSubjectManager;
 import com.zsd.service.InviteCodeInfoManager;
 import com.zsd.service.NetTeacherInfoManager;
 import com.zsd.service.NetTeacherStudentManager;
@@ -170,42 +168,7 @@ public class UserAction extends DispatchAction {
 									spManager.addSpInfo(upId, userId);
 								}
 							}else{//班级不存在
-								ClassInfoManager cInfoManager = (ClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_CLASS_INFO);
-								GradeSubjectManager gsManager = (GradeSubjectManager) AppFactory.instance(null).getApp(Constants.WEB_GRADE_SUBJECT_INFO);
-							
-//								for(int c =1;c<=20;c++){
-//									Integer ciId = cInfoManager.addClassInfo(schoolId, c+"班", getBuildeClassDate(gradeNo));//创建班级
-//									if(prov!=""&&city !=""&&county!=""&&schoolType!=0 && scId !=0&&g!=0){
-//										List<RoleUserInfo> cRu = ruManager.listUserRoleInfoByPosition(prov, city, county, schoolType, scId, g, c);
-//										//创建班级管理员
-//										if(cRu.isEmpty()){
-//											//生成班级管理员账户
-//											Integer cMid=uManager.addUser("c"+ciId, "", new MD5().calcMD5("123456"), "",currTime, lastLoginIp, currTime, scId, "", yearSystem, prov, city);
-//											//绑定班级管理员角色
-//											ruManager.addRoleUserInfo(cMid, mRId, prov, city, county, "", schoolType, scId, g, ciId);
-//										}
-//									}
-//									if(ciId>0){//班内学科老师
-//										String gName = Convert.NunberConvertChinese(g);//年级名
-//										List<GradeSubject> gslist = gsManager.listSpecInfoByGname(gName);//根据年级名获取学科列表
-//										for (GradeSubject gs : gslist) {
-//											Integer subId = gs.getSubject().getId();
-//											//生成班内老师账户
-//											Integer teaId=uManager.addUser("t"+scId+subId+ciId, "", new MD5().calcMD5("123456"), "",currTime, lastLoginIp, currTime, scId, "", yearSystem, prov, city);
-//											//老师绑定角色
-//											List<RoleInfo> rlist = rManager.listRoleInfo("老师");
-//											if(rlist.size() > 0){
-//												Integer roleId = rlist.get(0).getId();
-//												ruManager.addRoleUserInfo(teaId, roleId, "", "", "", "", 0, 0, 0, 0);
-//												ucManager.addUcInfo(teaId, ciId, roleId); //绑定班级
-//											}
-//											
-//										}
-//										           
-//									}
-//								}
 							}
-								
 						}
 					}
 				}else{
@@ -350,23 +313,13 @@ public class UserAction extends DispatchAction {
 		Integer userId=CommonTools.getFinalInteger("userId", request);
 		String endDate=CommonTools.getFinalStr("endDate",request);
 		Integer accStatus=CommonTools.getFinalInteger("accStatus", request);
-<<<<<<< HEAD
 		Integer freeSta=CommonTools.getFinalInteger("freeSta", request);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "fail";
-//		boolean uflag = uManager.updateUser(userId, accStatus, freeSta, endDate);
-//		if(uflag){
-//			msg ="success";
-//		}
-=======
-		Integer freeStatus=CommonTools.getFinalInteger("freeStatus", request);
-		Map<String,Object> map = new HashMap<String,Object>();
-		String msg = "fail";
-		boolean uflag = uManager.updateUser(userId, accStatus,freeStatus, endDate);
+		boolean uflag = uManager.updateUser(userId, accStatus, freeSta, endDate);
 		if(uflag){
 			msg ="success";
 		}
->>>>>>> 6fc161bca2a12813795992f9c5eca5ea9e3574e3
 		map.put("msg", msg);
 		CommonTools.getJsonPkg(map, response);
 		return null;
@@ -643,9 +596,8 @@ public class UserAction extends DispatchAction {
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
-<<<<<<< HEAD
 	/**
-	 * 检查是否为当前的用户密码
+	 * 检查手机号码是否注册
 	 * @author zong
 	 * 2019-5-14下午05:18:29
 	 * @param mapping
@@ -660,12 +612,9 @@ public class UserAction extends DispatchAction {
 		UserManager uManager = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String mobile=CommonTools.getFinalStr("mobile",request);
-//		boolean flag = uManager.checkUserMobile(mobile);
-//		map.put("msg", flag);
+		boolean flag = uManager.checkUserMobile(mobile);
+		map.put("msg", flag);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
 }
-=======
-}
->>>>>>> 6fc161bca2a12813795992f9c5eca5ea9e3574e3

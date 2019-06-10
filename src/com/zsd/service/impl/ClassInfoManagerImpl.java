@@ -30,7 +30,7 @@ public class ClassInfoManagerImpl implements ClassInfoManager {
 			return ciDao.findClassInfoByOption(sess, gradeId, currentTime, schoolId, className);
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new WEBException("根据条件分页获取学校信息列表信息时出现异常!");
+			throw new WEBException("根据条件获取班级列表信息时出现异常!");
 		} finally{
 			HibernateUtil.closeSession();
 		}
@@ -63,7 +63,7 @@ public class ClassInfoManagerImpl implements ClassInfoManager {
 			return ciDao.findClassInfoById(sess, cId);
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new WEBException("根据主键获取学校信息列表信息时出现异常!");
+			throw new WEBException("根据主键获取班级信息列表信息时出现异常!");
 		} finally{
 			HibernateUtil.closeSession();
 		}
