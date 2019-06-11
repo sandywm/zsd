@@ -121,7 +121,7 @@ public class GradeSubjectDaoImpl implements GradeSubjectDao{
 	@Override
 	public List<GradeSubject> findSpecInfoByschType(Session sess,
 			Integer schoolType) {
-		String hql = " from GradeSubject as gs where gs.schoolType = "+schoolType+" and gs.displayStatus = 0";
+		String hql = "select distinct gs.subject.id  from GradeSubject as gs where gs.schoolType = "+schoolType+" and gs.displayStatus = 0";
 		return sess.createQuery(hql).list();
 	}
 
