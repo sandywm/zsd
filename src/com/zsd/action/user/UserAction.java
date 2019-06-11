@@ -142,7 +142,7 @@ public class UserAction extends DispatchAction {
 		}
 		if(roleName.equals("学生")){
 				if(userId>0){
-					msg = "success";//注册用户成功
+					
 					
 					List<RoleInfo> rList = rManager.listRoleInfo(roleName);
 					Integer roleId = 0;
@@ -150,6 +150,7 @@ public class UserAction extends DispatchAction {
 						roleId = rList.get(0).getId();
 						//2 绑定角色
 						Integer ruId=ruManager.addRoleUserInfo(userId, roleId, "", "", "", "", 0, 0, 0, 0);
+						msg = "success";//注册用户成功
 						if(ruId>0){//绑定角色成功
 							List<ClassInfo> ciList = ciManager.listClassInfoByOption(gradeNo, CurrentTime.getCurrentTime(), schoolId, className);
 							if(ciList.size()>0){
@@ -239,6 +240,7 @@ public class UserAction extends DispatchAction {
 					ruManager.addRoleUserInfo(userId, ntRoleId, "", "", "", "", 0, 0, 0, 0);
 				}
 				ntManager.addNtInfo(userId, subId, schoolType, baseMoney, "", "", "", "", "", "", "", "", 0, 0, 0); //添加网络导师基本信息
+				msg = "success";//注册用户成功
 			}
 			
 			
