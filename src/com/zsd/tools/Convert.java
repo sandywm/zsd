@@ -2,9 +2,6 @@ package com.zsd.tools;
 
 import java.text.DecimalFormat;
 
-import com.zsd.tools.Convert;
-import com.zsd.tools.CurrentTime;
-
 import net.sourceforge.pinyin4j.PinyinHelper;
 import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
 import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
@@ -336,7 +333,24 @@ public class Convert {
         }
 		return result.toString();
 	}
-	
+	/**
+	 * 根据年级编号获取年级创建时间；
+	 * @author zong
+	 * 2019-5-7上午11:35:22
+	 * @param gradeID 年级编号
+	 * @return
+	 */
+	public static String gradeNoToBuildeClassDate(Integer gradeNo) {
+		String buildeClassDate;
+		Integer currentYear = Integer.parseInt(CurrentTime.getYear());
+		Integer currentMonth = Integer.parseInt(CurrentTime.getMonth());
+		if(currentMonth >= 9){
+			buildeClassDate = (currentYear - gradeNo + 1) + "-09-01";
+		}else{
+			buildeClassDate = currentYear - gradeNo + "-09-01";
+		}
+		return buildeClassDate;
+	}
 	public static void main(String[] args){
 		System.out.println(Convert.MoneyToCNFormat(157894.26));
 	}

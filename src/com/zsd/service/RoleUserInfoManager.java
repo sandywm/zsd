@@ -65,6 +65,15 @@ public interface RoleUserInfoManager {
 	 * @throws WEBException
 	 */
 	List<RoleUserInfo> listUserRoleInfoByuserId(Integer userId)throws WEBException;
+	/**
+	 * 根据学校编号获取用户角色信息
+	 * @author zong
+	 * 2019-6-11上午10:47:41
+	 * @param schoolId 学校编号
+	 * @return
+	 * @throws WEBException
+	 */
+	List<RoleUserInfo> listUserRoleInfoBySchId(Integer schoolId)throws WEBException;
 
 	
 }

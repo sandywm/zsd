@@ -69,4 +69,11 @@ public class RoleUserInfoDaoImpl implements RoleUserInfoDao {
 		return sess.createQuery(hql).list();
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<RoleUserInfo> findUrInfoBySchId(Session sess, Integer schoolId) {
+		String hql = " from RoleUserInfo as ru where ru.schoolId ="+ schoolId;
+		return sess.createQuery(hql).list();
+	}
+
 }

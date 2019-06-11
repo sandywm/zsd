@@ -21,17 +21,13 @@ import org.apache.struts.actions.DispatchAction;
 import com.zsd.action.base.Transcode;
 import com.zsd.exception.WEBException;
 import com.zsd.factory.AppFactory;
-import com.zsd.module.GradeSubject;
 import com.zsd.module.RoleInfo;
 import com.zsd.module.RoleUserInfo;
 import com.zsd.module.School;
 import com.zsd.page.PageConst;
-import com.zsd.service.ClassInfoManager;
-import com.zsd.service.GradeSubjectManager;
 import com.zsd.service.RoleInfoManager;
 import com.zsd.service.RoleUserInfoManager;
 import com.zsd.service.SchoolManager;
-import com.zsd.service.UserClassInfoManager;
 import com.zsd.service.UserManager;
 import com.zsd.tools.CommonTools;
 import com.zsd.tools.Convert;
@@ -339,14 +335,14 @@ public class SchoolAction extends DispatchAction {
 					getGenGraManager(ruManager, uManager, prov, city, county,
 							schoolType, yearSystem, lastLoginIp, currTime,
 							scId, mRId, g);
-					getGenRela(ruManager,uManager,rManager,prov, city, yearSystem, lastLoginIp, currTime,scId, g,county,schoolType,mRId);//生成班内老师
+					//getGenRela(ruManager,uManager,rManager,prov, city, yearSystem, lastLoginIp, currTime,scId, g,county,schoolType,mRId);//生成班内老师
 				}
 			}else if(schoolType==2&&yearSystem==3){//年级
 				for(int g =7;g<=9;g++){
 					getGenGraManager(ruManager, uManager, prov, city, county,
 							schoolType, yearSystem, lastLoginIp, currTime,
 							scId, mRId, g);
-					getGenRela(ruManager,uManager,rManager,prov, city, yearSystem, lastLoginIp, currTime,scId, g,county,schoolType,mRId);//生成班内老师
+					//getGenRela(ruManager,uManager,rManager,prov, city, yearSystem, lastLoginIp, currTime,scId, g,county,schoolType,mRId);//生成班内老师
 				}
 				
 			}else if(schoolType==2&&yearSystem==4){//年级
@@ -354,7 +350,7 @@ public class SchoolAction extends DispatchAction {
 					getGenGraManager(ruManager, uManager, prov, city, county,
 							schoolType, yearSystem, lastLoginIp, currTime,
 							scId, mRId, g);
-					getGenRela(ruManager,uManager,rManager,prov, city, yearSystem, lastLoginIp, currTime,scId, g,county,schoolType,mRId);//生成班内老师
+					//getGenRela(ruManager,uManager,rManager,prov, city, yearSystem, lastLoginIp, currTime,scId, g,county,schoolType,mRId);//生成班内老师
 				}
 			}else{
 				for(int g=10;g<=12;g++){//年级
@@ -366,7 +362,7 @@ public class SchoolAction extends DispatchAction {
 						//绑定年级管理员角色
 						ruManager.addRoleUserInfo(gMid, mRId, prov, city, county, "", schoolType, scId, g, 0);
 					}
-					getGenRela(ruManager,uManager,rManager,prov, city, yearSystem, lastLoginIp, currTime,scId, g,county,schoolType,mRId);//生成班内老师
+					//getGenRela(ruManager,uManager,rManager,prov, city, yearSystem, lastLoginIp, currTime,scId, g,county,schoolType,mRId);//生成班内老师
 				}
 			}
 			msg = "success";
@@ -425,7 +421,7 @@ public class SchoolAction extends DispatchAction {
 	 * @throws Exception
 	 * @throws WEBException
 	 */
-	private void getGenRela(RoleUserInfoManager ruManager,UserManager uManager,RoleInfoManager rManager,
+/*	private void getGenRela(RoleUserInfoManager ruManager,UserManager uManager,RoleInfoManager rManager,
 			String prov, String city, Integer yearSystem,
 			String lastLoginIp, String currTime, Integer scId, int g, String county, Integer schoolType, Integer mRId)
 			throws Exception, WEBException {
@@ -434,7 +430,7 @@ public class SchoolAction extends DispatchAction {
 	
 		UserClassInfoManager ucManager = (UserClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
 		for(int c =1;c<=20;c++){
-			Integer ciId = cInfoManager.addClassInfo(scId, c+"班", getBuildeClassDate(g));//创建班级
+			Integer ciId = cInfoManager.addClassInfo(scId, c+"班", Convert.gradeNoToBuildeClassDate(g));//创建班级
 			if(prov!=""&&city !=""&&county!=""&&schoolType!=0 && scId !=0&&g!=0){
 				List<RoleUserInfo> cRu = ruManager.listUserRoleInfoByPosition(prov, city, county, schoolType, scId, g, c);
 				//创建班级管理员
@@ -464,23 +460,5 @@ public class SchoolAction extends DispatchAction {
 				           
 			}
 		}
-	}
-	/**
-	 * 根据年级编号获取年级创建时间；
-	 * @author zong
-	 * 2019-5-7上午11:35:22
-	 * @param gradeID 年级编号
-	 * @return
-	 */
-	private String getBuildeClassDate(Integer gradeID) {
-		String buildeClassDate;
-		Integer currentYear = Integer.parseInt(CurrentTime.getYear());
-		Integer currentMonth = Integer.parseInt(CurrentTime.getMonth());
-		if(currentMonth >= 9){
-			buildeClassDate = (currentYear - gradeID + 1) + "-09-01";
-		}else{
-			buildeClassDate = currentYear - gradeID + "-09-01";
-		}
-		return buildeClassDate;
-	}
+	}*/
 }

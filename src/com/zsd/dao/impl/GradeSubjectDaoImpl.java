@@ -118,4 +118,11 @@ public class GradeSubjectDaoImpl implements GradeSubjectDao{
 		return sess.createQuery(hql).list();
 	}
 
+	@Override
+	public List<GradeSubject> findSpecInfoByschType(Session sess,
+			Integer schoolType) {
+		String hql = " from GradeSubject as gs where gs.schoolType = "+schoolType+" and gs.displayStatus = 0";
+		return sess.createQuery(hql).list();
+	}
+
 }

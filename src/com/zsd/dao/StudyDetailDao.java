@@ -92,4 +92,29 @@ public interface StudyDetailDao {
 	 */
 	List<StudyDetailInfo> findPretRightInfoByLogId(Session sess,Integer studyLogId,Integer loreId,String loreTypeName,Integer completeTimes);
 	
+	/**
+	 * 根据学习记录，知识点编号，题库类型获取已做过的题库列表
+	 * @author wm
+	 * @date 2019-6-11 上午10:42:47
+	 * @param sess
+	 * @param studyLogId 学习记录编号
+	 * @param logId 当前知识典编号
+	 * @param loreTypeName 答题类型
+	 * @return
+	 */
+	List<StudyDetailInfo> findInfoByOpt(Session sess,Integer studyLogId,Integer loreId,String loreTypeName);
+	
+	/**
+	 * 根据学习记录编号和知识点编号和知识点诊断类型获和完成次数取最后一次答题数据列表
+	 * @author wm
+	 * @date 2019-6-11 上午11:46:35
+	 * @param sess
+	 * @param studyLogId 学习记录编号
+	 * @param logId 当前知识典编号
+	 * @param loreTypeName 答题类型
+	 * @param completeTimes 完成次数
+	 * @return
+	 */
+	List<StudyDetailInfo> findLastInfoByOpt(Session sess,Integer studyLogId,Integer loreId,String loreTypeName,Integer completeTimes);
+	
 }

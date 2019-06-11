@@ -83,4 +83,29 @@ public interface StudyDetailManager {
 	 * @throws WEBException
 	 */
 	List<StudyDetailInfo> listPretRightInfoByLogId(Integer studyLogId,Integer loreId,String loreTypeName,Integer completeTimes) throws WEBException;
+	
+	/**
+	 * 根据学习记录编号和知识点编号和知识点诊断类型获取已做题列表
+	 * @author wm
+	 * @date 2019-6-11 上午10:44:32
+	 * @param studyLogId 学习记录编号
+	 * @param loreId 知识点编号(0不查询)
+	 * @param loreTypeName 答题类型(""不查询)
+	 * @return
+	 * @throws WEBException
+	 */
+	List<StudyDetailInfo> listInfoByOpt(Integer studyLogId, Integer loreId, String loreTypeName) throws WEBException;
+	
+	/**
+	 * 根据学习记录编号和知识点编号和知识点诊断类型获和完成次数取最后一次答题数据列表
+	 * @author wm
+	 * @date 2019-6-11 上午11:49:26
+	 * @param studyLogId 学习记录编号
+	 * @param logId 当前知识典编号
+	 * @param loreTypeName 答题类型
+	 * @param completeTimes 完成次数
+	 * @return
+	 * @throws WEBException
+	 */
+	List<StudyDetailInfo> listLastInfoByOpt(Integer studyLogId,Integer loreId,String loreTypeName,Integer completeTimes) throws WEBException;
 }

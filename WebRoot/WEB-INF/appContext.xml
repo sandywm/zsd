@@ -38,5 +38,7 @@
 	<app id="net_teacher_tx_record_Web" class="com.zsd.service.impl.NetTeacherTxRecordManagerImpl"/>
 	<app id="student_pay_order_Web" class="com.zsd.service.impl.StudentPayOrderInfoManagerImpl"/>
 	<app id="net_teacher_return_record_Web" class="com.zsd.service.impl.NetTeacherReturnRecordManagerImpl"/>
+	<app id="study_stu_tj_info_Web" class="com.zsd.service.impl.StudyStuTjInfoManagerImpl"/>
+	<app id="study_all_tj_info_Web" class="com.zsd.service.impl.StudyAllTjInfoManagerImpl"/>
 	<app id="study_map_Web" class="com.zsd.service.impl.StudyMapManagerImpl"/>
 </appContext>

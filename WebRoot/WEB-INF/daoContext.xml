@@ -40,5 +40,7 @@
 	<dao id="net_teacher_tx_record_Dao" class="com.zsd.dao.impl.NetTeacherTxRecordDaoImpl" />
 	<dao id="student_pay_order_Dao" class="com.zsd.dao.impl.StudentPayOrderInfoDaoImpl" />
 	<dao id="net_teacher_return_record_Dao" class="com.zsd.dao.impl.NetTeacherReturnRecordDaoImpl" />
+	<dao id="study_stu_tj_info_Dao" class="com.zsd.dao.impl.StudyStuTjInfoDaoImpl" />
+	<dao id="study_all_tj_info_Dao" class="com.zsd.dao.impl.StudyAllTjInfoDaoImpl" />
 	<dao id="study_map_Dao" class="com.zsd.dao.impl.StudyMapDaoImpl" />
 </daoContext>

@@ -21,6 +21,7 @@ import org.apache.struts.actions.DispatchAction;
 import com.zsd.action.base.Transcode;
 import com.zsd.factory.AppFactory;
 import com.zsd.module.ClassInfo;
+import com.zsd.module.GradeSubject;
 import com.zsd.module.InviteCodeInfo;
 import com.zsd.module.RoleInfo;
 import com.zsd.module.RoleUserInfo;
@@ -28,6 +29,7 @@ import com.zsd.module.School;
 import com.zsd.module.User;
 import com.zsd.page.PageConst;
 import com.zsd.service.ClassInfoManager;
+import com.zsd.service.GradeSubjectManager;
 import com.zsd.service.InviteCodeInfoManager;
 import com.zsd.service.NetTeacherInfoManager;
 import com.zsd.service.NetTeacherStudentManager;
@@ -108,6 +110,7 @@ public class UserAction extends DispatchAction {
 		InviteCodeInfoManager icManager = (InviteCodeInfoManager) AppFactory.instance(null).getApp(Constants.WEB_INVITE_CODE_INFO);
 		StudentParentInfoManager spManager = (StudentParentInfoManager) AppFactory.instance(null).getApp(Constants.WEB_STUDENT_PARENT_INFO);
 		NetTeacherInfoManager ntManager = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
+		GradeSubjectManager gsManager = (GradeSubjectManager) AppFactory.instance(null).getApp(Constants.WEB_GRADE_SUBJECT_INFO);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String userAccount =CommonTools.getFinalStr("userAccount",request);
 		String roleName =CommonTools.getFinalStr("roleName",request);
@@ -155,7 +158,7 @@ public class UserAction extends DispatchAction {
 								List<InviteCodeInfo> icList = icManager.listIcInfoByicCode(inviteCode);
 								if(icList.size()>0){
 									Integer teaId=icList.get(0).getInviteId();
-									ntsManager.addNTS(userId, teaId, CurrentTime.getCurrentTime(), -1, CurrentTime.getFinalDateTime(7), 0, "", "", 0);//4 网络导师学生绑定
+									ntsManager.addNTS(userId, teaId, CurrentTime.getCurrentTime(), -1, CurrentTime.getFinalDateTime(7), 0, "", "", 0);//4 缃戠粶瀵煎笀瀛︾敓缁戝畾
 									//5 生成家长账户
 									Integer upId = uManager.addUser(userAccount+"_jz", "", new MD5().calcMD5("123456"), "", lastLoginDate, lastLoginIp, signDate, schoolId, CurrentTime.getFinalDateTime(30), yearSystem, prov, city);
 									//6 家长绑定角色
@@ -168,6 +171,48 @@ public class UserAction extends DispatchAction {
 									spManager.addSpInfo(upId, userId);
 								}
 							}else{//班级不存在
+								Integer mRoId =0;
+								List<RoleInfo> mRList = rManager.listRoleInfo("管理员");
+								if(mRList.size()>0){
+								    mRoId = mRList.get(0).getId();
+								}
+								List<RoleUserInfo> rulist = ruManager.listUserRoleInfoBySchId(schoolId);
+								String pr="";
+								String ct="";
+								String county="";
+								Integer schType=0;
+								if(!rulist.isEmpty()){
+									pr= rulist.get(0).getProv();
+									ct= rulist.get(0).getCity();
+									county=rulist.get(0).getCounty();
+									schType=rulist.get(0).getSchoolType();
+								}
+								Integer ciId = ciManager.addClassInfo(schoolId,className,Convert.gradeNoToBuildeClassDate(gradeNo));//创建班级
+								String currTime=CurrentTime.getCurrentTime();
+								Integer cMid=uManager.addUser("c"+ciId, "", new MD5().calcMD5("123456"), "",currTime, lastLoginIp, currTime, schoolId, "", yearSystem, prov, city);
+								
+								//绑定班级管理员角色
+								Integer ruNo =ruManager.addRoleUserInfo(cMid, mRoId, pr, ct, county, "", schType, schoolId, gradeNo, ciId);
+									
+								
+								if(ruNo>0){//班内学科老师
+									String gName = Convert.NunberConvertChinese(gradeNo);//年级名
+									List<GradeSubject> gslist = gsManager.listSpecInfoByGname(gName);//根据年级名获取学科列表
+									for (GradeSubject gs : gslist) {
+										Integer sId = gs.getSubject().getId();
+										//生成班内老师账户
+										Integer teaId=uManager.addUser("t"+schoolId+sId+ciId, "", new MD5().calcMD5("123456"), "",currTime, lastLoginIp, currTime, schoolId, "", yearSystem, prov, city);
+										//老师绑定角色
+										List<RoleInfo> rlist = rManager.listRoleInfo("老师");
+										if(rlist.size() > 0){
+											Integer teaRoId = rlist.get(0).getId();
+											ruManager.addRoleUserInfo(teaId, teaRoId, "", "", "", "", 0, 0, 0, 0);
+											ucManager.addUcInfo(teaId, ciId, teaRoId); //绑定班级
+										}
+										
+									}
+									           
+								}
 							}
 						}
 					}
@@ -187,7 +232,7 @@ public class UserAction extends DispatchAction {
 				}else{
 					baseMoney = (int) Constants.NET_TEACHER_SERVICE_FEE_GZ;
 				}
-				//6 家长绑定角色
+			
 				List<RoleInfo> ntlist = rManager.listRoleInfo("网络导师");
 				if(ntlist.size() > 0){
 					Integer ntRoleId = ntlist.get(0).getId();
@@ -204,9 +249,9 @@ public class UserAction extends DispatchAction {
 		return null;
 	}
 	/**
-	 * 根据账户,学校名称,角色名,省,市,县,学段,学校名称,年级获取用户信息
+	 * 
 	 * @author zong
-	 * 2019-5-10上午10:54:57
+	 * 2019-6-11上午11:28:14
 	 * @param mapping
 	 * @param form
 	 * @param request
@@ -214,7 +259,7 @@ public class UserAction extends DispatchAction {
 	 * @return
 	 * @throws Exception
 	 */
-	public ActionForward getUserByOption(ActionMapping mapping, ActionForm form,
+	public ActionForward getUserByOption (ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		UserManager uManager = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
 		RoleUserInfoManager ruManager = (RoleUserInfoManager) AppFactory.instance(null).getApp(Constants.WEB_ROLE_USER_INFO);

@@ -103,4 +103,13 @@ public interface GradeSubjectManager {
 	 * @throws WEBException
 	 */
 	List<GradeSubject> listSpecInfoByGname(String gradeName) throws WEBException;
+	/**
+	 * 根据学段获取年级学科列表
+	 * @author zong
+	 * 2019-6-10下午05:49:41
+	 * @param schType
+	 * @return
+	 * @throws WEBException
+	 */
+	List<GradeSubject> findSpecInfoByschType(Integer schType) throws WEBException;
 }

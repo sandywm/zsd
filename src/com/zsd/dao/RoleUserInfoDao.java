@@ -83,6 +83,15 @@ public interface RoleUserInfoDao {
 	 */
 	List<RoleUserInfo> findUserRoleInfoByPosition(Session sess,String prov, String city, String county,Integer schoolType,
 													Integer schoolId,Integer gradeNo,Integer classId);
+	/**
+	 * 根据学校编号获取用户角色信息
+	 * @author zong
+	 * 2019-6-11上午10:44:33
+	 * @param sess
+	 * @param schoolId 学校编号
+	 * @return
+	 */
+	List<RoleUserInfo> findUrInfoBySchId(Session sess,Integer schoolId);
 
 
 }

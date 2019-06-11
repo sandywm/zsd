@@ -124,4 +124,39 @@ public class StudyDetailManagerImpl implements StudyDetailManager{
 		}
 	}
 
+	@Override
+	public List<StudyDetailInfo> listInfoByOpt(Integer studyLogId,
+			Integer loreId, String loreTypeName) throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			sdDao = (StudyDetailDao) DaoFactory.instance(null).getDao(Constants.DAO_STUDY_DETAIL_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return sdDao.findInfoByOpt(sess, studyLogId, loreId, loreTypeName);
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			throw new WEBException("根据学习记录编号和知识点编号和知识点诊断类型获取已做题列表时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public List<StudyDetailInfo> listLastInfoByOpt(Integer studyLogId,
+			Integer loreId, String loreTypeName, Integer completeTimes)
+			throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			sdDao = (StudyDetailDao) DaoFactory.instance(null).getDao(Constants.DAO_STUDY_DETAIL_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return sdDao.findLastInfoByOpt(sess, studyLogId, loreId, loreTypeName, completeTimes);
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			throw new WEBException("根据学习记录编号和知识点编号和知识点诊断类型获和完成次数取最后一次答题数据列表时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
 }

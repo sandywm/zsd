@@ -105,5 +105,20 @@ public class RoleUserInfoManagerImpl implements RoleUserInfoManager {
 		}
 	}
 
+	@Override
+	public List<RoleUserInfo> listUserRoleInfoBySchId(Integer schoolId)
+			throws WEBException {
+		try {
+			ruinfoDao = (RoleUserInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_ROLE_USER_INFO);
+			Session sess  = HibernateUtil.currentSession();
+			return ruinfoDao.findUrInfoBySchId(sess, schoolId);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("根据学校编号获取角色信息列表时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
 
 }

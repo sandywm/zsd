@@ -79,4 +79,27 @@ public class StudyDetailDaoImpl implements StudyDetailDao{
 		return sess.createQuery(hql).list();
 	}
 
+	@Override
+	public List<StudyDetailInfo> findInfoByOpt(Session sess,
+			Integer studyLogId, Integer loreId, String loreTypeName) {
+		// TODO Auto-generated method stub
+		String hql = " from StudyDetailInfo as sd where sd.studyLogInfo.id = "+studyLogId;
+		if(loreId > 0){
+			hql += " and sd.loreInfo.id = "+loreId; 
+		}
+		if(!loreTypeName.equals("")){
+			hql += " and sd.loreQuestion.loreTypeName = '"+loreTypeName+"'";
+		}
+		return sess.createQuery(hql).list();
+	}
+
+	@Override
+	public List<StudyDetailInfo> findLastInfoByOpt(Session sess,
+			Integer studyLogId, Integer loreId, String loreTypeName,
+			Integer completeTimes) {
+		// TODO Auto-generated method stub
+		String hql = " from StudyDetailInfo as sd where sd.studyLogInfo.id = "+studyLogId + " and sd.loreQuestion.loreTypeName = '"+loreTypeName+"' and sd.loreInfo.id = "+loreId + " and sd.completeTimes = "+completeTimes;
+		return sess.createQuery(hql).list();
+	}
+
 }

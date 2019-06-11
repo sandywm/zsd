@@ -172,4 +172,20 @@ public class GradeSubjectManagerImpl implements GradeSubjectManager{
 		}
 	}
 
+	@Override
+	public List<GradeSubject> findSpecInfoByschType(Integer schType)
+			throws WEBException {
+		try {
+			gsDao = (GradeSubjectDao) DaoFactory.instance(null).getDao(Constants.DAO_GRADE_SUBJECT_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return gsDao.findSpecInfoByschType(sess, schType);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new WEBException("根据学段获取年级学科列表时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
 }

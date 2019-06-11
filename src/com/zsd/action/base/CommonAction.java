@@ -322,6 +322,41 @@ public class CommonAction extends DispatchAction {
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
+	/**
+	 * 根据学段获取学科列表
+	 * @author zong
+	 * 2019-6-10下午05:54:24
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getSubjectDataBySchType(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		GradeSubjectManager gsm = (GradeSubjectManager) AppFactory.instance(null).getApp(Constants.WEB_GRADE_SUBJECT_INFO);
+		Integer schType = CommonTools.getFinalInteger("schType", request);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "noInfo";
+		List<GradeSubject> gsList = gsm.findSpecInfoByschType(schType);
+		if(gsList.size() > 0){
+			msg = "success";
+			List<Object> list_d = new ArrayList<Object>();
+			for(Iterator<GradeSubject> it = gsList.iterator() ; it.hasNext();){
+				GradeSubject gs = it.next();
+				Map<String,Object> map_d = new HashMap<String,Object>();
+				map_d.put("subId", gs.getSubject().getId());
+				map_d.put("subName", gs.getSubject().getSubName());
+				list_d.add(map_d);
+			}
+			map.put("subList", list_d);
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
 	
 	/**
 	 * 根据学科编号获取年级列表
