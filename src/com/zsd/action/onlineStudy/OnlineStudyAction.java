@@ -1601,6 +1601,8 @@ public class OnlineStudyAction extends DispatchAction {
 						Map<String,Object> map_d = new HashMap<String,Object>();
 						Integer lqId_old = lq.getId();
 						map_d.put("lqId", lqId_old);
+						Integer quetoLoreId = lq.getLoreInfo().getId();
+						
 						map_d.put("lqType", lq.getQueType());
 						map_d.put("lqSub", lq.getQueSub());
 						map_d.put("answerA", lq.getA());
@@ -1912,7 +1914,8 @@ public class OnlineStudyAction extends DispatchAction {
 		StudyAllTjInfoManager sam = (StudyAllTjInfoManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_ALL_TJ_INFO);
 		Integer loreId = CommonTools.getFinalInteger("loreId", request);
 		Integer studyLogId = CommonTools.getFinalInteger("studyLogId", request);
-		
+		Integer currentLoreId = CommonTools.getFinalInteger("currentLoreId", request);//当前做题的知识点编号
+		String answerOptionArrayStr = Transcode.unescape_new1("answerOptionArray", request);
 		return null;
 	}
 }

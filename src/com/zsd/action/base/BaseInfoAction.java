@@ -22,11 +22,14 @@ import org.apache.struts.actions.DispatchAction;
 
 import com.alibaba.fastjson.JSON;
 import com.zsd.factory.AppFactory;
+import com.zsd.module.ClassInfo;
 import com.zsd.module.School;
 import com.zsd.module.User;
+import com.zsd.service.ClassInfoManager;
 import com.zsd.service.SchoolManager;
 import com.zsd.service.UserManager;
 import com.zsd.tools.CommonTools;
+import com.zsd.tools.CurrentTime;
 import com.zsd.util.Constants;
 
 /** 
@@ -96,13 +99,15 @@ public class BaseInfoAction extends DispatchAction {
 		// TODO Auto-generated method stub
 		Map<String,String> map = new HashMap<String,String>();
 		String msg = "error";
-		String address = CommonTools.getSelfArea(CommonTools.getIpAddress(request));
-		if(!address.equals("un-know")){
-			msg = "success";
-			map.put("prov", address.split(":")[0]);
-			map.put("city", address.split(":")[1]);
-		}
-		map.put("result", msg);
+		String ip = CommonTools.getFinalStr("ip", request);
+//		String address = CommonTools.getSelfArea(CommonTools.getIpAddress(request));
+		String address = CommonTools.getSelfArea_taobao(ip);
+//		if(!address.equals("un-know")){
+//			msg = "success";
+//			map.put("prov", address.split(":")[0]);
+//			map.put("city", address.split(":")[1]);
+//		}
+		map.put("result", address);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
@@ -153,4 +158,13 @@ public class BaseInfoAction extends DispatchAction {
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
+	
+	public ActionForward testM(ActionMapping mapping,ActionForm form,
+			HttpServletRequest request,HttpServletResponse response) throws Exception{
+		UserManager um = (UserManager)AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
+		ClassInfoManager ciManager = (ClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_CLASS_INFO);
+		List<ClassInfo> ciList = ciManager.listClassInfoByOption(1, CurrentTime.getCurrentTime(), 1, "1班");
+		return null;
+	}
+	
 }
