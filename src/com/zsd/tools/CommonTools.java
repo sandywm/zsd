@@ -357,7 +357,8 @@ public class CommonTools {
 	public static String getSelfArea_taobao(String ip) {
 		String url = "http://ip.taobao.com/service/getIpInfo.php?ip=" + ip;
 		String cityName = "";
-		HttpClient client = HttpClientBuilder.create().build();
+		HttpClientBuilder hcb = HttpClientBuilder.create();
+		HttpClient client = hcb.build();
 		HttpGet request = new HttpGet(url);
 		try {
 			HttpResponse response = client.execute(request);

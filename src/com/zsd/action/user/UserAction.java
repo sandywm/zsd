@@ -117,7 +117,8 @@ public class UserAction extends DispatchAction {
 		String realName=Transcode.unescape_new("realName",request);
 		String className=Transcode.unescape_new("className",request);
 		String inviteCode=CommonTools.getFinalStr("inviteCode",request);
-		String password=new MD5().calcMD5(CommonTools.getFinalStr("password",request));
+		String  pwd =CommonTools.getFinalStr("password",request);
+		String password=new MD5().calcMD5(pwd);
 		String mobile=CommonTools.getFinalStr("mobile",request);
 		String lastLoginDate=CurrentTime.getCurrentTime();
 		String signDate=CurrentTime.getCurrentTime();
@@ -139,13 +140,18 @@ public class UserAction extends DispatchAction {
 		}else{
 			//1.用户注册
 			userId=uManager.addUser(userAccount, realName, password, mobile, lastLoginDate, lastLoginIp, signDate, schoolId, CurrentTime.getFinalDateTime(30), yearSystem, prov, city);
+			List<User> ulists =uManager.listEntityById(userId);
+			User user = ulists.get(0);
+			String portrait = user.getPortrait();
+			if(portrait==""){
+				portrait="Module/commonJs/ueditor/jsp/head/defaultHead.jpg";
+			}
+			map.put("portrait", user.getPortrait());//头像
+			map.put("userAcc", user.getUserAccount());//账号
+			map.put("password", pwd);// 密码
+			map.put("userId", userId); // 用户编号
 		}
-		List<User> ulists =uManager.listEntityById(userId);
-		User user = ulists.get(0);
-		map.put("portrait", user.getPortrait());//头像
-		map.put("userAcc", user.getUserAccount());//账号
-		map.put("password", password);// 密码
-		map.put("userId", userId); // 用户编号
+		
 		if(roleName.equals("学生")){
 				if(userId>0){
 					List<RoleInfo> rList = rManager.listRoleInfo(roleName);
@@ -225,6 +231,7 @@ public class UserAction extends DispatchAction {
 					msg ="fail";//注册用户失败
 				}
 		}else if(roleName.equals("网络导师")){ //网络导师注册
+			if(userId>0){
 			//网络导师生成自己的邀请码
 			String ivCode = InviteCode.getRandomCode();
 			Integer icId=icManager.addInviteCodeInfo(userId, "导师邀请码", ivCode, CurrentTime.getCurrentTime1());
@@ -246,6 +253,7 @@ public class UserAction extends DispatchAction {
 				ntManager.addNtInfo(userId, subId, schoolType, baseMoney, "", "", "", "", "", "", "", "", 0, 0, 0); //添加网络导师基本信息
 				msg = "success";//注册用户成功
 			}
+		  }
 		}
 		
 		map.put("result", msg);

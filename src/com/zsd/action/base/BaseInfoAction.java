@@ -158,13 +158,4 @@ public class BaseInfoAction extends DispatchAction {
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
-	
-	public ActionForward testM(ActionMapping mapping,ActionForm form,
-			HttpServletRequest request,HttpServletResponse response) throws Exception{
-		UserManager um = (UserManager)AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
-		ClassInfoManager ciManager = (ClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_CLASS_INFO);
-		List<ClassInfo> ciList = ciManager.listClassInfoByOption(1, CurrentTime.getCurrentTime(), 1, "1班");
-		return null;
-	}
-	
 }
