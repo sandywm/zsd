@@ -8,11 +8,13 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.URL;
+import java.net.URLConnection;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -355,32 +357,42 @@ public class CommonTools {
 	 * @return
 	 */
 	public static String getSelfArea_taobao(String ip) {
-		String url = "http://ip.taobao.com/service/getIpInfo.php?ip=" + ip;
-		String cityName = "";
-		HttpClientBuilder hcb = HttpClientBuilder.create();
-		HttpClient client = hcb.build();
-		HttpGet request = new HttpGet(url);
-		try {
-			HttpResponse response = client.execute(request);
-			int statusCode = response.getStatusLine().getStatusCode();
-			if (statusCode == HttpStatus.SC_OK) {
-				String strResult = EntityUtils.toString(response.getEntity());
-				try {
-					JSONObject jsonResult = JSON.parseObject(strResult);
-					System.out.println(JSON.toJSONString(jsonResult, true));
-					JSONObject dataJson = jsonResult.getJSONObject("data");
-					cityName = dataJson.getString("city");
-					System.out.println(JSON.toJSONString(jsonResult, true));
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		} catch (ClientProtocolException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return cityName;
+		String result = "";
+        BufferedReader in = null;
+        try {
+            String urlNameString = "http://ip.taobao.com/service/getIpInfo.php?ip="+ip;
+            URL realUrl = new URL(urlNameString);
+            // 打开和URL之间的连接
+            URLConnection connection = realUrl.openConnection();
+            connection.setRequestProperty("Charsert", "UTF-8");
+            // 设置通用的请求属性
+            connection.setRequestProperty("accept", "*/*");
+            connection.setRequestProperty("connection", "Keep-Alive");
+            connection.setRequestProperty("user-agent","Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
+            // 建立实际的连接
+            connection.connect();
+            // 定义 BufferedReader输入流来读取URL的响应
+            in = new BufferedReader(new InputStreamReader(
+                    connection.getInputStream(),"utf-8"));
+            String line;
+            while ((line = in.readLine()) != null) {
+                result += line;
+            }
+        } catch (Exception e) {
+            System.out.println("发送GET请求出现异常！" + e);
+            e.printStackTrace();
+        }
+        // 使用finally块来关闭输入流
+        finally {
+            try {
+                if (in != null) {
+                    in.close();
+                }
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
+        }
+        return result;
 	}
 	
 	/**

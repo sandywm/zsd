@@ -21,6 +21,7 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.zsd.factory.AppFactory;
 import com.zsd.module.ClassInfo;
 import com.zsd.module.School;
@@ -98,16 +99,19 @@ public class BaseInfoAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
 		Map<String,String> map = new HashMap<String,String>();
-		String msg = "error";
-		String ip = CommonTools.getFinalStr("ip", request);
-//		String address = CommonTools.getSelfArea(CommonTools.getIpAddress(request));
-		String address = CommonTools.getSelfArea_taobao(ip);
-//		if(!address.equals("un-know")){
-//			msg = "success";
-//			map.put("prov", address.split(":")[0]);
-//			map.put("city", address.split(":")[1]);
-//		}
-		map.put("result", address);
+		String address = CommonTools.getSelfArea_taobao("123.52.203.75");
+//		String address = CommonTools.getSelfArea_taobao(CommonTools.getIpAddress(request));
+		JSONObject jsonResult = JSON.parseObject(address);
+		System.out.println(JSON.toJSONString(jsonResult, true));
+		JSONObject dataJson = jsonResult.getJSONObject("data");
+		String provName = dataJson.getString("region");
+		String cityName = dataJson.getString("city");
+		String provNo = dataJson.getString("region_id");
+		String cityNo = dataJson.getString("city_id");
+		map.put("provName", provName);
+		map.put("cityName", cityName);
+		map.put("provNo", provNo);
+		map.put("cityNo", cityNo);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
