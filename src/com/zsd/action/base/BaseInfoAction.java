@@ -4,6 +4,7 @@
  */
 package com.zsd.action.base;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -12,15 +13,19 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
 
+import com.alibaba.fastjson.JSON;
 import com.zsd.factory.AppFactory;
 import com.zsd.module.School;
+import com.zsd.module.User;
 import com.zsd.service.SchoolManager;
+import com.zsd.service.UserManager;
 import com.zsd.tools.CommonTools;
 import com.zsd.util.Constants;
 
@@ -98,6 +103,53 @@ public class BaseInfoAction extends DispatchAction {
 			map.put("city", address.split(":")[1]);
 		}
 		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 获取用户账号登录状态
+	 * success:账号正常，loginOut：账号别处登录,sessionOut:60分钟未登陆
+	 * @author wm
+	 * @date 2019-6-12 上午10:09:40
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward checkUserLoginStatus(ActionMapping mapping,ActionForm form,
+			HttpServletRequest request,HttpServletResponse response) throws Exception{
+		UserManager um = (UserManager)AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
+		HttpSession session = request.getSession(false);
+		Integer login_status_sess = -2;
+		Integer login_status_dataBase = -1;
+		Integer userId = 0;
+		String result = "";//用户账号状态
+		if(session != null){
+			login_status_sess = CommonTools.getLoginStatus(request);
+			userId = CommonTools.getLoginUserId(request);
+			if(userId > 0){
+				List<User> uList = um.listEntityById(userId);
+				if(uList.size() > 0){
+					login_status_dataBase = uList.get(0).getLoginStatus();
+					if(login_status_dataBase.equals(login_status_sess)){
+						result = "success";//账号正常
+					}else{
+						result = "loginOut";//账号别处登录
+					}
+				}else{
+					result = "loginOut";//账号别处登录
+				}
+			}else{
+				result = "sessionOut";//60分钟无操作
+			}
+		}else{
+			result = "sessionOut";//60分钟无操作
+		}
+		Map<String,String> map = new HashMap<String,String>();
+		map.put("result", result);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}

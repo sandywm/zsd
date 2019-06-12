@@ -71,7 +71,7 @@ public class UserLoginFilter implements Filter{
 		Integer userId = 0;
 		if(session != null){
 			//获取用户session中的loginFlag
-			loginFlag = (Integer)session.getAttribute(Constants.LOGIN_TIMES);
+			loginFlag = (Integer)session.getAttribute(Constants.LOGIN_STATUS);
 			//获取用户session中的用户编号
 			userId = (Integer)session.getAttribute(Constants.LOGIN_USER_ID);
 			if(userId == null){

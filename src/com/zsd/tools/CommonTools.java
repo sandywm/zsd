@@ -44,6 +44,21 @@ public class CommonTools {
 	}
 	
 	/**
+	 * 获取session中用户的登陆次数
+	 * @author wm
+	 * @date 2019-6-12 上午10:07:55
+	 * @param request
+	 * @return
+	 */
+	public static Integer getLoginStatus(HttpServletRequest request){
+        Integer loginTimes = (Integer)request.getSession(false).getAttribute(Constants.LOGIN_STATUS);
+        if(loginTimes == null){
+        	return 0;
+        }
+        return loginTimes;
+	}
+	
+	/**
 	 * 获取session中的用户账号
 	 * @author wm
 	 * @date 2019-5-10 上午11:19:52

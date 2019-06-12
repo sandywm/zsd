@@ -43,9 +43,11 @@ import com.zsd.service.GradeSubjectManager;
 import com.zsd.service.LoreInfoManager;
 import com.zsd.service.LoreQuestionManager;
 import com.zsd.service.StuSubjectEduManager;
+import com.zsd.service.StudyAllTjInfoManager;
 import com.zsd.service.StudyDetailManager;
 import com.zsd.service.StudyLogManager;
 import com.zsd.service.StudyMapManager;
+import com.zsd.service.StudyStuTjInfoManager;
 import com.zsd.service.StudyTaskManager;
 import com.zsd.service.UserClassInfoManager;
 import com.zsd.tools.CommonTools;
@@ -1533,9 +1535,11 @@ public class OnlineStudyAction extends DispatchAction {
 		Integer studyLogId = CommonTools.getFinalInteger("studyLogId", request);
 		String pathType = CommonTools.getFinalStr("pathType", request);//路径类型(diagnosis,study)
 		String loreType = Transcode.unescape_new1("loreType", request);
+		String nextLoreIdArray = CommonTools.getFinalStr("nextLoreIdArray",request);
 		request.setAttribute("loreId", loreId);
 		request.setAttribute("studyLogId", studyLogId);
-		request.setAttribute("pathType", pathType);
+		request.setAttribute("loreType", loreType);
+		request.setAttribute("nextLoreIdArray", nextLoreIdArray);
 		String page = "";
 		if(pathType.equals("study")){
 			page = "studyPage";
@@ -1765,6 +1769,30 @@ public class OnlineStudyAction extends DispatchAction {
 	}
 	
 	/**
+	 * 导向五步学习法介绍页面
+	 * @author wm
+	 * @date 2019-6-12 上午10:45:49
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward goStepStudyPage(ActionMapping mapping ,ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		Integer loreId = CommonTools.getFinalInteger("loreId", request);
+		Integer studyLogId = CommonTools.getFinalInteger("studyLogId", request);
+		String loreType = Transcode.unescape_new1("loreType", request);
+		String nextLoreIdArray = CommonTools.getFinalStr("nextLoreIdArray",request);
+		request.setAttribute("loreId", loreId);
+		request.setAttribute("studyLogId", studyLogId);
+		request.setAttribute("loreType", loreType);
+		request.setAttribute("nextLoreIdArray", nextLoreIdArray);
+		return mapping.findForward("stepStudyPage");
+	}
+	
+	/**
 	 * 获取五步学习法内容
 	 * @author wm
 	 * @date 2019-6-11 下午04:54:35
@@ -1777,11 +1805,8 @@ public class OnlineStudyAction extends DispatchAction {
 	 */
 	public ActionForward getStepQuestionData(ActionMapping mapping ,ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
-		StudyLogManager slm = (StudyLogManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_LOG_INFO);
 		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
-		StudyDetailManager sdm = (StudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_STUDY_DETAIL_INFO);
 		Integer currLoreId = CommonTools.getFinalInteger("nextLoreIdArray",request);//当前知识点编号
-		Integer studyLogId = CommonTools.getFinalInteger("studyLogId", request);
 		String loreTypeName = request.getParameter("loreTypeName");//五步类型（video,guide,loreList,example,practice）
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "error";
@@ -1789,7 +1814,7 @@ public class OnlineStudyAction extends DispatchAction {
 		if(currLoreId > 0){
 			quoteLoreId = CommonTools.getQuoteLoreId(currLoreId);
 			if(loreTypeName.equals("video")){//视频讲解
-				List<LoreQuestion> lqList = lqm.listInfoByLoreId(currLoreId, "知识讲解", 0);
+				List<LoreQuestion> lqList = lqm.listInfoByLoreId(quoteLoreId, "知识讲解", 0);
 				if(lqList.size() > 0){
 					msg = "success";
 					map.put("sourceDetail", lqList.get(0).getQueAnswer());
@@ -1816,21 +1841,77 @@ public class OnlineStudyAction extends DispatchAction {
 							map_d.put("lqsContent", lqs.getLqsContent());
 							list_d.add(map_d);
 						}
+						map.put("sourceDetail", list_d);
 					}else{
 						msg = "noInfo";
 					}
 				}
 			}else if(loreTypeName.equals("example")){//解题示范
-				List<LoreQuestion> lqList = lqm.listInfoByLoreId(currLoreId, "解题示范", 0);
+				List<LoreQuestion> lqList = lqm.listInfoByLoreId(quoteLoreId, "解题示范", 0);
 				if(lqList.size() > 0){
-					
+					List<Object> list_d = new ArrayList<Object>();
+					for(LoreQuestion lq : lqList){
+						Map<String,Object> map_d = new HashMap<String,Object>();
+						map_d.put("queSub", lq.getQueSub());
+						map_d.put("queAnswer", lq.getQueAnswer());
+						map_d.put("queResolution", lq.getQueResolution());
+						list_d.add(map_d);
+					}
+					map.put("sourceDetail", list_d);
 				}else{
 					msg = "noInfo";
 				}
 			}else if(loreTypeName.equals("practice")){//巩固训练
-				
+				if(currLoreId > 0){
+					List<LoreQuestion> lqList = lqm.listInfoByLoreId(quoteLoreId, "巩固训练", 0);
+					if(lqList.size() > 0){
+						List<Object> list_d = new ArrayList<Object>();
+						for(LoreQuestion lq : lqList){
+							Map<String,Object> map_d = new HashMap<String,Object>();
+							map_d.put("lqId", lq.getId());
+							map_d.put("lqType", lq.getQueType());
+							map_d.put("lqSub", lq.getQueSub());
+							map_d.put("answerA", lq.getA());
+							map_d.put("answerB", lq.getB());
+							map_d.put("answerC", lq.getC());
+							map_d.put("answerD", lq.getD());
+							map_d.put("answerE", lq.getE());
+							map_d.put("answerF", lq.getF());
+							//巩固训练全部都需要重新做
+							list_d.add(map_d);
+						}
+						map.put("sourceDetail", list_d);
+					}else{
+						msg = "noInfo";
+					}
+				}
 			}
 		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 将答题记录插入数据库
+	 * @author wm
+	 * @date 2019-6-12 上午11:15:21
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward insertStudyInfo(ActionMapping mapping ,ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		StudyLogManager slm = (StudyLogManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_LOG_INFO);
+		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
+		StudyDetailManager sdm = (StudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_STUDY_DETAIL_INFO);
+		StudyStuTjInfoManager ssm = (StudyStuTjInfoManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_STU_TJ_INFO);
+		StudyAllTjInfoManager sam = (StudyAllTjInfoManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_ALL_TJ_INFO);
+		Integer loreId = CommonTools.getFinalInteger("loreId", request);
+		Integer studyLogId = CommonTools.getFinalInteger("studyLogId", request);
 		
 		return null;
 	}
