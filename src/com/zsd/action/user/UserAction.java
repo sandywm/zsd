@@ -140,14 +140,30 @@ public class UserAction extends DispatchAction {
 			//1.用户注册
 			userId=uManager.addUser(userAccount, realName, password, mobile, lastLoginDate, lastLoginIp, signDate, schoolId, CurrentTime.getFinalDateTime(30), yearSystem, prov, city);
 		}
+		List<User> ulists =uManager.listEntityById(userId);
+		User user = ulists.get(0);
+		map.put("portrait", user.getPortrait());//头像
+		map.put("userAcc", user.getUserAccount());//账号
+		map.put("password", password);// 密码
+		map.put("userId", userId); // 用户编号
 		if(roleName.equals("学生")){
 				if(userId>0){
 					List<RoleInfo> rList = rManager.listRoleInfo(roleName);
 					Integer roleId = 0;
 					if(rList.size() > 0){
 						roleId = rList.get(0).getId();
-						//2 绑定角色
+						//2学生 绑定角色
 						Integer ruId=ruManager.addRoleUserInfo(userId, roleId, "", "", "", "", 0, 0, 0, 0);
+						//5 生成家长账户
+						Integer upId = uManager.addUser(userAccount+"_jz", "", new MD5().calcMD5("123456"), "", lastLoginDate, lastLoginIp, signDate, schoolId, CurrentTime.getFinalDateTime(30), yearSystem, prov, city);
+						//6 家长绑定角色
+						List<RoleInfo> jzlist = rManager.listRoleInfo("家长");
+						if(jzlist.size() > 0){
+							Integer jzRoleId = jzlist.get(0).getId();
+							ruManager.addRoleUserInfo(upId, jzRoleId, "", "", "", "", 0, 0, 0, 0);
+						}
+						// 7 学生家长绑定
+						spManager.addSpInfo(upId, userId);
 						msg = "success";//注册用户成功
 						if(ruId>0){//绑定角色成功
 							List<ClassInfo> ciList = ciManager.listClassInfoByOption(gradeNo, CurrentTime.getCurrentTime(), schoolId, className);
@@ -155,19 +171,9 @@ public class UserAction extends DispatchAction {
 								Integer classId = ciList.get(0).getId();
 								ucManager.addUcInfo(userId, classId, roleId); //3 绑定用户班级
 								List<InviteCodeInfo> icList = icManager.listIcInfoByicCode(inviteCode);
-								if(icList.size()>0){
+								if(icList.size()>0){//存在班级邀请码
 									Integer teaId=icList.get(0).getInviteId();
 									ntsManager.addNTS(userId, teaId, CurrentTime.getCurrentTime(), -1, CurrentTime.getFinalDateTime(7), 0, "", "", 0);//4 缃戠粶瀵煎笀瀛︾敓缁戝畾
-									//5 生成家长账户
-									Integer upId = uManager.addUser(userAccount+"_jz", "", new MD5().calcMD5("123456"), "", lastLoginDate, lastLoginIp, signDate, schoolId, CurrentTime.getFinalDateTime(30), yearSystem, prov, city);
-									//6 家长绑定角色
-									List<RoleInfo> jzlist = rManager.listRoleInfo("家长");
-									if(jzlist.size() > 0){
-										Integer jzRoleId = jzlist.get(0).getId();
-										ruManager.addRoleUserInfo(upId, jzRoleId, "", "", "", "", 0, 0, 0, 0);
-									}
-									// 7 学生家长绑定
-									spManager.addSpInfo(upId, userId);
 								}
 							}else{//班级不存在
 								Integer mRoId =0;
