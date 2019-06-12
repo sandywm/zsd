@@ -316,8 +316,8 @@ public class CommonTools {
 						}
 					}
 				}else if(address.equals("本地局域网")){
-					prov = "河南";
-					city = "濮阳";
+					prov = "河南省";
+					city = "濮阳市";
 				}else{//直辖市
 					for(Integer i = 0 ; i < zxs.length ; i++){
 						if(address.contains(zxs[i])){
@@ -479,6 +479,36 @@ public class CommonTools {
 				realLoreId = loreId;
 			}else{
 				realLoreId = quoteLoreId;
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return realLoreId;
+	}
+	
+	/**
+	 * 根据通用知识点编号、学习知识点编号获取当前和学习知识点相同出版社的真实编号
+	 * @author wm
+	 * @date 2019-6-12 上午11:52:13
+	 * @param quoteLoreId 题库知识点编号--通用版
+	 * @param loreId 其他版本下的知识点编号--学习知识点
+	 * @return
+	 */
+	public static Integer getRealLoreId(Integer quoteLoreId,Integer loreId){
+		Integer realLoreId = 0;
+		try {
+			LoreInfoManager lm = (LoreInfoManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
+			LoreInfo lore_bb = lm.getEntityById(loreId);
+			if(lore_bb != null){
+				Integer ediId = lore_bb.getChapter().getEducation().getEdition().getId();//学习知识点所属出版社
+				List<LoreInfo> loreList = lm.listInfoByMainLoreId(quoteLoreId);
+				for(LoreInfo lore : loreList){
+					if(lore.getChapter().getEducation().getEdition().getId().equals(ediId)){
+						realLoreId =  lore.getId();
+						break;
+					}
+				}
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
