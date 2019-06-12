@@ -113,9 +113,9 @@ public class UserAction extends DispatchAction {
 		GradeSubjectManager gsManager = (GradeSubjectManager) AppFactory.instance(null).getApp(Constants.WEB_GRADE_SUBJECT_INFO);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String userAccount =CommonTools.getFinalStr("userAccount",request);
-		String roleName =CommonTools.getFinalStr("roleName",request);
-		String realName=CommonTools.getFinalStr("realName",request);
-		String className=CommonTools.getFinalStr("className",request);
+		String roleName =Transcode.unescape_new("roleName",request);
+		String realName=Transcode.unescape_new("realName",request);
+		String className=Transcode.unescape_new("className",request);
 		String inviteCode=CommonTools.getFinalStr("inviteCode",request);
 		String password=new MD5().calcMD5(CommonTools.getFinalStr("password",request));
 		String mobile=CommonTools.getFinalStr("mobile",request);
@@ -142,8 +142,6 @@ public class UserAction extends DispatchAction {
 		}
 		if(roleName.equals("学生")){
 				if(userId>0){
-					
-					
 					List<RoleInfo> rList = rManager.listRoleInfo(roleName);
 					Integer roleId = 0;
 					if(rList.size() > 0){
@@ -242,8 +240,6 @@ public class UserAction extends DispatchAction {
 				ntManager.addNtInfo(userId, subId, schoolType, baseMoney, "", "", "", "", "", "", "", "", 0, 0, 0); //添加网络导师基本信息
 				msg = "success";//注册用户成功
 			}
-			
-			
 		}
 		
 		map.put("result", msg);
