@@ -11,6 +11,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -674,6 +675,26 @@ public class CommonTools {
 		}else{//学习
 			return ltmj.getStudyPath(path,pathChi);
 		}
+	}
+	
+	/**
+	 * 对数组进行排序（数组必须是a-z或者A-Z）
+	 * @author wm
+	 * @date 2019-6-13 下午04:06:20
+	 * @param array
+	 * @return
+	 */
+	public static String arraySort(String[] array){
+		String newSortStr = "";
+		Arrays.sort(array);
+		for(int i = 0 ; i <array.length ; i++){
+			if(i < array.length - 1){
+				newSortStr += array[i] + ",";
+			}else{
+				newSortStr += array[i];
+			}
+		}
+		return newSortStr;
 	}
 	
 	public static void main(String[] args){

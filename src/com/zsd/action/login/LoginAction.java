@@ -138,7 +138,7 @@ public class LoginAction extends DispatchAction {
 					session.setAttribute(Constants.LOGIN_USER_ID,uid);
 					session.setAttribute(Constants.LOGIN_STATUS, loginStatus);
 					session.setAttribute(Constants.LOGIN_USER_ROLE_ID, roleId);
-					if(portrait=="" || portrait == null){
+					if(portrait.equals("")){
 						portrait="Module/commonJs/ueditor/jsp/head/defaultHead.jpg";
 					}
 					map.put("userAcc", userAcc);

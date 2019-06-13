@@ -1940,7 +1940,7 @@ public class OnlineStudyAction extends DispatchAction {
 		StudyDetailManager sdm = (StudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_STUDY_DETAIL_INFO);
 		StudyStuTjInfoManager ssm = (StudyStuTjInfoManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_STU_TJ_INFO);
 		StudyAllTjInfoManager sam = (StudyAllTjInfoManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_ALL_TJ_INFO);
-		Integer loreId = CommonTools.getFinalInteger("loreId", request);
+		Integer loreId = CommonTools.getFinalInteger("loreId", request);//最初的知识点
 		Integer studyLogId = CommonTools.getFinalInteger("studyLogId", request);
 		Integer currentLoreId = CommonTools.getFinalInteger("currentLoreId", request);//当前做题的知识点编号
 		String answerOptionArrayStr = Transcode.unescape_new1("answerOptionArray", request);//做题时的答案选项
@@ -1950,9 +1950,19 @@ public class OnlineStudyAction extends DispatchAction {
 		String currDate = CurrentTime.getStringDate();
 		Integer result = 0;//0为错,1为对
 		boolean flag = false;
+		String[] answerOptionStr = {"","","","","",""};
+		
+		Integer subjectId = 0;
+		Integer step = 1;
+		Integer stepComplete = 0;//0:未做完题，1:做完题
+		Integer isFinish = 1;//0:未做过,1:未通过，2:通过
+		Integer oldStepMoney = 0;//该阶段得分
+		Integer access = 0;//本阶段完成情况
+		
 		if(lqId > 0){
 			LoreQuestion lq = lqm.getEntityByLqId(lqId);
 			if(lq != null){
+				subjectId = lq.getLoreInfo().getChapter().getEducation().getGradeSubject().getSubject().getId();
 				String realAnser = lq.getQueAnswer();
 				String queType = lq.getQueType();
 				String queType2 = lq.getQueType2();
@@ -2006,6 +2016,34 @@ public class OnlineStudyAction extends DispatchAction {
 							flag = false;//顺序可以不同
 						}else{//不是多选题答案需要完全匹配(填空选择题、单选题，判断题)
 							flag = true;
+						}
+						if(flag){//完全匹配
+							if(dataBaseAnswerChar.equals(myAnswer)){
+								result = 1;
+							}else{
+								result = 0;
+							}
+						}else{//答案顺序可以不同
+							String[] myAnserArray = myAnswer.split(",");
+							String[] realAnswerArray = dataBaseAnswerChar.split(",");
+							String newMyAnswer = CommonTools.arraySort(myAnserArray);//排序后我的答案
+							String newRealAnswer = CommonTools.arraySort(realAnswerArray);//排序后后台正确答案
+							if(newMyAnswer.equals(newRealAnswer)){
+								result = 1;
+							}else{
+								result = 0;
+							}
+						}
+						for(int i = 0 ; i < answerOptionArray.size() ; i++){
+							answerOptionStr[i] = answerOptionArray.get(i).toString();
+						}
+						if(studyLogId.equals(0)){//新开的题
+							if(result == 1){//题做对了
+								oldStepMoney++;
+							}
+//							studyLogId = slm.addStudyLog(CommonTools.getLoginUserId(request), loreId, subId, step, stepComplete, isFinish, sysAssess, currentGold, access, addTime, taskNumber, logType)
+						}else{//表示是继续之前的未做完的题（修改log里面的记录）
+							
 						}
 					}
 				}
