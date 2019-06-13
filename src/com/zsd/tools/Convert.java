@@ -67,6 +67,36 @@ public class Convert {
 		}
 		return gradeNo;
 	}
+	/**
+	 * 0-5转换成大写字母A-F
+	 * @author wm
+	 * @date 2019-6-13 上午11:58:21
+	 * @param number
+	 * @return
+	 */
+	public static String NumberConvertBigChar(int number){
+		String convertStr = "";
+		String[] chineseStr = {"A","B","C","D","E","F"};
+		if(number <= chineseStr.length){
+			convertStr = chineseStr[number];
+		}
+		return convertStr;
+	}
+	/**
+	 * 0-5转换成小写字母a-f
+	 * @author wm
+	 * @date 2019-6-13 上午11:59:03
+	 * @param number
+	 * @return
+	 */
+	public static String NumberConvertSmallChar(int number){
+		String convertStr = "";
+		String[] chineseStr = {"a","b","c","e","d","f"};
+		if(number <= chineseStr.length){
+			convertStr = chineseStr[number];
+		}
+		return convertStr;
+	}
 	
 	/**
 	 * 班级创建日期转成年级数字（1,2,3）

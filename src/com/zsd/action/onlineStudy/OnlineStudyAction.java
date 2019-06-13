@@ -17,6 +17,8 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.zsd.action.base.Transcode;
 import com.zsd.factory.AppFactory;
 import com.zsd.module.Chapter;
@@ -1942,6 +1944,7 @@ public class OnlineStudyAction extends DispatchAction {
 		Integer studyLogId = CommonTools.getFinalInteger("studyLogId", request);
 		Integer currentLoreId = CommonTools.getFinalInteger("currentLoreId", request);//当前做题的知识点编号
 		String answerOptionArrayStr = Transcode.unescape_new1("answerOptionArray", request);//做题时的答案选项
+		String dataBaseAnswerChar = "";
 		String myAnswer = Transcode.unescape_new1("myAnswer", request);//我的答案
 		Integer lqId = CommonTools.getFinalInteger("lqId", request);
 		String currDate = CurrentTime.getStringDate();
@@ -1980,6 +1983,29 @@ public class OnlineStudyAction extends DispatchAction {
 							result = 1;
 						}else{
 							result = 0;
+						}
+						dataBaseAnswerChar = answerOptionArrayStr.replaceAll("&#wmd;", "'");
+					}else{
+						JSONArray answerOptionArray = JSON.parseArray(answerOptionArrayStr);
+						String[] dataBaseAnswerArray = realAnser.split(",");
+						for(int j = 0; j < dataBaseAnswerArray.length; j++){
+							for(int i = 0; i < answerOptionArray.size(); i++){
+								String answerOption = answerOptionArray.get(i).toString();
+								if(answerOption.indexOf("Module/commonJs/ueditor/jsp/lore") >= 0){
+									//表示答案选项是图片--截取前面的路径
+									answerOption = answerOption.replace("Module/commonJs/ueditor/jsp/lore/", "");
+								}
+								if(dataBaseAnswerArray[j].equals(answerOption)){
+									dataBaseAnswerChar += Convert.NumberConvertBigChar(i)+",";
+									break;
+								}
+							}
+						}
+						dataBaseAnswerChar = dataBaseAnswerChar.substring(0, dataBaseAnswerChar.length() - 1);
+						if(queType.equals("多选题")){
+							flag = false;//顺序可以不同
+						}else{//不是多选题答案需要完全匹配(填空选择题、单选题，判断题)
+							flag = true;
 						}
 					}
 				}

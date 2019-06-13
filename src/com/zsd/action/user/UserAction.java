@@ -140,14 +140,10 @@ public class UserAction extends DispatchAction {
 		}else{
 			//1.用户注册
 			userId=uManager.addUser(userAccount, realName, password, mobile, lastLoginDate, lastLoginIp, signDate, schoolId, CurrentTime.getFinalDateTime(30), yearSystem, prov, city);
-			List<User> ulists =uManager.listEntityById(userId);
-			User user = ulists.get(0);
-			String portrait = user.getPortrait();
-			if(portrait==""){
-				portrait="Module/commonJs/ueditor/jsp/head/defaultHead.jpg";
-			}
-			map.put("portrait", user.getPortrait());//头像
-			map.put("userAcc", user.getUserAccount());//账号
+			
+			String portrait="Module/commonJs/ueditor/jsp/head/defaultHead.jpg";
+			map.put("portrait", portrait);//头像
+			map.put("userAcc", userAccount);//账号
 			map.put("password", pwd);// 密码
 			map.put("userId", userId); // 用户编号
 		}
@@ -670,6 +666,31 @@ public class UserAction extends DispatchAction {
 		Map<String,Object> map = new HashMap<String,Object>();
 		String mobile=CommonTools.getFinalStr("mobile",request);
 		boolean flag = uManager.checkUserMobile(mobile);
+		map.put("msg", flag);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	/**
+	 * 检查用户名是否已存在
+	 * @author zong
+	 * 2019年6月13日上午8:28:34
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward checkUserName(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		UserManager uManager = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String userAccount=CommonTools.getFinalStr("userAccess",request);
+		List<User> uList = uManager.listInfoByAccount(userAccount);//判断账户是否存在
+		boolean flag = false;
+		if(uList.isEmpty()){
+			flag = true;
+		}
 		map.put("msg", flag);
 		CommonTools.getJsonPkg(map, response);
 		return null;
