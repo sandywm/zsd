@@ -106,12 +106,20 @@ public class StudyDetailDaoImpl implements StudyDetailDao{
 	public boolean checkSuccCompleteFlag(Session sess, Integer studyLogId,
 			Integer lqId, String currDate) {
 		// TODO Auto-generated method stub
-		String hql = " from StudyDetailInfo as sd where sd.studyLogInfo.id = "+studyLogId + " and sd.loreQuestion.id = '"+lqId+"' and sd.result = 1 and substring(sd.addTime,1,10) = '"+currDate+"'";
+		String hql = " from StudyDetailInfo as sd where sd.studyLogInfo.id = "+studyLogId + " and sd.loreQuestion.id = "+lqId+" and sd.result = 1 and substring(sd.addTime,1,10) = '"+currDate+"'";
 		List<StudyDetailInfo> l = sess.createQuery(hql).list();
 		if(l.size() == 0){//没做过或者错误
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public List<StudyDetailInfo> findInfoByOpt(Session sess,
+			Integer studyLogId, Integer lqId) {
+		// TODO Auto-generated method stub
+		String hql = " from StudyDetailInfo as sd where sd.studyLogInfo.id = "+studyLogId + " and sd.loreQuestion.id = " + lqId;
+		return sess.createQuery(hql).list();
 	}
 
 }

@@ -52,6 +52,7 @@ import com.zsd.service.StudyMapManager;
 import com.zsd.service.StudyStuTjInfoManager;
 import com.zsd.service.StudyTaskManager;
 import com.zsd.service.UserClassInfoManager;
+import com.zsd.service.UserManager;
 import com.zsd.tools.CommonTools;
 import com.zsd.tools.Convert;
 import com.zsd.tools.CurrentTime;
@@ -1935,56 +1936,67 @@ public class OnlineStudyAction extends DispatchAction {
 	 */
 	public ActionForward insertStudyInfo(ActionMapping mapping ,ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		UserManager um = (UserManager)AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
 		StudyLogManager slm = (StudyLogManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_LOG_INFO);
 		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
 		StudyDetailManager sdm = (StudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_STUDY_DETAIL_INFO);
 		StudyStuTjInfoManager ssm = (StudyStuTjInfoManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_STU_TJ_INFO);
 		StudyAllTjInfoManager sam = (StudyAllTjInfoManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_ALL_TJ_INFO);
+		StudyTaskManager stm = (StudyTaskManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_TASK_INFO);
 		Integer loreId = CommonTools.getFinalInteger("loreId", request);//最初的知识点
 		Integer studyLogId = CommonTools.getFinalInteger("studyLogId", request);
 		Integer currentLoreId = CommonTools.getFinalInteger("currentLoreId", request);//当前做题的知识点编号
 		String answerOptionArrayStr = Transcode.unescape_new1("answerOptionArray", request);//做题时的答案选项
+		Integer questionStep = CommonTools.getFinalInteger("questionStep",request);//题的顺序
 		String dataBaseAnswerChar = "";
 		String myAnswer = Transcode.unescape_new1("myAnswer", request);//我的答案
 		Integer lqId = CommonTools.getFinalInteger("lqId", request);
+		String loreTaskName = Transcode.unescape_new1("loreTaskName",request);
 		String currDate = CurrentTime.getStringDate();
 		Integer result = 0;//0为错,1为对
 		boolean flag = false;
 		String[] answerOptionStr = {"","","","","",""};
-		
+		String currTime = CurrentTime.getCurrentTime();
+		Integer stuId = CommonTools.getLoginUserId(request);
 		Integer subjectId = 0;
 		Integer step = 1;
 		Integer stepComplete = 0;//0:未做完题，1:做完题
 		Integer isFinish = 1;//0:未做过,1:未通过，2:通过
 		Integer oldStepMoney = 0;//该阶段得分
 		Integer access = 0;//本阶段完成情况
-		
+		String msg = "error";
 		if(lqId > 0){
 			LoreQuestion lq = lqm.getEntityByLqId(lqId);
 			if(lq != null){
-				subjectId = lq.getLoreInfo().getChapter().getEducation().getGradeSubject().getSubject().getId();
+				msg = "success";
 				String realAnser = lq.getQueAnswer();
 				String queType = lq.getQueType();
 				String queType2 = lq.getQueType2();
 				String loreType = lq.getLoreTypeName();
 				if(loreType.equals("巩固训练")){//巩固训练不检查
-					
+					if(studyLogId > 0){//存在学习记录
+						subjectId = slm.getEntityById(studyLogId).getSubject().getId();
+					}else{
+						subjectId = lq.getLoreInfo().getChapter().getEducation().getGradeSubject().getSubject().getId();
+					}
 				}else{
 					if(studyLogId > 0){//存在学习记录
+						subjectId = slm.getEntityById(studyLogId).getSubject().getId();
 						flag = sdm.checkSuccCompleteFlag(studyLogId, lqId, currDate);
 						if(!flag){//当当前题错误或者没做时
 							//判断上次答题时间（正常答题不会出现，防止URL提交）
 							List<StudyDetailInfo> sdList = sdm.listLastInfoByLogId(studyLogId, 0, "");
 							String lastAddTime = sdList.get(0).getAddTime();
-							String currTime = CurrentTime.getCurrentTime();
 							long diffS = CurrentTime.compareDateTime(currTime, lastAddTime);//相差毫秒数
-							if(diffS > 10000){//间隔10秒以上
+							if(diffS > 5000){//间隔5秒以上
 								//允许做题
 								flag = false;
 							}else{
 								flag = true;
 							}
 						}
+					}else{
+						subjectId = lq.getLoreInfo().getChapter().getEducation().getGradeSubject().getSubject().getId();
 					}
 				}
 				if(!flag){
@@ -2035,21 +2047,142 @@ public class OnlineStudyAction extends DispatchAction {
 							}
 						}
 						for(int i = 0 ; i < answerOptionArray.size() ; i++){
-							answerOptionStr[i] = answerOptionArray.get(i).toString();
+							answerOptionStr[i] = answerOptionArray.get(i).toString().replaceAll("&#wmd;", "'");
+						}
+						boolean updateFlag = false;
+						/**
+						 * step1:向log表中插入一条数据
+						 * 插入数据前需要先查询有无该记录。
+						 * 如果没有，执行插入
+						 * 如果有：分为两步
+						 * 1:如果stepComplete为1（做完该阶段所有题，者修改step、stepComplete、isFinish的值）
+						 * 2:如果stepComplete为0（未做完该阶段所有题）
+						 * 2.1：如果这是access为1，表示需要进入下一级关联知识点（修改access的值为1）
+						 */
+						if(studyLogId.equals(0)){//新开的题
+							List<StudyLogInfo> slList = slm.listLastStudyInfoByOpt(stuId, loreId, 1);
+							if(slList.size() > 0){
+								studyLogId = slList.get(0).getId();
+							}
 						}
 						if(studyLogId.equals(0)){//新开的题
-							if(result == 1){//题做对了
+							if(result.equals(1)){//题做对了
 								oldStepMoney++;
 							}
-//							studyLogId = slm.addStudyLog(CommonTools.getLoginUserId(request), loreId, subId, step, stepComplete, isFinish, sysAssess, currentGold, access, addTime, taskNumber, logType)
+							studyLogId = slm.addStudyLog(stuId, loreId, subjectId, step, stepComplete, isFinish, "", oldStepMoney, access, currTime, 1, 1);
 						}else{//表示是继续之前的未做完的题（修改log里面的记录）
-							
+							StudyLogInfo  sl = slm.getEntityById(studyLogId);
+							if(sl != null){
+								step = sl.getStep();
+								oldStepMoney = sl.getCurrentGold();
+								isFinish = sl.getIsFinish();
+								access = sl.getAccess();
+								if(result == 1){
+									oldStepMoney++;
+								}
+								stepComplete = sl.getStepComplete();
+								if(isFinish == 1){//表示本知识点还未完成
+									if(stepComplete == 1){//表示该阶段已经完成
+										//将step增加1，stepComplete重新清0
+										step++;
+										stepComplete = 0;
+										oldStepMoney = 0;
+									}else{//当前级关联知识点已经完成access的值为1
+										if(access == 1){//表示该阶段知识点已经完成，需要进入下一级关联知识点学习
+											
+										}
+									}
+								}
+							}
+							if(loreType.equals("巩固训练")){//巩固训练不检查
+								//巩固训练只修改access状态为31，只要不是最后的提交，下次还会继续停留在学习当前知识点的状态
+								//当currentLoreId和知识点的loreId(本知识点)
+								if(currentLoreId.equals(loreId)){
+									//表示是本知识点的学习（巩固训练）
+									updateFlag = slm.updateStudyLog(studyLogId, 4, 0, -1, -1, 31, "");
+								}else{
+									updateFlag = slm.updateStudyLog(studyLogId, 3, 0, -1, -1, 31, "");
+								}
+							}else{
+								updateFlag = slm.updateStudyLog(studyLogId, step, stepComplete, isFinish, oldStepMoney, 0, currTime);
+							}
+							if(studyLogId > 0 || updateFlag == true){
+								//step2:向detail表中插入一条记录并查看该studyLogId+loreQuestionId有没有记录
+								List<StudyDetailInfo> sdList = sdm.listInfoByOpt(studyLogId, lqId);
+								Integer questionNumber_curr = sdList.size() + 1;
+								sdm.addStudyDetail(stuId, studyLogId, currentLoreId, lqId, questionStep, dataBaseAnswerChar, 
+										result, currTime, myAnswer, answerOptionStr[0], answerOptionStr[1], answerOptionStr[2]
+										,answerOptionStr[3], answerOptionStr[4], answerOptionStr[5], questionNumber_curr);
+								//此处增加学生学习、全平台统计---------------------start
+								//A：统计学生学习情况---------------------
+								//根据学习时间、学生编号、学科编号获取学生学习统计信息
+								boolean liaojieSuccFlag = false;
+								boolean lijieSuccFlag = false;
+								boolean yySuccFlag = false;
+								boolean liaojieSuccFlag_all = false;
+								boolean lijieSuccFlag_all = false;
+								boolean yySuccFlag_all = false;
+								
+								Integer coin = 0;
+								Integer experience = Constants.EXPERIENCE;
+								if(result.equals(1)){
+									if(queType2.equals("了解")){
+										liaojieSuccFlag = true;
+										liaojieSuccFlag_all = true;
+									}else if(queType2.equals("理解")){
+										lijieSuccFlag = true;
+										lijieSuccFlag_all = true;
+									}else if(queType2.equals("应用")){
+										yySuccFlag = true;
+										yySuccFlag_all = true;
+									}
+									
+									if(loreType.equals("巩固训练")){//巩固训练不计分
+										coin = 0;
+										experience = 0;
+									}else{
+										coin = Constants.COIN;
+										experience += Constants.EXPERIENCE;
+									}
+								}
+								
+								//增加和修改学生统计表、全平台统计表记录
+								
+								
+								//插入数据到studyTask表中
+								//获取指定学习记录的学习任务描述
+								if(!loreType.equals("巩固训练")){//巩固训练不增加至studyTask
+									List<StudyTaskInfo>  stList = stm.listTaskInfoByOpt(studyLogId, "");
+									Integer number = 0;
+									if(stList.size() == 0){//第一次做题
+										number = 1;
+										stm.addSTask(number, studyLogId, loreTaskName, coin);
+									}else{//表示已经有该题的答题记录了
+										List<StudyTaskInfo>  stList_1 = stm.listTaskInfoByOpt(studyLogId, loreTaskName);
+										if(stList_1.size() > 0){
+											//修改指定studyLogId的记录的金币和时间
+											Integer stId = stList_1.get(0).getId();
+											stm.updateCoinInfoById(stId, coin);
+										}else{//新一级知识点的题（需要新增答题学习任务）
+											number = stList.get(0).getTaskNum() + 1;
+											stm.addSTask(number, studyLogId, loreTaskName, coin);
+										}
+									}
+									//修改用户中的经验和金币数（答一题增加1经验，答对一题再增加1经验）
+									um.updateUser(stuId, coin, experience, 0, 0);
+								}
+							}
 						}
 					}
+				}else{
+					msg = "timeErr";//间隔5秒以上
 				}
 			}
 		}
-		
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("result", msg);
+		map.put("studyStatus", result);
+		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
 }

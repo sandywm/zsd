@@ -176,4 +176,21 @@ public class StudyDetailManagerImpl implements StudyDetailManager{
 		}
 	}
 
+	@Override
+	public List<StudyDetailInfo> listInfoByOpt(Integer studyLogId, Integer lqId)
+			throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			sdDao = (StudyDetailDao) DaoFactory.instance(null).getDao(Constants.DAO_STUDY_DETAIL_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return sdDao.findInfoByOpt(sess, studyLogId, lqId);
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			throw new WEBException("根据学习记录编号、题库编号获取做题信息列表时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
 }

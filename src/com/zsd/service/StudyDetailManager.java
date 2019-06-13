@@ -120,4 +120,15 @@ public interface StudyDetailManager {
 	 * @throws WEBException
 	 */
 	boolean checkSuccCompleteFlag(Integer studyLogId, Integer lqId, String currDate) throws WEBException;
+	
+	/**
+	 * 根据学习记录编号、题库编号获取做题信息列表
+	 * @author wm
+	 * @date 2019-6-13 下午05:03:31
+	 * @param studyLogId 学习记录编号
+	 * @param lqId 题库编号
+	 * @return
+	 * @throws WEBException
+	 */
+	List<StudyDetailInfo> listInfoByOpt(Integer studyLogId,Integer lqId) throws WEBException;
 }

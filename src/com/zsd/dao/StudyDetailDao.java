@@ -129,4 +129,15 @@ public interface StudyDetailDao {
 	 */
 	boolean checkSuccCompleteFlag(Session sess,Integer studyLogId, Integer lqId, String currDate);
 	
+	/**
+	 * 根据学习记录编号、题库编号获取做题信息列表
+	 * @author wm
+	 * @date 2019-6-13 下午05:01:02
+	 * @param sess
+	 * @param studyLogId 学习记录编号
+	 * @param lqId 题库编号
+	 * @return
+	 */
+	List<StudyDetailInfo> findInfoByOpt(Session sess,Integer studyLogId, Integer lqId);
+	
 }

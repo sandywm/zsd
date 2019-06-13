@@ -45,12 +45,12 @@ public interface StudyLogManager {
 	 * @author wm
 	 * @date 2019-5-29 上午08:55:19
 	 * @param id
-	 * @param step 答题阶段（共5段）
-	 * @param stepComplete 该阶段完成状态（题有无做完）
-	 * @param isFinish 该知识典完成状态
-	 * @param currentGold 当前阶段答题分数
-	 * @param access 本级知识点完成情况
-	 * @param addTime 添加时间
+	 * @param step 答题阶段（共5段）-1不修改
+	 * @param stepComplete 该阶段完成状态（题有无做完）-1不修改
+	 * @param isFinish 该知识典完成状态-1不修改
+	 * @param currentGold 当前阶段答题分数-1不修改
+	 * @param access 本级知识点完成情况-1不修改
+	 * @param addTime 添加时间 （""不修改）
 	 * @return
 	 * @throws WEBException
 	 */

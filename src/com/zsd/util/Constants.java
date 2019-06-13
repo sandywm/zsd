@@ -10,7 +10,9 @@ public class Constants {
 	public static final String LOGIN_USER_ROLE_ID = "login_user_role_id";
 	public static final String LOGIN_USER_ROLE_NAME = "login_user_role_name";
 	
-
+	public static final Integer COIN = 10;
+	public static final Integer EXPERIENCE = 1;
+	
 	//--------------------费用---------------------------//
 	public static final double NET_TEACHER_SERVICE_FEE_XX = 4500.00;
 	public static final double NET_TEACHER_SERVICE_FEE_CZ = 5500.00;

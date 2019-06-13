@@ -86,12 +86,24 @@ public class StudyLogManagerImpl implements StudyLogManager{
 			tran = sess.beginTransaction();
 			StudyLogInfo sl = slDao.getEntityById(sess, id);
 			if(sl != null){
-				sl.setStep(step);
-				sl.setStepComplete(stepComplete);
-				sl.setIsFinish(isFinish);
-				sl.setCurrentGold(currentGold);
-				sl.setAccess(access);
-				sl.setAddTime(addTime);
+				if(!step.equals(-1)){
+					sl.setStep(step);
+				}
+				if(!stepComplete.equals(-1)){
+					sl.setStepComplete(stepComplete);
+				}
+				if(!isFinish.equals(-1)){
+					sl.setIsFinish(isFinish);
+				}
+				if(!currentGold.equals(-1)){
+					sl.setCurrentGold(currentGold);
+				}
+				if(!access.equals(-1)){
+					sl.setAccess(access);
+				}
+				if(!addTime.equals("")){
+					sl.setAddTime(addTime);
+				}
 				slDao.update(sess, sl);
 				tran.commit();
 				return true;
