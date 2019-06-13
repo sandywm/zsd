@@ -159,4 +159,21 @@ public class StudyDetailManagerImpl implements StudyDetailManager{
 		}
 	}
 
+	@Override
+	public boolean checkSuccCompleteFlag(Integer studyLogId, Integer lqId,
+			String currDate) throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			sdDao = (StudyDetailDao) DaoFactory.instance(null).getDao(Constants.DAO_STUDY_DETAIL_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return sdDao.checkSuccCompleteFlag(sess, studyLogId, lqId, currDate);
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			throw new WEBException("检查同一学习记录当天不能成功2次以上的记录情况【针对性诊断+再次诊断】（防止用户恶意提交赚取金币）时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
 }

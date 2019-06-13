@@ -117,4 +117,16 @@ public interface StudyDetailDao {
 	 */
 	List<StudyDetailInfo> findLastInfoByOpt(Session sess,Integer studyLogId,Integer loreId,String loreTypeName,Integer completeTimes);
 	
+	/**
+	 * 检查同一学习记录当天不能成功2次以上的记录情况【针对性诊断+再次诊断】（防止用户恶意提交赚取金币）
+	 * @author wm
+	 * @date 2019-6-13 上午10:26:19
+	 * @param sess
+	 * @param studyLogId 学习记录编号
+	 * @param lqId 题库编号
+	 * @param currDate 当前时间
+	 * @return
+	 */
+	boolean checkSuccCompleteFlag(Session sess,Integer studyLogId, Integer lqId, String currDate);
+	
 }

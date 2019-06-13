@@ -1944,13 +1944,45 @@ public class OnlineStudyAction extends DispatchAction {
 		String answerOptionArrayStr = Transcode.unescape_new1("answerOptionArray", request);//做题时的答案选项
 		String myAnswer = Transcode.unescape_new1("myAnswer", request);//我的答案
 		Integer lqId = CommonTools.getFinalInteger("lqId", request);
-		
+		String currDate = CurrentTime.getStringDate();
+		Integer result = 0;//0为错,1为对
+		boolean flag = false;
 		if(lqId > 0){
 			LoreQuestion lq = lqm.getEntityByLqId(lqId);
 			if(lq != null){
 				String realAnser = lq.getQueAnswer();
 				String queType = lq.getQueType();
 				String queType2 = lq.getQueType2();
+				String loreType = lq.getLoreTypeName();
+				if(loreType.equals("巩固训练")){//巩固训练不检查
+					
+				}else{
+					if(studyLogId > 0){//存在学习记录
+						flag = sdm.checkSuccCompleteFlag(studyLogId, lqId, currDate);
+						if(!flag){//当当前题错误或者没做时
+							//判断上次答题时间（正常答题不会出现，防止URL提交）
+							List<StudyDetailInfo> sdList = sdm.listLastInfoByLogId(studyLogId, 0, "");
+							String lastAddTime = sdList.get(0).getAddTime();
+							String currTime = CurrentTime.getCurrentTime();
+							long diffS = CurrentTime.compareDateTime(currTime, lastAddTime);//相差毫秒数
+							if(diffS > 10000){//间隔10秒以上
+								//允许做题
+								flag = false;
+							}else{
+								flag = true;
+							}
+						}
+					}
+				}
+				if(!flag){
+					if(queType.equals("问答题") || queType.equals("填空题")){
+						if(myAnswer.indexOf("正确") >= 0){
+							result = 1;
+						}else{
+							result = 0;
+						}
+					}
+				}
 			}
 		}
 		

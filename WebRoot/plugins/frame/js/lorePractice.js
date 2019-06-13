@@ -68,49 +68,49 @@ layui.define(['form','buffetLoreMet'],function(exports){
         			if(answer1 != ""){
         				this.getId("answSelInpTxt1").value = answer1;
         				if(questionType == "填空选择题"){
-        					options[0].alt = this.replaceQuote(answer1);
+        					options[0].alt = answer1;
         				}else{//单选题 多选题 判断题
-        					options[0].value = this.replaceQuote(answer1);
+        					options[0].value = answer1;
         				}
         			}
         			if(answer2 != ""){
         				this.getId("answSelInpTxt2").value = answer2;
         				if(questionType == "填空选择题"){
-        					options[1].alt = this.replaceQuote(answer2);
+        					options[1].alt = answer2;
         				}else{
-        					options[1].value = this.replaceQuote(answer2);
+        					options[1].value = answer2;
         				}
         			}
         			if(answer3 != ""){
         				this.getId("answSelInpTxt3").value = answer3;
         				if(questionType == "填空选择题"){
-        					options[2].alt = this.replaceQuote(answer3);
+        					options[2].alt = answer3;
         				}else{
-        					options[2].value = this.replaceQuote(answer3);
+        					options[2].value = answer3;
         				}
         			}
         			if(answer4 != ""){
         				this.getId("answSelInpTxt4").value = answer4;
         				if(questionType == "填空选择题"){
-        					options[3].alt = this.replaceQuote(answer4);
+        					options[3].alt = answer4;
         				}else{
-        					options[3].value = this.replaceQuote(answer4);
+        					options[3].value = answer4;
         				}
         			}
         			if(answer5 != ""){
         				this.getId("answSelInpTxt5").value = answer5;
         				if(questionType == "填空选择题"){
-        					options[4].alt = this.replaceQuote(answer5);
+        					options[4].alt = answer5;
         				}else{
-        					options[4].value = this.replaceQuote(answer5);
+        					options[4].value = answer5;
         				}
         			}
         			if(answer6 != ""){
         				this.getId("answSelInpTxt6").value = answer6;
         				if(questionType == "填空选择题"){
-        					options[5].alt = this.replaceQuote(answer6);
+        					options[5].alt = answer6;
         				}else{
-        					options[5].value = this.replaceQuote(answer6);
+        					options[5].value = answer6;
         				}
         			}
         		}else{
@@ -188,22 +188,22 @@ layui.define(['form','buffetLoreMet'],function(exports){
     		
     		//初始化单选多选框选择状态
     		if(questionType == "单选题"){
-    			if(realAnswer == this.replaceQuote(answer1)){
+    			if(realAnswer == answer1){
     				options[0].checked = true;
     			}
-    			if(realAnswer == this.replaceQuote(answer2)){
+    			if(realAnswer == answer2){
     				options[1].checked = true;
     			}
-    			if(realAnswer == this.replaceQuote(answer3)){
+    			if(realAnswer == answer3){
     				options[2].checked = true;
     			}
-    			if(realAnswer == this.replaceQuote(answer4)){
+    			if(realAnswer == answer4){
     				options[3].checked = true;
     			}
-    			if(realAnswer == this.replaceQuote(answer5)){
+    			if(realAnswer == answer5){
     				options[4].checked = true;
     			}
-    			if(realAnswer == this.replaceQuote(answer6)){
+    			if(realAnswer == answer6){
     				options[5].checked = true;
     			}
     			

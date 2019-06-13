@@ -108,4 +108,16 @@ public interface StudyDetailManager {
 	 * @throws WEBException
 	 */
 	List<StudyDetailInfo> listLastInfoByOpt(Integer studyLogId,Integer loreId,String loreTypeName,Integer completeTimes) throws WEBException;
+	
+	/**
+	 * 检查同一学习记录当天不能成功2次以上的记录情况【针对性诊断+再次诊断】（防止用户恶意提交赚取金币）
+	 * @author wm
+	 * @date 2019-6-13 上午10:24:33
+	 * @param studyLogId 学习记录编号
+	 * @param lqId 题库编号
+	 * @param currDate 当前时间
+	 * @return true:存在，false:不存在或者做错
+	 * @throws WEBException
+	 */
+	boolean checkSuccCompleteFlag(Integer studyLogId, Integer lqId, String currDate) throws WEBException;
 }
