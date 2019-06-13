@@ -544,11 +544,11 @@ public class CommonTools {
 	 * @author wm
 	 * @date 2019-6-12 上午11:52:13
 	 * @param quoteLoreId 题库知识点编号--通用版
-	 * @param loreId 其他版本下的知识点编号--学习知识点
+	 * @param loreId 其他版本下的知识点编号(最开始学习的知识点)--学习知识点
 	 * @return
 	 */
-	public static Integer getRealLoreId(Integer quoteLoreId,Integer loreId){
-		Integer realLoreId = 0;
+	public static String[] getRealLoreInfo(Integer quoteLoreId,Integer loreId){
+		String[] loreInfoArr = new String[2];
 		try {
 			LoreInfoManager lm = (LoreInfoManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
 			LoreInfo lore_bb = lm.getEntityById(loreId);
@@ -557,7 +557,8 @@ public class CommonTools {
 				List<LoreInfo> loreList = lm.listInfoByMainLoreId(quoteLoreId);
 				for(LoreInfo lore : loreList){
 					if(lore.getChapter().getEducation().getEdition().getId().equals(ediId)){
-						realLoreId =  lore.getId();
+						loreInfoArr[0] = lore.getId().toString();
+						loreInfoArr[1] = lore.getLoreName();
 						break;
 					}
 				}
@@ -566,7 +567,7 @@ public class CommonTools {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return realLoreId;
+		return loreInfoArr;
 	}
 	
 	/**

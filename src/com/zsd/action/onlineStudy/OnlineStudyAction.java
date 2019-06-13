@@ -1601,9 +1601,12 @@ public class OnlineStudyAction extends DispatchAction {
 						Map<String,Object> map_d = new HashMap<String,Object>();
 						Integer lqId_old = lq.getId();
 						map_d.put("lqId", lqId_old);
-						Integer quetoLoreId = lq.getLoreInfo().getId();
-						
+						Integer quoteLoreId = lq.getLoreInfo().getId();
+						String[] loreInfo = CommonTools.getRealLoreInfo(quoteLoreId, loreId);//当前题库的指定版本下的知识点
+						map_d.put("currLoreId", Integer.parseInt(loreInfo[0]));
+						map_d.put("currLoreName", Integer.parseInt(loreInfo[1]));
 						map_d.put("lqType", lq.getQueType());
+						map_d.put("loreType", lq.getLoreTypeName());
 						map_d.put("lqSub", lq.getQueSub());
 						map_d.put("answerA", lq.getA());
 						map_d.put("answerB", lq.getB());
@@ -1641,7 +1644,12 @@ public class OnlineStudyAction extends DispatchAction {
 							LoreQuestion lq = lqList_old.get(i);
 							Map<String,Object> map_d = new HashMap<String,Object>();
 							map_d.put("lqId", lq.getId());
+							Integer quoteLoreId = lq.getLoreInfo().getId();
+							String[] loreInfo = CommonTools.getRealLoreInfo(quoteLoreId, loreId);//当前题库的指定版本下的知识点
+							map_d.put("currLoreId", Integer.parseInt(loreInfo[0]));
+							map_d.put("currLoreName", Integer.parseInt(loreInfo[1]));
 							map_d.put("lqType", lq.getQueType());
+							map_d.put("loreType", lq.getLoreTypeName());
 							map_d.put("lqSub", lq.getQueSub());
 							map_d.put("answerA", lq.getA());
 							map_d.put("answerB", lq.getB());
@@ -1669,7 +1677,12 @@ public class OnlineStudyAction extends DispatchAction {
 							}
 							if(status.equals(1)){//过滤掉已做正确的题
 								map_d.put("lqId", lqId_old);
+								Integer quoteLoreId = lq.getLoreInfo().getId();
+								String[] loreInfo = CommonTools.getRealLoreInfo(quoteLoreId, loreId);//当前题库的指定版本下的知识点
+								map_d.put("currLoreId", Integer.parseInt(loreInfo[0]));
+								map_d.put("currLoreName", Integer.parseInt(loreInfo[1]));
 								map_d.put("lqType", lq.getQueType());
+								map_d.put("loreType", lq.getLoreTypeName());
 								map_d.put("lqSub", lq.getQueSub());
 								map_d.put("answerA", lq.getA());
 								map_d.put("answerB", lq.getB());
@@ -1710,7 +1723,12 @@ public class OnlineStudyAction extends DispatchAction {
 									}
 									if(status.equals(1)){//过滤掉已做正确的题
 										map_d.put("lqId", lqId_old);
+										Integer quoteLoreId = lq.getLoreInfo().getId();
+										String[] loreInfo = CommonTools.getRealLoreInfo(quoteLoreId, loreId);//当前题库的指定版本下的知识点
+										map_d.put("currLoreId", Integer.parseInt(loreInfo[0]));
+										map_d.put("currLoreName", Integer.parseInt(loreInfo[1]));
 										map_d.put("lqType", lq.getQueType());
+										map_d.put("loreType", lq.getLoreTypeName());
 										map_d.put("lqSub", lq.getQueSub());
 										map_d.put("answerA", lq.getA());
 										map_d.put("answerB", lq.getB());
@@ -1750,7 +1768,11 @@ public class OnlineStudyAction extends DispatchAction {
 						for(LoreQuestion lq : lqList){
 							Map<String,Object> map_d = new HashMap<String,Object>();
 							map_d.put("lqId", lq.getId());
+							String[] loreInfo = CommonTools.getRealLoreInfo(quoteLoreId, loreId);//当前题库的指定版本下的知识点
+							map_d.put("currLoreId", Integer.parseInt(loreInfo[0]));
+							map_d.put("currLoreName", Integer.parseInt(loreInfo[1]));
 							map_d.put("lqType", lq.getQueType());
+							map_d.put("loreType", lq.getLoreTypeName());
 							map_d.put("lqSub", lq.getQueSub());
 							map_d.put("answerA", lq.getA());
 							map_d.put("answerB", lq.getB());
@@ -1808,6 +1830,7 @@ public class OnlineStudyAction extends DispatchAction {
 	public ActionForward getStepQuestionData(ActionMapping mapping ,ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
+		LoreInfoManager lm = (LoreInfoManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
 		Integer currLoreId = CommonTools.getFinalInteger("nextLoreIdArray",request);//当前知识点编号
 		String loreTypeName = request.getParameter("loreTypeName");//五步类型（video,guide,loreList,example,practice）
 		Map<String,Object> map = new HashMap<String,Object>();
@@ -1871,6 +1894,9 @@ public class OnlineStudyAction extends DispatchAction {
 						for(LoreQuestion lq : lqList){
 							Map<String,Object> map_d = new HashMap<String,Object>();
 							map_d.put("lqId", lq.getId());
+							LoreInfo lore = lm.getEntityById(currLoreId);
+							map_d.put("currLoreId", currLoreId);
+							map_d.put("currLoreName", lore.getLoreName());
 							map_d.put("lqType", lq.getQueType());
 							map_d.put("lqSub", lq.getQueSub());
 							map_d.put("answerA", lq.getA());
@@ -1915,7 +1941,19 @@ public class OnlineStudyAction extends DispatchAction {
 		Integer loreId = CommonTools.getFinalInteger("loreId", request);
 		Integer studyLogId = CommonTools.getFinalInteger("studyLogId", request);
 		Integer currentLoreId = CommonTools.getFinalInteger("currentLoreId", request);//当前做题的知识点编号
-		String answerOptionArrayStr = Transcode.unescape_new1("answerOptionArray", request);
+		String answerOptionArrayStr = Transcode.unescape_new1("answerOptionArray", request);//做题时的答案选项
+		String myAnswer = Transcode.unescape_new1("myAnswer", request);//我的答案
+		Integer lqId = CommonTools.getFinalInteger("lqId", request);
+		
+		if(lqId > 0){
+			LoreQuestion lq = lqm.getEntityByLqId(lqId);
+			if(lq != null){
+				String realAnser = lq.getQueAnswer();
+				String queType = lq.getQueType();
+				String queType2 = lq.getQueType2();
+			}
+		}
+		
 		return null;
 	}
 }

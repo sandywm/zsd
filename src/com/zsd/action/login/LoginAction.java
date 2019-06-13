@@ -18,7 +18,9 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
 
 import com.zsd.factory.AppFactory;
+import com.zsd.module.RoleUserInfo;
 import com.zsd.module.User;
+import com.zsd.service.RoleUserInfoManager;
 import com.zsd.service.UserManager;
 import com.zsd.tools.CommonTools;
 import com.zsd.tools.CurrentTime;
@@ -100,11 +102,13 @@ public class LoginAction extends DispatchAction {
 	public ActionForward userLogin(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		UserManager uManager = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
+		RoleUserInfoManager ruManager = (RoleUserInfoManager) AppFactory.instance(null).getApp(Constants.WEB_ROLE_USER_INFO);
 		MD5 md5 = new MD5();
 		HttpSession session = request.getSession(false);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String account =CommonTools.getFinalStr("account",request);
-		String password=md5.calcMD5(CommonTools.getFinalStr("password",request));
+		String pwd = CommonTools.getFinalStr("password",request);
+		String password=md5.calcMD5(pwd);
 		String msg = "error";
 		if(account!=""&& password!=""){
 			boolean uFlag = uManager.userLogin(account, password);
@@ -114,8 +118,14 @@ public class LoginAction extends DispatchAction {
 				List<User> uList = uManager.listInfoByAccount(account);
 				Integer uid = uList.get(0).getId();
 				String  userAcc = uList.get(0).getUserAccount();
+				String portrait = uList.get(0).getPortrait();
 				//判断用户账号有效状态
 				Integer status = uList.get(0).getAccountStatus();
+				List<RoleUserInfo> ruList = ruManager.listUserRoleInfoByuserId(uid);
+				Integer roleId =0;
+				if(!ruList.isEmpty()){
+					roleId = ruList.get(0).getRoleInfo().getId();
+				}
 				if(status.equals(1)){//状态 0:无效,1:有效
 					Integer loginStatus = uList.get(0).getLoginStatus();//每次登陆，loginStatus自动加1，满50时恢复0状态
 					if(loginStatus < 50){
@@ -127,6 +137,14 @@ public class LoginAction extends DispatchAction {
 					uManager.updateUserLogin(uid, currdate, CommonTools.getIpAddress(request), uList.get(0).getLoginTimes() + 1, loginStatus);
 					session.setAttribute(Constants.LOGIN_USER_ID,uid);
 					session.setAttribute(Constants.LOGIN_STATUS, loginStatus);
+					session.setAttribute(Constants.LOGIN_USER_ROLE_ID, roleId);
+					if(portrait=="" || portrait == null){
+						portrait="Module/commonJs/ueditor/jsp/head/defaultHead.jpg";
+					}
+					map.put("userAcc", userAcc);
+					map.put("password", pwd);
+					map.put("portrait", portrait);
+					map.put("userId", uid);
 					msg = "success";
 				}else{//账号无效
 					msg = "lock";
