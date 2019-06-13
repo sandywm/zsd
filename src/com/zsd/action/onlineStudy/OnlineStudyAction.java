@@ -44,6 +44,7 @@ import com.zsd.service.EducationManager;
 import com.zsd.service.GradeSubjectManager;
 import com.zsd.service.LoreInfoManager;
 import com.zsd.service.LoreQuestionManager;
+import com.zsd.service.RelationZdResultManager;
 import com.zsd.service.StuSubjectEduManager;
 import com.zsd.service.StudyAllTjInfoManager;
 import com.zsd.service.StudyDetailManager;
@@ -2183,6 +2184,30 @@ public class OnlineStudyAction extends DispatchAction {
 		map.put("result", msg);
 		map.put("studyStatus", result);
 		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 当前阶段完成(最后提交动作)，修改指定logId的stepComplete,isFinish状态
+	 * @author wm
+	 * @date 2019-6-13 下午09:47:16 
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward updateLogStatus(ActionMapping mapping ,ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		UserManager um = (UserManager)AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
+		StudyLogManager slm = (StudyLogManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_LOG_INFO);
+		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
+		StudyDetailManager sdm = (StudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_STUDY_DETAIL_INFO);
+		StudyTaskManager stm = (StudyTaskManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_TASK_INFO);
+		RelationZdResultManager rzrManager = (RelationZdResultManager)AppFactory.instance(null).getApp(Constants.WEB_RELATION_ZD_RESULT_INFO);
+		
+		
 		return null;
 	}
 }
