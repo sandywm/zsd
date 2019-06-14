@@ -31,15 +31,24 @@ import com.zsd.util.Constants;
 public class CommonTools {
 	
 	/**
-	 * 获取session中的用户ID
+	 * 获取session/页面传递过来的用户ID
+	 * PC端通过session获取，移动端通过页面获取
+	 * @author wm
+	 * @date 2019-6-14 下午05:54:38
 	 * @param request
 	 * @return
 	 */
 	public static Integer getLoginUserId(HttpServletRequest request){
-        Integer userId = (Integer)request.getSession(false).getAttribute(Constants.LOGIN_USER_ID);
-        if(userId == null){
-        	return 0;
-        }
+		String cilentInfo = CommonTools.getCilentInfo_new(request);
+		Integer userId = 0;
+		if(cilentInfo.equals("pc")){
+			userId = (Integer)request.getSession(false).getAttribute(Constants.LOGIN_USER_ID);
+	        if(userId == null){
+	        	return 0;
+	        }
+		}else{
+			userId = CommonTools.getFinalInteger("userId", request);
+		}
         return userId;
 	}
 	
@@ -51,11 +60,17 @@ public class CommonTools {
 	 * @return
 	 */
 	public static Integer getLoginStatus(HttpServletRequest request){
-        Integer loginTimes = (Integer)request.getSession(false).getAttribute(Constants.LOGIN_STATUS);
-        if(loginTimes == null){
-        	return 0;
-        }
-        return loginTimes;
+		String cilentInfo = CommonTools.getCilentInfo_new(request);
+		Integer loginStatus = 0;
+		if(cilentInfo.equals("pc")){
+			loginStatus = (Integer)request.getSession(false).getAttribute(Constants.LOGIN_STATUS);
+	        if(loginStatus == null){
+	        	return 0;
+	        }
+		}else{
+			loginStatus = CommonTools.getFinalInteger("loginStatus", request);
+		}
+        return loginStatus;
 	}
 	
 	/**
@@ -66,10 +81,16 @@ public class CommonTools {
 	 * @return
 	 */
 	public static String getLoginAccount(HttpServletRequest request){
-        String account = String.valueOf(request.getSession(false).getAttribute(Constants.LOGIN_ACCOUNT));
-        if(account.equals("null")){
-        	return "";
-        }
+		String cilentInfo = CommonTools.getCilentInfo_new(request);
+		String account = "";
+		if(cilentInfo.equals("pc")){
+			account = String.valueOf(request.getSession(false).getAttribute(Constants.LOGIN_ACCOUNT));
+	        if(account.equals("null")){
+	        	return "";
+	        }
+		}else{
+			account = CommonTools.getFinalStr("account", request);
+		}
         return account;
 	}
 	
@@ -79,10 +100,16 @@ public class CommonTools {
 	 * @return
 	 */
 	public static Integer getLoginRoleId(HttpServletRequest request){
-        Integer roleId = (Integer)request.getSession(false).getAttribute(Constants.LOGIN_USER_ROLE_ID);
-        if(roleId == null){
-        	return 0;
-        }
+		String cilentInfo = CommonTools.getCilentInfo_new(request);
+		Integer roleId = 0;
+		if(cilentInfo.equals("pc")){
+			roleId = (Integer)request.getSession(false).getAttribute(Constants.LOGIN_USER_ROLE_ID);
+	        if(roleId == null){
+	        	return 0;
+	        }
+		}else{
+			roleId = CommonTools.getFinalInteger("roleId", request);
+		}
         return roleId;
 	}
 	
@@ -712,6 +739,6 @@ public class CommonTools {
 	    String bb = "7389:7392:7394|7396|7390|7393:7397|7405:7406|7407:7431|7432:7433:7436|7446:7448";
 	    System.out.println(CommonTools.getCurrentStudyPath_new(bb, 7397));
 //	    System.out.println(CommonTools.getStudyPath_new(bb, 7397));
-	    System.out.println(CommonTools.getSelfArea_taobao("123.52.203.75"));
+	    System.out.println(CurrentTime.convertTimestampToString_1(CurrentTime.getCurrentTime1()));
 	}
 }

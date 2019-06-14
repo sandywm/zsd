@@ -28,7 +28,8 @@ public class UserManagerImpl implements UserManager {
 			userDao = (UserDao) DaoFactory.instance(null).getDao(Constants.DAO_USER_INFO);
 			Session sess  = HibernateUtil.currentSession();
 			tran = sess.beginTransaction();
-			User user = new User(userAccount, "", realName, "", password, "", mobile, "", "", "", "", lastLoginDate, lastLoginIp, signDate, 0, 0, 1, 0, schoolId, endDate, 0, 0, yearSystem, "", 0, 0, prov, city);
+			User user = new User(userAccount, "", realName, "", password, "", mobile, "Module/commonJs/ueditor/jsp/head/defaultHead.jpg", "", "", "", lastLoginDate, 
+					lastLoginIp, signDate, 0, 0, 1, 0, schoolId, endDate, 0, 0, yearSystem, "", 0, 0, prov, city);
 			userDao.save(sess, user);
 			tran.commit();
 			return user.getId();
@@ -49,11 +50,21 @@ public class UserManagerImpl implements UserManager {
 			tran = sess.beginTransaction();
 			User user = userDao.get(sess, id);
 			if(user != null){
-				user.setNickName(nickName);
-				user.setRealName(realName);
-				user.setSex(sex);
-				user.setBirthday(birthday);
-				user.setQq(qq);
+				if(!nickName.equals("")){
+				  user.setNickName(nickName);
+				}
+				if(!realName.equals("")){
+				  user.setRealName(realName);
+				}
+				if(!sex.equals("")){
+				  user.setSex(sex);
+				}
+				if(!birthday.equals("")){
+				  user.setBirthday(birthday);
+				}
+				if(!qq.equals("")){
+				  user.setQq(qq);
+				}
 				tran.commit();
 				return true;
 			}

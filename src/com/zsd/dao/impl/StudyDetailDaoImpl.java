@@ -51,7 +51,13 @@ public class StudyDetailDaoImpl implements StudyDetailDao{
 	public List<StudyDetailInfo> findCurrentRightInfoByLogId(Session sess,
 			Integer studyLogId, Integer loreId, String loreTypeName) {
 		// TODO Auto-generated method stub
-		String hql = " from StudyDetailInfo as sd where sd.studyLogInfo.id = "+studyLogId + " and sd.loreQuestion.loreTypeName = '"+loreTypeName+"' and sd.result = 1 and sd.loreInfo.id = "+loreId;
+		String hql = " from StudyDetailInfo as sd where sd.studyLogInfo.id = "+studyLogId +" and sd.result = 1";
+		if(loreId > 0){
+			hql += " and sd.loreInfo.id = "+loreId; 
+		}
+		if(!loreTypeName.equals("")){
+			hql += " and sd.loreQuestion.loreTypeName = '"+loreTypeName+"'";
+		}
 		return sess.createQuery(hql).list();
 	}
 

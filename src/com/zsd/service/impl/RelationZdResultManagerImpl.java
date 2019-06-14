@@ -57,19 +57,19 @@ public class RelationZdResultManagerImpl implements RelationZdResultManager{
 			tran = sess.beginTransaction();
 			RelationZdResult rz = rzDao.getEntityById(sess, id);
 			if(rz != null){
-				if(zdxzdFlag > -2){
+				if(zdxzdFlag > -1){
 					rz.setZdxzdFlag(zdxzdFlag);
 				}
-				if(studyFlag > -2){
+				if(studyFlag > -1){
 					rz.setStudyFlag(studyFlag);				
 								}
-				if(zczdFlag > -2){
+				if(zczdFlag > -1){
 					rz.setZczdFlag(zczdFlag);
 				}
-				if(studyTimes > -2){
+				if(studyTimes > -1){
 					rz.setStudyTimes(studyTimes);
 				}
-				if(zczdTimes > -2){
+				if(zczdTimes > -1){
 					rz.setZczdTimes(zczdTimes);
 				}
 				rzDao.update(sess, rz);

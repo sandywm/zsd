@@ -61,8 +61,8 @@ public interface StudyDetailDao {
 	 * @date 2019-6-3 上午11:52:43
 	 * @param sess
 	 * @param studyLogId 学习记录编号
-	 * @param loreId 当前知识典编号
-	 * @param loreTypeName 答题类型
+	 * @param loreId 当前知识典编号(0不查询)
+	 * @param loreTypeName 答题类型(""不查询)
 	 * @return
 	 */
 	List<StudyDetailInfo> findCurrentRightInfoByLogId(Session sess,Integer studyLogId,Integer loreId,String loreTypeName);

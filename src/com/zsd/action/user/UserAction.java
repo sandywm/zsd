@@ -139,15 +139,9 @@ public class UserAction extends DispatchAction {
 			msg="exist"; //用户名存在
 		}else{
 			//1.用户注册
-			userId=uManager.addUser(userAccount, realName, password, mobile, lastLoginDate, lastLoginIp, signDate, schoolId, CurrentTime.getFinalDateTime(30), yearSystem, prov, city);
-			
-			String portrait="Module/commonJs/ueditor/jsp/head/defaultHead.jpg";
-			map.put("portrait", portrait);//头像
-			map.put("userAcc", userAccount);//账号
-			map.put("password", pwd);// 密码
-			map.put("userId", userId); // 用户编号
+			userId=uManager.addUser(userAccount, realName, password, mobile, lastLoginDate, lastLoginIp, 
+					signDate, schoolId, CurrentTime.getFinalDateTime(30), yearSystem, prov, city);
 		}
-		
 		if(roleName.equals("学生")){
 				if(userId>0){
 					List<RoleInfo> rList = rManager.listRoleInfo(roleName);
@@ -201,7 +195,6 @@ public class UserAction extends DispatchAction {
 								//绑定班级管理员角色
 								Integer ruNo =ruManager.addRoleUserInfo(cMid, mRoId, pr, ct, county, "", schType, schoolId, gradeNo, ciId);
 									
-								
 								if(ruNo>0){//班内学科老师
 									String gName = Convert.NunberConvertChinese(gradeNo);//年级名
 									List<GradeSubject> gslist = gsManager.listSpecInfoByGname(gName);//根据年级名获取学科列表
@@ -216,9 +209,7 @@ public class UserAction extends DispatchAction {
 											ruManager.addRoleUserInfo(teaId, teaRoId, "", "", "", "", 0, 0, 0, 0);
 											ucManager.addUcInfo(teaId, ciId, teaRoId); //绑定班级
 										}
-										
 									}
-									           
 								}
 							}
 						}
@@ -251,7 +242,47 @@ public class UserAction extends DispatchAction {
 			}
 		  }
 		}
-		
+		if(msg.equals("success")){
+			//直接执行登录
+			boolean uFlag = uManager.userLogin(userAccount, pwd);
+			if(uFlag){
+				//登录成功
+				String currdate = CurrentTime.getCurrentTime();
+				User user = uList.get(0);
+				Integer uid = user.getId();
+				String  userAcc = user.getUserAccount();
+				String portrait = user.getPortrait();
+				//判断用户账号有效状态
+				Integer status = user.getAccountStatus();
+				List<RoleUserInfo> ruList = ruManager.listUserRoleInfoByuserId(uid);
+				Integer roleId =0;
+				if(!ruList.isEmpty()){
+					roleId = ruList.get(0).getRoleInfo().getId();
+				}
+				if(status.equals(1)){//状态 0:无效,1:有效
+					Integer loginStatus = uList.get(0).getLoginStatus();//每次登陆，loginStatus自动加1，满50时恢复0状态
+					if(loginStatus < 50){
+						loginStatus++;
+					}else{
+						loginStatus = 0;
+					}
+					//修改用户的登录IP、登录时间、登录次数
+					uManager.updateUserLogin(uid, currdate, CommonTools.getIpAddress(request), uList.get(0).getLoginTimes() + 1, loginStatus);
+					map.put("roleId", roleId);
+					map.put("loginStatus", loginStatus);
+					map.put("userAcc", userAcc);
+					map.put("password", pwd);
+					map.put("portrait", portrait);
+					map.put("userId", uid);
+					msg = "success";
+				}else{//账号无效
+					msg = "lock";
+				}
+				msg = "success";
+			}else{
+				msg = "fail";
+			}
+		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
 		return null;
@@ -392,7 +423,7 @@ public class UserAction extends DispatchAction {
 	public ActionForward updateUserByEmail(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		UserManager uManager = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
-		Integer userId=(Integer) request.getSession().getAttribute("userId");
+		Integer userId=CommonTools.getFinalInteger("userId",request);
 		String email=CommonTools.getFinalStr("email",request);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "fail";
@@ -419,7 +450,7 @@ public class UserAction extends DispatchAction {
 	public ActionForward updateUserByMobile(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		UserManager uManager = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
-		Integer userId=(Integer) request.getSession().getAttribute("userId");
+		Integer userId=CommonTools.getFinalInteger("userId",request);
 		String mobile=CommonTools.getFinalStr("mobile",request);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "fail";
@@ -446,7 +477,7 @@ public class UserAction extends DispatchAction {
 	public ActionForward updateUserByPwd(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		UserManager uManager = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
-		Integer userId=(Integer) request.getSession().getAttribute("userId");
+		Integer userId=CommonTools.getFinalInteger("userId",request);
 		String password=new MD5().calcMD5(CommonTools.getFinalStr("password", request));
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "fail";
@@ -496,7 +527,7 @@ public class UserAction extends DispatchAction {
 	public ActionForward updateUserByStuInfo(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		UserManager uManager = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
-		Integer userId=CommonTools.getLoginUserId(request);
+		Integer userId=CommonTools.getFinalInteger("userId",request);
 		String sex=CommonTools.getFinalStr("sex",request);
 		String birthday=CommonTools.getFinalStr("birthday",request);
 		String qq=CommonTools.getFinalStr("qq",request);
@@ -527,7 +558,7 @@ public class UserAction extends DispatchAction {
 	public ActionForward updateUserByPortrait(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		UserManager uManager = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
-		Integer userId=CommonTools.getLoginUserId(request);
+		Integer userId=CommonTools.getFinalInteger("userId",request);
 		String portrait=CommonTools.getFinalStr("portrait",request);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "fail";
@@ -563,18 +594,21 @@ public class UserAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		UserManager uManager = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
 		Map<String,Object> map = new HashMap<String,Object>();
-		Integer userId=CommonTools.getLoginUserId(request);
+		Integer userId=CommonTools.getFinalInteger("userId",request);
 		List<User> uList = uManager.listEntityById(userId);
 		User user = uList.get(0);
-		map.put("id", user.getId());
 		map.put("account", user.getUserAccount());
 		map.put("nickName", user.getNickName());
 		map.put("realName", user.getRealName());
 		map.put("birthDay", user.getBirthday());
-		map.put("sex", user.getSex());
+		String sex="女";
+		if(user.getSex().equals("m")){
+			sex="男";
+		}
+		map.put("sex", sex);
 		map.put("email",user.getEmail());
 		map.put("mobile", user.getMobile());
-		map.put("qq", user.getQq());
+		map.put("portrait", user.getPortrait());
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}

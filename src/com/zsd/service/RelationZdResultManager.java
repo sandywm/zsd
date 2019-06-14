@@ -27,11 +27,11 @@ public interface RelationZdResultManager {
 	 * @author wm
 	 * @date 2019-5-30 上午10:08:39
 	 * @param id 主键
-	 * @param zdxzdFlag 针对性诊断标记（-2不修改）
-	 * @param studyFlag 学习标记（-2不修改）
-	 * @param zczdFlag 再次诊断标记（-2不修改）
-	 * @param studyTimes 学习次数（-2不修改）
-	 * @param zczdTimes 再次诊断次数（-2不修改）
+	 * @param zdxzdFlag 针对性诊断标记（-1不修改）
+	 * @param studyFlag 学习标记（-1不修改）
+	 * @param zczdFlag 再次诊断标记（-1不修改）
+	 * @param studyTimes 学习次数（-1不修改）
+	 * @param zczdTimes 再次诊断次数（-1不修改）
 	 * @return
 	 * @throws WEBException
 	 */

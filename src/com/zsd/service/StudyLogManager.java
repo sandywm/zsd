@@ -1,6 +1,7 @@
 package com.zsd.service;
 
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import com.zsd.exception.WEBException;
@@ -58,6 +59,21 @@ public interface StudyLogManager {
 			Integer isFinish,Integer currentGold,Integer access,String addTime)throws WEBException;
 	
 	/**
+	 * 根据主键修改答题记录的本阶段的完成状态和整个知识典的完成状态
+	 * @author wm
+	 * @date 2019-6-14 下午03:39:05
+	 * @param id
+	 * @param step 阶段(为0时不修改)
+	 * @param taskNumber 任务数(为0时不修改)
+	 * @param stepComplete 该阶段完成状态（题有无做完）
+	 * @param isFinish 该知识点完成状态
+	 * @return
+	 * @throws WEBException
+	 */
+	boolean updateLogStatus(Integer id, Integer step,Integer stepComplete,
+			Integer isFinish,Integer access,Integer taskNumber) throws WEBException; 
+	
+	/**
 	 * 根据主键获取学习记录
 	 * @author wm
 	 * @date 2019-5-29 上午08:59:50
@@ -92,5 +108,28 @@ public interface StudyLogManager {
 	 * @throws WEBException
 	 */
 	List<StudyLogInfo> listLastStudyInfoByOpt(Integer userId,Integer loreId,Integer logType)throws WEBException;
+	
+	/**
+	 * 增加系统评价
+	 * @author wm
+	 * @date 2019-6-14 下午04:52:44
+	 * @param id 主键
+	 * @param sysAssess 系统评价
+	 * @param finalScore 分数
+	 * @return
+	 * @throws WEBException
+	 */
+	boolean addSysAssess(Integer id,String sysAssess,Integer finalScore)throws WEBException;
+	
+	/**
+	 * 增加网络导师评价
+	 * @author wm
+	 * @date 2019-6-14 下午04:52:53
+	 * @param id 主键
+	 * @param teaAssess 网络导师评价
+	 * @return
+	 * @throws WEBException
+	 */
+	boolean addTeaAssess(Integer id,String teaAssess)throws WEBException;
 	
 }

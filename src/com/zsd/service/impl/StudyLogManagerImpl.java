@@ -13,6 +13,7 @@ import com.zsd.exception.WEBException;
 import com.zsd.factory.DaoFactory;
 import com.zsd.module.StudyLogInfo;
 import com.zsd.service.StudyLogManager;
+import com.zsd.tools.CurrentTime;
 import com.zsd.tools.HibernateUtil;
 import com.zsd.util.Constants;
 
@@ -164,6 +165,92 @@ public class StudyLogManagerImpl implements StudyLogManager{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			throw new WEBException("根据学生编号、知识点编号获取最后一次学习记录时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public boolean updateLogStatus(Integer id, Integer step,
+			Integer stepComplete, Integer isFinish, Integer access,
+			Integer taskNumber) throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			slDao = (StudyLogDao) DaoFactory.instance(null).getDao(Constants.DAO_STUDY_LOG_INFO);
+			Session sess = HibernateUtil.currentSession();
+			tran = sess.beginTransaction();
+			StudyLogInfo sl = slDao.getEntityById(sess, id);
+			if(sl != null){
+				if(step > 0){
+					sl.setStep(step);
+				}
+				if(taskNumber > 0){
+					sl.setTaskNumber(taskNumber);
+				}
+				sl.setStepComplete(stepComplete);
+				sl.setIsFinish(isFinish);
+				sl.setAccess(access);
+				sl.setAddTime(CurrentTime.getCurrentTime());
+				slDao.update(sess, sl);
+				tran.commit();
+				return true;
+			}
+			return false;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new WEBException("修改指定logId的step,stepComplete,isFinish,access状态时异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public boolean addSysAssess(Integer id, String sysAssess, Integer finalScore)
+			throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			slDao = (StudyLogDao) DaoFactory.instance(null).getDao(Constants.DAO_STUDY_LOG_INFO);
+			Session sess = HibernateUtil.currentSession();
+			tran = sess.beginTransaction();
+			StudyLogInfo sl = slDao.getEntityById(sess, id);
+			if(sl != null){
+				sl.setSysAssess(sysAssess);
+				sl.setFinalScore(finalScore);
+				slDao.update(sess, sl);
+				tran.commit();
+				return true;
+			}
+			return false;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new WEBException("增加系统评价时异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public boolean addTeaAssess(Integer id, String teaAssess)
+			throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			slDao = (StudyLogDao) DaoFactory.instance(null).getDao(Constants.DAO_STUDY_LOG_INFO);
+			Session sess = HibernateUtil.currentSession();
+			tran = sess.beginTransaction();
+			StudyLogInfo sl = slDao.getEntityById(sess, id);
+			if(sl != null){
+				sl.setTeaAssess(teaAssess);
+				slDao.update(sess, sl);
+				tran.commit();
+				return true;
+			}
+			return false;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new WEBException("增加导师评价时异常!");
 		} finally{
 			HibernateUtil.closeSession();
 		}
