@@ -72,4 +72,17 @@ public interface StudyStuTjInfoDao {
 	 * @return
 	 */
 	List<StudyStuTjInfo> findInfoByOpt(Session sess,Integer userId,Integer subId,String startTime,String endTime);
+	/**
+	 * 根据学习时间、学生编号、学科编号获取学生个人学习统计列表
+	 * @author zong
+	 * 2019年6月13日下午5:31:00
+	 * @param sess
+	 * @param userId 学生编号
+	 * @param subId 学科编号
+	 * @param studyDate 学习时间
+	 * @return
+	 */
+	List<StudyStuTjInfo> findInfoByOption(Session sess,Integer userId,Integer subId,String studyDate);
+	
+	
 }

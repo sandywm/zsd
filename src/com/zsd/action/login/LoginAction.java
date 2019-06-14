@@ -10,7 +10,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -104,7 +103,7 @@ public class LoginAction extends DispatchAction {
 		UserManager uManager = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
 		RoleUserInfoManager ruManager = (RoleUserInfoManager) AppFactory.instance(null).getApp(Constants.WEB_ROLE_USER_INFO);
 		MD5 md5 = new MD5();
-		HttpSession session = request.getSession(false);
+		//HttpSession session = request.getSession(false);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String account =CommonTools.getFinalStr("account",request);
 		String pwd = CommonTools.getFinalStr("password",request);
@@ -135,12 +134,16 @@ public class LoginAction extends DispatchAction {
 					}
 					//修改用户的登录IP、登录时间、登录次数
 					uManager.updateUserLogin(uid, currdate, CommonTools.getIpAddress(request), uList.get(0).getLoginTimes() + 1, loginStatus);
-					session.setAttribute(Constants.LOGIN_USER_ID,uid);
+					/*session.setAttribute(Constants.LOGIN_USER_ID,uid);
 					session.setAttribute(Constants.LOGIN_STATUS, loginStatus);
-					session.setAttribute(Constants.LOGIN_USER_ROLE_ID, roleId);
+					session.setAttribute(Constants.LOGIN_USER_ROLE_ID, roleId);*/
 					if(portrait.equals("")){
 						portrait="Module/commonJs/ueditor/jsp/head/defaultHead.jpg";
 					}
+					
+					//map.put("lastLoginDate", currdate);
+					map.put("roleId", roleId);
+					map.put("loginStatus", loginStatus);
 					map.put("userAcc", userAcc);
 					map.put("password", pwd);
 					map.put("portrait", portrait);

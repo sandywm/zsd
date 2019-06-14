@@ -118,7 +118,7 @@ public class BaseInfoAction extends DispatchAction {
 	
 	/**
 	 * 获取用户账号登录状态
-	 * success:账号正常，loginOut：账号别处登录,sessionOut:60分钟未登陆
+	 * success:账号正常，loginOut：账号别处登录,sessionLose:超过3天未登陆,accountInvalid(账号无效)
 	 * @author wm
 	 * @date 2019-6-12 上午10:09:40
 	 * @param mapping
@@ -131,31 +131,32 @@ public class BaseInfoAction extends DispatchAction {
 	public ActionForward checkUserLoginStatus(ActionMapping mapping,ActionForm form,
 			HttpServletRequest request,HttpServletResponse response) throws Exception{
 		UserManager um = (UserManager)AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
-		HttpSession session = request.getSession(false);
-		Integer login_status_sess = -2;
 		Integer login_status_dataBase = -1;
-		Integer userId = 0;
-		String result = "";//用户账号状态
-		if(session != null){
-			login_status_sess = CommonTools.getLoginStatus(request);
-			userId = CommonTools.getLoginUserId(request);
-			if(userId > 0){
-				List<User> uList = um.listEntityById(userId);
-				if(uList.size() > 0){
-					login_status_dataBase = uList.get(0).getLoginStatus();
-					if(login_status_dataBase.equals(login_status_sess)){
-						result = "success";//账号正常
+		String result = "accountError";//用户账号状态--账号错误(默认)
+		Integer userId_local = CommonTools.getFinalInteger("userId", request);
+		Integer loginStatus_local = CommonTools.getFinalInteger("loginStatus", request);
+		String lastLoginDate_db = "";
+		String currDate = CurrentTime.getStringDate();
+		if(userId_local > 0 && loginStatus_local > 0){
+			List<User> uList = um.listEntityById(userId_local);
+			if(uList.size() > 0){
+				if(uList.get(0).getAccountStatus().equals(1)){
+					lastLoginDate_db = uList.get(0).getLastLoginDate().substring(0, 10);
+					Integer diffDays = CurrentTime.compareDate(lastLoginDate_db, currDate);
+					if(diffDays > 3){
+						result = "sessionLose";//3天无操作
 					}else{
-						result = "loginOut";//账号别处登录
+						login_status_dataBase = uList.get(0).getLoginStatus();
+						if(login_status_dataBase.equals(loginStatus_local)){
+							result = "success";//账号正常
+						}else{
+							result = "loginOut";//账号别处登录
+						}
 					}
 				}else{
-					result = "loginOut";//账号别处登录
+					result = "acountLock";//账号被锁定
 				}
-			}else{
-				result = "sessionOut";//60分钟无操作
 			}
-		}else{
-			result = "sessionOut";//60分钟无操作
 		}
 		Map<String,String> map = new HashMap<String,String>();
 		map.put("result", result);

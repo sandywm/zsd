@@ -72,5 +72,15 @@ public interface StudyAllTjInfoDao {
 	 * @return
 	 */
 	List<StudyAllTjInfo> findInfoByOpt(Session sess,Integer subId,String startTime,String endTime);
+	/**
+	 * 根据科目编号 ,学习时间获取全平台知识点记录
+	 * @author zong
+	 * 2019年6月13日下午5:42:11
+	 * @param sess
+	 * @param subId 学科编号
+	 * @param studyDate 学习时间
+	 * @return
+	 */
+	List<StudyAllTjInfo> findInfoByOpt(Session sess,Integer subId,String studyDate);
 
 }

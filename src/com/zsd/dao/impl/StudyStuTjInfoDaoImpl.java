@@ -46,4 +46,11 @@ public class StudyStuTjInfoDaoImpl implements StudyStuTjInfoDao {
 		return sess.createQuery(hql).list();
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<StudyStuTjInfo> findInfoByOption(Session sess, Integer userId,Integer subId, String studyDate) {
+		String hql = " from StudyStuTjInfo as sst where sst.studyDate >= '"+ studyDate +"' and sst.user.id = "+ userId + " and sst.subject.id = "+subId;
+		return sess.createQuery(hql).list();
+	}
+
 }
