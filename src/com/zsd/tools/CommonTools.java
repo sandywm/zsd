@@ -114,7 +114,7 @@ public class CommonTools {
 	}
 	
 	/**
-	 * 获取session中的用户角色名称
+	 * 获取session中的用户角色名称(先不启用)
 	 * @param request
 	 * @return
 	 */

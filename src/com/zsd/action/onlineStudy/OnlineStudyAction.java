@@ -109,10 +109,8 @@ public class OnlineStudyAction extends DispatchAction {
 		StuSubjectEduManager ssem = (StuSubjectEduManager)  AppFactory.instance(null).getApp(Constants.WEB_STU_SUB_EDU_INFO);
 		Integer userId = CommonTools.getLoginUserId(request);
 		Integer roleId = CommonTools.getLoginRoleId(request);
-		String roleName = CommonTools.getLoginRoleName(request);
 		userId = 1;
 		roleId = 2;
-		roleName = "学生";
 		Map<String,Object> map = new HashMap<String,Object>();
 		Integer subId = CommonTools.getFinalInteger("subId", request);//学科编号
 		Integer ediId = CommonTools.getFinalInteger("ediId", request);//出版社编号
@@ -121,7 +119,7 @@ public class OnlineStudyAction extends DispatchAction {
 		List<Object> list_edu = new ArrayList<Object>();
 		String msg = "error";
 		Integer gsId_curr = 0;
-		if(roleName.equals("学生")){
+		if(roleId.equals(2)){
 			msg = "success";
 			String gradeName = "";
 			//获取该学生的班级,然后获取该班级所在年级
@@ -1964,7 +1962,7 @@ public class OnlineStudyAction extends DispatchAction {
 		boolean flag = false;
 		String[] answerOptionStr = {"","","","","",""};
 		String currTime = CurrentTime.getCurrentTime();
-		Integer stuId = CommonTools.getFinalInteger("userId", request);
+		Integer stuId = CommonTools.getLoginUserId(request);
 		Integer subjectId = 0;
 		Integer step = 1;
 		Integer stepComplete = 0;//0:未做完题，1:做完题
@@ -2225,7 +2223,7 @@ public class OnlineStudyAction extends DispatchAction {
 		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
 		StudyDetailManager sdm = (StudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_STUDY_DETAIL_INFO);
 		RelationZdResultManager rzrm = (RelationZdResultManager)AppFactory.instance(null).getApp(Constants.WEB_RELATION_ZD_RESULT_INFO);
-		Integer stuId = CommonTools.getFinalInteger("userId", request);
+		Integer stuId = CommonTools.getLoginUserId(request);
 		String submitType = CommonTools.getFinalStr("type", request);//巩固训练传study，其他不传
 		String currentStepLoreIdStr = CommonTools.getFinalStr("currentStepLoreArray", request);
 		Integer loreId = CommonTools.getFinalInteger("loreId", request);//最初的知识点
