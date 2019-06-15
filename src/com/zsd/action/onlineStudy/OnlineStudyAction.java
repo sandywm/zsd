@@ -198,7 +198,7 @@ public class OnlineStudyAction extends DispatchAction {
 									}
 								}
 							}else{
-								msg = "noStudyInfo";//mei
+								msg = "noInfo";//mei
 								map.put("selTxt", gradeName+"("+em.listInfoByShowStatus(2, -1).get(0).getEdiName()+")");
 							}
 						}else if(opt.equals("manu")){
@@ -315,7 +315,7 @@ public class OnlineStudyAction extends DispatchAction {
 				List<Object> list_d = new ArrayList<Object>();
 				Integer i = 1;
 				for(Chapter cpt : cptList){
-					
+					//默认获取第一单元的知识点，其他单元的通过单独点击获取
 					Map<String,Object> map_d = new HashMap<String,Object>();
 					map_d.put("cptId", cpt.getId());
 					map_d.put("cptName", cpt.getChapterName());
@@ -330,8 +330,10 @@ public class OnlineStudyAction extends DispatchAction {
 							//0:未学习,1:未通过,2:已经掌握
 							if(slList.size() > 0){
 								map_d_1.put("studyStatus", slList.get(0).getIsFinish());
+								map_d.put("studyLogId", slList.get(0).getId());//studyLogId
 							}else{
 								map_d_1.put("studyStatus", 0);
+								map_d.put("studyLogId", 0);
 							}
 							list_d_1.add(map_d_1);
 						}
@@ -387,7 +389,7 @@ public class OnlineStudyAction extends DispatchAction {
 				}
 				list_d.add(map_d);
 			}
-			map.put("cptList", list_d);
+			map.put("loreList", list_d);
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
@@ -409,9 +411,7 @@ public class OnlineStudyAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
 		StudyLogManager slm = (StudyLogManager) AppFactory.instance(null).getApp(Constants.WEB_STUDY_LOG_INFO);
-		Integer loreId = CommonTools.getFinalInteger("loreId", request);
 		Integer studyLogId = CommonTools.getFinalInteger("studyLogId", request);
-		Integer stuId = CommonTools.getLoginUserId(request);
 		boolean studyFlag = false;
 		Map<String,Boolean> map = new HashMap<String,Boolean>();
 		//自学的知识点一天只能完成一次，家庭作业只要状态是完成就不能再做(家庭不用在这判断)
@@ -419,7 +419,8 @@ public class OnlineStudyAction extends DispatchAction {
 		if(studyLogId > 0){
 			slList.add(slm.getEntityById(studyLogId));
 		}else{
-			slList = slm.listLastStudyInfoByOpt(stuId, loreId, 1);
+//			slList = slm.listLastStudyInfoByOpt(stuId, loreId, 1);
+//			studyLogId等于0表示没有学习记录
 		}
 		if(slList.size() == 0){
 			studyFlag = true;
@@ -573,8 +574,12 @@ public class OnlineStudyAction extends DispatchAction {
 			if(lqList.size() > 0){
 				msg = "success";
 				if(loreTypeName.equals("知识讲解")){
-					map.put("sourceDetail", lqList.get(0).getQueAnswer());
-					
+					String sourceDetail = lqList.get(0).getQueAnswer();
+					if(!sourceDetail.equals("")){
+						map.put("sourceDetail", sourceDetail);
+					}else{
+						msg = "noInfo";
+					}
 				}else if(loreTypeName.equals("点拨指导") && loreTypeName.equals("知识清单")){
 					Integer lqId = lqList.get(0).getId();
 					List<LoreQuestionSubInfo> lqsList = lqm.listLQSInfoByLqId(lqId,"");
@@ -588,6 +593,7 @@ public class OnlineStudyAction extends DispatchAction {
 							map_d.put("lqsContent", lqs.getLqsContent());
 							list_d.add(map_d);
 						}
+						map.put("sourceDetailList", list_d);
 					}else{
 						msg = "noInfo";
 					}
@@ -602,7 +608,7 @@ public class OnlineStudyAction extends DispatchAction {
 						map_d.put("queResolution", lq.getQueResolution());
 						list_d.add(map_d);
 					}
-					map.put("sourceDetail", list_d);
+					map.put("sourceDetailList", list_d);
 				}else if(loreTypeName.equals("practice")){//巩固训练
 					
 				}
