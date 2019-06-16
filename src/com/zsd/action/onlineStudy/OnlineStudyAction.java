@@ -563,9 +563,11 @@ public class OnlineStudyAction extends DispatchAction {
 	 */
 	public ActionForward getSourceDetail(ActionMapping mapping ,ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		Integer stuId = CommonTools.getLoginUserId(request);
 		Integer loreId =  CommonTools.getFinalInteger("loreId", request);
 		String loreTypeName = Transcode.unescape_new1("loreTypeName", request);
 		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
+		StudyMapManager smm = (StudyMapManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_MAP_INFO);
 		Integer quoteLoreId = CommonTools.getQuoteLoreId(loreId);
 		String msg = "noInfo";
 		Map<String,Object> map = new HashMap<String,Object>();
@@ -573,44 +575,79 @@ public class OnlineStudyAction extends DispatchAction {
 			List<LoreQuestion> lqList = lqm.listInfoByLoreId(quoteLoreId, loreTypeName, 0);
 			if(lqList.size() > 0){
 				msg = "success";
-				if(loreTypeName.equals("知识讲解")){
-					String sourceDetail = lqList.get(0).getQueAnswer();
-					if(!sourceDetail.equals("")){
-						map.put("sourceDetail", sourceDetail);
-					}else{
-						msg = "noInfo";
+				List<StudyMapInfo> smList = smm.listInfoByOpt(stuId, loreId);
+				if(smList.size() > 0){//存在学习记录
+					StudyMapInfo sm = smList.get(0);
+					Integer currStep = sm.getCurrStep();
+					if(currStep.equals(0)){
+						if(loreTypeName.equals("知识讲解")){
+							smm.updateStepById(sm.getId(), 1);
+						}else{
+							msg = "zsjjNotStart";
+						}
+					}else if(currStep.equals(1)){
+						if(loreTypeName.equals("点拨指导")){
+							smm.updateStepById(sm.getId(), 2);
+						}else if(loreTypeName.equals("知识讲解")){
+							//知识讲解能点开，但是不更新层数
+						}else{
+							msg = "dbzdNotStart";
+						}
+					}else if(currStep.equals(2)){
+						if(loreTypeName.equals("知识清单")){
+							smm.updateStepById(sm.getId(), 3);
+						}else if(loreTypeName.equals("知识讲解") || loreTypeName.equals("点拨指导")){
+							//知识讲解,点拨指导都能点开，但是不更新层数
+						}else{//解题示范不能点开
+							msg = "zsqdNotStart";
+						}
+					}else if(currStep.equals(3)){
+						if(loreTypeName.equals("解题示范")){
+							smm.updateStepById(sm.getId(), 4);
+						}
+						//其他都能打开
 					}
-				}else if(loreTypeName.equals("点拨指导") && loreTypeName.equals("知识清单")){
-					Integer lqId = lqList.get(0).getId();
-					List<LoreQuestionSubInfo> lqsList = lqm.listLQSInfoByLqId(lqId,"");
-					if(lqsList.size() > 0){
+				}else{
+					smm.addSM(stuId, loreId, 1);
+				}
+				if(msg.equals("success")){
+					if(loreTypeName.equals("知识讲解")){
+						String sourceDetail = lqList.get(0).getQueAnswer();
+						if(!sourceDetail.equals("")){
+							map.put("sourceDetail", sourceDetail);
+						}else{
+							msg = "noInfo";
+						}
+					}else if(loreTypeName.equals("点拨指导") && loreTypeName.equals("知识清单")){
+						Integer lqId = lqList.get(0).getId();
+						List<LoreQuestionSubInfo> lqsList = lqm.listLQSInfoByLqId(lqId,"");
+						if(lqsList.size() > 0){
+							List<Object> list_d = new ArrayList<Object>();
+							for(LoreQuestionSubInfo lqs : lqsList){
+								String loreType = lqs.getLoreTypeName();
+								Map<String,Object> map_d = new HashMap<String,Object>();
+								map_d.put("loreType", loreType);
+								map_d.put("lqsTitle", lqs.getLqsTitle());
+								map_d.put("lqsContent", lqs.getLqsContent());
+								list_d.add(map_d);
+							}
+							map.put("sourceDetailList", list_d);
+						}else{
+							msg = "noInfo";
+						}
+					}else if(loreTypeName.equals("解题示范")){
 						List<Object> list_d = new ArrayList<Object>();
-						for(LoreQuestionSubInfo lqs : lqsList){
-							String loreType = lqs.getLoreTypeName();
+						for(LoreQuestion lq : lqList){
 							Map<String,Object> map_d = new HashMap<String,Object>();
-							map_d.put("loreType", loreType);
-							map_d.put("lqsTitle", lqs.getLqsTitle());
-							map_d.put("lqsContent", lqs.getLqsContent());
+							map_d.put("lqId", lq.getId());
+							map_d.put("queTitle", lq.getQueTitle());
+							map_d.put("queSub", lq.getQueSub());
+							map_d.put("queAnswer", lq.getQueAnswer());
+							map_d.put("queResolution", lq.getQueResolution());
 							list_d.add(map_d);
 						}
 						map.put("sourceDetailList", list_d);
-					}else{
-						msg = "noInfo";
 					}
-				}else if(loreTypeName.equals("解题示范")){
-					List<Object> list_d = new ArrayList<Object>();
-					for(LoreQuestion lq : lqList){
-						Map<String,Object> map_d = new HashMap<String,Object>();
-						map_d.put("lqId", lq.getId());
-						map_d.put("queTitle", lq.getQueTitle());
-						map_d.put("queSub", lq.getQueSub());
-						map_d.put("queAnswer", lq.getQueAnswer());
-						map_d.put("queResolution", lq.getQueResolution());
-						list_d.add(map_d);
-					}
-					map.put("sourceDetailList", list_d);
-				}else if(loreTypeName.equals("practice")){//巩固训练
-					
 				}
 			}
 		}

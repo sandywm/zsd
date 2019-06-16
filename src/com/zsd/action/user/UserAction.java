@@ -198,7 +198,8 @@ public class UserAction extends DispatchAction {
 								if(ruNo>0){//班内学科老师
 									String gName = Convert.NunberConvertChinese(gradeNo);//年级名
 									List<GradeSubject> gslist = gsManager.listSpecInfoByGname(gName);//根据年级名获取学科列表
-									for (GradeSubject gs : gslist) {
+									for (Iterator<GradeSubject> itr = gslist.iterator(); itr.hasNext();) {
+										GradeSubject gs = (GradeSubject) itr.next();
 										Integer sId = gs.getSubject().getId();
 										//生成班内老师账户
 										Integer teaId=uManager.addUser("t"+schoolId+sId+ciId, "", new MD5().calcMD5("123456"), "",currTime, lastLoginIp, currTime, schoolId, "", yearSystem, prov, city);
@@ -244,11 +245,12 @@ public class UserAction extends DispatchAction {
 		}
 		if(msg.equals("success")){
 			//直接执行登录
-			boolean uFlag = uManager.userLogin(userAccount, pwd);
+			boolean uFlag = uManager.userLogin(userAccount, password);
 			if(uFlag){
 				//登录成功
 				String currdate = CurrentTime.getCurrentTime();
-				User user = uList.get(0);
+				List<User> uLists = uManager.listInfoByAccount(userAccount);
+				User user = uLists.get(0);
 				Integer uid = user.getId();
 				String  userAcc = user.getUserAccount();
 				String portrait = user.getPortrait();
@@ -260,14 +262,14 @@ public class UserAction extends DispatchAction {
 					roleId = ruList.get(0).getRoleInfo().getId();
 				}
 				if(status.equals(1)){//状态 0:无效,1:有效
-					Integer loginStatus = uList.get(0).getLoginStatus();//每次登陆，loginStatus自动加1，满50时恢复0状态
+					Integer loginStatus = uLists.get(0).getLoginStatus();//每次登陆，loginStatus自动加1，满50时恢复0状态
 					if(loginStatus < 50){
 						loginStatus++;
 					}else{
 						loginStatus = 0;
 					}
 					//修改用户的登录IP、登录时间、登录次数
-					uManager.updateUserLogin(uid, currdate, CommonTools.getIpAddress(request), uList.get(0).getLoginTimes() + 1, loginStatus);
+					uManager.updateUserLogin(uid, currdate, CommonTools.getIpAddress(request), uLists.get(0).getLoginTimes() + 1, loginStatus);
 					map.put("roleId", roleId);
 					map.put("loginStatus", loginStatus);
 					map.put("userAcc", userAcc);
@@ -719,7 +721,7 @@ public class UserAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		UserManager uManager = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
 		Map<String,Object> map = new HashMap<String,Object>();
-		String userAccount=CommonTools.getFinalStr("userAccess",request);
+		String userAccount=CommonTools.getFinalStr("userAccount",request);
 		List<User> uList = uManager.listInfoByAccount(userAccount);//判断账户是否存在
 		boolean flag = false;
 		if(uList.isEmpty()){
