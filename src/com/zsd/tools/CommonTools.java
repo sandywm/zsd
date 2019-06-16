@@ -319,36 +319,39 @@ public class CommonTools {
 		        String response2 = response.substring(response.indexOf("{\"location\":\"")+13,response.length());
 		        address = response2.substring(0,response2.indexOf("\""));
 		        String[] zzq = {"内蒙古","新疆","西藏","广西","宁夏"};
-				String[] zxs = {"北京","天津","上海","重庆"};
+				String[] zxs = {"北京市","天津市","上海市","重庆市"};
 				String[] xzq = {"香港","澳门"};
 				if(address.contains("自治区")){//自治区
 					for(Integer i = 0 ; i < zzq.length ; i++){
 						if(address.contains(zzq[i])){
-							prov = zzq[i];
+							prov = zzq[i]+"自治区";
 							Integer startIndex = address.indexOf("自治区");
-							city = address.substring(startIndex+3, address.indexOf("市"));
+							city = address.substring(startIndex+3, address.indexOf("市"))+"市";
 							break;
 						}
 					}
 				}else if(address.contains("省")){//省、市
 					Integer startIndex = address.indexOf("省");
 					Integer endIndex = address.indexOf("市");
-					prov = address.substring(0,startIndex);
-					city = address.substring(startIndex+1, endIndex);
+					prov = address.substring(0,startIndex)+"省";
+					city = address.substring(startIndex+1, endIndex)+"市";
 				}else if(address.contains("行政区")){//特别行政区
-					for(Integer i = 0 ; i < xzq.length ; i++){
-						if(address.contains(xzq[i])){
-							prov = city = xzq[i];
-							break;
-						}
-					}
+//					for(Integer i = 0 ; i < xzq.length ; i++){
+//						if(address.contains(xzq[i])){
+//							prov = city = xzq[i];
+//							break;
+//						}
+//					}
+					prov = address;
+					city = "none";
 				}else if(address.equals("本地局域网")){
 					prov = "河南省";
 					city = "濮阳市";
 				}else{//直辖市
 					for(Integer i = 0 ; i < zxs.length ; i++){
 						if(address.contains(zxs[i])){
-							prov = city = zxs[i];
+							prov = zxs[i];
+							city = "none";
 							break;
 						}
 					}

@@ -99,19 +99,25 @@ public class BaseInfoAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
 		Map<String,String> map = new HashMap<String,String>();
-		String address = CommonTools.getSelfArea_taobao("123.52.203.75");
-//		String address = CommonTools.getSelfArea_taobao(CommonTools.getIpAddress(request));
-		JSONObject jsonResult = JSON.parseObject(address);
-		System.out.println(JSON.toJSONString(jsonResult, true));
-		JSONObject dataJson = jsonResult.getJSONObject("data");
-		String provName = dataJson.getString("region");
-		String cityName = dataJson.getString("city");
-		String provNo = dataJson.getString("region_id");
-		String cityNo = dataJson.getString("city_id");
-		map.put("provName", provName);
-		map.put("cityName", cityName);
-		map.put("provNo", provNo);
-		map.put("cityNo", cityNo);
+		String IP = CommonTools.getFinalStr("ips", request);
+//		String address = CommonTools.getSelfArea_taobao("123.52.203.75");
+////		String address = CommonTools.getSelfArea_taobao(CommonTools.getIpAddress(request));
+//		JSONObject jsonResult = JSON.parseObject(address);
+//		System.out.println(JSON.toJSONString(jsonResult, true));
+//		JSONObject dataJson = jsonResult.getJSONObject("data");
+//		String provName = dataJson.getString("region");
+//		String cityName = dataJson.getString("city");
+//		String provNo = dataJson.getString("region_id");
+//		String cityNo = dataJson.getString("city_id");
+//		map.put("provName", provName);
+//		map.put("cityName", cityName);
+//		map.put("provNo", provNo);
+//		map.put("cityNo", cityNo);
+//		CommonTools.getJsonPkg(map, response);
+		String address = CommonTools.getSelfArea(IP);
+		
+		map.put("provName", address.split(":")[0]);
+		map.put("cityName", address.split(":")[1]);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
