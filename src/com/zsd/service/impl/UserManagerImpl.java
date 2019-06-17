@@ -222,9 +222,8 @@ public class UserManagerImpl implements UserManager {
 			userDao = (UserDao) DaoFactory.instance(null).getDao(Constants.DAO_USER_INFO);
 			Session sess  = HibernateUtil.currentSession();
 			tran = sess.beginTransaction();
-			List<User> ulist = userDao.getEntityById(sess, id);
-			if(!ulist.isEmpty()){
-				User user = ulist.get(0);
+			User user = userDao.get(sess, id);
+			if(user!=null){
 				user.setEmail(email);
 				tran.commit();
 				return true;
@@ -245,9 +244,8 @@ public class UserManagerImpl implements UserManager {
 			userDao = (UserDao) DaoFactory.instance(null).getDao(Constants.DAO_USER_INFO);
 			Session sess  = HibernateUtil.currentSession();
 			tran = sess.beginTransaction();
-			List<User> ulist = userDao.getEntityById(sess, id);
-			if(!ulist.isEmpty()){
-				User user = ulist.get(0);
+			User user = userDao.get(sess, id);
+			if(user!=null){
 				user.setMobile(mobile);
 				tran.commit();
 				return true;
@@ -268,9 +266,8 @@ public class UserManagerImpl implements UserManager {
 			userDao = (UserDao) DaoFactory.instance(null).getDao(Constants.DAO_USER_INFO);
 			Session sess  = HibernateUtil.currentSession();
 			tran = sess.beginTransaction();
-			List<User> ulist = userDao.getEntityById(sess, id);
-			if(!ulist.isEmpty()){
-				User user = ulist.get(0);
+			User user = userDao.get(sess, id);
+			if(user!=null){
 				if(password==user.getPassword()||password.equals("")){
 					
 				}else{
@@ -310,7 +307,7 @@ public class UserManagerImpl implements UserManager {
 			Session sess  = HibernateUtil.currentSession();
 			List<User> ulist = userDao.checkUserPwd(sess, id, password);
 			boolean flag = false;
-			if(!ulist.isEmpty()){
+			if(ulist.isEmpty()){
 				flag = true;
 			}
 			return flag;
@@ -386,7 +383,7 @@ public class UserManagerImpl implements UserManager {
 			Session sess  = HibernateUtil.currentSession();
 			List<User> ulist = userDao.checkUserMobile(sess, mobile);
 			boolean flag = false;
-			if(!ulist.isEmpty()){
+			if(ulist.isEmpty()){
 				flag = true;
 			}
 			return flag;

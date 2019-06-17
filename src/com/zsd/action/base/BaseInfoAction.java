@@ -99,7 +99,7 @@ public class BaseInfoAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
 		Map<String,String> map = new HashMap<String,String>();
-		String IP = CommonTools.getFinalStr("ips", request);
+//		String IP = CommonTools.getFinalStr("ips", request);
 //		String address = CommonTools.getSelfArea_taobao("123.52.203.75");
 ////		String address = CommonTools.getSelfArea_taobao(CommonTools.getIpAddress(request));
 //		JSONObject jsonResult = JSON.parseObject(address);
@@ -114,7 +114,7 @@ public class BaseInfoAction extends DispatchAction {
 //		map.put("provNo", provNo);
 //		map.put("cityNo", cityNo);
 //		CommonTools.getJsonPkg(map, response);
-		String address = CommonTools.getSelfArea(IP);
+		String address = CommonTools.getSelfArea(CommonTools.getIpAddress(request));
 		
 		map.put("provName", address.split(":")[0]);
 		map.put("cityName", address.split(":")[1]);

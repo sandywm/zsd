@@ -508,7 +508,7 @@ public class UserAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		UserManager uManager = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
 		Map<String,Object> map = new HashMap<String,Object>();
-		Integer userId=(Integer) request.getSession().getAttribute("userId");
+		Integer userId=CommonTools.getFinalInteger("userId",request);
 		String password=new MD5().calcMD5(CommonTools.getFinalStr("password", request));
 		boolean flag = uManager.checkCurrpwd(userId, password);
 		map.put("msg", flag);
