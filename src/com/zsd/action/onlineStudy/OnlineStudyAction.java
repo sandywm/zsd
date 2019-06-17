@@ -1901,6 +1901,7 @@ public class OnlineStudyAction extends DispatchAction {
 				if(lqList.size() > 0){
 					msg = "success";
 					map.put("sourceDetail", lqList.get(0).getQueAnswer());
+					map.put("loreTypeName", loreTypeName);
 				}else{
 					msg = "noInfo";
 				}
@@ -1925,6 +1926,7 @@ public class OnlineStudyAction extends DispatchAction {
 							list_d.add(map_d);
 						}
 						map.put("sourceDetail", list_d);
+						map.put("loreTypeName", loreTypeName);
 					}else{
 						msg = "noInfo";
 					}
@@ -1941,6 +1943,7 @@ public class OnlineStudyAction extends DispatchAction {
 						list_d.add(map_d);
 					}
 					map.put("sourceDetail", list_d);
+					map.put("loreTypeName", loreTypeName);
 				}else{
 					msg = "noInfo";
 				}
@@ -1955,6 +1958,7 @@ public class OnlineStudyAction extends DispatchAction {
 							LoreInfo lore = lm.getEntityById(currLoreId);
 							map_d.put("currLoreId", currLoreId);
 							map_d.put("currLoreName", lore.getLoreName());
+							map_d.put("loreType", lq.getLoreTypeName());
 							map_d.put("lqType", lq.getQueType());
 							map_d.put("lqSub", lq.getQueSub());
 							map_d.put("answerA", lq.getA());
@@ -1967,6 +1971,7 @@ public class OnlineStudyAction extends DispatchAction {
 							list_d.add(map_d);
 						}
 						map.put("sourceDetail", list_d);
+						map.put("loreTypeName", loreTypeName);
 					}else{
 						msg = "noInfo";
 					}
@@ -2251,7 +2256,7 @@ public class OnlineStudyAction extends DispatchAction {
 		}
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("result", msg);
-		map.put("studyStatus", result);
+		map.put("studyResult", result);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
