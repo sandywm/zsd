@@ -80,8 +80,13 @@
     <action path="/questionInfo"  parameter="action" scope="request" type="com.zsd.action.question.QuestionInfoAction">
       <set-property property="cancellable" value="true" />
     </action>
+	<!--    头像上传 -->
     <action path="/upload"  parameter="action" scope="request" type="com.zsd.action.user.UploadAction">
       <set-property property="cancellable" value="true" />
+    </action>
+  	 <!--  报告中心 -->
+    <action path="/reportCenter"  parameter="action" scope="request" type="com.zsd.action.base.ReportCenterAction">
+      <forward name="nlPage" path="/###.jsp"></forward><!-- 学生能力报告页面 -->
     </action>
   </action-mappings>
 

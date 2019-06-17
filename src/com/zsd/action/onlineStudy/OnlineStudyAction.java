@@ -1518,7 +1518,6 @@ public class OnlineStudyAction extends DispatchAction {
 			LoreInfo lore = lm.getEntityById(loreId);
 			if(lore != null){
 				msg = "success";
-				stuId = 323;//测试------------------------------------
 				List<StudyLogInfo> slList = slm.listLastStudyInfoByOpt(stuId, loreId, 1);
 				if(slList.size() > 0){
 					if(slList.get(0).getIsFinish() == 2){

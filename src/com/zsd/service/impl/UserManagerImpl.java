@@ -305,10 +305,12 @@ public class UserManagerImpl implements UserManager {
 		try {
 			userDao = (UserDao) DaoFactory.instance(null).getDao(Constants.DAO_USER_INFO);
 			Session sess  = HibernateUtil.currentSession();
-			List<User> ulist = userDao.checkUserPwd(sess, id, password);
-			boolean flag = false;
-			if(ulist.isEmpty()){
-				flag = true;
+			User user  = userDao.get(sess, id);
+			boolean flag = true;
+			if(user!=null){
+				if (user.getPassword().equalsIgnoreCase(password)) {
+					flag = false;
+				}
 			}
 			return flag;
 		} catch (Exception e) {
