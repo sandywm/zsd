@@ -584,6 +584,7 @@ public class UserAction extends DispatchAction {
 	/**
 	 * 基本资料(学生个人中心)
 	 * @author zong
+	 * @modify by wm
 	 * 2019-6-4下午04:43:25
 	 * @param mapping
 	 * @param form
