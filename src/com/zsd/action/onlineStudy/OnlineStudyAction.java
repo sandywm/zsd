@@ -89,6 +89,49 @@ public class OnlineStudyAction extends DispatchAction {
 	}
 	
 	/**
+	 * 获取用户的首页数据
+	 * @author wm
+	 * @date 2019-6-18 上午10:30:15
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getWelcomeData(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		UserClassInfoManager ucm = (UserClassInfoManager)AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
+		Integer userId = CommonTools.getLoginUserId(request);
+		Integer roleId = CommonTools.getLoginRoleId(request);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "error";
+		if(roleId.equals(2)){//学生
+			UserClassInfo uc = ucm.getEntityByOpt(userId, roleId);
+			ClassInfo c = null;
+			if(uc != null){
+				c = uc.getClassInfo();
+				Integer realGradeNumber = Convert.dateConvertGradeNumber(c.getBuildeClassDate());//当前学生的真实年级
+				if(realGradeNumber > 12){
+					realGradeNumber = 12;
+				}
+				map.put("gradeName", Convert.NunberConvertChinese(realGradeNumber));
+				//获取学生最近三天的学习记录(包括在线学习，家庭作业，自助餐)
+			}
+		}else if(roleId.equals(3)){//网络导师
+			
+		}else if(roleId.equals(4)){//学科老师
+			
+		}else if(roleId.equals(5)){//各级管理员
+			
+		}else if(roleId.equals(6)){//家长
+			
+		}
+		
+		return null;
+	}
+	
+	/**
 	 * 获取在线学习初始数据
 	 * @author wm
 	 * @date 2019-5-24 下午04:23:41

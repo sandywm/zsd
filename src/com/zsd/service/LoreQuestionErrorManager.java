@@ -51,6 +51,7 @@ public interface LoreQuestionErrorManager {
 	 * @author wm
 	 * @date 2019-5-23 下午05:28:43
 	 * @param userId 提交人员编号(0表示全部)
+	 * @param lqId 题编号(0表示全部)
 	 * @param sDate 开始日期
 	 * @param sDate 结束日期
 	 * @param errorType 错误类型(""表示全部,noPicError:没有图片,contentError:内容错误,anserError:答案错误,otherError:其他错误)
@@ -60,7 +61,7 @@ public interface LoreQuestionErrorManager {
 	 * @return
 	 * @throws WEBException
 	 */
-	List<LoreQuestionErrorInfo> listPageInfoByOptions(Integer userId,String sDate,String eDate,
+	List<LoreQuestionErrorInfo> listPageInfoByOptions(Integer userId,Integer lqId,String sDate,String eDate,
 			String errorType,Integer updateStatus,Integer pageNo, Integer pageSize) throws WEBException;
 	
 	/**
@@ -68,6 +69,7 @@ public interface LoreQuestionErrorManager {
 	 * @author wm
 	 * @date 2019-5-23 下午05:29:09
 	 * @param userId 提交人员编号(0表示全部)
+	 * @param lqId 题编号(0表示全部)
 	 * @param sDate 开始日期
 	 * @param sDate 结束日期
 	 * @param errorType 错误类型(""表示全部,noPicError:没有图片,contentError:内容错误,anserError:答案错误,otherError:其他错误)
@@ -77,5 +79,5 @@ public interface LoreQuestionErrorManager {
 	 * @return
 	 * @throws WEBException
 	 */
-	Integer getCountByOptions(Integer userId,String sDate,String eDate,String errorType,Integer updateStatus) throws WEBException;
+	Integer getCountByOptions(Integer userId,Integer lqId,String sDate,String eDate,String errorType,Integer updateStatus) throws WEBException;
 }

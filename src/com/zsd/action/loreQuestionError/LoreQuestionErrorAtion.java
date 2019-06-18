@@ -17,6 +17,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
 
+import com.zsd.action.base.Transcode;
 import com.zsd.factory.AppFactory;
 import com.zsd.module.LexInfo;
 import com.zsd.module.LoreQuestion;
@@ -85,12 +86,12 @@ public class LoreQuestionErrorAtion extends DispatchAction {
 		if(opt.equals("stu")){
 			addUserId = CommonTools.getLoginUserId(request);
 		}
-		Integer count = lqem.getCountByOptions(addUserId, sDate, eDate, errorType,checkStatus);
+		Integer count = lqem.getCountByOptions(addUserId, 0,sDate, eDate, errorType,checkStatus);
 		if(count > 0){
 			msg = "success";
 			Integer pageSize = PageConst.getPageSize(String.valueOf(request.getParameter("limit")), 10);//等同于pageSize
 			Integer pageNo = CommonTools.getFinalInteger("page", request);//等同于pageNo
-			List<LoreQuestionErrorInfo> lqeList = lqem.listPageInfoByOptions(addUserId, sDate, eDate, errorType, checkStatus, pageNo, pageSize);
+			List<LoreQuestionErrorInfo> lqeList = lqem.listPageInfoByOptions(addUserId, 0,sDate, eDate, errorType, checkStatus, pageNo, pageSize);
 			List<Object> list_d = new ArrayList<Object>();
 			for(Iterator<LoreQuestionErrorInfo> it = lqeList.iterator() ; it.hasNext();){
 				LoreQuestionErrorInfo lqe = it.next();
@@ -99,15 +100,22 @@ public class LoreQuestionErrorAtion extends DispatchAction {
 				map_d.put("loreName", lqe.getLoreQuestion().getLoreInfo().getLoreName());
 				map_d.put("lqTitle", lqe.getLoreQuestion().getQueTitle());
 				map_d.put("content", lqe.getContent());
-				String errorType_text = lqe.getErrorType();
-				if(errorType_text.equals("noPicError")){
-					errorType_text = "图片错误";
-				}else if(errorType_text.equals("contentError")){
-					errorType_text = "内容错误";
-				}else if(errorType_text.equals("anserError")){
-					errorType_text = "答案错误";
-				}else if(errorType_text.equals("otherError")){
-					errorType_text = "其他错误";
+				String errorTypeEng = lqe.getErrorType();
+				String errorType_text = "";
+				if(errorTypeEng.contains("noPicError")){
+					errorType_text += "图片错误,";
+				}
+				if(errorTypeEng.contains("contentError")){
+					errorType_text += "内容错误,";
+				}
+				if(errorTypeEng.contains("anserError")){
+					errorType_text += "答案错误,";
+				}
+				if(errorTypeEng.contains("otherError")){
+					errorType_text += "其他错误,";
+				}
+				if(!errorType_text.equals("")){
+					errorType_text = errorType_text.substring(0,errorType_text.length() - 1);
 				}
 				map_d.put("errorType", errorType_text);
 				map_d.put("addate", lqe.getAddDate());
@@ -255,6 +263,78 @@ public class LoreQuestionErrorAtion extends DispatchAction {
 			map.put("listIfo", list_d);
 		}
 		map.put("msg", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 检查一人一天对当天同一知识点只能提交一次错误
+	 * @author wm
+	 * @date 2019-6-18 上午10:50:04
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return noSubmit,submit,error
+	 * @throws Exception
+	 */
+	public ActionForward checkCurrSubmitError(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		LoreQuestionErrorManager lqem = (LoreQuestionErrorManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_ERROR_INFO);
+		Integer userId = CommonTools.getLoginUserId(request);
+		Integer lqId = CommonTools.getFinalInteger("lqId", request);
+		String currDate = CurrentTime.getStringDate();
+		Map<String,String> map = new HashMap<String,String>();
+		String msg = "error";
+		if(lqId > 0 && userId > 0){
+			Integer count = lqem.getCountByOptions(userId, lqId,currDate, currDate, "", -1);
+			if(count > 0){
+				msg = "noSubmit";
+			}else{
+				msg = "submit";
+			}
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	
+	/**
+	 * 提交错题信息
+	 * @author wm
+	 * @date 2019-6-18 上午10:45:44
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward addLqe(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		LoreQuestionErrorManager lqem = (LoreQuestionErrorManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_ERROR_INFO);
+		Integer userId = CommonTools.getLoginUserId(request);
+		String errorType = CommonTools.getFinalStr("errorType", request);
+		Integer lqId = CommonTools.getFinalInteger("lqId", request);
+		String msg = "error";
+		String contentError = Transcode.unescape_new1("contentError", request);
+		Map<String,String> map = new HashMap<String,String>();
+		if(!errorType.equals("") && lqId > 0 && !contentError.equals("") && userId > 0){
+			//检查一人一天对当天知识点只能提交一次错误
+			String currDate = CurrentTime.getStringDate();
+			Integer count = lqem.getCountByOptions(userId, lqId,currDate, currDate, "", -1);
+			if(count.equals(0)){
+				if(lqem.addLQE(userId, lqId, errorType, contentError, currDate) > 0){
+					msg = "success";
+				}
+			}else{
+				msg = "noSubmit";
+			}
+		}
+		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}

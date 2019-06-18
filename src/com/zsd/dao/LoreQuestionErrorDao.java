@@ -64,13 +64,15 @@ public interface LoreQuestionErrorDao {
 	 * @date 2019-5-10 下午06:34:13
 	 * @param sess
 	 * @param userId 提交错误学生编号(0表示全部)
+	 * @param lqId 题编号(0表示全部)
 	 * @param errorType 错误类型(""表示全部,noPicError:没有图片,contentError:内容错误,anserError:答案错误,otherError:其他错误)
 	 * @param sDate 开始时间
 	 * @param eDate 结束时间
 	 * @param updateStatus 修改状态(-1:全部,0:未修改,1:已修改)
 	 * @return
 	 */
-	List<LoreQuestionErrorInfo> findPageInfoByOpt(Session sess,Integer userId,String errorType,String sDate,String eDate,Integer updateStatus,Integer pageNo,Integer pageSize);
+	List<LoreQuestionErrorInfo> findPageInfoByOpt(Session sess,Integer userId,Integer lqId,String errorType,String sDate,String eDate,
+			Integer updateStatus,Integer pageNo,Integer pageSize);
 	
 	/**
 	 * 根据条件获取知识点题库错误信息记录条数
@@ -78,11 +80,12 @@ public interface LoreQuestionErrorDao {
 	 * @date 2019-5-10 下午06:47:41
 	 * @param sess
 	 * @param userId 提交错误学生编号(0表示全部)
+	 * @param lqId 题编号(0表示全部)
 	 * @param errorType 错误类型(""表示全部,noPicError:没有图片,contentError:内容错误,anserError:答案错误,otherError:其他错误)
 	 * @param sDate 开始时间
 	 * @param eDate 结束时间
 	 * @param updateStatus 修改状态(-1:全部,0:未修改,1:已修改)
 	 * @return
 	 */
-	Integer getCountByOpt(Session sess,Integer userId,String errorType,String sDate,String eDate,Integer updateStatus);
+	Integer getCountByOpt(Session sess,Integer userId,Integer lqId,String errorType,String sDate,String eDate,Integer updateStatus);
 }

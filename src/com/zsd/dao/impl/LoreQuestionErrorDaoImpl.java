@@ -47,12 +47,12 @@ public class LoreQuestionErrorDaoImpl implements LoreQuestionErrorDao{
 	}
 
 	@Override
-	public List<LoreQuestionErrorInfo> findPageInfoByOpt(Session sess,Integer userId,
+	public List<LoreQuestionErrorInfo> findPageInfoByOpt(Session sess,Integer userId,Integer lqId,
 			String errorType, String sDate, String eDate, Integer updateStatus,Integer pageNo,Integer pageSize) {
 		// TODO Auto-generated method stub
 		String hql = " from LoreQuestionErrorInfo as lqe where 1=1";
 		if(!errorType.equals("")){
-			hql += " and lqe.errorType = '"+errorType+"'";
+			hql += " and find_in_set('"+errorType+"',lqe.errorType) > 0";
 		}
 		if(!sDate.equals("") && !eDate.equals("")){
 			hql += " and lqe.addDate >= '"+sDate+"' and lqe.addDate <= '"+eDate+"'";
@@ -60,6 +60,13 @@ public class LoreQuestionErrorDaoImpl implements LoreQuestionErrorDao{
 		if(!updateStatus.equals(-1)){
 			hql += " and lqe.checkStatus = "+updateStatus;
 		}
+		if(userId > 0){
+			hql += " and lqe.user.id = "+userId;
+		}
+		if(lqId > 0){
+			hql += " and lqe.loreQuestion.id = "+lqId;
+		}
+		hql += " order by lqe.id desc";
 		int offset = (pageNo - 1) * pageSize;
 		if (offset < 0) {
 			offset = 0;
@@ -68,18 +75,24 @@ public class LoreQuestionErrorDaoImpl implements LoreQuestionErrorDao{
 	}
 
 	@Override
-	public Integer getCountByOpt(Session sess, Integer userId,String errorType, String sDate,
+	public Integer getCountByOpt(Session sess, Integer userId,Integer lqId,String errorType, String sDate,
 			String eDate, Integer updateStatus) {
 		// TODO Auto-generated method stub
 		String hql = "select count(lqe.id) from LoreQuestionErrorInfo as lqe where 1=1";
 		if(!errorType.equals("")){
-			hql += " and lqe.errorType = '"+errorType+"'";
+			hql += " and find_in_set('"+errorType+"',lqe.errorType) > 0";
 		}
 		if(!sDate.equals("") && !eDate.equals("")){
 			hql += " and lqe.addDate >= '"+sDate+"' and lqe.addDate <= '"+eDate+"'";
 		}
 		if(!updateStatus.equals(-1)){
 			hql += " and lqe.checkStatus = "+updateStatus;
+		}
+		if(userId > 0){
+			hql += " and lqe.user.id = "+userId;
+		}
+		if(lqId > 0){
+			hql += " and lqe.loreQuestion.id = "+lqId;
 		}
 		Object countObj = sess.createQuery(hql).uniqueResult();
 		return CommonTools.longToInt(countObj);
