@@ -562,7 +562,8 @@ public class UserAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		UserManager uManager = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
 		Integer userId=CommonTools.getLoginUserId(request);
-		String portrait=CommonTools.getFinalStr("portrait",request);
+		String base64=CommonTools.getFinalStr("portrait",request);
+		String portrait = Base64Utils.Base64ToImage(base64, userId);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "fail";
 		
@@ -579,6 +580,7 @@ public class UserAction extends DispatchAction {
 			msg ="success";
 		}
 		map.put("msg", msg);
+		map.put("imgUrl", portrait);
 		CommonTools.getJsonPkg(map, response);
 		return null;	
 	}
