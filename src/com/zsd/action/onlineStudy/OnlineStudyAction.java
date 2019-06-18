@@ -109,8 +109,6 @@ public class OnlineStudyAction extends DispatchAction {
 		StuSubjectEduManager ssem = (StuSubjectEduManager)  AppFactory.instance(null).getApp(Constants.WEB_STU_SUB_EDU_INFO);
 		Integer userId = CommonTools.getLoginUserId(request);
 		Integer roleId = CommonTools.getLoginRoleId(request);
-		userId = 1;
-		roleId = 2;
 		Map<String,Object> map = new HashMap<String,Object>();
 		Integer subId = CommonTools.getFinalInteger("subId", request);//学科编号
 		Integer ediId = CommonTools.getFinalInteger("ediId", request);//出版社编号
@@ -130,13 +128,44 @@ public class OnlineStudyAction extends DispatchAction {
 				User user = uc.getUser();
 				Integer remainDays = CurrentTime.compareDate(CurrentTime.getStringDate(), user.getEndDate());
 				Integer freeStatus = user.getFreeStatus();//0:收费,1:免费
+				List<Object> list_grade = new ArrayList<Object>();
+				Integer realGradeNumber = Convert.dateConvertGradeNumber(c.getBuildeClassDate());//当前学生的真实年级
+				if(realGradeNumber > 0){
+					if(realGradeNumber >= 12 || realGradeNumber.equals(9)){//初三或者高三的时候可以复习之前的
+						if(realGradeNumber > 12){
+							realGradeNumber = 12;
+						}
+						for(Integer i = 2 ; i >= 0 ; i--){
+							Map<String,Object> map_d = new HashMap<String,Object>();
+							map_d.put("gradeNumber", realGradeNumber - i);
+							map_d.put("gradeName", Convert.NunberConvertChinese(realGradeNumber - i));
+							if(gradeNumber.equals(0)){
+								if(i.equals(0)){
+									map_d.put("selFlag", true);
+								}else{
+									map_d.put("selFlag", false);
+								}
+							}else{
+								if(gradeNumber.equals(realGradeNumber - i)){
+									map_d.put("selFlag", true);
+								}else{
+									map_d.put("selFlag", false);
+								}
+							}
+							list_grade.add(map_d);
+						}
+					}else{//其他年级时只有一组
+						Map<String,Object> map_d = new HashMap<String,Object>();
+						map_d.put("gradeNumber", realGradeNumber);
+						map_d.put("gradeNanme", Convert.NunberConvertChinese(realGradeNumber));
+						list_grade.add(map_d);
+					}
+				}
+				map.put("gradeList", list_grade);
 				if(gradeNumber.equals(0)){//如果页面没传递，直接通过学生获取
-					gradeNumber = Convert.dateConvertGradeNumber(c.getBuildeClassDate());
+					gradeNumber = realGradeNumber;
 				}
 				if(gradeNumber > 0){
-					if(gradeNumber > 12){
-						gradeNumber = 12;
-					}
 					if(subId.equals(0)){
 						opt = "init";//初始加载
 						subId = 2;//默认为数学

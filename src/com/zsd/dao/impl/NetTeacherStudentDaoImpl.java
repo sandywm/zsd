@@ -39,7 +39,7 @@ public class NetTeacherStudentDaoImpl implements NetTeacherStudentDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<NetTeacherStudent> findNTByStuId(Session sess, int stuId) {
-		String hql = "from NetTeacherStudent as nts where nts.user.id="+stuId+"and nts.bindStatus!=2 and nts.bindStatus!=0 and nts.clearStatus=0";
+		String hql = "from NetTeacherStudent as nts where nts.user.id="+stuId+"and nts.clearStatus=0";
 		return  sess.createQuery(hql).list();
 	}
 	@SuppressWarnings("unchecked")

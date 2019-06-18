@@ -23,6 +23,7 @@ import com.zsd.factory.AppFactory;
 import com.zsd.module.ClassInfo;
 import com.zsd.module.GradeSubject;
 import com.zsd.module.InviteCodeInfo;
+import com.zsd.module.NetTeacherStudent;
 import com.zsd.module.RoleInfo;
 import com.zsd.module.RoleUserInfo;
 import com.zsd.module.School;
@@ -425,7 +426,7 @@ public class UserAction extends DispatchAction {
 	public ActionForward updateUserByEmail(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		UserManager uManager = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
-		Integer userId=CommonTools.getFinalInteger("userId",request);
+		Integer userId=CommonTools.getLoginUserId(request);
 		String email=CommonTools.getFinalStr("email",request);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "fail";
@@ -452,7 +453,7 @@ public class UserAction extends DispatchAction {
 	public ActionForward updateUserByMobile(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		UserManager uManager = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
-		Integer userId=CommonTools.getFinalInteger("userId",request);
+		Integer userId=CommonTools.getLoginUserId(request);
 		String mobile=CommonTools.getFinalStr("mobile",request);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "fail";
@@ -479,7 +480,7 @@ public class UserAction extends DispatchAction {
 	public ActionForward updateUserByPwd(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		UserManager uManager = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
-		Integer userId=CommonTools.getFinalInteger("userId",request);
+		Integer userId=CommonTools.getLoginUserId(request);
 		String password=new MD5().calcMD5(CommonTools.getFinalStr("password", request));
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "fail";
@@ -508,7 +509,7 @@ public class UserAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		UserManager uManager = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
 		Map<String,Object> map = new HashMap<String,Object>();
-		Integer userId=CommonTools.getFinalInteger("userId",request);
+		Integer userId=CommonTools.getLoginUserId(request);
 		String password=new MD5().calcMD5(CommonTools.getFinalStr("password", request));
 		boolean flag = uManager.checkCurrpwd(userId, password);
 		map.put("msg", flag);
@@ -529,7 +530,7 @@ public class UserAction extends DispatchAction {
 	public ActionForward updateUserByStuInfo(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		UserManager uManager = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
-		Integer userId=CommonTools.getFinalInteger("userId",request);
+		Integer userId=CommonTools.getLoginUserId(request);
 		String sex=CommonTools.getFinalStr("sex",request);
 		String birthday=CommonTools.getFinalStr("birthday",request);
 		String qq=CommonTools.getFinalStr("qq",request);
@@ -560,7 +561,7 @@ public class UserAction extends DispatchAction {
 	public ActionForward updateUserByPortrait(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		UserManager uManager = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
-		Integer userId=CommonTools.getFinalInteger("userId",request);
+		Integer userId=CommonTools.getLoginUserId(request);
 		String portrait=CommonTools.getFinalStr("portrait",request);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "fail";
@@ -597,7 +598,7 @@ public class UserAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		UserManager uManager = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
 		Map<String,Object> map = new HashMap<String,Object>();
-		Integer userId=CommonTools.getFinalInteger("userId",request);
+		Integer userId=CommonTools.getLoginUserId(request);
 		List<User> uList = uManager.listEntityById(userId);
 		User user = uList.get(0);
 		map.put("account", user.getUserAccount());
@@ -716,7 +717,7 @@ public class UserAction extends DispatchAction {
 	 * @param request
 	 * @param response
 	 * @return
-	 * @throws Exception
+	 * @throws ExceptionlistByStuId
 	 */
 	public ActionForward checkUserName(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -732,4 +733,44 @@ public class UserAction extends DispatchAction {
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
+	/**
+	 * 我的导师(学生)
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getNtByStuId(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		NetTeacherStudentManager ntsManager = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT);
+		Map<String,Object> map = new HashMap<String,Object>();
+		Integer userId=CommonTools.getLoginUserId(request);
+		List<NetTeacherStudent> ntslist =ntsManager.listByStuId(userId);
+		List<Object> list_d = new ArrayList<Object>();
+		for (Iterator<NetTeacherStudent> itr = ntslist.iterator(); itr.hasNext();) {
+			NetTeacherStudent nts = (NetTeacherStudent) itr.next();
+			Map<String,Object> map_d = new HashMap<String,Object>();
+			map_d.put("realName", nts.getNetTeacherInfo().getUser().getRealName());
+			map_d.put("subName", nts.getNetTeacherInfo().getSubject().getSubName());
+			if(nts.getNetTeacherInfo().getSchoolType().equals(1)){
+				map_d.put("schType", "小学");
+			}else if(nts.getNetTeacherInfo().getSchoolType().equals(2)){
+				map_d.put("schType", "初中");
+			}else if(nts.getNetTeacherInfo().getSchoolType().equals(3)){
+				map_d.put("schType", "高中");
+			}
+			map_d.put("portrait", nts.getNetTeacherInfo().getUser().getPortrait());
+			map_d.put("bindStatus", nts.getBindStatus());
+			map_d.put("bindDate", nts.getBindDate());
+			map_d.put("clearDate", nts.getClearDate());
+			map_d.put("clearStatus", nts.getClearStatus());
+			list_d.add(map_d);
+		}
+		map.put("ntlist", list_d);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
 }
