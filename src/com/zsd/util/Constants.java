@@ -73,6 +73,7 @@ public class Constants {
 	public static final String WEB_STUDY_ALL_TJ_INFO = "study_all_tj_info_Web";
 	public static final String WEB_STUDY_MAP_INFO = "study_map_Web";
 	public static final String WEB_STUDY_STU_QFTJ_INFO = "study_stu_qftj_Web";
+	public static final String WEB_BUFFET_SEND_INFO = "buffet_send_info_Web";
 	
 	//-------------------DAO-------------------------//
 	public static final String DAO_EDITION_INFO = "edition_Dao";
@@ -118,5 +119,6 @@ public class Constants {
 	public static final String DAO_STUDY_ALL_TJ_INFO = "study_all_tj_info_Dao";
 	public static final String DAO_STUDY_MAP_INFO = "study_map_Dao";
 	public static final String DAO_STUDY_STU_QFTJ_INFO = "study_stu_qftj_Dao";
+	public static final String DAO_BUFFET_SEND_INFO = "buffet_send_info_Dao";
 }
 

@@ -35,6 +35,7 @@ import com.zsd.module.StudyAllTjInfo;
 import com.zsd.module.StudyDetailInfo;
 import com.zsd.module.StudyLogInfo;
 import com.zsd.module.StudyMapInfo;
+import com.zsd.module.StudyStuQfTjInfo;
 import com.zsd.module.StudyStuTjInfo;
 import com.zsd.module.StudyTaskInfo;
 import com.zsd.module.Subject;
@@ -53,6 +54,7 @@ import com.zsd.service.StudyAllTjInfoManager;
 import com.zsd.service.StudyDetailManager;
 import com.zsd.service.StudyLogManager;
 import com.zsd.service.StudyMapManager;
+import com.zsd.service.StudyStuQfTjManager;
 import com.zsd.service.StudyStuTjInfoManager;
 import com.zsd.service.StudyTaskManager;
 import com.zsd.service.UserClassInfoManager;
@@ -2258,7 +2260,7 @@ public class OnlineStudyAction extends DispatchAction {
 								if(sstList.size() > 0){//已存在
 									ssm.updateSSTById(sstList.get(0).getId(), queType2, liaojieSuccFlag, lijieSuccFlag, yySuccFlag);
 								}else{//不存在
-									ssm.addSST(currTime, stuId ,subjectId, queType2, result);
+									ssm.addSST(currDate, stuId ,subjectId, queType2, result);
 								}
 								
 								//B:统计全平台学习情况---------------------
@@ -2266,7 +2268,7 @@ public class OnlineStudyAction extends DispatchAction {
 								if(satList.size() > 0){//已存在
 									sam.updateSATById(satList.get(0).getId(), queType2, liaojieSuccFlag_all, lijieSuccFlag_all, yySuccFlag_all);
 								}else{//不存在
-									sam.addSAT(currTime, subjectId, queType2, result);
+									sam.addSAT(currDate, subjectId, queType2, result);
 								}
 								//---------------------end
 								
@@ -2350,6 +2352,7 @@ public class OnlineStudyAction extends DispatchAction {
 		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
 		StudyDetailManager sdm = (StudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_STUDY_DETAIL_INFO);
 		RelationZdResultManager rzrm = (RelationZdResultManager)AppFactory.instance(null).getApp(Constants.WEB_RELATION_ZD_RESULT_INFO);
+		StudyStuQfTjManager tjm = (StudyStuQfTjManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_STU_QFTJ_INFO);
 		Integer stuId = CommonTools.getLoginUserId(request);
 		String submitType = CommonTools.getFinalStr("type", request);//巩固训练传study，其他不传
 		String currentStepLoreIdStr = CommonTools.getFinalStr("currentStepLoreArray", request);
@@ -2373,6 +2376,19 @@ public class OnlineStudyAction extends DispatchAction {
 		}
 		//最后提交的任务数都+1
 		StudyLogInfo sl = slm.getEntityById(studyLogId);
+		
+		//获取指定学生，指定科目，指定日期的勤奋报告统计信息
+		StudyStuQfTjInfo qftj = tjm.getEntityByOpt(stuId, sl.getSubject().getId(), CurrentTime.getStringDate());
+		Integer oneZdSuccNum = 0;//一次性通过总数
+		Integer oneZdFailNum = 0;//一次性未通过总数
+		Integer againXxSuccNum = 0;//再次诊断(学习)通过
+		Integer againXxFailNum = 0;//再次诊断(学习)未通过
+		Integer noRelateNum = 0;//未溯源个数
+		Integer relateZdFailNum = 0;//关联诊断未通过
+		Integer relateXxSuccNum = 0;//关联学习通过
+		Integer relateXxFailNum = 0;//关联未学习通过
+		String rate = "";//转化率
+		
 		Integer taskNumber = sl.getTaskNumber() + 1;
 		if(step == 3){//再次诊断时用
 			if(access == 1){//再次诊断全部正确
@@ -2459,9 +2475,19 @@ public class OnlineStudyAction extends DispatchAction {
 						//-1为未做
 					rzrm.addRZR(studyLogId, loreId_curr, zdxzd_flag, -1, -1, 0, 0);
 				}
+				if(currentStepLoreArray.length > 0){
+					if(access.equals(1)){//当前关联知识点的针对性诊断全部正确
+						noRelateNum = -1;//关联诊断完成，未溯源个数-1
+					}else{//未完全正确或全部错误
+						relateZdFailNum = currentStepLoreArray.length;//当前层有多少个知识点就有多少个关联知识点针对性诊断未通过次数
+						relateXxFailNum = currentStepLoreArray.length;
+					}
+				}
 			}else if(step_curr.equals(3)){//关联知识点再次诊断
 				if(access.equals(1)){//当前层全部正确
 					zczd_flag = access;
+					relateXxSuccNum = 1;//关联学习通过+1
+					relateXxFailNum = -1;//关联学习未通过-1
 				}else{//未完全正确或全部错误
 					zczd_flag = 0;
 				}
@@ -2473,6 +2499,8 @@ public class OnlineStudyAction extends DispatchAction {
 				}
 			}else if(step_curr.equals(4)){//最后一个关联知识点再次诊断完全正确后step会变成4
 				Integer current_lore_id = Integer.parseInt(currentStepLoreArray[0]);
+				relateXxSuccNum = 1;//关联学习通过+1
+				relateXxFailNum = -1;//关联学习未通过-1
 				if(!current_lore_id.equals(loreId)){
 					//最后一个关联知识点全部正确后，access肯定为1
 					RelationZdResult rzr = rzrm.getEntityByOpt(studyLogId, current_lore_id);
@@ -2484,6 +2512,7 @@ public class OnlineStudyAction extends DispatchAction {
 				
 			}
 		}
+		
 		if(isFinish.equals(2)){
 			//表示该知识点完成，更新result(系统评价)
 			//统计该知识点做了多少题
@@ -2502,7 +2531,12 @@ public class OnlineStudyAction extends DispatchAction {
 			if(zdxQuestionNumber.equals(allQuestionRightNumber)){//表示一次性通过
 				systemProposal = "共"+zdxQuestionNumber+"道题，您全做对了，正确率100%";
 				rightRate = 100;
+				//增加一次性通过次数，其他全部不修改
+				oneZdSuccNum = 1;
 			}else{//表示是经过五部学习法学习后通过
+				//肯定之前再次诊断学习未通过时+1，现在通过了需要减1
+				againXxSuccNum = 1;//再次诊断学习通过+1
+				againXxFailNum = -1;//再次诊断学习未通过-1
 				rightRate = allQuestionRightNumber * 100 / allQuestionNumber ;
 				if(rightRate >= 80){
 					gdProposal = "您已经完成了该知识点，证明您对本知识掌握的很好，做的非常棒。(";
@@ -2512,7 +2546,20 @@ public class OnlineStudyAction extends DispatchAction {
 				systemProposal = gdProposal + "共"+allQuestionNumber+"道题，您做对了"+allQuestionRightNumber+"道，正确率"+rightRate+"%)";
 			}
 			flag = slm.addSysAssess(studyLogId, systemProposal, rightRate);
+		}else{//未通过
+			if(currentLoreId.equals(loreId)){//当前知识点是主知识点时
+				//主知识点的针对性诊断未通过
+				oneZdFailNum = 1;
+				againXxFailNum = 1;
+				noRelateNum = 1;
+			}
 		}
+		Integer fmNum = qftj.getOneZdFailNum() + qftj.getRelateZdFailNum();
+		Integer againXxSuccNum_real = qftj.getAgainXxSuccNum() + againXxSuccNum;
+		if(fmNum > 0 && againXxSuccNum_real > 0){
+			rate = Convert.convertInputNumber_1(againXxSuccNum_real * 100.0  / fmNum);
+		}
+		tjm.updateTjInfoById(qftj.getId(), oneZdSuccNum, oneZdFailNum, againXxSuccNum, againXxFailNum, noRelateNum, relateZdFailNum, relateXxSuccNum, relateXxFailNum, rate);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "error";
 		if(flag){

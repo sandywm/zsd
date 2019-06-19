@@ -67,19 +67,15 @@ public class ReportCenterAction  extends DispatchAction{
 		Integer subId = CommonTools.getFinalInteger("subjectId",request);
 		String startTime = CommonTools.getFinalStr("startTime",request);
 		String endTime = CommonTools.getFinalStr("endTime",request);
-		String time_last_suffix = " 00:00:00";
-		String time_last_suffix_1 = " 23:59:59";
 		
 		if(startTime.equals("")){//进入后不选择时间点查询
 			//表示是默认的当前日期前3天的记录(包含当前，所以-2)
-			startTime = CurrentTime.getFinalDate(CurrentTime.getStringDate(), -2) + time_last_suffix;
-			endTime = CurrentTime.getStringDate() + time_last_suffix_1;
+			startTime = CurrentTime.getFinalDate(CurrentTime.getStringDate(), -2);
+			endTime = CurrentTime.getStringDate();
 		}else{
-			startTime += time_last_suffix;
 			if(endTime.equals("")){
 				endTime = CurrentTime.getStringDate();
 			}
-			endTime += time_last_suffix_1;
 		}
 		//1:通过userId获取学生所在班级
 		List<UserClassInfo> ucList = ucManager.listUcInfoByUserId(userId);

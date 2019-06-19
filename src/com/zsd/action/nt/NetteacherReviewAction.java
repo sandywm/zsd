@@ -183,7 +183,7 @@ public class NetteacherReviewAction extends DispatchAction {
 		NetTeacherInfoManager ntManager = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
 		Integer ntId = CommonTools.getFinalInteger("ntId", request);//网络导师主键
 		Integer id = CommonTools.getFinalInteger("id", request);//网络导师证件主键
-		Integer checkUserId=(Integer) request.getSession().getAttribute("userId");
+		Integer userId = CommonTools.getLoginUserId(request);
 		String checkUserAccount=(String) request.getSession().getAttribute("userAcc");
 		String checkICard = Transcode.unescape_new("checkICard", request);//身份证审核状态
 		String checkZgz = Transcode.unescape_new("checkZgz", request);//资格证审核状态
@@ -196,7 +196,7 @@ public class NetteacherReviewAction extends DispatchAction {
 		}else if(checkICard.replace(" ", "").equalsIgnoreCase("pass")&&checkZgz.replace(" ", "").equalsIgnoreCase("pass")&&checkXlz.replace(" ", "").equalsIgnoreCase("pass")){
 			checkStatus =2;
 		}
-		boolean ntcFlag = ntcManager.updateNtcByCheck(id, checkUserId, checkUserAccount, checkStatus, checkTime, checkICard, checkZgz, checkXlz);
+		boolean ntcFlag = ntcManager.updateNtcByCheck(id, userId, checkUserAccount, checkStatus, checkTime, checkICard, checkZgz, checkXlz);
 		boolean ntFlag = false;
 		if(ntcFlag){
 		  ntFlag =ntManager.updateNtInfoByCheckSta(ntId, checkStatus);

@@ -88,6 +88,10 @@
     <action path="/reportCenter"  parameter="action" scope="request" type="com.zsd.action.base.ReportCenterAction">
       <forward name="nlPage" path="/###.jsp"></forward><!-- 学生能力报告页面 -->
     </action>
+    <!-- 学习记录-->
+    <action path="/studyRecord" parameter="action" scope="request" type="com.zsd.action.studyrec.StudyRecordAction">
+      <forward name="stuRecPage" path="/###.jsp"></forward><!-- 学生记录页面 -->
+    </action>
   </action-mappings>
 
   <message-resources parameter="com.yourcompany.struts.ApplicationResources" />

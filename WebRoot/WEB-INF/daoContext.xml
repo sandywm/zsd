@@ -44,4 +44,5 @@
 	<dao id="study_all_tj_info_Dao" class="com.zsd.dao.impl.StudyAllTjInfoDaoImpl" />
 	<dao id="study_map_Dao" class="com.zsd.dao.impl.StudyMapDaoImpl" />
 	<dao id="study_stu_qftj_Dao" class="com.zsd.dao.impl.StudyStuQfTjDaoImpl" />
+	<dao id="buffet_send_info_Dao" class="com.zsd.dao.impl.BuffetSendInfoDaoImpl" />
 </daoContext>

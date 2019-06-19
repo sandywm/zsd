@@ -137,8 +137,8 @@ public class NetTeacherAction extends DispatchAction {
 		NtCertificateInfoManager ntcManager = (NtCertificateInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_CERTIFICATE_INFO);
 		NetTeacherInfoManager ntManager = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
 		Map<String, String> map = new HashMap<String, String>();
-		Integer uId=(Integer) request.getSession().getAttribute("userId");
-		List<NetTeacherInfo> ntList = ntManager.listntInfoByuserId(uId);
+		Integer userId = CommonTools.getLoginUserId(request);
+		List<NetTeacherInfo> ntList = ntManager.listntInfoByuserId(userId);
 		Integer ntId = ntList.get(0).getId();
 		Integer id = CommonTools.getFinalInteger("ntcId", request);// 主键
 		String icardName = Transcode.unescape_new("icardName", request);//身份证姓名
@@ -182,8 +182,8 @@ public class NetTeacherAction extends DispatchAction {
 		NtCertificateInfoManager ntcManager = (NtCertificateInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_CERTIFICATE_INFO);
 		NetTeacherInfoManager ntManager = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
 		Map<String, String> map = new HashMap<String, String>();
-		Integer uId=(Integer) request.getSession().getAttribute("userId");
-		List<NetTeacherInfo> ntList = ntManager.listntInfoByuserId(uId);
+		Integer userId = CommonTools.getLoginUserId(request);
+		List<NetTeacherInfo> ntList = ntManager.listntInfoByuserId(userId);
 		Integer ntId = ntList.get(0).getId();
 		Integer id = CommonTools.getFinalInteger("ntcId", request);// 主键
 		String xlzImgBig = Transcode.unescape_new("xlzImgBig", request); //学历证大
@@ -223,8 +223,8 @@ public class NetTeacherAction extends DispatchAction {
 		NtCertificateInfoManager ntcManager = (NtCertificateInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_CERTIFICATE_INFO);
 		NetTeacherInfoManager ntManager = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
 		Map<String, String> map = new HashMap<String, String>();
-		Integer uId=(Integer) request.getSession().getAttribute("userId");
-		List<NetTeacherInfo> ntList = ntManager.listntInfoByuserId(uId);
+		Integer userId = CommonTools.getLoginUserId(request);
+		List<NetTeacherInfo> ntList = ntManager.listntInfoByuserId(userId);
 		Integer ntId = ntList.get(0).getId();
 		Integer id = CommonTools.getFinalInteger("ntcId", request);// 主键
 		String zgzImgBig = Transcode.unescape_new("zgzImgBig", request); //学历证大

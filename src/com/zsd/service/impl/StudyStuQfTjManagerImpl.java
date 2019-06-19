@@ -12,11 +12,7 @@ import com.zsd.dao.SubjectDao;
 import com.zsd.dao.UserDao;
 import com.zsd.exception.WEBException;
 import com.zsd.factory.DaoFactory;
-import com.zsd.module.ClassInfo;
-import com.zsd.module.School;
 import com.zsd.module.StudyStuQfTjInfo;
-import com.zsd.module.Subject;
-import com.zsd.module.User;
 import com.zsd.service.StudyStuQfTjManager;
 import com.zsd.tools.CurrentTime;
 import com.zsd.tools.HibernateUtil;
@@ -92,29 +88,29 @@ public class StudyStuQfTjManagerImpl implements StudyStuQfTjManager{
 			tran = sess.beginTransaction();
 			StudyStuQfTjInfo qftj = tjDao.getEntityById(sess, id);
 			if(qftj != null){
-				if(oneZdSuccNum > 0){
-					qftj.setOneZdSuccNum(oneZdSuccNum);
+				if(!oneZdSuccNum.equals(0)){
+					qftj.setOneZdSuccNum(qftj.getOneZdSuccNum() + oneZdSuccNum);
 				}
-				if(oneZdFailNum > 0){
-					qftj.setOneZdFailNum(oneZdFailNum);				
+				if(!oneZdFailNum.equals(0)){
+					qftj.setOneZdFailNum(qftj.getOneZdFailNum() + oneZdFailNum);				
 				}
-				if(againXxSuccNum > 0){
-					qftj.setAgainXxSuccNum(againXxSuccNum);
+				if(!againXxSuccNum.equals(0)){
+					qftj.setAgainXxSuccNum(qftj.getAgainXxSuccNum() + againXxSuccNum);
 				}
-				if(againXxFailNum > 0){
-					qftj.setAgainXxFailNum(againXxFailNum);
+				if(!againXxFailNum.equals(0)){
+					qftj.setAgainXxFailNum(qftj.getAgainXxFailNum() + againXxFailNum);
 				}
-				if(noRelateNum > 0){
-					qftj.setNoRelateNum(noRelateNum);
+				if(!noRelateNum.equals(0)){
+					qftj.setNoRelateNum(qftj.getNoRelateNum() + noRelateNum);
 				}
-				if(relateZdFailNum > 0){
-					qftj.setRelateZdFailNum(relateZdFailNum);
+				if(!relateZdFailNum.equals(0)){
+					qftj.setRelateZdFailNum(qftj.getRelateZdFailNum() + relateZdFailNum);
 				}
-				if(relateXxSuccNum > 0){
-					qftj.setRelateXxSuccNum(relateXxSuccNum);
+				if(!relateXxSuccNum.equals(0)){
+					qftj.setRelateXxSuccNum(qftj.getRelateXxSuccNum() + relateXxSuccNum);
 				}
-				if(relateXxFailNum > 0){
-					qftj.setRelateXxFailNum(relateXxFailNum);		
+				if(!relateXxFailNum.equals(0)){
+					qftj.setRelateXxFailNum(qftj.getRelateXxFailNum() + relateXxFailNum);		
 				}
 				if(!rate.equals("")){
 					qftj.setRate(rate);

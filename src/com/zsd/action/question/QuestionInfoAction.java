@@ -62,7 +62,7 @@ public class QuestionInfoAction extends DispatchAction {
 		QuestionInfoManager qManager = (QuestionInfoManager) AppFactory.instance(null).getApp(Constants.WEB_QUESTION_INFO);
 		Integer subId = CommonTools.getFinalInteger("subId", request);
 		Integer ntId = CommonTools.getFinalInteger("ntId", request);
-		Integer userId = (Integer) request.getSession().getAttribute("userId");
+		Integer userId = CommonTools.getLoginUserId(request);
 		String queTitle=Transcode.unescape_new1("qTitle",request);
 		String queContent=Transcode.unescape_new1("qCon",request);
 		String queTime= CurrentTime.getCurrentTime();
@@ -144,7 +144,7 @@ public class QuestionInfoAction extends DispatchAction {
 		UserClassInfoManager ucManager = (UserClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
 		ClassInfoManager cManager = (ClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_CLASS_INFO);
 		GradeSubjectManager gsm = (GradeSubjectManager) AppFactory.instance(null).getApp(Constants.WEB_GRADE_SUBJECT_INFO);
-		Integer userId = (Integer) request.getSession().getAttribute("userId");
+		Integer userId = CommonTools.getLoginUserId(request);
 		List<UserClassInfo> ucList = ucManager.listUcInfoByUserId(userId);
 		String bcdate = "";
 		if (!ucList.isEmpty()) {
@@ -192,7 +192,7 @@ public class QuestionInfoAction extends DispatchAction {
 		ClassInfoManager cManager = (ClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_CLASS_INFO);
 		GradeSubjectManager gsm = (GradeSubjectManager) AppFactory.instance(null).getApp(Constants.WEB_GRADE_SUBJECT_INFO);
 		NetTeacherStudentManager ntsManager = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT);
-		Integer userId = (Integer) request.getSession().getAttribute("userId");
+		Integer userId = CommonTools.getLoginUserId(request);
 		List<UserClassInfo> ucList = ucManager.listUcInfoByUserId(userId);
 		String bcdate = "";
 		if (!ucList.isEmpty()) {
@@ -250,7 +250,7 @@ public class QuestionInfoAction extends DispatchAction {
 			throws Exception {
 		QuestionInfoManager qManager = (QuestionInfoManager) AppFactory.instance(null).getApp(Constants.WEB_QUESTION_INFO);
 		NetTeacherInfoManager ntManager = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
-		Integer userId = (Integer) request.getSession().getAttribute("userId");
+		Integer userId = CommonTools.getLoginUserId(request);
 		List<NetTeacherInfo> ntlist = ntManager.listntInfoByuserId(userId);
 		Integer ntId = ntlist.get(0).getId();
 		Map<String,Object> map = new HashMap<String,Object>();
