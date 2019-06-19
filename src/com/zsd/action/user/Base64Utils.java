@@ -23,7 +23,7 @@ public class Base64Utils   {
 			  String[] baseStrs = base64.split(",");
 			  String fileName = CurrentTime.getRadomTime()+"."+getSuffix(baseStrs[0]);
 			  BASE64Decoder decoder = new BASE64Decoder();
-			  String imgFilePath = WebUrl.DATA_URL+userId;
+			  String imgFilePath = WebUrl.DATA_URL+"\\"+userId;
 				// Base64解码
 				byte[] b = decoder.decodeBuffer(baseStrs[1]);
 				for (int i = 0; i < b.length; ++i) {

@@ -73,7 +73,7 @@ public class StudyStuQfTjManagerImpl implements StudyStuQfTjManager{
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			throw new WEBException("增加勤奋统计信息时出现异常!");
+			throw new WEBException("根据主键获取勤奋统计信息实体时出现异常!");
 		} finally{
 			HibernateUtil.closeSession();
 		}
@@ -86,14 +86,68 @@ public class StudyStuQfTjManagerImpl implements StudyStuQfTjManager{
 			Integer relateZdFailNum, Integer relateXxSuccNum,
 			Integer relateXxFailNum, String rate) throws WEBException {
 		// TODO Auto-generated method stub
-		return false;
+		try {
+			tjDao = (StudyStuQfTjDao) DaoFactory.instance(null).getDao(Constants.DAO_STUDY_STU_QFTJ_INFO);
+			Session sess = HibernateUtil.currentSession();
+			tran = sess.beginTransaction();
+			StudyStuQfTjInfo qftj = tjDao.getEntityById(sess, id);
+			if(qftj != null){
+				if(oneZdSuccNum > 0){
+					qftj.setOneZdSuccNum(oneZdSuccNum);
+				}
+				if(oneZdFailNum > 0){
+					qftj.setOneZdFailNum(oneZdFailNum);				
+				}
+				if(againXxSuccNum > 0){
+					qftj.setAgainXxSuccNum(againXxSuccNum);
+				}
+				if(againXxFailNum > 0){
+					qftj.setAgainXxFailNum(againXxFailNum);
+				}
+				if(noRelateNum > 0){
+					qftj.setNoRelateNum(noRelateNum);
+				}
+				if(relateZdFailNum > 0){
+					qftj.setRelateZdFailNum(relateZdFailNum);
+				}
+				if(relateXxSuccNum > 0){
+					qftj.setRelateXxSuccNum(relateXxSuccNum);
+				}
+				if(relateXxFailNum > 0){
+					qftj.setRelateXxFailNum(relateXxFailNum);		
+				}
+				if(!rate.equals("")){
+					qftj.setRate(rate);
+				}
+				tjDao.update(sess, qftj);
+				tran.commit();
+				return true;
+			}
+			return false;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new WEBException("修改指定编号的信息时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
 	}
 
 	@Override
 	public StudyStuQfTjInfo getEntityByOpt(Integer userId, Integer subId,
 			String addDate) throws WEBException {
 		// TODO Auto-generated method stub
-		return null;
+		try {
+			tjDao = (StudyStuQfTjDao) DaoFactory.instance(null).getDao(Constants.DAO_STUDY_STU_QFTJ_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return tjDao.getEntityByOpt(sess, userId, subId, addDate);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new WEBException("获取指定学生，指定科目，指定日期的勤奋报告统计信息时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
 	}
 
 	@Override
@@ -102,7 +156,17 @@ public class StudyStuQfTjManagerImpl implements StudyStuQfTjManager{
 			String county, Integer schoolType, Integer schoolId,
 			String gradeName, Integer classId) throws WEBException {
 		// TODO Auto-generated method stub
-		return null;
+		try {
+			tjDao = (StudyStuQfTjDao) DaoFactory.instance(null).getDao(Constants.DAO_STUDY_STU_QFTJ_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return tjDao.findInfoByOpt(sess, userId, subId, sDate, eDate, prov, city, county, schoolType, schoolId, gradeName, classId);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new WEBException("根据条件获取勤奋报告统计信息列表时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
 	}
 
 }
