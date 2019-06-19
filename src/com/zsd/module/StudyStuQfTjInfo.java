@@ -16,6 +16,7 @@ public class StudyStuQfTjInfo implements java.io.Serializable {
 	private Subject subject;
 	private School school;
 	private User user;
+	private ClassInfo classInfo;
 	private String studyDate;
 	private Integer oneZdSuccNum;
 	private Integer oneZdFailNum;
@@ -32,7 +33,7 @@ public class StudyStuQfTjInfo implements java.io.Serializable {
 	private String town;
 	private Integer schoolType;
 	private String gradeName;
-	private String className;
+//	private String className;
 
 	// Constructors
 
@@ -47,7 +48,7 @@ public class StudyStuQfTjInfo implements java.io.Serializable {
 			Integer noRelateNum, Integer relateZdFailNum,
 			Integer relateXxSuccNum, Integer relateXxFailNum, String rate,
 			String prov, String city, String county, String town,
-			Integer schoolType, String gradeName, String className) {
+			Integer schoolType, String gradeName, ClassInfo classInfo) {
 		this.subject = subject;
 		this.school = school;
 		this.user = user;
@@ -67,7 +68,7 @@ public class StudyStuQfTjInfo implements java.io.Serializable {
 		this.town = town;
 		this.schoolType = schoolType;
 		this.gradeName = gradeName;
-		this.className = className;
+		this.classInfo = classInfo;
 	}
 
 	// Property accessors
@@ -232,12 +233,13 @@ public class StudyStuQfTjInfo implements java.io.Serializable {
 		this.gradeName = gradeName;
 	}
 
-	public String getClassName() {
-		return this.className;
+	public ClassInfo getClassInfo() {
+		return classInfo;
 	}
 
-	public void setClassName(String className) {
-		this.className = className;
+	public void setClassInfo(ClassInfo classInfo) {
+		this.classInfo = classInfo;
 	}
+
 
 }

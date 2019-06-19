@@ -25,6 +25,11 @@
                 <comment>学生编号</comment>
             </column>
         </many-to-one>
+        <many-to-one name="classInfo" class="com.zsd.module.ClassInfo" lazy="false">
+            <column name="class_id" not-null="true">
+                <comment>班级编号</comment>
+            </column>
+        </many-to-one>
         <property name="studyDate" type="java.lang.String">
             <column name="study_date" length="30" not-null="true">
                 <comment>学习时间</comment>
@@ -105,10 +110,10 @@
                 <comment>年级名称</comment>
             </column>
         </property>
-        <property name="className" type="java.lang.String">
+        <!--property name="className" type="java.lang.String">
             <column name="class_name" length="30" not-null="true">
                 <comment>班级名称</comment>
             </column>
-        </property>
+        </property-->
     </class>
 </hibernate-mapping>

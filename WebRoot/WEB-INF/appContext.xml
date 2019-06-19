@@ -41,4 +41,5 @@
 	<app id="study_stu_tj_info_Web" class="com.zsd.service.impl.StudyStuTjInfoManagerImpl"/>
 	<app id="study_all_tj_info_Web" class="com.zsd.service.impl.StudyAllTjInfoManagerImpl"/>
 	<app id="study_map_Web" class="com.zsd.service.impl.StudyMapManagerImpl"/>
+	<app id="study_stu_qftj_Web" class="com.zsd.service.impl.StudyStuQfTjManagerImpl"/>
 </appContext>

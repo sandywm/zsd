@@ -42,7 +42,7 @@ public class InitServlet extends HttpServlet
         
         WebUrl.LORE_DATA_URL = getServletContext().getRealPath("Module/commonJs/ueditor/jsp/lore/");
         
-        WebUrl.DATA_URL = "Module/commonJs/ueditor/jsp/head/";
+        WebUrl.DATA_URL = getServletContext().getRealPath("Module/commonJs/ueditor/jsp/head/");
         
         WebUrl.NEW_DATA_URL = "Module/commonJs/ueditor/jsp/head/";
     }
