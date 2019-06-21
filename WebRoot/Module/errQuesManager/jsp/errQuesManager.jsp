@@ -96,7 +96,7 @@
 	
 	<script type="text/javascript">
 		var loreType = 'ggxl';//自助餐
-		var addEditFlag = false,isAddClickFlag=true,
+		var addEditFlag = false,isAddClickFlag=true,switchFlag=false,
 			globalOpts='',currPage='lorePage',lexContent='',
 			currNum=0,loreNameBig='',lqBigId=0,lqeId=0,realAnswer='';//是否可以增加点拨指导和知识讲解;
 		var result_answer = "";//ABCD
