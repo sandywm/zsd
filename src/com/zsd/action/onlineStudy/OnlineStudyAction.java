@@ -30,6 +30,7 @@ import com.zsd.module.LoreInfo;
 import com.zsd.module.LoreQuestion;
 import com.zsd.module.LoreQuestionSubInfo;
 import com.zsd.module.RelationZdResult;
+import com.zsd.module.School;
 import com.zsd.module.StuSubjectEduInfo;
 import com.zsd.module.StudyAllTjInfo;
 import com.zsd.module.StudyDetailInfo;
@@ -49,6 +50,7 @@ import com.zsd.service.GradeSubjectManager;
 import com.zsd.service.LoreInfoManager;
 import com.zsd.service.LoreQuestionManager;
 import com.zsd.service.RelationZdResultManager;
+import com.zsd.service.SchoolManager;
 import com.zsd.service.StuSubjectEduManager;
 import com.zsd.service.StudyAllTjInfoManager;
 import com.zsd.service.StudyDetailManager;
@@ -2349,10 +2351,12 @@ public class OnlineStudyAction extends DispatchAction {
 	public ActionForward updateLogStatus(ActionMapping mapping ,ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		StudyLogManager slm = (StudyLogManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_LOG_INFO);
+		SchoolManager sm = (SchoolManager) AppFactory.instance(null).getApp(Constants.WEB_SCHOOL_INFO);
 		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
 		StudyDetailManager sdm = (StudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_STUDY_DETAIL_INFO);
 		RelationZdResultManager rzrm = (RelationZdResultManager)AppFactory.instance(null).getApp(Constants.WEB_RELATION_ZD_RESULT_INFO);
 		StudyStuQfTjManager tjm = (StudyStuQfTjManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_STU_QFTJ_INFO);
+		UserClassInfoManager ucm = (UserClassInfoManager)AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
 		Integer stuId = CommonTools.getLoginUserId(request);
 		String submitType = CommonTools.getFinalStr("type", request);//巩固训练传study，其他不传
 		String currentStepLoreIdStr = CommonTools.getFinalStr("currentStepLoreArray", request);
@@ -2364,6 +2368,15 @@ public class OnlineStudyAction extends DispatchAction {
 		Integer stepComplete = CommonTools.getFinalInteger("stepComplete", request);
 		Integer isFinish = CommonTools.getFinalInteger("isFinish", request);
 		String[] currentStepLoreArray = null;
+		//以下是勤奋报告统计用变量
+		Integer subId = 0;
+		Integer schoolId = 0;
+		String prov = "";
+		String city = "";
+		String county = "";
+		Integer schoolType = 0;
+		String gradeName = "";
+		Integer classId = 0;
 		if(!currentStepLoreIdStr.equals("")){
 			currentStepLoreArray = currentStepLoreIdStr.split(",");
 		}
@@ -2372,13 +2385,30 @@ public class OnlineStudyAction extends DispatchAction {
 			List<StudyLogInfo> slLastList = slm.listLastStudyInfoByOpt(stuId, loreId, 1);
 			if(slLastList.size() > 0){
 				studyLogId = slLastList.get(0).getId();
+				subId = slLastList.get(0).getSubject().getId();
+				schoolId = slLastList.get(0).getUser().getSchoolId();
+				if(schoolId > 0){
+					List<School> sList = sm.listInfoById(schoolId);
+					if(sList.size() > 0){
+						prov = sList.get(0).getProv();
+						city = sList.get(0).getCity();
+						county = sList.get(0).getCounty();
+						schoolType = sList.get(0).getSchoolType();
+						UserClassInfo uc = ucm.getEntityByOpt(stuId, 2);
+						if(uc != null){
+							ClassInfo c = uc.getClassInfo();
+							gradeName = Convert.dateConvertGradeName(c.getBuildeClassDate());//当前学生的真实年级
+							classId = c.getId();
+						}
+					}
+				}
 			}
 		}
 		//最后提交的任务数都+1
 		StudyLogInfo sl = slm.getEntityById(studyLogId);
 		
 		//获取指定学生，指定科目，指定日期的勤奋报告统计信息
-		StudyStuQfTjInfo qftj = tjm.getEntityByOpt(stuId, sl.getSubject().getId(), CurrentTime.getStringDate());
+		StudyStuQfTjInfo qftj = tjm.getEntityByOpt(stuId, subId, CurrentTime.getStringDate());
 		Integer oneZdSuccNum = 0;//一次性通过总数
 		Integer oneZdFailNum = 0;//一次性未通过总数
 		Integer againXxSuccNum = 0;//再次诊断(学习)通过
@@ -2554,12 +2584,23 @@ public class OnlineStudyAction extends DispatchAction {
 				noRelateNum = 1;
 			}
 		}
-		Integer fmNum = qftj.getOneZdFailNum() + qftj.getRelateZdFailNum();
-		Integer againXxSuccNum_real = qftj.getAgainXxSuccNum() + againXxSuccNum;
-		if(fmNum > 0 && againXxSuccNum_real > 0){
-			rate = Convert.convertInputNumber_1(againXxSuccNum_real * 100.0  / fmNum);
+		if(qftj != null){
+			//修改
+			Integer fmNum = qftj.getOneZdFailNum() + oneZdFailNum + qftj.getRelateZdFailNum() + relateZdFailNum;//一次性通过总数+关联诊断未通过
+			Integer againXxSuccNum_real = qftj.getAgainXxSuccNum() + againXxSuccNum;//再次诊断学习通过次数
+			if(fmNum > 0 && againXxSuccNum_real > 0){
+				rate = Convert.convertInputNumber_1(againXxSuccNum_real * 100.0  / fmNum) + "%";//转换率
+			}
+			tjm.updateTjInfoById(qftj.getId(), oneZdSuccNum, oneZdFailNum, againXxSuccNum, againXxFailNum, noRelateNum, relateZdFailNum, relateXxSuccNum, relateXxFailNum, rate);
+		}else{
+			//增加
+			Integer fmNum = oneZdFailNum + relateZdFailNum;//一次性通过总数+关联诊断未通过
+			Integer againXxSuccNum_real = againXxSuccNum;//再次诊断学习通过次数
+			if(fmNum > 0 && againXxSuccNum_real > 0){
+				rate = Convert.convertInputNumber_1(againXxSuccNum_real * 100.0  / fmNum) + "%";//转换率
+			}
+			tjm.addQFTJ(stuId, subId, oneZdSuccNum, oneZdFailNum, againXxSuccNum, againXxFailNum, noRelateNum, relateZdFailNum, relateXxSuccNum, relateXxFailNum, rate, prov, city, county, schoolType, schoolId, gradeName, classId);
 		}
-		tjm.updateTjInfoById(qftj.getId(), oneZdSuccNum, oneZdFailNum, againXxSuccNum, againXxFailNum, noRelateNum, relateZdFailNum, relateXxSuccNum, relateXxFailNum, rate);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "error";
 		if(flag){

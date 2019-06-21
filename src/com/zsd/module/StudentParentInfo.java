@@ -13,8 +13,8 @@ public class StudentParentInfo implements java.io.Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	private Integer id;
-	private User userByParentId;
-	private User userByStuId;
+	private User parent;
+	private User stu;
 
 	// Constructors
 
@@ -23,9 +23,9 @@ public class StudentParentInfo implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public StudentParentInfo(User userByParentId, User userByStuId) {
-		this.userByParentId = userByParentId;
-		this.userByStuId = userByStuId;
+	public StudentParentInfo(User parent, User stu) {
+		this.parent = parent;
+		this.stu = stu;
 	}
 
 	// Property accessors
@@ -38,20 +38,22 @@ public class StudentParentInfo implements java.io.Serializable {
 		this.id = id;
 	}
 
-	public User getUserByParentId() {
-		return this.userByParentId;
+	public User getParent() {
+		return parent;
 	}
 
-	public void setUserByParentId(User userByParentId) {
-		this.userByParentId = userByParentId;
+	public void setParent(User parent) {
+		this.parent = parent;
 	}
 
-	public User getUserByStuId() {
-		return this.userByStuId;
+	public User getStu() {
+		return stu;
 	}
 
-	public void setUserByStuId(User userByStuId) {
-		this.userByStuId = userByStuId;
+	public void setStu(User stu) {
+		this.stu = stu;
 	}
+
+	
 
 }

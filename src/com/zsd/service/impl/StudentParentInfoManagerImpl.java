@@ -37,5 +37,20 @@ public class StudentParentInfoManagerImpl implements StudentParentInfoManager {
 			HibernateUtil.closeSession();
 		}
 	}
+	@Override
+	public StudentParentInfo getEntityByParId(Integer parId)
+			throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			spDao = (StudentParentInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_STUDENT_PARENT_INFO);
+			Session sess  = HibernateUtil.currentSession();
+			return spDao.getEntityByParentId(sess, parId);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("根据家长编号获取孩子家长关联信息实体时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
 
 }

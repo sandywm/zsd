@@ -1,5 +1,7 @@
 package com.zsd.dao.impl;
 
+import java.util.List;
+
 import org.hibernate.Session;
 
 import com.zsd.dao.StudentParentInfoDao;
@@ -32,6 +34,18 @@ public class StudentParentInfoDaoImpl implements StudentParentInfoDao {
 	public void update(Session sess, StudentParentInfo spInfo) {
 	sess.update(spInfo);
 
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public StudentParentInfo getEntityByParentId(Session sess, Integer parId) {
+		// TODO Auto-generated method stub
+		String hql = " from StudentParentInfo as sp where sp.parent.id = "+parId;
+		List<StudentParentInfo> spList = sess.createQuery(hql).list();
+		if(spList.size() > 0){
+			return spList.get(0);
+		}
+		return null;
 	}
 
 }

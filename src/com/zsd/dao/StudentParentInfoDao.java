@@ -60,5 +60,15 @@ public interface StudentParentInfoDao {
 	 * @param spInfo 需要更新的学生家长信息
 	 */
 	void update(Session sess,StudentParentInfo spInfo);	
+	
+	/**
+	 * 通过家长编号获取孩子家长关联信息实体信息
+	 * @author wm
+	 * @date 2019-6-20 上午11:32:29
+	 * @param sess
+	 * @param parId 家长编号
+	 * @return
+	 */
+	StudentParentInfo getEntityByParentId(Session sess,Integer parId);
 
 }

@@ -10,12 +10,12 @@
             <column name="id" />
             <generator class="native" />
         </id>
-        <many-to-one name="userByParentId" class="com.zsd.module.User" lazy="false">
+        <many-to-one name="parent" class="com.zsd.module.User" lazy="false">
             <column name="parent_id" not-null="true">
                 <comment>家长编号</comment>
             </column>
         </many-to-one>
-        <many-to-one name="userByStuId" class="com.zsd.module.User" lazy="false">
+        <many-to-one name="stu" class="com.zsd.module.User" lazy="false">
             <column name="stu_id" not-null="true">
                 <comment>学生编号</comment>
             </column>

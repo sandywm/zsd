@@ -1,6 +1,7 @@
 package com.zsd.service;
 
 import com.zsd.exception.WEBException;
+import com.zsd.module.StudentParentInfo;
 
 public interface StudentParentInfoManager {
 	/**
@@ -13,4 +14,14 @@ public interface StudentParentInfoManager {
 	 * @throws WEBException
 	 */
 	Integer addSpInfo(Integer upId,Integer uId)throws WEBException;
+	
+	/**
+	 * 根据家长编号获取孩子家长关联信息实体
+	 * @author wm
+	 * @date 2019-6-20 上午11:36:58
+	 * @param parId 家长编号
+	 * @return
+	 * @throws WEBException
+	 */
+	StudentParentInfo getEntityByParId(Integer parId)throws WEBException;
 }

@@ -741,7 +741,7 @@ public class CommonTools {
 	    
 	    String bb = "7389:7392:7394|7396|7390|7393:7397|7405:7406|7407:7431|7432:7433:7436|7446:7448";
 	    System.out.println(CommonTools.getCurrentStudyPath_new(bb, 7397));
-//	    System.out.println(CommonTools.getStudyPath_new(bb, 7397));
+	    System.out.println(CommonTools.getSelfArea_taobao("123.52.203.75"));
 	    System.out.println(CurrentTime.convertTimestampToString_1(CurrentTime.getCurrentTime1()));
 	}
 }
