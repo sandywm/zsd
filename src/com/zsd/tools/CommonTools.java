@@ -2,10 +2,13 @@ package com.zsd.tools;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.URL;
 import java.net.URLConnection;
@@ -21,6 +24,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.zsd.factory.AppFactory;
 import com.zsd.module.LoreInfo;
 import com.zsd.module.json.LoreTreeMenuJson;
@@ -727,7 +732,7 @@ public class CommonTools {
 		return newSortStr;
 	}
 	
-	public static void main(String[] args){
+	public static void main(String[] args) throws Exception, FileNotFoundException{
 //		Integer items[] = {1,2,3,4,5,11,12,21};
 //		Integer[] need_del_items =  {2,11,4};
 //	    List<Integer> list1=Arrays.asList(items);
@@ -739,9 +744,41 @@ public class CommonTools {
 //	    arrList.toArray();
 //	    System.out.println(arrList);
 	    
-	    String bb = "7389:7392:7394|7396|7390|7393:7397|7405:7406|7407:7431|7432:7433:7436|7446:7448";
-	    System.out.println(CommonTools.getCurrentStudyPath_new(bb, 7397));
-	    System.out.println(CommonTools.getSelfArea_taobao("123.52.203.75"));
-	    System.out.println(CurrentTime.convertTimestampToString_1(CurrentTime.getCurrentTime1()));
+//	    String bb = "7389:7392:7394|7396|7390|7393:7397|7405:7406|7407:7431|7432:7433:7436|7446:7448";
+//	    System.out.println(CommonTools.getCurrentStudyPath_new(bb, 7397));
+//	    System.out.println(CommonTools.getSelfArea_taobao("123.52.203.75"));
+//	    System.out.println(CurrentTime.convertTimestampToString_1(CurrentTime.getCurrentTime1()));
+		File file = new File("d:/new4.json");
+		InputStreamReader br = new InputStreamReader(new FileInputStream(file),"utf-8");//读取文件,同时指定编码
+		StringBuffer sb = new StringBuffer();
+        char[] ch = new char[128];  //一次读取128个字符
+        int len = 0;
+        while((len = br.read(ch,0, ch.length)) != -1){
+            sb.append(ch, 0, len);
+        }
+        String s = sb.toString();
+        if(!s.equals("")){
+        	JSONObject dataJson = JSON.parseObject(s); 
+            JSONArray features = dataJson.getJSONArray("areaList");// 找到features json数组
+            //第一级
+            for(int i = 0 ; i < features.size() ; i++){
+            	JSONArray features1 = features.getJSONObject(i).getJSONArray("children");
+                //第二级
+            	for(int j = 0 ; j < features1.size() ; j++){
+            		JSONArray features2 = features1.getJSONObject(j).getJSONArray("children");
+            		for(int k = 0 ; k < features2.size() ; k++){
+            			 //第三级
+            			JSONObject obj2 = features2.getJSONObject(k);
+            			String countyCode = obj2.getString("code");
+            			String countyName = obj2.getString("name");
+                        JSONArray features3 = obj2.getJSONArray("children");
+                        for(Integer num = 0 ; num < features3.size() ; num++){
+                        	JSONObject obj3 = features3.getJSONObject(num);
+                        	System.out.println(countyCode+"--"+ countyName +"--" + obj3.getString("code") + "   " + obj3.getString("name"));
+                        }
+            		}
+            	}
+            }
+        }
 	}
 }

@@ -316,12 +316,23 @@ public class OnlineStudyAction extends DispatchAction {
 						for(Iterator<Edition> it = ediList.iterator() ; it.hasNext();){
 							Edition edi = it.next();
 							Map<String,Object> map_d = new HashMap<String,Object>();
+							if(edi.getEdiName().contains("通用")){
+								continue;
+							}
 							map_d.put("ediId", edi.getId());
 							map_d.put("ediName", edi.getEdiName());
-							if(ediId.equals(edi.getId())){
-								map_d.put("selFlag", true);
+							if(ediId.equals(0)){//默认没有出版社
+								if(edi.getId().equals(2)){//人教版
+									map_d.put("selFlag", true);
+								}else{
+									map_d.put("selFlag", false);
+								}
 							}else{
-								map_d.put("selFlag", false);
+								if(ediId.equals(edi.getId())){
+									map_d.put("selFlag", true);
+								}else{
+									map_d.put("selFlag", false);
+								}
 							}
 							list_edi.add(map_d);
 						}

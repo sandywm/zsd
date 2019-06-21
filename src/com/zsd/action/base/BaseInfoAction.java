@@ -4,6 +4,9 @@
  */
 package com.zsd.action.base;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,6 +24,7 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.zsd.factory.AppFactory;
 import com.zsd.module.ClassInfo;
@@ -28,6 +32,7 @@ import com.zsd.module.School;
 import com.zsd.module.User;
 import com.zsd.service.ClassInfoManager;
 import com.zsd.service.SchoolManager;
+import com.zsd.service.TownManager;
 import com.zsd.service.UserManager;
 import com.zsd.tools.CommonTools;
 import com.zsd.tools.CurrentTime;
@@ -167,4 +172,57 @@ public class BaseInfoAction extends DispatchAction {
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
+	
+	/**
+	 * 初始化增加乡镇数据
+	 * @author wm
+	 * @date 2019-6-21 下午04:45:26
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward initTownData(ActionMapping mapping,ActionForm form,
+			HttpServletRequest request,HttpServletResponse response) throws Exception{
+		TownManager tm = (TownManager)AppFactory.instance(null).getApp(Constants.WEB_TOWN_INFO);
+		File file = new File("d:/new4.json");
+		InputStreamReader br = new InputStreamReader(new FileInputStream(file),"utf-8");//读取文件,同时指定编码
+		StringBuffer sb = new StringBuffer();
+        char[] ch = new char[128];  //一次读取128个字符
+        int len = 0;
+        while((len = br.read(ch,0, ch.length)) != -1){
+            sb.append(ch, 0, len);
+        }
+        String s = sb.toString();
+        if(!s.equals("")){
+        	JSONObject dataJson = JSON.parseObject(s); 
+            JSONArray features = dataJson.getJSONArray("areaList");// 找到features json数组
+            //第一级
+            for(int i = 0 ; i < features.size() ; i++){
+            	JSONArray features1 = features.getJSONObject(i).getJSONArray("children");
+                //第二级
+            	for(int j = 0 ; j < features1.size() ; j++){
+            		JSONArray features2 = features1.getJSONObject(j).getJSONArray("children");
+            		for(int k = 0 ; k < features2.size() ; k++){
+            			 //第三级
+            			JSONObject obj2 = features2.getJSONObject(k);
+            			String countyCode = obj2.getString("code");
+            			String countyName = obj2.getString("name");
+                        JSONArray features3 = obj2.getJSONArray("children");
+                        for(Integer num = 0 ; num < features3.size() ; num++){
+                        	JSONObject obj3 = features3.getJSONObject(num);
+                        	tm.addInfo(countyCode, countyName, obj3.getString("code"), obj3.getString("name"));
+                        }
+            		}
+            	}
+            }
+        }
+		Map<String,String> map = new HashMap<String,String>();
+		map.put("result", "success");
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
 }
