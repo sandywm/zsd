@@ -60,6 +60,7 @@ public interface StudyStuQfTjDao {
 	 * @param prov 省 (""不查询)
 	 * @param city 市(""不查询)
 	 * @param county 县(""不查询)
+	 * @param town 镇(""不查询)
 	 * @param schoolType 学段(0不查询)
 	 * @param schoolId 学校编号(0不查询)
 	 * @param gradeName 年级名称(""不查询)
@@ -67,5 +68,5 @@ public interface StudyStuQfTjDao {
 	 * @return
 	 */
 	List<StudyStuQfTjInfo> findInfoByOpt(Session sess,Integer userId,Integer subId,String sDate,String eDate,
-			String prov,String city,String county,Integer schoolType,Integer schoolId,String gradeName,Integer classId);
+			String prov,String city,String county,String town,Integer schoolType,Integer schoolId,String gradeName,Integer classId);
 }

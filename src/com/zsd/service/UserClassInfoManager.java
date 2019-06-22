@@ -60,4 +60,15 @@ public interface UserClassInfoManager {
 	 * @return
 	 */
 	Integer getUciByOpt(Integer classId,Integer roleId)throws WEBException;
+	
+	/**
+	 * 获取班内老师的班级列表(包括临时接班的老师)
+	 * @author wm
+	 * @date 2019-6-21 下午06:45:17
+	 * @param classId
+	 * @param roleId
+	 * @return
+	 * @throws WEBException
+	 */
+	List<UserClassInfo> listTeaInfoByOpt(Integer classId,Integer roleId)throws WEBException;
 }

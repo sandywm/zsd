@@ -108,5 +108,11 @@ public class UserClassInfoManagerImpl implements UserClassInfoManager {
 			HibernateUtil.closeSession();
 		}
 	}
+	@Override
+	public List<UserClassInfo> listTeaInfoByOpt(Integer classId, Integer roleId)
+			throws WEBException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

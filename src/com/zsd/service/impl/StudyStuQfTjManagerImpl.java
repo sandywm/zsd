@@ -149,13 +149,13 @@ public class StudyStuQfTjManagerImpl implements StudyStuQfTjManager{
 	@Override
 	public List<StudyStuQfTjInfo> listInfoByOpt(Integer userId, Integer subId,
 			String sDate, String eDate, String prov, String city,
-			String county, Integer schoolType, Integer schoolId,
+			String county, String town,Integer schoolType, Integer schoolId,
 			String gradeName, Integer classId) throws WEBException {
 		// TODO Auto-generated method stub
 		try {
 			tjDao = (StudyStuQfTjDao) DaoFactory.instance(null).getDao(Constants.DAO_STUDY_STU_QFTJ_INFO);
 			Session sess = HibernateUtil.currentSession();
-			return tjDao.findInfoByOpt(sess, userId, subId, sDate, eDate, prov, city, county, schoolType, schoolId, gradeName, classId);
+			return tjDao.findInfoByOpt(sess, userId, subId, sDate, eDate, prov, city, county, town,schoolType, schoolId, gradeName, classId);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

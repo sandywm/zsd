@@ -18,6 +18,7 @@ import com.zsd.module.StudentParentInfo;
 import com.zsd.module.StudyAllTjInfo;
 import com.zsd.module.StudyStuQfTjInfo;
 import com.zsd.module.StudyStuTjInfo;
+import com.zsd.module.User;
 import com.zsd.module.UserClassInfo;
 import com.zsd.service.GradeSubjectManager;
 import com.zsd.service.LoreQuestionManager;
@@ -30,6 +31,7 @@ import com.zsd.service.StudyLogManager;
 import com.zsd.service.StudyStuQfTjManager;
 import com.zsd.service.StudyStuTjInfoManager;
 import com.zsd.service.UserClassInfoManager;
+import com.zsd.service.UserManager;
 import com.zsd.tools.CommonTools;
 import com.zsd.tools.Convert;
 import com.zsd.tools.CurrentTime;
@@ -143,21 +145,23 @@ public class ReportCenterAction  extends DispatchAction{
 		StudyStuQfTjManager tjm = (StudyStuQfTjManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_STU_QFTJ_INFO);
 		StudentParentInfoManager spm = (StudentParentInfoManager) AppFactory.instance(null).getApp(Constants.WEB_STUDENT_PARENT_INFO);
 		UserClassInfoManager ucm = (UserClassInfoManager)AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
+		UserManager um = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
 		Integer userId = CommonTools.getLoginUserId(request);
 		Integer roleId = CommonTools.getLoginRoleId(request);
 		//家长学生传递参数学科，时间段
 		//班内老师传递参数所教学科，班级，时间段
 		//各级关联员，上级能看下级，下级能看上级学科，省，市，县，学段，学校，年级，班级，学生，时间段
-		Integer subId = 0;
-		String prov = "";
-		String city = "";
-		String county = "";
-		Integer schoolType = 0;//小学(1),初中(2),高中(3)
-		Integer schoolId = 0;
-		String gradeName = "";
-		Integer classId = 0;
-		String sDate = "";
-		String eDate = "";
+		Integer subId = CommonTools.getFinalInteger("subId", request);//必须传
+		String prov = Transcode.unescape_new1("prov", request);
+		String city = Transcode.unescape_new1("city", request);
+		String county = Transcode.unescape_new1("county", request);
+		String town = Transcode.unescape_new1("town", request);
+		Integer schoolType = CommonTools.getFinalInteger("schoolType", request);//小学(1),初中(2),高中(3)
+		Integer schoolId = CommonTools.getFinalInteger("schoolId", request);
+		String gradeName = Transcode.unescape_new1("gradeName", request);
+		Integer classId = CommonTools.getFinalInteger("classId", request);
+		String sDate = CommonTools.getFinalStr("sDate", request);
+		String eDate = CommonTools.getFinalStr("eDate", request);//默认最近7天
 		
 		//学生个人的统计信息
 		Integer oneZdSuccNum = 0;//一次性通过总数
@@ -184,16 +188,15 @@ public class ReportCenterAction  extends DispatchAction{
 		String msg = "error";
 		Map<String,Object> map = new HashMap<String,Object>();
 		if(roleId > 0 && userId > 0){
-			//学生和学生所在班级的统计信息进行对比
+			//学生和学生所在班级的平均统计信息进行对比
 			if(roleId.equals(2) || roleId.equals(6)){//学生\家长
 				if(roleId.equals(6)){//家长
 					StudentParentInfo sp = spm.getEntityByParId(userId);
 					if(sp != null){//获取自己孩子的id
 						userId = sp.getStu().getId();
-						classId = ucm.getEntityByOpt(userId, 2).getClassInfo().getId();
 					}
 				}
-				List<StudyStuQfTjInfo> tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, prov, city, county, schoolType, schoolId, gradeName, classId);
+				List<StudyStuQfTjInfo> tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, prov, city, county, town, schoolType, schoolId, gradeName, classId);
 				if(tjList.size() > 0){
 					msg = "success";
 					Integer allNum = tjList.size();
@@ -253,6 +256,11 @@ public class ReportCenterAction  extends DispatchAction{
 				}
 			}else if(roleId.equals(4)){//老师(班内)
 				//一年级一班和一年级所有班级的平均值对比
+				//班内老师有自己的班级
+				UserClassInfo uc = ucm.getEntityByOpt(userId, roleId);
+				if(uc != null){
+					
+				}
 			}else if(roleId.equals(5)){//各级管理员
 				//学科必须选择，学段可隔空选择，比如省管理 员可不选市县乡而直接选择学段，那就是指定省下指定学段和全国所有省指定学段的平均值进行对比
 				//当为省时，需要和全国所有省份平均值进行对比(河南省和全国省份平均值对比)

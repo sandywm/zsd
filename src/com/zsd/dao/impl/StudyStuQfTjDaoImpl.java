@@ -36,7 +36,7 @@ public class StudyStuQfTjDaoImpl implements StudyStuQfTjDao{
 	@Override
 	public List<StudyStuQfTjInfo> findInfoByOpt(Session sess, Integer userId,
 			Integer subId, String sDate, String eDate, String prov,
-			String city, String county, Integer schoolType, Integer schoolId,
+			String city, String county, String town,Integer schoolType, Integer schoolId,
 			String gradeName, Integer classId) {
 		// TODO Auto-generated method stub
 		String hql = " from StudyStuQfTjInfo as qftj where qftj.studyDate >= '"+sDate+"' and qftj.studyDate <= '"+eDate+"'";
@@ -54,6 +54,9 @@ public class StudyStuQfTjDaoImpl implements StudyStuQfTjDao{
 		}
 		if(!county.equals("")){
 			hql += " and qftj.county = '"+county+"'";
+		}
+		if(!town.equals("")){
+			hql += " and qftj.town = '"+town+"'";
 		}
 		if(schoolType > 0){
 			hql += " and qftj.schoolType = "+schoolType;

@@ -29,6 +29,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.zsd.factory.AppFactory;
 import com.zsd.module.ClassInfo;
 import com.zsd.module.School;
+import com.zsd.module.TownInfo;
 import com.zsd.module.User;
 import com.zsd.service.ClassInfoManager;
 import com.zsd.service.SchoolManager;
@@ -221,6 +222,40 @@ public class BaseInfoAction extends DispatchAction {
         }
 		Map<String,String> map = new HashMap<String,String>();
 		map.put("result", "success");
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 根据县编码获取乡镇数据列表
+	 * @author wm
+	 * @date 2019-6-21 下午05:13:38
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getSpecTownData(ActionMapping mapping,ActionForm form,
+			HttpServletRequest request,HttpServletResponse response) throws Exception{
+		TownManager tm = (TownManager)AppFactory.instance(null).getApp(Constants.WEB_TOWN_INFO);
+		String countyCode = CommonTools.getFinalStr("countyCode", request);
+		String msg = "noInfo";
+		Map<String,Object> map = new HashMap<String,Object>();
+		List<TownInfo> tList = tm.listInfoByCountyCode(countyCode);
+		if(tList.size() > 0){
+			msg = "success";
+			List<Object> list_d = new ArrayList<Object>();
+			for(TownInfo t : tList){
+				Map<String,String> map_d = new HashMap<String,String>();
+				map_d.put("townCode", t.getTownCode());
+				map_d.put("townName", t.getTownName());
+				list_d.add(map_d);
+			}
+			map.put("townList", list_d);
+		}
+		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
