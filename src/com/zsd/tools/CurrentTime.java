@@ -537,6 +537,9 @@ public class CurrentTime {
     }
     
 	public static void main(String args[]) throws Exception{
+		String aa = "2019-01-01";
+		System.out.println(aa.substring(0, 10));
+		
 //		System.out.println(CurrentTime.compareDate("2014-01-30", "2014-02-01"));
 //		float outPenalty = Float.parseFloat("0.1");
 //		int differenceDays = -3;

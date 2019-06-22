@@ -262,7 +262,13 @@ public class OnlineStudyAction extends DispatchAction {
 											map_d.put("subImg", sub.getImgUrl());
 											map_d.put("eduVolume", edu.getEduVolume());
 											map_d.put("remainDays", remainDays);
+											map_d.put("studyDays", CurrentTime.compareDate(user.getSignDate().substring(0, 10), CurrentTime.getStringDate()));
 											map_d.put("freeStatus", freeStatus.equals(0) ? "免费试用/付费使用" : "免费使用");
+											if(freeStatus.equals(0)){
+												map_d.put("date_range", user.getSignDate().substring(0, 10) + "至" + user.getEndDate().substring(0, 10));
+											}else{
+												map_d.put("date_range", user.getSignDate() + "至[长期免费]");
+											}
 											list_edu.add(map_d);
 										}
 										map.put("studyList", list_edu);
@@ -298,7 +304,13 @@ public class OnlineStudyAction extends DispatchAction {
 									map_d.put("subImg", sub.getImgUrl());
 									map_d.put("eduVolume", edu.getEduVolume());
 									map_d.put("remainDays", remainDays);
+									map_d.put("studyDays", CurrentTime.compareDate(user.getSignDate().substring(0, 10), CurrentTime.getStringDate()));
 									map_d.put("freeStatus", freeStatus.equals(0) ? "免费试用/付费使用" : "免费使用");
+									if(freeStatus.equals(0)){
+										map_d.put("date_range", user.getSignDate().substring(0, 10) + "至" + user.getEndDate().substring(0, 10));
+									}else{
+										map_d.put("date_range", user.getSignDate() + "至[长期免费]");
+									}
 									list_edu.add(map_d);
 								}
 								map.put("studyList", list_edu);
