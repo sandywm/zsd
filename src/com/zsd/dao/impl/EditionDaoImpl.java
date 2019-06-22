@@ -41,11 +41,14 @@ public class EditionDaoImpl implements EditionDao{
 	}
 
 	@Override
-	public List<Edition> findInfoByShowStatus(Session sess, Integer showStatus) {
+	public List<Edition> findInfoByShowStatus(Session sess, Integer ediId,Integer showStatus) {
 		// TODO Auto-generated method stub
-		String hql = " from Edition as edi";
+		String hql = " from Edition as edi where 1=1";
+		if(ediId > 0){
+			hql += " and edi.id = "+ediId;
+		}
 		if(showStatus >= 0){
-			hql += " where edi.showStatus = "+showStatus;
+			hql += " and edi.showStatus = "+showStatus;
 		}
 		hql += " order by edi.ediOrder";
 		return sess.createQuery(hql).list();

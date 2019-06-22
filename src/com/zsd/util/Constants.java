@@ -75,6 +75,7 @@ public class Constants {
 	public static final String WEB_STUDY_STU_QFTJ_INFO = "study_stu_qftj_Web";
 	public static final String WEB_BUFFET_SEND_INFO = "buffet_send_info_Web";
 	public static final String WEB_TOWN_INFO = "town_info_Web";
+	public static final String WEB_APPLY_CLASS_INFO = "apply_class_info_Web";
 	
 	//-------------------DAO-------------------------//
 	public static final String DAO_EDITION_INFO = "edition_Dao";
@@ -122,5 +123,6 @@ public class Constants {
 	public static final String DAO_STUDY_STU_QFTJ_INFO = "study_stu_qftj_Dao";
 	public static final String DAO_BUFFET_SEND_INFO = "buffet_send_info_Dao";
 	public static final String DAO_TOWN_INFO = "town_info_Dao";
+	public static final String DAO_APPLY_CLASS_INFO = "apply_class_info_Dao";
 }
 

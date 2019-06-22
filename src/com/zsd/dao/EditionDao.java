@@ -65,8 +65,9 @@ public interface EditionDao {
 	 * @author Administrator
 	 * @date 2019-4-28 下午03:20:36
 	 * @param sess
+	 * @param ediId 出版社编号(0表示全部)
 	 * @param showStatus 显示状态(-1:表示全部,0:显示,1:隐藏)
 	 * @return
 	 */
-	List<Edition> findInfoByShowStatus(Session sess,Integer showStatus);
+	List<Edition> findInfoByShowStatus(Session sess,Integer ediId,Integer showStatus);
 }

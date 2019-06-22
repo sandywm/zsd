@@ -70,7 +70,7 @@ public class EditionManagerImpl implements EditionManager{
 		try {
 			eDao = (EditionDao) DaoFactory.instance(null).getDao(Constants.DAO_EDITION_INFO);
 			Session sess  = HibernateUtil.currentSession();
-			return eDao.findInfoByShowStatus(sess, showStatus);
+			return eDao.findInfoByShowStatus(sess, id,showStatus);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

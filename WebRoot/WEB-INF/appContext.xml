@@ -44,4 +44,5 @@
 	<app id="study_stu_qftj_Web" class="com.zsd.service.impl.StudyStuQfTjManagerImpl"/>
 	<app id="buffet_send_info_Web" class="com.zsd.service.impl.BuffetSendInfoManagerImpl"/>
 	<app id="town_info_Web" class="com.zsd.service.impl.TownManagerImpl"/>
+	<app id="apply_class_info_Web" class="com.zsd.service.impl.ApplyClassManagerImpl"/>
 </appContext>
