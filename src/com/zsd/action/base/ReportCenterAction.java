@@ -170,6 +170,7 @@ public class ReportCenterAction  extends DispatchAction{
 		Integer classId = CommonTools.getFinalInteger("classId", request);
 		String sDate = CommonTools.getFinalStr("sDate", request);
 		String eDate = CommonTools.getFinalStr("eDate", request);//默认最近7天
+		Integer stuId = CommonTools.getFinalInteger("stuId", request);//选择学生（班内老师和层级管理员传递）
 		
 		//学生个人的统计信息
 		Integer oneZdSuccNum = 0;//一次性通过总数
@@ -218,7 +219,7 @@ public class ReportCenterAction  extends DispatchAction{
 				//需要条件起始时间(必须)，学科(必须)，年级名称(不必须)，班级编号(必须)，学生编号(不必须)
 				//当选择的是班级时--一年级一班和一年级所有班级的平均值对比
 				//当选择的是班级列表下的学生时--学生和当前班级的平均统计信息进行对比
-				if(userId.equals(0)){//当选择的是班级时--一年级一班和一年级所有班级的平均值对比
+				if(stuId.equals(0)){//当选择的是班级时--一年级一班和一年级所有班级的平均值对比
 					tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, "", "", "", "", 0, schoolId, gradeName, 0);//获取指定学校指定年级的统计信息
 				}else{//当选择的是班级列表下的学生时--学生和当前班级的平均统计信息进行对比
 					tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, "", "", "", "", 0, 0, "", classId);//获取指定班级的统计信息
@@ -236,20 +237,56 @@ public class ReportCenterAction  extends DispatchAction{
 				if(!prov.equals("")){
 					if(!city.equals("")){
 						if(!county.equals("")){
-							
+							if(!town.equals("")){
+								if(schoolId > 0){
+									if(!gradeName.equals("")){
+										if(classId > 0){
+											if(stuId > 0){
+												tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, "", "", "", "", 0, 0, "", classId);//获取指定班级的统计信息
+											}else{
+												//当选择的是班级时--一年级一班和一年级所有班级的平均值对比
+												tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, "", "", "", "", 0, schoolId, gradeName, 0);//获取指定学校指定年级的统计信息
+											}
+										}else{
+											//油田八小一年级和当前学校所处乡的所有小学一年级的平均值对比
+											tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, "", "", "", town, schoolType, 0, gradeName, 0);//获取指定乡下所有指定年级的统计信息
+										}
+									}else{
+										//schoolType必须是大于0
+										//指定学校和指定乡下所有指定学段的平均值进行对比（小学油田八小和城关镇下所有小学平均值进行对比）
+										tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, prov, city, county, town, schoolType, 0, "", 0);
+									}
+								}else{
+									if(schoolType > 0){//当是省+市+县+乡+学段
+										//指定乡下指定学段和指定县下所有乡的指定学段的平均值进行对比（范县城关镇所有小学和范县下所有乡的小学平均值进行对比）
+										tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, prov, city, county, "", schoolType, 0, "", 0);
+									}else{
+										//指定乡和当前县下所有乡的平均值进行对比（范县城关镇和范县下所有乡的平均值进行对比）
+										tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, prov, city, county, "", 0, 0, "", 0);
+									}
+								}
+							}else{
+								if(schoolType > 0){//当是省+市+县+学段
+									//指定县下指定学段和指定市下所有县的指定学段的平均值进行对比（濮阳市范县小学和濮阳市下所有县的小学平均值进行对比）
+									tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, prov, city, "", "", schoolType, 0, "", 0);
+								}else{
+									//指定县当前市下所有县的平均值进行对比（濮阳市范县和濮阳市下所有县的平均值进行对比）
+									tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, prov, city, "", "", 0, 0, "", 0);
+								}
+							}
 						}else{
 							if(schoolType > 0){//当是省+市+学段
 								//指定市下指定学段和指定省下所有市的指定学段的平均值进行对比（河南省濮阳市小学和河南省所有市的小学平均值进行对比）
-								tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, "", "", "", "", schoolType, 0, "", 0);
+								tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, prov, "", "", "", schoolType, 0, "", 0);
 							}else{
 								//需要和该省下所有市的平均值进行对比(濮阳市和河南省所有市平均值进行对比)
-								tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, "", "", "", "", 0, 0, "", 0);
+								tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, prov, "", "", "", 0, 0, "", 0);
 							}
 						}
 					}else{//当市为空的时候
 						if(schoolType > 0){//当是省+学段
 							//指定省下指定学段和全国所有省指定学段的平均值进行对比（河南省小学和全国小学平均值进行对比）
-							tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, prov, "", "", "", schoolType, 0, "", 0);
+							tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, "", "", "", "", schoolType, 0, "", 0);
 						}else{
 							//需要和全国所有省份平均值进行对比(河南省和全国省份平均值对比)
 							tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, "", "", "", "", 0, 0, "", 0);
@@ -282,40 +319,84 @@ public class ReportCenterAction  extends DispatchAction{
 							relateXxFailNum += qftj.getRelateXxFailNum();
 						}
 					}else if(roleId.equals(4)){//老师(班内)
-						if(userId.equals(0)){//当选择的是班级时--一年级一班和一年级所有班级的平均值对比
+						boolean flag = false;
+						if(stuId.equals(0)){//当选择的是班级时--一年级一班和一年级所有班级的平均值对比
 							if(qftj.getClassInfo().getId().equals(classId)){
-								oneZdSuccNum += qftj.getOneZdSuccNum();
-								oneZdFailNum += qftj.getOneZdFailNum();
-								againXxSuccNum += qftj.getAgainXxSuccNum();
-								againXxFailNum += qftj.getAgainXxFailNum();
-								noRelateNum += qftj.getNoRelateNum();
-								relateZdFailNum += qftj.getRelateZdFailNum();
-								relateXxSuccNum += qftj.getRelateXxSuccNum();
-								relateXxFailNum += qftj.getRelateXxFailNum();
+								flag = true;
 							}
 						}else{//当选择的是班级列表下的学生时--学生和当前班级的平均统计信息进行对比
-							if(qftj.getUser().getId().equals(userId)){
-								oneZdSuccNum += qftj.getOneZdSuccNum();
-								oneZdFailNum += qftj.getOneZdFailNum();
-								againXxSuccNum += qftj.getAgainXxSuccNum();
-								againXxFailNum += qftj.getAgainXxFailNum();
-								noRelateNum += qftj.getNoRelateNum();
-								relateZdFailNum += qftj.getRelateZdFailNum();
-								relateXxSuccNum += qftj.getRelateXxSuccNum();
-								relateXxFailNum += qftj.getRelateXxFailNum();
+							if(qftj.getUser().getId().equals(stuId)){
+								flag = true;
 							}
 						}
+						if(flag){
+							oneZdSuccNum += qftj.getOneZdSuccNum();
+							oneZdFailNum += qftj.getOneZdFailNum();
+							againXxSuccNum += qftj.getAgainXxSuccNum();
+							againXxFailNum += qftj.getAgainXxFailNum();
+							noRelateNum += qftj.getNoRelateNum();
+							relateZdFailNum += qftj.getRelateZdFailNum();
+							relateXxSuccNum += qftj.getRelateXxSuccNum();
+							relateXxFailNum += qftj.getRelateXxFailNum();
+						}
 					}else if(roleId.equals(5)){//各级管理员
+						boolean flag = false;
 						if(!prov.equals("")){
 							if(!city.equals("")){
-								
-							}else{//当市为空的时候
-								if(schoolType > 0){//当是省+学段
-									//指定省下指定学段和全国所有省指定学段的平均值进行对比（河南省小学和全国小学平均值进行对比）
+								if(!county.equals("")){
+									if(!town.equals("")){
+										if(schoolId > 0){
+											if(!gradeName.equals("")){
+												if(classId > 0){
+													if(stuId > 0){
+														if(qftj.getUser().getId().equals(userId)){
+															flag = true;
+														}
+													}else{
+														if(qftj.getClassInfo().getId().equals(classId)){
+															flag = true;
+														}
+													}
+												}else{
+													if(qftj.getGradeName().equals(gradeName)){
+														flag = true;
+													}
+												}
+											}else{
+												if(qftj.getSchool().getId().equals(schoolId)){
+													flag = true;
+												}
+											}
+										}else{
+											if(qftj.getTown().equals(town)){
+												flag = true;
+											}
+										}
+									}else{
+										if(qftj.getCounty().equals(county)){
+											flag = true;
+										}
+									}
 								}else{
-									//需要和全国所有省份平均值进行对比(河南省和全国省份平均值对比)
+									if(qftj.getCity().equals(city)){
+										flag = true;
+									}
+								}
+							}else{
+								if(qftj.getProv().equals(prov)){
+									flag = true;
 								}
 							}
+						}
+						if(flag){
+							oneZdSuccNum += qftj.getOneZdSuccNum();
+							oneZdFailNum += qftj.getOneZdFailNum();
+							againXxSuccNum += qftj.getAgainXxSuccNum();
+							againXxFailNum += qftj.getAgainXxFailNum();
+							noRelateNum += qftj.getNoRelateNum();
+							relateZdFailNum += qftj.getRelateZdFailNum();
+							relateXxSuccNum += qftj.getRelateXxSuccNum();
+							relateXxFailNum += qftj.getRelateXxFailNum();
 						}
 					}
 				}
