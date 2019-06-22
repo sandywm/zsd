@@ -156,8 +156,6 @@ public class OnlineStudyAction extends DispatchAction {
 		StuSubjectEduManager ssem = (StuSubjectEduManager)  AppFactory.instance(null).getApp(Constants.WEB_STU_SUB_EDU_INFO);
 		Integer userId = CommonTools.getLoginUserId(request);
 		Integer roleId = CommonTools.getLoginRoleId(request);
-		userId = 1;
-		roleId = 2;
 		Map<String,Object> map = new HashMap<String,Object>();
 		Integer subId = CommonTools.getFinalInteger("subId", request);//学科编号
 		Integer ediId = CommonTools.getFinalInteger("ediId", request);//出版社编号
