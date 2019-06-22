@@ -163,15 +163,15 @@ public class UserAction extends DispatchAction {
 						spManager.addSpInfo(upId, userId);
 						msg = "success";//注册用户成功
 						if(ruId>0){//绑定角色成功
+							List<InviteCodeInfo> icList = icManager.listIcInfoByicCode(inviteCode);
+							if(icList.size()>0){//存在班级邀请码
+								Integer teaId=icList.get(0).getInviteId();
+								ntsManager.addNTS(userId, teaId, CurrentTime.getCurrentTime(), -1, CurrentTime.getFinalDateTime(7), 0, "", "", 0);//4 缃戠粶瀵煎笀瀛︾敓缁戝畾
+							}
 							List<ClassInfo> ciList = ciManager.listClassInfoByOption(gradeNo, CurrentTime.getCurrentTime(), schoolId, className);
 							if(ciList.size()>0){
 								Integer classId = ciList.get(0).getId();
 								ucManager.addUcInfo(userId, classId, roleId); //3 绑定用户班级
-								List<InviteCodeInfo> icList = icManager.listIcInfoByicCode(inviteCode);
-								if(icList.size()>0){//存在班级邀请码
-									Integer teaId=icList.get(0).getInviteId();
-									ntsManager.addNTS(userId, teaId, CurrentTime.getCurrentTime(), -1, CurrentTime.getFinalDateTime(7), 0, "", "", 0);//4 缃戠粶瀵煎笀瀛︾敓缁戝畾
-								}
 							}else{//班级不存在
 								Integer mRoId =0;
 								List<RoleInfo> mRList = rManager.listRoleInfo("管理员");
@@ -213,6 +213,7 @@ public class UserAction extends DispatchAction {
 										}
 									}
 								}
+								ucManager.addUcInfo(userId, ciId, roleId); //学生用户 绑定班级	
 							}
 						}
 					}
