@@ -210,191 +210,11 @@ public class ReportCenterAction  extends DispatchAction{
 						classId = uc.getClassInfo().getId();
 					}
 					//学生和家长身份时，只需要用到起始时间，学科，班级编号
-					List<StudyStuQfTjInfo> tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, "", "", "", "", 0, 0, "", classId);
-					if(tjList.size() > 0){
-						msg = "success";
-						Integer allNum = tjList.size();
-						for(StudyStuQfTjInfo qftj : tjList){
-							oneZdSuccNumAll += qftj.getOneZdSuccNum();
-							oneZdFailNumAll += qftj.getOneZdFailNum();
-							againXxSuccNumAll += qftj.getAgainXxSuccNum();
-							againXxFailNumAll += qftj.getAgainXxFailNum();
-							noRelateNumAll += qftj.getNoRelateNum();
-							relateZdFailNumAll += qftj.getRelateZdFailNum();
-							relateXxSuccNumAll += qftj.getRelateXxSuccNum();
-							relateXxFailNumAll += qftj.getRelateXxFailNum();
-							if(qftj.getUser().getId().equals(userId)){
-								oneZdSuccNum += qftj.getOneZdSuccNum();
-								oneZdFailNum += qftj.getOneZdFailNum();
-								againXxSuccNum += qftj.getAgainXxSuccNum();
-								againXxFailNum += qftj.getAgainXxFailNum();
-								noRelateNum += qftj.getNoRelateNum();
-								relateZdFailNum += qftj.getRelateZdFailNum();
-								relateXxSuccNum += qftj.getRelateXxSuccNum();
-								relateXxFailNum += qftj.getRelateXxFailNum();
-							}
-						}
-						Integer fmNum = oneZdFailNum + relateZdFailNum;//一次性通过总数+关联诊断未通过
-						Integer againXxSuccNum_real = againXxSuccNum;//再次诊断学习通过次数
-						if(fmNum > 0 && againXxSuccNum_real > 0){
-							rate = Convert.convertInputNumber_1(againXxSuccNum_real * 100.0  / fmNum) + "%";//转换率
-						}
-						
-						Integer fmNumAll = oneZdFailNumAll + relateZdFailNumAll;//一次性通过总数+关联诊断未通过
-						Integer againXxSuccNum_real_all = againXxSuccNumAll;//再次诊断学习通过次数
-						if(fmNumAll > 0 && againXxSuccNum_real_all > 0){
-							rateAll = Convert.convertInputNumber_1(againXxSuccNum_real_all * 100.0  / fmNumAll) + "%";//转换率
-						}
-						
-						map.put("oneZdSuccNum", oneZdSuccNum);
-						map.put("oneZdFailNum", oneZdFailNum);
-						map.put("againXxSuccNum", againXxSuccNum);
-						map.put("againXxFailNum", againXxFailNum);
-						map.put("noRelateNum", noRelateNum);
-						map.put("relateZdFailNum", relateZdFailNum);
-						map.put("relateXxSuccNum", relateXxSuccNum);
-						map.put("relateXxFailNum", relateXxFailNum);
-						map.put("rate", rate);
-						
-						map.put("oneZdSuccNumAll", Convert.convertInputNumber_2(oneZdSuccNumAll * 1.0 / allNum));
-						map.put("oneZdFailNumAll", Convert.convertInputNumber_2(oneZdFailNumAll * 1.0 / allNum));
-						map.put("againXxSuccNumAll", Convert.convertInputNumber_2(againXxSuccNumAll * 1.0 / allNum));
-						map.put("againXxFailNumAll", Convert.convertInputNumber_2(againXxFailNumAll * 1.0 / allNum));
-						map.put("noRelateNumAll", Convert.convertInputNumber_2(noRelateNumAll * 1.0 / allNum));
-						map.put("relateZdFailNumAll", Convert.convertInputNumber_2(relateZdFailNumAll * 1.0 / allNum));
-						map.put("relateXxSuccNumAll", Convert.convertInputNumber_2(relateXxSuccNumAll * 1.0 / allNum));
-						map.put("relateXxFailNumAll", Convert.convertInputNumber_2(relateXxFailNumAll * 1.0 / allNum));
-						map.put("rateAll", rateAll);
-					}else{
-						msg = "noInfo";
-					}
 				}
 			}else if(roleId.equals(4)){//老师(班内)
 				//需要条件起始时间(必须)，学科(必须)，年级名称(不必须)，班级编号(必须)，学生编号(不必须)
-				schoolId = um.listEntityById(userId).get(0).getSchoolId();//老师所在的学校
-				Integer stuId = CommonTools.getFinalInteger("stuId", request);//不必须
 				//当选择的是班级时--一年级一班和一年级所有班级的平均值对比
-				if(stuId.equals(0)){
-					//传递参数--起始时间(必须)，学科(必须)，年级名称(必须)
-					List<StudyStuQfTjInfo> tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, "", "", "", "", 0, schoolId, gradeName, 0);
-					if(tjList.size() > 0){
-						msg = "success";
-						Integer allNum = tjList.size();
-						for(StudyStuQfTjInfo qftj : tjList){
-							oneZdSuccNumAll += qftj.getOneZdSuccNum();
-							oneZdFailNumAll += qftj.getOneZdFailNum();
-							againXxSuccNumAll += qftj.getAgainXxSuccNum();
-							againXxFailNumAll += qftj.getAgainXxFailNum();
-							noRelateNumAll += qftj.getNoRelateNum();
-							relateZdFailNumAll += qftj.getRelateZdFailNum();
-							relateXxSuccNumAll += qftj.getRelateXxSuccNum();
-							relateXxFailNumAll += qftj.getRelateXxFailNum();
-							if(qftj.getClassInfo().getId().equals(classId)){
-								oneZdSuccNum += qftj.getOneZdSuccNum();
-								oneZdFailNum += qftj.getOneZdFailNum();
-								againXxSuccNum += qftj.getAgainXxSuccNum();
-								againXxFailNum += qftj.getAgainXxFailNum();
-								noRelateNum += qftj.getNoRelateNum();
-								relateZdFailNum += qftj.getRelateZdFailNum();
-								relateXxSuccNum += qftj.getRelateXxSuccNum();
-								relateXxFailNum += qftj.getRelateXxFailNum();
-							}
-						}
-						Integer fmNum = oneZdFailNum + relateZdFailNum;//一次性通过总数+关联诊断未通过
-						Integer againXxSuccNum_real = againXxSuccNum;//再次诊断学习通过次数
-						if(fmNum > 0 && againXxSuccNum_real > 0){
-							rate = Convert.convertInputNumber_1(againXxSuccNum_real * 100.0  / fmNum) + "%";//转换率
-						}
-						
-						Integer fmNumAll = oneZdFailNumAll + relateZdFailNumAll;//一次性通过总数+关联诊断未通过
-						Integer againXxSuccNum_real_all = againXxSuccNumAll;//再次诊断学习通过次数
-						if(fmNumAll > 0 && againXxSuccNum_real_all > 0){
-							rateAll = Convert.convertInputNumber_1(againXxSuccNum_real_all * 100.0  / fmNumAll) + "%";//转换率
-						}
-						
-						map.put("oneZdSuccNum", oneZdSuccNum);
-						map.put("oneZdFailNum", oneZdFailNum);
-						map.put("againXxSuccNum", againXxSuccNum);
-						map.put("againXxFailNum", againXxFailNum);
-						map.put("noRelateNum", noRelateNum);
-						map.put("relateZdFailNum", relateZdFailNum);
-						map.put("relateXxSuccNum", relateXxSuccNum);
-						map.put("relateXxFailNum", relateXxFailNum);
-						map.put("rate", rate);
-						
-						map.put("oneZdSuccNumAll", Convert.convertInputNumber_2(oneZdSuccNumAll * 1.0 / allNum));
-						map.put("oneZdFailNumAll", Convert.convertInputNumber_2(oneZdFailNumAll * 1.0 / allNum));
-						map.put("againXxSuccNumAll", Convert.convertInputNumber_2(againXxSuccNumAll * 1.0 / allNum));
-						map.put("againXxFailNumAll", Convert.convertInputNumber_2(againXxFailNumAll * 1.0 / allNum));
-						map.put("noRelateNumAll", Convert.convertInputNumber_2(noRelateNumAll * 1.0 / allNum));
-						map.put("relateZdFailNumAll", Convert.convertInputNumber_2(relateZdFailNumAll * 1.0 / allNum));
-						map.put("relateXxSuccNumAll", Convert.convertInputNumber_2(relateXxSuccNumAll * 1.0 / allNum));
-						map.put("relateXxFailNumAll", Convert.convertInputNumber_2(relateXxFailNumAll * 1.0 / allNum));
-						map.put("rateAll", rateAll);
-					}else{
-						msg = "noInfo";
-					}
-				}else{//当选择的是班级列表下的学生时--学生和当前班级的平均统计信息进行对比
-					//传递参数--起始时间(必须)，学科(必须)，班级编号(必须)，学生编号(必须)
-					List<StudyStuQfTjInfo> tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, "", "", "", "", 0, 0, "", classId);
-					if(tjList.size() > 0){
-						msg = "success";
-						Integer allNum = tjList.size();
-						for(StudyStuQfTjInfo qftj : tjList){
-							oneZdSuccNumAll += qftj.getOneZdSuccNum();
-							oneZdFailNumAll += qftj.getOneZdFailNum();
-							againXxSuccNumAll += qftj.getAgainXxSuccNum();
-							againXxFailNumAll += qftj.getAgainXxFailNum();
-							noRelateNumAll += qftj.getNoRelateNum();
-							relateZdFailNumAll += qftj.getRelateZdFailNum();
-							relateXxSuccNumAll += qftj.getRelateXxSuccNum();
-							relateXxFailNumAll += qftj.getRelateXxFailNum();
-							if(qftj.getUser().getId().equals(stuId)){
-								oneZdSuccNum += qftj.getOneZdSuccNum();
-								oneZdFailNum += qftj.getOneZdFailNum();
-								againXxSuccNum += qftj.getAgainXxSuccNum();
-								againXxFailNum += qftj.getAgainXxFailNum();
-								noRelateNum += qftj.getNoRelateNum();
-								relateZdFailNum += qftj.getRelateZdFailNum();
-								relateXxSuccNum += qftj.getRelateXxSuccNum();
-								relateXxFailNum += qftj.getRelateXxFailNum();
-							}
-						}
-						Integer fmNum = oneZdFailNum + relateZdFailNum;//一次性通过总数+关联诊断未通过
-						Integer againXxSuccNum_real = againXxSuccNum;//再次诊断学习通过次数
-						if(fmNum > 0 && againXxSuccNum_real > 0){
-							rate = Convert.convertInputNumber_1(againXxSuccNum_real * 100.0  / fmNum) + "%";//转换率
-						}
-						
-						Integer fmNumAll = oneZdFailNumAll + relateZdFailNumAll;//一次性通过总数+关联诊断未通过
-						Integer againXxSuccNum_real_all = againXxSuccNumAll;//再次诊断学习通过次数
-						if(fmNumAll > 0 && againXxSuccNum_real_all > 0){
-							rateAll = Convert.convertInputNumber_1(againXxSuccNum_real_all * 100.0  / fmNumAll) + "%";//转换率
-						}
-						
-						map.put("oneZdSuccNum", oneZdSuccNum);
-						map.put("oneZdFailNum", oneZdFailNum);
-						map.put("againXxSuccNum", againXxSuccNum);
-						map.put("againXxFailNum", againXxFailNum);
-						map.put("noRelateNum", noRelateNum);
-						map.put("relateZdFailNum", relateZdFailNum);
-						map.put("relateXxSuccNum", relateXxSuccNum);
-						map.put("relateXxFailNum", relateXxFailNum);
-						map.put("rate", rate);
-						
-						map.put("oneZdSuccNumAll", Convert.convertInputNumber_2(oneZdSuccNumAll * 1.0 / allNum));
-						map.put("oneZdFailNumAll", Convert.convertInputNumber_2(oneZdFailNumAll * 1.0 / allNum));
-						map.put("againXxSuccNumAll", Convert.convertInputNumber_2(againXxSuccNumAll * 1.0 / allNum));
-						map.put("againXxFailNumAll", Convert.convertInputNumber_2(againXxFailNumAll * 1.0 / allNum));
-						map.put("noRelateNumAll", Convert.convertInputNumber_2(noRelateNumAll * 1.0 / allNum));
-						map.put("relateZdFailNumAll", Convert.convertInputNumber_2(relateZdFailNumAll * 1.0 / allNum));
-						map.put("relateXxSuccNumAll", Convert.convertInputNumber_2(relateXxSuccNumAll * 1.0 / allNum));
-						map.put("relateXxFailNumAll", Convert.convertInputNumber_2(relateXxFailNumAll * 1.0 / allNum));
-						map.put("rateAll", rateAll);
-					}else{
-						msg = "noInfo";
-					}
-				}
+				//当选择的是班级列表下的学生时--学生和当前班级的平均统计信息进行对比
 				
 			}else if(roleId.equals(5)){//各级管理员
 				//学科必须选择，学段可隔空选择，比如省管理 员可不选市县乡而直接选择学段，那就是指定省下指定学段和全国所有省指定学段的平均值进行对比
@@ -406,13 +226,72 @@ public class ReportCenterAction  extends DispatchAction{
 				//当为省市县学段(小学)学校年级时，需要和该县下所有指定学段的指定年级平均值进行对比(范县小学油田八小一年级和范县所有小学一年级平均值进行对比)
 				//当为省市县学段(小学)学校年级班级时，需要当前学校指定班级所在的年级平均值进行对比(油田八小一年级一班和油田八小一年级平均值进行对比)
 				//当为省市县学段(小学)学校年级班级学生时，需要学生和学生所在的班级平均值进行对比(油田八小一年级一班某某学生和油田八小一年级一班的平均值进行对比)
-				if(!prov.equals("")){
-					if(!city.equals("")){
-						
-					}else{//光传递省
-//						if()
+			}
+			List<StudyStuQfTjInfo> tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, prov, city, county, town, schoolType, schoolId, gradeName, classId);
+			if(tjList.size() > 0){
+				msg = "success";
+				Integer allNum = tjList.size();
+				for(StudyStuQfTjInfo qftj : tjList){
+					oneZdSuccNumAll += qftj.getOneZdSuccNum();
+					oneZdFailNumAll += qftj.getOneZdFailNum();
+					againXxSuccNumAll += qftj.getAgainXxSuccNum();
+					againXxFailNumAll += qftj.getAgainXxFailNum();
+					noRelateNumAll += qftj.getNoRelateNum();
+					relateZdFailNumAll += qftj.getRelateZdFailNum();
+					relateXxSuccNumAll += qftj.getRelateXxSuccNum();
+					relateXxFailNumAll += qftj.getRelateXxFailNum();
+					if(roleId.equals(2) || roleId.equals(6)){//学生\家长
+						if(qftj.getUser().getId().equals(userId)){
+							oneZdSuccNum += qftj.getOneZdSuccNum();
+							oneZdFailNum += qftj.getOneZdFailNum();
+							againXxSuccNum += qftj.getAgainXxSuccNum();
+							againXxFailNum += qftj.getAgainXxFailNum();
+							noRelateNum += qftj.getNoRelateNum();
+							relateZdFailNum += qftj.getRelateZdFailNum();
+							relateXxSuccNum += qftj.getRelateXxSuccNum();
+							relateXxFailNum += qftj.getRelateXxFailNum();
+						}
+					}else if(roleId.equals(4)){//老师(班内)
+						if(userId.equals(0)){//当选择的是班级时--一年级一班和一年级所有班级的平均值对比
+							
+						}else{//当选择的是班级列表下的学生时--学生和当前班级的平均统计信息进行对比
+							
+						}
 					}
 				}
+				Integer fmNum = oneZdFailNum + relateZdFailNum;//一次性通过总数+关联诊断未通过
+				Integer againXxSuccNum_real = againXxSuccNum;//再次诊断学习通过次数
+				if(fmNum > 0 && againXxSuccNum_real > 0){
+					rate = Convert.convertInputNumber_1(againXxSuccNum_real * 100.0  / fmNum) + "%";//转换率
+				}
+				
+				Integer fmNumAll = oneZdFailNumAll + relateZdFailNumAll;//一次性通过总数+关联诊断未通过
+				Integer againXxSuccNum_real_all = againXxSuccNumAll;//再次诊断学习通过次数
+				if(fmNumAll > 0 && againXxSuccNum_real_all > 0){
+					rateAll = Convert.convertInputNumber_1(againXxSuccNum_real_all * 100.0  / fmNumAll) + "%";//转换率
+				}
+				
+				map.put("oneZdSuccNum", oneZdSuccNum);
+				map.put("oneZdFailNum", oneZdFailNum);
+				map.put("againXxSuccNum", againXxSuccNum);
+				map.put("againXxFailNum", againXxFailNum);
+				map.put("noRelateNum", noRelateNum);
+				map.put("relateZdFailNum", relateZdFailNum);
+				map.put("relateXxSuccNum", relateXxSuccNum);
+				map.put("relateXxFailNum", relateXxFailNum);
+				map.put("rate", rate);
+				
+				map.put("oneZdSuccNumAll", Convert.convertInputNumber_2(oneZdSuccNumAll * 1.0 / allNum));
+				map.put("oneZdFailNumAll", Convert.convertInputNumber_2(oneZdFailNumAll * 1.0 / allNum));
+				map.put("againXxSuccNumAll", Convert.convertInputNumber_2(againXxSuccNumAll * 1.0 / allNum));
+				map.put("againXxFailNumAll", Convert.convertInputNumber_2(againXxFailNumAll * 1.0 / allNum));
+				map.put("noRelateNumAll", Convert.convertInputNumber_2(noRelateNumAll * 1.0 / allNum));
+				map.put("relateZdFailNumAll", Convert.convertInputNumber_2(relateZdFailNumAll * 1.0 / allNum));
+				map.put("relateXxSuccNumAll", Convert.convertInputNumber_2(relateXxSuccNumAll * 1.0 / allNum));
+				map.put("relateXxFailNumAll", Convert.convertInputNumber_2(relateXxFailNumAll * 1.0 / allNum));
+				map.put("rateAll", rateAll);
+			}else{
+				msg = "noInfo";
 			}
 		}
 		map.put("result", msg);

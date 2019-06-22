@@ -156,6 +156,8 @@ public class OnlineStudyAction extends DispatchAction {
 		StuSubjectEduManager ssem = (StuSubjectEduManager)  AppFactory.instance(null).getApp(Constants.WEB_STU_SUB_EDU_INFO);
 		Integer userId = CommonTools.getLoginUserId(request);
 		Integer roleId = CommonTools.getLoginRoleId(request);
+		userId = 1;
+		roleId = 2;
 		Map<String,Object> map = new HashMap<String,Object>();
 		Integer subId = CommonTools.getFinalInteger("subId", request);//学科编号
 		Integer ediId = CommonTools.getFinalInteger("ediId", request);//出版社编号
@@ -266,16 +268,13 @@ public class OnlineStudyAction extends DispatchAction {
 											list_edu.add(map_d);
 										}
 										map.put("studyList", list_edu);
-										map.put("selTxt", gradeName+"("+edu_study.getEdition().getEdiName()+")");
 										break;
 									}else{
 										msg = "noInfo";
-										map.put("selTxt", gradeName+"("+edu_study.getEdition().getEdiName()+")");
 									}
 								}
 							}else{
 								msg = "noInfo";//mei
-								map.put("selTxt", gradeName+"("+em.listInfoByShowStatus(2, -1).get(0).getEdiName()+")");
 							}
 						}else if(opt.equals("manu")){
 							List<Education> eduList = edum.listInfoByOpt(ediId, gsId_curr);//获取当前年级学科、出版社下的教材信息
@@ -305,10 +304,8 @@ public class OnlineStudyAction extends DispatchAction {
 									list_edu.add(map_d);
 								}
 								map.put("studyList", list_edu);
-								map.put("selTxt", gradeName+"("+eduList.get(0).getEdition().getEdiName()+")");
 							}else{
 								msg = "noInfo";
-								map.put("selTxt", gradeName+"("+em.listInfoByShowStatus(2, -1).get(0).getEdiName()+")");
 							}
 						}
 						//获取出版社列表
@@ -322,11 +319,7 @@ public class OnlineStudyAction extends DispatchAction {
 							map_d.put("ediId", edi.getId());
 							map_d.put("ediName", edi.getEdiName());
 							if(ediId.equals(0)){//默认没有出版社
-								if(edi.getId().equals(2)){//人教版
-									map_d.put("selFlag", true);
-								}else{
-									map_d.put("selFlag", false);
-								}
+								map_d.put("selFlag", false);
 							}else{
 								if(ediId.equals(edi.getId())){
 									map_d.put("selFlag", true);
