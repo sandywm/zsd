@@ -840,6 +840,11 @@ public class OnlineStudyAction extends DispatchAction {
 									task = 1;
 									loreTaskName = "针对性诊断";
 									loreTypeName = "针对性诊断";
+									if(logType.equals(1)){
+										
+									}else{
+										11
+									}
 									lqList = lqm.listInfoByLoreId(quoteLoreId, loreTypeName, 0);
 									money *= lqList.size();
 									currentLoreId = loreId;

@@ -114,4 +114,17 @@ public interface LoreQuestionDao {
 	 * @return
 	 */
 	LoreQuestion getMaxNumInfoByOpt(Session sess,Integer loreId,String loreType,Integer inUse);
+	
+	/**
+	 * 根据知识点编号、知识点类型(可为空),有效状态,班内老师编号获取题库记录列表
+	 * @author wm
+	 * @date 2019-6-24 下午05:54:14
+	 * @param sess
+	 * @param loreId
+	 * @param loreType
+	 * @param inUse
+	 * @param queClassTeaId
+	 * @return
+	 */
+	List<LoreQuestion> findInfoByOpt(Session sess,Integer loreId,String loreType,Integer inUse,Integer queClassTeaId);
 }
