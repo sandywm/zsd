@@ -420,10 +420,10 @@ public class OnlineStudyAction extends DispatchAction {
 							//0:未学习,1:未通过,2:已经掌握
 							if(slList.size() > 0){
 								map_d_1.put("studyStatus", slList.get(0).getIsFinish());
-								map_d.put("studyLogId", slList.get(0).getId());//studyLogId
+								map_d_1.put("studyLogId", slList.get(0).getId());//studyLogId
 							}else{
 								map_d_1.put("studyStatus", 0);
-								map_d.put("studyLogId", 0);
+								map_d_1.put("studyLogId", 0);
 							}
 							list_d_1.add(map_d_1);
 						}
@@ -768,6 +768,7 @@ public class OnlineStudyAction extends DispatchAction {
 		Integer loreId =  CommonTools.getFinalInteger("loreId", request);//知识点最初的编号
 		Integer studyLogId = CommonTools.getFinalInteger("studyLogId", request);//学习记录编号
 		Integer logType = CommonTools.getFinalInteger("logType", request);//1:自学（默认不传）,2:家庭作业
+		UserClassInfoManager ucm = (UserClassInfoManager)AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
 		if(logType.equals(0)){
 			logType = 1;
 		}
@@ -791,7 +792,12 @@ public class OnlineStudyAction extends DispatchAction {
 		Integer quoteLoreId = 0;//通用知识点
 		String nextLoreIdArray = "";//下级知识典编号数组
 		String loreName = "";
+		Integer classId = 0;
 		if(loreId > 0){
+			UserClassInfo  uc = ucm.getEntityByOpt(stuId, 2);//获取学生所在班级信息
+			if(uc != null){
+				classId = uc.getClassInfo().getId();
+			}
 			List<StudyMapInfo> smList = smm.listInfoByOpt(stuId, loreId);
 			if(smList.size() > 0){//存在学习记录
 				if(smList.get(0).getCurrStep().equals(4)){
