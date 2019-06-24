@@ -605,9 +605,9 @@ public class OnlineStudyAction extends DispatchAction {
 		StudyLogManager slm = (StudyLogManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_LOG_INFO);
 		Integer loreId =  CommonTools.getFinalInteger("loreId", request);
 		Integer studyLogId = CommonTools.getFinalInteger("studyLogId", request);
-		Integer loretType = CommonTools.getFinalInteger("loreType", request);//1:自学（默认不传）,2:家庭作业
-		if(loretType.equals(0)){
-			loretType = 1;
+		Integer logType = CommonTools.getFinalInteger("logType", request);//1:自学（默认不传）,2:家庭作业
+		if(logType.equals(0)){
+			logType = 1;
 		}
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "noInfo";
@@ -615,7 +615,7 @@ public class OnlineStudyAction extends DispatchAction {
 		if(studyLogId > 0){
 			sl = slm.getEntityById(studyLogId);
 		}else{
-			List<StudyLogInfo> slList = slm.listLastStudyInfoByOpt(CommonTools.getLoginUserId(request), loreId, loretType);
+			List<StudyLogInfo> slList = slm.listLastStudyInfoByOpt(CommonTools.getLoginUserId(request), loreId, logType);
 			if(slList.size() > 0){
 				sl = slList.get(0);
 			}
@@ -767,8 +767,11 @@ public class OnlineStudyAction extends DispatchAction {
 		Map<String,Object> map = new HashMap<String,Object>();
 		Integer loreId =  CommonTools.getFinalInteger("loreId", request);//知识点最初的编号
 		Integer studyLogId = CommonTools.getFinalInteger("studyLogId", request);//学习记录编号
+		Integer logType = CommonTools.getFinalInteger("logType", request);//1:自学（默认不传）,2:家庭作业
+		if(logType.equals(0)){
+			logType = 1;
+		}
 		Integer currentLoreId =  0;//当前知识点编号
-		Integer nextLoreId = 0;//下级子知识点编号
 		Integer stuId = CommonTools.getLoginUserId(request);
 		String msg = "error";
 		String path = "";//针对性诊断的路线
@@ -816,7 +819,7 @@ public class OnlineStudyAction extends DispatchAction {
 							studyPathChi = studyPathArr[1];
 							StudyLogInfo sl = null;
 							if(studyLogId.equals(0)){//新诊断
-								List<StudyLogInfo> slList = slm.listLastStudyInfoByOpt(stuId, loreId, 1);
+								List<StudyLogInfo> slList = slm.listLastStudyInfoByOpt(stuId, loreId, logType);
 								if(slList.size() > 0){
 									sl = slList.get(0);
 									studyLogId = sl.getId();
@@ -1236,6 +1239,10 @@ public class OnlineStudyAction extends DispatchAction {
 		StudyTaskManager stm = (StudyTaskManager) AppFactory.instance(null).getApp(Constants.WEB_STUDY_TASK_INFO);
 		Integer loreId =  CommonTools.getFinalInteger("loreId", request);//知识点最初的编号
 		Integer studyLogId = CommonTools.getFinalInteger("studyLogId", request);//学习记录编号
+		Integer logType = CommonTools.getFinalInteger("logType", request);//1:自学（默认不传）,2:家庭作业
+		if(logType.equals(0)){
+			logType = 1;
+		}
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "error";
 		Integer currentLoreId = 0;//当前知识点编号
@@ -1608,7 +1615,7 @@ public class OnlineStudyAction extends DispatchAction {
 			LoreInfo lore = lm.getEntityById(loreId);
 			if(lore != null){
 				msg = "success";
-				List<StudyLogInfo> slList = slm.listLastStudyInfoByOpt(stuId, loreId, 1);
+				List<StudyLogInfo> slList = slm.listLastStudyInfoByOpt(stuId, loreId, logType);
 				if(slList.size() > 0){
 					if(slList.get(0).getIsFinish() == 2){
 						if(slList.get(0).getStep() == 1){
@@ -2102,6 +2109,10 @@ public class OnlineStudyAction extends DispatchAction {
 		String myAnswer = Transcode.unescape_new1("myAnswer", request);//我的答案
 		Integer lqId = CommonTools.getFinalInteger("lqId", request);
 		String loreTaskName = Transcode.unescape_new1("loreTaskName",request);
+		Integer logType = CommonTools.getFinalInteger("logType", request);//1:自学（默认不传）,2:家庭作业
+		if(logType.equals(0)){
+			logType = 1;
+		}
 		String currDate = CurrentTime.getStringDate();
 		Integer result = 0;//0为错,1为对
 		boolean flag = false;
@@ -2125,13 +2136,17 @@ public class OnlineStudyAction extends DispatchAction {
 				String loreType = lq.getLoreTypeName();
 				if(loreType.equals("巩固训练")){//巩固训练不检查
 					if(studyLogId > 0){//存在学习记录
-						subjectId = slm.getEntityById(studyLogId).getSubject().getId();
+						StudyLogInfo sl = slm.getEntityById(studyLogId);
+						logType = sl.getLogType();
+						subjectId = sl.getSubject().getId();
 					}else{
 						subjectId = lq.getLoreInfo().getChapter().getEducation().getGradeSubject().getSubject().getId();
 					}
 				}else{
 					if(studyLogId > 0){//存在学习记录
-						subjectId = slm.getEntityById(studyLogId).getSubject().getId();
+						StudyLogInfo sl = slm.getEntityById(studyLogId);
+						logType = sl.getLogType();
+						subjectId = sl.getSubject().getId();
 						flag = sdm.checkSuccCompleteFlag(studyLogId, lqId, currDate);
 						if(!flag){//当当前题错误或者没做时
 							//判断上次答题时间（正常答题不会出现，防止URL提交）
@@ -2210,7 +2225,7 @@ public class OnlineStudyAction extends DispatchAction {
 						 * 2.1：如果这是access为1，表示需要进入下一级关联知识点（修改access的值为1）
 						 */
 						if(studyLogId.equals(0)){//新开的题
-							List<StudyLogInfo> slList = slm.listLastStudyInfoByOpt(stuId, loreId, 1);
+							List<StudyLogInfo> slList = slm.listLastStudyInfoByOpt(stuId, loreId, logType);
 							if(slList.size() > 0){
 								studyLogId = slList.get(0).getId();
 							}
@@ -2219,7 +2234,7 @@ public class OnlineStudyAction extends DispatchAction {
 							if(result.equals(1)){//题做对了
 								oldStepMoney++;
 							}
-							studyLogId = slm.addStudyLog(stuId, loreId, subjectId, step, stepComplete, isFinish, "", oldStepMoney, access, currTime, 1, 1);
+							studyLogId = slm.addStudyLog(stuId, loreId, subjectId, step, stepComplete, isFinish, "", oldStepMoney, access, currTime, 1, logType);
 						}else{//表示是继续之前的未做完的题（修改log里面的记录）
 							StudyLogInfo  sl = slm.getEntityById(studyLogId);
 							if(sl != null){
@@ -2381,6 +2396,10 @@ public class OnlineStudyAction extends DispatchAction {
 		Integer currentLoreId = CommonTools.getFinalInteger("currentLoreId", request);
 		Integer stepComplete = CommonTools.getFinalInteger("stepComplete", request);
 		Integer isFinish = CommonTools.getFinalInteger("isFinish", request);
+		Integer logType = CommonTools.getFinalInteger("logType", request);//1:自学（默认不传）,2:家庭作业
+		if(logType.equals(0)){
+			logType = 1;
+		}
 		String[] currentStepLoreArray = null;
 		//以下是勤奋报告统计用变量
 		Integer subId = 0;
@@ -2396,7 +2415,7 @@ public class OnlineStudyAction extends DispatchAction {
 		}
 		if(studyLogId.equals(0)){//初次做题
 			//通过userId+loreId获取最后一条答题详情
-			List<StudyLogInfo> slLastList = slm.listLastStudyInfoByOpt(stuId, loreId, 1);
+			List<StudyLogInfo> slLastList = slm.listLastStudyInfoByOpt(stuId, loreId, logType);
 			if(slLastList.size() > 0){
 				studyLogId = slLastList.get(0).getId();
 				subId = slLastList.get(0).getSubject().getId();

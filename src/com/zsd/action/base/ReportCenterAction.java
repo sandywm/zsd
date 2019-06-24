@@ -145,17 +145,14 @@ public class ReportCenterAction  extends DispatchAction{
 	 */
 	public ActionForward getQfTjData(ActionMapping mapping ,ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
-		StudyLogManager slm = (StudyLogManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_LOG_INFO);
-		SchoolManager sm = (SchoolManager) AppFactory.instance(null).getApp(Constants.WEB_SCHOOL_INFO);
-		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
-		StudyDetailManager sdm = (StudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_STUDY_DETAIL_INFO);
-		RelationZdResultManager rzrm = (RelationZdResultManager)AppFactory.instance(null).getApp(Constants.WEB_RELATION_ZD_RESULT_INFO);
 		StudyStuQfTjManager tjm = (StudyStuQfTjManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_STU_QFTJ_INFO);
 		StudentParentInfoManager spm = (StudentParentInfoManager) AppFactory.instance(null).getApp(Constants.WEB_STUDENT_PARENT_INFO);
 		UserClassInfoManager ucm = (UserClassInfoManager)AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
 		UserManager um = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
-		Integer userId = CommonTools.getLoginUserId(request);
-		Integer roleId = CommonTools.getLoginRoleId(request);
+		Integer userId = CommonTools.getLoginUserId(request);//必须传
+		Integer roleId = CommonTools.getLoginRoleId(request);//必须传
+		userId = 1;
+		roleId = 2;
 		//家长学生传递参数学科，时间段
 		//班内老师传递参数所教学科，班级，时间段
 		//各级关联员，上级能看下级，下级能看上级学科，省，市，县，学段，学校，年级，班级，学生，时间段
@@ -171,6 +168,10 @@ public class ReportCenterAction  extends DispatchAction{
 		String sDate = CommonTools.getFinalStr("sDate", request);
 		String eDate = CommonTools.getFinalStr("eDate", request);//默认最近7天
 		Integer stuId = CommonTools.getFinalInteger("stuId", request);//选择学生（班内老师和层级管理员传递）
+		
+		//学生/家长时传递userId
+		//班内老师时传递userId,stuId,gradeName,classId
+		//各级管理员
 		
 		//学生个人的统计信息
 		Integer oneZdSuccNum = 0;//一次性通过总数
@@ -220,6 +221,7 @@ public class ReportCenterAction  extends DispatchAction{
 				//当选择的是班级时--一年级一班和一年级所有班级的平均值对比
 				//当选择的是班级列表下的学生时--学生和当前班级的平均统计信息进行对比
 				if(stuId.equals(0)){//当选择的是班级时--一年级一班和一年级所有班级的平均值对比
+					schoolId = um.listEntityById(userId).get(0).getSchoolId();
 					tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, "", "", "", "", 0, schoolId, gradeName, 0);//获取指定学校指定年级的统计信息
 				}else{//当选择的是班级列表下的学生时--学生和当前班级的平均统计信息进行对比
 					tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, "", "", "", "", 0, 0, "", classId);//获取指定班级的统计信息
@@ -249,55 +251,55 @@ public class ReportCenterAction  extends DispatchAction{
 											}
 										}else{
 											//油田八小一年级和当前学校所处乡的所有小学一年级的平均值对比
-											tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, "", "", "", town, schoolType, 0, gradeName, 0);//获取指定乡下所有指定年级的统计信息
+											tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, prov, city, county, town, schoolType, 0, gradeName, 0);//获取指定乡下所有指定年级的统计信息
 										}
 									}else{
 										//schoolType必须是大于0
 										//指定学校和指定乡下所有指定学段的平均值进行对比（小学油田八小和城关镇下所有小学平均值进行对比）
-										tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, prov, city, county, town, schoolType, 0, "", 0);
+										tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, prov, city, county, town, schoolType, 0, "", 0);//城关镇下所有小学
 									}
 								}else{
 									if(schoolType > 0){//当是省+市+县+乡+学段
 										//指定乡下指定学段和指定县下所有乡的指定学段的平均值进行对比（范县城关镇所有小学和范县下所有乡的小学平均值进行对比）
-										tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, prov, city, county, "", schoolType, 0, "", 0);
+										tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, prov, city, county, "", schoolType, 0, "", 0);//范县下所有乡的小学的记录
 									}else{
 										//指定乡和当前县下所有乡的平均值进行对比（范县城关镇和范县下所有乡的平均值进行对比）
-										tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, prov, city, county, "", 0, 0, "", 0);
+										tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, prov, city, county, "", 0, 0, "", 0);//范县下所有乡的记录
 									}
 								}
 							}else{
 								if(schoolType > 0){//当是省+市+县+学段
 									//指定县下指定学段和指定市下所有县的指定学段的平均值进行对比（濮阳市范县小学和濮阳市下所有县的小学平均值进行对比）
-									tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, prov, city, "", "", schoolType, 0, "", 0);
+									tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, prov, city, "", "", schoolType, 0, "", 0);//濮阳市下所有县的小学的记录
 								}else{
 									//指定县当前市下所有县的平均值进行对比（濮阳市范县和濮阳市下所有县的平均值进行对比）
-									tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, prov, city, "", "", 0, 0, "", 0);
+									tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, prov, city, "", "", 0, 0, "", 0);//濮阳市下所有县的记录
 								}
 							}
 						}else{
 							if(schoolType > 0){//当是省+市+学段
 								//指定市下指定学段和指定省下所有市的指定学段的平均值进行对比（河南省濮阳市小学和河南省所有市的小学平均值进行对比）
-								tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, prov, "", "", "", schoolType, 0, "", 0);
+								tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, prov, "", "", "", schoolType, 0, "", 0);//河南省所有市的小学记录
 							}else{
 								//需要和该省下所有市的平均值进行对比(濮阳市和河南省所有市平均值进行对比)
-								tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, prov, "", "", "", 0, 0, "", 0);
+								tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, prov, "", "", "", 0, 0, "", 0);//河南省所有市的记录
 							}
 						}
 					}else{//当市为空的时候
 						if(schoolType > 0){//当是省+学段
 							//指定省下指定学段和全国所有省指定学段的平均值进行对比（河南省小学和全国小学平均值进行对比）
-							tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, "", "", "", "", schoolType, 0, "", 0);
+							tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, "", "", "", "", schoolType, 0, "", 0);//全国小学记录
 						}else{
 							//需要和全国所有省份平均值进行对比(河南省和全国省份平均值对比)
-							tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, "", "", "", "", 0, 0, "", 0);
+							tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, "", "", "", "", 0, 0, "", 0);//全国记录
 						}
 					}
 				}
 			}
-			tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, prov, city, county, town, schoolType, schoolId, gradeName, classId);
 			if(tjList.size() > 0){
 				msg = "success";
 				Integer allNum = tjList.size();
+				Integer specNum = 0;
 				for(StudyStuQfTjInfo qftj : tjList){
 					oneZdSuccNumAll += qftj.getOneZdSuccNum();
 					oneZdFailNumAll += qftj.getOneZdFailNum();
@@ -308,6 +310,7 @@ public class ReportCenterAction  extends DispatchAction{
 					relateXxSuccNumAll += qftj.getRelateXxSuccNum();
 					relateXxFailNumAll += qftj.getRelateXxFailNum();
 					if(roleId.equals(2) || roleId.equals(6)){//学生\家长
+						specNum = 1;
 						if(qftj.getUser().getId().equals(userId)){
 							oneZdSuccNum += qftj.getOneZdSuccNum();
 							oneZdFailNum += qftj.getOneZdFailNum();
@@ -338,6 +341,11 @@ public class ReportCenterAction  extends DispatchAction{
 							relateZdFailNum += qftj.getRelateZdFailNum();
 							relateXxSuccNum += qftj.getRelateXxSuccNum();
 							relateXxFailNum += qftj.getRelateXxFailNum();
+							if(stuId.equals(0)){
+								specNum++;
+							}else{
+								specNum = 1;
+							}
 						}
 					}else if(roleId.equals(5)){//各级管理员
 						boolean flag = false;
@@ -346,9 +354,9 @@ public class ReportCenterAction  extends DispatchAction{
 								if(!county.equals("")){
 									if(!town.equals("")){
 										if(schoolId > 0){
-											if(!gradeName.equals("")){
-												if(classId > 0){
-													if(stuId > 0){
+											if(!gradeName.equals("")){//无需判断学段
+												if(classId > 0){//无需判断学段
+													if(stuId > 0){//无需判断学段
 														if(qftj.getUser().getId().equals(userId)){
 															flag = true;
 														}
@@ -369,22 +377,46 @@ public class ReportCenterAction  extends DispatchAction{
 											}
 										}else{
 											if(qftj.getTown().equals(town)){
-												flag = true;
+												if(schoolType > 0){
+													if(schoolType.equals(qftj.getSchoolType())){
+														flag = true;
+													}
+												}else{
+													flag = true;
+												}
 											}
 										}
 									}else{
 										if(qftj.getCounty().equals(county)){
-											flag = true;
+											if(schoolType > 0){
+												if(schoolType.equals(qftj.getSchoolType())){
+													flag = true;
+												}
+											}else{
+												flag = true;
+											}
 										}
 									}
 								}else{
 									if(qftj.getCity().equals(city)){
-										flag = true;
+										if(schoolType > 0){
+											if(schoolType.equals(qftj.getSchoolType())){
+												flag = true;
+											}
+										}else{
+											flag = true;
+										}
 									}
 								}
 							}else{
 								if(qftj.getProv().equals(prov)){
-									flag = true;
+									if(schoolType > 0){
+										if(schoolType.equals(qftj.getSchoolType())){
+											flag = true;
+										}
+									}else{
+										flag = true;
+									}
 								}
 							}
 						}
@@ -397,37 +429,46 @@ public class ReportCenterAction  extends DispatchAction{
 							relateZdFailNum += qftj.getRelateZdFailNum();
 							relateXxSuccNum += qftj.getRelateXxSuccNum();
 							relateXxFailNum += qftj.getRelateXxFailNum();
+							if(stuId.equals(0)){
+								specNum++;
+							}else{
+								specNum = 1;
+							}
 						}
 					}
 				}
-				Integer fmNum = oneZdFailNum + relateZdFailNum;//一次性通过总数+关联诊断未通过
-				Integer againXxSuccNum_real = againXxSuccNum;//再次诊断学习通过次数
+				Double oneZdFailNum_new = Convert.convertInputNumber_2(oneZdFailNum * 1.0 / specNum);
+				Double relateZdFailNum_new = Convert.convertInputNumber_2(relateZdFailNum * 1.0 / specNum);
+				Double fmNum = Convert.convertInputNumber_2(oneZdFailNum_new + relateZdFailNum_new);//一次性通过总数+关联诊断未通过
+				Double againXxSuccNum_real = Convert.convertInputNumber_2(againXxSuccNum * 1.0 / specNum);//再次诊断学习通过次数
 				if(fmNum > 0 && againXxSuccNum_real > 0){
 					rate = Convert.convertInputNumber_1(againXxSuccNum_real * 100.0  / fmNum) + "%";//转换率
 				}
 				
-				Integer fmNumAll = oneZdFailNumAll + relateZdFailNumAll;//一次性通过总数+关联诊断未通过
-				Integer againXxSuccNum_real_all = againXxSuccNumAll;//再次诊断学习通过次数
+				Double oneZdFailNumAll_new = Convert.convertInputNumber_2(oneZdFailNumAll * 1.0 / allNum);
+				Double relateZdFailNumAll_new = Convert.convertInputNumber_2(relateZdFailNumAll * 1.0 / allNum);
+				Double fmNumAll = Convert.convertInputNumber_2(oneZdFailNumAll_new + relateZdFailNumAll_new);//一次性通过总数+关联诊断未通过
+				Double againXxSuccNum_real_all = Convert.convertInputNumber_2(againXxSuccNumAll * 1.0 / allNum);//再次诊断学习通过次数
 				if(fmNumAll > 0 && againXxSuccNum_real_all > 0){
 					rateAll = Convert.convertInputNumber_1(againXxSuccNum_real_all * 100.0  / fmNumAll) + "%";//转换率
 				}
 				
-				map.put("oneZdSuccNum", oneZdSuccNum);
-				map.put("oneZdFailNum", oneZdFailNum);
-				map.put("againXxSuccNum", againXxSuccNum);
-				map.put("againXxFailNum", againXxFailNum);
-				map.put("noRelateNum", noRelateNum);
-				map.put("relateZdFailNum", relateZdFailNum);
-				map.put("relateXxSuccNum", relateXxSuccNum);
-				map.put("relateXxFailNum", relateXxFailNum);
+				map.put("oneZdSuccNum", Convert.convertInputNumber_2(oneZdSuccNum * 1.0 / specNum));
+				map.put("oneZdFailNum", oneZdFailNum_new);
+				map.put("againXxSuccNum", againXxSuccNum_real);
+				map.put("againXxFailNum", Convert.convertInputNumber_2(againXxFailNum * 1.0 / specNum));
+				map.put("noRelateNum", Convert.convertInputNumber_2(noRelateNum * 1.0 / specNum));
+				map.put("relateZdFailNum", relateZdFailNum_new);
+				map.put("relateXxSuccNum", Convert.convertInputNumber_2(relateXxSuccNum * 1.0 / specNum));
+				map.put("relateXxFailNum", Convert.convertInputNumber_2(relateXxFailNum * 1.0 / specNum));
 				map.put("rate", rate);
 				
 				map.put("oneZdSuccNumAll", Convert.convertInputNumber_2(oneZdSuccNumAll * 1.0 / allNum));
-				map.put("oneZdFailNumAll", Convert.convertInputNumber_2(oneZdFailNumAll * 1.0 / allNum));
-				map.put("againXxSuccNumAll", Convert.convertInputNumber_2(againXxSuccNumAll * 1.0 / allNum));
+				map.put("oneZdFailNumAll", oneZdFailNumAll_new);
+				map.put("againXxSuccNumAll", againXxSuccNum_real_all);
 				map.put("againXxFailNumAll", Convert.convertInputNumber_2(againXxFailNumAll * 1.0 / allNum));
 				map.put("noRelateNumAll", Convert.convertInputNumber_2(noRelateNumAll * 1.0 / allNum));
-				map.put("relateZdFailNumAll", Convert.convertInputNumber_2(relateZdFailNumAll * 1.0 / allNum));
+				map.put("relateZdFailNumAll", relateZdFailNumAll_new);
 				map.put("relateXxSuccNumAll", Convert.convertInputNumber_2(relateXxSuccNumAll * 1.0 / allNum));
 				map.put("relateXxFailNumAll", Convert.convertInputNumber_2(relateXxFailNumAll * 1.0 / allNum));
 				map.put("rateAll", rateAll);
@@ -436,6 +477,7 @@ public class ReportCenterAction  extends DispatchAction{
 			}
 		}
 		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
 	
