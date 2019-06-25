@@ -6,6 +6,7 @@ import org.hibernate.Session;
 
 import com.zsd.dao.StudyDetailDao;
 import com.zsd.module.StudyDetailInfo;
+import com.zsd.tools.CommonTools;
 
 @SuppressWarnings("unchecked")
 public class StudyDetailDaoImpl implements StudyDetailDao{
@@ -126,6 +127,25 @@ public class StudyDetailDaoImpl implements StudyDetailDao{
 		// TODO Auto-generated method stub
 		String hql = " from StudyDetailInfo as sd where sd.studyLogInfo.id = "+studyLogId + " and sd.loreQuestion.id = " + lqId;
 		return sess.createQuery(hql).list();
+	}
+
+	@Override
+	public List<StudyDetailInfo> findInfoByOption(Session sess,
+			Integer studyLogId, String typeName, int pageNo, int pageSize) {
+		int offset = (pageNo - 1) * pageSize;
+		if (offset < 0) {
+			offset = 0;
+		}
+		String hql = " from StudyDetailInfo as sd where sd.studyLogInfo.id = "+studyLogId+"and sd.loreQuestion.loreTypeName='"+typeName+"'";
+		return 	sess.createQuery(hql).setFirstResult(offset).setMaxResults(pageSize).list();
+	
+	}
+
+	@Override
+	public Integer getInfoByOption(Session sess, Integer studyLogId,String typeName) {
+		String hql = "select count(sd.id) from StudyDetailInfo as sd where sd.studyLogInfo.id = "+studyLogId+"and sd.loreQuestion.loreTypeName='"+typeName+"'";
+		Object countObj = sess.createQuery(hql).uniqueResult();
+		return CommonTools.longToInt(countObj);
 	}
 
 }

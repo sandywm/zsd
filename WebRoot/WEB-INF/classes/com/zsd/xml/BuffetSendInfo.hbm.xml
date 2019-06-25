@@ -27,7 +27,7 @@
         </property>
         <property name="studyResult" type="java.lang.Integer">
             <column name="study_result" not-null="true">
-                <comment>学习结果[0(未学习),1(完成),2(未完成)]</comment>
+                <comment>学习结果[(0(全部),1(未完成),2(已完成))]</comment>
             </column>
         </property>
         <property name="sendMode" type="java.lang.Integer">

@@ -1008,8 +1008,16 @@ public class LoreAction extends DispatchAction {
 		LexInfoManager lexm = (LexInfoManager) AppFactory.instance(null).getApp(Constants.WEB_LEX_INFO);
 		Integer loreId = CommonTools.getFinalInteger("loreId", request);
 		Map<String,Object> map = new HashMap<String,Object>();
+		Integer logType = 0;//管理员查看全部，班内老师只能看系统和自己上传的题
+		String roleName = CommonTools.getLoginRoleName(request);
+		Integer userId = 0;//老师编号
+		if(roleName.equals("知识点管理员")){
+			
+		}else if(roleName.equals("老师")){
+			userId = CommonTools.getLoginUserId(request);//老师编号
+		}
 		String msg = "noInfo";
-		List<LoreQuestion> lqList = lqm.listInfoByLoreId(loreId, "", 0);
+		List<LoreQuestion> lqList = lqm.listInfoByLoreId(loreId, "", 0);//后台管理员看全部
 		List<Object> list_d_zsqd = new ArrayList<Object>();
 		List<Object> list_d_dbzd = new ArrayList<Object>();
 		List<Object> list_d_jtsf = new ArrayList<Object>();

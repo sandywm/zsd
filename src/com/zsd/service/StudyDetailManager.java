@@ -2,8 +2,6 @@ package com.zsd.service;
 
 import java.util.List;
 
-import org.hibernate.Session;
-
 import com.zsd.exception.WEBException;
 import com.zsd.module.StudyDetailInfo;
 
@@ -131,4 +129,27 @@ public interface StudyDetailManager {
 	 * @throws WEBException
 	 */
 	List<StudyDetailInfo> listInfoByOpt(Integer studyLogId,Integer lqId) throws WEBException;
+	/**
+	 * 根据学习记录编号,类型分页获取学习详情信息
+	 * @author zdf
+	 * 2019-6-25 上午10:45:31
+	 * @param sess
+	 * @param studyLogId 学习记录编号
+	 * @param typeName  知识点类型
+	 * @param pageNo 第几页
+	 * @param pageSize 每页多少条
+	 * @return
+	 * @throws WEBException
+	 */
+	List<StudyDetailInfo> listInfoByOption(Integer studyLogId, String typeName, int pageNo, int pageSize) throws WEBException;
+	/**
+	 * 根据学习记录编号,类型获取 记录数
+	 * @author zdf
+	 * 2019-6-25 下午04:13:00
+	 * @param studyLogId 学习记录编号
+	 * @param typeName 知识点类型名
+	 * @return
+	 * @throws WEBException
+	 */
+	Integer getInfoByOption(Integer studyLogId,String typeName)throws WEBException;
 }

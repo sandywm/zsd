@@ -64,9 +64,18 @@ public class StudyLogDaoImpl implements StudyLogDao{
 			Integer subId, Integer isfinish, Integer logType, String sDate,
 			String eDate) {
 		String hql = " from StudyLogInfo as sl where sl.user.id = "+userId;
-		hql += " and sl.subject.id = "+subId + " and sl.logType = "+logType;
-		hql +=" and sl.isFinish="+isfinish;
-		hql += " and substring(sl.addTime,1,10) >= '"+sDate+"' and substring(sl.addTime,1,10) >= '"+eDate+"'";
+		if(!subId.equals(0)){
+			hql += " and sl.subject.id = "+subId ;
+		}
+		if(logType.equals(1) || logType.equals(2)){
+			hql+=" and sl.logType = "+logType;
+		}
+		if(!isfinish.equals(0)){
+			hql +=" and sl.isFinish="+isfinish;
+		}
+		if(!sDate.equals("")&& !eDate.equals("")){
+			hql += " and sl.addTime >= '"+sDate+"' and sl.addTime <= '"+eDate+"'";
+		}
 		return sess.createQuery(hql).list();
 	}
 

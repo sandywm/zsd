@@ -122,7 +122,7 @@ public class UserAction extends DispatchAction {
 		String password=new MD5().calcMD5(pwd);
 		String mobile=CommonTools.getFinalStr("mobile",request);
 		String lastLoginDate=CurrentTime.getCurrentTime();
-		String signDate=CurrentTime.getCurrentTime();
+		String signDate=CurrentTime.getStringDate();
 		Integer schoolId=CommonTools.getFinalInteger("schoolId", request);
 		Integer gradeNo=CommonTools.getFinalInteger("gradeNo", request);
 		Integer subId=CommonTools.getFinalInteger("subId", request);
@@ -141,7 +141,7 @@ public class UserAction extends DispatchAction {
 		}else{
 			//1.用户注册
 			userId=uManager.addUser(userAccount, realName, password, mobile, lastLoginDate, lastLoginIp, 
-					signDate, schoolId, CurrentTime.getFinalDateTime(30), yearSystem, prov, city);
+					signDate, schoolId, CurrentTime.getFinalDate(30), yearSystem, prov, city);
 		}
 		if(roleName.equals("学生")){
 				if(userId>0){

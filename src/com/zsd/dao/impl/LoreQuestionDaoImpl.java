@@ -83,6 +83,9 @@ public class LoreQuestionDaoImpl implements LoreQuestionDao{
 		if(!inUse.equals(-1)){
 			hql += " and lq.inUse = " + inUse;
 		}
+//		if(classTeaId > 0){
+//			hql += " and lq.queClassTeaId = "+classTeaId;
+//		}
 		hql += " order by lq.queOrder asc";
 		return sess.createQuery(hql).list();
 	}
@@ -117,13 +120,6 @@ public class LoreQuestionDaoImpl implements LoreQuestionDao{
 		if(lqList.size() > 0){
 			return lqList.get(0);
 		}
-		return null;
-	}
-
-	@Override
-	public List<LoreQuestion> findInfoByOpt(Session sess, Integer loreId,
-			String loreType, Integer inUse, Integer queClassTeaId) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

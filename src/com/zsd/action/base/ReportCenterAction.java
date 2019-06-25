@@ -480,5 +480,4 @@ public class ReportCenterAction  extends DispatchAction{
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
-	
 }

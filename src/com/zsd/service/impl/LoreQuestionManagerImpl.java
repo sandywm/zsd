@@ -131,7 +131,7 @@ public class LoreQuestionManagerImpl implements LoreQuestionManager{
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
-			throw new WEBException("根据知识点编号、知识点类型(可为空),有效状态,获取题库记录列表时出现异常!");
+			throw new WEBException("根据知识点编号、知识点类型(可为空),有效状态,学习类型获取题库记录列表时出现异常!");
 		} finally{
 			HibernateUtil.closeSession();
 		}

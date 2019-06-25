@@ -173,12 +173,13 @@ public interface LoreQuestionManager {
 	
 	
 	/**
-	 * 根据知识点编号、知识点类型(可为空),有效状态,获取题库记录列表
+	 * 根据知识点编号、知识点类型(可为空),有效状态,学习类型获取题库记录列表
 	 * @author wm
 	 * @date 2019-5-7 上午11:51:51
 	 * @param loreId 知识点编号
 	 * @param loreType 知识点类型(""表示全部，知识清单,点拨指导,解题示范,巩固训练,针对性诊断,再次诊断,知识讲解)
 	 * @param inUse 有效状态(-1：表示全部,0：有效，1：无效)
+	 * @param logType 学习类型(0：全部,1:自学（默认）,2:家庭作业)
 	 * @return
 	 * @throws WEBException
 	 */

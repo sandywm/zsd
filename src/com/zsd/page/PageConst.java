@@ -9,20 +9,10 @@ public class PageConst
     {
     }
 
-    public static int getPageNo(String pageNoStr, int pageCount)
-    {
-        int pageNo;
-        if(pageNoStr == "null" || pageNoStr.trim().equals(""))
-            pageNo = 0;
-        try
-        {
-            pageNo = Integer.parseInt(pageNoStr.trim());
-        }
-        catch(Exception e)
-        {
-            pageNo = 1;
-        }
-        if(pageNo > pageCount)
+    public static int getPageNo(Integer pageNo, int pageCount){
+    	if(pageNo.equals(0)){
+    		pageNo = 1;
+    	}else if(pageNo > pageCount)
             pageNo = pageCount;
         return pageNo;
     }

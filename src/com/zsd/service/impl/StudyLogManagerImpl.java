@@ -256,4 +256,19 @@ public class StudyLogManagerImpl implements StudyLogManager{
 		}
 	}
 
+	@Override
+	public List<StudyLogInfo> listSlInfoByopt(Integer userId, Integer subId,
+			Integer isfinish, Integer logType, String sDate, String eDate)throws WEBException{
+		try {
+			slDao = (StudyLogDao) DaoFactory.instance(null).getDao(Constants.DAO_STUDY_LOG_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return slDao.findStuLogByOption(sess, userId, subId, isfinish, logType, sDate, eDate);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("根据学科编号,学生编号  类型,完成状态,时间段获取学习记录时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
 }

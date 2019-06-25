@@ -193,4 +193,34 @@ public class StudyDetailManagerImpl implements StudyDetailManager{
 		}
 	}
 
+	@Override
+	public List<StudyDetailInfo> listInfoByOption(Integer studyLogId, String typeName, int pageNo, int pageSize)
+			throws WEBException {
+		try {
+			sdDao = (StudyDetailDao) DaoFactory.instance(null).getDao(Constants.DAO_STUDY_DETAIL_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return sdDao.findInfoByOption(sess, studyLogId, typeName, pageNo, pageSize);
+		} catch (Exception e1) {
+			e1.printStackTrace();
+			throw new WEBException("根据学习记录编号、知识点类型分页获取做题信息列表时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public Integer getInfoByOption(Integer studyLogId, String typeName)
+			throws WEBException {
+		try {
+			sdDao = (StudyDetailDao) DaoFactory.instance(null).getDao(Constants.DAO_STUDY_DETAIL_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return sdDao.getInfoByOption(sess, studyLogId, typeName);
+		} catch (Exception e1) {
+			e1.printStackTrace();
+			throw new WEBException("根据学习记录编号、知识点类型获取做题信息记录数时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
 }

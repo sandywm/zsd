@@ -4,7 +4,6 @@
  */
 package com.zsd.action.studyrec;
 
-import java.io.Console;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -13,15 +12,20 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
 
 import com.zsd.factory.AppFactory;
+import com.zsd.module.BuffetSendInfo;
 import com.zsd.module.StudyLogInfo;
+import com.zsd.service.BuffetSendInfoManager;
+import com.zsd.service.StudyDetailManager;
 import com.zsd.service.StudyLogManager;
 import com.zsd.tools.CommonTools;
+import com.zsd.tools.CurrentTime;
 import com.zsd.util.Constants;
 
 /** 
@@ -35,7 +39,7 @@ public class StudyRecordAction extends DispatchAction {
 	/*
 	 * Generated Methods
 	 */
-
+ 
 	/** 
 	 * 学习记录页面
 	 * Method execute
@@ -51,7 +55,7 @@ public class StudyRecordAction extends DispatchAction {
 		return mapping.findForward("stuRecPage");
 	}
 	/**
-	 * 根据学科 时间段获取学习记录
+	 * 根据学生编号,学科编号,完成状态,类型, 时间段获取学习记录
 	 * @param mapping
 	 * @param form
 	 * @param request
@@ -63,19 +67,239 @@ public class StudyRecordAction extends DispatchAction {
 			ActionForm form, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		StudyLogManager slManager = (StudyLogManager) AppFactory.instance(null).getApp(Constants.WEB_STUDY_LOG_INFO);
+		BuffetSendInfoManager bsManager = (BuffetSendInfoManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_SEND_INFO);
 		Integer subId=CommonTools.getFinalInteger("subId", request);
-		Integer userId=CommonTools.getFinalInteger("userId",request);
-		Integer logType=CommonTools.getFinalInteger("logType",request);//1:自学,2:家庭作业
-		String startTime=CommonTools.getFinalStr("startTime",request);
-		String endTime=CommonTools.getFinalStr("endTime",request);
+		Integer isfinish=CommonTools.getFinalInteger("isfinish", request);
+		Integer userId=CommonTools.getLoginUserId(request);
+		Integer logType=CommonTools.getFinalInteger("logType",request);//1:自学,2:家庭作业,3,自助餐 -1全部
+		String sDate=CommonTools.getFinalStr("sDate",request);
+		String eDate=CommonTools.getFinalStr("eDate",request);
+		if(sDate.equals("")){
+			//表示是默认的当前日期前3天的记录(包含当前，所以-2)
+			sDate = CurrentTime.getFinalDate(CurrentTime.getStringDate(), -2);
+			eDate = CurrentTime.getStringDate();
+		}else{
+			if(eDate.equals("")){
+				eDate = CurrentTime.getStringDate();
+			}
+		}
 		Map<String,Object> map = new HashMap<String,Object>();
 		List<Object> list_d = new ArrayList<Object>();
-		List<StudyLogInfo> slList =  slManager.listStudyLogInfoByOpt(userId, subId, logType, startTime, endTime);
-		for (Iterator<StudyLogInfo> itr = slList.iterator(); itr.hasNext();) {
-			StudyLogInfo slInfo = (StudyLogInfo) itr.next();
-			Map<String,Object> map_d= new HashMap<String,Object>();
+		Map<String,Object> map_d= new HashMap<String,Object>();
+		Integer allStudyLog =0; //所有学习记录
+		Integer noFinishSl =0; //没有完成记录
+		Integer finishSl =0; //完成记录
+		String comRate = "0.00%";//完成率
+		//学生学习记录
+		if(logType.equals(1)||logType.equals(2)||logType.equals(-1)){
+			List<StudyLogInfo> slList =  slManager.listSlInfoByopt(userId, subId, isfinish, logType, sDate, eDate);
+			allStudyLog += slList.size();
+			for (Iterator<StudyLogInfo> itr = slList.iterator(); itr.hasNext();) {
+				StudyLogInfo slInfo = (StudyLogInfo) itr.next();
+				map_d.put("studyLogId", slInfo.getId()); //学习记录主键
+				map_d.put("subName", slInfo.getSubject().getSubName()); //学科名称
+				map_d.put("chapterName", slInfo.getLoreInfo().getChapter().getChapterName());//章节名称
+				map_d.put("loreId", slInfo.getLoreInfo().getId()); //知识点主键
+				map_d.put("loreName", slInfo.getLoreInfo().getLoreName());//知识点名称
+				Integer finishFlag = slInfo.getIsFinish();
+				if(finishFlag.equals(1)){
+					noFinishSl++;
+				}else if(finishFlag.equals(2)){
+					finishSl++;
+				}
+				map_d.put("isFinish",finishFlag); //完成状态
+				map_d.put("step", slInfo.getStep());//答题阶段
+				map_d.put("stepCom", slInfo.getStepComplete());//阶段完成情况
+				map_d.put("logType", slInfo.getLogType()); //学习记录类型
+				list_d.add(map_d);
+			}
 		}
+		//自助餐发布信息
+		if(logType.equals(-1)|| logType.equals(3)){
+			List<BuffetSendInfo> bslist=bsManager.listBsInfoByOption(userId, subId, isfinish, sDate, eDate);
+			allStudyLog += bslist.size();
+			for (Iterator<BuffetSendInfo> it = bslist.iterator(); it.hasNext();) {
+				BuffetSendInfo bsInfo = (BuffetSendInfo) it.next();
+				map_d.put("studyLogId", bsInfo.getStudyLogInfo().getId());
+				map_d.put("subName", bsInfo.getStudyLogInfo().getSubject().getSubName());
+				map_d.put("chapterName", bsInfo.getStudyLogInfo().getLoreInfo().getChapter().getChapterName());
+				map_d.put("loreName", bsInfo.getStudyLogInfo().getLoreInfo().getId());
+				map_d.put("loreName", bsInfo.getStudyLogInfo().getLoreInfo().getLoreName());
+				Integer comSta = bsInfo.getStudyResult();
+				if(comSta.equals(1)){
+					noFinishSl++;
+				}else if(comSta.equals(2)){
+					finishSl++;
+				}
+				map_d.put("isFinish", bsInfo.getStudyResult());
+				map_d.put("step", bsInfo.getComNumber());
+				map_d.put("stepCom", bsInfo.getSendNumber());
+				list_d.add(map_d);
+			}
+		}
+		
+		if(allStudyLog > 0){
+			 comRate = String.format("%.2f", (double)finishSl * 100 / allStudyLog) + "%";//完成率
+		}
+		map.put("allStudyLog", allStudyLog);
+		map.put("noFinish", noFinishSl);
+		map.put("finish", finishSl);
+		map.put("comRate", comRate);
+		map.put("studyList", list_d);
 		CommonTools.getJsonPkg(map, response);
 		return null;
+	}
+	/**
+	 * 查看指定学习记录结果
+	 * @author zdf
+	 * 2019-6-24 上午10:26:08
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward StuLogByResult(ActionMapping mapping,
+			ActionForm form, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		StudyLogManager slManager = (StudyLogManager) AppFactory.instance(null).getApp(Constants.WEB_STUDY_LOG_INFO);
+		Integer stuLogId=CommonTools.getFinalInteger("stuLogId", request);
+		StudyLogInfo slInfo =	slManager.getEntityById(stuLogId);
+		Map<String,Object> map = new HashMap<String,Object>();
+		Integer isFinish= slInfo.getIsFinish();
+		Integer step = slInfo.getStep();
+		Integer stepC= slInfo.getStepComplete();
+		Integer score = slInfo.getFinalScore();
+		String sysAssess = slInfo.getSysAssess();
+		String teaAssess =slInfo.getTeaAssess();
+		String step1="";
+		String step2="";
+		String step3="";
+		String step4="";
+		String step5="";
+		String stepCom="";
+		String finalScore="";
+
+		if(score.equals(0)){
+			finalScore = "暂无";
+		}else{
+			finalScore= score+"分";
+		
+		}
+		if(sysAssess.equals("")|| sysAssess==null){
+			sysAssess = "暂无系统评价";
+		}
+		if(teaAssess.equals("")|| teaAssess==null){
+			teaAssess = "暂无导师评价";
+		}
+		if(isFinish.equals(2)){
+			step1="通过";
+			step2="通过";
+			step3="完成";
+			step4="完成";
+			step5="通过";
+			stepCom="完成";
+		}else{
+			if(step == 1){//本知识点的针对性诊断做完题(未通过)，还未进入到关联知识点
+				step1="未通过";
+ 				step2="未诊断";
+     			step3="未学习";
+     			step4="未学习";
+     			step5="未诊断";
+     			stepCom ="未完成";
+			}else if(step == 2){
+				if(stepC == 0){//表示关联性诊断未完成
+					step1="未通过";
+     				step2="诊断未完成";
+         			step3="未学习";
+         			step4="未学习";
+         			step5="未诊断";
+				}else{//关联性诊断已经完成
+					step1="未通过";
+					step2="诊断已完成";
+         			step3="未学习";
+         			step4="未学习";
+         			step5="未诊断";
+				}
+				stepCom ="未完成";
+			}else if(step == 3){
+				if(stepC == 0){//表示关联知识点未完成学习
+					step1="未通过";
+     				step2="诊断已完成";
+         			step3="学习未完成";
+         			step4="未学习";
+         			step5="未诊断";
+				}else{//表示关联知识点完成学习
+					step1="未通过";
+     				step2="诊断已完成";
+         			step3="学习已完成";
+         			step4="未学习";
+         			step5="未诊断";
+				}
+				stepCom ="未完成";
+			}else if(step == 4){
+				step1="未通过";
+ 				step2="诊断已完成";
+     			step3="学习已完成";
+     			step4="学习未完成";
+     			step5="未诊断";
+     			stepCom ="未完成";
+			}else{//本知识点再次诊断
+				if(stepC == 0){//表示本知识点未完成诊断
+					step1="未通过";
+     				step2="诊断已完成";
+         			step3="学习未完成";
+         			step4="学习未完成";
+         			step5="诊断未通过";
+         			stepCom ="未完成";
+				}
+			}
+		}
+		map.put("step1", step1);
+		map.put("step2", step2);
+		map.put("step3", step3);
+		map.put("step4", step4);
+		map.put("step5", step5);
+		map.put("stepCom", stepCom);
+		map.put("sysAssess", sysAssess);
+		map.put("teaAssess", teaAssess);
+		map.put("finalScore", finalScore);
+		map.put("stuLogId", stuLogId);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	/**
+	 * 获取指定学习记录详情
+	 * @author zdf
+	 * 2019-6-25 上午10:59:28
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getStuLogByDetail(ActionMapping mapping,
+			ActionForm form, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		StudyDetailManager sdManager = (StudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_STUDY_DETAIL_INFO);
+		Integer stuLogId=CommonTools.getFinalInteger("stuLogId", request);//学习记录编号
+		String loreTypeName=CommonTools.getFinalStr("loreTypeName",request);//知识点类型
+		Integer pageNo;// 页数
+		Integer pageSize = 10; //多少条记录
+		if(!loreTypeName.equals("")){
+			if(loreTypeName.equals("zdx")){
+				loreTypeName = "针对性诊断";
+			}else if(loreTypeName.equals("zc")){
+				loreTypeName = "再次诊断";
+			}else if(loreTypeName.equals("gg")){
+				loreTypeName = "巩固训练";
+			}else if(loreTypeName.equals("gl")){
+				loreTypeName = "关联诊断结果";
+			}
+		}
+		//List<StudyDetailInfo> sdList=	sdManager.listInfoByOption(stuLogId, loreTypeName, pageNo, pageSize);
+		return  null;
 	}
 }

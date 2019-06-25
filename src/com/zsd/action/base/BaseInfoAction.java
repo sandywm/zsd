@@ -28,14 +28,19 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.zsd.factory.AppFactory;
 import com.zsd.module.ClassInfo;
+import com.zsd.module.GradeSubject;
 import com.zsd.module.School;
 import com.zsd.module.TownInfo;
 import com.zsd.module.User;
+import com.zsd.module.UserClassInfo;
 import com.zsd.service.ClassInfoManager;
+import com.zsd.service.GradeSubjectManager;
 import com.zsd.service.SchoolManager;
 import com.zsd.service.TownManager;
+import com.zsd.service.UserClassInfoManager;
 import com.zsd.service.UserManager;
 import com.zsd.tools.CommonTools;
+import com.zsd.tools.Convert;
 import com.zsd.tools.CurrentTime;
 import com.zsd.util.Constants;
 
@@ -260,4 +265,61 @@ public class BaseInfoAction extends DispatchAction {
 		return null;
 	}
 	
+	/**
+	 * 获取学生所在年级的学科列表
+	 * @author wm
+	 * @date 2019-6-25 下午04:40:30
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getSelfSubjectData(ActionMapping mapping,ActionForm form,
+			HttpServletRequest request,HttpServletResponse response) throws Exception{
+		UserClassInfoManager ucm = (UserClassInfoManager)AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
+		GradeSubjectManager gsm = (GradeSubjectManager)AppFactory.instance(null).getApp(Constants.WEB_GRADE_SUBJECT_INFO);
+		//获取我所在年级的学科
+		Integer userId = CommonTools.getLoginUserId(request);
+		Integer subId = CommonTools.getFinalInteger("subId", request);
+		String msg = "noInfo";
+		Map<String,Object> map = new HashMap<String,Object>();
+		if(userId > 0){
+			if(subId.equals(0)){
+				subId = 2;
+			}
+			UserClassInfo  uc = ucm.getEntityByOpt(userId, 2);//获取学生所在班级信息
+			if(uc != null){
+				Integer gradeNumber = Convert.dateConvertGradeNumber(uc.getClassInfo().getBuildeClassDate());
+				if(gradeNumber > 12){
+					gradeNumber = 12;
+				}
+				String gradeName = Convert.NunberConvertChinese(gradeNumber);
+				//获取当前年级的学科列表
+				List<GradeSubject>  gsList = gsm.listSpecInfoByGname(gradeName);
+				if(gsList.size() > 0){
+					msg = "success";
+					List<Object> list_g = new ArrayList<Object>();
+					for(GradeSubject gs : gsList){
+						Map<String,Object> map_g = new HashMap<String,Object>();
+						map_g.put("subId", gs.getSubject().getId());
+						map_g.put("subName", gs.getSubject().getSubName());
+						if(gs.getSubject().getId().equals(subId)){
+							map_g.put("selFlag", true);
+						}else{
+							map_g.put("selFlag", false);
+						}
+						list_g.add(map_g);
+					}
+					map.put("subList", list_g);
+				}else{
+					msg = "noInfo";
+				}
+			}
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
 }

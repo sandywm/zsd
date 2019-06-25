@@ -7,6 +7,7 @@ import org.hibernate.Session;
 import com.zsd.dao.BuffetSendInfoDao;
 import com.zsd.module.BuffetSendInfo;
 
+@SuppressWarnings("unchecked")
 public class BuffetSendInfoDaoImpl implements BuffetSendInfoDao {
 
 	@Override
@@ -35,7 +36,6 @@ public class BuffetSendInfoDaoImpl implements BuffetSendInfoDao {
 		sess.update(bsInfo);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<BuffetSendInfo> findBsInfoByOption(Session sess, Integer stuId,
 			Integer subId, Integer isfinish, String starttime, String endtime) {
@@ -47,13 +47,35 @@ public class BuffetSendInfoDaoImpl implements BuffetSendInfoDao {
 			hql+=" and bs.studyResult="+isfinish;
 		}
 		if (!starttime.equals("")){
-			hql += "and bs.sendTime >= '"+ starttime + "'";
+			hql += " and bs.sendTime >= '"+ starttime + "'";
 		}
 		if (!endtime.equals("")) {
-			endtime += " 23:59:59";
-			hql += "and bs.sendTime <='" + endtime +"'";
+			hql += " and bs.sendTime <='" + endtime +"'";
 		}
 		return sess.createQuery(hql).list();
+	}
+
+	@Override
+	public List<BuffetSendInfo> findPageInfoByOption(Session sess,
+			Integer stuId, Integer subId, Integer isfinish, String sDate,
+			String eDate, Integer pageNo, Integer pageSize) {
+		// TODO Auto-generated method stub
+		String hql = " from BuffetSendInfo as bs where bs.studyLogInfo.user.id ="+stuId;
+		if(!subId.equals(0)){
+		  hql+=" and bs.studyLogInfo.subject.id ="+subId;
+		}
+		if(!isfinish.equals(-1)){
+			hql+=" and bs.studyResult="+isfinish;
+		}
+		if (!sDate.equals("") && !eDate.equals("")){
+			hql += " and bs.sendTime >= '"+ sDate + "'";
+			hql += " and bs.sendTime <='" + eDate +"'";
+		}
+		int offset = (pageNo - 1) * pageSize;
+		if (offset < 0) {
+			offset = 0;
+		}
+		return sess.createQuery(hql).setFirstResult(offset).setMaxResults(pageSize).list();
 	}
 
 }

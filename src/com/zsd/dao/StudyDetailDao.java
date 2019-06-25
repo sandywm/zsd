@@ -139,5 +139,26 @@ public interface StudyDetailDao {
 	 * @return
 	 */
 	List<StudyDetailInfo> findInfoByOpt(Session sess,Integer studyLogId, Integer lqId);
-	
+	/**
+	 * 根据学习记录编号,类型分页获取学习详情列表
+	 * @author zdf
+	 * 2019-6-25 上午10:34:32
+	 * @param sess
+	 * @param studyLogId 学习记录编号
+	 * @param typeName 类型
+	 * @param pageNo 第几页
+	 * @param pageSize 每页多少条
+	 * @return
+	 */
+	List<StudyDetailInfo> findInfoByOption(Session sess, Integer studyLogId,String typeName, int pageNo, int pageSize);
+	/**
+	 * 根据学习记录编号,类型获取总记录数
+	 * @author zdf
+	 * 2019-6-25 下午04:08:58
+	 * @param sess
+	 * @param studyLogId 学习记录编号
+	 * @param typeName 知识点类型
+	 * @return
+	 */
+	Integer getInfoByOption(Session sess,Integer studyLogId,String typeName);
 }

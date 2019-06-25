@@ -67,4 +67,21 @@ public interface BuffetSendInfoDao {
 	 * @return
 	 */
 	List<BuffetSendInfo> findBsInfoByOption(Session sess, Integer stuId,Integer subId, Integer isfinish, String starttime, String endtime);
+	
+	/**
+	 * 根据指定学生,学科,完成状态,时间段分页获取自助餐发布信息
+	 * @author wm
+	 * @date 2019-6-25 下午05:22:08
+	 * @param sess
+	 * @param stuId 学生编号
+	 * @param subId  学科编号
+	 * @param isfinish 完成状态-1(全部),1(完成),2(未完成))
+	 * @param sDate 开始时间
+	 * @param eDate 结束时间
+	 * @param pageNo
+	 * @param pageSize
+	 * @return
+	 */
+	List<BuffetSendInfo> findPageInfoByOption(Session sess, Integer stuId,Integer subId, Integer isfinish, 
+			String sDate, String eDate,Integer pageNo,Integer pageSize);
 }

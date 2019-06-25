@@ -1,7 +1,6 @@
 package com.zsd.service;
 
 
-import java.sql.Timestamp;
 import java.util.List;
 
 import com.zsd.exception.WEBException;
@@ -131,5 +130,20 @@ public interface StudyLogManager {
 	 * @throws WEBException
 	 */
 	boolean addTeaAssess(Integer id,String teaAssess)throws WEBException;
+	/**
+	 * 根据学科编号,学生编号  类型,完成状态,时间段获取学习记录信息
+	 * @author zdf
+	 * 2019-6-20 上午09:49:02
+	  * @param userId 学生编号
+	 * @param subId 学科编号
+	 * @param logType 学习记录类型 (1:自学,2:家庭作业)
+	 * @param sDate 开始时间
+	 * @param eDate 结束时间
+	 * @param isfinish 完成状态 (1:未完成,2:已完成)
+	 * @return
+	 * @throws WEBException
+	 */
+	List<StudyLogInfo> listSlInfoByopt(Integer userId,
+			Integer subId, Integer isfinish, Integer logType, String sDate,String eDate)throws WEBException;
 	
 }

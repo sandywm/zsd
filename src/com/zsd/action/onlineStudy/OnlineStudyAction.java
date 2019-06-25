@@ -768,7 +768,7 @@ public class OnlineStudyAction extends DispatchAction {
 		Integer loreId =  CommonTools.getFinalInteger("loreId", request);//知识点最初的编号
 		Integer studyLogId = CommonTools.getFinalInteger("studyLogId", request);//学习记录编号
 		Integer logType = CommonTools.getFinalInteger("logType", request);//1:自学（默认不传）,2:家庭作业
-		UserClassInfoManager ucm = (UserClassInfoManager)AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
+//		UserClassInfoManager ucm = (UserClassInfoManager)AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
 		if(logType.equals(0)){
 			logType = 1;
 		}
@@ -792,12 +792,12 @@ public class OnlineStudyAction extends DispatchAction {
 		Integer quoteLoreId = 0;//通用知识点
 		String nextLoreIdArray = "";//下级知识典编号数组
 		String loreName = "";
-		Integer classId = 0;
+//		Integer classId = 0;
 		if(loreId > 0){
-			UserClassInfo  uc = ucm.getEntityByOpt(stuId, 2);//获取学生所在班级信息
-			if(uc != null){
-				classId = uc.getClassInfo().getId();
-			}
+//			UserClassInfo  uc = ucm.getEntityByOpt(stuId, 2);//获取学生所在班级信息
+//			if(uc != null){
+//				classId = uc.getClassInfo().getId();
+//			}
 			List<StudyMapInfo> smList = smm.listInfoByOpt(stuId, loreId);
 			if(smList.size() > 0){//存在学习记录
 				if(smList.get(0).getCurrStep().equals(4)){
@@ -840,12 +840,13 @@ public class OnlineStudyAction extends DispatchAction {
 									task = 1;
 									loreTaskName = "针对性诊断";
 									loreTypeName = "针对性诊断";
-									if(logType.equals(1)){
-										
-									}else{
-										
+									if(logType.equals(1)){//自学
+										//只获取系统题库
+										lqList = lqm.listInfoByLoreId(quoteLoreId, loreTypeName, 0);
+									}else{//家庭作业
+										//获取系统题库和自己老师发布的题库
+										lqList = lqm.listInfoByLoreId(quoteLoreId, loreTypeName, 0);
 									}
-									lqList = lqm.listInfoByLoreId(quoteLoreId, loreTypeName, 0);
 									money *= lqList.size();
 									currentLoreId = loreId;
 								}else{//未通过，需要定位到现在需要学习的地方

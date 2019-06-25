@@ -72,13 +72,14 @@ public interface LoreQuestionDao {
 	Integer getCountByLoreId(Session sess,Integer loreId);
 	
 	/**
-	 * 根据知识点编号、知识点类型(可为空),有效状态,获取题库记录列表
+	 * 根据知识点编号、知识点类型(可为空),有效状态,学习类型获取题库记录列表
 	 * @author wm
 	 * @date 2019-5-6 下午05:30:53
 	 * @param sess
 	 * @param loreId 知识点编号
 	 * @param loreType 知识点类型(""表示全部，知识清单,点拨指导,解题示范,巩固训练,针对性诊断,再次诊断,知识讲解)
 	 * @param inUse 有效状态(-1：表示全部,0：有效，1：无效)
+	 * @param classTeaId 老师编号(上传题的老师编号，当是管理员时classTeaId为0表示全部)
 	 * @return
 	 */
 	List<LoreQuestion> findInfoByOpt(Session sess,Integer loreId,String loreType,Integer inUse);
@@ -114,17 +115,4 @@ public interface LoreQuestionDao {
 	 * @return
 	 */
 	LoreQuestion getMaxNumInfoByOpt(Session sess,Integer loreId,String loreType,Integer inUse);
-	
-	/**
-	 * 根据知识点编号、知识点类型(可为空),有效状态,班内老师编号获取题库记录列表
-	 * @author wm
-	 * @date 2019-6-24 下午05:54:14
-	 * @param sess
-	 * @param loreId
-	 * @param loreType
-	 * @param inUse
-	 * @param queClassTeaId
-	 * @return
-	 */
-	List<LoreQuestion> findInfoByOpt(Session sess,Integer loreId,String loreType,Integer inUse,Integer queClassTeaId);
 }
