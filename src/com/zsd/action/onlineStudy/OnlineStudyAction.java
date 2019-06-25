@@ -708,7 +708,7 @@ public class OnlineStudyAction extends DispatchAction {
 						}else{
 							msg = "noInfo";
 						}
-					}else if(loreTypeName.equals("点拨指导") && loreTypeName.equals("知识清单")){
+					}else if(loreTypeName.equals("点拨指导") || loreTypeName.equals("知识清单")){
 						Integer lqId = lqList.get(0).getId();
 						List<LoreQuestionSubInfo> lqsList = lqm.listLQSInfoByLqId(lqId,"");
 						if(lqsList.size() > 0){
@@ -843,7 +843,7 @@ public class OnlineStudyAction extends DispatchAction {
 									if(logType.equals(1)){
 										
 									}else{
-										11
+										
 									}
 									lqList = lqm.listInfoByLoreId(quoteLoreId, loreTypeName, 0);
 									money *= lqList.size();
