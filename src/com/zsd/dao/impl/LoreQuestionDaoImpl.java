@@ -120,4 +120,11 @@ public class LoreQuestionDaoImpl implements LoreQuestionDao{
 		return null;
 	}
 
+	@Override
+	public List<LoreQuestion> findInfoByOpt(Session sess, Integer loreId,
+			String loreType, Integer inUse, Integer queClassTeaId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

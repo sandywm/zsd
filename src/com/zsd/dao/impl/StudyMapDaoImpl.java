@@ -30,7 +30,7 @@ public class StudyMapDaoImpl implements StudyMapDao{
 	@Override
 	public void update(Session sess, StudyMapInfo sm) {
 		// TODO Auto-generated method stub
-		sess.delete(sm);
+		sess.update(sm);
 	}
 
 	@Override
