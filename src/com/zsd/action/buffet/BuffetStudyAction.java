@@ -4,6 +4,7 @@
  */
 package com.zsd.action.buffet;
 
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,16 +17,22 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.zsd.action.base.Transcode;
 import com.zsd.factory.AppFactory;
+import com.zsd.module.BuffetQueInfo;
 import com.zsd.module.BuffetSendInfo;
-import com.zsd.module.GradeSubject;
-import com.zsd.module.UserClassInfo;
+import com.zsd.module.BuffetStudyDetailInfo;
+import com.zsd.module.LoreInfo;
+import com.zsd.module.StudyLogInfo;
 import com.zsd.page.PageConst;
 import com.zsd.service.BuffetSendInfoManager;
-import com.zsd.service.GradeSubjectManager;
-import com.zsd.service.UserClassInfoManager;
+import com.zsd.service.BuffetStudyDetailManager;
+import com.zsd.service.UserManager;
 import com.zsd.tools.CommonTools;
 import com.zsd.tools.Convert;
+import com.zsd.tools.CurrentTime;
 import com.zsd.util.Constants;
 
 /** 
@@ -67,30 +74,29 @@ public class BuffetStudyAction extends DispatchAction {
 	public ActionForward getBuffetSendData(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
-		UserClassInfoManager ucm = (UserClassInfoManager)AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
-		GradeSubjectManager gsm = (GradeSubjectManager)AppFactory.instance(null).getApp(Constants.WEB_GRADE_SUBJECT_INFO);
 		BuffetSendInfoManager bsm = (BuffetSendInfoManager)AppFactory.instance(null).getApp(Constants.WEB_BUFFET_SEND_INFO);
-		//获取我所在年级的学科
 		Integer userId = CommonTools.getLoginUserId(request);
 		Integer subId = CommonTools.getFinalInteger("subId", request);
 		Integer comStatus = CommonTools.getFinalInteger("comStatus", request);//完成状态，默认未全部0
 		String sDate = CommonTools.getFinalStr("sDate", request);
 		String eDate = CommonTools.getFinalStr("eDate", request);
-		Integer pageNo = CommonTools.getFinalInteger("pageNo", request);
-		Integer pageSize = CommonTools.getFinalInteger("pageSize", request);
+		Integer pageNo = CommonTools.getFinalInteger("pageNo", request);//默认为1
+		Integer pageSize = CommonTools.getFinalInteger("pageSize", request);//默认为10
 		if(pageSize <= 0){
 			pageSize = 10;
 		}
-		
+		if(subId.equals(0)){
+			subId = 2;//默认为数学
+		}
 		String msg = "error";
 		Map<String,Object> map = new HashMap<String,Object>();
 		if(userId > 0){
-			Integer count = bsm.listBsInfoByOption(userId, subId, -1, sDate, eDate).size();
+			Integer count = bsm.listBsInfoByOption(userId, subId, comStatus, sDate, eDate).size();
 			if(count > 0){
 				msg = "success";
 				Integer countPage = PageConst.getPageCount(count, pageSize);
 				pageNo = PageConst.getPageNo(pageNo, countPage);
-				List<BuffetSendInfo> bsList = bsm.listPageInfoByOption(userId, subId, -1, sDate, eDate, pageNo, pageSize);
+				List<BuffetSendInfo> bsList = bsm.listPageInfoByOption(userId, subId, comStatus, sDate, eDate, pageNo, pageSize);
 				List<Object> list_d = new ArrayList<Object>();
 				for(BuffetSendInfo bs : bsList){
 					Map<String,Object> map_d = new HashMap<String,Object>();
@@ -98,46 +104,202 @@ public class BuffetStudyAction extends DispatchAction {
 					map_d.put("subName", bs.getStudyLogInfo().getSubject().getSubName());
 					map_d.put("loreName", bs.getStudyLogInfo().getLoreInfo().getLoreName());
 					map_d.put("studyResult", bs.getStudyResult());//1:未完成，2:已完成
-					map_d.put("", bs);
-					map_d.put("", bs);
-					map_d.put("", bs);
+					map_d.put("allNumber", bs.getSendNumber());
+					map_d.put("comNumber", bs.getComNumber());
+					map_d.put("sendUserInfo", bs.getUser().getNickName());
+					map_d.put("sendDate", bs.getSendTime().substring(0, 10));
 					list_d.add(map_d);
 				}
+				map.put("studyList", list_d);
+				map.put("countPage", countPage);
 			}else{
 				msg = "noInfo";
 			}
-			
-			
-			if(subId.equals(0)){
-				subId = 2;//默认为数学
-			}
-			UserClassInfo  uc = ucm.getEntityByOpt(userId, 2);//获取学生所在班级信息
-			if(uc != null){
-				Integer gradeNumber = Convert.dateConvertGradeNumber(uc.getClassInfo().getBuildeClassDate());
-				if(gradeNumber > 12){
-					gradeNumber = 12;
-				}
-				String gradeName = Convert.NunberConvertChinese(gradeNumber);
-				//获取当前年级的学科列表
-				List<GradeSubject>  gsList = gsm.listSpecInfoByGname(gradeName);
-				if(gsList.size() > 0){
-					List<Object> list_g = new ArrayList<Object>();
-					for(GradeSubject gs : gsList){
-						Map<String,Object> map_g = new HashMap<String,Object>();
-						map_g.put("subId", gs.getSubject().getId());
-						map_g.put("subName", gs.getSubject().getSubName());
-						if(gs.getSubject().getId().equals(subId)){
-							map_g.put("selFlag", true);
-						}else{
-							map_g.put("selFlag", false);
-						}
-						list_g.add(map_g);
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 获取指定发送的自助餐题库
+	 * @author wm
+	 * @date 2019-6-26 上午10:13:55
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getBuffetQueData(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		BuffetStudyDetailManager bsdm = (BuffetStudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_STUDY_DETAIL_INFO);
+		Integer bsId = CommonTools.getFinalInteger("bsId", request);
+		Integer userId = CommonTools.getLoginUserId(request);
+		String msg = "noInfo";
+		Map<String,Object> map = new HashMap<String,Object>();
+		List<BuffetStudyDetailInfo> bsdList = bsdm.listInfoByBsId(bsId);
+		if(bsdList.size() > 0){
+			if(bsdList.get(0).getBuffetSendInfo().getStudyLogInfo().getUser().getId().equals(userId)){
+				msg = "success";
+				List<Object> list_d = new ArrayList<Object>();
+				for(BuffetStudyDetailInfo bsd : bsdList){
+					Map<String,Object> map_d = new HashMap<String,Object>();
+					map_d.put("bsId", bsId);
+					StudyLogInfo sl = bsd.getBuffetSendInfo().getStudyLogInfo();
+					map_d.put("studyLogId", sl.getId());
+					LoreInfo lore = sl.getLoreInfo();
+					map_d.put("ediLoreId", lore.getId());//出版社下的知识点编号
+					map_d.put("ediLoreName", lore.getLoreName());
+					BuffetQueInfo buff = bsd.getBuffetQueInfo();
+					map_d.put("buffetId", buff.getId());
+					map_d.put("quoteLoreId", buff.getLoreInfo().getId());//通用版下的知识点编号
+					map_d.put("queType", buff.getQueType());
+					map_d.put("buffTypeId", buff.getBuffetTypeInfo().getId());
+					map_d.put("buffTypeName", buff.getBuffetTypeInfo().getTypes());
+					map_d.put("title", buff.getTitle());
+					map_d.put("subject", buff.getSubject());
+					map_d.put("answerA", buff.getA());
+					map_d.put("answerB", buff.getB());
+					map_d.put("answerC", buff.getC());
+					map_d.put("answerD", buff.getD());
+					map_d.put("answerE", buff.getE());
+					map_d.put("answerF", buff.getF());
+					map_d.put("resolution", buff.getResolution());
+					map_d.put("myAnswer", bsd.getMyAnswer());
+					if(!bsd.getMyAnswer().equals("")){//说明该题已做
+						//答案选项选用做题时的答案选项
+						map_d.put("answerA", bsd.getA());
+						map_d.put("answerB", bsd.getB());
+						map_d.put("answerC", bsd.getC());
+						map_d.put("answerD", bsd.getD());
+						map_d.put("answerE", bsd.getE());
+						map_d.put("answerF", bsd.getF());
 					}
-					//获取自助餐题库列表
-					map.put("subList", list_g);
+					map_d.put("realAnswer", bsd.getRealAnswer());
+					map_d.put("studyResult", bsd.getResult());
+					map_d.put("traceComStatus", bsd.getTraceComStatus());
+					map_d.put("currComStatus", bsd.getCurrComStatus());
+					list_d.add(map_d);
+				}
+				map.put("bsdList", list_d);
+			}else{
+				msg = "error";
+			}
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 做自助餐题，修改自助餐题库信息
+	 * @author wm
+	 * @date 2019-6-26 下午03:22:51
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward updateBuffetStudyDetail(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		BuffetStudyDetailManager bsdm = (BuffetStudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_STUDY_DETAIL_INFO);
+		BuffetSendInfoManager bsm = (BuffetSendInfoManager)AppFactory.instance(null).getApp(Constants.WEB_BUFFET_SEND_INFO);
+		UserManager um = (UserManager)AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
+		Integer userId = CommonTools.getLoginUserId(request);
+		Integer bsdId = CommonTools.getFinalInteger("bsdId", request);
+		String myAnswer = Transcode.unescape_new1("myAnswer", request);
+		String answerOptionArrayStr = Transcode.unescape_new1("answerOptionArray",request);
+		String[] answerOptionStr = {"","","","","",""};
+		String msg = "noInfo";
+		boolean flag = false;
+		Integer result = 0;//0为错,1为对
+		String dataBaseAnswerChar = "";
+		Map<String,Object> map = new HashMap<String,Object>();
+		if(userId > 0 && bsdId > 0){
+			msg = "success";
+			BuffetStudyDetailInfo bsd = bsdm.getEntityById(bsdId);
+			if(bsd != null){
+				Integer bsId = bsd.getBuffetSendInfo().getId();
+				BuffetQueInfo bq = bsd.getBuffetQueInfo();
+				String buffetType = bq.getBuffetTypeInfo().getTypes();
+				String realAnswer = bq.getAnswer();
+				if(buffetType.equals("问答题") || buffetType.equals("填空题")){
+					if(myAnswer.indexOf("正确") >= 0){
+						result = 1;
+					}else{
+						result = 0;
+					}
+					dataBaseAnswerChar = answerOptionArrayStr.replaceAll("&#wmd;", "'");
+				}else{
+					JSONArray answerOptionArray = JSON.parseArray(answerOptionArrayStr);
+					String[] dataBaseAnswerArray = realAnswer.split(",");
+					for(int j = 0; j < dataBaseAnswerArray.length; j++){
+						for(int i = 0; i < answerOptionArray.size(); i++){
+							String answerOption = answerOptionArray.get(i).toString();
+							if(answerOption.indexOf("Module/commonJs/ueditor/jsp/lore") >= 0){
+								//表示答案选项是图片--截取前面的路径
+								answerOption = answerOption.replace("Module/commonJs/ueditor/jsp/lore/", "");
+							}
+							if(dataBaseAnswerArray[j].equals(answerOption)){
+								dataBaseAnswerChar += Convert.NumberConvertBigChar(i)+",";
+								break;
+							}
+						}
+					}
+					dataBaseAnswerChar = dataBaseAnswerChar.substring(0, dataBaseAnswerChar.length() - 1);
+					if(buffetType.equals("多选题")){
+						flag = false;//顺序可以不同
+					}else{//不是多选题答案需要完全匹配(填空选择题、单选题，判断题)
+						flag = true;
+					}
+					if(flag){//完全匹配
+						if(dataBaseAnswerChar.equals(myAnswer)){
+							result = 1;
+						}else{
+							result = 0;
+						}
+					}else{//答案顺序可以不同
+						String[] myAnserArray = myAnswer.split(",");
+						String[] realAnswerArray = dataBaseAnswerChar.split(",");
+						String newMyAnswer = CommonTools.arraySort(myAnserArray);//排序后我的答案
+						String newRealAnswer = CommonTools.arraySort(realAnswerArray);//排序后后台正确答案
+						if(newMyAnswer.equals(newRealAnswer)){
+							result = 1;
+						}else{
+							result = 0;
+						}
+					}
+					for(int i = 0 ; i < answerOptionArray.size() ; i++){
+						answerOptionStr[i] = answerOptionArray.get(i).toString().replaceAll("&#wmd;", "'");
+					}
+				}
+				//修改自助餐答题情况
+				boolean upFlag = bsdm.updateBuffetStudyDetailById(bsdId, myAnswer, result, CurrentTime.getCurrentTime(), 
+						answerOptionStr[0], answerOptionStr[1], answerOptionStr[2],
+				        answerOptionStr[3], answerOptionStr[4], answerOptionStr[5]);
+				Integer coin = 0;//自助餐不增加金币数
+				Integer experience = Constants.EXPERIENCE;
+				if(upFlag){
+					if(result.equals(1)){
+						experience += Constants.EXPERIENCE;
+						//当巴菲特题直接正确时--需要修改buffetStudyDetail中的traceCompleteFlag和currCompleteFlag的值为1
+						bsdm.updateStatusById(bsdId, 1, 1);
+						//修改自助餐发送记录中的完成次数
+						bsm.updateBuffetSend(bsId, 0, 1);
+					}
+					um.updateUser(userId, coin, experience, 0, 0);
 				}
 			}
 		}
+		map.put("result", msg);
+		map.put("studyResult", result);
+		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
 }

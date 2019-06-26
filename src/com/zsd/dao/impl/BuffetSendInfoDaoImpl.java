@@ -12,7 +12,12 @@ public class BuffetSendInfoDaoImpl implements BuffetSendInfoDao {
 
 	@Override
 	public BuffetSendInfo get(Session sess, int id) {
-		return (BuffetSendInfo) sess.load(BuffetSendInfo.class, id);
+		String hql="from BuffetSendInfo as bs where bs.id ="+id;
+		List<BuffetSendInfo> bsList = sess.createQuery(hql).list();
+		if(bsList.size() > 0){
+			return bsList.get(0);
+		}
+		return null;
 	}
 
 	@Override

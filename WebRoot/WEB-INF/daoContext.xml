@@ -45,6 +45,7 @@
 	<dao id="study_map_Dao" class="com.zsd.dao.impl.StudyMapDaoImpl" />
 	<dao id="study_stu_qftj_Dao" class="com.zsd.dao.impl.StudyStuQfTjDaoImpl" />
 	<dao id="buffet_send_info_Dao" class="com.zsd.dao.impl.BuffetSendInfoDaoImpl" />
+	<dao id="buffet_study_detail_info_Dao" class="com.zsd.dao.impl.BuffetStudyDetailDaoImpl" />
 	<dao id="town_info_Dao" class="com.zsd.dao.impl.TownDaoImpl" />
 	<dao id="apply_class_info_Dao" class="com.zsd.dao.impl.ApplyClassDaoImpl" />
 </daoContext>

@@ -37,4 +37,30 @@ public interface BuffetSendInfoManager {
 	 */
 	List<BuffetSendInfo> listPageInfoByOption(Integer stuId,Integer subId, Integer isfinish, 
 			String sDate, String eDate,Integer pageNo,Integer pageSize)throws WEBException;
+	
+	/**
+	 * 增加自助餐发布信息
+	 * @author wm
+	 * @date 2019-6-26 下午05:40:01
+	 * @param studyLogId 学习记录编号
+	 * @param sendTime 发送时间
+	 * @param sendUserId 发送人编号
+	 * @param sendMode 发送方式(0:网络导师发送,1:系统发送)
+	 * @param allNumber 总数
+	 * @return
+	 * @throws WEBException
+	 */
+	Integer addBuffetSend(Integer studyLogId,String sendTime,Integer sendUserId,Integer sendMode,Integer allNumber)throws WEBException;
+	
+	/**
+	 * 修改指定主键的学习结果、完成次数
+	 * @author wm
+	 * @date 2019-6-26 下午03:55:46
+	 * @param id 主键
+	 * @param isfinish 完成状态(0(不修改),1(未完成),2(已完成))
+	 * @param completeNumber 完成次数(0不修改)
+	 * @return
+	 * @throws WEBException
+	 */
+	boolean updateBuffetSend(Integer id,Integer isfinish,Integer completeNumber)throws WEBException;
 }
