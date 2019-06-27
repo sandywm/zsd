@@ -1778,7 +1778,7 @@ public class OnlineStudyAction extends DispatchAction {
 						Integer quoteLoreId = lq.getLoreInfo().getId();
 						String[] loreInfo = CommonTools.getRealLoreInfo(quoteLoreId, loreId);//当前题库的指定版本下的知识点
 						map_d.put("currLoreId", Integer.parseInt(loreInfo[0]));
-						map_d.put("currLoreName", Integer.parseInt(loreInfo[1]));
+						map_d.put("currLoreName", loreInfo[1]);
 						map_d.put("lqType", lq.getQueType());
 						map_d.put("loreType", lq.getLoreTypeName());
 						map_d.put("lqSub", lq.getQueSub());
@@ -1821,7 +1821,7 @@ public class OnlineStudyAction extends DispatchAction {
 							Integer quoteLoreId = lq.getLoreInfo().getId();
 							String[] loreInfo = CommonTools.getRealLoreInfo(quoteLoreId, loreId);//当前题库的指定版本下的知识点
 							map_d.put("currLoreId", Integer.parseInt(loreInfo[0]));
-							map_d.put("currLoreName", Integer.parseInt(loreInfo[1]));
+							map_d.put("currLoreName", loreInfo[1]);
 							map_d.put("lqType", lq.getQueType());
 							map_d.put("loreType", lq.getLoreTypeName());
 							map_d.put("lqSub", lq.getQueSub());
@@ -1854,7 +1854,7 @@ public class OnlineStudyAction extends DispatchAction {
 								Integer quoteLoreId = lq.getLoreInfo().getId();
 								String[] loreInfo = CommonTools.getRealLoreInfo(quoteLoreId, loreId);//当前题库的指定版本下的知识点
 								map_d.put("currLoreId", Integer.parseInt(loreInfo[0]));
-								map_d.put("currLoreName", Integer.parseInt(loreInfo[1]));
+								map_d.put("currLoreName", loreInfo[1]);
 								map_d.put("lqType", lq.getQueType());
 								map_d.put("loreType", lq.getLoreTypeName());
 								map_d.put("lqSub", lq.getQueSub());
@@ -1900,7 +1900,7 @@ public class OnlineStudyAction extends DispatchAction {
 										Integer quoteLoreId = lq.getLoreInfo().getId();
 										String[] loreInfo = CommonTools.getRealLoreInfo(quoteLoreId, loreId);//当前题库的指定版本下的知识点
 										map_d.put("currLoreId", Integer.parseInt(loreInfo[0]));
-										map_d.put("currLoreName", Integer.parseInt(loreInfo[1]));
+										map_d.put("currLoreName", loreInfo[1]);
 										map_d.put("lqType", lq.getQueType());
 										map_d.put("loreType", lq.getLoreTypeName());
 										map_d.put("lqSub", lq.getQueSub());
@@ -1947,7 +1947,7 @@ public class OnlineStudyAction extends DispatchAction {
 									map_d.put("lqId", lq.getId());
 									String[] loreInfo = CommonTools.getRealLoreInfo(quoteLoreId, loreId);//当前题库的指定版本下的知识点
 									map_d.put("currLoreId", Integer.parseInt(loreInfo[0]));
-									map_d.put("currLoreName", Integer.parseInt(loreInfo[1]));
+									map_d.put("currLoreName", loreInfo[1]);
 									map_d.put("lqType", lq.getQueType());
 									map_d.put("loreType", lq.getLoreTypeName());
 									map_d.put("lqSub", lq.getQueSub());
