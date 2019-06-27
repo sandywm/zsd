@@ -4,7 +4,6 @@
  */
 package com.zsd.action.buffet;
 
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,14 +20,20 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.zsd.action.base.Transcode;
 import com.zsd.factory.AppFactory;
+import com.zsd.module.BuffetLoreRelateInfo;
 import com.zsd.module.BuffetQueInfo;
 import com.zsd.module.BuffetSendInfo;
 import com.zsd.module.BuffetStudyDetailInfo;
+import com.zsd.module.JoinLoreRelation;
 import com.zsd.module.LoreInfo;
 import com.zsd.module.StudyLogInfo;
+import com.zsd.module.json.LoreTreeMenuJson;
 import com.zsd.page.PageConst;
+import com.zsd.service.BuffetLoreRelateInfoManager;
 import com.zsd.service.BuffetSendInfoManager;
 import com.zsd.service.BuffetStudyDetailManager;
+import com.zsd.service.JoinLoreRelationManager;
+import com.zsd.service.LoreInfoManager;
 import com.zsd.service.UserManager;
 import com.zsd.tools.CommonTools;
 import com.zsd.tools.Convert;
@@ -300,6 +305,226 @@ public class BuffetStudyAction extends DispatchAction {
 		map.put("result", msg);
 		map.put("studyResult", result);
 		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 获取当前自助餐下的关联知识点（筛去没有的）
+	 * @author wm
+	 * @date 2019-6-27 上午08:05:49
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward showRelationByBuffetAndLore(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		BuffetLoreRelateInfoManager blrm = (BuffetLoreRelateInfoManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_LORE_RELATE_INFO);
+		JoinLoreRelationManager jlrm = (JoinLoreRelationManager) AppFactory.instance(null).getApp(Constants.WEB_JOIN_LORE_RELATE_INFO);
+		LoreInfoManager lm = (LoreInfoManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
+		Integer buffetId = CommonTools.getFinalInteger("buffetId", request);
+		Integer currBasicLoreId = CommonTools.getFinalInteger("currBasicLoreId", request);;//通用知识点
+		Integer currLoreId = CommonTools.getFinalInteger("currLoreId", request);;//出版社下知识点编号
+		String relateLoreIdStr = "";//该出版社下的关联知识点
+		Integer editionId = 0;//当前知识点所在的出版社
+		String msg = "noInfo";
+		List<BuffetLoreRelateInfo> blrList = blrm.listInfoByOpt(buffetId, currBasicLoreId);
+		if(blrList.size() == 0){//表示该巴菲特下没有关联，需要查询与之合并的知识点，查询合并的知识点有无巴菲特题
+			//step1:根据通用知识点获取与之合并的其他知识点
+			JoinLoreRelation jlr = jlrm.getInfoByLoreId(currBasicLoreId);
+			if(jlr != null){
+				String[] loreIdArray = jlr.getLoreIdArray().split(",");
+				for(Integer i = 0 ; i < loreIdArray.length ; i++){
+					Integer joinLoreId = Integer.parseInt(loreIdArray[i]);
+					//step2:查询合并的知识点下面有无关联知识点（合并知识点共用关联知识点）
+					if(!currBasicLoreId.equals(joinLoreId)){
+						blrList = blrm.listInfoByOpt(buffetId, joinLoreId);
+						if(blrList.size() > 0){
+							break;
+						}
+					}
+				}
+			}
+		}
+		if(blrList.size() > 0){
+			LoreInfo lore = lm.getEntityById(currLoreId);
+			if(lore != null){
+				editionId = lore.getChapter().getEducation().getEdition().getId();
+				//通用版关联的知识点
+				for(BuffetLoreRelateInfo blr : blrList){
+					List<LoreInfo> loreList = lm.listInfoByMainLoreId(blr.getLoreInfoByLoreId().getId());
+					for(LoreInfo lore_tmp : loreList){
+						Integer relateLoreId = lore_tmp.getId();
+						Integer inUse = lore_tmp.getInUse();
+						if(inUse.equals(0)){//获取知识点的启用状态0：启用
+							//通过通用版知识点编号获取被引用的知识点所在的出版社
+							Integer joinLoreEditionId = lore_tmp.getChapter().getEducation().getEdition().getId();
+							if(editionId.equals(joinLoreEditionId)){//两个出版社必须保持一致
+								relateLoreIdStr += relateLoreId + ",";
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
+		if(!relateLoreIdStr.equals("")){
+			relateLoreIdStr = relateLoreIdStr.substring(0, relateLoreIdStr.length() - 1);
+			msg = "success";
+		}
+		Map<String,String> map = new HashMap<String,String>();
+		map.put("result", msg);
+		map.put("relateLoreIdStr", relateLoreIdStr);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 获取当前巴菲特发布记录的详细完成情况（opt=trace时必须traceFlag完成，防止恶意提交。opt=currCom主要用于提交后页面不刷新时答题状态不变化）
+	 * false:1,true:0
+	 * @author wm
+	 * @date 2019-6-27 上午09:41:16
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getCurrBuffetFlag(ActionMapping mapping ,ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		BuffetStudyDetailManager bsdm = (BuffetStudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_STUDY_DETAIL_INFO);
+		Integer bsdId = CommonTools.getFinalInteger("bsdId", request);
+		String opt = CommonTools.getFinalStr("opt", request);//trace(溯源完成标记),currCom(当前自助餐完成标记)
+		BuffetStudyDetailInfo bsd = bsdm.getEntityById(bsdId);
+		boolean flag = true;
+		Integer status = 0;//0:未完成,1:已完成
+		if(bsd != null){
+			if(opt.equals("trace")){
+				status = bsd.getTraceComStatus();
+			}else if(opt.equals("currCom")){
+				status = bsd.getCurrComStatus();
+			}
+			if(status.equals(1)){
+				flag = false;
+			}
+		}
+		Map<String,Boolean> map = new HashMap<String,Boolean>();
+		map.put("result", flag);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 根据巴菲特学习记录编号修改当前巴菲特学习记录已完成currCompleteFlag=1
+	 * @author wm
+	 * @date 2019-6-27 上午10:04:21
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward updateCurrCompleteFlag(ActionMapping mapping ,ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		BuffetStudyDetailManager bsdm = (BuffetStudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_STUDY_DETAIL_INFO);
+		BuffetSendInfoManager bsm = (BuffetSendInfoManager)AppFactory.instance(null).getApp(Constants.WEB_BUFFET_SEND_INFO);
+		Integer bsdId = CommonTools.getFinalInteger("bsdId", request);
+		boolean flag = bsdm.updateStatusById(bsdId, 1, 1);//自助餐都完成了，肯定溯源也完成
+		if(flag){
+			BuffetSendInfo bs = bsdm.getEntityById(bsdId).getBuffetSendInfo();
+			Integer bsId = bs.getId();
+			Integer allNumber = bs.getSendNumber();
+			if(allNumber > bs.getComNumber()){
+				//分两种情况（当最后一道题）
+				//1:直接答题正确，这时completeNumber已经+1，所以不能再执行增加
+				//2:答题错误，进入溯源，溯源完成后，点击完成，这时completeNumber没+1，所以要执行增加
+				Integer isFinish = 0;
+//				if(allNumber.equals(bs.getComNumber() + 1)){//最后一题
+//					isFinish = 2;//学习完成
+//				}
+				flag = bsm.updateBuffetSend(bsId, isFinish, 1);
+			}
+		}
+		Map<String,Boolean> map = new HashMap<String,Boolean>();
+		map.put("result", flag);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 自助餐答题错误后导向关联知识点的溯源页面
+	 * @author wm
+	 * @date 2019-6-27 上午10:33:29
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward goBuffetLoreTracePage(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+	
+		return mapping.findForward("buffetTracePage");
+	}
+	
+	/**
+	 * 自助餐答题错误后获取关联知识点的溯源数据
+	 * @author wm
+	 * @date 2019-6-27 上午10:35:28
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getBuffetLoreTraceDate(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		BuffetStudyDetailManager bsdm = (BuffetStudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_STUDY_DETAIL_INFO);
+		BuffetSendInfoManager bsm = (BuffetSendInfoManager)AppFactory.instance(null).getApp(Constants.WEB_BUFFET_SEND_INFO);
+		BuffetLoreRelateInfoManager blrm = (BuffetLoreRelateInfoManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_LORE_RELATE_INFO);
+		JoinLoreRelationManager jlrm = (JoinLoreRelationManager) AppFactory.instance(null).getApp(Constants.WEB_JOIN_LORE_RELATE_INFO);
+		LoreInfoManager lm = (LoreInfoManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
+		Integer bsdId = CommonTools.getFinalInteger("bsdId", request);
+		BuffetStudyDetailInfo bsd = bsdm.getEntityById(bsdId);
+		if(bsd != null){
+			Integer basicLoreId = bsd.getBuffetSendInfo().getStudyLogInfo().getLoreInfo().getId();//发布巴菲特的学习的知识点编号
+			Integer buffetId = bsd.getBuffetQueInfo().getId();
+			String buffetName = bsd.getBuffetQueInfo().getTitle();
+			String nextLoreIdArray = "";//下级知识典编号数组
+			Integer isFinish = 0;
+			Integer task = 1;//第几个任务数（课后复习任务数）
+			Integer money = Constants.COIN;
+			String loreTaskName = "";
+			String buttonValue = "开始挑战";
+			String path = "";//顺序路线图(诊断时)
+			String pathChi = "";
+			String studyPath = "";//学习的路线
+			String studyPathChi = "";
+			Integer stepCount = 0;//知识点有多少级
+			Integer loreCount = 0;//有多少知识点
+			String pathType = "diagnosis";//类型:diagnosis--诊断，study--学习
+			String loreTypeName = "针对性诊断";
+			Integer access = -1;
+			String page = "detailList";
+			String[] pathArr = CommonTools.getBuffetLorePath(buffetId, buffetName, basicLoreId, pathType);
+			path =  pathArr[0];
+			pathChi = pathArr[1];
+			LoreTreeMenuJson ltmj = new LoreTreeMenuJson();
+			if(!path.equals("")){
+				stepCount = path.split(":").length;//多少级
+				loreCount = ltmj.getLoreNum(path);//多少个知识点
+			}
+			//通过buffet_study_detail_id获取buffet_lore_study_log_id
+			
+		}
 		return null;
 	}
 }

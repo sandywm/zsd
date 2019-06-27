@@ -6,10 +6,12 @@ import java.util.List;
 
 import com.zsd.factory.AppFactory;
 import com.zsd.module.BuffetLoreRelateInfo;
+import com.zsd.module.BuffetQueInfo;
 import com.zsd.module.LoreInfo;
 import com.zsd.module.LoreRelateInfo;
 import com.zsd.service.BuffetLoreRelateInfoManager;
 import com.zsd.service.BuffetQueInfoManager;
+import com.zsd.service.LoreInfoManager;
 import com.zsd.service.LoreRelateManager;
 import com.zsd.util.Constants;
 
@@ -302,5 +304,114 @@ public class LoreBuffetTreeMenuJson {
 	        tree.add(tree2(t,t.getMenus(),true));
 	    }
 	    return tree;
+	}
+	
+	/**
+	 * 显示制定巴菲特题下的知识树(学习时用)
+	 * @author wm
+	 * @date 2019-6-27 下午04:40:16
+	 * @param buffetId 巴菲特编号
+	 * @param buffetName 巴菲特名字
+	 * @param currLoreId 当前知识点编号（当前发布巴菲特的知识点编号）
+	 * @param studyLogId 学习记录编号
+	 * @return
+	 * @throws Exception
+	 */
+	public List<MyTreeNode> showBuffetTree_2(Integer buffetId,String buffetName,Integer currLoreId,Integer studyLogId) throws Exception {
+		BuffetLoreRelateInfoManager blrm = (BuffetLoreRelateInfoManager)AppFactory.instance(null).getApp(Constants.WEB_BUFFET_LORE_RELATE_INFO);
+		LoreInfoManager lm = (LoreInfoManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
+		List<BuffetLoreRelateInfo> blrList = blrm.listInfoByBuffetId(buffetId);
+		List<BuffetLoreRelateInfo> result = new ArrayList<BuffetLoreRelateInfo>();
+		Integer editionId = 0;
+		LoreInfo lore_edi = lm.getEntityById(currLoreId);
+		if(lore_edi != null){
+			editionId = lore_edi.getChapter().getEducation().getEdition().getId();//当前知识点所在的出版社
+			for(Iterator<BuffetLoreRelateInfo> it = blrList.iterator() ; it.hasNext();){
+				BuffetLoreRelateInfo blr = it.next();
+				Integer relateBasicLoreId = blr.getLoreInfoByLoreId().getId();//通用版知识点编号
+				List<LoreInfo> lList = lm.listInfoByMainLoreId(relateBasicLoreId);
+				for(Iterator<LoreInfo> it_1 = lList.iterator() ; it_1.hasNext();){
+					LoreInfo lore = it_1.next();
+					Integer inUse = lore.getInUse();
+					if(inUse.equals(0)){//获取知识点的启用状态0：启用
+						//通过通用版知识点编号获取被引用的知识点所在的出版社
+						Integer joinLoreEditionId = lore.getChapter().getEducation().getEdition().getId();
+						if(editionId.equals(joinLoreEditionId)){//两个出版社必须保持一致
+							result.add(blr);
+							break;
+						}
+					}
+				}
+			}
+		}
+		
+		List<LoreTreeMenu> l = this.getBuffetTreeMenuList(result);
+	    List<MyTreeNode> tree = new ArrayList<MyTreeNode>();
+	    this.loreList = new ArrayList();
+	    this.num = 0;
+	    //2014年9月23日修改--wm
+	    if(l.size() == 0){//表示没有记录，就用当前知识点记录
+	    	l = this.getNoBuffetTreeMenuList(buffetId,buffetName);
+	    }
+	    for (LoreTreeMenu t : l) {
+	        tree.add(tree1(t,t.getMenus(),true,studyLogId));
+	    }
+	    return tree;
+	}
+	
+	/**
+	 * 获取有巴菲特关联知识树节点
+	 * @author wm
+	 * @date 2019-6-27 下午04:55:10
+	 * @param blrList
+	 * @return
+	 * @throws Exception
+	 */
+	public List<LoreTreeMenu> getBuffetTreeMenuList(List<BuffetLoreRelateInfo> blrList) throws Exception{
+		LoreRelateManager lrm = (LoreRelateManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_RELATE_INFO);
+		List<LoreTreeMenu> secondResult = new ArrayList<LoreTreeMenu>();
+		List<LoreTreeMenu> result = new ArrayList<LoreTreeMenu>();
+		if(blrList.size() > 0){
+			BuffetQueInfo firstBuffet = blrList.get(0).getBuffetQueInfo();
+			Integer firstId = firstBuffet.getId();
+			String firstName = firstBuffet.getTitle();
+			LoreTreeMenu ltMenu_first = new LoreTreeMenu();
+			ltMenu_first.setId(firstId);
+			ltMenu_first.setName(firstName);
+			for(Iterator<BuffetLoreRelateInfo> it = blrList.iterator() ; it.hasNext();){
+				LoreTreeMenu ltMenu = new LoreTreeMenu();
+				BuffetLoreRelateInfo blr = it.next();
+				Integer relateLoreId = blr.getLoreInfoByLoreId().getId();
+				String relateLoreName = blr.getLoreInfoByLoreId().getLoreName();
+				ltMenu.setId(relateLoreId);
+				ltMenu.setName(relateLoreName);
+				ltMenu.setMenus(this.getSubTreeMenuList(lrm.listRelateInfoByOpt(relateLoreId, 0, 0, "desc")));	
+				//2015-09-25 只显示启用的关联知识点（wm）
+				//ltMenu.setMenus(this.getSubTreeMenuList(lrm.listUsedRelateByLoreId(relateLoreId)));	
+				secondResult.add(ltMenu);
+			}
+			ltMenu_first.setMenus(secondResult);
+			result.add(ltMenu_first);
+		}
+		return result;
+	}
+	
+	/**
+	 * 获取没有巴菲特关联知识树节点
+	 * @author wm
+	 * @date 2019-6-27 下午05:03:02
+	 * @param buffetId
+	 * @param buffetName
+	 * @return
+	 * @throws Exception
+	 */
+	public List<LoreTreeMenu> getNoBuffetTreeMenuList(Integer buffetId,String buffetName) throws Exception{
+		List<LoreTreeMenu> result = new ArrayList<LoreTreeMenu>();
+		LoreTreeMenu ltMenu = new LoreTreeMenu();
+		ltMenu.setId(buffetId);
+		ltMenu.setName(buffetName);
+		ltMenu.setMenus(null);
+		result.add(ltMenu);
+		return result;
 	}
 }

@@ -28,6 +28,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.zsd.factory.AppFactory;
 import com.zsd.module.LoreInfo;
+import com.zsd.module.json.LoreBuffetTreeMenuJson;
 import com.zsd.module.json.LoreTreeMenuJson;
 import com.zsd.module.json.MyTreeNode;
 import com.zsd.service.LoreInfoManager;
@@ -700,6 +701,37 @@ public class CommonTools {
 		List<MyTreeNode> ltList = ltmj.showTree(loreId, 0,"desc");
 		StringBuilder buff = new StringBuilder();
 		StringBuilder buffChi = new StringBuilder();
+		ltmj.getPath(ltList, buff,buffChi);
+		path = buff.delete(buff.length() - 1, buff.length()).toString();
+		String pathChi = buffChi.delete(buffChi.length() - 1, buffChi.length()).toString();
+		pathArr[0] = path;
+		pathArr[1] = pathChi;
+		if(pathType.equals("diagnosis")){//诊断
+			return pathArr;
+		}else{//学习
+			return ltmj.getStudyPath(path,pathChi);
+		}
+	}
+	
+	/**
+	 * 学习自助餐时获取关联知识点的全部路径(诊断/学习时)
+	 * @author wm
+	 * @date 2019-6-27 下午04:36:08
+	 * @param buffetId 自助餐编号
+	 * @param buffetName 自助餐名称
+	 * @param loreId 知识点编号
+	 * @param pathType diagnosis/study
+	 * @return loreId组合,loreName组合
+	 * @throws Exception
+	 */
+	public static String[] getBuffetLorePath(Integer buffetId,String buffetName,Integer loreId,String pathType) throws Exception{
+		String[] pathArr = new String[2];
+		String path = "";
+		LoreBuffetTreeMenuJson lbtmj = new LoreBuffetTreeMenuJson();
+		List<MyTreeNode> ltList = lbtmj.showBuffetTree_2(buffetId, buffetName, loreId, 0);
+		StringBuilder buff = new StringBuilder();
+		StringBuilder buffChi = new StringBuilder();
+		LoreTreeMenuJson ltmj = new LoreTreeMenuJson();
 		ltmj.getPath(ltList, buff,buffChi);
 		path = buff.delete(buff.length() - 1, buff.length()).toString();
 		String pathChi = buffChi.delete(buffChi.length() - 1, buffChi.length()).toString();
