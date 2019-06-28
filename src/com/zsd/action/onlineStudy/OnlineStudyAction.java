@@ -1810,6 +1810,9 @@ public class OnlineStudyAction extends DispatchAction {
 								map_d.put("answerNum", lq.getQueAnswer().split(",").length);
 							}
 						}
+						if(lqType.equals("填空题") || lqType.equals("问答题")){
+							map_d.put("realAnswer", lq.getQueAnswer());
+						}
 						list_d.add(map_d);
 					}
 					map.put("lqList", list_d);
@@ -1845,6 +1848,9 @@ public class OnlineStudyAction extends DispatchAction {
 								map_d.put("answerNum", 1);
 							}else{//填空选择题
 								map_d.put("answerNum", lq.getQueAnswer().split(",").length);
+							}
+							if(lqType.equals("填空题") || lqType.equals("问答题")){
+								map_d.put("realAnswer", lq.getQueAnswer());
 							}
 							list_d.add(map_d);
 						}
@@ -1884,6 +1890,9 @@ public class OnlineStudyAction extends DispatchAction {
 									map_d.put("answerNum", 1);
 								}else{//填空选择题
 									map_d.put("answerNum", lq.getQueAnswer().split(",").length);
+								}
+								if(lqType.equals("填空题") || lqType.equals("问答题")){
+									map_d.put("realAnswer", lq.getQueAnswer());
 								}
 								list_d.add(map_d);
 							}
@@ -1951,6 +1960,9 @@ public class OnlineStudyAction extends DispatchAction {
 												map_d.put("answerNum", lq.getQueAnswer().split(",").length);
 											}
 										}
+										if(lqType.equals("填空题") || lqType.equals("问答题")){
+											map_d.put("realAnswer", lq.getQueAnswer());
+										}
 										list_d.add(map_d);
 									}
 								}
@@ -1991,6 +2003,9 @@ public class OnlineStudyAction extends DispatchAction {
 										map_d.put("answerNum", 1);
 									}else{//填空选择题
 										map_d.put("answerNum", lq.getQueAnswer().split(",").length);
+									}
+									if(lqType.equals("填空题") || lqType.equals("问答题")){
+										map_d.put("realAnswer", lq.getQueAnswer());
 									}
 									list_d.add(map_d);
 								}
