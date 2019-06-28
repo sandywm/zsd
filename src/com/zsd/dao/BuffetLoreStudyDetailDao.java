@@ -41,10 +41,20 @@ public interface BuffetLoreStudyDetailDao {
 	 * @author wm
 	 * @date 2019-6-27 下午05:54:00
 	 * @param sess
-	 * @param blsdId 学习记录编号
+	 * @param studyLogId 学习记录编号
 	 * @return
 	 */
-	List<BuffetLoreStudyDetailInfo> findInfoByLogId(Session sess,Integer blsdId);
+	List<BuffetLoreStudyDetailInfo> findInfoByLogId(Session sess,Integer studyLogId);
+	
+	/**
+	 * 根据学习记录编号获取最后一条学习详情列表
+	 * @author wm
+	 * @date 2019-6-28 下午03:57:12
+	 * @param sess
+	 * @param studyLogId 学习记录编号
+	 * @return
+	 */
+	List<BuffetLoreStudyDetailInfo> findLastInfoByLogId(Session sess,Integer studyLogId);
 	
 	/**
 	 * 根据学习记录编号获取当前级知识点所有答对的再次诊断记录列表
@@ -83,4 +93,18 @@ public interface BuffetLoreStudyDetailDao {
 	 * @return
 	 */
 	List<BuffetLoreStudyDetailInfo> findLastInfoByOpt(Session sess,Integer studyLogId,Integer loreId,String loreTypeName,Integer completeTimes);
+	
+	/**
+	 * 根据学习记录编号获取当前知识点有无指定类型的答题记录
+	 * @author wm
+	 * @date 2019-6-28 下午04:04:59
+	 * @param sess
+	 * @param studyLogId 学习记录编号
+	 * @param logId 当前知识典编号
+	 * @param loreTypeName 答题类型
+	 * @return
+	 */
+	List<BuffetLoreStudyDetailInfo> findExistInfoByLogId(Session sess,Integer studyLogId,Integer loreId,String loreTypeName);
+	
+	
 }

@@ -7,7 +7,7 @@ import org.hibernate.Transaction;
 
 import com.zsd.dao.BuffetQueInfoDao;
 import com.zsd.dao.BuffetSendInfoDao;
-import com.zsd.dao.impl.BuffetStudyDetailDao;
+import com.zsd.dao.BuffetStudyDetailDao;
 import com.zsd.exception.WEBException;
 import com.zsd.factory.DaoFactory;
 import com.zsd.module.BuffetStudyDetailInfo;

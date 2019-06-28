@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.hibernate.Session;
 
+import com.zsd.dao.BuffetStudyDetailDao;
 import com.zsd.module.BuffetStudyDetailInfo;
 
 @SuppressWarnings("unchecked")

@@ -27,7 +27,7 @@
         </many-to-one>
         <property name="isFinish" type="java.lang.Integer">
             <column name="is_finish" not-null="true">
-                <comment>完成状态(0:未完成,1:已完成)</comment>
+                <comment>完成状态(1:未完成,2:已完成)</comment>
             </column>
         </property>
         <property name="access" type="java.lang.Integer">

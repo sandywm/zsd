@@ -21,6 +21,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.zsd.action.base.Transcode;
 import com.zsd.factory.AppFactory;
 import com.zsd.module.BuffetLoreRelateInfo;
+import com.zsd.module.BuffetLoreStudyDetailInfo;
+import com.zsd.module.BuffetLoreStudyLogInfo;
 import com.zsd.module.BuffetQueInfo;
 import com.zsd.module.BuffetSendInfo;
 import com.zsd.module.BuffetStudyDetailInfo;
@@ -30,6 +32,8 @@ import com.zsd.module.StudyLogInfo;
 import com.zsd.module.json.LoreTreeMenuJson;
 import com.zsd.page.PageConst;
 import com.zsd.service.BuffetLoreRelateInfoManager;
+import com.zsd.service.BuffetLoreStudyDetailManager;
+import com.zsd.service.BuffetLoreStudyLogManager;
 import com.zsd.service.BuffetSendInfoManager;
 import com.zsd.service.BuffetStudyDetailManager;
 import com.zsd.service.JoinLoreRelationManager;
@@ -474,7 +478,7 @@ public class BuffetStudyAction extends DispatchAction {
 	}
 	
 	/**
-	 * 自助餐答题错误后获取关联知识点的溯源数据
+	 * 自助餐答题错误后获取关联知识点的溯源路线如图
 	 * @author wm
 	 * @date 2019-6-27 上午10:35:28
 	 * @param mapping
@@ -488,43 +492,295 @@ public class BuffetStudyAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
 		BuffetStudyDetailManager bsdm = (BuffetStudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_STUDY_DETAIL_INFO);
-		BuffetSendInfoManager bsm = (BuffetSendInfoManager)AppFactory.instance(null).getApp(Constants.WEB_BUFFET_SEND_INFO);
-		BuffetLoreRelateInfoManager blrm = (BuffetLoreRelateInfoManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_LORE_RELATE_INFO);
-		JoinLoreRelationManager jlrm = (JoinLoreRelationManager) AppFactory.instance(null).getApp(Constants.WEB_JOIN_LORE_RELATE_INFO);
+		BuffetLoreStudyLogManager blslm = (BuffetLoreStudyLogManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_LORE_STUDY_LOG_INFO);
+		BuffetLoreStudyDetailManager blsdm = (BuffetLoreStudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_LORE_STUDY_DETAIL_INFO);
 		LoreInfoManager lm = (LoreInfoManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
 		Integer bsdId = CommonTools.getFinalInteger("bsdId", request);
 		BuffetStudyDetailInfo bsd = bsdm.getEntityById(bsdId);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String nextLoreIdArray = "";//下级知识典编号数组
+		Integer isFinish = 0;
+		Integer studyLogId = 0;
+		Integer totalMoney = -1;
+		String path = "";//顺序路线图(诊断时)
+		String pathChi = "";
+		String studyPath = "";//学习的路线
+		String studyPathChi = "";
+		Integer step = 0;
+		Integer stepComplete = 0;
+		Integer access = -1;
+		Integer currentLoreId = 0;
+		Integer option = 0;//1--诊断,2--学习
+		String successStep = "";
+		Integer success = -1;//0:正确,1:不正确
+		String nextLoreStep = "上一级的关联知识点";
+		String currentloreName_study = "";//当前5步学习法时的知识典名称
+		Integer basicLoreId = 0;
+		Integer buffetId = 0;
+		String buffetName = "";
 		if(bsd != null){
-			Integer basicLoreId = bsd.getBuffetSendInfo().getStudyLogInfo().getLoreInfo().getId();//发布巴菲特的学习的知识点编号
-			Integer buffetId = bsd.getBuffetQueInfo().getId();
-			String buffetName = bsd.getBuffetQueInfo().getTitle();
-			String nextLoreIdArray = "";//下级知识典编号数组
-			Integer isFinish = 0;
-			Integer task = 1;//第几个任务数（课后复习任务数）
-			Integer money = Constants.COIN;
-			String loreTaskName = "";
-			String buttonValue = "开始挑战";
-			String path = "";//顺序路线图(诊断时)
-			String pathChi = "";
-			String studyPath = "";//学习的路线
-			String studyPathChi = "";
-			Integer stepCount = 0;//知识点有多少级
-			Integer loreCount = 0;//有多少知识点
-			String pathType = "diagnosis";//类型:diagnosis--诊断，study--学习
-			String loreTypeName = "针对性诊断";
-			Integer access = -1;
-			String page = "detailList";
-			String[] pathArr = CommonTools.getBuffetLorePath(buffetId, buffetName, basicLoreId, pathType);
+			basicLoreId = bsd.getBuffetSendInfo().getStudyLogInfo().getLoreInfo().getId();//发布巴菲特的学习的知识点编号
+			buffetId = bsd.getBuffetQueInfo().getId();
+			buffetName = bsd.getBuffetQueInfo().getTitle();
+			String[] pathArr = CommonTools.getBuffetLorePath(buffetId, buffetName, basicLoreId, "diagnosis");
 			path =  pathArr[0];
 			pathChi = pathArr[1];
 			LoreTreeMenuJson ltmj = new LoreTreeMenuJson();
-			if(!path.equals("")){
-				stepCount = path.split(":").length;//多少级
-				loreCount = ltmj.getLoreNum(path);//多少个知识点
-			}
 			//通过buffet_study_detail_id获取buffet_lore_study_log_id
-			
+			BuffetLoreStudyLogInfo blsl = blslm.getEntityByBsdId(bsdId);
+			if(blsl == null){//表示第一次，还未进行巴菲特知识点学习
+				currentLoreId = buffetId;//目的为了获取当前级别(把第一级巴菲特编号赋值给currLoreId)
+				String[] pathArray = path.split(":");
+				Integer currentI = CommonTools.getCurrentStep(pathArray, currentLoreId);
+				if(currentI + 1 == pathArray.length){
+					//表示是最后一级（只有一级）
+					//溯源完成，开始学习
+				}else{
+					nextLoreIdArray = "";
+					String[] nextPathArray = pathArray[currentI + 1].split(",");
+					Integer nextPathLength = nextPathArray.length;
+					for(Integer k = 0 ; k < nextPathLength ; k++){
+						String[] nextDetailPathArray = nextPathArray[k].split("\\|");
+						for(Integer l = 0 ; l < nextDetailPathArray.length ; l++){
+							nextLoreIdArray += nextDetailPathArray[l] + ",";
+						}
+					}
+					if(nextLoreIdArray.length() > 0){
+						nextLoreIdArray = nextLoreIdArray.substring(0, nextLoreIdArray.length() - 1);
+					}
+					successStep = buffetName;
+					success = 1;
+				}
+			}else{
+				totalMoney = blsl.getCurrentGold() * 10;
+				stepComplete = blsl.getStepComlete();
+				step = blsl.getStep();
+				access = blsl.getAccess();
+				studyLogId = blsl.getId();
+				if(blsl.getIsFinish().equals(1)){//表示未全部完成,2:已完成
+					//从detail表中获取指定logId的最后一条详情
+					List<BuffetLoreStudyDetailInfo> bsdList = blsdm.listLastInfoByLogId(studyLogId);
+					//获取该题对应的知识点编号
+					currentLoreId = bsdList.get(0).getLoreInfo().getId();
+					if(stepComplete > 0){//本阶段答题已完成(还未进行下一级)
+						if(step.equals(1)){
+							//通过当前知识点获取下级子知识点
+							String[] pathArray = path.split(":");
+							Integer currentI = CommonTools.getCurrentStep(pathArray, currentLoreId);
+							if(currentI + 1 == pathArray.length){
+								
+							}else{
+								option = 1;
+								nextLoreIdArray = "";
+								String[] nextPathArray = pathArray[currentI + 1].split(",");
+								Integer nextPathLength = nextPathArray.length;
+								for(Integer k = 0 ; k < nextPathLength ; k++){
+									String[] nextDetailPathArray = nextPathArray[k].split("\\|");
+									for(Integer l = 0 ; l < nextDetailPathArray.length ; l++){
+										nextLoreIdArray += nextDetailPathArray[l] + ",";
+									}
+								}
+								if(nextLoreIdArray.length() > 0){
+									nextLoreIdArray = nextLoreIdArray.substring(0, nextLoreIdArray.length() - 1);
+								}
+								successStep = "本知识点";
+								success = 1;
+							}
+						}else if(step.equals(2)){//表示关联知识点诊断完成/或者是某一级的关联知识点全部正确，需要进入学习阶段
+							String[] studyPathArr = ltmj.getStudyPath(path,pathChi);
+							studyPath = studyPathArr[0];
+							studyPathChi = studyPathArr[1];
+							String[] studyPath_new_arr = CommonTools.getStudyPath_new(studyPath,studyPathChi, currentLoreId);
+							studyPath = studyPath_new_arr[0];
+							studyPathChi = studyPath_new_arr[1];
+							//根据当前currentLoreId截取studyPath
+							option = 2;
+							if(access == 1){//当前关联知识典诊断全部正确，进入当前知识典的下级进行学习
+								Integer stepNumber = CommonTools.getCurrentStep(path.split(":"), currentLoreId);
+								successStep = stepNumber+"级关联知识点的诊断题";
+								success = 3;
+								//获取studyPath_new的第二组的数据中的第一组数据
+								nextLoreIdArray = studyPath.split(":")[1].split("\\|")[0];
+								if(nextLoreIdArray.equals(String.valueOf(basicLoreId))){
+									nextLoreStep = "本知识点";
+								}
+							}else{//学习完了所有的关联知识典，返回逆序进行全部学习access=2
+								Integer stepNumber = CommonTools.getCurrentStep(path.split(":"), currentLoreId);
+								successStep = stepNumber+"级关联知识点的诊断题";
+								nextLoreIdArray = String.valueOf(currentLoreId);
+								success = 2;
+							}
+						}else if(step.equals(3)){
+							option = 2;
+							success = 5;
+							nextLoreIdArray = String.valueOf(basicLoreId);
+							String[] studyPathArr = ltmj.getStudyPath(path,pathChi);
+							studyPath = studyPathArr[0];
+							studyPathChi = studyPathArr[1];
+						}
+					}else{//本阶段答题完成，但本知识点所有的关联性诊断未完成
+						//不会存在access=1的情况，1表示当前题全部正确，如果是全部正确的话，那么stepComplete>0
+						if(step == 3){//
+							if(access.equals(4)){//第一次进入再次诊断（列出再次诊断全部题）
+								option = 2;
+								success = 4;
+								nextLoreIdArray = String.valueOf(currentLoreId);
+								Integer stepNumber = CommonTools.getCurrentStep(path.split(":"), currentLoreId);
+								successStep = stepNumber+"级关联知识点的诊断题";
+								//获取studyPath_new的第二组的数据中的第一组数据
+								currentloreName_study = lm.getEntityById(Integer.parseInt(nextLoreIdArray)).getLoreName();
+								if(nextLoreIdArray.equals(String.valueOf(buffetId))){
+									nextLoreStep = "本知识点";
+								}
+							}else if(access.equals(41)){
+								option = 2;
+								success = 4;
+								nextLoreIdArray = String.valueOf(currentLoreId);
+								Integer stepNumber = CommonTools.getCurrentStep(path.split(":"), currentLoreId);
+								String currentLoreName = lm.getEntityById(currentLoreId).getLoreName();
+								successStep = stepNumber+"级关联知识点("+currentLoreName+")";
+								//获取studyPath_new的第二组的数据中的第一组数据
+								currentloreName_study = lm.getEntityById(Integer.parseInt(nextLoreIdArray)).getLoreName();
+								if(nextLoreIdArray.equals(String.valueOf(buffetId))){
+									nextLoreStep = "本知识点";
+								}
+							}else if(access.equals(3)){//之前没把再次诊断全部做对（列出做错的再次诊断题）
+								option = 2;
+								success = 4;
+								nextLoreIdArray = String.valueOf(currentLoreId);
+								Integer stepNumber = CommonTools.getCurrentStep(path.split(":"), currentLoreId);
+								String currentLoreName = lm.getEntityById(currentLoreId).getLoreName();
+								successStep = stepNumber+"级关联知识点("+currentLoreName+")";
+								//获取studyPath_new的第二组的数据中的第一组数据
+								currentloreName_study = lm.getEntityById(Integer.parseInt(nextLoreIdArray)).getLoreName();
+								if(nextLoreIdArray.equals(String.valueOf(buffetId))){
+									nextLoreStep = "本知识点";
+								}
+							}else if(access.equals(31)){//再次诊断完成提交后（31）
+								option = 2;
+								success = 2;
+								nextLoreIdArray = String.valueOf(currentLoreId);
+								Integer stepNumber = CommonTools.getCurrentStep(path.split(":"), currentLoreId);
+								String currentLoreName = lm.getEntityById(currentLoreId).getLoreName();
+								successStep = stepNumber+"级关联知识点("+currentLoreName+")";
+								//获取studyPath_new的第二组的数据中的第一组数据
+								currentloreName_study = lm.getEntityById(Integer.parseInt(nextLoreIdArray)).getLoreName();
+								if(nextLoreIdArray.equals(String.valueOf(buffetId))){
+									nextLoreStep = "本知识点";
+								}
+							}else if(access.equals(2)){//进入5步学习法
+								
+							}else if(access.equals(1)){//题做完，全部正确（需要定位到下一个知识点）
+								String studyPath_new = CommonTools.getCurrentStudyPath_new(studyPath, currentLoreId);//获取当前知识点以后的知识点
+								Integer currentLoreId_new = Integer.parseInt(studyPath_new.split(":")[0].split("\\|")[0]);
+								option = 2;
+								nextLoreIdArray = String.valueOf(currentLoreId_new);
+								success = 5;//进入5步学习法
+								//获取studyPath_new的第二组的数据中的第一组数据
+								currentloreName_study = lm.getEntityById(Integer.parseInt(nextLoreIdArray)).getLoreName();
+								if(nextLoreIdArray.equals(String.valueOf(buffetId))){
+									nextLoreStep = "本知识点";
+								}
+							}else if(access.equals(0)){//表示已经做了再次诊断题，但是没做完（将已做的题和未做的列出来）
+								//根据当前currentLoreId截取studyPath
+								option = 2;
+								nextLoreIdArray = String.valueOf(currentLoreId);
+								Integer stepNumber = CommonTools.getCurrentStep(path.split(":"), currentLoreId);
+								successStep = stepNumber+"级关联知识点";
+								success = 0;//再次诊断未做完
+								//获取studyPath_new的第二组的数据中的第一组数据
+								currentloreName_study = lm.getEntityById(Integer.parseInt(nextLoreIdArray)).getLoreName();
+								if(nextLoreIdArray.equals(String.valueOf(buffetId))){//同上，如何判定当前到了巴菲特的阶段
+									nextLoreStep = "本知识点";
+								}
+							}
+						}else if(step.equals(4)){//到4结束
+							if(access.equals(2)){//溯源完成
+								option = 2;
+								nextLoreIdArray = String.valueOf(buffetId);
+								success = 6;//进入巴菲特的解析
+							}
+						}else{
+							if(blsl.getAccess().equals(2)){//本阶段题部分正确
+								nextLoreIdArray = "";
+								option = 1;
+								String[] pathArray = path.split(":");
+								Integer currentI = CommonTools.getCurrentStep(pathArray, currentLoreId);
+								String[] currentPathArray = pathArray[currentI+1].split("\\|");
+								for(Integer i = 0 ; i < currentPathArray.length ; i++){
+									nextLoreIdArray += currentPathArray[i]+",";
+								}
+								if(nextLoreIdArray.length() > 0){
+									nextLoreIdArray = nextLoreIdArray.substring(0, nextLoreIdArray.length() - 1);
+								}
+								Integer stepNumber = CommonTools.getCurrentStep(path.split(":"), currentLoreId);
+								successStep = stepNumber+"级关联知识点的诊断题";
+								success = 1;
+							}else{//本阶段还未点最后的提交，access为0
+								nextLoreIdArray = "";
+								option = 1;
+								String[] pathArray = path.split(":");
+								Integer currentI = CommonTools.getCurrentStep(pathArray, currentLoreId);											
+								String[] currentPathArray = pathArray[currentI].split("\\|");
+								for(Integer i = 0 ; i < currentPathArray.length ; i++){
+									nextLoreIdArray += currentPathArray[i]+",";
+								}
+								if(nextLoreIdArray.length() > 0){
+									nextLoreIdArray = nextLoreIdArray.substring(0, nextLoreIdArray.length() - 1);
+								}
+								Integer stepNumber = CommonTools.getCurrentStep(path.split(":"), currentLoreId);
+								if(stepNumber == 0){
+									successStep = "本知识点";
+									success = 0;
+								}else{
+									success = 1;
+									successStep = stepNumber+"级关联知识点的诊断题";
+								}
+							}
+						}
+					}
+				}else if(blsl.getIsFinish().equals(2)){//表示全部完成
+					step = blsl.getStep();
+					//从detail表中获取指定logId的最后一条详情
+					List<BuffetLoreStudyDetailInfo> blsdList = blsdm.listLastInfoByLogId(studyLogId);
+					//获取最后（最近）的一条答题详情
+					BuffetLoreStudyDetailInfo blsdLastInfo = blsdList.get(0);
+					//获取该题对应的知识点编号
+					currentLoreId = blsdLastInfo.getLoreQuestion().getLoreInfo().getId();
+					studyPath = "";
+					if(step == 1){//表示是本知识典诊断时一次性全部正确通过
+						option = 1;
+						success = 2;
+						path = String.valueOf(currentLoreId);
+						nextLoreIdArray = String.valueOf(currentLoreId);
+					}else{//通过溯源完成的
+
+						option = 2;
+						nextLoreIdArray = "0";
+						successStep = "本知识点的诊断题";
+						success = 6;//全部完成
+					}
+				}
+			}
 		}
+		map.put("option", option);
+		map.put("totalMoney", totalMoney);
+		map.put("success", success);
+		map.put("path", path);
+		map.put("pathChi", pathChi);
+		map.put("studyPath", studyPath);
+		map.put("studyPathChi", studyPathChi);
+		map.put("nextLoreIdArray", nextLoreIdArray);
+		map.put("successStep", successStep);
+		map.put("nextLoreStep", nextLoreStep);
+		map.put("currentloreName_study", currentloreName_study);
+		map.put("access", access);
+		map.put("buffetId", buffetId);
+		map.put("buffetName", buffetName);
+		map.put("bsdId", bsdId);
+		
+		map.put("studyLogId", studyLogId);
+		map.put("isFinish", isFinish);
 		return null;
 	}
 }

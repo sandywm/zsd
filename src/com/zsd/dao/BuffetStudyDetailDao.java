@@ -1,4 +1,4 @@
-package com.zsd.dao.impl;
+package com.zsd.dao;
 
 import java.util.List;
 
