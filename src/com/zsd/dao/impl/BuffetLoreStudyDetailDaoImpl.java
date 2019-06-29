@@ -67,7 +67,7 @@ public class BuffetLoreStudyDetailDaoImpl implements BuffetLoreStudyDetailDao{
 		// TODO Auto-generated method stub
 		String hql = " from BuffetLoreStudyDetailInfo as blsd where blsd.buffetLoreStudyLogInfo.id = "+studyLogId;
 		hql += " and blsd.loreInfo.id = "+loreId + " and sd.loreQuestion.loreTypeName='"+loreTypeName+"' and blsd.completeTimes = "+completeTimes;
-		return sess.createQuery(hql).setFirstResult(0).setMaxResults(1).list();
+		return sess.createQuery(hql).list();
 	}
 
 	@Override

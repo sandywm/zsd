@@ -1856,7 +1856,7 @@ public class OnlineStudyAction extends DispatchAction {
 						}
 						map.put("lqList", list_d);
 					}else if(access == 3){
-						//获取最对的再次诊断题
+						//获取做对的再次诊断题
 						for(Integer i = 0 ; i < lqList_old.size() ; i++){
 							LoreQuestion lq = lqList_old.get(i);
 							Map<String,Object> map_d = new HashMap<String,Object>();
