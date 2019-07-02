@@ -48,7 +48,12 @@ layui.define(['form','buffetLoreMet'],function(exports){
     			$('.answerSelectImg ').show();
     		}
     	},
+    	convertEngToChi1 : function(value){
+    		//return value.replace(/,/g,"，").replace(/\s+/g,"").replace(/"/g,"”").replace(/'/g,"&#wmd;");
+    		return value.replace(/,/g,"，").replace(/\s+/g,"").replace(/\&quot;/g,'"').replace(/\&#39;/g,"'");
+    	},
     	initAnswerOption : function(answerType,answer1,answer2,answer3,answer4,answer5,answer6){
+    		var _this = this;
     		this.initAnswerSelectType(answer1);
     		var options,questionType = $('#tiganTypeInp').val();
     		if(questionType == "单选题"){
@@ -66,7 +71,7 @@ layui.define(['form','buffetLoreMet'],function(exports){
     		if(questionType == "单选题" || questionType == "多选题" || questionType == "填空选择题"){
     			if(answerType == "character"){//文字题型
         			if(answer1 != ""){
-        				this.getId("answSelInpTxt1").value = answer1;
+        				this.getId("answSelInpTxt1").value = _this.convertEngToChi1(answer1);
         				if(questionType == "填空选择题"){
         					options[0].alt = answer1;
         				}else{//单选题 多选题 判断题
@@ -74,7 +79,7 @@ layui.define(['form','buffetLoreMet'],function(exports){
         				}
         			}
         			if(answer2 != ""){
-        				this.getId("answSelInpTxt2").value = answer2;
+        				this.getId("answSelInpTxt2").value = _this.convertEngToChi1(answer2);
         				if(questionType == "填空选择题"){
         					options[1].alt = answer2;
         				}else{
@@ -82,7 +87,7 @@ layui.define(['form','buffetLoreMet'],function(exports){
         				}
         			}
         			if(answer3 != ""){
-        				this.getId("answSelInpTxt3").value = answer3;
+        				this.getId("answSelInpTxt3").value = _this.convertEngToChi1(answer3);
         				if(questionType == "填空选择题"){
         					options[2].alt = answer3;
         				}else{
@@ -90,7 +95,7 @@ layui.define(['form','buffetLoreMet'],function(exports){
         				}
         			}
         			if(answer4 != ""){
-        				this.getId("answSelInpTxt4").value = answer4;
+        				this.getId("answSelInpTxt4").value = _this.convertEngToChi1(answer4);
         				if(questionType == "填空选择题"){
         					options[3].alt = answer4;
         				}else{
@@ -98,7 +103,7 @@ layui.define(['form','buffetLoreMet'],function(exports){
         				}
         			}
         			if(answer5 != ""){
-        				this.getId("answSelInpTxt5").value = answer5;
+        				this.getId("answSelInpTxt5").value = _this.convertEngToChi1(answer5);
         				if(questionType == "填空选择题"){
         					options[4].alt = answer5;
         				}else{
@@ -106,7 +111,7 @@ layui.define(['form','buffetLoreMet'],function(exports){
         				}
         			}
         			if(answer6 != ""){
-        				this.getId("answSelInpTxt6").value = answer6;
+        				this.getId("answSelInpTxt6").value = _this.convertEngToChi1(answer6);
         				if(questionType == "填空选择题"){
         					options[5].alt = answer6;
         				}else{

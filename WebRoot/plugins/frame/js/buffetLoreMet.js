@@ -372,7 +372,8 @@ layui.define(['form','buffetLoreDOM'],function(exports){
     	},
     	//替换选项中存在单引号为自定义字符，双引号为中文状态下的双引号,并去除空格
     	convertEngToChi : function(value){
-    		return value.replace(/,/g,"，").replace(/\s+/g,"").replace(/"/g,"”").replace(/'/g,"&#wmd;");
+    		//return value.replace(/,/g,"，").replace(/\s+/g,"").replace(/"/g,"”").replace(/'/g,"&#wmd;");
+    		return value.replace(/,/g,"，").replace(/\s+/g,"").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
     	},
     	//单选 多选 填空选择题型下 文字类型下input选项blur事件
     	inputBlur : function(){
@@ -385,7 +386,7 @@ layui.define(['form','buffetLoreDOM'],function(exports){
     				var options = document.getElementsByName('answer_singel');
     				options[i-1].value = _this.convertEngToChi($.trim($(this).val()));
     				if(options[i-1].checked){//如果当前选项处于选中状态，input blur的时候需要更新下隐藏变量 ans_singleInp的值
-    					$('#ans_singleInp').val($.trim($(this).val()));
+    					$('#ans_singleInp').val(_this.convertEngToChi($.trim($(this).val())));
     				}
     				if($(this).val() == ''){
     					options[i-1].checked = false;

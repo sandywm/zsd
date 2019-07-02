@@ -731,19 +731,19 @@ public class LoreAction extends DispatchAction {
 					}
 				}
 				map_d.put("lqSub", lq.getQueSub());
-				String answerA = lq.getA().replaceAll("&#wmd;", "'");
-				String answerB = lq.getB().replaceAll("&#wmd;", "'");
-				String answerC = lq.getC().replaceAll("&#wmd;", "'");
-				String answerD = lq.getD().replaceAll("&#wmd;", "'");
-				String answerE = lq.getE().replaceAll("&#wmd;", "'");
-				String answerF = lq.getF().replaceAll("&#wmd;", "'");
+				String answerA = lq.getA();
+				String answerB = lq.getB();
+				String answerC = lq.getC();
+				String answerD = lq.getD();
+				String answerE = lq.getE();
+				String answerF = lq.getF();
 				map_d.put("anserA", answerA);
 				map_d.put("anserB", answerB);
 				map_d.put("anserC", answerC);
 				map_d.put("anserD", answerD);
 				map_d.put("anserE", answerE);
 				map_d.put("anserF", answerF);
-				map_d.put("lqAnswer", lq.getQueAnswer().replaceAll("&#wmd;", "'"));
+				map_d.put("lqAnswer", lq.getQueAnswer());
 				Integer queOptNum = 0;//问题选项
 				Integer answerNum = 0;//答案数量
 				if(queType.equals("单选题") || queType.equals("多选题") || queType.equals("填空选择题")){
@@ -859,7 +859,7 @@ public class LoreAction extends DispatchAction {
 	
 	
 	/**
-	 * 修改指定的知识点题库/题库子表
+	 * 修改指定的知识点题库/题库子表(将所有单引号修改成&#wmd;)
 	 * @author wm
 	 * @date 2019-5-10 上午11:10:52
 	 * @param mapping

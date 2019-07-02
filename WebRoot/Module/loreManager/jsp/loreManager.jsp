@@ -264,6 +264,10 @@
 						$('.addZhuti').hide();
 					});
 				},
+				convertEngToChi : function(value){
+		    		//return value.replace(/,/g,"，").replace(/\s+/g,"").replace(/"/g,"”").replace(/'/g,"&#wmd;");
+		    		return value.replace(/,/g,"，").replace(/\s+/g,"").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+		    	},
 				//提交
 				subLore : function(){
 					var _this = this;
@@ -631,8 +635,8 @@
 								var queTipsId = $('#tipsInp_' + loreType).val() == '' ? 0 : $('#tipsInp_' + loreType).val()	,
 									lexId  = $('#'+loreType+'_lexId').val();
 								if(tiganTypeInpVal == '单选题' || tiganTypeInpVal == '多选题' || tiganTypeInpVal == '填空选择题'){
-									var answerA = answSelTypeInpVal == 1 ? $('#answSelInpTxt1').val() : $('#answerSelect1').attr('currSrc'),
-											answerB = answSelTypeInpVal == 1 ? $('#answSelInpTxt2').val() : $('#answerSelect2').attr('currSrc'),
+									var answerA = answSelTypeInpVal == 1 ? _this.convertEngToChi($('#answSelInpTxt1').val()) : $('#answerSelect1').attr('currSrc'),
+											answerB = answSelTypeInpVal == 1 ? _this.convertEngToChi($('#answSelInpTxt2').val()) : $('#answerSelect2').attr('currSrc'),
 											answerC = answSelTypeInpVal == 1 ? $('#answSelInpTxt3').val() : $('#answerSelect3').attr('currSrc'),
 											answerD = answSelTypeInpVal == 1 ? $('#answSelInpTxt4').val() : $('#answerSelect4').attr('currSrc'),
 											answerE = answSelTypeInpVal == 1 ? $('#answSelInpTxt5').val() : $('#answerSelect5').attr('currSrc'),

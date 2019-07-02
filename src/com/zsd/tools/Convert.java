@@ -381,6 +381,16 @@ public class Convert {
 		}
 		return buildeClassDate;
 	}
+	
+	/**
+	 * 将转义字符转换成原始字符（&#39;转成英文的单引号,&quot;转成英文的双引号）
+	 * @author wm
+	 * @date 2019-7-2 上午11:01:09
+	 * @param specChar
+	 */
+	public static String replaceSpecChar(String specChar){
+		return specChar.replaceAll("&#39;", "'").replaceAll("&quot;", "\"");
+	}
 	public static void main(String[] args){
 		System.out.println(Convert.MoneyToCNFormat(157894.26));
 	}

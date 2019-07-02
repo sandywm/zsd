@@ -1802,7 +1802,7 @@ public class OnlineStudyAction extends DispatchAction {
 								break;
 							}
 						}
-						map_d.put("completeStatus", completeStatus);//做题状态(0:已做,1:未做)
+						map_d.put("completeStatus", completeStatus);//做题状态(0:未做,1:已做)
 						if(completeStatus.equals(0)){
 							if(lqType.equals("单选题") || lqType.equals("多选题") || lqType.equals("判断题") || lqType.equals("填空题") || lqType.equals("问答题")){
 								map_d.put("answerNum", 1);

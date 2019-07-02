@@ -517,6 +517,7 @@ public class BuffetStudyAction extends DispatchAction {
 		Integer access = -1;
 		Integer bsdId = CommonTools.getFinalInteger("bsdId", request);
 		String buffetName = "";
+		Integer buffetLorestudyLogId = 0;
 		BuffetStudyDetailInfo bsd = bsdm.getEntityById(bsdId);
 		if(bsd != null){
 			Integer basicLoreId = bsd.getBuffetSendInfo().getStudyLogInfo().getLoreInfo().getId();//发布巴菲特的学习的知识点编号
@@ -559,7 +560,7 @@ public class BuffetStudyAction extends DispatchAction {
 					nextLoreIdArray = nextLoreIdArray.substring(0, nextLoreIdArray.length() - 1);
 				}
 			}else{//表示已有记录
-				Integer buffetLorestudyLogId = blsl.getId();
+				buffetLorestudyLogId = blsl.getId();
 				isFinish = blsl.getIsFinish();
 				if(isFinish.equals(2)){//完成后不显示，无动作
 					
@@ -766,6 +767,7 @@ public class BuffetStudyAction extends DispatchAction {
 		map.put("pathType", pathType);
 		map.put("loreType", loreTypeName);
 		map.put("nextLoreIdArray", nextLoreIdArray);
+		map.put("buffetLorestudyLogId", buffetLorestudyLogId);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
@@ -1123,6 +1125,7 @@ public class BuffetStudyAction extends DispatchAction {
 		String loreType = Transcode.unescape_new1("loreType", request);
 		Integer loreId = 0;
 		Integer currentLoreId = 0;
+		String msg = "noInfo";
 		Map<String,Object> map = new HashMap<String,Object>();
 		BuffetStudyDetailInfo bsd = bsdm.getEntityById(bsdId);
 		if(bsd != null){
@@ -1133,6 +1136,7 @@ public class BuffetStudyAction extends DispatchAction {
 			List<BuffetLoreStudyDetailInfo> sdList_used = new ArrayList<BuffetLoreStudyDetailInfo>();
 			BuffetLoreStudyLogInfo blsl = blslm.getEntityByBsdId(bsdId);
 			Integer buffetStudyLogId = blsl.getId();
+			List<Object> list_d = new ArrayList<Object>();
 			if(buffetStudyLogId > 0){//表示是继续之前的操作
 				if(!nextLoreIdArray.equals("")){
 					 String[] nextLoreIdArray_1 = nextLoreIdArray.split(",");
@@ -1151,7 +1155,6 @@ public class BuffetStudyAction extends DispatchAction {
 					//获取该知识典所有类型为loreType的题型[0为题状态为有效状态]
 					lqList_old.addAll(lqm.listInfoByLoreId( CommonTools.getQuoteLoreId(currentLoreId), loreType, 0));//全部题列表
 				}
-				List<Object> list_d = new ArrayList<Object>();
 				if(loreType.equals("针对性诊断")){//将做过的题的情况和未做过的题都列出来
 					for(Integer i = 0 ; i < lqList_old.size() ; i++){
 						LoreQuestion lq = lqList_old.get(i);
@@ -1198,10 +1201,15 @@ public class BuffetStudyAction extends DispatchAction {
 						}
 						list_d.add(map_d);
 					}
-					map.put("lqList", list_d);
 				}else if(loreType.equals("巩固训练")){
 					 //封装巩固训练题
-					 
+					 if(lqList_old.size() > 0){
+						 for(Integer i = 0 ; i < lqList_old.size() ; i++){
+							LoreQuestion lq = lqList_old.get(i);
+							Map<String,Object> map_d = new HashMap<String,Object>();
+							
+						 }
+					 }
 				}else if(loreType.equals("再次诊断")){//再次诊断()：
 					//分三种情况(当是再次诊断时，不会有2和1的状态)
 					//0:诊断题未做完，下次的诊断题列表为做过的+剩下的题
@@ -1238,7 +1246,6 @@ public class BuffetStudyAction extends DispatchAction {
 							}
 							list_d.add(map_d);
 						}
-						map.put("lqList", list_d);
 					}else if(access == 3){
 						//获取做对的再次诊断题
 						for(Integer i = 0 ; i < lqList_old.size() ; i++){
@@ -1281,7 +1288,6 @@ public class BuffetStudyAction extends DispatchAction {
 								list_d.add(map_d);
 							}
 						}
-						map.put("lqList", list_d);
 					}else if(access == 0){
 						//表示题还未做完-显示答题正确的题和未做的题
 						//?需要思考（接下来的题库列表为正确的+最后一次做错的+剩下没做的）
@@ -1352,15 +1358,139 @@ public class BuffetStudyAction extends DispatchAction {
 								}
 							 }else{//表示是刚从5步学习法过来
 								//将已答题和数据库中的原题中未答的题组合在一起(巴菲特时用)
-								
+								 for(Integer i = 0 ; i < lqList_old.size() ; i++){
+									 LoreQuestion lq = lqList_old.get(i);
+									 Integer lqId_old = lq.getId();
+									 Map<String,Object> map_d = new HashMap<String,Object>();
+									 map_d.put("lqId", lqId_old);
+									Integer quoteLoreId = lq.getLoreInfo().getId();
+									String[] loreInfo = CommonTools.getRealLoreInfo(quoteLoreId, loreId);//当前题库的指定版本下的知识点
+									map_d.put("currLoreId", Integer.parseInt(loreInfo[0]));
+									map_d.put("currLoreName", loreInfo[1]);
+									String lqType = lq.getQueType();
+									map_d.put("lqType", lqType);
+									map_d.put("loreType", lq.getLoreTypeName());
+									map_d.put("lqSub", lq.getQueSub());
+									map_d.put("answerA", lq.getA());
+									map_d.put("answerB", lq.getB());
+									map_d.put("answerC", lq.getC());
+									map_d.put("answerD", lq.getD());
+									map_d.put("answerE", lq.getE());
+									map_d.put("answerF", lq.getF());
+									map_d.put("realAnswer", "");
+									map_d.put("myAnswer", "");
+									map_d.put("result", 0);//答案对错0:错，1:对
+									map_d.put("questionStep", 0);
+									Integer completeStatus = 0;//做题状态(0:已做,1:未做)
+									 for(Integer j = 0 ; j < sdList_used.size() ; j++){
+										 BuffetLoreStudyDetailInfo sd = sdList_used.get(j);
+										 LoreQuestion lq_use = sd.getLoreQuestion();
+										 if(lqId_old.equals(lq_use.getId())){
+											completeStatus = 1;
+											 //表示已做过
+											map_d.put("answerA", lq_use.getA());
+											map_d.put("answerB", lq_use.getB());
+											map_d.put("answerC", lq_use.getC());
+											map_d.put("answerD", lq_use.getD());
+											map_d.put("answerE", lq_use.getE());
+											map_d.put("answerF", lq_use.getF());
+											map_d.put("realAnswer", sd.getRealAnswer());
+											map_d.put("myAnswer", sd.getMyAnswer());
+											map_d.put("result", sd.getResult());//答案对错0:错，1:对
+											map_d.put("questionStep", sd.getQueStep());
+											break;
+										 }
+									 }
+									 map_d.put("completeStatus", completeStatus);//做题状态(0:未做,1:已做)
+									if(completeStatus.equals(0)){
+										if(lqType.equals("单选题") || lqType.equals("多选题") || lqType.equals("判断题") || lqType.equals("填空题") || lqType.equals("问答题")){
+											map_d.put("answerNum", 1);
+										}else{//填空选择题
+											map_d.put("answerNum", lq.getQueAnswer().split(",").length);
+										}
+									}
+									if(lqType.equals("填空题") || lqType.equals("问答题")){
+										map_d.put("realAnswer", lq.getQueAnswer());
+									}
+									list_d.add(map_d);
+								 }
 							 }
 						 }
-						 map.put("lqList", list_d);
 					}
 				}
-			}else{
-				
+			}else{//新的挑战
+				if(!nextLoreIdArray.equals("")){
+					 String[] nextLoreIdArray_1 = nextLoreIdArray.split(",");
+					 for(Integer i = 0 ; i < nextLoreIdArray_1.length ; i++){
+						 loreId = Integer.parseInt(nextLoreIdArray_1[i]);
+						 currentLoreId = loreId;
+						 //获取该知识典所有类型为loreType的题型[0为题状态为有效状态]
+						 lqList_old.addAll(lqm.listInfoByLoreId(CommonTools.getQuoteLoreId(loreId), loreType, 0));
+						 if(loreType.equals("再次诊断")){//获取上次的学习情况(根据logId+nextLoreIdArray+loreType)获取答题正确的题
+							 sdList_used.addAll(blsdm.listCurrentRightInfoByLogId(buffetStudyLogId, loreId, loreType));
+						 }else{//获取上次的学习情况(根据logId+nextLoreIdArray+loreType)
+							 sdList_used.addAll(blsdm.listExistInfoByOption(buffetStudyLogId, currentLoreId, loreType));
+						 }
+					 }
+				}
+				for(Integer i = 0 ; i < lqList_old.size() ; i++){
+					LoreQuestion lq = lqList_old.get(i);
+					Integer lqId_old = lq.getId();
+					Map<String,Object> map_d = new HashMap<String,Object>();
+					map_d.put("lqId", lqId_old);
+					Integer quoteLoreId = lq.getLoreInfo().getId();
+					String[] loreInfo = CommonTools.getRealLoreInfo(quoteLoreId, loreId);//当前题库的指定版本下的知识点
+					map_d.put("currLoreId", Integer.parseInt(loreInfo[0]));
+					map_d.put("currLoreName", loreInfo[1]);
+					String lqType = lq.getQueType();
+					map_d.put("lqType", lqType);
+					map_d.put("loreType", lq.getLoreTypeName());
+					map_d.put("lqSub", lq.getQueSub());
+					map_d.put("answerA", lq.getA());
+					map_d.put("answerB", lq.getB());
+					map_d.put("answerC", lq.getC());
+					map_d.put("answerD", lq.getD());
+					map_d.put("answerE", lq.getE());
+					map_d.put("answerF", lq.getF());
+					map_d.put("realAnswer", "");
+					map_d.put("myAnswer", "");
+					map_d.put("result", 0);//答案对错0:错，1:对
+					map_d.put("questionStep", 0);
+					Integer completeStatus = 0;//做题状态(0:已做,1:未做)
+					 for(Integer j = 0 ; j < sdList_used.size() ; j++){
+						 BuffetLoreStudyDetailInfo sd = sdList_used.get(j);
+						 LoreQuestion lq_use = sd.getLoreQuestion();
+						 if(lqId_old.equals(lq_use.getId())){
+							completeStatus = 1;
+							 //表示已做过
+							map_d.put("answerA", lq_use.getA());
+							map_d.put("answerB", lq_use.getB());
+							map_d.put("answerC", lq_use.getC());
+							map_d.put("answerD", lq_use.getD());
+							map_d.put("answerE", lq_use.getE());
+							map_d.put("answerF", lq_use.getF());
+							map_d.put("realAnswer", sd.getRealAnswer());
+							map_d.put("myAnswer", sd.getMyAnswer());
+							map_d.put("result", sd.getResult());//答案对错0:错，1:对
+							map_d.put("questionStep", sd.getQueStep());
+							break;
+						 }
+					 }
+					 map_d.put("completeStatus", completeStatus);//做题状态(0:未做,1:已做)
+					if(completeStatus.equals(0)){
+						if(lqType.equals("单选题") || lqType.equals("多选题") || lqType.equals("判断题") || lqType.equals("填空题") || lqType.equals("问答题")){
+							map_d.put("answerNum", 1);
+						}else{//填空选择题
+							map_d.put("answerNum", lq.getQueAnswer().split(",").length);
+						}
+					}
+					if(lqType.equals("填空题") || lqType.equals("问答题")){
+						map_d.put("realAnswer", lq.getQueAnswer());
+					}
+					list_d.add(map_d);
+				 }
 			}
+			map.put("lqList", list_d);
 		}
 		return null;
 	}
