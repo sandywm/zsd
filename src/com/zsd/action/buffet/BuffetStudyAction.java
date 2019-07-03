@@ -18,6 +18,7 @@ import org.apache.struts.actions.DispatchAction;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.sun.org.apache.bcel.internal.generic.RETURN;
 import com.zsd.action.base.Transcode;
 import com.zsd.factory.AppFactory;
 import com.zsd.module.BuffetLoreRelateInfo;
@@ -1667,6 +1668,26 @@ public class BuffetStudyAction extends DispatchAction {
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 当前阶段完成(最后提交动作)，修改指定logId的stepComplete,isFinish状态
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward updateLogStatus(ActionMapping mapping ,ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		BuffetStudyDetailManager bsdm = (BuffetStudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_STUDY_DETAIL_INFO);
+		BuffetLoreStudyLogManager blslm = (BuffetLoreStudyLogManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_LORE_STUDY_LOG_INFO);
+		BuffetLoreStudyDetailManager blsdm = (BuffetLoreStudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_LORE_STUDY_DETAIL_INFO);
+		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
+		UserManager um = (UserManager)AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
+		Integer bsdId = CommonTools.getFinalInteger("bsdId", request);//自助餐学习记录编号
 		return null;
 	}
 }
