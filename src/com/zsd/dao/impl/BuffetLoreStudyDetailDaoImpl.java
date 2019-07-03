@@ -87,4 +87,13 @@ public class BuffetLoreStudyDetailDaoImpl implements BuffetLoreStudyDetailDao{
 		return sess.createQuery(hql).list();
 	}
 
+	@Override
+	public Integer getQuestionNumberByOption(Session sess, Integer studyLogId,
+			Integer lqId) {
+		// TODO Auto-generated method stub
+		String hql = " from BuffetLoreStudyDetailInfo as blsd where blsd.buffetLoreStudyLogInfo.id = "+studyLogId+" and blsd.loreQuestion.id = "+lqId;
+		List<BuffetLoreStudyDetailInfo> l = sess.createQuery(hql).list();
+		return l.size();
+	}
+
 }

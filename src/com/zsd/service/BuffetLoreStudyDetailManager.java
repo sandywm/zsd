@@ -104,4 +104,14 @@ public interface BuffetLoreStudyDetailManager {
 	  * @throws WEBException
 	  */
 	 List<BuffetLoreStudyDetailInfo> listExistInfoByOption(Integer studyLogId,Integer currentLoreId,String loreTypeName)throws WEBException;
+	 
+	 /**
+	  * 根据学习记录编号和问题编号获取做该题的次数
+	  * @author wm
+	  * @date 2019-7-3 上午11:04:05
+	  * @param studyLogId 学习记录编号
+	  * @param lqId 知识点题库编号
+	  * @return
+	  */
+	 Integer getQuestionNumberByOption(Integer studyLogId,Integer lqId)throws WEBException;
 }

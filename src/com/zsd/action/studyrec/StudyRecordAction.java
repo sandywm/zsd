@@ -5,6 +5,8 @@
 package com.zsd.action.studyrec;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -20,7 +22,11 @@ import org.apache.struts.actions.DispatchAction;
 
 import com.zsd.factory.AppFactory;
 import com.zsd.module.BuffetSendInfo;
+import com.zsd.module.StudyDetailInfo;
 import com.zsd.module.StudyLogInfo;
+import com.zsd.module.json.LoreTreeMenuJson;
+import com.zsd.module.json.MyTreeNode;
+import com.zsd.page.PageConst;
 import com.zsd.service.BuffetSendInfoManager;
 import com.zsd.service.StudyDetailManager;
 import com.zsd.service.StudyLogManager;
@@ -63,6 +69,7 @@ public class StudyRecordAction extends DispatchAction {
 	 * @return
 	 * @throws Exception
 	 */
+	@SuppressWarnings("unchecked")
 	public ActionForward StuLogListByOption(ActionMapping mapping,
 			ActionForm form, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
@@ -70,11 +77,11 @@ public class StudyRecordAction extends DispatchAction {
 		BuffetSendInfoManager bsManager = (BuffetSendInfoManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_SEND_INFO);
 		Integer subId=CommonTools.getFinalInteger("subId", request);
 		Integer isfinish=CommonTools.getFinalInteger("isfinish", request);
-		Integer userId=CommonTools.getLoginUserId(request);
+		Integer userId=CommonTools.getLoginUserId(request);;
 		Integer logType=CommonTools.getFinalInteger("logType",request);//1:自学,2:家庭作业,3,自助餐 -1全部
 		String sDate=CommonTools.getFinalStr("sDate",request);
 		String eDate=CommonTools.getFinalStr("eDate",request);
-		if(sDate.equals("")){
+ 	    if(sDate.equals("")){
 			//表示是默认的当前日期前3天的记录(包含当前，所以-2)
 			sDate = CurrentTime.getFinalDate(CurrentTime.getStringDate(), -2);
 			eDate = CurrentTime.getStringDate();
@@ -85,7 +92,7 @@ public class StudyRecordAction extends DispatchAction {
 		}
 		Map<String,Object> map = new HashMap<String,Object>();
 		List<Object> list_d = new ArrayList<Object>();
-		Map<String,Object> map_d= new HashMap<String,Object>();
+		
 		Integer allStudyLog =0; //所有学习记录
 		Integer noFinishSl =0; //没有完成记录
 		Integer finishSl =0; //完成记录
@@ -96,6 +103,7 @@ public class StudyRecordAction extends DispatchAction {
 			allStudyLog += slList.size();
 			for (Iterator<StudyLogInfo> itr = slList.iterator(); itr.hasNext();) {
 				StudyLogInfo slInfo = (StudyLogInfo) itr.next();
+				Map<String,Object> map_d= new HashMap<String,Object>();
 				map_d.put("studyLogId", slInfo.getId()); //学习记录主键
 				map_d.put("subName", slInfo.getSubject().getSubName()); //学科名称
 				map_d.put("chapterName", slInfo.getLoreInfo().getChapter().getChapterName());//章节名称
@@ -111,6 +119,7 @@ public class StudyRecordAction extends DispatchAction {
 				map_d.put("step", slInfo.getStep());//答题阶段
 				map_d.put("stepCom", slInfo.getStepComplete());//阶段完成情况
 				map_d.put("logType", slInfo.getLogType()); //学习记录类型
+				map_d.put("studyTime", slInfo.getAddTime());
 				list_d.add(map_d);
 			}
 		}
@@ -120,10 +129,11 @@ public class StudyRecordAction extends DispatchAction {
 			allStudyLog += bslist.size();
 			for (Iterator<BuffetSendInfo> it = bslist.iterator(); it.hasNext();) {
 				BuffetSendInfo bsInfo = (BuffetSendInfo) it.next();
+				Map<String,Object> map_d= new HashMap<String,Object>();
 				map_d.put("studyLogId", bsInfo.getStudyLogInfo().getId());
 				map_d.put("subName", bsInfo.getStudyLogInfo().getSubject().getSubName());
 				map_d.put("chapterName", bsInfo.getStudyLogInfo().getLoreInfo().getChapter().getChapterName());
-				map_d.put("loreName", bsInfo.getStudyLogInfo().getLoreInfo().getId());
+				map_d.put("loreId", bsInfo.getStudyLogInfo().getLoreInfo().getId());
 				map_d.put("loreName", bsInfo.getStudyLogInfo().getLoreInfo().getLoreName());
 				Integer comSta = bsInfo.getStudyResult();
 				if(comSta.equals(1)){
@@ -134,9 +144,12 @@ public class StudyRecordAction extends DispatchAction {
 				map_d.put("isFinish", bsInfo.getStudyResult());
 				map_d.put("step", bsInfo.getComNumber());
 				map_d.put("stepCom", bsInfo.getSendNumber());
+				map_d.put("studyTime", bsInfo.getSendTime());
 				list_d.add(map_d);
 			}
 		}
+		SortClass sort = new SortClass();
+		Collections.sort(list_d, sort);
 		
 		if(allStudyLog > 0){
 			 comRate = String.format("%.2f", (double)finishSl * 100 / allStudyLog) + "%";//完成率
@@ -149,6 +162,19 @@ public class StudyRecordAction extends DispatchAction {
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
+	
+	 @SuppressWarnings("rawtypes")
+	 private class SortClass implements Comparator {
+	    @SuppressWarnings("unchecked")
+		@Override
+	    public int compare(Object obj0, Object obj1) {
+	      Map<String, String> map0 = (Map) obj0;
+	      Map<String, String> map1 = (Map) obj1;
+	      int flag = map0.get("studyTime").toString().compareTo(map1.get("studyTime").toString());
+	      return -flag; // 不取反，则按正序排列
+	    }
+	 }
+	
 	/**
 	 * 查看指定学习记录结果
 	 * @author zdf
@@ -173,6 +199,7 @@ public class StudyRecordAction extends DispatchAction {
 		Integer score = slInfo.getFinalScore();
 		String sysAssess = slInfo.getSysAssess();
 		String teaAssess =slInfo.getTeaAssess();
+		Integer loreId= slInfo.getLoreInfo().getId();
 		String step1="";
 		String step2="";
 		String step3="";
@@ -266,6 +293,7 @@ public class StudyRecordAction extends DispatchAction {
 		map.put("teaAssess", teaAssess);
 		map.put("finalScore", finalScore);
 		map.put("stuLogId", stuLogId);
+		map.put("loreId", loreId);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
@@ -285,21 +313,63 @@ public class StudyRecordAction extends DispatchAction {
 			HttpServletResponse response) throws Exception {
 		StudyDetailManager sdManager = (StudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_STUDY_DETAIL_INFO);
 		Integer stuLogId=CommonTools.getFinalInteger("stuLogId", request);//学习记录编号
+		Integer loreId=CommonTools.getFinalInteger("loreId", request);//学习记录编号
+		Integer pNo=CommonTools.getFinalInteger("pageNo", request);//学习记录编号
 		String loreTypeName=CommonTools.getFinalStr("loreTypeName",request);//知识点类型
-		Integer pageNo;// 页数
 		Integer pageSize = 10; //多少条记录
-		if(!loreTypeName.equals("")){
+		
+		Map<String,Object> map = new HashMap<String,Object>();
+		List<Object> list_d = new ArrayList<Object>();
+		
+		
+		if(!loreTypeName.equals("") && !loreTypeName.equals("gl")){
 			if(loreTypeName.equals("zdx")){
 				loreTypeName = "针对性诊断";
 			}else if(loreTypeName.equals("zc")){
 				loreTypeName = "再次诊断";
 			}else if(loreTypeName.equals("gg")){
 				loreTypeName = "巩固训练";
-			}else if(loreTypeName.equals("gl")){
-				loreTypeName = "关联诊断结果";
 			}
+			
+			Integer count = sdManager.getInfoByOption(stuLogId, loreTypeName);//总记录数
+			Integer countPage =PageConst.getPageCount(count, pageSize);//总页数
+			Integer pageNo=PageConst.getPageNo(pNo, countPage);//当前页
+			
+			List<StudyDetailInfo> sdList=	sdManager.listInfoByOption(stuLogId, loreTypeName, pageNo, pageSize);
+			for (Iterator<StudyDetailInfo> itr = sdList.iterator(); itr.hasNext();) {
+				StudyDetailInfo sdInfo = (StudyDetailInfo) itr.next();
+				Map<String,Object> map_d= new HashMap<String,Object>();
+				map_d.put("queSub",sdInfo.getLoreQuestion().getQueSub());
+				if(!sdInfo.getA().equals("")){
+					map_d.put("A", sdInfo.getA());	
+				}
+				if(!sdInfo.getB().equals("")){
+					map_d.put("B", sdInfo.getB());
+				}
+				if(!sdInfo.getC().equals("")){
+					map_d.put("C", sdInfo.getC());
+				}
+				if(!sdInfo.getD().equals("")){
+					map_d.put("D", sdInfo.getD());
+				}
+				if(!sdInfo.getE().equals("")){
+					map_d.put("E", sdInfo.getE());
+				}
+				if(!sdInfo.getF().equals("")){
+					map_d.put("F", sdInfo.getF());
+				}
+				map_d.put("myAns", sdInfo.getMyAnswer());
+				map_d.put("realAns", sdInfo.getRealAnswer());
+				list_d.add(map_d);
+			}
+			map.put("sdList", list_d);
+		}else if(loreTypeName.equals("gl")&& !loreTypeName.equals("")){
+			//loreTypeName = "关联诊断结果";
+			List<MyTreeNode> loreTreeList = new LoreTreeMenuJson().showTree(loreId, stuLogId, "desc");
+			map.put("sdList", loreTreeList);
 		}
-		//List<StudyDetailInfo> sdList=	sdManager.listInfoByOption(stuLogId, loreTypeName, pageNo, pageSize);
-		return  null;
+		CommonTools.getJsonPkg(map, response);
+		return null;
 	}
+	
 }

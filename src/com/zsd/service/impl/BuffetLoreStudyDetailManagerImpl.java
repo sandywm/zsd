@@ -7,17 +7,12 @@ import org.hibernate.Transaction;
 
 import com.zsd.dao.BuffetLoreStudyDetailDao;
 import com.zsd.dao.BuffetLoreStudyLogDao;
-import com.zsd.dao.BuffetStudyDetailDao;
 import com.zsd.dao.LoreInfoDao;
 import com.zsd.dao.LoreQuestionDao;
-import com.zsd.dao.SubjectDao;
 import com.zsd.dao.UserDao;
 import com.zsd.exception.WEBException;
 import com.zsd.factory.DaoFactory;
 import com.zsd.module.BuffetLoreStudyDetailInfo;
-import com.zsd.module.BuffetLoreStudyLogInfo;
-import com.zsd.module.LoreInfo;
-import com.zsd.module.LoreQuestion;
 import com.zsd.service.BuffetLoreStudyDetailManager;
 import com.zsd.tools.HibernateUtil;
 import com.zsd.util.Constants;
@@ -161,6 +156,22 @@ public class BuffetLoreStudyDetailManagerImpl implements BuffetLoreStudyDetailMa
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 			throw new WEBException("根据学习记录编号获取有无当前知识点指定类型的答题记录时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public Integer getQuestionNumberByOption(Integer studyLogId, Integer lqId) throws WEBException{
+		// TODO Auto-generated method stub
+		try {
+			blsdDao = (BuffetLoreStudyDetailDao) DaoFactory.instance(null).getDao(Constants.DAO_BUFFET_LORE_STUDY_DETAIL_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return blsdDao.getQuestionNumberByOption(sess, studyLogId, lqId);
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			throw new WEBException("根据学习记录编号和问题编号获取做该题的次数时出现异常!");
 		} finally{
 			HibernateUtil.closeSession();
 		}

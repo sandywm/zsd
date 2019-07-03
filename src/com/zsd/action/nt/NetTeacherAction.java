@@ -358,9 +358,9 @@ public class NetTeacherAction extends DispatchAction {
 			Integer pageNo = CommonTools.getFinalInteger("page", request);//等同于pageNo
 			List<NetTeacherTxRecord> ntxlist= ntxManager.listnTxReCordByNtId(ntId, pageNo, pageSize);
 			List<Object> list_d = new ArrayList<Object>();
-			Map<String,Object> map_d = new HashMap<String,Object>();
 			for (Iterator<NetTeacherTxRecord> itr = ntxlist.iterator(); itr.hasNext();) {
 				NetTeacherTxRecord ntx = (NetTeacherTxRecord) itr.next();
+				Map<String,Object> map_d = new HashMap<String,Object>();
 				map_d.put("id", ntx.getId());
 				map_d.put("txMoney", ntx.getTxMoney());
 				map_d.put("txDate", ntx.getTxDate());
@@ -410,9 +410,9 @@ public class NetTeacherAction extends DispatchAction {
 					 Integer pageSize = PageConst.getPageSize(String.valueOf(request.getParameter("limit")), 10);//等同于pageSize
 					 Integer pageNo = CommonTools.getFinalInteger("page", request);//等同于pageNo
 					 List<StudentPayOrderInfo> sordeList = sOrdeManager.listSpayOrderInfoByOpt(ntsId, pageNo, pageSize);
-					 Map<String,Object> map_d = new HashMap<String,Object>();
 						for (Iterator<StudentPayOrderInfo> itrs = sordeList.iterator(); itrs.hasNext();) {
 							StudentPayOrderInfo sorder = (StudentPayOrderInfo) itrs.next();
+							Map<String,Object> map_d = new HashMap<String,Object>();
 							map_d.put("stuName", sorder.getUser().getRealName());
 							map_d.put("payDate", sorder.getAddDate());
 							map_d.put("payMoney", sorder.getPayMoney());
@@ -455,9 +455,9 @@ public class NetTeacherAction extends DispatchAction {
 			Integer pageNo = CommonTools.getFinalInteger("page", request);//等同于pageNo
 			List<NetTeacherReturnRecord> ntrlist= ntrManager.listnTrRecordByNtId(ntId, pageNo, pageSize);
 			List<Object> list_d = new ArrayList<Object>();
-			Map<String,Object> map_d = new HashMap<String,Object>();
 			for (Iterator<NetTeacherReturnRecord> itr = ntrlist.iterator(); itr.hasNext();) {
 				NetTeacherReturnRecord ntr = (NetTeacherReturnRecord) itr.next();
+				Map<String,Object> map_d = new HashMap<String,Object>();
 				map_d.put("id", ntr.getId());
 				map_d.put("stuName", ntr.getUser().getRealName());
 				map_d.put("reMoney", ntr.getReturnMoney());
@@ -502,9 +502,9 @@ public class NetTeacherAction extends DispatchAction {
 			Integer pageNo = CommonTools.getFinalInteger("page", request);//等同于pageNo
 			List<NetTeacherStudent> ntslist = ntsManager.listNTByStuNameOrBindSta(ntId, paySta, bindFlag, stuName, pageNo, pageSize);
 			List<Object> list_d = new ArrayList<Object>();
-			Map<String,Object> map_d = new HashMap<String,Object>();
 			for (Iterator<NetTeacherStudent> itr = ntslist.iterator(); itr.hasNext();) {
 				NetTeacherStudent nts = (NetTeacherStudent) itr.next();
+				Map<String,Object> map_d = new HashMap<String,Object>();
 				map_d.put("id", nts.getId());
 				map_d.put("stuNmae", nts.getUser().getRealName());
 				map_d.put("sectDate", nts.getBindDate()+"至"+nts.getEndDate());

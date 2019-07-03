@@ -136,14 +136,14 @@ public class StudyDetailDaoImpl implements StudyDetailDao{
 		if (offset < 0) {
 			offset = 0;
 		}
-		String hql = " from StudyDetailInfo as sd where sd.studyLogInfo.id = "+studyLogId+"and sd.loreQuestion.loreTypeName='"+typeName+"'";
+		String hql = " from StudyDetailInfo as sd where sd.studyLogInfo.id = "+studyLogId+" and sd.loreQuestion.loreTypeName='"+typeName+"'";
 		return 	sess.createQuery(hql).setFirstResult(offset).setMaxResults(pageSize).list();
 	
 	}
 
 	@Override
 	public Integer getInfoByOption(Session sess, Integer studyLogId,String typeName) {
-		String hql = "select count(sd.id) from StudyDetailInfo as sd where sd.studyLogInfo.id = "+studyLogId+"and sd.loreQuestion.loreTypeName='"+typeName+"'";
+		String hql = "select count(sd.id) from StudyDetailInfo as sd where sd.studyLogInfo.id = "+studyLogId+" and sd.loreQuestion.loreTypeName='"+typeName+"'";
 		Object countObj = sess.createQuery(hql).uniqueResult();
 		return CommonTools.longToInt(countObj);
 	}

@@ -2180,7 +2180,7 @@ public class OnlineStudyAction extends DispatchAction {
 		StudyTaskManager stm = (StudyTaskManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_TASK_INFO);
 		Integer loreId = CommonTools.getFinalInteger("loreId", request);//最初的知识点
 		Integer studyLogId = CommonTools.getFinalInteger("studyLogId", request);
-		Integer currentLoreId = CommonTools.getFinalInteger("currentLoreId", request);//当前做题的知识点编号
+//		Integer currentLoreId = CommonTools.getFinalInteger("currentLoreId", request);//当前做题的知识点编号
 		String answerOptionArrayStr = Transcode.unescape_new1("answerOptionArray", request);//做题时的答案选项
 		Integer questionStep = CommonTools.getFinalInteger("questionStep",request);//题的顺序
 		String dataBaseAnswerChar = "";
@@ -2188,6 +2188,7 @@ public class OnlineStudyAction extends DispatchAction {
 		Integer lqId = CommonTools.getFinalInteger("lqId", request);
 		String loreTaskName = Transcode.unescape_new1("loreTaskName",request);
 		Integer logType = CommonTools.getFinalInteger("logType", request);//1:自学（默认不传）,2:家庭作业
+		Integer currentLoreId = 0;
 		if(logType.equals(0)){
 			logType = 1;
 		}
@@ -2212,6 +2213,9 @@ public class OnlineStudyAction extends DispatchAction {
 				String queType = lq.getQueType();
 				String queType2 = lq.getQueType2();
 				String loreType = lq.getLoreTypeName();
+				Integer quoteLoreId = lq.getLoreInfo().getId();
+				String[] loreInfo = CommonTools.getRealLoreInfo(quoteLoreId, loreId);//当前题库的指定版本下的知识点
+				currentLoreId = Integer.parseInt(loreInfo[0]);
 				if(loreType.equals("巩固训练")){//巩固训练不检查
 					if(studyLogId > 0){//存在学习记录
 						StudyLogInfo sl = slm.getEntityById(studyLogId);
