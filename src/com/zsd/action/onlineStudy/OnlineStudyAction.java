@@ -2355,83 +2355,83 @@ public class OnlineStudyAction extends DispatchAction {
 							}else{
 								updateFlag = slm.updateStudyLog(studyLogId, step, stepComplete, isFinish, oldStepMoney, 0, currTime);
 							}
-							if(studyLogId > 0 || updateFlag == true){
-								//step2:向detail表中插入一条记录并查看该studyLogId+loreQuestionId有没有记录
-								List<StudyDetailInfo> sdList = sdm.listInfoByOpt(studyLogId, lqId);
-								Integer questionNumber_curr = sdList.size() + 1;
-								sdm.addStudyDetail(stuId, studyLogId, currentLoreId, lqId, questionStep, dataBaseAnswerChar, 
-										result, currTime, myAnswer, answerOptionStr[0], answerOptionStr[1], answerOptionStr[2]
-										,answerOptionStr[3], answerOptionStr[4], answerOptionStr[5], questionNumber_curr);
-								//此处增加学生学习、全平台统计---------------------start
-								//A：统计学生学习情况---------------------
-								//根据学习时间、学生编号、学科编号获取学生学习统计信息
-								boolean liaojieSuccFlag = false;
-								boolean lijieSuccFlag = false;
-								boolean yySuccFlag = false;
-								boolean liaojieSuccFlag_all = false;
-								boolean lijieSuccFlag_all = false;
-								boolean yySuccFlag_all = false;
-								List<StudyStuTjInfo> sstList = ssm.listInfoByOption(stuId, subjectId, currDate);
-								if(sstList.size() > 0){//已存在
-									ssm.updateSSTById(sstList.get(0).getId(), queType2, liaojieSuccFlag, lijieSuccFlag, yySuccFlag);
-								}else{//不存在
-									ssm.addSST(currDate, stuId ,subjectId, queType2, result);
+						}
+						if(studyLogId > 0 || updateFlag == true){
+							//step2:向detail表中插入一条记录并查看该studyLogId+loreQuestionId有没有记录
+							List<StudyDetailInfo> sdList = sdm.listInfoByOpt(studyLogId, lqId);
+							Integer questionNumber_curr = sdList.size() + 1;
+							sdm.addStudyDetail(stuId, studyLogId, currentLoreId, lqId, questionStep, dataBaseAnswerChar, 
+									result, currTime, myAnswer, answerOptionStr[0], answerOptionStr[1], answerOptionStr[2]
+									,answerOptionStr[3], answerOptionStr[4], answerOptionStr[5], questionNumber_curr);
+							//此处增加学生学习、全平台统计---------------------start
+							//A：统计学生学习情况---------------------
+							//根据学习时间、学生编号、学科编号获取学生学习统计信息
+							boolean liaojieSuccFlag = false;
+							boolean lijieSuccFlag = false;
+							boolean yySuccFlag = false;
+							boolean liaojieSuccFlag_all = false;
+							boolean lijieSuccFlag_all = false;
+							boolean yySuccFlag_all = false;
+							List<StudyStuTjInfo> sstList = ssm.listInfoByOption(stuId, subjectId, currDate);
+							if(sstList.size() > 0){//已存在
+								ssm.updateSSTById(sstList.get(0).getId(), queType2, liaojieSuccFlag, lijieSuccFlag, yySuccFlag);
+							}else{//不存在
+								ssm.addSST(currDate, stuId ,subjectId, queType2, result);
+							}
+							
+							//B:统计全平台学习情况---------------------
+							List<StudyAllTjInfo> satList = sam.listInfoByOption(currDate, subjectId);
+							if(satList.size() > 0){//已存在
+								sam.updateSATById(satList.get(0).getId(), queType2, liaojieSuccFlag_all, lijieSuccFlag_all, yySuccFlag_all);
+							}else{//不存在
+								sam.addSAT(currDate, subjectId, queType2, result);
+							}
+							//---------------------end
+							
+							//修改用户中的经验和金币数（答一题增加1经验，答对一题再增加1经验）
+							Integer coin = 0;
+							Integer experience = Constants.EXPERIENCE;
+							if(result.equals(1)){
+								if(queType2.equals("了解")){
+									liaojieSuccFlag = true;
+									liaojieSuccFlag_all = true;
+								}else if(queType2.equals("理解")){
+									lijieSuccFlag = true;
+									lijieSuccFlag_all = true;
+								}else if(queType2.equals("应用")){
+									yySuccFlag = true;
+									yySuccFlag_all = true;
 								}
 								
-								//B:统计全平台学习情况---------------------
-								List<StudyAllTjInfo> satList = sam.listInfoByOption(currDate, subjectId);
-								if(satList.size() > 0){//已存在
-									sam.updateSATById(satList.get(0).getId(), queType2, liaojieSuccFlag_all, lijieSuccFlag_all, yySuccFlag_all);
-								}else{//不存在
-									sam.addSAT(currDate, subjectId, queType2, result);
+								if(loreType.equals("巩固训练")){//巩固训练不计分
+									coin = 0;
+									experience = 0;
+								}else{
+									coin = Constants.COIN;
+									experience += Constants.EXPERIENCE;
 								}
-								//---------------------end
-								
-								//修改用户中的经验和金币数（答一题增加1经验，答对一题再增加1经验）
-								Integer coin = 0;
-								Integer experience = Constants.EXPERIENCE;
-								if(result.equals(1)){
-									if(queType2.equals("了解")){
-										liaojieSuccFlag = true;
-										liaojieSuccFlag_all = true;
-									}else if(queType2.equals("理解")){
-										lijieSuccFlag = true;
-										lijieSuccFlag_all = true;
-									}else if(queType2.equals("应用")){
-										yySuccFlag = true;
-										yySuccFlag_all = true;
-									}
-									
-									if(loreType.equals("巩固训练")){//巩固训练不计分
-										coin = 0;
-										experience = 0;
-									}else{
-										coin = Constants.COIN;
-										experience += Constants.EXPERIENCE;
-									}
-								}
-								
-								//插入数据到studyTask表中
-								//获取指定学习记录的学习任务描述
-								if(!loreType.equals("巩固训练")){//巩固训练不增加至studyTask
-									List<StudyTaskInfo>  stList = stm.listTaskInfoByOpt(studyLogId, "");
-									Integer number = 0;
-									if(stList.size() == 0){//第一次做题
-										number = 1;
+							}
+							
+							//插入数据到studyTask表中
+							//获取指定学习记录的学习任务描述
+							if(!loreType.equals("巩固训练")){//巩固训练不增加至studyTask
+								List<StudyTaskInfo>  stList = stm.listTaskInfoByOpt(studyLogId, "");
+								Integer number = 0;
+								if(stList.size() == 0){//第一次做题
+									number = 1;
+									stm.addSTask(number, studyLogId, loreTaskName, coin);
+								}else{//表示已经有该题的答题记录了
+									List<StudyTaskInfo>  stList_1 = stm.listTaskInfoByOpt(studyLogId, loreTaskName);
+									if(stList_1.size() > 0){
+										//修改指定studyLogId的记录的金币和时间
+										Integer stId = stList_1.get(0).getId();
+										stm.updateCoinInfoById(stId, coin);
+									}else{//新一级知识点的题（需要新增答题学习任务）
+										number = stList.get(0).getTaskNum() + 1;
 										stm.addSTask(number, studyLogId, loreTaskName, coin);
-									}else{//表示已经有该题的答题记录了
-										List<StudyTaskInfo>  stList_1 = stm.listTaskInfoByOpt(studyLogId, loreTaskName);
-										if(stList_1.size() > 0){
-											//修改指定studyLogId的记录的金币和时间
-											Integer stId = stList_1.get(0).getId();
-											stm.updateCoinInfoById(stId, coin);
-										}else{//新一级知识点的题（需要新增答题学习任务）
-											number = stList.get(0).getTaskNum() + 1;
-											stm.addSTask(number, studyLogId, loreTaskName, coin);
-										}
 									}
-									um.updateUser(stuId, coin, experience, 0, 0);
 								}
+								um.updateUser(stuId, coin, experience, 0, 0);
 							}
 						}
 					}
