@@ -79,6 +79,9 @@ public class Constants {
 	public static final String WEB_BUFFET_LORE_STUDY_DETAIL_INFO = "buffet_lore_study_log_info_Web";
 	public static final String WEB_TOWN_INFO = "town_info_Web";
 	public static final String WEB_APPLY_CLASS_INFO = "apply_class_info_Web";
+	public static final String WEB_BUFFET_MIND_RELATION_INFO = "buffet_mind_relation_info_Web";
+	public static final String WEB_BUFFET_ABILITY_RELATION_INFO = "buffet_ability_relation_info_Web";
+	
 	
 	//-------------------DAO-------------------------//
 	public static final String DAO_EDITION_INFO = "edition_Dao";
@@ -130,5 +133,7 @@ public class Constants {
 	public static final String DAO_BUFFET_LORE_STUDY_DETAIL_INFO = "buffet_lore_study_log_info_Dao";
 	public static final String DAO_TOWN_INFO = "town_info_Dao";
 	public static final String DAO_APPLY_CLASS_INFO = "apply_class_info_Dao";
+	public static final String DAO_BUFFET_MIND_RELATION_INFO = "buffet_mind_relation_info_Dao";
+	public static final String DAO_BUFFET_ABILITY_RELATION_INFO = "buffet_ability_relation_info_Dao";
 }
 

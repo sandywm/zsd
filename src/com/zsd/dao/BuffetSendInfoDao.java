@@ -67,7 +67,16 @@ public interface BuffetSendInfoDao {
 	 * @return
 	 */
 	List<BuffetSendInfo> findBsInfoByOption(Session sess, Integer stuId,Integer subId, Integer isfinish, String starttime, String endtime);
-	
+	/**
+	 * 根据主键查询自助餐发送信息
+	 * @author zdf
+	 * 2019-7-1 下午04:51:52
+	 * @param sess
+	 * @param id 主键
+	 * @return
+	 */
+	List<BuffetSendInfo> findBsInfoById(Session sess,Integer id);
+	 
 	/**
 	 * 根据指定学生,学科,完成状态,时间段分页获取自助餐发布信息
 	 * @author wm

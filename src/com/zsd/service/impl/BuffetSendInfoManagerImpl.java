@@ -7,13 +7,10 @@ import org.hibernate.Transaction;
 
 import com.zsd.dao.BuffetSendInfoDao;
 import com.zsd.dao.StudyLogDao;
-import com.zsd.dao.SubjectDao;
 import com.zsd.dao.UserDao;
 import com.zsd.exception.WEBException;
 import com.zsd.factory.DaoFactory;
 import com.zsd.module.BuffetSendInfo;
-import com.zsd.module.StudyLogInfo;
-import com.zsd.module.User;
 import com.zsd.service.BuffetSendInfoManager;
 import com.zsd.tools.CurrentTime;
 import com.zsd.tools.HibernateUtil;
@@ -40,6 +37,20 @@ public class BuffetSendInfoManagerImpl implements BuffetSendInfoManager {
 			HibernateUtil.closeSession();
 		}
 	}
+	@Override
+	public List<BuffetSendInfo> listBsInfoById(Integer Id) throws WEBException {
+		try {
+			bsDao = (BuffetSendInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_BUFFET_SEND_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return bsDao.findBsInfoById(sess, Id);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("根据主键获取自助餐发布信息时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+}
+
 	@Override
 	public List<BuffetSendInfo> listPageInfoByOption(Integer stuId,
 			Integer subId, Integer isfinish, String sDate, String eDate,
@@ -106,5 +117,6 @@ public class BuffetSendInfoManagerImpl implements BuffetSendInfoManager {
 			HibernateUtil.closeSession();
 		}
 	}
+
 
 }

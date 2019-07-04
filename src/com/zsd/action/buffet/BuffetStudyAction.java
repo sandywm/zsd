@@ -43,6 +43,7 @@ import com.zsd.service.JoinLoreRelationManager;
 import com.zsd.service.LoreInfoManager;
 import com.zsd.service.LoreQuestionManager;
 import com.zsd.service.StudyDetailManager;
+import com.zsd.service.StudyMapManager;
 import com.zsd.service.UserManager;
 import com.zsd.tools.CommonTools;
 import com.zsd.tools.Convert;
@@ -1685,9 +1686,120 @@ public class BuffetStudyAction extends DispatchAction {
 		BuffetStudyDetailManager bsdm = (BuffetStudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_STUDY_DETAIL_INFO);
 		BuffetLoreStudyLogManager blslm = (BuffetLoreStudyLogManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_LORE_STUDY_LOG_INFO);
 		BuffetLoreStudyDetailManager blsdm = (BuffetLoreStudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_LORE_STUDY_DETAIL_INFO);
-		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
-		UserManager um = (UserManager)AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
 		Integer bsdId = CommonTools.getFinalInteger("bsdId", request);//自助餐学习记录编号
+		Integer stepComplete = Integer.parseInt(request.getParameter("stepComplete"));
+		Integer isFinish = CommonTools.getFinalInteger("isFinish", request);
+		Integer access = CommonTools.getFinalInteger("access", request);
+		Integer step = CommonTools.getFinalInteger("step", request);
+		String submitType = CommonTools.getFinalStr("type", request);;//study(巩固训练),diagnosis(针对性诊断和再次诊断)
+		Integer currentLoreId = CommonTools.getFinalInteger("currentLoreId", request);//当前做题的知识点编号
+		Integer loreId = 0;//自助餐题库属于那个知识点名下（指定出版社下）
+		BuffetLoreStudyLogInfo blsl = blslm.getEntityByBsdId(bsdId);
+		Map<String,String> map = new HashMap<String,String>();
+		String msg = "error";
+		Integer studyLogId = 0;
+		Integer taskNumber = 0;
+		Integer traceCompleteFlag = -1;
+		Integer currCompleteFlag = -1;
+		if(blsl != null){
+			msg = "success";
+			studyLogId = blsl.getId();
+			LoreInfo lore_init = blsl.getBuffetStudyDetailInfo().getBuffetSendInfo().getStudyLogInfo().getLoreInfo();//获取当初发送自助餐的学习记录中的知识点
+			loreId = lore_init.getId();
+			taskNumber = blsl.getTaskNumber() + 1;
+			BuffetQueInfo bq = blsl.getBuffetStudyDetailInfo().getBuffetQueInfo();
+			Integer buffetId = bq.getId();
+			String buffetName = bq.getTitle();
+			if(step.equals(3)){//再次诊断时用
+				if(access.equals(1)){//再次诊断全部正确
+					String[] studyPath = CommonTools.getBuffetLorePath(buffetId, buffetName, loreId, "sutdy");
+					String studyPath_new = CommonTools.getCurrentStudyPath_new(studyPath[0], currentLoreId);
+					if(studyPath_new.split(":").length == 1){//表示当前知识点是本知识点之前的最后一个知识点
+						//表示当前层完成，stepComplete = 1;
+						stepComplete = 0;
+						access = 2;
+						step = 4;
+						isFinish = 1;
+						traceCompleteFlag = 1;
+					}
+				}else{
+					//根据学习记录编号获取有无当前知识点指定类型的答题记录
+					List<BuffetLoreStudyDetailInfo>  blsdList = blsdm.listExistInfoByOption(studyLogId, currentLoreId, "再次诊断");
+					if(submitType.equals("study")){//5步学习法学完后的提交动作
+						if(blsdList.size() > 0){//表示之前有做过的答题记录
+							access = 3;
+						}else{//表示还没做过再次诊断
+							access = 4;
+						}
+					}else{//再次诊断时(针对性诊断的step不可能是3)再次诊断后的提交动作
+						if(blsdList.size() > 0){//表示之前有做过的答题记录
+							access = 31;
+						}else{//表示还没做过再次诊断
+							access = 41;
+						}
+					}
+				}
+			}else if(step.equals(4)){
+				if(access == 1){//再次诊断全部正确
+					stepComplete = 0;
+					access = 2;
+					step = 4;
+					isFinish = 1;
+					traceCompleteFlag = 1;
+				}else{
+					//根据学习记录编号获取有无当前知识点指定类型的答题记录
+					List<BuffetLoreStudyDetailInfo>  blsdList = blsdm.listExistInfoByOption(studyLogId, currentLoreId, "再次诊断");
+					if(submitType.equals("study")){//5步学习法学完后的提交动作
+						if(blsdList.size() > 0){//表示之前有做过的答题记录
+							access = 3;
+						}else{//表示还没做过再次诊断
+							access = 4;
+						}
+					}else{//再次诊断时(针对性诊断的step不可能是3)再次诊断后的提交动作
+						if(blsdList.size() > 0){//表示之前有做过的答题记录
+							access = 31;
+						}else{//表示还没做过再次诊断
+							access = 41;
+						}
+					}
+				}
+			}
+			//step=0表示不对step进行修改
+			boolean flag = blslm.updateLogStatus(studyLogId, step, stepComplete, isFinish, access, taskNumber);
+			if(flag){
+				msg = "success";
+				if(traceCompleteFlag.equals(1)){
+					flag = bsdm.updateStatusById(bsdId, traceCompleteFlag, currCompleteFlag);
+					if(!flag){
+						msg = "error";
+					}
+				}
+			}
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 获取五步学习法内容
+	 * @author wm
+	 * @date 2019-7-4 上午11:37:46
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getStepStudyData(ActionMapping mapping ,ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
+		StudyMapManager smm = (StudyMapManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_MAP_INFO);
+		String loreTypeName = CommonTools.getFinalStr("loreTypeName", request);//五步类型video,guide,loreList,example,practice
+		String msg = "noInfo";
+		Map<String,Object> map = new HashMap<String,Object>();
+		
 		return null;
 	}
 }

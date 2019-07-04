@@ -83,4 +83,16 @@ public interface StudyLogDao {
 	 * @return
 	 */
 	List<StudyLogInfo> findStuLogByOption(Session sess,Integer userId,Integer subId, Integer isfinish, Integer logType,String sDate, String eDate);
+	/**
+	 * 根据学生编号,时间段获取学生完成的学习记录
+	 * @author zdf
+	 * 2019-6-28 下午04:26:18
+	 * @param sess
+	 * @param userId 学生编号
+	 * @param subId 学科编号
+	 * @param sDate 开始时间
+	 * @param eDate 结束时间
+	 * @return
+	 */
+	List<StudyLogInfo> findStuLogByOption(Session sess,Integer userId,Integer subId,String sDate, String eDate);
 }

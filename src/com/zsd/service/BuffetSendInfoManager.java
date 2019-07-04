@@ -20,6 +20,15 @@ public interface BuffetSendInfoManager {
 	 */
 	List<BuffetSendInfo> listBsInfoByOption(Integer stuId,
 			Integer subId, Integer isfinish, String starttime, String endtime)throws WEBException;
+	/**
+	 * 根据主键获取自助餐发布信息
+	 * @author zdf
+	 * 2019-7-1 下午05:01:31
+	 * @param Id 主键
+	 * @return
+	 * @throws WEBException
+	 */
+	List<BuffetSendInfo> listBsInfoById(Integer Id)throws WEBException;
 	
 	/**
 	 * 根据指定学生,学科,完成状态,时间段分页获取自助餐发布信息

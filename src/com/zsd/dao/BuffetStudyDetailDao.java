@@ -45,4 +45,15 @@ public interface BuffetStudyDetailDao {
 	 * @return
 	 */
 	List<BuffetStudyDetailInfo> findInfoByBsdId(Session sess,Integer bsId);
+	/**
+	 * 根据学生编号获取自助餐学习详情列表
+	 * @author zdf
+	 * 2019-7-2 下午04:45:46
+	 * @param sess
+	 * @param stuId 学生编号
+	 * @param subName 学科名称
+	 * @param succFlag  成功状态
+	 * @return
+	 */
+	List<BuffetStudyDetailInfo> findInfoByStuId(Session sess,Integer stuId,String subName,Integer succFlag);
 }

@@ -49,4 +49,6 @@
 	<dao id="buffet_lore_study_log_info_Dao" class="com.zsd.dao.impl.BuffetLoreStudyLogDaoImpl" />
 	<dao id="town_info_Dao" class="com.zsd.dao.impl.TownDaoImpl" />
 	<dao id="apply_class_info_Dao" class="com.zsd.dao.impl.ApplyClassDaoImpl" />
+	<dao id="buffet_mind_relation_info_Dao" class="com.zsd.dao.impl.BuffetMindRelationInfoDaoImpl" />
+	<dao id="buffet_ability_relation_info_Dao" class="com.zsd.dao.impl.BuffetAbilityRelationInfoDaoImpl" />
 </daoContext>

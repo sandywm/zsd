@@ -41,4 +41,19 @@ public class BuffetStudyDetailDaoImpl implements BuffetStudyDetailDao{
 		return sess.createQuery(hql).list();
 	}
 
+	@Override
+	public List<BuffetStudyDetailInfo> findInfoByStuId(Session sess,
+			Integer stuId, String subName, Integer succFlag) {
+		String hql=" from BuffetStudyDetailInfo as bsd where bsd.buffetSendInfo.studyLogInfo.user.id="+stuId;
+		if(!subName.equals("all")){
+			hql += " and bsd.buffetSendInfo.studyLogInfo.subject.subName = '"+ subName +"'";
+		}
+		if(!succFlag.equals(-1)){
+			hql += " and bsd.result = "+succFlag;
+		}
+		return sess.createQuery(hql).list();
+	}
+
+	
+
 }

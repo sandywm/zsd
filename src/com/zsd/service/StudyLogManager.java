@@ -145,5 +145,17 @@ public interface StudyLogManager {
 	 */
 	List<StudyLogInfo> listSlInfoByopt(Integer userId,
 			Integer subId, Integer isfinish, Integer logType, String sDate,String eDate)throws WEBException;
+	/**
+	 * 根据学生编号,时间段获取指定学生完成学习记录
+	 * @author zdf
+	 * 2019-6-28 下午04:41:37
+	 * @param userId 学生编号
+	 * @param subId  学科编号
+	 * @param sDate 开始时间
+	 * @param eDate 结束时间
+	 * @return
+	 * @throws WEBException
+	 */
+	List<StudyLogInfo> listStuLogByOption(Integer userId,Integer subId,String sDate, String eDate)throws WEBException;
 	
 }

@@ -22,12 +22,16 @@ import org.apache.struts.actions.DispatchAction;
 
 import com.zsd.factory.AppFactory;
 import com.zsd.module.BuffetSendInfo;
+import com.zsd.module.BuffetStudyDetailInfo;
+import com.zsd.module.NetTeacherStudent;
 import com.zsd.module.StudyDetailInfo;
 import com.zsd.module.StudyLogInfo;
 import com.zsd.module.json.LoreTreeMenuJson;
 import com.zsd.module.json.MyTreeNode;
 import com.zsd.page.PageConst;
 import com.zsd.service.BuffetSendInfoManager;
+import com.zsd.service.BuffetStudyDetailManager;
+import com.zsd.service.NetTeacherStudentManager;
 import com.zsd.service.StudyDetailManager;
 import com.zsd.service.StudyLogManager;
 import com.zsd.tools.CommonTools;
@@ -372,4 +376,157 @@ public class StudyRecordAction extends DispatchAction {
 		return null;
 	}
 	
+	
+	
+	/**
+	 * 根据网络导师编号获取绑定学生
+	 * @author zdf
+	 * 2019-6-28 下午05:50:15
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getStuByntId(ActionMapping mapping,
+			ActionForm form, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		NetTeacherStudentManager ntsManager = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT);
+		Integer userId=CommonTools.getFinalInteger("userId", request);//导师编号
+		List<NetTeacherStudent> ntsList = ntsManager.listByntId(userId);
+		Map<String,Object> map = new HashMap<String,Object>();
+		List<Object> list_d = new ArrayList<Object>();
+		for (Iterator<NetTeacherStudent> itr = ntsList.iterator(); itr.hasNext();) {
+			NetTeacherStudent nts = (NetTeacherStudent) itr.next();
+			Map<String,Object> map_d= new HashMap<String,Object>();
+			map_d.put("stuId", nts.getUser().getId());//学生编号
+			map_d.put("stuName", nts.getUser().getRealName());//学生姓名
+			nts.getNetTeacherInfo().getSubject().getId();
+			list_d.add(map_d);
+		}
+		map.put("stulist", list_d);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 培优指定学生学习记录(培优辅查)
+	 * @author zdf
+	 * 2019-6-28 下午05:28:37
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getBuffetSendList(ActionMapping mapping,
+			ActionForm form, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		StudyLogManager slManager = (StudyLogManager) AppFactory.instance(null).getApp(Constants.WEB_STUDY_LOG_INFO);
+		NetTeacherStudentManager ntsManager = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT);
+		BuffetSendInfoManager bsManager = (BuffetSendInfoManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_SEND_INFO);
+		Integer userId=CommonTools.getFinalInteger("stuId", request);//学生编号
+		Integer ntId=CommonTools.getFinalInteger("userId", request);//学生编号
+		String sDate=CommonTools.getFinalStr("sDate",request);
+		String eDate=CommonTools.getFinalStr("eDate",request);
+		Integer subId = 0;
+		int diffDay =0;
+		Integer BuffetSendNum = 0;//发送巴菲特数
+		Integer comBuffetNum = 0;//完成巴菲特数
+		Integer unComBuffetNum = 0;//未完成巴菲特数
+		String  comRate = "0.00%";//完成率
+		Map<String,Object> map = new HashMap<String,Object>();
+		List<Object> list_d = new ArrayList<Object>();
+		List<NetTeacherStudent> ntsList = ntsManager.listByntId(ntId);
+		if(!ntsList.isEmpty()){
+			subId = ntsList.get(0).getNetTeacherInfo().getSubject().getId();
+			if(userId.equals(0)){
+				userId = ntsList.get(0).getUser().getId();
+			}
+		    if(sDate.equals("")){
+				//表示是默认的当前日期前3天的记录(包含当前，所以-2)
+				sDate = CurrentTime.getFinalDate(CurrentTime.getStringDate(), -2);
+				eDate = CurrentTime.getStringDate();
+			}else{
+				if(eDate.equals("")){
+					eDate = CurrentTime.getStringDate();
+				}
+			}
+		    diffDay = CurrentTime.compareDate(sDate,eDate);
+			List<StudyLogInfo> slList =  slManager.listStuLogByOption(userId,subId, sDate, eDate);
+			for (Iterator<StudyLogInfo> itr = slList.iterator(); itr.hasNext();) {
+				StudyLogInfo slInfo = (StudyLogInfo) itr.next();
+				Map<String,Object> map_d= new HashMap<String,Object>();
+				Integer stuLogId = slInfo.getId();
+				map_d.put("studyLogId", stuLogId); //学习记录主键
+				map_d.put("loreId", slInfo.getLoreInfo().getId()); //知识点主键
+				map_d.put("loreName", slInfo.getLoreInfo().getLoreName());//知识点名称
+				map_d.put("mainLoreId", slInfo.getLoreInfo().getMainLoreId());//引用知识点
+				map_d.put("stuId", slInfo.getUser().getId());//学生编号
+				List<BuffetSendInfo> bsList = bsManager.listBsInfoById(stuLogId);
+				if(bsList.isEmpty()){
+					map_d.put("bs_id",0);
+					map_d.put("bs_sendTime", "");
+					map_d.put("bs_result", "");
+				
+				}else{
+					BuffetSendInfo bs = bsList.get(0);
+					map_d.put("bs_id", bs.getId());
+					map_d.put("bs_sendTime", bs.getSendTime());
+					map_d.put("bs_result", bs.getStudyResult());
+					BuffetSendNum++;
+					if(bs.getStudyResult().equals(1)){
+						comBuffetNum++;
+					}
+				}
+				list_d.add(map_d);
+			}
+			if(BuffetSendNum > 0){
+				unComBuffetNum = BuffetSendNum - comBuffetNum;
+				comRate = String.format("%.2f", (double)comBuffetNum * 100 / BuffetSendNum) + "%";//完成率
+			}
+		}
+		
+		map.put("studyList", list_d);
+		map.put("BuffetSendNum", BuffetSendNum);
+		map.put("comBuffetNum", comBuffetNum);
+		map.put("unComBuffetNum", unComBuffetNum);
+		map.put("comRate", comRate);
+		map.put("diffDay", diffDay);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	/**
+	 * 学习记录当前知识点图表数据信息
+	 * @author zdf
+	 * 2019-7-2 上午11:23:39
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getBuffetChart(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		BuffetStudyDetailManager bsdManager = (BuffetStudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_STUDY_DETAIL_INFO);
+		BuffetSendInfoManager bsm = (BuffetSendInfoManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_SEND_INFO);
+		Integer userId=CommonTools.getFinalInteger("stuId", request);//学生编号
+		Integer bsId=CommonTools.getFinalInteger("bsId", request);//自助餐发布编号
+		String subName=CommonTools.getFinalStr("subName",request);
+		if(subName.equals("")){//表示网络导师发布时没指定科目名称（需要和发布时完成的知识点科目名称相同）
+			List<BuffetSendInfo> bsList = bsm.listBsInfoById(bsId);
+			if(bsList.size() > 0){
+				subName = bsList.get(0).getStudyLogInfo().getSubject().getSubName();
+			}	
+		}
+		//当前发布的巴菲特学习情况
+		List<BuffetStudyDetailInfo> bsList = bsdManager.listInfoByBsId(bsId);
+		//当前学生所有学习巴菲特汇总学习情况
+		List<BuffetStudyDetailInfo> bsStuList = bsdManager.listInfoByStuId(userId, subName, -1);
+		
+		return null;
+	}
 }

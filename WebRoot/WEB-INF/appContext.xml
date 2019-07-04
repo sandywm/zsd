@@ -47,4 +47,6 @@
 	<app id="buffet_lore_study_log_info_Web" class="com.zsd.service.impl.BuffetLoreStudyLogManagerImpl"/>
 	<app id="town_info_Web" class="com.zsd.service.impl.TownManagerImpl"/>
 	<app id="apply_class_info_Web" class="com.zsd.service.impl.ApplyClassManagerImpl"/>
+	<app id="buffet_mind_relation_info_Web" class="com.zsd.service.impl.BuffetMindRelationInfoManagerImpl"/>
+	<app id="buffet_ability_relation_info_Web" class="com.zsd.service.impl.BuffetAbilityRelationInfoManagerImpl"/>
 </appContext>

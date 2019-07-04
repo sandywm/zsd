@@ -60,6 +60,13 @@ public class BuffetSendInfoDaoImpl implements BuffetSendInfoDao {
 		return sess.createQuery(hql).list();
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<BuffetSendInfo> findBsInfoById(Session sess, Integer id) {
+		String hql="from BuffetSendInfo as bs where bs.id ="+id;
+		return sess.createQuery(hql).list();
+	}
+
 	@Override
 	public List<BuffetSendInfo> findPageInfoByOption(Session sess,
 			Integer stuId, Integer subId, Integer isfinish, String sDate,
