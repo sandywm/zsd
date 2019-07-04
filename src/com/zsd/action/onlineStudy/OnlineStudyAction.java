@@ -1789,7 +1789,7 @@ public class OnlineStudyAction extends DispatchAction {
 						map_d.put("answerD", lq.getD());
 						map_d.put("answerE", lq.getE());
 						map_d.put("answerF", lq.getF());
-						Integer completeStatus = 0;//做题状态(0:已做,1:未做)
+						Integer completeStatus = 0;//做题状态(0:未做,1:已做)
 						for(Integer j = 0 ; j < sdList_used.size() ; j++){
 							StudyDetailInfo sd = sdList_used.get(j);
 							LoreQuestion lq_use = sd.getLoreQuestion();
@@ -2107,7 +2107,8 @@ public class OnlineStudyAction extends DispatchAction {
 					}
 				}
 			}else if(loreTypeName.equals("example")){//解题示范
-				List<LoreQuestion> lqList = lqm.listInfoByLoreId(quoteLoreId, "解题示范", 0);
+				loreTypeName = "解题示范";
+				List<LoreQuestion> lqList = lqm.listInfoByLoreId(quoteLoreId, loreTypeName, 0);
 				if(lqList.size() > 0){
 					List<Object> list_d = new ArrayList<Object>();
 					for(LoreQuestion lq : lqList){
@@ -2123,8 +2124,9 @@ public class OnlineStudyAction extends DispatchAction {
 					msg = "noInfo";
 				}
 			}else if(loreTypeName.equals("practice")){//巩固训练
+				loreTypeName = "巩固训练";
 				if(currLoreId > 0){
-					List<LoreQuestion> lqList = lqm.listInfoByLoreId(quoteLoreId, "巩固训练", 0);
+					List<LoreQuestion> lqList = lqm.listInfoByLoreId(quoteLoreId, loreTypeName, 0);
 					if(lqList.size() > 0){
 						List<Object> list_d = new ArrayList<Object>();
 						for(LoreQuestion lq : lqList){
@@ -2408,9 +2410,6 @@ public class OnlineStudyAction extends DispatchAction {
 										experience += Constants.EXPERIENCE;
 									}
 								}
-								
-								//增加和修改学生统计表、全平台统计表记录
-								
 								
 								//插入数据到studyTask表中
 								//获取指定学习记录的学习任务描述

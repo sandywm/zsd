@@ -30,6 +30,7 @@ import com.zsd.module.BuffetStudyDetailInfo;
 import com.zsd.module.JoinLoreRelation;
 import com.zsd.module.LoreInfo;
 import com.zsd.module.LoreQuestion;
+import com.zsd.module.LoreQuestionSubInfo;
 import com.zsd.module.StudyDetailInfo;
 import com.zsd.module.StudyLogInfo;
 import com.zsd.module.json.LoreTreeMenuJson;
@@ -769,7 +770,7 @@ public class BuffetStudyAction extends DispatchAction {
 		map.put("pathType", pathType);
 		map.put("loreType", loreTypeName);
 		map.put("nextLoreIdArray", nextLoreIdArray);
-		map.put("buffetLorestudyLogId", buffetLorestudyLogId);
+		map.put("studyLogId", buffetLorestudyLogId);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
@@ -1498,6 +1499,7 @@ public class BuffetStudyAction extends DispatchAction {
 				 }
 			}
 			map.put("lqList", list_d);
+			map.put("bsdId", bsdId);
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
@@ -1528,7 +1530,7 @@ public class BuffetStudyAction extends DispatchAction {
 		String myAnswer = Transcode.unescape("myAnswer",request);//选择的答案
 		String answerOptionArrayStr = Transcode.unescape("answerOptionArray",request);//做题时的选项
 		Integer lqId = CommonTools.getFinalInteger("lqId", request);//做题的编号
-		String loreTaskName = Transcode.unescape(request.getParameter("loreTaskName"),request);
+		String loreType = Transcode.unescape(request.getParameter("loreType"),request);//针对性诊断，巩固训练，再次诊断
 		Integer stuId = CommonTools.getLoginUserId(request);
 		Integer result = 0;//0为错,1为对
 		boolean flag = false;
@@ -1626,7 +1628,7 @@ public class BuffetStudyAction extends DispatchAction {
 									oldStepMoney = 0;
 								}
 							}
-							if(loreTaskName.indexOf("学习") >= 0){
+							if(loreType.equals("巩固训练")){
 								//巩固训练只修改access状态为31，只要不是最后的提交，下次还会继续停留在学习当前知识点的状态
 								//-1表示不修改对应值
 								updateFlag = blslm.updateStudyLog(studyLogId, 3, 0, -1, -1, 31, "");
@@ -1652,7 +1654,7 @@ public class BuffetStudyAction extends DispatchAction {
 							Integer coin = 0;
 							Integer experience = Constants.EXPERIENCE;
 							if(result == 1){//答题正确
-								if(loreTaskName.indexOf("学习") >= 0){//巩固训练不计分
+								if(loreType.equals("巩固训练")){//巩固训练不计分
 									coin = 0;
 									experience = 0;
 								}else{
@@ -1782,6 +1784,25 @@ public class BuffetStudyAction extends DispatchAction {
 	}
 	
 	/**
+	 * 自助餐题库界面查看解析后点击做完了动作--表示该自助餐完成（所有题必须traceFlag都要完成，防止恶意提交）
+	 * @author wm
+	 * @date 2019-7-4 下午05:42:57
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward checkAllBuffetCompleteFlag(ActionMapping mapping ,ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		BuffetLoreStudyDetailManager blsdm = (BuffetLoreStudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_LORE_STUDY_DETAIL_INFO);
+		Integer buffetSendId = CommonTools.getFinalInteger("bsId", request);
+		return null;
+	}
+	
+	
+	/**
 	 * 获取五步学习法内容
 	 * @author wm
 	 * @date 2019-7-4 上午11:37:46
@@ -1795,11 +1816,101 @@ public class BuffetStudyAction extends DispatchAction {
 	public ActionForward getStepStudyData(ActionMapping mapping ,ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
-		StudyMapManager smm = (StudyMapManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_MAP_INFO);
+		LoreInfoManager lm = (LoreInfoManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
 		String loreTypeName = CommonTools.getFinalStr("loreTypeName", request);//五步类型video,guide,loreList,example,practice
+		Integer currLoreId = CommonTools.getFinalInteger("currentLoreId", request);//即将要学习的知识点（就是map接口中的nextLoreIdArray--学习时为单个id）
+		Integer bsdId = CommonTools.getFinalInteger("bsdId", request);
 		String msg = "noInfo";
 		Map<String,Object> map = new HashMap<String,Object>();
-		
+		Integer quoteLoreId = CommonTools.getQuoteLoreId(currLoreId);
+		if(loreTypeName.equals("video")){//视频讲解
+			List<LoreQuestion> lqList = lqm.listInfoByLoreId(quoteLoreId, "知识讲解", 0);
+			if(lqList.size() > 0){
+				msg = "success";
+				map.put("sourceDetail", lqList.get(0).getQueAnswer());
+				map.put("loreTypeName", loreTypeName);
+			}else{
+				msg = "noInfo";
+			}
+		}else if(loreTypeName.equals("guide") || loreTypeName.equals("loreList")){//点拨指导//知识清单
+			if(loreTypeName.equals("guide")){
+				loreTypeName = "点拨指导";
+			}else{
+				loreTypeName = "知识清单";
+			}
+			List<LoreQuestion> lqList = lqm.listInfoByLoreId(quoteLoreId, loreTypeName, 0);
+			if(lqList.size() > 0){
+				Integer lqId = lqList.get(0).getId();
+				List<LoreQuestionSubInfo> lqsList = lqm.listLQSInfoByLqId(lqId, "");
+				if(lqsList.size() > 0){
+					List<Object> list_d = new ArrayList<Object>();
+					for(LoreQuestionSubInfo lqs : lqsList){
+						String loreType = lqs.getLoreTypeName();
+						Map<String,Object> map_d = new HashMap<String,Object>();
+						map_d.put("loreType", loreType);
+						map_d.put("lqsTitle", lqs.getLqsTitle());
+						map_d.put("lqsContent", lqs.getLqsContent());
+						list_d.add(map_d);
+					}
+					map.put("sourceDetail", list_d);
+					map.put("loreTypeName", loreTypeName);
+				}else{
+					msg = "noInfo";
+				}
+			}
+		}else if(loreTypeName.equals("example")){//解题示范
+			loreTypeName = "解题示范";
+			List<LoreQuestion> lqList = lqm.listInfoByLoreId(quoteLoreId, loreTypeName, 0);
+			if(lqList.size() > 0){
+				List<Object> list_d = new ArrayList<Object>();
+				for(LoreQuestion lq : lqList){
+					Map<String,Object> map_d = new HashMap<String,Object>();
+					map_d.put("queSub", lq.getQueSub());
+					map_d.put("queAnswer", lq.getQueAnswer());
+					map_d.put("queResolution", lq.getQueResolution());
+					list_d.add(map_d);
+				}
+				map.put("sourceDetail", list_d);
+				map.put("loreTypeName", loreTypeName);
+			}else{
+				msg = "noInfo";
+			}
+		}else if(loreTypeName.equals("practice")){//巩固训练
+			loreTypeName = "巩固训练";
+			if(currLoreId > 0){
+				List<LoreQuestion> lqList = lqm.listInfoByLoreId(quoteLoreId, loreTypeName, 0);
+				if(lqList.size() > 0){
+					List<Object> list_d = new ArrayList<Object>();
+					for(LoreQuestion lq : lqList){
+						Map<String,Object> map_d = new HashMap<String,Object>();
+						map_d.put("lqId", lq.getId());
+						LoreInfo lore = lm.getEntityById(currLoreId);
+						map_d.put("currLoreId", currLoreId);
+						map_d.put("currLoreName", lore.getLoreName());
+						map_d.put("loreType", lq.getLoreTypeName());
+						map_d.put("lqType", lq.getQueType());
+						map_d.put("lqSub", lq.getQueSub());
+						map_d.put("answerA", lq.getA());
+						map_d.put("answerB", lq.getB());
+						map_d.put("answerC", lq.getC());
+						map_d.put("answerD", lq.getD());
+						map_d.put("answerE", lq.getE());
+						map_d.put("answerF", lq.getF());
+						//巩固训练全部都需要重新做
+						list_d.add(map_d);
+					}
+					map.put("sourceDetail", list_d);
+					map.put("loreTypeName", loreTypeName);
+					map.put("bsdId", bsdId);
+				}else{
+					msg = "noInfo";
+				}
+			}
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
+	
+	
 }
