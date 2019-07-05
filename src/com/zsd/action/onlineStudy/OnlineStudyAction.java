@@ -658,10 +658,11 @@ public class OnlineStudyAction extends DispatchAction {
 		String loreTypeName = Transcode.unescape_new1("loreTypeName", request);
 		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
 		StudyMapManager smm = (StudyMapManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_MAP_INFO);
-		Integer quoteLoreId = CommonTools.getQuoteLoreId(loreId);
+		Integer quoteLoreId = 0;
 		String msg = "noInfo";
 		Map<String,Object> map = new HashMap<String,Object>();
 		if(loreId > 0 && !loreTypeName.equals("")){
+			quoteLoreId = CommonTools.getQuoteLoreId(loreId);
 			List<LoreQuestion> lqList = lqm.listInfoByLoreId(quoteLoreId, loreTypeName, 0);
 			if(lqList.size() > 0){
 				msg = "success";
@@ -1770,50 +1771,54 @@ public class OnlineStudyAction extends DispatchAction {
 				}
 				List<Object> list_d = new ArrayList<Object>();
 				if(loreType.equals("针对性诊断")){//将做过的题的情况和未做过的题都列出来
-					for(Integer i = 0 ; i < lqList_old.size() ; i++){
-						LoreQuestion lq = lqList_old.get(i);
-						Map<String,Object> map_d = new HashMap<String,Object>();
-						Integer lqId_old = lq.getId();
-						map_d.put("lqId", lqId_old);
-						Integer quoteLoreId = lq.getLoreInfo().getId();
-						String[] loreInfo = CommonTools.getRealLoreInfo(quoteLoreId, loreId);//当前题库的指定版本下的知识点
-						map_d.put("currLoreId", Integer.parseInt(loreInfo[0]));
-						map_d.put("currLoreName", loreInfo[1]);
-						String lqType = lq.getQueType();
-						map_d.put("lqType", lqType);
-						map_d.put("loreType", lq.getLoreTypeName());
-						map_d.put("lqSub", lq.getQueSub());
-						map_d.put("answerA", lq.getA());
-						map_d.put("answerB", lq.getB());
-						map_d.put("answerC", lq.getC());
-						map_d.put("answerD", lq.getD());
-						map_d.put("answerE", lq.getE());
-						map_d.put("answerF", lq.getF());
-						Integer completeStatus = 0;//做题状态(0:未做,1:已做)
-						for(Integer j = 0 ; j < sdList_used.size() ; j++){
-							StudyDetailInfo sd = sdList_used.get(j);
-							LoreQuestion lq_use = sd.getLoreQuestion();
-							if(lqId_old.equals(lq_use.getId())){//做过
-								completeStatus = 1;
-								map_d.put("realAnswer", sd.getRealAnswer());
-								map_d.put("myAnswer", sd.getMyAnswer());
-								map_d.put("result", sd.getResult());//答案对错0:错，1:对
-								map_d.put("questionStep", sd.getQueStep());
-								break;
+					if(lqList_old.size() > 0){
+						for(Integer i = 0 ; i < lqList_old.size() ; i++){
+							LoreQuestion lq = lqList_old.get(i);
+							Map<String,Object> map_d = new HashMap<String,Object>();
+							Integer lqId_old = lq.getId();
+							map_d.put("lqId", lqId_old);
+							Integer quoteLoreId = lq.getLoreInfo().getId();
+							String[] loreInfo = CommonTools.getRealLoreInfo(quoteLoreId, loreId);//当前题库的指定版本下的知识点
+							map_d.put("currLoreId", Integer.parseInt(loreInfo[0]));
+							map_d.put("currLoreName", loreInfo[1]);
+							String lqType = lq.getQueType();
+							map_d.put("lqType", lqType);
+							map_d.put("loreType", lq.getLoreTypeName());
+							map_d.put("lqSub", lq.getQueSub());
+							map_d.put("answerA", lq.getA());
+							map_d.put("answerB", lq.getB());
+							map_d.put("answerC", lq.getC());
+							map_d.put("answerD", lq.getD());
+							map_d.put("answerE", lq.getE());
+							map_d.put("answerF", lq.getF());
+							Integer completeStatus = 0;//做题状态(0:未做,1:已做)
+							for(Integer j = 0 ; j < sdList_used.size() ; j++){
+								StudyDetailInfo sd = sdList_used.get(j);
+								LoreQuestion lq_use = sd.getLoreQuestion();
+								if(lqId_old.equals(lq_use.getId())){//做过
+									completeStatus = 1;
+									map_d.put("realAnswer", sd.getRealAnswer());
+									map_d.put("myAnswer", sd.getMyAnswer());
+									map_d.put("result", sd.getResult());//答案对错0:错，1:对
+									map_d.put("questionStep", sd.getQueStep());
+									break;
+								}
 							}
-						}
-						map_d.put("completeStatus", completeStatus);//做题状态(0:未做,1:已做)
-						if(completeStatus.equals(0)){
-							if(lqType.equals("单选题") || lqType.equals("判断题") || lqType.equals("填空题") || lqType.equals("问答题")){
-								map_d.put("answerNum", 1);
-							}else{//填空选择题
-								map_d.put("answerNum", lq.getQueAnswer().split(",").length);
+							map_d.put("completeStatus", completeStatus);//做题状态(0:未做,1:已做)
+							if(completeStatus.equals(0)){
+								if(lqType.equals("单选题") || lqType.equals("判断题") || lqType.equals("填空题") || lqType.equals("问答题")){
+									map_d.put("answerNum", 1);
+								}else{//填空选择题
+									map_d.put("answerNum", lq.getQueAnswer().split(",").length);
+								}
 							}
+							if(lqType.equals("填空题") || lqType.equals("问答题")){
+								map_d.put("realAnswer", lq.getQueAnswer());
+							}
+							list_d.add(map_d);
 						}
-						if(lqType.equals("填空题") || lqType.equals("问答题")){
-							map_d.put("realAnswer", lq.getQueAnswer());
-						}
-						list_d.add(map_d);
+						String[] pathArr = CommonTools.getLorePath(loreId, "diagnosis");
+						map.put("path", pathArr[0]);
 					}
 					map.put("lqList", list_d);
 				}else if(loreType.equals("再次诊断")){//再次诊断()：
@@ -2009,6 +2014,8 @@ public class OnlineStudyAction extends DispatchAction {
 									}
 									list_d.add(map_d);
 								}
+								String[] pathArr = CommonTools.getLorePath(loreId, "diagnosis");
+								map.put("path", pathArr[0]);
 							}
 						}
 						map.put("lqList", list_d);
@@ -2319,6 +2326,9 @@ public class OnlineStudyAction extends DispatchAction {
 								oldStepMoney++;
 							}
 							studyLogId = slm.addStudyLog(stuId, loreId, subjectId, step, stepComplete, isFinish, "", oldStepMoney, access, currTime, 1, logType);
+							if(studyLogId > 0){
+								updateFlag = true;
+							}
 						}else{//表示是继续之前的未做完的题（修改log里面的记录）
 							StudyLogInfo  sl = slm.getEntityById(studyLogId);
 							if(sl != null){
@@ -2356,7 +2366,7 @@ public class OnlineStudyAction extends DispatchAction {
 								updateFlag = slm.updateStudyLog(studyLogId, step, stepComplete, isFinish, oldStepMoney, 0, currTime);
 							}
 						}
-						if(studyLogId > 0 || updateFlag == true){
+						if(studyLogId > 0 && updateFlag == true){
 							//step2:向detail表中插入一条记录并查看该studyLogId+loreQuestionId有没有记录
 							List<StudyDetailInfo> sdList = sdm.listInfoByOpt(studyLogId, lqId);
 							Integer questionNumber_curr = sdList.size() + 1;
