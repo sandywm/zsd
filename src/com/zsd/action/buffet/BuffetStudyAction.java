@@ -296,6 +296,9 @@ public class BuffetStudyAction extends DispatchAction {
 				boolean upFlag = bsdm.updateBuffetStudyDetailById(bsdId, myAnswer, result, CurrentTime.getCurrentTime(), 
 						answerOptionStr[0], answerOptionStr[1], answerOptionStr[2],
 				        answerOptionStr[3], answerOptionStr[4], answerOptionStr[5]);
+				if(bsd.getResult().equals(0)){//第一次做巴菲特题时才修改状态
+					bsm.updateBuffetSend(bsId, 1, 0);
+				}
 				Integer coin = 0;//自助餐不增加金币数
 				Integer experience = Constants.EXPERIENCE;
 				if(upFlag){
@@ -457,7 +460,7 @@ public class BuffetStudyAction extends DispatchAction {
 			Integer bsId = bs.getId();
 			Integer allNumber = bs.getSendNumber();//已发送的自助餐题量
 			Integer comNumber = bs.getComNumber();//已完成的自助餐题量
-			if(allNumber > comNumber){
+			if(allNumber.equals(comNumber)){
 				//分两种情况（当最后一道题）
 				//1:直接答题正确，这时completeNumber已经+1，所以不能再执行增加
 				//2:答题错误，进入溯源，溯源完成后，点击完成，这时completeNumber没+1，所以要执行增加

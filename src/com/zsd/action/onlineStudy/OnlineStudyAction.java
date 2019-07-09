@@ -1743,6 +1743,7 @@ public class OnlineStudyAction extends DispatchAction {
 		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
 		StudyDetailManager sdm = (StudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_STUDY_DETAIL_INFO);
 		StudyMapManager smm = (StudyMapManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_MAP_INFO);
+		LoreInfoManager lm = (LoreInfoManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
 		Integer loreId = CommonTools.getFinalInteger("loreId", request);
 		Integer studyLogId = CommonTools.getFinalInteger("studyLogId", request);
 		String loreType = Transcode.unescape_new1("loreType", request);
@@ -1751,8 +1752,15 @@ public class OnlineStudyAction extends DispatchAction {
 		Integer currentLoreId = 0;
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "success";
+		String loreName = "";
 		if(loreType.equals("")){
 			loreType = "针对性诊断";
+		}
+		if(loreId > 0){
+			LoreInfo lore = lm.getEntityById(loreId);
+			if(lore != null){
+				loreName = lore.getLoreName();
+			}
 		}
 		if(studyLogId > 0){//表示是继续之前的操作
 			StudyLogInfo sl = slm.getEntityById(studyLogId);
@@ -2033,6 +2041,9 @@ public class OnlineStudyAction extends DispatchAction {
 			}
 		}
 		map.put("result", msg);
+		if(msg.equals("success")){
+			map.put("loreName", loreName);
+		}
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
