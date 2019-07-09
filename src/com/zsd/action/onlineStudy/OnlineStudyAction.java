@@ -1258,6 +1258,7 @@ public class OnlineStudyAction extends DispatchAction {
 		Integer stepComplete = 0;
 		Integer access = 0;//access:0:未做完，1--当前级全部正确，2:当前级部分正确或者无正确
 		Integer isFinish = 0;//该知识点完成状态（1:未完成,2:已完成）
+		String loreName = "";
 		String path = "";//loreId组合
 		String pathChi = "";//loreName组合
 		String studyPath = "";
@@ -1268,6 +1269,9 @@ public class OnlineStudyAction extends DispatchAction {
 		Integer success = -1;//0:正确,1:不正确
 		String currentloreName_study = "";//当前5步学习法时的知识典名称
 		String nextLoreStep = "上一级的关联知识点";
+		if(loreId > 0){
+			loreName = lm.getEntityById(loreId).getLoreName();
+		}
 		if(studyLogId > 0){
 			StudyLogInfo sl = slm.getEntityById(studyLogId);
 			if(sl != null){
@@ -1682,6 +1686,7 @@ public class OnlineStudyAction extends DispatchAction {
 			map.put("currentloreName_study", currentloreName_study);
 			map.put("access", access);
 			map.put("loreId", loreId);
+			map.put("loreName", loreName);
 			map.put("studyLogId", studyLogId);
 			map.put("isFinish", isFinish);
 		}

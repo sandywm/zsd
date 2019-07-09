@@ -335,7 +335,7 @@ public class BuffetStudyAction extends DispatchAction {
 		LoreInfoManager lm = (LoreInfoManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
 		Integer buffetId = CommonTools.getFinalInteger("buffetId", request);
 //		Integer currBasicLoreId = CommonTools.getFinalInteger("currBasicLoreId", request);;//通用知识点--自助餐属于该知识点名下
-		Integer currLoreId = CommonTools.getFinalInteger("currLoreId", request);;//出版社下知识点编号
+		Integer currLoreId = CommonTools.getFinalInteger("currLoreId", request);;//出版社下知识点编号(最初学习记录中的知识点编号)
 		Integer currBasicLoreId = 0;
 		String relateLoreIdStr = "";//该出版社下的关联知识点
 		Integer editionId = 0;//当前知识点所在的出版社
@@ -408,26 +408,29 @@ public class BuffetStudyAction extends DispatchAction {
 	 * @return
 	 * @throws Exception
 	 */
-	public ActionForward getCurrBuffetFlag(ActionMapping mapping ,ActionForm form,
+	public ActionForward getCurrBuffetInfo(ActionMapping mapping ,ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		BuffetStudyDetailManager bsdm = (BuffetStudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_STUDY_DETAIL_INFO);
 		Integer bsdId = CommonTools.getFinalInteger("bsdId", request);
 		String opt = CommonTools.getFinalStr("opt", request);//trace(溯源完成标记),currCom(当前自助餐完成标记)
 		BuffetStudyDetailInfo bsd = bsdm.getEntityById(bsdId);
 		boolean flag = true;
-		Integer status = 0;//0:未完成,1:已完成
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "error";
 		if(bsd != null){
 			if(opt.equals("trace")){
-				status = bsd.getTraceComStatus();
+				Integer status = bsd.getTraceComStatus();//0:未完成,1:已完成
+				if(status.equals(1)){
+					flag = false;
+				}
+				map.put("status", flag);
+				msg = "success";
 			}else if(opt.equals("currCom")){
-				status = bsd.getCurrComStatus();
-			}
-			if(status.equals(1)){
-				flag = false;
+				map.put("status", bsd.getCurrComStatus());
+				msg = "success";
 			}
 		}
-		Map<String,Boolean> map = new HashMap<String,Boolean>();
-		map.put("result", flag);
+		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
@@ -452,15 +455,16 @@ public class BuffetStudyAction extends DispatchAction {
 		if(flag){
 			BuffetSendInfo bs = bsdm.getEntityById(bsdId).getBuffetSendInfo();
 			Integer bsId = bs.getId();
-			Integer allNumber = bs.getSendNumber();
-			if(allNumber > bs.getComNumber()){
+			Integer allNumber = bs.getSendNumber();//已发送的自助餐题量
+			Integer comNumber = bs.getComNumber();//已完成的自助餐题量
+			if(allNumber > comNumber){
 				//分两种情况（当最后一道题）
 				//1:直接答题正确，这时completeNumber已经+1，所以不能再执行增加
 				//2:答题错误，进入溯源，溯源完成后，点击完成，这时completeNumber没+1，所以要执行增加
 				Integer isFinish = 0;
-//				if(allNumber.equals(bs.getComNumber() + 1)){//最后一题
-//					isFinish = 2;//学习完成
-//				}
+				if(allNumber.equals(comNumber + 1)){//最后一题
+					isFinish = 2;//自助餐最后一题完成，表示该发送自助餐记录学生完成
+				}
 				flag = bsm.updateBuffetSend(bsId, isFinish, 1);
 			}
 		}
