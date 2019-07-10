@@ -102,7 +102,7 @@ public class StudyRecordAction extends DispatchAction {
 		
  	    if(sDate.equals("")){
 			//表示是默认的当前日期前3天的记录(包含当前，所以-2)
-			sDate = CurrentTime.getFinalDate(CurrentTime.getStringDate(), -2);
+			sDate = CurrentTime.getFinalDate(CurrentTime.getStringDate(), -3);
 			eDate = CurrentTime.getStringDate();
 		}else{
 			if(eDate.equals("")){
@@ -418,7 +418,7 @@ public class StudyRecordAction extends DispatchAction {
 			ActionForm form, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		NetTeacherStudentManager ntsManager = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT);
-		Integer userId=CommonTools.getFinalInteger("userId", request);//导师编号
+		Integer userId=CommonTools.getLoginUserId(request);//老师用户编号
 		List<NetTeacherStudent> ntsList = ntsManager.listByntId(userId);
 		Map<String,Object> map = new HashMap<String,Object>();
 		List<Object> list_d = new ArrayList<Object>();
@@ -453,7 +453,7 @@ public class StudyRecordAction extends DispatchAction {
 		NetTeacherStudentManager ntsManager = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT);
 		BuffetSendInfoManager bsManager = (BuffetSendInfoManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_SEND_INFO);
 		Integer userId=CommonTools.getFinalInteger("stuId", request);//学生编号
-		Integer ntId=CommonTools.getFinalInteger("userId", request);//学生编号
+		Integer ntId=CommonTools.getLoginUserId(request);
 		String sDate=CommonTools.getFinalStr("sDate",request);
 		String eDate=CommonTools.getFinalStr("eDate",request);
 		Integer subId = 0;
@@ -472,7 +472,7 @@ public class StudyRecordAction extends DispatchAction {
 			}
 		    if(sDate.equals("")){
 				//表示是默认的当前日期前3天的记录(包含当前，所以-2)
-				sDate = CurrentTime.getFinalDate(CurrentTime.getStringDate(), -2);
+				sDate = CurrentTime.getFinalDate(CurrentTime.getStringDate(), -3);
 				eDate = CurrentTime.getStringDate();
 			}else{
 				if(eDate.equals("")){

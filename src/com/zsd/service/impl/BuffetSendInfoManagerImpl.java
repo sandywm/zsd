@@ -102,7 +102,7 @@ public class BuffetSendInfoManagerImpl implements BuffetSendInfoManager {
 				if(!isfinish.equals(0)){
 					bs.setStudyResult(isfinish);
 				}
-				if(completeNumber.equals(1)){
+				if(completeNumber.equals(1) && (bs.getSendNumber() > bs.getComNumber())){
 					bs.setComNumber(bs.getComNumber() + 1);
 				}
 				bsDao.update(sess, bs);
