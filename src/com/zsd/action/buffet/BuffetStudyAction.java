@@ -460,19 +460,23 @@ public class BuffetStudyAction extends DispatchAction {
 			Integer bsId = bs.getId();
 			Integer allNumber = bs.getSendNumber();//已发送的自助餐题量
 			Integer comNumber = bs.getComNumber();//已完成的自助餐题量
-			if(allNumber > comNumber){
-				flag = bsm.updateBuffetSend(bsId, 0, 1);
-			}
-			if(allNumber.equals(comNumber)){
-				//分两种情况（当最后一道题）
-				//1:直接答题正确，这时completeNumber已经+1，所以不能再执行增加
+			Integer isFinish = 0;
+			Integer result = bs.getStudyResult();//自助餐完成情况--0:错误，1：正确
+			Integer newComNumber = 0;
+			if(result.equals(0)){//溯源回来修改
 				//2:答题错误，进入溯源，溯源完成后，点击完成，这时completeNumber没+1，所以要执行增加
-				Integer isFinish = 0;
+				newComNumber = 1;
 				if(allNumber.equals(comNumber + 1)){//最后一题
-					isFinish = 2;//自助餐最后一题完成，表示该发送自助餐记录学生完成
+					isFinish = 2;
 				}
-				flag = bsm.updateBuffetSend(bsId, isFinish, 1);
+			}else if(result.equals(1)){//直接做题正确修改
+				//1:直接答题正确，这时completeNumber已经+1，所以不能再执行增加
+				newComNumber = 0;
+				if(allNumber.equals(comNumber)){//做对自助餐题并且是最后一题
+					isFinish = 2;
+				}
 			}
+			flag = bsm.updateBuffetSend(bsId, isFinish, newComNumber);//溯源回来加1
 		}
 		Map<String,Boolean> map = new HashMap<String,Boolean>();
 		map.put("result", flag);
