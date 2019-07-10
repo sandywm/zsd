@@ -228,6 +228,7 @@ public class StudyRecordAction extends DispatchAction {
 		String sysAssess = slInfo.getSysAssess();
 		String teaAssess =slInfo.getTeaAssess();
 		Integer loreId= slInfo.getLoreInfo().getId();
+		String  loreName = slInfo.getLoreInfo().getLoreName();
 		String step1="";
 		String step2="";
 		String step3="";
@@ -322,6 +323,7 @@ public class StudyRecordAction extends DispatchAction {
 		map.put("finalScore", finalScore);
 		map.put("stuLogId", stuLogId);
 		map.put("loreId", loreId);
+		map.put("loreName", loreName);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}

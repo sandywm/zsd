@@ -462,8 +462,6 @@ public class BuffetStudyAction extends DispatchAction {
 			Integer comNumber = bs.getComNumber();//已完成的自助餐题量
 			if(allNumber > comNumber){
 				flag = bsm.updateBuffetSend(bsId, 0, 1);
-			}else if(allNumber.equals(comNumber)){//1:直接答题正确，这时completeNumber已经+1
-				
 			}
 			if(allNumber.equals(comNumber)){
 				//分两种情况（当最后一道题）
