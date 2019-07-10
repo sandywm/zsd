@@ -141,5 +141,24 @@ public interface BuffetQueInfoManager {
 	 */
 	boolean updateInfoById(Integer id,String queSub,String queAnswer,Integer queTipId,Integer lexId,String queResolution,String queType,
 			String a,String b,String c,String d,String e,String f,String operateUserName,String operateDate)throws WEBException;
-			
+	/**
+	 * 根据知识点编号,开启状态获取自助餐信息
+	 * @author zdf
+	 * 2019-7-5 下午04:40:50
+	 * @param loreId 知识点编号
+	 * @param inUse 开启状态（0：有效，1：无效）（0：有效，1：无效）
+	 * @return
+	 * @throws WEBException
+	 */
+	List<BuffetQueInfo> listInfoByOption(Integer loreId,Integer inUse)throws WEBException;
+	/**
+	 * 根据知识点编号,自助餐类型获取自助餐信息
+	 * @author zdf
+	 * 2019-7-8 下午05:22:01
+	 * @param loreId 知识点编号
+	 * @param buffetTypeName 自助餐类型
+	 * @return
+	 */
+	List<BuffetQueInfo> listInfoByLoreAndBuffetType(Integer loreId,String buffetTypeName)throws WEBException;
+	
 }

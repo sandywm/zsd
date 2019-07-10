@@ -1760,6 +1760,8 @@ public class OnlineStudyAction extends DispatchAction {
 			LoreInfo lore = lm.getEntityById(loreId);
 			if(lore != null){
 				loreName = lore.getLoreName();
+				String[] pathArr = CommonTools.getLorePath(loreId, "diagnosis");
+				map.put("path", pathArr[0]);
 			}
 		}
 		if(studyLogId > 0){//表示是继续之前的操作
@@ -1830,8 +1832,6 @@ public class OnlineStudyAction extends DispatchAction {
 							}
 							list_d.add(map_d);
 						}
-						String[] pathArr = CommonTools.getLorePath(loreId, "diagnosis");
-						map.put("path", pathArr[0]);
 					}
 					map.put("lqList", list_d);
 				}else if(loreType.equals("再次诊断")){//再次诊断()：
@@ -2027,8 +2027,6 @@ public class OnlineStudyAction extends DispatchAction {
 									}
 									list_d.add(map_d);
 								}
-								String[] pathArr = CommonTools.getLorePath(loreId, "diagnosis");
-								map.put("path", pathArr[0]);
 							}
 						}
 						map.put("lqList", list_d);
@@ -2264,7 +2262,7 @@ public class OnlineStudyAction extends DispatchAction {
 								//允许做题
 								flag = false;
 							}else{
-								flag = true;
+								flag = false;
 							}
 						}
 					}else{

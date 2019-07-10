@@ -79,4 +79,24 @@ public interface BuffetQueInfoDao {
 	 * @return
 	 */
 	List<BuffetQueInfo> findInfoByOpt(Session sess,Integer loreId,Integer btId,Integer inUse,boolean currNumFlag);
+	/**
+	 * 根据知识点编号,有效状态获取自助餐题库列表
+	 * @author zdf
+	 * 2019-7-5 上午11:51:41
+	 * @param sess
+	 * @param loreId 知识点编号
+	 * @param inUse  有效状态(-1：表示全部,0：有效，1：无效)
+	 * @return
+	 */
+	List<BuffetQueInfo> findInfoByOption(Session sess,Integer loreId, Integer inUse);
+	/**
+	 * 根据指定编号,自助餐类型获取自助餐题库列表
+	 * @author zdf
+	 * 2019-7-8 下午05:17:01
+	 * @param sess
+	 * @param loreId 知识点编号
+	 * @param buffetTypeName 自助餐类型
+	 * @return
+	 */
+	List<BuffetQueInfo> findInfoByLoreAndBuffetType(Session sess,Integer loreId, String buffetTypeName);
 }

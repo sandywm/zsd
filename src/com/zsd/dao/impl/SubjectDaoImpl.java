@@ -51,4 +51,11 @@ public class SubjectDaoImpl implements SubjectDao{
 		return sess.createQuery(hql).list();
 	}
 
+	@Override
+	public List<Subject> findInfoBySubName(Session sess, String subName) {
+		String hql = " from Subject as sub where sub.subName='"+subName+"'";
+		return sess.createQuery(hql).list();
+	}
+	
+
 }

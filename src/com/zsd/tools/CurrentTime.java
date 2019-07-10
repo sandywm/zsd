@@ -26,6 +26,9 @@ public class CurrentTime {
 	public static String getStringTime1(){
 		return getFormat("yyyyMMddHHmmssSSS");
 	}
+	public static String getStringTime2(){
+		return getFormat("yyyyMMddHHmmssSSSSSS");
+	}
 	/**
 	 * 获取当前日期（格式yyyy-MM-dd）
 	 * @description

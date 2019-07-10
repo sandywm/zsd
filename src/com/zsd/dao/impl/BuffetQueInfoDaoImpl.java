@@ -80,4 +80,24 @@ public class BuffetQueInfoDaoImpl implements BuffetQueInfoDao{
 		sess.update(bq);
 	}
 
+	@Override
+	public List<BuffetQueInfo> findInfoByOption(Session sess, Integer loreId,
+			Integer inUse) {
+		String hql = " from BuffetQueInfo as bq where bq.loreInfo.id = "+loreId;
+		if(inUse >= 0){
+			hql += " and bq.inUse = "+inUse;
+		}
+		hql += " order by bq.queOrder";
+		
+		return sess.createQuery(hql).list();
+	}
+
+	@Override
+	public List<BuffetQueInfo> findInfoByLoreAndBuffetType(Session sess,
+			Integer loreId, String buffetTypeName) {
+		String hql = " from BuffetQueInfo as bq where bq.loreInfo.id = "+loreId;
+		 hql+=" and bq.buffetTypeInfo.types='"+buffetTypeName+"'";
+		 return sess.createQuery(hql).list();
+	}
+
 }

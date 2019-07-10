@@ -80,4 +80,25 @@ public interface BuffetStudyDetailManager {
 	 * @throws WEBException
 	 */
 	List<BuffetStudyDetailInfo> listInfoByStuId(Integer stuId,String subName, Integer succFlag)throws WEBException;
+	/**
+	 * 添加自助餐详情
+	 * @author zdf
+	 * 2019-7-9 下午04:45:52
+	 * @param buffetSendId 自助餐发送编号
+	 * @param buffetId 自助餐题库编号
+	 * @param realAnswer 正确答案
+	 * @param myAnswer 我的答案
+	 * @param result 结果
+	 * @param addTime 答题时间
+	 * @param a 选项A
+	 * @param b 选项B
+	 * @param c 选项C
+	 * @param d 选项D
+	 * @param e 选项E
+	 * @param f 选项F
+	 * @return
+	 * @throws WEBException
+	 */
+	Integer addBuffetStudyDeatil(Integer buffetSendId, Integer buffetId,String realAnswer, String myAnswer, Integer result,
+			String addTime, String a, String b, String c, String d,String e, String f)throws WEBException;
 }

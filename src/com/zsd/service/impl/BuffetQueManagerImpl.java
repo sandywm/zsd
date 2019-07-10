@@ -232,4 +232,34 @@ public class BuffetQueManagerImpl implements BuffetQueInfoManager{
 		}
 	}
 
+	@Override 
+	public List<BuffetQueInfo> listInfoByOption(Integer loreId, Integer inUse)
+			throws WEBException {
+		try {
+			bqDao = (BuffetQueInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_BUFFET_QUE_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return bqDao.findInfoByOption(sess, loreId, inUse);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException(" 根据知识点编号,开启状态获取自助餐题库信息时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+// 
+	@Override
+	public List<BuffetQueInfo> listInfoByLoreAndBuffetType(Integer loreId,
+			String buffetTypeName)throws WEBException {
+		try {
+			bqDao = (BuffetQueInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_BUFFET_QUE_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return bqDao.findInfoByLoreAndBuffetType(sess, loreId, buffetTypeName);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("根据知识点编号,自助餐类型获取自助餐信息时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
 }

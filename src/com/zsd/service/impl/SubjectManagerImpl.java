@@ -32,4 +32,20 @@ public class SubjectManagerImpl implements SubjectManager{
 		}
 	}
 
+	@Override
+	public List<Subject> listInfoBySubName(String subName) throws WEBException {
+		 SubjectDao sDao = null;
+		 try {
+			sDao = (SubjectDao) DaoFactory.instance(null).getDao(Constants.DAO_SUBJECT_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return sDao.findInfoBySubName(sess, subName);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new WEBException("根据学科名称获取学科信息时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
 }

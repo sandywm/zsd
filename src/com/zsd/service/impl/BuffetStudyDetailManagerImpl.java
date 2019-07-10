@@ -10,6 +10,7 @@ import com.zsd.dao.BuffetSendInfoDao;
 import com.zsd.dao.BuffetStudyDetailDao;
 import com.zsd.exception.WEBException;
 import com.zsd.factory.DaoFactory;
+import com.zsd.module.BuffetQueInfo;
 import com.zsd.module.BuffetStudyDetailInfo;
 import com.zsd.service.BuffetStudyDetailManager;
 import com.zsd.tools.CurrentTime;
@@ -18,6 +19,7 @@ import com.zsd.util.Constants;
 
 public class BuffetStudyDetailManagerImpl implements BuffetStudyDetailManager{
 
+	private static final BuffetQueInfo BuffetSendInfo = null;
 	BuffetSendInfoDao bsDao = null;
 	BuffetQueInfoDao bqDao = null;
 	BuffetStudyDetailDao bsdDao = null;
@@ -143,6 +145,29 @@ public class BuffetStudyDetailManagerImpl implements BuffetStudyDetailManager{
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new WEBException("根据学生编号,学科名称,完成状态获取自助餐学习题库列表时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public Integer addBuffetStudyDeatil(Integer buffetSendId, Integer buffetId,
+			String realAnswer, String myAnswer, Integer result, String addTime,
+			String a, String b, String c, String d, String e, String f)
+			throws WEBException {
+		try {
+			bsdDao = (BuffetStudyDetailDao) DaoFactory.instance(null).getDao(Constants.DAO_BUFFET_STUDY_DETAIL_INFO);
+			BuffetSendInfoDao bsDao = (BuffetSendInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_BUFFET_SEND_INFO);
+			BuffetQueInfoDao bqDao = (BuffetQueInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_BUFFET_QUE_INFO);
+			Session sess = HibernateUtil.currentSession();
+			tran = sess.beginTransaction();
+			BuffetStudyDetailInfo bsd = new BuffetStudyDetailInfo(bqDao.getEntityById(sess, buffetId), bsDao.get(sess, buffetSendId), realAnswer, myAnswer, result, addTime, a, b, c, d, e, f, 0, 0, 0);
+			bsdDao.save(sess, bsd);
+			tran.commit();
+			return bsd.getId();
+		} catch (Exception e1) {
+			e1.printStackTrace();
+			throw new WEBException("添加自助餐详情信息时出现异常!");
 		} finally{
 			HibernateUtil.closeSession();
 		}

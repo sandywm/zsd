@@ -69,4 +69,13 @@ public interface SubjectDao {
 	 * @return
 	 */
 	List<Subject> findInfoByDisplayStatus(Session sess,Integer displayStatus);
+	/**
+	 * 根据学科名称获取学科列表
+	 * @author zdf
+	 * 2019-7-10 下午03:50:00
+	 * @param sess
+	 * @param subName 学科名称
+	 * @return
+	 */
+	List<Subject> findInfoBySubName(Session sess,String subName);
 }
