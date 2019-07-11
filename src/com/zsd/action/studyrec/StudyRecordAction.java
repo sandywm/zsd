@@ -344,10 +344,10 @@ public class StudyRecordAction extends DispatchAction {
 		StudyDetailManager sdManager = (StudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_STUDY_DETAIL_INFO);
 		Integer stuLogId=CommonTools.getFinalInteger("stuLogId", request);//学习记录编号
 		Integer loreId=CommonTools.getFinalInteger("loreId", request);//学习记录编号
-		Integer pNo=CommonTools.getFinalInteger("pageNo", request);//学习记录编号
+//		Integer pNo=CommonTools.getFinalInteger("pageNo", request);//学习记录编号
 		String loreTypeName=CommonTools.getFinalStr("loreTypeName",request);//知识点类型
 		Integer pageSize = 10; //多少条记录
-		
+		String msg = "noInfo";
 		Map<String,Object> map = new HashMap<String,Object>();
 		List<Object> list_d = new ArrayList<Object>();
 		
@@ -361,44 +361,49 @@ public class StudyRecordAction extends DispatchAction {
 				loreTypeName = "巩固训练";
 			}
 			
-			Integer count = sdManager.getInfoByOption(stuLogId, loreTypeName);//总记录数
-			Integer countPage =PageConst.getPageCount(count, pageSize);//总页数
-			Integer pageNo=PageConst.getPageNo(pNo, countPage);//当前页
+//			Integer count = sdManager.getInfoByOption(stuLogId, loreTypeName);//总记录数
+//			Integer countPage =PageConst.getPageCount(count, pageSize);//总页数
+			Integer pageNo = CommonTools.getFinalInteger("pageNo", request);//当前页
 			
-			List<StudyDetailInfo> sdList=	sdManager.listInfoByOption(stuLogId, loreTypeName, pageNo, pageSize);
-			for (Iterator<StudyDetailInfo> itr = sdList.iterator(); itr.hasNext();) {
-				StudyDetailInfo sdInfo = (StudyDetailInfo) itr.next();
-				Map<String,Object> map_d= new HashMap<String,Object>();
-				map_d.put("queSub",sdInfo.getLoreQuestion().getQueSub());
-				map_d.put("queType",sdInfo.getLoreQuestion().getQueType());
-				if(!sdInfo.getA().equals("")){
-					map_d.put("A", sdInfo.getA());	
+			List<StudyDetailInfo> sdList =	sdManager.listInfoByOption(stuLogId, loreTypeName, pageNo, pageSize);
+			if(sdList.size() > 0){
+				msg = "success";
+				for (Iterator<StudyDetailInfo> itr = sdList.iterator(); itr.hasNext();) {
+					StudyDetailInfo sdInfo = (StudyDetailInfo) itr.next();
+					Map<String,Object> map_d= new HashMap<String,Object>();
+					map_d.put("queSub",sdInfo.getLoreQuestion().getQueSub());
+					map_d.put("queType",sdInfo.getLoreQuestion().getQueType());
+					if(!sdInfo.getA().equals("")){
+						map_d.put("A", sdInfo.getA());	
+					}
+					if(!sdInfo.getB().equals("")){
+						map_d.put("B", sdInfo.getB());
+					}
+					if(!sdInfo.getC().equals("")){
+						map_d.put("C", sdInfo.getC());
+					}
+					if(!sdInfo.getD().equals("")){
+						map_d.put("D", sdInfo.getD());
+					}
+					if(!sdInfo.getE().equals("")){
+						map_d.put("E", sdInfo.getE());
+					}
+					if(!sdInfo.getF().equals("")){
+						map_d.put("F", sdInfo.getF());
+					}
+					map_d.put("myAns", sdInfo.getMyAnswer());
+					map_d.put("realAns", sdInfo.getRealAnswer());
+					list_d.add(map_d);
 				}
-				if(!sdInfo.getB().equals("")){
-					map_d.put("B", sdInfo.getB());
-				}
-				if(!sdInfo.getC().equals("")){
-					map_d.put("C", sdInfo.getC());
-				}
-				if(!sdInfo.getD().equals("")){
-					map_d.put("D", sdInfo.getD());
-				}
-				if(!sdInfo.getE().equals("")){
-					map_d.put("E", sdInfo.getE());
-				}
-				if(!sdInfo.getF().equals("")){
-					map_d.put("F", sdInfo.getF());
-				}
-				map_d.put("myAns", sdInfo.getMyAnswer());
-				map_d.put("realAns", sdInfo.getRealAnswer());
-				list_d.add(map_d);
+				map.put("sdList", list_d);
 			}
-			map.put("sdList", list_d);
 		}else if(loreTypeName.equals("gl")&& !loreTypeName.equals("")){
 			//loreTypeName = "关联诊断结果";
 			List<MyTreeNode> loreTreeList = new LoreTreeMenuJson().showTree(loreId, stuLogId, "desc");
+			msg = "success";
 			map.put("sdList", loreTreeList);
 		}
+		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
