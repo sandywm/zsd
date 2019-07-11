@@ -345,26 +345,25 @@ public class StudyRecordAction extends DispatchAction {
 		Integer stuLogId=CommonTools.getFinalInteger("stuLogId", request);//学习记录编号
 		Integer loreId=CommonTools.getFinalInteger("loreId", request);//学习记录编号
 //		Integer pNo=CommonTools.getFinalInteger("pageNo", request);//学习记录编号
+		Integer pageNo = CommonTools.getFinalInteger("pageNo", request);//当前页
 		String loreTypeName=CommonTools.getFinalStr("loreTypeName",request);//知识点类型
 		Integer pageSize = 10; //多少条记录
 		String msg = "noInfo";
 		Map<String,Object> map = new HashMap<String,Object>();
 		List<Object> list_d = new ArrayList<Object>();
-		
-		
-		if(!loreTypeName.equals("") && !loreTypeName.equals("gl")){
-			if(loreTypeName.equals("zdx")){
+
+		if(loreTypeName.equals("gl")){//关联诊断结果
+			List<MyTreeNode> loreTreeList = new LoreTreeMenuJson().showTree(loreId, stuLogId, "desc");
+			msg = "success";
+			map.put("sdList", loreTreeList);
+		}else{//三种类型诊断题，默认不传为针对性诊断
+			if(loreTypeName.equals("zdx") || loreTypeName.equals("")){
 				loreTypeName = "针对性诊断";
 			}else if(loreTypeName.equals("zc")){
 				loreTypeName = "再次诊断";
 			}else if(loreTypeName.equals("gg")){
 				loreTypeName = "巩固训练";
 			}
-			
-//			Integer count = sdManager.getInfoByOption(stuLogId, loreTypeName);//总记录数
-//			Integer countPage =PageConst.getPageCount(count, pageSize);//总页数
-			Integer pageNo = CommonTools.getFinalInteger("pageNo", request);//当前页
-			
 			List<StudyDetailInfo> sdList =	sdManager.listInfoByOption(stuLogId, loreTypeName, pageNo, pageSize);
 			if(sdList.size() > 0){
 				msg = "success";
@@ -397,11 +396,6 @@ public class StudyRecordAction extends DispatchAction {
 				}
 				map.put("sdList", list_d);
 			}
-		}else if(loreTypeName.equals("gl")&& !loreTypeName.equals("")){
-			//loreTypeName = "关联诊断结果";
-			List<MyTreeNode> loreTreeList = new LoreTreeMenuJson().showTree(loreId, stuLogId, "desc");
-			msg = "success";
-			map.put("sdList", loreTreeList);
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
