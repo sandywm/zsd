@@ -1823,7 +1823,7 @@ public class OnlineStudyAction extends DispatchAction {
 							if(completeStatus.equals(0)){
 								if(lqType.equals("单选题") || lqType.equals("判断题") || lqType.equals("填空题") || lqType.equals("问答题")){
 									map_d.put("answerNum", 1);
-								}else{//填空选择题
+								}else{//填空选择题,多选题
 									map_d.put("answerNum", lq.getQueAnswer().split(",").length);
 								}
 							}
@@ -1864,7 +1864,7 @@ public class OnlineStudyAction extends DispatchAction {
 							map_d.put("completeStatus", 0);//做题状态(0:未做,1:已做)
 							if(lqType.equals("单选题") || lqType.equals("判断题") || lqType.equals("填空题") || lqType.equals("问答题")){
 								map_d.put("answerNum", 1);
-							}else{//填空选择题
+							}else{//填空选择题,多选题
 								map_d.put("answerNum", lq.getQueAnswer().split(",").length);
 							}
 							if(lqType.equals("填空题") || lqType.equals("问答题")){
@@ -1906,7 +1906,7 @@ public class OnlineStudyAction extends DispatchAction {
 								map_d.put("completeStatus", 0);//做题状态(0:未做,1:已做)
 								if(lqType.equals("单选题") || lqType.equals("判断题") || lqType.equals("填空题") || lqType.equals("问答题")){
 									map_d.put("answerNum", 1);
-								}else{//填空选择题
+								}else{//填空选择题,多选题
 									map_d.put("answerNum", lq.getQueAnswer().split(",").length);
 								}
 								if(lqType.equals("填空题") || lqType.equals("问答题")){
@@ -1974,7 +1974,7 @@ public class OnlineStudyAction extends DispatchAction {
 										if(completeStatus.equals(0)){
 											if(lqType.equals("单选题") || lqType.equals("判断题") || lqType.equals("填空题") || lqType.equals("问答题")){
 												map_d.put("answerNum", 1);
-											}else{//填空选择题
+											}else{//填空选择题,多选题
 												map_d.put("answerNum", lq.getQueAnswer().split(",").length);
 											}
 										}
@@ -2019,7 +2019,7 @@ public class OnlineStudyAction extends DispatchAction {
 									map_d.put("completeStatus", 0);//做题状态(0:未做,1:已做)
 									if(lqType.equals("单选题") || lqType.equals("判断题") || lqType.equals("填空题") || lqType.equals("问答题")){
 										map_d.put("answerNum", 1);
-									}else{//填空选择题
+									}else{//填空选择题,多选题
 										map_d.put("answerNum", lq.getQueAnswer().split(",").length);
 									}
 									if(lqType.equals("填空题") || lqType.equals("问答题")){
