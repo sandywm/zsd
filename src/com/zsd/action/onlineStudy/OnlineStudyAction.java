@@ -2112,6 +2112,7 @@ public class OnlineStudyAction extends DispatchAction {
 					Integer lqId = lqList.get(0).getId();
 					List<LoreQuestionSubInfo> lqsList = lqm.listLQSInfoByLqId(lqId, "");
 					if(lqsList.size() > 0){
+						msg = "success";
 						List<Object> list_d = new ArrayList<Object>();
 						for(LoreQuestionSubInfo lqs : lqsList){
 							String loreType = lqs.getLoreTypeName();
@@ -2131,6 +2132,7 @@ public class OnlineStudyAction extends DispatchAction {
 				loreTypeName = "解题示范";
 				List<LoreQuestion> lqList = lqm.listInfoByLoreId(quoteLoreId, loreTypeName, 0);
 				if(lqList.size() > 0){
+					msg = "success";
 					List<Object> list_d = new ArrayList<Object>();
 					for(LoreQuestion lq : lqList){
 						Map<String,Object> map_d = new HashMap<String,Object>();
@@ -2149,6 +2151,7 @@ public class OnlineStudyAction extends DispatchAction {
 				if(currLoreId > 0){
 					List<LoreQuestion> lqList = lqm.listInfoByLoreId(quoteLoreId, loreTypeName, 0);
 					if(lqList.size() > 0){
+						msg = "success";
 						List<Object> list_d = new ArrayList<Object>();
 						for(LoreQuestion lq : lqList){
 							Map<String,Object> map_d = new HashMap<String,Object>();
