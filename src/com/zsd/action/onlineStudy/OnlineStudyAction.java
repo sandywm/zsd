@@ -2202,8 +2202,9 @@ public class OnlineStudyAction extends DispatchAction {
 							LoreInfo lore = lm.getEntityById(currLoreId);
 							map_d.put("currLoreId", currLoreId);
 							map_d.put("currLoreName", lore.getLoreName());
+							String lqType = lq.getQueType();
 							map_d.put("loreType", lq.getLoreTypeName());
-							map_d.put("lqType", lq.getQueType());
+							map_d.put("lqType", lqType);
 							map_d.put("lqSub", lq.getQueSub());
 							map_d.put("answerA", lq.getA());
 							map_d.put("answerB", lq.getB());
@@ -2211,6 +2212,14 @@ public class OnlineStudyAction extends DispatchAction {
 							map_d.put("answerD", lq.getD());
 							map_d.put("answerE", lq.getE());
 							map_d.put("answerF", lq.getF());
+							if(lqType.equals("单选题") || lqType.equals("判断题") || lqType.equals("填空题") || lqType.equals("问答题")){
+								map_d.put("answerNum", 1);
+							}else{//填空选择题,多选题
+								map_d.put("answerNum", lq.getQueAnswer().split(",").length);
+							}
+							if(lqType.equals("填空题") || lqType.equals("问答题")){
+								map_d.put("realAnswer", lq.getQueAnswer());
+							}
 							//巩固训练全部都需要重新做
 							list_d.add(map_d);
 						}
