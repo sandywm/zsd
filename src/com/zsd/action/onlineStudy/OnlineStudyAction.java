@@ -1816,6 +1816,14 @@ public class OnlineStudyAction extends DispatchAction {
 									map_d.put("myAnswer", sd.getMyAnswer());
 									map_d.put("result", sd.getResult());//答案对错0:错，1:对
 									map_d.put("questionStep", sd.getQueStep());
+									Integer lqsId = lq.getQueTips();
+									if(lqsId > 0){
+										LoreQuestionSubInfo lqs = lqm.getEntityByLqsId(lqsId);
+										if(lqs != null){
+											map_d.put("tipsTitle", lqs.getLqsTitle());
+											map_d.put("tipsContent", lqs.getLqsContent());
+										}
+									}
 									break;
 								}
 							}
@@ -1862,6 +1870,14 @@ public class OnlineStudyAction extends DispatchAction {
 							map_d.put("answerE", lq.getE());
 							map_d.put("answerF", lq.getF());
 							map_d.put("completeStatus", 0);//做题状态(0:未做,1:已做)
+							Integer lqsId = lq.getQueTips();
+							if(lqsId > 0){
+								LoreQuestionSubInfo lqs = lqm.getEntityByLqsId(lqsId);
+								if(lqs != null){
+									map_d.put("tipsTitle", lqs.getLqsTitle());
+									map_d.put("tipsContent", lqs.getLqsContent());
+								}
+							}
 							if(lqType.equals("单选题") || lqType.equals("判断题") || lqType.equals("填空题") || lqType.equals("问答题")){
 								map_d.put("answerNum", 1);
 							}else{//填空选择题,多选题
@@ -1904,6 +1920,14 @@ public class OnlineStudyAction extends DispatchAction {
 								map_d.put("answerE", lq.getE());
 								map_d.put("answerF", lq.getF());
 								map_d.put("completeStatus", 0);//做题状态(0:未做,1:已做)
+								Integer lqsId = lq.getQueTips();
+								if(lqsId > 0){
+									LoreQuestionSubInfo lqs = lqm.getEntityByLqsId(lqsId);
+									if(lqs != null){
+										map_d.put("tipsTitle", lqs.getLqsTitle());
+										map_d.put("tipsContent", lqs.getLqsContent());
+									}
+								}
 								if(lqType.equals("单选题") || lqType.equals("判断题") || lqType.equals("填空题") || lqType.equals("问答题")){
 									map_d.put("answerNum", 1);
 								}else{//填空选择题,多选题
@@ -1967,6 +1991,14 @@ public class OnlineStudyAction extends DispatchAction {
 												map_d.put("myAnswer", sd_new.getMyAnswer());
 												map_d.put("result", sd_new.getResult());//答案对错0:错，1:对
 												map_d.put("questionStep", sd_new.getQueStep());
+												Integer lqsId = lq.getQueTips();
+												if(lqsId > 0){
+													LoreQuestionSubInfo lqs = lqm.getEntityByLqsId(lqsId);
+													if(lqs != null){
+														map_d.put("tipsTitle", lqs.getLqsTitle());
+														map_d.put("tipsContent", lqs.getLqsContent());
+													}
+												}
 												break;
 											}
 										}
@@ -2017,6 +2049,14 @@ public class OnlineStudyAction extends DispatchAction {
 									map_d.put("answerE", lq.getE());
 									map_d.put("answerF", lq.getF());
 									map_d.put("completeStatus", 0);//做题状态(0:未做,1:已做)
+									Integer lqsId = lq.getQueTips();
+									if(lqsId > 0){
+										LoreQuestionSubInfo lqs = lqm.getEntityByLqsId(lqsId);
+										if(lqs != null){
+											map_d.put("tipsTitle", lqs.getLqsTitle());
+											map_d.put("tipsContent", lqs.getLqsContent());
+										}
+									}
 									if(lqType.equals("单选题") || lqType.equals("判断题") || lqType.equals("填空题") || lqType.equals("问答题")){
 										map_d.put("answerNum", 1);
 									}else{//填空选择题,多选题
@@ -2085,8 +2125,11 @@ public class OnlineStudyAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
 		LoreInfoManager lm = (LoreInfoManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
+		StudyLogManager slm = (StudyLogManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_LOG_INFO);
+		Integer studyLogId = CommonTools.getFinalInteger("studyLogId", request);
 		Integer currLoreId = CommonTools.getFinalInteger("nextLoreIdArray",request);//当前知识点编号
 		String loreTypeName = request.getParameter("loreTypeName");//五步类型（video,guide,loreList,example,practice）
+		String loreTaskName = Transcode.unescape_new1("loreTaskName",request);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "error";
 		Integer quoteLoreId = 0;//基础知识点编号
@@ -2176,6 +2219,16 @@ public class OnlineStudyAction extends DispatchAction {
 					}else{
 						msg = "noInfo";
 					}
+				}
+			}
+		}
+		if(msg.equals("success")){
+			if(studyLogId > 0){
+				StudyLogInfo sl = slm.getEntityById(studyLogId);
+				if(sl != null){
+					map.put("loreId", sl.getLoreInfo().getId());
+					map.put("studyLogId", studyLogId);
+					map.put("loreTaskName", loreTaskName);
 				}
 			}
 		}
