@@ -114,6 +114,7 @@
 		<mapping resource="com/zsd/xml/JoinLoreRelation.hbm.xml" />
 		<mapping resource="com/zsd/xml/RelationZdResult.hbm.xml" />
 		<mapping resource="com/zsd/xml/TownInfo.hbm.xml" />
+		<mapping resource="com/zsd/xml/GuideStudyInfo.hbm.xml" />
 
 
 
