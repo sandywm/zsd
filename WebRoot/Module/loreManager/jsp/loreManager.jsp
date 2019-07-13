@@ -637,10 +637,10 @@
 								if(tiganTypeInpVal == '单选题' || tiganTypeInpVal == '多选题' || tiganTypeInpVal == '填空选择题'){
 									var answerA = answSelTypeInpVal == 1 ? _this.convertEngToChi($('#answSelInpTxt1').val()) : $('#answerSelect1').attr('currSrc'),
 											answerB = answSelTypeInpVal == 1 ? _this.convertEngToChi($('#answSelInpTxt2').val()) : $('#answerSelect2').attr('currSrc'),
-											answerC = answSelTypeInpVal == 1 ? $('#answSelInpTxt3').val() : $('#answerSelect3').attr('currSrc'),
-											answerD = answSelTypeInpVal == 1 ? $('#answSelInpTxt4').val() : $('#answerSelect4').attr('currSrc'),
-											answerE = answSelTypeInpVal == 1 ? $('#answSelInpTxt5').val() : $('#answerSelect5').attr('currSrc'),
-											answerF = answSelTypeInpVal == 1 ? $('#answSelInpTxt6').val() : $('#answerSelect6').attr('currSrc'),
+											answerC = answSelTypeInpVal == 1 ? _this.convertEngToChi($('#answSelInpTxt3').val()) : $('#answerSelect3').attr('currSrc'),
+											answerD = answSelTypeInpVal == 1 ? _this.convertEngToChi($('#answSelInpTxt4').val()) : $('#answerSelect4').attr('currSrc'),
+											answerE = answSelTypeInpVal == 1 ? _this.convertEngToChi($('#answSelInpTxt5').val()) : $('#answerSelect5').attr('currSrc'),
+											answerF = answSelTypeInpVal == 1 ? _this.convertEngToChi($('#answSelInpTxt6').val()) : $('#answerSelect6').attr('currSrc'),
 											fieldCom = {queType:tiganTypeInpVal,queType2:tiganType1InpVal,queSub:currUeEditCon,queTipId:queTipsId,queResolution:currUeEditAnaly,
 													lexId:lexId,answerA:answerA,answerB:answerB,answerC:answerC,answerD:answerD,answerE:answerE,answerF:answerF};
 								
