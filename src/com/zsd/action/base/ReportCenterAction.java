@@ -151,8 +151,8 @@ public class ReportCenterAction  extends DispatchAction{
 		UserManager um = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
 		Integer userId = CommonTools.getLoginUserId(request);//必须传
 		Integer roleId = CommonTools.getLoginRoleId(request);//必须传
-		userId = 1;
-		roleId = 2;
+//		userId = 1;
+//		roleId = 2;
 		//家长学生传递参数学科，时间段
 		//班内老师传递参数所教学科，班级，时间段
 		//各级关联员，上级能看下级，下级能看上级学科，省，市，县，学段，学校，年级，班级，学生，时间段
