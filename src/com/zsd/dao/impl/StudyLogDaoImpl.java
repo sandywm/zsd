@@ -74,7 +74,7 @@ public class StudyLogDaoImpl implements StudyLogDao{
 			hql +=" and sl.isFinish="+isfinish;
 		}
 		if(!sDate.equals("")&& !eDate.equals("")){
-			hql += " and sl.addTime >= '"+sDate+"' and sl.addTime <= '"+eDate+"'";
+			hql += " and substring(sl.addTime,1,10) >= '"+sDate+"' and substring(sl.addTime,1,10) <= '"+eDate+"'";
 		}
 		return sess.createQuery(hql).list();
 	}
@@ -87,7 +87,7 @@ public class StudyLogDaoImpl implements StudyLogDao{
 			   hql +=" and sl.isFinish = 2";
 					  
 			   if(!sDate.equals("")&& !eDate.equals("")){
-				    hql += " and sl.addTime >= '"+sDate+"' and sl.addTime <= '"+eDate+"'";
+				    hql += " and substring(sl.addTime,1,10) >= '"+sDate+"' and substring(sl.addTime,1,10) <= '"+eDate+"'";
 			   }
 		return sess.createQuery(hql).list();
 	}

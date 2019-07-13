@@ -578,7 +578,7 @@ public class StudyRecordAction extends DispatchAction {
 		BuffetMindRelationInfoManager bmrManager = (BuffetMindRelationInfoManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_MIND_RELATION_INFO);
 		BuffetAbilityRelationInfoManager barManager= (BuffetAbilityRelationInfoManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_ABILITY_RELATION_INFO);
 		Integer userId=CommonTools.getFinalInteger("stuId", request);//学生编号
-		Integer subId=CommonTools.getFinalInteger("subId", request);//学生编号
+		Integer subId=CommonTools.getFinalInteger("subId", request);//学科编号
 		String sDate=CommonTools.getFinalStr("sDate",request);//开始时间
 		String eDate=CommonTools.getFinalStr("eDate",request);//结束时间
 		Integer studyLogId=CommonTools.getFinalInteger("studyLogId", request);//学习记录编号
@@ -650,7 +650,6 @@ public class StudyRecordAction extends DispatchAction {
 		map.put("quoteLoreId", quoteLoreId);
 		map.put("sDate", sDate);
 		map.put("eDate", eDate);
-		map.put("subId", subId);//学科编号
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
@@ -689,15 +688,27 @@ public class StudyRecordAction extends DispatchAction {
 			BuffetQueInfo bqInfo = (BuffetQueInfo) itr.next();
 			Map<String,Object> map_d= new HashMap<String,Object>();
 			map_d.put("buffetId", bqInfo.getId());//自助餐题库编号
-			map_d.put("queType", bqInfo.getQueType());//题型
+			map_d.put("buffetId", bqInfo.getQueType());//题型
 			map_d.put("title", bqInfo.getTitle());//自助餐题库标题
 			map_d.put("subject", bqInfo.getSubject());//题干
-			map_d.put("A", bqInfo.getA());
-			map_d.put("B", bqInfo.getB());
-			map_d.put("C", bqInfo.getC());
-			map_d.put("D", bqInfo.getD());
-			map_d.put("E", bqInfo.getE());
-			map_d.put("F", bqInfo.getF());
+			if(!bqInfo.getA().equals("")){
+				map_d.put("A", bqInfo.getA());	
+			}
+			if(!bqInfo.getB().equals("")){
+				map_d.put("B", bqInfo.getB());
+			}
+			if(!bqInfo.getC().equals("")){
+				map_d.put("C", bqInfo.getC());
+			}
+			if(!bqInfo.getD().equals("")){
+				map_d.put("D", bqInfo.getD());
+			}
+			if(!bqInfo.getE().equals("")){
+				map_d.put("E", bqInfo.getE());
+			}
+			if(!bqInfo.getF().equals("")){
+				map_d.put("F", bqInfo.getF());
+			}
 			map_d.put("answer", bqInfo.getAnswer());
 			map_d.put("resolution", bqInfo.getResolution());
 			map_d.put("tips", bqInfo.getTips());
@@ -762,7 +773,7 @@ public class StudyRecordAction extends DispatchAction {
 		//插入发布记录表
 		Integer buffetQuestionLength = buffetIdArray.length;
 		Integer bsId = bsManager.addBuffetSend(studyLogId, CurrentTime.getCurrentTime(), userId, sendMode, buffetQuestionLength);
-		boolean flag = true;
+		String  status = "fail";
 		Map<String,Object> map = new HashMap<String,Object>();
 		if(bsId > 0){
 			for(Integer i = 0 ; i < buffetQuestionLength ; i++){
@@ -775,8 +786,9 @@ public class StudyRecordAction extends DispatchAction {
 					bsdManager.addBuffetStudyDeatil(bsId, buffetId, realAnswer, "", -1, null, "","","","","","");
 				}
 			}
+		 status="success";	
 		}
-		map.put("result", flag);
+		map.put("status", status);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}

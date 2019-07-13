@@ -851,10 +851,10 @@ public class OnlineStudyAction extends DispatchAction {
 							Integer stepComplete = sl.getStepComplete();//本阶段整体完成情况--0:未完成,1:已完成
 							access = sl.getAccess();//本阶段详细完成情况（溯源诊断时分级完成情况）
 							//从detail表中获取指定logId的最后一条详情
-							List<StudyDetailInfo> sdList = sdm.listInfoByLogId(studyLogId);
+							List<StudyDetailInfo> sdList = sdm.listLastInfoByLogId(studyLogId, 0, "");
 							if(sdList.size() > 0){
 								//获取该题对应的知识点编号
-								currentLoreId = sdList.get(sdList.size() - 1).getLoreInfo().getId();
+								currentLoreId = sdList.get(0).getLoreInfo().getId();
 								if(stepComplete == 0){//0:表示本阶段未完成（未做完题标记）
 									if(step == 1){//诊断题未做完---loreId==currentLoreId
 										buttonValue = "继续诊断";
@@ -1045,7 +1045,7 @@ public class OnlineStudyAction extends DispatchAction {
 											//根据全部再次诊断题除去该知识典做对的题就是目前需要在测试的再次诊断题
 											//2014-10-22日修改（获取该知识典所有类型为loreTypeName的题型[0为题状态为有效状态]）
 											//做对的题
-											List<StudyDetailInfo> sdList_current_right = sdm.listCurrentRightInfoByLogId(studyLogId, quoteLoreId, loreTypeName);
+											List<StudyDetailInfo> sdList_current_right = sdm.listCurrentRightInfoByLogId(studyLogId, currentLoreId, loreTypeName);
 											//该知识点类型为再次诊断的全部题
 											List<LoreQuestion> zcList = lqm.listInfoByLoreId(CommonTools.getQuoteLoreId(currentLoreId), loreTypeName, 0);
 											//该知识点答对的题
@@ -1748,6 +1748,7 @@ public class OnlineStudyAction extends DispatchAction {
 		Integer studyLogId = CommonTools.getFinalInteger("studyLogId", request);
 		String loreType = Transcode.unescape_new1("loreType", request);
 		String nextLoreIdArray = CommonTools.getFinalStr("nextLoreIdArray",request);
+		String loreTaskName = Transcode.unescape_new1("loreTaskName", request);
 		Integer stuId = CommonTools.getLoginUserId(request);
 		Integer currentLoreId = 0;
 		Map<String,Object> map = new HashMap<String,Object>();
@@ -2081,6 +2082,7 @@ public class OnlineStudyAction extends DispatchAction {
 		map.put("result", msg);
 		if(msg.equals("success")){
 			map.put("loreName", loreName);
+			map.put("loreTaskName", loreTaskName);
 		}
 		CommonTools.getJsonPkg(map, response);
 		return null;
@@ -2238,6 +2240,7 @@ public class OnlineStudyAction extends DispatchAction {
 					map.put("loreId", sl.getLoreInfo().getId());
 					map.put("studyLogId", studyLogId);
 					map.put("loreTaskName", loreTaskName);
+					map.put("initLoreName", sl.getLoreInfo().getLoreName());
 				}
 			}
 		}
