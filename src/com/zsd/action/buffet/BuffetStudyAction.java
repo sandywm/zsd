@@ -192,17 +192,16 @@ public class BuffetStudyAction extends DispatchAction {
 						map_d.put("answerE", bsd.getE());
 						map_d.put("answerF", bsd.getF());
 					}
-					map_d.put("realAnswer", bsd.getRealAnswer());
 					map_d.put("studyResult", bsd.getResult());
 					map_d.put("traceComStatus", bsd.getTraceComStatus());
 					map_d.put("currComStatus", bsd.getCurrComStatus());
 					if(lqType.equals("单选题") || lqType.equals("多选题") || lqType.equals("判断题") || lqType.equals("填空题") || lqType.equals("问答题")){
 						map_d.put("answerNum", 1);
 					}else{//填空选择题
-						map_d.put("answerNum", lq.getQueAnswer().split(",").length);
+//						map_d.put("answerNum", lq.getQueAnswer().split(",").length);
 					}
 					if(lqType.equals("填空题") || lqType.equals("问答题")){
-						map_d.put("realAnswer", lq.getQueAnswer());
+						map_d.put("realAnswer", bsd.getRealAnswer());
 					}
 					list_d.add(map_d);
 				}

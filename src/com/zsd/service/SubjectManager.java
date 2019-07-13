@@ -26,4 +26,13 @@ public interface SubjectManager {
 	 * @throws WEBException
 	 */
 	List<Subject> listInfoBySubName(String subName)throws WEBException;
+	/**
+	 * 根据学科编号获取学科信息
+	 * @author zdf
+	 * 2019-7-13 下午05:04:20
+	 * @param Id学科编号
+	 * @return
+	 * @throws WEBException
+	 */
+	List<Subject> listEntityById(Integer Id)throws WEBException;
 }

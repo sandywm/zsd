@@ -99,7 +99,7 @@ public class StudyRecordAction extends DispatchAction {
 		Integer logType=CommonTools.getFinalInteger("logType",request);//1:自学,2:家庭作业,3,自助餐 -1全部
 		String sDate=CommonTools.getFinalStr("sDate",request);
 		String eDate=CommonTools.getFinalStr("eDate",request);
-		
+		String subName ="";
  	    if(sDate.equals("")){
 			//表示是默认的当前日期前3天的记录(包含当前，所以-2)
 			sDate = CurrentTime.getFinalDate(CurrentTime.getStringDate(), -3);
@@ -114,6 +114,12 @@ public class StudyRecordAction extends DispatchAction {
  	    	List<Subject> sublist = subManager.listInfoBySubName("数学");
  	    	if(!sublist.isEmpty()){
  	    		subId = sublist.get(0).getId();
+ 	    		subName= "数学";
+ 	    	}
+ 	    }else{
+ 	    	List<Subject> subs = subManager.listEntityById(subId);
+ 	    	if(!subs.isEmpty()){
+ 	    		subName =subs.get(0).getSubName();
  	    	}
  	    }
  	    
@@ -186,6 +192,7 @@ public class StudyRecordAction extends DispatchAction {
 		map.put("finish", finishSl);
 		map.put("comRate", comRate);
 		map.put("diffday", diffDay);
+		map.put("subName", subName);
 		map.put("studyList", list_d);
 		CommonTools.getJsonPkg(map, response);
 		return null;

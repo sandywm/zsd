@@ -78,4 +78,13 @@ public interface SubjectDao {
 	 * @return
 	 */
 	List<Subject> findInfoBySubName(Session sess,String subName);
+	/**
+	 * 根据主键获取学科
+	 * @author zdf
+	 * 2019-7-13 下午05:02:25
+	 * @param sess
+	 * @param Id
+	 * @return
+	 */
+	List<Subject> findEntityById(Session sess, Integer Id);
 }
