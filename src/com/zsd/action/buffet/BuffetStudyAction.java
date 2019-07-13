@@ -191,6 +191,7 @@ public class BuffetStudyAction extends DispatchAction {
 						map_d.put("answerD", bsd.getD());
 						map_d.put("answerE", bsd.getE());
 						map_d.put("answerF", bsd.getF());
+						map_d.put("realAnswer", bsd.getRealAnswer());
 					}
 					map_d.put("studyResult", bsd.getResult());
 					map_d.put("traceComStatus", bsd.getTraceComStatus());
@@ -198,7 +199,7 @@ public class BuffetStudyAction extends DispatchAction {
 					if(lqType.equals("单选题") || lqType.equals("多选题") || lqType.equals("判断题") || lqType.equals("填空题") || lqType.equals("问答题")){
 						map_d.put("answerNum", 1);
 					}else{//填空选择题
-//						map_d.put("answerNum", lq.getQueAnswer().split(",").length);
+						map_d.put("answerNum", bsd.getRealAnswer().split(",").length);
 					}
 					if(lqType.equals("填空题") || lqType.equals("问答题")){
 						map_d.put("realAnswer", bsd.getRealAnswer());
@@ -1308,9 +1309,9 @@ public class BuffetStudyAction extends DispatchAction {
 							}
 							map_d.put("completeStatus", completeStatus);//做题状态(0:已做,1:未做)
 							if(completeStatus.equals(0)){
-								if(lqType.equals("单选题") || lqType.equals("判断题") || lqType.equals("填空题") || lqType.equals("问答题")){
+								if(lqType.equals("单选题") || lqType.equals("多选题") || lqType.equals("判断题") || lqType.equals("填空题") || lqType.equals("问答题")){
 									map_d.put("answerNum", 1);
-								}else{//填空选择题,多选题
+								}else{//填空选择题
 									map_d.put("answerNum", lq.getQueAnswer().split(",").length);
 								}
 							}
@@ -1347,9 +1348,9 @@ public class BuffetStudyAction extends DispatchAction {
 								map_d.put("answerE", lq.getE());
 								map_d.put("answerF", lq.getF());
 								map_d.put("completeStatus", 0);//做题状态(0:未做,1:已做)
-								if(lqType.equals("单选题") || lqType.equals("判断题") || lqType.equals("填空题") || lqType.equals("问答题")){
+								if(lqType.equals("单选题") || lqType.equals("多选题") || lqType.equals("判断题") || lqType.equals("填空题") || lqType.equals("问答题")){
 									map_d.put("answerNum", 1);
-								}else{//填空选择题,多选题
+								}else{//填空选择题
 									map_d.put("answerNum", lq.getQueAnswer().split(",").length);
 								}
 								if(lqType.equals("填空题") || lqType.equals("问答题")){
@@ -1388,9 +1389,9 @@ public class BuffetStudyAction extends DispatchAction {
 									map_d.put("answerE", lq.getE());
 									map_d.put("answerF", lq.getF());
 									map_d.put("completeStatus", 0);//做题状态(0:未做,1:已做)
-									if(lqType.equals("单选题") || lqType.equals("判断题") || lqType.equals("填空题") || lqType.equals("问答题")){
+									if(lqType.equals("单选题") || lqType.equals("多选题") || lqType.equals("判断题") || lqType.equals("填空题") || lqType.equals("问答题")){
 										map_d.put("answerNum", 1);
-									}else{//填空选择题,多选题
+									}else{//填空选择题
 										map_d.put("answerNum", lq.getQueAnswer().split(",").length);
 									}
 									if(lqType.equals("填空题") || lqType.equals("问答题")){
@@ -1455,9 +1456,9 @@ public class BuffetStudyAction extends DispatchAction {
 											}
 											map_d.put("completeStatus", completeStatus);//做题状态(0:未做,1:已做)
 											if(completeStatus.equals(0)){
-												if(lqType.equals("单选题") || lqType.equals("判断题") || lqType.equals("填空题") || lqType.equals("问答题")){
+												if(lqType.equals("单选题") || lqType.equals("多选题") || lqType.equals("判断题") || lqType.equals("填空题") || lqType.equals("问答题")){
 													map_d.put("answerNum", 1);
-												}else{//填空选择题,多选题
+												}else{//填空选择题
 													map_d.put("answerNum", lq.getQueAnswer().split(",").length);
 												}
 											}
@@ -1514,9 +1515,9 @@ public class BuffetStudyAction extends DispatchAction {
 										 }
 										 map_d.put("completeStatus", completeStatus);//做题状态(0:未做,1:已做)
 										if(completeStatus.equals(0)){
-											if(lqType.equals("单选题") || lqType.equals("判断题") || lqType.equals("填空题") || lqType.equals("问答题")){
+											if(lqType.equals("单选题") || lqType.equals("多选题") || lqType.equals("判断题") || lqType.equals("填空题") || lqType.equals("问答题")){
 												map_d.put("answerNum", 1);
-											}else{//填空选择题,多选题
+											}else{//填空选择题
 												map_d.put("answerNum", lq.getQueAnswer().split(",").length);
 											}
 										}
@@ -1589,9 +1590,9 @@ public class BuffetStudyAction extends DispatchAction {
 						 }
 						 map_d.put("completeStatus", completeStatus);//做题状态(0:未做,1:已做)
 						if(completeStatus.equals(0)){
-							if(lqType.equals("单选题") || lqType.equals("判断题") || lqType.equals("填空题") || lqType.equals("问答题")){
+							if(lqType.equals("单选题") || lqType.equals("多选题") || lqType.equals("判断题") || lqType.equals("填空题") || lqType.equals("问答题")){
 								map_d.put("answerNum", 1);
-							}else{//填空选择题,多选题
+							}else{//填空选择题
 								map_d.put("answerNum", lq.getQueAnswer().split(",").length);
 							}
 						}
@@ -2009,7 +2010,9 @@ public class BuffetStudyAction extends DispatchAction {
 						LoreInfo lore = lm.getEntityById(currLoreId);
 						map_d.put("currLoreId", currLoreId);
 						map_d.put("currLoreName", lore.getLoreName());
+						String lqType = lq.getQueType();
 						map_d.put("loreType", lq.getLoreTypeName());
+						map_d.put("lqType", lqType);
 						map_d.put("lqType", lq.getQueType());
 						map_d.put("lqSub", lq.getQueSub());
 						map_d.put("answerA", lq.getA());
@@ -2018,6 +2021,14 @@ public class BuffetStudyAction extends DispatchAction {
 						map_d.put("answerD", lq.getD());
 						map_d.put("answerE", lq.getE());
 						map_d.put("answerF", lq.getF());
+						if(lqType.equals("单选题") || lqType.equals("多选题") || lqType.equals("判断题") || lqType.equals("填空题") || lqType.equals("问答题")){
+							map_d.put("answerNum", 1);
+						}else{//填空选择题
+							map_d.put("answerNum", lq.getQueAnswer().split(",").length);
+						}
+						if(lqType.equals("填空题") || lqType.equals("问答题")){
+							map_d.put("realAnswer", lq.getQueAnswer());
+						}
 						//巩固训练全部都需要重新做
 						list_d.add(map_d);
 					}

@@ -173,6 +173,11 @@ public class ReportCenterAction  extends DispatchAction{
 		//班内老师时传递userId,stuId,gradeName,classId
 		//各级管理员
 		
+		String contentInfo = "";
+		Integer diffDays = 3;
+		String axisName1 = "";//当前筛选的值（一年级一班王杰对比一年级一班的平均值）
+		String axisName2 = "";//当前级别的平均值
+		
 		//学生个人的统计信息
 		Integer oneZdSuccNum = 0;//一次性通过总数
 		Integer oneZdFailNum = 0;//一次性未通过总数
@@ -201,6 +206,8 @@ public class ReportCenterAction  extends DispatchAction{
 			if(sDate.equals("") && eDate.equals("")){
 				eDate = CurrentTime.getStringDate();
 				sDate = CurrentTime.getFinalDate(-2);
+			}else{
+				diffDays = CurrentTime.compareDate(sDate, eDate) + 1;
 			}
 			List<StudyStuQfTjInfo> tjList = new ArrayList<StudyStuQfTjInfo>();
 			//学生和学生所在班级的平均统计信息进行对比
