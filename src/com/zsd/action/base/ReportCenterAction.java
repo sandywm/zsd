@@ -198,6 +198,10 @@ public class ReportCenterAction  extends DispatchAction{
 		String msg = "error";
 		Map<String,Object> map = new HashMap<String,Object>();
 		if(roleId > 0){
+			if(sDate.equals("") && eDate.equals("")){
+				eDate = CurrentTime.getStringDate();
+				sDate = CurrentTime.getFinalDate(-2);
+			}
 			List<StudyStuQfTjInfo> tjList = new ArrayList<StudyStuQfTjInfo>();
 			//学生和学生所在班级的平均统计信息进行对比
 			if(roleId.equals(2) || roleId.equals(6)){//学生\家长

@@ -169,7 +169,8 @@ public class BuffetStudyAction extends DispatchAction {
 					BuffetQueInfo buff = bsd.getBuffetQueInfo();
 					map_d.put("buffetId", buff.getId());
 					map_d.put("quoteLoreId", buff.getLoreInfo().getId());//通用版下的知识点编号
-					map_d.put("queType", buff.getQueType());
+					String lqType = buff.getQueType();
+					map_d.put("queType", lqType);
 					map_d.put("buffTypeId", buff.getBuffetTypeInfo().getId());
 					map_d.put("buffTypeName", buff.getBuffetTypeInfo().getTypes());
 					map_d.put("title", buff.getTitle());
@@ -195,6 +196,14 @@ public class BuffetStudyAction extends DispatchAction {
 					map_d.put("studyResult", bsd.getResult());
 					map_d.put("traceComStatus", bsd.getTraceComStatus());
 					map_d.put("currComStatus", bsd.getCurrComStatus());
+					if(lqType.equals("单选题") || lqType.equals("多选题") || lqType.equals("判断题") || lqType.equals("填空题") || lqType.equals("问答题")){
+						map_d.put("answerNum", 1);
+					}else{//填空选择题
+						map_d.put("answerNum", lq.getQueAnswer().split(",").length);
+					}
+					if(lqType.equals("填空题") || lqType.equals("问答题")){
+						map_d.put("realAnswer", lq.getQueAnswer());
+					}
 					list_d.add(map_d);
 				}
 				map.put("bsdList", list_d);
