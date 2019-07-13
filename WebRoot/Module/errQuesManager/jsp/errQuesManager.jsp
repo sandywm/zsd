@@ -227,6 +227,10 @@
 	        	    }
 	        	    editor_answer_select.render("myEditor_answer_select");
 				},
+				convertEngToChi : function(value){
+		    		//return value.replace(/,/g,"，").replace(/\s+/g,"").replace(/"/g,"”").replace(/'/g,"&#wmd;");
+		    		return value.replace(/,/g,"，").replace(/\s+/g,"").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+		    	},
 				//提交
 				subLore : function(){
 					var _this = this;
@@ -374,12 +378,12 @@
 						var queTipsId = $('#tipsInp_' + loreType).val() == '' ? 0 : $('#tipsInp_' + loreType).val()	,
 								lexId  = $('#'+loreType+'_lexId').val();
 						if(tiganTypeInpVal == '单选题' || tiganTypeInpVal == '多选题' || tiganTypeInpVal == '填空选择题'){
-							var answerA = answSelTypeInpVal == 1 ? $('#answSelInpTxt1').val() : $('#answerSelect1').attr('currSrc'),
-								answerB = answSelTypeInpVal == 1 ? $('#answSelInpTxt2').val() : $('#answerSelect2').attr('currSrc'),
-								answerC = answSelTypeInpVal == 1 ? $('#answSelInpTxt3').val() : $('#answerSelect3').attr('currSrc'),
-								answerD = answSelTypeInpVal == 1 ? $('#answSelInpTxt4').val() : $('#answerSelect4').attr('currSrc'),
-								answerE = answSelTypeInpVal == 1 ? $('#answSelInpTxt5').val() : $('#answerSelect5').attr('currSrc'),
-								answerF = answSelTypeInpVal == 1 ? $('#answSelInpTxt6').val() : $('#answerSelect6').attr('currSrc'),
+							var answerA = answSelTypeInpVal == 1 ? _this.convertEngToChi($('#answSelInpTxt1').val()) : $('#answerSelect1').attr('currSrc'),
+								answerB = answSelTypeInpVal == 1 ? _this.convertEngToChi($('#answSelInpTxt2').val()) : $('#answerSelect2').attr('currSrc'),
+								answerC = answSelTypeInpVal == 1 ? _this.convertEngToChi($('#answSelInpTxt3').val()) : $('#answerSelect3').attr('currSrc'),
+								answerD = answSelTypeInpVal == 1 ? _this.convertEngToChi($('#answSelInpTxt4').val()) : $('#answerSelect4').attr('currSrc'),
+								answerE = answSelTypeInpVal == 1 ? _this.convertEngToChi($('#answSelInpTxt5').val()) : $('#answerSelect5').attr('currSrc'),
+								answerF = answSelTypeInpVal == 1 ? _this.convertEngToChi($('#answSelInpTxt6').val()) : $('#answerSelect6').attr('currSrc'),
 								fieldCom = {lqId:lqBigId,lqeId:lqeId,cyStatus:cyStatus,queType:tiganTypeInpVal,queType2:tiganType1InpVal,queSub:currUeEditCon,queTipId:queTipsId,queResolution:currUeEditAnaly,
 										lexId:lexId,answerA:answerA,answerB:answerB,answerC:answerC,answerD:answerD,answerE:answerE,answerF:answerF};
 						}else if(tiganTypeInpVal == '判断题'){
