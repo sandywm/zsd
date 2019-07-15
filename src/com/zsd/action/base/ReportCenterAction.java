@@ -19,6 +19,7 @@ import com.zsd.module.StudentParentInfo;
 import com.zsd.module.StudyAllTjInfo;
 import com.zsd.module.StudyStuQfTjInfo;
 import com.zsd.module.StudyStuTjInfo;
+import com.zsd.module.Subject;
 import com.zsd.module.User;
 import com.zsd.module.UserClassInfo;
 import com.zsd.service.GradeSubjectManager;
@@ -31,6 +32,7 @@ import com.zsd.service.StudyDetailManager;
 import com.zsd.service.StudyLogManager;
 import com.zsd.service.StudyStuQfTjManager;
 import com.zsd.service.StudyStuTjInfoManager;
+import com.zsd.service.SubjectManager;
 import com.zsd.service.UserClassInfoManager;
 import com.zsd.service.UserManager;
 import com.zsd.tools.CommonTools;
@@ -147,6 +149,7 @@ public class ReportCenterAction  extends DispatchAction{
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		StudyStuQfTjManager tjm = (StudyStuQfTjManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_STU_QFTJ_INFO);
 		StudentParentInfoManager spm = (StudentParentInfoManager) AppFactory.instance(null).getApp(Constants.WEB_STUDENT_PARENT_INFO);
+		SubjectManager sm = (SubjectManager) AppFactory.instance(null).getApp(Constants.WEB_SUBJECT_INFO);
 		UserClassInfoManager ucm = (UserClassInfoManager)AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
 		UserManager um = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
 		Integer userId = CommonTools.getLoginUserId(request);//必须传
@@ -177,6 +180,7 @@ public class ReportCenterAction  extends DispatchAction{
 		Integer diffDays = 3;
 		String axisName1 = "";//当前筛选的值（一年级一班王杰对比一年级一班的平均值）
 		String axisName2 = "";//当前级别的平均值
+		String subName = "";
 		
 		//学生个人的统计信息
 		Integer oneZdSuccNum = 0;//一次性通过总数
@@ -209,22 +213,34 @@ public class ReportCenterAction  extends DispatchAction{
 			}else{
 				diffDays = CurrentTime.compareDate(sDate, eDate) + 1;
 			}
+			if(subId > 0){
+				List<Subject> subList = sm.listEntityById(subId);
+				if(subList.size() > 0){
+					subName = subList.get(0).getSubName();
+				}
+			}
 			List<StudyStuQfTjInfo> tjList = new ArrayList<StudyStuQfTjInfo>();
 			//学生和学生所在班级的平均统计信息进行对比
 			if(roleId.equals(2) || roleId.equals(6)){//学生\家长
 				if(userId > 0){
+					axisName1 = "我的统计";
 					if(roleId.equals(6)){//家长
 						StudentParentInfo sp = spm.getEntityByParId(userId);
 						if(sp != null){//获取自己孩子的id
 							userId = sp.getStu().getId();
+							axisName1 = sp.getStu().getRealName()+"的统计";
 						}
 					}
 					//获取学生所在的班级
 					UserClassInfo uc = ucm.getEntityByOpt(userId, 2);
 					if(uc != null){
 						classId = uc.getClassInfo().getId();
+						String className_temp = uc.getClassInfo().getClassName();
+						Integer gradeNumber = Convert.dateConvertGradeNumber(uc.getClassInfo().getBuildeClassDate());
+						axisName2 = Convert.NunberConvertChinese(gradeNumber)+className_temp+"的统计";
 					}
 					//学生和家长身份时，只需要用到起始时间，学科，班级编号
+					axisName2 = "";
 				}
 				tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, "", "", "", "", 0, 0, "", classId);//获取指定班级的统计信息
 			}else if(roleId.equals(4)){//老师(班内)
