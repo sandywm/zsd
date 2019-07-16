@@ -14,6 +14,7 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
 
 import com.zsd.factory.AppFactory;
+import com.zsd.module.ClassInfo;
 import com.zsd.module.GradeSubject;
 import com.zsd.module.StudentParentInfo;
 import com.zsd.module.StudyAllTjInfo;
@@ -22,6 +23,7 @@ import com.zsd.module.StudyStuTjInfo;
 import com.zsd.module.Subject;
 import com.zsd.module.User;
 import com.zsd.module.UserClassInfo;
+import com.zsd.service.ClassInfoManager;
 import com.zsd.service.GradeSubjectManager;
 import com.zsd.service.LoreQuestionManager;
 import com.zsd.service.RelationZdResultManager;
@@ -151,7 +153,9 @@ public class ReportCenterAction  extends DispatchAction{
 		StudentParentInfoManager spm = (StudentParentInfoManager) AppFactory.instance(null).getApp(Constants.WEB_STUDENT_PARENT_INFO);
 		SubjectManager sm = (SubjectManager) AppFactory.instance(null).getApp(Constants.WEB_SUBJECT_INFO);
 		UserClassInfoManager ucm = (UserClassInfoManager)AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
-		UserManager um = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
+		SchoolManager schm = (SchoolManager) AppFactory.instance(null).getApp(Constants.WEB_SCHOOL_INFO);
+ 		UserManager um = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
+		ClassInfoManager cm = (ClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_CLASS_INFO);
 		Integer userId = CommonTools.getLoginUserId(request);//必须传
 		Integer roleId = CommonTools.getLoginRoleId(request);//必须传
 //		userId = 1;
@@ -219,6 +223,7 @@ public class ReportCenterAction  extends DispatchAction{
 					subName = subList.get(0).getSubName();
 				}
 			}
+			contentInfo = "最近"+diffDays+"天"+subName+"的统计";
 			List<StudyStuQfTjInfo> tjList = new ArrayList<StudyStuQfTjInfo>();
 			//学生和学生所在班级的平均统计信息进行对比
 			if(roleId.equals(2) || roleId.equals(6)){//学生\家长
@@ -240,7 +245,6 @@ public class ReportCenterAction  extends DispatchAction{
 						axisName2 = Convert.NunberConvertChinese(gradeNumber)+className_temp+"的统计";
 					}
 					//学生和家长身份时，只需要用到起始时间，学科，班级编号
-					axisName2 = "";
 				}
 				tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, "", "", "", "", 0, 0, "", classId);//获取指定班级的统计信息
 			}else if(roleId.equals(4)){//老师(班内)
@@ -250,8 +254,22 @@ public class ReportCenterAction  extends DispatchAction{
 				if(stuId.equals(0)){//当选择的是班级时--一年级一班和一年级所有班级的平均值对比
 					schoolId = um.listEntityById(userId).get(0).getSchoolId();
 					tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, "", "", "", "", 0, schoolId, gradeName, 0);//获取指定学校指定年级的统计信息
+					if(classId > 0){
+						List<ClassInfo> cList = cm.listClassInfoById(classId);
+						if(cList.size() > 0){
+							axisName1 = gradeName+cList.get(0).getClassName()+"的统计";
+							axisName2 = gradeName+"的统计";
+						}
+					}
 				}else{//当选择的是班级列表下的学生时--学生和当前班级的平均统计信息进行对比
 					tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, "", "", "", "", 0, 0, "", classId);//获取指定班级的统计信息
+					if(classId > 0){
+						List<ClassInfo> cList = cm.listClassInfoById(classId);
+						if(cList.size() > 0){
+							axisName1 = um.listEntityById(stuId).get(0).getRealName()+"的统计";
+							axisName2 = gradeName+cList.get(0).getClassName()+"的统计";
+						}
+					}
 				}
 			}else if(roleId.equals(5)){//各级管理员
 				//1：学科必须选择，学段可隔空选择，比如省管理 员可不选市县乡而直接选择学段，那就是指定省下指定学段和全国所有省指定学段的平均值进行对比
@@ -264,61 +282,96 @@ public class ReportCenterAction  extends DispatchAction{
 				//8：当为省市县学段(小学)学校年级班级时，需要当前学校指定班级所在的年级平均值进行对比(油田八小一年级一班和油田八小一年级平均值进行对比)
 				//9：当为省市县学段(小学)学校年级班级学生时，需要学生和学生所在的班级平均值进行对比(油田八小一年级一班某某学生和油田八小一年级一班的平均值进行对比)
 				if(!prov.equals("")){
+					String schoolTypeName = "";
+					if(schoolType.equals(1)){
+						schoolTypeName = "小学";
+					}else if(schoolType.equals(2)){
+						schoolTypeName = "初中";
+					}else if(schoolType.equals(3)){
+						schoolTypeName = "高中";
+					}
 					if(!city.equals("")){
 						if(!county.equals("")){
 							if(!town.equals("")){
 								if(schoolId > 0){
+									String schoolName = schm.listInfoById(schoolId).get(0).getSchoolName();
 									if(!gradeName.equals("")){
 										if(classId > 0){
+											String className = cm.listClassInfoById(classId).get(0).getClassName();
 											if(stuId > 0){
+												String stuName = um.listEntityById(stuId).get(0).getRealName();
 												tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, "", "", "", "", 0, 0, "", classId);//获取指定班级的统计信息
+												axisName1 = prov+city+county+town+schoolName+gradeName+className+stuName+"的统计";
+												axisName2 = prov+city+county+town+schoolName+gradeName+className+"的统计";
 											}else{
 												//当选择的是班级时--一年级一班和一年级所有班级的平均值对比
 												tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, "", "", "", "", 0, schoolId, gradeName, 0);//获取指定学校指定年级的统计信息
+												axisName1 = prov+city+county+town+schoolName+gradeName+className+"的统计";
+												axisName2 = prov+city+county+town+schoolName+gradeName+"的统计";
 											}
 										}else{
 											//油田八小一年级和当前学校所处乡的所有小学一年级的平均值对比
 											tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, prov, city, county, town, schoolType, 0, gradeName, 0);//获取指定乡下所有指定年级的统计信息
+											axisName1 = prov+city+county+town+schoolName+gradeName+"的统计";
+											axisName2 = prov+city+county+town+gradeName+"的统计";
 										}
 									}else{
 										//schoolType必须是大于0
 										//指定学校和指定乡下所有指定学段的平均值进行对比（小学油田八小和城关镇下所有小学平均值进行对比）
 										tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, prov, city, county, town, schoolType, 0, "", 0);//城关镇下所有小学
+										axisName1 = prov+city+county+town+schoolName+"的统计";
+										axisName2 = prov+city+county+town+schoolTypeName+"的统计";
 									}
 								}else{
 									if(schoolType > 0){//当是省+市+县+乡+学段
 										//指定乡下指定学段和指定县下所有乡的指定学段的平均值进行对比（范县城关镇所有小学和范县下所有乡的小学平均值进行对比）
 										tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, prov, city, county, "", schoolType, 0, "", 0);//范县下所有乡的小学的记录
+										axisName1 = prov+city+county+town+schoolTypeName+"的统计";
+										axisName2 = prov+city+county+schoolTypeName+"的统计";
 									}else{
 										//指定乡和当前县下所有乡的平均值进行对比（范县城关镇和范县下所有乡的平均值进行对比）
 										tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, prov, city, county, "", 0, 0, "", 0);//范县下所有乡的记录
+										axisName1 = prov+city+county+town+"的统计";
+										axisName2 = prov+city+county+"的统计";
 									}
 								}
 							}else{
 								if(schoolType > 0){//当是省+市+县+学段
 									//指定县下指定学段和指定市下所有县的指定学段的平均值进行对比（濮阳市范县小学和濮阳市下所有县的小学平均值进行对比）
 									tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, prov, city, "", "", schoolType, 0, "", 0);//濮阳市下所有县的小学的记录
+									axisName1 = prov+city+county+schoolTypeName+"的统计";
+									axisName2 = prov+city+schoolTypeName+"的统计";
 								}else{
 									//指定县当前市下所有县的平均值进行对比（濮阳市范县和濮阳市下所有县的平均值进行对比）
 									tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, prov, city, "", "", 0, 0, "", 0);//濮阳市下所有县的记录
+									axisName1 = prov+city+county+"的统计";
+									axisName2 = prov+city+"的统计";
 								}
 							}
 						}else{
 							if(schoolType > 0){//当是省+市+学段
 								//指定市下指定学段和指定省下所有市的指定学段的平均值进行对比（河南省濮阳市小学和河南省所有市的小学平均值进行对比）
 								tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, prov, "", "", "", schoolType, 0, "", 0);//河南省所有市的小学记录
+								axisName1 = prov+city+schoolTypeName+"的统计";
+								axisName2 = prov+schoolTypeName+"的统计";
 							}else{
 								//需要和该省下所有市的平均值进行对比(濮阳市和河南省所有市平均值进行对比)
 								tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, prov, "", "", "", 0, 0, "", 0);//河南省所有市的记录
+								axisName1 = prov+city+county+"的统计";
+								axisName2 = prov+city+"的统计";
 							}
 						}
 					}else{//当市为空的时候
 						if(schoolType > 0){//当是省+学段
 							//指定省下指定学段和全国所有省指定学段的平均值进行对比（河南省小学和全国小学平均值进行对比）
 							tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, "", "", "", "", schoolType, 0, "", 0);//全国小学记录
+							axisName1 = prov+schoolTypeName+"的统计";
+							axisName2 = "全国"+schoolTypeName+"的统计";
 						}else{
 							//需要和全国所有省份平均值进行对比(河南省和全国省份平均值对比)
 							tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, "", "", "", "", 0, 0, "", 0);//全国记录
+							axisName1 = prov+"的统计";
+							axisName2 = "全国的统计";
 						}
 					}
 				}
@@ -489,6 +542,7 @@ public class ReportCenterAction  extends DispatchAction{
 				map.put("relateXxSuccNum", Convert.convertInputNumber_2(relateXxSuccNum * 1.0 / specNum));
 				map.put("relateXxFailNum", Convert.convertInputNumber_2(relateXxFailNum * 1.0 / specNum));
 				map.put("rate", rate);
+				map.put("axisName1", axisName1);
 				
 				map.put("oneZdSuccNumAll", Convert.convertInputNumber_2(oneZdSuccNumAll * 1.0 / allNum));
 				map.put("oneZdFailNumAll", oneZdFailNumAll_new);
@@ -499,6 +553,8 @@ public class ReportCenterAction  extends DispatchAction{
 				map.put("relateXxSuccNumAll", Convert.convertInputNumber_2(relateXxSuccNumAll * 1.0 / allNum));
 				map.put("relateXxFailNumAll", Convert.convertInputNumber_2(relateXxFailNumAll * 1.0 / allNum));
 				map.put("rateAll", rateAll);
+				map.put("axisName2", axisName2);
+				map.put("contentInfo", contentInfo);
 			}else{
 				msg = "noInfo";
 			}
