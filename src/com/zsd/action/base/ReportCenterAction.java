@@ -209,6 +209,7 @@ public class ReportCenterAction  extends DispatchAction{
 		String rate = "";//转化率
 		String rateAll = "";
 		String msg = "error";
+		Integer allNum = 1;
 		Map<String,Object> map = new HashMap<String,Object>();
 		if(roleId > 0){
 			if(sDate.equals("") && eDate.equals("")){
@@ -301,17 +302,20 @@ public class ReportCenterAction  extends DispatchAction{
 											if(stuId > 0){
 												String stuName = um.listEntityById(stuId).get(0).getRealName();
 												tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, "", "", "", "", 0, 0, "", classId);//获取指定班级的统计信息
+												allNum = tjm.getDistinctCountByOpt(0, subId, sDate, eDate, "", "", "", "", 0, 0, "", classId);
 												axisName1 = prov+city+county+town+schoolName+gradeName+className+stuName+"的统计";
 												axisName2 = prov+city+county+town+schoolName+gradeName+className+"的统计";
 											}else{
 												//当选择的是班级时--一年级一班和一年级所有班级的平均值对比
 												tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, "", "", "", "", 0, schoolId, gradeName, 0);//获取指定学校指定年级的统计信息
+												allNum = tjm.getDistinctCountByOpt(0, subId, sDate, eDate, "", "", "", "", 0, schoolId, gradeName, 0);
 												axisName1 = prov+city+county+town+schoolName+gradeName+className+"的统计";
 												axisName2 = prov+city+county+town+schoolName+gradeName+"的统计";
 											}
 										}else{
 											//油田八小一年级和当前学校所处乡的所有小学一年级的平均值对比
 											tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, prov, city, county, town, schoolType, 0, gradeName, 0);//获取指定乡下所有指定年级的统计信息
+											allNum = tjm.getDistinctCountByOpt(0, subId, sDate, eDate, prov, city, county, town, schoolType, 0, gradeName, 0);
 											axisName1 = prov+city+county+town+schoolName+gradeName+"的统计";
 											axisName2 = prov+city+county+town+gradeName+"的统计";
 										}
@@ -319,6 +323,7 @@ public class ReportCenterAction  extends DispatchAction{
 										//schoolType必须是大于0
 										//指定学校和指定乡下所有指定学段的平均值进行对比（小学油田八小和城关镇下所有小学平均值进行对比）
 										tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, prov, city, county, town, schoolType, 0, "", 0);//城关镇下所有小学
+										allNum = tjm.getDistinctCountByOpt(0, subId, sDate, eDate, prov, city, county, town, schoolType, 0, "", 0);
 										axisName1 = prov+city+county+town+schoolName+"的统计";
 										axisName2 = prov+city+county+town+schoolTypeName+"的统计";
 									}
@@ -326,11 +331,13 @@ public class ReportCenterAction  extends DispatchAction{
 									if(schoolType > 0){//当是省+市+县+乡+学段
 										//指定乡下指定学段和指定县下所有乡的指定学段的平均值进行对比（范县城关镇所有小学和范县下所有乡的小学平均值进行对比）
 										tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, prov, city, county, "", schoolType, 0, "", 0);//范县下所有乡的小学的记录
+										allNum = tjm.getDistinctCountByOpt(0, subId, sDate, eDate, prov, city, county, "", schoolType, 0, "", 0);
 										axisName1 = prov+city+county+town+schoolTypeName+"的统计";
 										axisName2 = prov+city+county+schoolTypeName+"的统计";
 									}else{
 										//指定乡和当前县下所有乡的平均值进行对比（范县城关镇和范县下所有乡的平均值进行对比）
 										tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, prov, city, county, "", 0, 0, "", 0);//范县下所有乡的记录
+										allNum = tjm.getDistinctCountByOpt(0, subId, sDate, eDate, prov, city, county, "", 0, 0, "", 0);
 										axisName1 = prov+city+county+town+"的统计";
 										axisName2 = prov+city+county+"的统计";
 									}
@@ -339,11 +346,13 @@ public class ReportCenterAction  extends DispatchAction{
 								if(schoolType > 0){//当是省+市+县+学段
 									//指定县下指定学段和指定市下所有县的指定学段的平均值进行对比（濮阳市范县小学和濮阳市下所有县的小学平均值进行对比）
 									tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, prov, city, "", "", schoolType, 0, "", 0);//濮阳市下所有县的小学的记录
+									allNum = tjm.getDistinctCountByOpt(0, subId, sDate, eDate, prov, city, "", "", schoolType, 0, "", 0);
 									axisName1 = prov+city+county+schoolTypeName+"的统计";
 									axisName2 = prov+city+schoolTypeName+"的统计";
 								}else{
 									//指定县当前市下所有县的平均值进行对比（濮阳市范县和濮阳市下所有县的平均值进行对比）
 									tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, prov, city, "", "", 0, 0, "", 0);//濮阳市下所有县的记录
+									allNum = tjm.getDistinctCountByOpt(0, subId, sDate, eDate, prov, city, "", "", 0, 0, "", 0);
 									axisName1 = prov+city+county+"的统计";
 									axisName2 = prov+city+"的统计";
 								}
@@ -352,11 +361,13 @@ public class ReportCenterAction  extends DispatchAction{
 							if(schoolType > 0){//当是省+市+学段
 								//指定市下指定学段和指定省下所有市的指定学段的平均值进行对比（河南省濮阳市小学和河南省所有市的小学平均值进行对比）
 								tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, prov, "", "", "", schoolType, 0, "", 0);//河南省所有市的小学记录
+								allNum = tjm.getDistinctCountByOpt(0, subId, sDate, eDate, prov, "", "", "", schoolType, 0, "", 0);
 								axisName1 = prov+city+schoolTypeName+"的统计";
 								axisName2 = prov+schoolTypeName+"的统计";
 							}else{
 								//需要和该省下所有市的平均值进行对比(濮阳市和河南省所有市平均值进行对比)
 								tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, prov, "", "", "", 0, 0, "", 0);//河南省所有市的记录
+								allNum = tjm.getDistinctCountByOpt(0, subId, sDate, eDate, prov, "", "", "", 0, 0, "", 0);
 								axisName1 = prov+city+county+"的统计";
 								axisName2 = prov+city+"的统计";
 							}
@@ -365,11 +376,13 @@ public class ReportCenterAction  extends DispatchAction{
 						if(schoolType > 0){//当是省+学段
 							//指定省下指定学段和全国所有省指定学段的平均值进行对比（河南省小学和全国小学平均值进行对比）
 							tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, "", "", "", "", schoolType, 0, "", 0);//全国小学记录
+							allNum = tjm.getDistinctCountByOpt(0, subId, sDate, eDate, "", "", "", "", schoolType, 0, "", 0);
 							axisName1 = prov+schoolTypeName+"的统计";
 							axisName2 = "全国"+schoolTypeName+"的统计";
 						}else{
 							//需要和全国所有省份平均值进行对比(河南省和全国省份平均值对比)
 							tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, "", "", "", "", 0, 0, "", 0);//全国记录
+							allNum = tjm.getDistinctCountByOpt(0, subId, sDate, eDate, "", "", "", "", 0, 0, "", 0);
 							axisName1 = prov+"的统计";
 							axisName2 = "全国的统计";
 						}
@@ -378,7 +391,6 @@ public class ReportCenterAction  extends DispatchAction{
 			}
 			if(tjList.size() > 0){
 				msg = "success";
-				Integer allNum = tjList.size();
 				Integer specNum = 0;
 				for(StudyStuQfTjInfo qftj : tjList){
 					oneZdSuccNumAll += qftj.getOneZdSuccNum();

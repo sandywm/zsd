@@ -69,4 +69,26 @@ public interface StudyStuQfTjDao {
 	 */
 	List<StudyStuQfTjInfo> findInfoByOpt(Session sess,Integer userId,Integer subId,String sDate,String eDate,
 			String prov,String city,String county,String town,Integer schoolType,Integer schoolId,String gradeName,Integer classId);
+	
+	/**
+	 * 获取指定条件的勤奋信息记录（去除重复，按照学生编号分组）--只做统计个数使用
+	 * @author wm
+	 * @date 2019-7-16 下午12:27:30
+	 * @param sess
+	 * @param userId 学生编号（0不查询）
+	 * @param subId 科目编号（0不查询）
+	 * @param sDate 开始时间
+	 * @param eDate 结束时间
+	 * @param prov 省 (""不查询)
+	 * @param city 市(""不查询)
+	 * @param county 县(""不查询)
+	 * @param town 镇(""不查询)
+	 * @param schoolType 学段(0不查询)
+	 * @param schoolId 学校编号(0不查询)
+	 * @param gradeName 年级名称(""不查询)
+	 * @param classId 班级编号(0不查询)
+	 * @return
+	 */
+	Integer getDistinctCountByOpt(Session sess,Integer userId,Integer subId,String sDate,String eDate,
+			String prov,String city,String county,String town,Integer schoolType,Integer schoolId,String gradeName,Integer classId);
 }

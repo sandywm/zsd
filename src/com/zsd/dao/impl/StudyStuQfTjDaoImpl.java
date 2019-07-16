@@ -86,4 +86,46 @@ public class StudyStuQfTjDaoImpl implements StudyStuQfTjDao{
 		return null;
 	}
 
+	@Override
+	public Integer getDistinctCountByOpt(Session sess, Integer userId,
+			Integer subId, String sDate, String eDate, String prov,
+			String city, String county, String town, Integer schoolType,
+			Integer schoolId, String gradeName, Integer classId) {
+		// TODO Auto-generated method stub
+		String hql = " from StudyStuQfTjInfo as qftj where qftj.studyDate >= '"+sDate+"' and qftj.studyDate <= '"+eDate+"'";
+		if(userId > 0){
+			hql += " and qftj.user.id = "+userId;
+		}
+		if(subId > 0){
+			hql += " and qftj.subject.id = "+subId;
+		}
+		if(!prov.equals("")){
+			hql += " and qftj.prov = '"+prov+"'";
+		}
+		if(!city.equals("")){
+			hql += " and qftj.city = '"+city+"'";
+		}
+		if(!county.equals("")){
+			hql += " and qftj.county = '"+county+"'";
+		}
+		if(!town.equals("")){
+			hql += " and qftj.town = '"+town+"'";
+		}
+		if(schoolType > 0){
+			hql += " and qftj.schoolType = "+schoolType;
+		}
+		if(schoolId > 0){
+			hql += " and qftj.school.id = "+schoolId;
+		}
+		if(!gradeName.equals("")){
+			hql += " and qftj.gradeName = '"+gradeName+"'";
+		}
+		if(classId > 0){
+			hql += " and qftj.classInfo.id = "+classId;
+		}
+		hql += " group by qftj.user.id";
+		List<StudyStuQfTjInfo> l = sess.createQuery(hql).list();
+		return l.size();
+	}
+
 }

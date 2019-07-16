@@ -165,4 +165,23 @@ public class StudyStuQfTjManagerImpl implements StudyStuQfTjManager{
 		}
 	}
 
+	@Override
+	public Integer getDistinctCountByOpt(Integer userId, Integer subId,
+			String sDate, String eDate, String prov, String city,
+			String county, String town, Integer schoolType, Integer schoolId,
+			String gradeName, Integer classId) throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			tjDao = (StudyStuQfTjDao) DaoFactory.instance(null).getDao(Constants.DAO_STUDY_STU_QFTJ_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return tjDao.getDistinctCountByOpt(sess, userId, subId, sDate, eDate, prov, city, county, town, schoolType, schoolId, gradeName, classId);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new WEBException("获取指定条件的勤奋信息记录（去除重复，按照学生编号分组）--只做统计个数使用时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
 }
