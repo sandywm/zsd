@@ -114,6 +114,7 @@ public class UserAction extends DispatchAction {
 		GradeSubjectManager gsManager = (GradeSubjectManager) AppFactory.instance(null).getApp(Constants.WEB_GRADE_SUBJECT_INFO);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String userAccount =CommonTools.getFinalStr("userAccount",request);
+		String xsAccount = CommonTools.getFinalStr("xsAccount",request);
 		String roleName =Transcode.unescape_new("roleName",request);
 		String realName=Transcode.unescape_new("realName",request);
 		String className=Transcode.unescape_new("className",request);
@@ -129,49 +130,190 @@ public class UserAction extends DispatchAction {
 		Integer schoolType=CommonTools.getFinalInteger("schoolType", request);
 		String msg ="";
 		Integer userId =0;
+		Integer  xsId =0;
 		List<School> scList = scManager.listInfoById(schoolId);
 		Integer yearSystem=0;
 		if(scList.size()>0){
 			yearSystem = scList.get(0).getYearSystem();
 		}
 		List<User> uList = uManager.listInfoByAccount(userAccount);//判断账户是否存在
-		msg ="fail";//注册用户失败
-		if(uList.size()>0){
-			msg="exist"; //用户名存在
-		}else{
-			//1.用户注册
-			userId=uManager.addUser(userAccount, realName, password, mobile, lastLoginDate, lastLoginIp, 
-					signDate, schoolId, CurrentTime.getFinalDate(30), yearSystem, prov, city);
+		List<User> xsulist =null; 
+		if(!xsAccount.equals("")){
+			xsulist = uManager.listInfoByAccount(xsAccount);//学生账户是否存在
 		}
-		if(roleName.equals("学生")){
-				if(userId>0){
-					List<RoleInfo> rList = rManager.listRoleInfo(roleName);
-					Integer roleId = 0;
-					if(rList.size() > 0){
-						roleId = rList.get(0).getId();
-						//2学生 绑定角色
-						Integer ruId=ruManager.addRoleUserInfo(userId, roleId, "", "", "", "", 0, 0, 0, 0);
-						//5 生成家长账户
-						Integer upId = uManager.addUser(userAccount+"_jz", "", new MD5().calcMD5("123456"), "", lastLoginDate, lastLoginIp, signDate, schoolId, CurrentTime.getFinalDateTime(30), yearSystem, prov, city);
-						//6 家长绑定角色
-						List<RoleInfo> jzlist = rManager.listRoleInfo("家长");
-						if(jzlist.size() > 0){
-							Integer jzRoleId = jzlist.get(0).getId();
-							ruManager.addRoleUserInfo(upId, jzRoleId, "", "", "", "", 0, 0, 0, 0);
+		msg ="fail";//注册用户失败
+		if(roleName.equals("家长")){
+			if(xsAccount==userAccount){
+				msg ="identical";//学生家长账户一样
+			}else{
+				if(!xsulist.isEmpty()){
+					msg="xs_exist"; //学生账户已存在
+				}else if(!uList.isEmpty()){
+					msg="jz_exist"; 
+				}else{
+					//1.用户注册
+					userId=uManager.addUser(userAccount, realName, password, mobile, lastLoginDate, lastLoginIp, 
+							signDate, schoolId, CurrentTime.getFinalDate(30), yearSystem, prov, city);
+					if(userId>0){//学生账户
+						xsId=uManager.addUser(userAccount, realName, password, mobile, lastLoginDate, lastLoginIp, 
+								signDate, schoolId, CurrentTime.getFinalDate(30), yearSystem, prov, city);
+						if(xsId > 0){
+							msg = "success";
 						}
-						// 7 学生家长绑定
-						spManager.addSpInfo(upId, userId);
-						msg = "success";//注册用户成功
-						if(ruId>0){//绑定角色成功
-							List<InviteCodeInfo> icList = icManager.listIcInfoByicCode(inviteCode);
-							if(icList.size()>0){//存在班级邀请码
-								Integer teaId=icList.get(0).getInviteId();
-								ntsManager.addNTS(userId, teaId, CurrentTime.getCurrentTime(), -1, CurrentTime.getFinalDateTime(7), 0, "", "", 0);//4 缃戠粶瀵煎笀瀛︾敓缁戝畾
+					}
+				}
+			}
+			
+		}else{
+			if(uList.size()>0){
+				msg="exist"; //用户名存在
+			}else{
+				//1.用户注册
+				userId=uManager.addUser(userAccount, realName, password, mobile, lastLoginDate, lastLoginIp, 
+						signDate, schoolId, CurrentTime.getFinalDate(30), yearSystem, prov, city);
+				if(userId > 0){
+					msg = "success";
+				}
+			}
+		}
+		if(msg.equals("success")){
+			if(roleName.equals("学生")){
+					if(userId>0){
+						List<RoleInfo> rList = rManager.listRoleInfo(roleName);
+						Integer roleId = 0;
+						if(rList.size() > 0){
+							roleId = rList.get(0).getId();
+							//2学生 绑定角色
+							Integer ruId=ruManager.addRoleUserInfo(userId, roleId, "", "", "", "", 0, 0, 0, 0);
+							//5 生成家长账户
+							Integer upId = uManager.addUser(userAccount+"_jz", "", new MD5().calcMD5("123456"), "", lastLoginDate, lastLoginIp, signDate, schoolId, CurrentTime.getFinalDateTime(30), yearSystem, prov, city);
+							//6 家长绑定角色
+							List<RoleInfo> jzlist = rManager.listRoleInfo("家长");
+							if(jzlist.size() > 0){
+								Integer jzRoleId = jzlist.get(0).getId();
+								ruManager.addRoleUserInfo(upId, jzRoleId, "", "", "", "", 0, 0, 0, 0);
 							}
+							// 7 学生家长绑定
+							spManager.addSpInfo(upId, userId);
+							msg = "success";//注册用户成功
+							if(ruId>0){//绑定角色成功
+								List<InviteCodeInfo> icList = icManager.listIcInfoByicCode(inviteCode);//导师邀请码
+								if(icList.size()>0){
+									Integer teaId=icList.get(0).getInviteId();
+									ntsManager.addNTS(userId, teaId, CurrentTime.getCurrentTime(), -1, CurrentTime.getFinalDateTime(7), 0, "", "", 0);//4 缃戠粶瀵煎笀瀛︾敓缁戝畾
+								}
+								List<ClassInfo> ciList = ciManager.listClassInfoByOption(gradeNo, CurrentTime.getCurrentTime(), schoolId, className);
+								if(ciList.size()>0){
+									Integer classId = ciList.get(0).getId();
+									ucManager.addUcInfo(userId, classId, roleId); //3 绑定用户班级
+								}else{//班级不存在
+									Integer mRoId =0;
+									List<RoleInfo> mRList = rManager.listRoleInfo("管理员");
+									if(mRList.size()>0){
+									    mRoId = mRList.get(0).getId();
+									}
+									List<RoleUserInfo> rulist = ruManager.listUserRoleInfoBySchId(schoolId);
+									String pr="";
+									String ct="";
+									String county="";
+									Integer schType=0;
+									if(!rulist.isEmpty()){
+										pr= rulist.get(0).getProv();
+										ct= rulist.get(0).getCity();
+										county=rulist.get(0).getCounty();
+										schType=rulist.get(0).getSchoolType();
+									}
+									Integer ciId = ciManager.addClassInfo(schoolId,className,Convert.gradeNoToBuildeClassDate(gradeNo));//创建班级
+									String currTime=CurrentTime.getCurrentTime();
+									Integer cMid=uManager.addUser("c"+ciId, "", new MD5().calcMD5("123456"), "",currTime, lastLoginIp, currTime, schoolId, "", yearSystem, prov, city);
+									
+									//绑定班级管理员角色
+									Integer ruNo =ruManager.addRoleUserInfo(cMid, mRoId, pr, ct, county, "", schType, schoolId, gradeNo, ciId);
+										
+									if(ruNo>0){//班内学科老师
+										String gName = Convert.NunberConvertChinese(gradeNo);//年级名
+										List<GradeSubject> gslist = gsManager.listSpecInfoByGname(gName);//根据年级名获取学科列表
+										for (Iterator<GradeSubject> itr = gslist.iterator(); itr.hasNext();) {
+											GradeSubject gs = (GradeSubject) itr.next();
+											Integer sId = gs.getSubject().getId();
+											//生成班内老师账户
+											Integer teaId=uManager.addUser("t"+schoolId+sId+ciId, "", new MD5().calcMD5("123456"), "",currTime, lastLoginIp, currTime, schoolId, "", yearSystem, prov, city);
+											//老师绑定角色
+											List<RoleInfo> rlist = rManager.listRoleInfo("老师");
+											if(rlist.size() > 0){
+												Integer teaRoId = rlist.get(0).getId();
+												ruManager.addRoleUserInfo(teaId, teaRoId, "", "", "", "", 0, 0, 0, 0);
+												ucManager.addUcInfo(teaId, ciId, teaRoId); //绑定班级
+											}
+										}
+									}
+									ucManager.addUcInfo(userId, ciId, roleId); //学生用户 绑定班级	
+								}
+							}
+						}
+					}else{
+						msg ="fail";//注册用户失败
+					}
+			}else if(roleName.equals("网络导师")){ //网络导师注册
+				if(userId>0){
+				//网络导师生成自己的邀请码
+				String ivCode = InviteCode.getRandomCode();
+				Integer icId=icManager.addInviteCodeInfo(userId, "导师邀请码", ivCode, CurrentTime.getCurrentTime1());
+				if(icId>0){
+					Integer baseMoney = 0;
+					if(schoolType.equals(1)){
+						baseMoney = (int) Constants.NET_TEACHER_SERVICE_FEE_XX;
+					}else if(schoolType.equals(2)){
+						baseMoney = (int) Constants.NET_TEACHER_SERVICE_FEE_CZ;
+					}else{
+						baseMoney = (int) Constants.NET_TEACHER_SERVICE_FEE_GZ;
+					}
+				
+					List<RoleInfo> ntlist = rManager.listRoleInfo("网络导师");
+					if(ntlist.size() > 0){
+						Integer ntRoleId = ntlist.get(0).getId();
+						ruManager.addRoleUserInfo(userId, ntRoleId, "", "", "", "", 0, 0, 0, 0);
+					}
+					ntManager.addNtInfo(userId, subId, schoolType, baseMoney, "", "", "", "", "", "", "", "", 0, 0, 0); //添加网络导师基本信息
+					msg = "success";//注册用户成功
+				}
+			  }else{
+					msg ="fail";//注册用户失败
+				}
+			}else if(roleName.equals("家长")){
+				if(userId>0){
+					List<RoleInfo> jzlist = rManager.listRoleInfo(roleName);
+					Integer roleId = 0;
+					if(jzlist.size() > 0){
+						roleId = jzlist.get(0).getId();
+						//家长 绑定角色
+						Integer jzRuId=ruManager.addRoleUserInfo(userId, roleId, "", "", "", "", 0, 0, 0, 0);
+					
+						/*if(jzRuId>0){
+						//生成学生账户
+						 xsId = uManager.addUser(userAccount+"_xs", "", new MD5().calcMD5("123456"), "", lastLoginDate, lastLoginIp, signDate, schoolId, CurrentTime.getFinalDateTime(30), yearSystem, prov, city);
+						}*/
+						
+						//获取学生角色信息
+						List<RoleInfo> xslist = rManager.listRoleInfo("学生");
+						if(xslist.size() > 0){
+							Integer xsRoleId = xslist.get(0).getId();
+							//学生绑定角色
+							ruManager.addRoleUserInfo(xsId, xsRoleId, "", "", "", "", 0, 0, 0, 0);
+						}
+						//学生家长绑定
+						spManager.addSpInfo(userId, xsId);
+						msg = "success";//注册用户成功
+						if(xsId>0){//绑定角色成功
+							/*List<InviteCodeInfo> icList = icManager.listIcInfoByicCode(inviteCode);
+							if(icList.size()>0){//导师邀请码
+								Integer teaId=icList.get(0).getInviteId();
+								ntsManager.addNTS(xsId, teaId, CurrentTime.getCurrentTime(), -1, CurrentTime.getFinalDateTime(7), 0, "", "", 0);//4 缃戠粶瀵煎笀瀛︾敓缁戝畾
+							}*/
 							List<ClassInfo> ciList = ciManager.listClassInfoByOption(gradeNo, CurrentTime.getCurrentTime(), schoolId, className);
 							if(ciList.size()>0){
 								Integer classId = ciList.get(0).getId();
-								ucManager.addUcInfo(userId, classId, roleId); //3 绑定用户班级
+								ucManager.addUcInfo(xsId, classId, roleId); //3 绑定用户班级
 							}else{//班级不存在
 								Integer mRoId =0;
 								List<RoleInfo> mRList = rManager.listRoleInfo("管理员");
@@ -180,7 +322,7 @@ public class UserAction extends DispatchAction {
 								}
 								List<RoleUserInfo> rulist = ruManager.listUserRoleInfoBySchId(schoolId);
 								String pr="";
-								String ct="";
+								String ct=""; 
 								String county="";
 								Integer schType=0;
 								if(!rulist.isEmpty()){
@@ -213,37 +355,14 @@ public class UserAction extends DispatchAction {
 										}
 									}
 								}
-								ucManager.addUcInfo(userId, ciId, roleId); //学生用户 绑定班级	
+								ucManager.addUcInfo(xsId, ciId, roleId); //学生用户 绑定班级	
 							}
 						}
 					}
 				}else{
 					msg ="fail";//注册用户失败
 				}
-		}else if(roleName.equals("网络导师")){ //网络导师注册
-			if(userId>0){
-			//网络导师生成自己的邀请码
-			String ivCode = InviteCode.getRandomCode();
-			Integer icId=icManager.addInviteCodeInfo(userId, "导师邀请码", ivCode, CurrentTime.getCurrentTime1());
-			if(icId>0){
-				Integer baseMoney = 0;
-				if(schoolType.equals(1)){
-					baseMoney = (int) Constants.NET_TEACHER_SERVICE_FEE_XX;
-				}else if(schoolType.equals(2)){
-					baseMoney = (int) Constants.NET_TEACHER_SERVICE_FEE_CZ;
-				}else{
-					baseMoney = (int) Constants.NET_TEACHER_SERVICE_FEE_GZ;
-				}
-			
-				List<RoleInfo> ntlist = rManager.listRoleInfo("网络导师");
-				if(ntlist.size() > 0){
-					Integer ntRoleId = ntlist.get(0).getId();
-					ruManager.addRoleUserInfo(userId, ntRoleId, "", "", "", "", 0, 0, 0, 0);
-				}
-				ntManager.addNtInfo(userId, subId, schoolType, baseMoney, "", "", "", "", "", "", "", "", 0, 0, 0); //添加网络导师基本信息
-				msg = "success";//注册用户成功
 			}
-		  }
 		}
 		if(msg.equals("success")){
 			//直接执行登录

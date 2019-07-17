@@ -88,28 +88,28 @@ public class StudyStuQfTjManagerImpl implements StudyStuQfTjManager{
 			tran = sess.beginTransaction();
 			StudyStuQfTjInfo qftj = tjDao.getEntityById(sess, id);
 			if(qftj != null){
-				if(!oneZdSuccNum.equals(0)){
+				if(!oneZdSuccNum.equals(0) && (qftj.getOneZdSuccNum() + oneZdSuccNum) >= 0){
 					qftj.setOneZdSuccNum(qftj.getOneZdSuccNum() + oneZdSuccNum);
 				}
-				if(!oneZdFailNum.equals(0)){
+				if(!oneZdFailNum.equals(0) && (qftj.getOneZdFailNum() + oneZdFailNum) >= 0){
 					qftj.setOneZdFailNum(qftj.getOneZdFailNum() + oneZdFailNum);				
 				}
-				if(!againXxSuccNum.equals(0)){
+				if(!againXxSuccNum.equals(0) && (qftj.getAgainXxSuccNum() + againXxSuccNum) >= 0){
 					qftj.setAgainXxSuccNum(qftj.getAgainXxSuccNum() + againXxSuccNum);
 				}
-				if(!againXxFailNum.equals(0)){
+				if(!againXxFailNum.equals(0) && (qftj.getAgainXxFailNum() + againXxFailNum) >= 0){
 					qftj.setAgainXxFailNum(qftj.getAgainXxFailNum() + againXxFailNum);
 				}
-				if(!noRelateNum.equals(0)){
+				if(!noRelateNum.equals(0) && (qftj.getNoRelateNum() + noRelateNum) >= 0){
 					qftj.setNoRelateNum(qftj.getNoRelateNum() + noRelateNum);
 				}
-				if(!relateZdFailNum.equals(0)){
+				if(!relateZdFailNum.equals(0) && (qftj.getRelateZdFailNum() + relateZdFailNum) >= 0){
 					qftj.setRelateZdFailNum(qftj.getRelateZdFailNum() + relateZdFailNum);
 				}
-				if(!relateXxSuccNum.equals(0)){
+				if(!relateXxSuccNum.equals(0) && (qftj.getRelateXxSuccNum() + relateXxSuccNum) >= 0){
 					qftj.setRelateXxSuccNum(qftj.getRelateXxSuccNum() + relateXxSuccNum);
 				}
-				if(!relateXxFailNum.equals(0)){
+				if(!relateXxFailNum.equals(0) && (qftj.getRelateXxFailNum() + relateXxFailNum) >= 0){
 					qftj.setRelateXxFailNum(qftj.getRelateXxFailNum() + relateXxFailNum);		
 				}
 				if(!rate.equals("")){

@@ -244,6 +244,7 @@ public class ReportCenterAction  extends DispatchAction{
 						String className_temp = uc.getClassInfo().getClassName();
 						Integer gradeNumber = Convert.dateConvertGradeNumber(uc.getClassInfo().getBuildeClassDate());
 						axisName2 = Convert.NunberConvertChinese(gradeNumber)+className_temp+"的统计";
+						allNum = tjm.getDistinctCountByOpt(0, subId, sDate, eDate, "", "", "", "", 0, 0, "", classId);
 					}
 					//学生和家长身份时，只需要用到起始时间，学科，班级编号
 				}
@@ -260,6 +261,7 @@ public class ReportCenterAction  extends DispatchAction{
 						if(cList.size() > 0){
 							axisName1 = gradeName+cList.get(0).getClassName()+"的统计";
 							axisName2 = gradeName+"的统计";
+							allNum = tjm.getDistinctCountByOpt(0, subId, sDate, eDate, "", "", "", "", 0, schoolId, gradeName, 0);
 						}
 					}
 				}else{//当选择的是班级列表下的学生时--学生和当前班级的平均统计信息进行对比
@@ -269,6 +271,7 @@ public class ReportCenterAction  extends DispatchAction{
 						if(cList.size() > 0){
 							axisName1 = um.listEntityById(stuId).get(0).getRealName()+"的统计";
 							axisName2 = gradeName+cList.get(0).getClassName()+"的统计";
+							allNum = tjm.getDistinctCountByOpt(0, subId, sDate, eDate, "", "", "", "", 0, 0, "", classId);
 						}
 					}
 				}
@@ -402,7 +405,7 @@ public class ReportCenterAction  extends DispatchAction{
 					relateXxSuccNumAll += qftj.getRelateXxSuccNum();
 					relateXxFailNumAll += qftj.getRelateXxFailNum();
 					if(roleId.equals(2) || roleId.equals(6)){//学生\家长
-						specNum = 1;
+						specNum = 1;//学生求总数，班级求平均值
 						if(qftj.getUser().getId().equals(userId)){
 							oneZdSuccNum += qftj.getOneZdSuccNum();
 							oneZdFailNum += qftj.getOneZdFailNum();
