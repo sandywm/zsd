@@ -16,32 +16,32 @@ import com.zsd.util.Constants;
 
 
 public class BuffetStudyDetailInfoJson {
-	private String currMindSuccRate;//当前巴菲特思维正确率数组xx,yy,....
+/*	private String currMindSuccRate;//当前巴菲特思维正确率数组xx,yy,....
 	private String currMindNumber;//当前巴菲特思维题数量
 	private String currAbilitySuccRate;//当前能力正确率数组
 	private String currAbilityNumber;//当前巴菲特能力题数量
-	private String allMindSuccRate;//所有思维正确率数组
+*/	private String allMindSuccRate;//所有思维正确率数组
 	private String allMindNumber;//所有思维题数量
 	private String allAbilitySuccRate;//所有能力正确率数组
 	private String allAbilityNumber;//所有能力题数量
-	public String getCurrMindSuccRate() {
+/*	public String getCurrMindSuccRate() {
 		return currMindSuccRate;
 	}
 	public void setCurrMindSuccRate(String currMindSuccRate) {
 		this.currMindSuccRate = currMindSuccRate;
-	}
+	}*/
 	public String getAllMindSuccRate() {
 		return allMindSuccRate;
 	}
 	public void setAllMindSuccRate(String allMindSuccRate) {
 		this.allMindSuccRate = allMindSuccRate;
 	}
-	public String getCurrAbilitySuccRate() {
+/*	public String getCurrAbilitySuccRate() {
 		return currAbilitySuccRate;
 	}
 	public void setCurrAbilitySuccRate(String currAbilitySuccRate) {
 		this.currAbilitySuccRate = currAbilitySuccRate;
-	}
+	}*/
 	public String getAllAbilitySuccRate() {
 		return allAbilitySuccRate;
 	}
@@ -49,7 +49,7 @@ public class BuffetStudyDetailInfoJson {
 		this.allAbilitySuccRate = allAbilitySuccRate;
 	}
 	
-	//图形报表数据(currDetialList当前巴菲特学习情况,allDetailList所有巴菲特学习情况)
+/*	//图形报表数据(currDetialList当前巴菲特学习情况,allDetailList所有巴菲特学习情况)
 	public String getCurrMindNumber() {
 		return currMindNumber;
 	}
@@ -61,7 +61,7 @@ public class BuffetStudyDetailInfoJson {
 	}
 	public void setCurrAbilityNumber(String currAbilityNumber) {
 		this.currAbilityNumber = currAbilityNumber;
-	}
+	}*/
 	public String getAllMindNumber() {
 		return allMindNumber;
 	}
@@ -74,11 +74,11 @@ public class BuffetStudyDetailInfoJson {
 	public void setAllAbilityNumber(String allAbilityNumber) {
 		this.allAbilityNumber = allAbilityNumber;
 	}
-	public List<BuffetStudyDetailInfoJson> getBuffetStudyInfoJson(List<BuffetStudyDetailInfo> currDetailList,List<BuffetStudyDetailInfo> allDetailList) throws Exception{
+	public List<BuffetStudyDetailInfoJson> getBuffetStudyInfoJson(List<BuffetStudyDetailInfo> allDetailList) throws Exception{
 		List<BuffetStudyDetailInfoJson> result = new ArrayList<BuffetStudyDetailInfoJson>();
 		BuffetMindRelationInfoManager bmrm = (BuffetMindRelationInfoManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_MIND_RELATION_INFO);
 		BuffetAbilityRelationInfoManager barm = (BuffetAbilityRelationInfoManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_ABILITY_RELATION_INFO);
-		//当前巴菲特发布记录
+/*		//当前巴菲特发布记录
 		Integer currAbilitySuccNumber_lijie = 0 ;
 		Integer currAbilitySuccNumber_fenxi = 0 ;
 		Integer currAbilitySuccNumber_biaoda = 0 ;
@@ -113,7 +113,7 @@ public class BuffetStudyDetailInfoJson {
 		Integer currMindAllNumber_nb = 0 ;
 		Integer currMindAllNumber_yz = 0 ;
 		Integer currMindAllNumber_xx = 0 ;
-		Integer currMindAllNumber_lx = 0 ;
+		Integer currMindAllNumber_lx = 0 ;*/
 		
 		//汇总巴菲特发布记录
 		Integer abilitySuccNumber_lijie = 0 ;
@@ -151,105 +151,7 @@ public class BuffetStudyDetailInfoJson {
 		Integer mindAllNumber_yz = 0 ;
 		Integer mindAllNumber_xx = 0 ;
 		Integer mindAllNumber_lx = 0 ;
-		//当前巴菲特发布情况
-		for(Iterator<BuffetStudyDetailInfo> it = currDetailList.iterator() ; it.hasNext();){
-			BuffetStudyDetailInfo bsd = it.next();
-			Integer buffetId = bsd.getBuffetQueInfo().getId();//巴菲特学习情况编号
-			//根据巴菲特编号获取该巴菲特（能力）类型关系列表
-			List<BuffetAbilityRelationInfo> barList = barm.listBarInfoBybqId(buffetId);
-			for(Iterator<BuffetAbilityRelationInfo> it_a = barList.iterator() ; it_a.hasNext();){
-				BuffetAbilityRelationInfo bar = it_a.next();
-				String ablityName = bar.getBuffetAbilityTypeInfo().getAbility();
-				if(ablityName.equals("理解能力")){
-					if(bsd.getResult().equals(1)){//正确
-						currAbilitySuccNumber_lijie += 1;
-					}
-					currAbilityAllNumber_lijie += 1;
-				}else if(ablityName.equals("分析能力")){
-					if(bsd.getResult().equals(1)){//正确
-						currAbilitySuccNumber_fenxi += 1;
-					}
-					currAbilityAllNumber_fenxi += 1;
-				}else if(ablityName.equals("表达能力")){
-					if(bsd.getResult().equals(1)){//正确
-						currAbilitySuccNumber_biaoda += 1;
-					}
-					currAbilityAllNumber_biaoda += 1;
-				}else if(ablityName.equals("实践能力")){
-					if(bsd.getResult().equals(1)){//正确
-						currAbilitySuccNumber_shijian += 1;
-					}
-					currAbilityAllNumber_shijian += 1;
-				}else if(ablityName.equals("质疑能力")){
-					if(bsd.getResult().equals(1)){//正确
-						currAbilitySuccNumber_zy += 1;
-					}
-					currAbilityAllNumber_zy += 1;
-				}else if(ablityName.equals("联想能力")){
-					if(bsd.getResult().equals(1)){//正确
-						currAbilitySuccNumber_lx += 1;
-					}
-					currAbilityAllNumber_lx += 1;
-				}else if(ablityName.equals("综合能力")){
-					if(bsd.getResult().equals(1)){//正确
-						currAbilitySuccNumber_zh += 1;
-					}
-					currAbilityAllNumber_zh += 1;
-				}else if(ablityName.equals("创造能力")){
-					if(bsd.getResult().equals(1)){//正确
-						currAbilitySuccNumber_cz += 1;
-					}
-					currAbilityAllNumber_cz += 1;
-				}
-			}
-			//根据巴菲特编号获取该巴菲特（思维）类型关系列表
-			List<BuffetMindRelationInfo> bmrList = bmrm.listBmrInfoBybqId(buffetId);
-			for(Iterator<BuffetMindRelationInfo> it_m = bmrList.iterator() ; it_m.hasNext();){
-				BuffetMindRelationInfo bmr = it_m.next();
-				String mindName = bmr.getBuffetMindTypeInfo().getMind();
-				if(mindName.equals("定向思维")){
-					if(bsd.getResult().equals(1)){//正确
-						currMindSuccNumber_dx += 1;
-					}
-					currMindAllNumber_dx += 1;
-				}else if(mindName.equals("发散思维")){
-					if(bsd.getResult().equals(1)){//正确
-						currMindSuccNumber_fs += 1;
-					}
-					currMindAllNumber_fs += 1;
-				}else if(mindName.equals("逆向思维")){
-					if(bsd.getResult().equals(1)){//正确
-						currMindSuccNumber_nx += 1;
-					}
-					currMindAllNumber_nx += 1;
-				}else if(mindName.equals("抽象思维")){
-					if(bsd.getResult().equals(1)){//正确
-						currMindSuccNumber_cx += 1;
-					}
-					currMindAllNumber_cx += 1;
-				}else if(mindName.equals("类比思维")){
-					if(bsd.getResult().equals(1)){//正确
-						currMindSuccNumber_nb += 1;
-					}
-					currMindAllNumber_nb += 1;
-				}else if(mindName.equals("移植思维")){
-					if(bsd.getResult().equals(1)){//正确
-						currMindSuccNumber_yz += 1;
-					}
-					currMindAllNumber_yz += 1;
-				}else if(mindName.equals("形象思维")){
-					if(bsd.getResult().equals(1)){//正确
-						currMindSuccNumber_xx += 1;
-					}
-					currMindAllNumber_xx += 1;
-				}else if(mindName.equals("联想思维")){
-					if(bsd.getResult().equals(1)){//正确
-						currMindSuccNumber_lx += 1;
-					}
-					currMindAllNumber_lx += 1;
-				}
-			}
-		}
+
 		//全部巴菲特发布记录情况
 		for(Iterator<BuffetStudyDetailInfo> it_all = allDetailList.iterator() ; it_all.hasNext();){
 			BuffetStudyDetailInfo bsd_a = it_all.next();
@@ -351,7 +253,7 @@ public class BuffetStudyDetailInfoJson {
 		}
 		
 		DecimalFormat df  = new DecimalFormat("######0.00");
-		//当前巴菲特发布记录下8种能力正确率
+	/*	//当前巴菲特发布记录下8种能力正确率
 		String currAbilitySuccRate_lj = "0";
 		String currAbilitySuccRate_fx = "0";
 		String currAbilitySuccRate_bd = "0";
@@ -383,9 +285,9 @@ public class BuffetStudyDetailInfoJson {
 		} 
 		if(currAbilitySuccNumber_cz > 0){
 			currAbilitySuccRate_cz = df.format(((double)currAbilitySuccNumber_cz / (double)currAbilityAllNumber_cz) * 100);
-		} 
+		} */
 		//当前巴菲特发不记录下8种思维正确率
-		String currMindSuccRate_dx = "0";
+	/*	String currMindSuccRate_dx = "0";
 		String currMindSuccRate_fs = "0";
 		String currMindSuccRate_nx = "0";
 		String currMindSuccRate_cx = "0";
@@ -416,7 +318,7 @@ public class BuffetStudyDetailInfoJson {
 		} 
 		if(currMindSuccNumber_lx > 0){
 			currMindSuccRate_lx = df.format(((double)currMindSuccNumber_lx / (double)currMindAllNumber_lx) * 100);
-		} 
+		}*/ 
 		
 		//所有巴菲特发布记录下8种能力正确率
 		String abilitySuccRate_lj = "0";
@@ -487,7 +389,7 @@ public class BuffetStudyDetailInfoJson {
 		} 
 
 		BuffetStudyDetailInfoJson bsdJson = new BuffetStudyDetailInfoJson();
-		//当前能力正确率
+		/*//当前能力正确率
 		bsdJson.setCurrAbilitySuccRate(currAbilitySuccRate_lj + "," + currAbilitySuccRate_fx + "," + currAbilitySuccRate_bd + "," + currAbilitySuccRate_sj + "," +
 				currAbilitySuccRate_zy + "," + currAbilitySuccRate_lx + "," + currAbilitySuccRate_zh + "," + currAbilitySuccRate_cz);
 		//当前思维正确率
@@ -498,7 +400,7 @@ public class BuffetStudyDetailInfoJson {
 				currAbilityAllNumber_zy + "," + currAbilityAllNumber_lx + "," + currAbilityAllNumber_zh + "," + currAbilityAllNumber_cz);
 		//当前思维总数量
 		bsdJson.setCurrMindNumber(currMindAllNumber_dx + "," + currMindAllNumber_fs + "," + currMindAllNumber_nx + "," + currMindAllNumber_cx + "," +
-				currMindAllNumber_nb + "," + currMindAllNumber_yz + "," + currMindAllNumber_xx + "," + currMindAllNumber_lx);
+				currMindAllNumber_nb + "," + currMindAllNumber_yz + "," + currMindAllNumber_xx + "," + currMindAllNumber_lx);*/
 		
 		//所有能力正确率
 		bsdJson.setAllAbilitySuccRate(abilitySuccRate_lj + "," + abilitySuccRate_fx + "," + abilitySuccRate_bd + "," + abilitySuccRate_sj + "," +

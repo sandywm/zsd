@@ -99,6 +99,6 @@ public interface BuffetStudyDetailManager {
 	 * @return
 	 * @throws WEBException
 	 */
-	Integer addBuffetStudyDeatil(Integer buffetSendId, Integer buffetId,String realAnswer, String myAnswer, Integer result,
+	Integer addBuffetStudyDetil(Integer buffetSendId, Integer buffetId,String realAnswer, String myAnswer, Integer result,
 			String addTime, String a, String b, String c, String d,String e, String f)throws WEBException;
 }

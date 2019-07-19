@@ -82,10 +82,10 @@ public class StudyLogDaoImpl implements StudyLogDao{
 	@Override
 	public List<StudyLogInfo> findStuLogByOption(Session sess, Integer userId,Integer subId,
 			String sDate, String eDate) {
-		String hql = " from StudyLogInfo as sl where sl.user.id = "+userId;
-		 	   hql += " and sl.subject.id="+subId;
-			   hql +=" and sl.isFinish = 2";
-					  
+		String hql = " from StudyLogInfo as sl where sl.isFinish = 2 and sl.subject.id="+subId;
+			   if(!userId.equals(0)){
+				   hql +=" and sl.user.id = "+userId;
+			   }
 			   if(!sDate.equals("")&& !eDate.equals("")){
 				    hql += " and substring(sl.addTime,1,10) >= '"+sDate+"' and substring(sl.addTime,1,10) <= '"+eDate+"'";
 			   }

@@ -151,7 +151,7 @@ public class BuffetStudyDetailManagerImpl implements BuffetStudyDetailManager{
 	}
 
 	@Override
-	public Integer addBuffetStudyDeatil(Integer buffetSendId, Integer buffetId,
+	public Integer addBuffetStudyDetil(Integer buffetSendId, Integer buffetId,
 			String realAnswer, String myAnswer, Integer result, String addTime,
 			String a, String b, String c, String d, String e, String f)
 			throws WEBException {
