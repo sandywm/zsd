@@ -39,20 +39,20 @@ public class NetTeacherStudentDaoImpl implements NetTeacherStudentDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<NetTeacherStudent> findNTByStuId(Session sess, int stuId) {
-		String hql = "from NetTeacherStudent as nts where nts.user.id="+stuId+"and nts.clearStatus=0";
+		String hql = "from NetTeacherStudent as nts where nts.user.id="+stuId+" and nts.clearStatus=0";
 		return  sess.createQuery(hql).list();
 	}
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<NetTeacherStudent> findNTByntId(Session sess, int ntId) {
-		String hql = "from NetTeacherStudent as nts where nts.netTeacherInfo.user.id="+ntId+"and nts.bindStatus!=2 and nts.bindStatus!=0 and nts.clearStatus=0";
+		String hql = "from NetTeacherStudent as nts where nts.netTeacherInfo.user.id="+ntId+" and nts.bindStatus!=0 and nts.endDate>'"+CurrentTime.getStringDate()+"' and nts.clearStatus=0";
 		return  sess.createQuery(hql).list();
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<NetTeacherStudent> findNTByntId(Session sess, int ntId,Integer bindSta) {
-		String hql = "from NetTeacherStudent as nts where nts.netTeacherInfo.user.id="+ntId+"and nts.bindStatus="+bindSta;
+		String hql = "from NetTeacherStudent as nts where nts.netTeacherInfo.user.id="+ntId+" and nts.bindStatus="+bindSta;
 		return  sess.createQuery(hql).list();
 	}
 
@@ -68,36 +68,36 @@ public class NetTeacherStudentDaoImpl implements NetTeacherStudentDao {
 		 if(bindFlag.equals(1)){//正在使用
 			 hql+=" and nts.clearStatus =0  and  nts.endDate>'"+CurrentTime.getStringDate()+"' ";
 			 if(paySta==0){//免费试用
-				hql+="and ((nts.bindStatus=2) or (nts.bindStatus=-1)) and nts.payStatus="+paySta;
+				hql+=" and ((nts.bindStatus=2) or (nts.bindStatus=-1)) and nts.payStatus="+paySta;
 			 }else if(paySta==1){//付费
-				hql+="and  nts.bindStatus=1   and nts.payStatus="+paySta;
+				hql+=" and  nts.bindStatus=1   and nts.payStatus="+paySta;
 			 }else{
-				 hql+="and ((nts.bindStatus=1) or (nts.bindStatus= -1) or (nts.bindStatus=2) )" ;
+				 hql+=" and ((nts.bindStatus=1) or (nts.bindStatus= -1) or (nts.bindStatus=2) )" ;
 			 }
 		 }else if(bindFlag==2){//到期
 			 hql+=" and nts.clearStatus =0  and  nts.endDate<'"+CurrentTime.getStringDate()+"'";
 			 if(paySta==0){//免费试用
-				hql+="and ((nts.bindStatus=2) or (nts.bindStatus=-1))  and nts.payStatus="+paySta;
+				hql+=" and ((nts.bindStatus=2) or (nts.bindStatus=-1))  and nts.payStatus="+paySta;
 			 }else if(paySta==1 ){//付费
-				 hql+="and nts.bindStatus=1 and nts.payStatus="+paySta;
+				 hql+=" and nts.bindStatus=1 and nts.payStatus="+paySta;
 			 }else{
-				hql+="and ((nts.bindStatus=1) or (nts.bindStatus=-1)or (nts.bindStatus=2))";
+				hql+=" and ((nts.bindStatus=1) or (nts.bindStatus=-1) or (nts.bindStatus=2))";
 			 } 
 		 }else if(bindFlag ==3){//取消
-			 hql+="and nts.clearStatus =0";
+			 hql+=" and nts.clearStatus =0";
 			 if(paySta==0 ||paySta==1 ){//免费试用或者付费
-				hql+="and nts.bindStatus=0 and nts.payStatus="+paySta;
+				hql+=" and nts.bindStatus=0 and nts.payStatus="+paySta;
 			}else{
-			   hql+="and nts.bindStatus=0";
+			   hql+=" and nts.bindStatus=0";
 			} 
 		 }else if(bindFlag ==4){//升学
-			 hql+="and  nts.clearStatus =1 ";
+			 hql+=" and  nts.clearStatus =1 ";
 			 if(paySta==0 || paySta==1 ){//免费试用或者付费或者免费
-				hql+="and nts.payStatus="+paySta;
+				hql+=" and nts.payStatus="+paySta;
 			  }
 		 }else{//全部
 			 if(paySta==0 ||paySta==1){//免费试用或者付费或者免费
-				hql+="and  nts.payStatus="+paySta ;
+				hql+=" and  nts.payStatus="+paySta ;
 			}
 		 }
 		 if(!stuName.equals("")){
@@ -113,36 +113,36 @@ public class NetTeacherStudentDaoImpl implements NetTeacherStudentDao {
 		 if(bindFlag.equals(1)){//正在使用
 			 hql+=" and nts.clearStatus =0  and  nts.endDate>'"+CurrentTime.getStringDate()+"' ";
 			 if(paySta==0){//免费试用
-				hql+="and ((nts.bindStatus=2) or (nts.bindStatus=-1)) and nts.payStatus="+paySta;
+				hql+=" and ((nts.bindStatus=2) or (nts.bindStatus=-1)) and nts.payStatus="+paySta;
 			 }else if(paySta==1){//付费
-				hql+="and  nts.bindStatus=1   and nts.payStatus="+paySta;
+				hql+=" and  nts.bindStatus=1   and nts.payStatus="+paySta;
 			 }else{
-				 hql+="and ((nts.bindStatus=1) or (nts.bindStatus= -1) or (nts.bindStatus=2) )" ;
+				 hql+=" and ((nts.bindStatus=1) or (nts.bindStatus= -1) or (nts.bindStatus=2) )" ;
 			 }
 		 }else if(bindFlag==2){//到期
 			 hql+=" and nts.clearStatus =0  and  nts.endDate<'"+CurrentTime.getStringDate()+"'";
 			 if(paySta==0){//免费试用
-				hql+="and ((nts.bindStatus=2) or (nts.bindStatus=-1))  and nts.payStatus="+paySta;
+				hql+=" and ((nts.bindStatus=2) or (nts.bindStatus=-1))  and nts.payStatus="+paySta;
 			 }else if(paySta==1 ){//付费
-				 hql+="and nts.bindStatus=1 and nts.payStatus="+paySta;
+				 hql+=" and nts.bindStatus=1 and nts.payStatus="+paySta;
 			 }else{
-				hql+="and ((nts.bindStatus=1) or (nts.bindStatus=-1)or (nts.bindStatus=2))";
+				hql+=" and ((nts.bindStatus=1) or (nts.bindStatus=-1)or (nts.bindStatus=2))";
 			 } 
 		 }else if(bindFlag ==3){//取消
-			 hql+="and nts.clearStatus =0";
+			 hql+=" and nts.clearStatus =0";
 			 if(paySta==0 ||paySta==1 ){//免费试用或者付费
-				hql+="and nts.bindStatus=0 and nts.payStatus="+paySta;
+				hql+=" and nts.bindStatus=0 and nts.payStatus="+paySta;
 			}else{
-			   hql+="and nts.bindStatus=0";
+			   hql+=" and nts.bindStatus=0";
 			} 
 		 }else if(bindFlag ==4){//升学
-			 hql+="and  nts.clearStatus =1 ";
+			 hql+=" and  nts.clearStatus =1 ";
 			 if(paySta==0 || paySta==1 ){//免费试用或者付费或者免费
-				hql+="and nts.payStatus="+paySta;
+				hql+=" and nts.payStatus="+paySta;
 			  }
 		 }else{//全部
 			 if(paySta==0 ||paySta==1){//免费试用或者付费或者免费
-				hql+="and  nts.payStatus="+paySta ;
+				hql+=" and  nts.payStatus="+paySta ;
 			}
 		 }
 		 if(!stuName.equals("")){
@@ -157,7 +157,7 @@ public class NetTeacherStudentDaoImpl implements NetTeacherStudentDao {
 		String hql = "select count(nts.id) from NetTeacherStudent as nts where nts.netTeacherInfo.user.id="+ ntId;
 		 hql+=" and nts.clearStatus =0  and  nts.endDate>'"+CurrentTime.getStringDate()+"' ";
 		 if(bindFlag.equals(-1)|| bindFlag.equals(2)){//免费试用或者免费
-			hql+="and nts.bindStatus="+bindFlag+" and nts.payStatus=0";
+			hql+=" and nts.bindStatus="+bindFlag+" and nts.payStatus=0";
 		 }else if(bindFlag.equals(1)){//付费
 			hql+=" and  nts.bindStatus="+bindFlag+" and nts.payStatus=1";
 		 }
