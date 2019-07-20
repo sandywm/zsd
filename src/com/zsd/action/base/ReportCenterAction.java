@@ -576,6 +576,8 @@ public class ReportCenterAction  extends DispatchAction{
 			}
 		}
 		map.put("result", msg);
+		map.put("sDate", sDate);
+		map.put("eDate", eDate);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
