@@ -505,7 +505,7 @@ public class StudyRecordAction extends DispatchAction {
 				map_d.put("mainLoreId", slInfo.getLoreInfo().getMainLoreId());//引用知识点
 				map_d.put("stuId", slInfo.getUser().getId());//学生编号
 				List<BuffetSendInfo> bsList = bsManager.listBsInfoById(stuLogId);
-				if(!bsList.isEmpty() && sendFlag.equals(0)){
+				if(bsList.isEmpty() && sendFlag.equals(0)){
 					map_d.put("bs_id",0);
 					map_d.put("bs_sendTime", "");
 					map_d.put("bs_result", "");
@@ -520,7 +520,7 @@ public class StudyRecordAction extends DispatchAction {
 						comBuffetNum++;
 					}
 					list_d.add(map_d);
-				}else if(!bsList.isEmpty() && sendFlag.equals(2)){
+				}else if(sendFlag.equals(2)){
 					if(bsList.isEmpty()){
 						map_d.put("bs_id",0);
 						map_d.put("bs_sendTime", "");
@@ -910,7 +910,6 @@ public class StudyRecordAction extends DispatchAction {
 		BuffetAbilityRelationInfoManager barManager= (BuffetAbilityRelationInfoManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_ABILITY_RELATION_INFO);
 		Integer bsId = CommonTools.getFinalInteger("bsId",request);
 		Map<String,Object> map = new HashMap<String,Object>();
-		List<Object> list_d = new ArrayList<Object>();
 		List<BuffetStudyDetailInfo> bsdlist = bsdManager.listInfoByBsId(bsId);
 		int total =bsdlist.size();
 		int rightNum =0;
@@ -926,7 +925,13 @@ public class StudyRecordAction extends DispatchAction {
 		errorNum = total-rightNum;
 		DecimalFormat df  = new DecimalFormat("######0.00");
 		String  rate  = df.format(((double)rightNum / (double)total) * 100);
-		
+		List<BuffetStudyDetailStatisticsJson> bsdJson = new BuffetStudyDetailStatisticsJson().getBsdStatisticsJson(bsdlist);
+		map.put("total", total);
+		map.put("rightNum", rightNum);
+		map.put("errorNum", errorNum);
+		map.put("comRate", rate);
+		map.put("result", bsdJson);
+		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
 	
