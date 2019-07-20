@@ -4,6 +4,7 @@
  */
 package com.zsd.action.studyrec;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -428,8 +429,7 @@ public class StudyRecordAction extends DispatchAction {
 			ActionForm form, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		NetTeacherStudentManager ntsManager = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT);
-		//Integer userId=CommonTools.getLoginUserId(request);//老师用户编号
-		Integer userId=5;//老师用户编号
+		Integer userId=CommonTools.getLoginUserId(request);//老师用户编号
 		List<NetTeacherStudent> ntsList = ntsManager.listByntId(userId);
 		Map<String,Object> map = new HashMap<String,Object>();
 		List<Object> list_d = new ArrayList<Object>();
@@ -475,15 +475,16 @@ public class StudyRecordAction extends DispatchAction {
 		Integer comBuffetNum = 0;//完成巴菲特数
 		Integer unComBuffetNum = 0;//未完成巴菲特数
 		String  comRate = "0.00%";//完成率
+		String stuUserName ="";
 		Map<String,Object> map = new HashMap<String,Object>();
 		List<Object> list_d = new ArrayList<Object>();
 		List<NetTeacherStudent> ntsList = ntsManager.listByntId(ntId);
 		if(!ntsList.isEmpty()){
 			subId = ntsList.get(0).getNetTeacherInfo().getSubject().getId();
-/*			if(userId.equals(0)){
-				userId = ntsList.get(0).getUser().getId();
+			if(!userId.equals(0)){
+				stuUserName = ntsList.get(0).getUser().getRealName();
 			}
-*/		    if(sDate.equals("")){
+		    if(sDate.equals("")){
 				//表示是默认的当前日期前3天的记录(包含当前，所以-2)
 				sDate = CurrentTime.getFinalDate(CurrentTime.getStringDate(), -3);
 				eDate = CurrentTime.getStringDate();
@@ -504,7 +505,7 @@ public class StudyRecordAction extends DispatchAction {
 				map_d.put("mainLoreId", slInfo.getLoreInfo().getMainLoreId());//引用知识点
 				map_d.put("stuId", slInfo.getUser().getId());//学生编号
 				List<BuffetSendInfo> bsList = bsManager.listBsInfoById(stuLogId);
-				if(bsList.isEmpty() && sendFlag.equals(0)){
+				if(!bsList.isEmpty() && sendFlag.equals(0)){
 					map_d.put("bs_id",0);
 					map_d.put("bs_sendTime", "");
 					map_d.put("bs_result", "");
@@ -519,7 +520,7 @@ public class StudyRecordAction extends DispatchAction {
 						comBuffetNum++;
 					}
 					list_d.add(map_d);
-				}else{
+				}else if(!bsList.isEmpty() && sendFlag.equals(2)){
 					if(bsList.isEmpty()){
 						map_d.put("bs_id",0);
 						map_d.put("bs_sendTime", "");
@@ -553,6 +554,7 @@ public class StudyRecordAction extends DispatchAction {
 		map.put("subId", subId);//学科编号
 		map.put("sDate", sDate);//开始时间
 		map.put("eDate", eDate);//结束时间
+		map.put("stuUserName", stuUserName);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
@@ -910,9 +912,22 @@ public class StudyRecordAction extends DispatchAction {
 		Map<String,Object> map = new HashMap<String,Object>();
 		List<Object> list_d = new ArrayList<Object>();
 		List<BuffetStudyDetailInfo> bsdlist = bsdManager.listInfoByBsId(bsId);
-		for (Iterator<BuffetStudyDetailInfo> itr = bsdlist.iterator(); itr.hasNext();) {
-			BuffetStudyDetailInfo bsdInfo = (BuffetStudyDetailInfo) itr.next();
+		int total =bsdlist.size();
+		int rightNum =0;
+		int errorNum=0;
+		if(total>0){
+			for (Iterator<BuffetStudyDetailInfo> itr = bsdlist.iterator(); itr.hasNext();) {
+				BuffetStudyDetailInfo bsdInfo = (BuffetStudyDetailInfo) itr.next();
+				if(bsdInfo.getCurrComStatus().equals(1)){
+					rightNum+=1;
+				}
+			}
 		}
+		errorNum = total-rightNum;
+		DecimalFormat df  = new DecimalFormat("######0.00");
+		String  rate  = df.format(((double)rightNum / (double)total) * 100);
+		
 		return null;
 	}
+	
 }
