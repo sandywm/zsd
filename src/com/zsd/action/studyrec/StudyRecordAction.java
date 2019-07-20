@@ -796,6 +796,8 @@ public class StudyRecordAction extends DispatchAction {
 					map.put("buffetList", list_d);
 					map.put("studyLogId", studyLogId);
 					map.put("quoteLoreId", basicLoreId);
+				}else{
+					msg = "noInfo";
 				}
 			}
 		}
