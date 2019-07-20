@@ -633,6 +633,7 @@ public class StudyRecordAction extends DispatchAction {
 			bList = bqManager.listInfoByOption(quoteLoreId, 0);//根据知识点编号获取启用的巴菲特列表
 		}
 		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("loreName", bList.get(0).getLoreInfo().getLoreName());
 		List<Object> list_d = new ArrayList<Object>();
 		for (Iterator<BuffetQueInfo> itr = bList.iterator(); itr.hasNext();) {
 			BuffetQueInfo bqInfo = (BuffetQueInfo) itr.next();
@@ -714,6 +715,7 @@ public class StudyRecordAction extends DispatchAction {
 		Map<String,Object> map = new HashMap<String,Object>();
 		List<Object> list_d = new ArrayList<Object>();
 		List<BuffetQueInfo> bqList = bqManager.listInfoByLoreAndBuffetType(basicLoreId, buffetTypeName);
+		map.put("loreName", bqList.get(0).getLoreInfo().getLoreName());
 		for (Iterator<BuffetQueInfo> itr = bqList.iterator(); itr.hasNext();) {
 			BuffetQueInfo bqInfo = (BuffetQueInfo) itr.next();
 			Map<String,Object> map_d= new HashMap<String,Object>();
