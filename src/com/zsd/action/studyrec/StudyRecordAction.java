@@ -194,6 +194,8 @@ public class StudyRecordAction extends DispatchAction {
 		map.put("diffday", diffDay);
 		map.put("subName", subName);
 		map.put("studyList", list_d);
+		map.put("sDate", sDate);
+		map.put("eDate", eDate);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
@@ -426,7 +428,8 @@ public class StudyRecordAction extends DispatchAction {
 			ActionForm form, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		NetTeacherStudentManager ntsManager = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT);
-		Integer userId=CommonTools.getLoginUserId(request);//老师用户编号
+		//Integer userId=CommonTools.getLoginUserId(request);//老师用户编号
+		Integer userId=5;//老师用户编号
 		List<NetTeacherStudent> ntsList = ntsManager.listByntId(userId);
 		Map<String,Object> map = new HashMap<String,Object>();
 		List<Object> list_d = new ArrayList<Object>();
@@ -435,6 +438,7 @@ public class StudyRecordAction extends DispatchAction {
 			Map<String,Object> map_d= new HashMap<String,Object>();
 			map_d.put("stuId", nts.getUser().getId());//学生编号
 			map_d.put("stuName", nts.getUser().getRealName());//学生姓名
+			map_d.put("portrait", nts.getUser().getPortrait());//头像
 			nts.getNetTeacherInfo().getSubject().getId();
 			list_d.add(map_d);
 		}
@@ -547,6 +551,8 @@ public class StudyRecordAction extends DispatchAction {
 		map.put("comRate", comRate);
 		map.put("diffDay", diffDay);
 		map.put("subId", subId);//学科编号
+		map.put("sDate", sDate);//开始时间
+		map.put("eDate", eDate);//结束时间
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
@@ -599,11 +605,11 @@ public class StudyRecordAction extends DispatchAction {
 		JoinLoreRelationManager jlrManager = (JoinLoreRelationManager) AppFactory.instance(null).getApp(Constants.WEB_JOIN_LORE_RELATE_INFO);
 		BuffetMindRelationInfoManager bmrManager = (BuffetMindRelationInfoManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_MIND_RELATION_INFO);
 		BuffetAbilityRelationInfoManager barManager= (BuffetAbilityRelationInfoManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_ABILITY_RELATION_INFO);
-		Integer userId=CommonTools.getFinalInteger("stuId", request);//学生编号
+	/*	Integer userId=CommonTools.getFinalInteger("stuId", request);//学生编号
 		Integer subId=CommonTools.getFinalInteger("subId", request);//学科编号
 		String sDate=CommonTools.getFinalStr("sDate",request);//开始时间
 		String eDate=CommonTools.getFinalStr("eDate",request);//结束时间
-		Integer studyLogId=CommonTools.getFinalInteger("studyLogId", request);//学习记录编号
+*/		Integer studyLogId=CommonTools.getFinalInteger("studyLogId", request);//学习记录编号
 		Integer currLoreId=CommonTools.getFinalInteger("loreId", request);//知识点编号
 		Integer quoteLoreId=CommonTools.getFinalInteger("quoteLoreId", request);//知识点题库编号
 	    JoinLoreRelation jlr = jlrManager.getInfoByLoreId(quoteLoreId);//获取当前知识点的通用版知识点与之合并的知识点记录
@@ -665,13 +671,13 @@ public class StudyRecordAction extends DispatchAction {
 			list_d.add(map_d);
 		}
 		map.put("buffetList", list_d);
-		map.put("stuId", userId);
-		map.put("subId", subId);
+	/*	map.put("stuId", userId);
+		map.put("subId", subId);*/
 		map.put("studyLogId", studyLogId);
 		map.put("currLoreId", currLoreId);
 		map.put("quoteLoreId", quoteLoreId);
-		map.put("sDate", sDate);
-		map.put("eDate", eDate);
+		/*map.put("sDate", sDate);
+		map.put("eDate", eDate);*/
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
@@ -710,7 +716,7 @@ public class StudyRecordAction extends DispatchAction {
 			BuffetQueInfo bqInfo = (BuffetQueInfo) itr.next();
 			Map<String,Object> map_d= new HashMap<String,Object>();
 			map_d.put("buffetId", bqInfo.getId());//自助餐题库编号
-			map_d.put("buffetId", bqInfo.getQueType());//题型
+			map_d.put("queType", bqInfo.getQueType());//题型
 			map_d.put("title", bqInfo.getTitle());//自助餐题库标题
 			map_d.put("subject", bqInfo.getSubject());//题干
 			if(!bqInfo.getA().equals("")){
@@ -882,6 +888,31 @@ public class StudyRecordAction extends DispatchAction {
 		}
 		map.put("buffetList", list_d);
 		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	/**
+	 * 获取指定发布自助餐统计
+	 * @author zdf
+	 * 2019-7-19 下午04:23:03
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward sendBuffetDetil1(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		BuffetStudyDetailManager bsdManager = (BuffetStudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_STUDY_DETAIL_INFO);
+		BuffetMindRelationInfoManager bmrManager = (BuffetMindRelationInfoManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_MIND_RELATION_INFO);
+		BuffetAbilityRelationInfoManager barManager= (BuffetAbilityRelationInfoManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_ABILITY_RELATION_INFO);
+		Integer bsId = CommonTools.getFinalInteger("bsId",request);
+		Map<String,Object> map = new HashMap<String,Object>();
+		List<Object> list_d = new ArrayList<Object>();
+		List<BuffetStudyDetailInfo> bsdlist = bsdManager.listInfoByBsId(bsId);
+		for (Iterator<BuffetStudyDetailInfo> itr = bsdlist.iterator(); itr.hasNext();) {
+			BuffetStudyDetailInfo bsdInfo = (BuffetStudyDetailInfo) itr.next();
+		}
 		return null;
 	}
 }
