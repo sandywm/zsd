@@ -607,80 +607,89 @@ public class StudyRecordAction extends DispatchAction {
 		JoinLoreRelationManager jlrManager = (JoinLoreRelationManager) AppFactory.instance(null).getApp(Constants.WEB_JOIN_LORE_RELATE_INFO);
 		BuffetMindRelationInfoManager bmrManager = (BuffetMindRelationInfoManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_MIND_RELATION_INFO);
 		BuffetAbilityRelationInfoManager barManager= (BuffetAbilityRelationInfoManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_ABILITY_RELATION_INFO);
+		StudyLogManager slm = (StudyLogManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_LOG_INFO);
 	/*	Integer userId=CommonTools.getFinalInteger("stuId", request);//学生编号
 		Integer subId=CommonTools.getFinalInteger("subId", request);//学科编号
 		String sDate=CommonTools.getFinalStr("sDate",request);//开始时间
 		String eDate=CommonTools.getFinalStr("eDate",request);//结束时间
 */		Integer studyLogId=CommonTools.getFinalInteger("studyLogId", request);//学习记录编号
-		Integer currLoreId=CommonTools.getFinalInteger("loreId", request);//知识点编号
-		Integer quoteLoreId=CommonTools.getFinalInteger("quoteLoreId", request);//知识点题库编号
-	    JoinLoreRelation jlr = jlrManager.getInfoByLoreId(quoteLoreId);//获取当前知识点的通用版知识点与之合并的知识点记录
-		List<BuffetQueInfo> bList = new ArrayList<BuffetQueInfo>();
-		String basicLoreIdStr = "";
-		
-		if(jlr!=null){
-			basicLoreIdStr = jlr.getLoreIdArray();
-			String[] basicLoreIdArray = basicLoreIdStr.split(",");
-			for(Integer i = 0 ; i < basicLoreIdArray.length ; i++){
-				bList = bqManager.listInfoByOption(Integer.parseInt(basicLoreIdArray[i]), 0);//根据知识点编号获取启用的巴菲特列表
+//		Integer currLoreId=CommonTools.getFinalInteger("loreId", request);//知识点编号
+//		Integer quoteLoreId=CommonTools.getFinalInteger("quoteLoreId", request);//知识点题库编号
+		Integer quoteLoreId = 0;
+		String msg = "error";
+		Map<String,Object> map = new HashMap<String,Object>();
+		if(studyLogId > 0){
+			StudyLogInfo sl  = slm.getEntityById(studyLogId);
+			if(sl != null){
+				map.put("loreName", sl.getLoreInfo().getLoreName());//标题用
+				quoteLoreId = sl.getLoreInfo().getMainLoreId();//被引用知识点
+			    JoinLoreRelation jlr = jlrManager.getInfoByLoreId(quoteLoreId);//获取当前知识点的通用版知识点与之合并的知识点记录
+				List<BuffetQueInfo> bList = new ArrayList<BuffetQueInfo>();
+				String basicLoreIdStr = "";
+				if(jlr!=null){
+					basicLoreIdStr = jlr.getLoreIdArray();
+					String[] basicLoreIdArray = basicLoreIdStr.split(",");
+					for(Integer i = 0 ; i < basicLoreIdArray.length ; i++){
+						bList = bqManager.listInfoByOption(Integer.parseInt(basicLoreIdArray[i]), 0);//根据知识点编号获取启用的巴菲特列表
+						if(bList.size() > 0){
+							//获取真实的存在巴菲特题库的被引用的知识点编号
+							quoteLoreId = Integer.parseInt(basicLoreIdArray[i]);
+							break;
+						}
+					}
+				}else{
+					bList = bqManager.listInfoByOption(quoteLoreId, 0);//根据知识点编号获取启用的巴菲特列表
+				}
+				List<Object> list_d = new ArrayList<Object>();
 				if(bList.size() > 0){
-					//获取真实的存在巴菲特题库的被引用的知识点编号
-					quoteLoreId = Integer.parseInt(basicLoreIdArray[i]);
-					break;
+					msg = "success";
+					for (Iterator<BuffetQueInfo> itr = bList.iterator(); itr.hasNext();) {
+						BuffetQueInfo bqInfo = (BuffetQueInfo) itr.next();
+						Map<String,Object> map_d= new HashMap<String,Object>();
+						map_d.put("buffetId", bqInfo.getId());//自助餐题库编号
+						map_d.put("bTypeName", bqInfo.getBuffetTypeInfo().getTypes());//自助餐类型名
+						map_d.put("title", bqInfo.getTitle());//自助餐题库标题
+					    List<BuffetMindRelationInfo> bmrList = 	bmrManager.listBmrInfoBybqId(bqInfo.getId());
+						String mindIdStr = "";
+						String mindNameStr = "";
+						for(Iterator<BuffetMindRelationInfo> it_mind = bmrList.iterator() ; it_mind.hasNext();){
+							BuffetMindRelationInfo bmr = it_mind.next();
+							mindIdStr += bmr.getBuffetMindTypeInfo().getId()+":";
+							mindNameStr += bmr.getBuffetMindTypeInfo().getMind()+",";
+						}
+						if(!mindIdStr.equals("")){
+							map_d.put("mindId", mindIdStr.substring(0,mindIdStr.length()-1));
+							map_d.put("mindName", mindNameStr.substring(0,mindNameStr.length()-1));
+						}else{
+							map_d.put("mindId", mindIdStr);
+							map_d.put("mindName", mindNameStr);
+						}
+						List<BuffetAbilityRelationInfo> barList = barManager.listBarInfoBybqId(bqInfo.getId());
+						String abilityIdStr = "";
+						String abilityNameStr = "";
+						for(Iterator<BuffetAbilityRelationInfo> it_ability = barList.iterator() ; it_ability.hasNext();){
+							BuffetAbilityRelationInfo bar = it_ability.next();
+							abilityIdStr += bar.getBuffetAbilityTypeInfo().getId()+":";
+							abilityNameStr += bar.getBuffetAbilityTypeInfo().getAbility()+",";
+						}
+						if(!abilityIdStr.equals("")){
+							map_d.put("abilityId", abilityIdStr.substring(0,abilityIdStr.length()-1));
+							map_d.put("abilityName", abilityNameStr.substring(0,abilityNameStr.length()-1));
+						}else{
+							map_d.put("abilityId", abilityIdStr);
+							map_d.put("abilityName", abilityNameStr);
+						}
+						list_d.add(map_d);
+					}
+					map.put("buffetList", list_d);
+					map.put("studyLogId", studyLogId);
+					map.put("quoteLoreId", quoteLoreId);
+				}else{
+					msg = "noInfo";
 				}
 			}
-		}else{
-			bList = bqManager.listInfoByOption(quoteLoreId, 0);//根据知识点编号获取启用的巴菲特列表
 		}
-		Map<String,Object> map = new HashMap<String,Object>();
-		map.put("loreName", bList.get(0).getLoreInfo().getLoreName());
-		List<Object> list_d = new ArrayList<Object>();
-		for (Iterator<BuffetQueInfo> itr = bList.iterator(); itr.hasNext();) {
-			BuffetQueInfo bqInfo = (BuffetQueInfo) itr.next();
-			Map<String,Object> map_d= new HashMap<String,Object>();
-			map_d.put("buffetId", bqInfo.getId());//自助餐题库编号
-			map_d.put("bTypeName", bqInfo.getBuffetTypeInfo().getTypes());//自助餐类型名
-			map_d.put("title", bqInfo.getTitle());//自助餐题库标题
-		    List<BuffetMindRelationInfo> bmrList = 	bmrManager.listBmrInfoBybqId(bqInfo.getId());
-			String mindIdStr = "";
-			String mindNameStr = "";
-			for(Iterator<BuffetMindRelationInfo> it_mind = bmrList.iterator() ; it_mind.hasNext();){
-				BuffetMindRelationInfo bmr = it_mind.next();
-				mindIdStr += bmr.getBuffetMindTypeInfo().getId()+":";
-				mindNameStr += bmr.getBuffetMindTypeInfo().getMind()+",";
-			}
-			if(!mindIdStr.equals("")){
-				map_d.put("mindId", mindIdStr.substring(0,mindIdStr.length()-1));
-				map_d.put("mindName", mindNameStr.substring(0,mindNameStr.length()-1));
-			}else{
-				map_d.put("mindId", mindIdStr);
-				map_d.put("mindName", mindNameStr);
-			}
-			List<BuffetAbilityRelationInfo> barList = barManager.listBarInfoBybqId(bqInfo.getId());
-			String abilityIdStr = "";
-			String abilityNameStr = "";
-			for(Iterator<BuffetAbilityRelationInfo> it_ability = barList.iterator() ; it_ability.hasNext();){
-				BuffetAbilityRelationInfo bar = it_ability.next();
-				abilityIdStr += bar.getBuffetAbilityTypeInfo().getId()+":";
-				abilityNameStr += bar.getBuffetAbilityTypeInfo().getAbility()+",";
-			}
-			if(!abilityIdStr.equals("")){
-				map_d.put("abilityId", abilityIdStr.substring(0,abilityIdStr.length()-1));
-				map_d.put("abilityName", abilityNameStr.substring(0,abilityNameStr.length()-1));
-			}else{
-				map_d.put("abilityId", abilityIdStr);
-				map_d.put("abilityName", abilityNameStr);
-			}
-			list_d.add(map_d);
-		}
-		map.put("buffetList", list_d);
-	/*	map.put("stuId", userId);
-		map.put("subId", subId);*/
-		map.put("studyLogId", studyLogId);
-		map.put("currLoreId", currLoreId);
-		map.put("quoteLoreId", quoteLoreId);
-		/*map.put("sDate", sDate);
-		map.put("eDate", eDate);*/
+		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
@@ -697,86 +706,100 @@ public class StudyRecordAction extends DispatchAction {
 	 */
 	public ActionForward showBuffetDetail(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
-		LoreInfoManager loreManager = (LoreInfoManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
+//		LoreInfoManager loreManager = (LoreInfoManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
 		BuffetQueInfoManager bqManager = (BuffetQueInfoManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_QUE_INFO);
 		BuffetMindRelationInfoManager bmrManager = (BuffetMindRelationInfoManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_MIND_RELATION_INFO);
 		BuffetAbilityRelationInfoManager barManager= (BuffetAbilityRelationInfoManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_ABILITY_RELATION_INFO);
-		Integer loreId=CommonTools.getFinalInteger("loreId", request);//知识点编号	
+		StudyLogManager slm = (StudyLogManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_LOG_INFO);
+		Integer studyLogId=CommonTools.getFinalInteger("studyLogId", request);//学习记录编号
+//		Integer loreId=CommonTools.getFinalInteger("loreId", request);//知识点编号	
+		Integer basicLoreId = CommonTools.getFinalInteger("quoteLoreId", request);//存在自助餐题库的知识点
 		String buffetTypeName=Transcode.unescape_new("buffetTypeName",request);
-		
-		LoreInfo loreInfo =  loreManager.getEntityById(loreId);
-		Integer basicLoreId = 0;//通用版知识点编号
-		if(loreInfo!=null){
-			basicLoreId = loreInfo.getMainLoreId();//当前的loreId是通用版知识典
-			if(basicLoreId.equals(0)){
-				basicLoreId = loreId;
-			}
-		}
+		String msg = "error";
+//		LoreInfo loreInfo =  loreManager.getEntityById(loreId);
+//		Integer basicLoreId = 0;//通用版知识点编号
+//		if(loreInfo!=null){
+//			basicLoreId = loreInfo.getMainLoreId();//当前的loreId是通用版知识典
+//			if(basicLoreId.equals(0)){
+//				basicLoreId = loreId;
+//			}
+//		}
 		Map<String,Object> map = new HashMap<String,Object>();
-		List<Object> list_d = new ArrayList<Object>();
-		List<BuffetQueInfo> bqList = bqManager.listInfoByLoreAndBuffetType(basicLoreId, buffetTypeName);
-		map.put("loreName", bqList.get(0).getLoreInfo().getLoreName());
-		for (Iterator<BuffetQueInfo> itr = bqList.iterator(); itr.hasNext();) {
-			BuffetQueInfo bqInfo = (BuffetQueInfo) itr.next();
-			Map<String,Object> map_d= new HashMap<String,Object>();
-			map_d.put("buffetId", bqInfo.getId());//自助餐题库编号
-			map_d.put("queType", bqInfo.getQueType());//题型
-			map_d.put("title", bqInfo.getTitle());//自助餐题库标题
-			map_d.put("subject", bqInfo.getSubject());//题干
-			if(!bqInfo.getA().equals("")){
-				map_d.put("A", bqInfo.getA());	
-			}
-			if(!bqInfo.getB().equals("")){
-				map_d.put("B", bqInfo.getB());
-			}
-			if(!bqInfo.getC().equals("")){
-				map_d.put("C", bqInfo.getC());
-			}
-			if(!bqInfo.getD().equals("")){
-				map_d.put("D", bqInfo.getD());
-			}
-			if(!bqInfo.getE().equals("")){
-				map_d.put("E", bqInfo.getE());
-			}
-			if(!bqInfo.getF().equals("")){
-				map_d.put("F", bqInfo.getF());
-			}
-			map_d.put("answer", bqInfo.getAnswer());
-			map_d.put("resolution", bqInfo.getResolution());
-			map_d.put("tips", bqInfo.getTips());
-			 List<BuffetMindRelationInfo> bmrList = 	bmrManager.listBmrInfoBybqId(bqInfo.getId());
-				String mindIdStr = "";
-				String mindNameStr = "";
-				for(Iterator<BuffetMindRelationInfo> it_mind = bmrList.iterator() ; it_mind.hasNext();){
-					BuffetMindRelationInfo bmr = it_mind.next();
-					mindIdStr += bmr.getBuffetMindTypeInfo().getId()+":";
-					mindNameStr += bmr.getBuffetMindTypeInfo().getMind()+",";
+		if(studyLogId > 0 && basicLoreId > 0){
+			StudyLogInfo sl  = slm.getEntityById(studyLogId);
+			if(sl != null){
+				map.put("loreName", sl.getLoreInfo().getLoreName());//标题用
+				List<Object> list_d = new ArrayList<Object>();
+				List<BuffetQueInfo> bqList = bqManager.listInfoByLoreAndBuffetType(basicLoreId, buffetTypeName);
+				if(bqList.size() > 0){
+					msg = "success";
+					for (Iterator<BuffetQueInfo> itr = bqList.iterator(); itr.hasNext();) {
+						BuffetQueInfo bqInfo = (BuffetQueInfo) itr.next();
+						Map<String,Object> map_d= new HashMap<String,Object>();
+						map_d.put("buffetId", bqInfo.getId());//自助餐题库编号
+						map_d.put("queType", bqInfo.getQueType());//题型
+						map_d.put("title", bqInfo.getTitle());//自助餐题库标题
+						map_d.put("subject", bqInfo.getSubject());//题干
+						if(!bqInfo.getA().equals("")){
+							map_d.put("A", bqInfo.getA());	
+						}
+						if(!bqInfo.getB().equals("")){
+							map_d.put("B", bqInfo.getB());
+						}
+						if(!bqInfo.getC().equals("")){
+							map_d.put("C", bqInfo.getC());
+						}
+						if(!bqInfo.getD().equals("")){
+							map_d.put("D", bqInfo.getD());
+						}
+						if(!bqInfo.getE().equals("")){
+							map_d.put("E", bqInfo.getE());
+						}
+						if(!bqInfo.getF().equals("")){
+							map_d.put("F", bqInfo.getF());
+						}
+						map_d.put("answer", bqInfo.getAnswer());
+						map_d.put("resolution", bqInfo.getResolution());
+						map_d.put("tips", bqInfo.getTips());
+						 List<BuffetMindRelationInfo> bmrList = 	bmrManager.listBmrInfoBybqId(bqInfo.getId());
+							String mindIdStr = "";
+							String mindNameStr = "";
+							for(Iterator<BuffetMindRelationInfo> it_mind = bmrList.iterator() ; it_mind.hasNext();){
+								BuffetMindRelationInfo bmr = it_mind.next();
+								mindIdStr += bmr.getBuffetMindTypeInfo().getId()+":";
+								mindNameStr += bmr.getBuffetMindTypeInfo().getMind()+",";
+							}
+							if(!mindIdStr.equals("")){
+								map_d.put("mindId", mindIdStr.substring(0,mindIdStr.length()-1));
+								map_d.put("mindName", mindNameStr.substring(0,mindNameStr.length()-1));
+							}else{
+								map_d.put("mindId", mindIdStr);
+								map_d.put("mindName", mindNameStr);
+							}
+							List<BuffetAbilityRelationInfo> barList = barManager.listBarInfoBybqId(bqInfo.getId());
+							String abilityIdStr = "";
+							String abilityNameStr = "";
+							for(Iterator<BuffetAbilityRelationInfo> it_ability = barList.iterator() ; it_ability.hasNext();){
+								BuffetAbilityRelationInfo bar = it_ability.next();
+								abilityIdStr += bar.getBuffetAbilityTypeInfo().getId()+":";
+								abilityNameStr += bar.getBuffetAbilityTypeInfo().getAbility()+",";
+							}
+							if(!abilityIdStr.equals("")){
+								map_d.put("abilityId", abilityIdStr.substring(0,abilityIdStr.length()-1));
+								map_d.put("abilityName", abilityNameStr.substring(0,abilityNameStr.length()-1));
+							}else{
+								map_d.put("abilityId", abilityIdStr);
+								map_d.put("abilityName", abilityNameStr);
+							}
+						  list_d.add(map_d);
+					}
+					map.put("buffetList", list_d);
+					map.put("studyLogId", studyLogId);
+					map.put("quoteLoreId", basicLoreId);
 				}
-				if(!mindIdStr.equals("")){
-					map_d.put("mindId", mindIdStr.substring(0,mindIdStr.length()-1));
-					map_d.put("mindName", mindNameStr.substring(0,mindNameStr.length()-1));
-				}else{
-					map_d.put("mindId", mindIdStr);
-					map_d.put("mindName", mindNameStr);
-				}
-				List<BuffetAbilityRelationInfo> barList = barManager.listBarInfoBybqId(bqInfo.getId());
-				String abilityIdStr = "";
-				String abilityNameStr = "";
-				for(Iterator<BuffetAbilityRelationInfo> it_ability = barList.iterator() ; it_ability.hasNext();){
-					BuffetAbilityRelationInfo bar = it_ability.next();
-					abilityIdStr += bar.getBuffetAbilityTypeInfo().getId()+":";
-					abilityNameStr += bar.getBuffetAbilityTypeInfo().getAbility()+",";
-				}
-				if(!abilityIdStr.equals("")){
-					map_d.put("abilityId", abilityIdStr.substring(0,abilityIdStr.length()-1));
-					map_d.put("abilityName", abilityNameStr.substring(0,abilityNameStr.length()-1));
-				}else{
-					map_d.put("abilityId", abilityIdStr);
-					map_d.put("abilityName", abilityNameStr);
-				}
-			  list_d.add(map_d);
+			}
 		}
-		map.put("buffetList", list_d);
+		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 		
