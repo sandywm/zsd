@@ -115,6 +115,15 @@
 		<mapping resource="com/zsd/xml/RelationZdResult.hbm.xml" />
 		<mapping resource="com/zsd/xml/TownInfo.hbm.xml" />
 		<mapping resource="com/zsd/xml/GuideStudyInfo.hbm.xml" />
+		<mapping resource="com/zsd/xml/HwStudyDetailInfo.hbm.xml" />
+		<mapping resource="com/zsd/xml/HwStudyTjInfo.hbm.xml" />
+		<mapping resource="com/zsd/xml/HwTraceStudyLogInfo.hbm.xml" />
+		<mapping resource="com/zsd/xml/TeaQueInfo.hbm.xml" />
+		<mapping resource="com/zsd/xml/HwMindRelationInfo.hbm.xml" />
+		<mapping resource="com/zsd/xml/HwTraceStudyDetailInfo.hbm.xml" />
+		<mapping resource="com/zsd/xml/HwAbilityRelationInfo.hbm.xml" />
+		<mapping resource="com/zsd/xml/HwQueInfo.hbm.xml" />
+		<mapping resource="com/zsd/xml/SendHwInfo.hbm.xml" />
 
 
 
