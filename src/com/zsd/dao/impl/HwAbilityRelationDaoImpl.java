@@ -13,7 +13,7 @@ public class HwAbilityRelationDaoImpl implements HwAbilityRelationDao{
 	@Override
 	public HwAbilityRelationInfo getEntityById(Session sess, Integer id) {
 		// TODO Auto-generated method stub
-		String hql = " from HwAbilityRelationInfo har hq where har.id = "+id;
+		String hql = " from HwAbilityRelationInfo as har where har.id = "+id;
 		List<HwAbilityRelationInfo> l = sess.createQuery(hql).list();
 		if(l.size() > 0){
 			return l.get(0);
@@ -37,12 +37,12 @@ public class HwAbilityRelationDaoImpl implements HwAbilityRelationDao{
 	public List<HwAbilityRelationInfo> findInfoByOpt(Session sess,
 			Integer hwId, Integer batId) {
 		// TODO Auto-generated method stub
-		String hql = " from HwAbilityRelationInfo har hq where 1 = 1";
+		String hql = " from HwAbilityRelationInfo as har where 1 = 1";
 		if(hwId > 0){
 			hql += " and har.hwQueInfo.id = "+hwId;
 		}
 		if(batId > 0){
-			hql += " and hmr.buffetAbilityTypeInfo.id = "+batId;
+			hql += " and har.buffetAbilityTypeInfo.id = "+batId;
 		}
 		return sess.createQuery(hql).list();
 	}

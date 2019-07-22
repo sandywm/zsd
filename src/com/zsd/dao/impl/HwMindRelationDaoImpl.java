@@ -13,7 +13,7 @@ public class HwMindRelationDaoImpl implements HwMindRelationDao{
 	@Override
 	public HwMindRelationInfo getEntityById(Session sess, Integer id) {
 		// TODO Auto-generated method stub
-		String hql = " from HwMindRelationInfo hmr hq where hmr.id = "+id;
+		String hql = " from HwMindRelationInfo as hmr where hmr.id = "+id;
 		List<HwMindRelationInfo> l = sess.createQuery(hql).list();
 		if(l.size() > 0){
 			return l.get(0);
@@ -37,7 +37,7 @@ public class HwMindRelationDaoImpl implements HwMindRelationDao{
 	public List<HwMindRelationInfo> findInfoByOpt(Session sess, Integer hwId,
 			Integer bmtId) {
 		// TODO Auto-generated method stub
-		String hql = " from HwMindRelationInfo hmr hq where 1 = 1";
+		String hql = " from HwMindRelationInfo as hmr where 1 = 1";
 		if(hwId > 0){
 			hql += " and hmr.hwQueInfo.id = "+hwId;
 		}

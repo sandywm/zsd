@@ -101,6 +101,13 @@ public class BuffetStudyAction extends DispatchAction {
 		if(subId.equals(0)){
 			subId = 2;//默认为数学
 		}
+		if(!sDate.equals("") && !eDate.equals("")){
+			eDate = CurrentTime.getStringDate();
+			sDate = CurrentTime.getFinalDate(-2);
+		}
+		if(comStatus.equals(-1)){
+			comStatus = 0;
+		}
 		String msg = "error";
 		Map<String,Object> map = new HashMap<String,Object>();
 		if(userId > 0){
@@ -130,6 +137,8 @@ public class BuffetStudyAction extends DispatchAction {
 			}
 		}
 		map.put("result", msg);
+		map.put("sDate", sDate);
+		map.put("eDate", eDate);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
