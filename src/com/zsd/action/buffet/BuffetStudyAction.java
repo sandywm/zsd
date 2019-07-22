@@ -101,7 +101,7 @@ public class BuffetStudyAction extends DispatchAction {
 		if(subId.equals(0)){
 			subId = 2;//默认为数学
 		}
-		if(!sDate.equals("") && !eDate.equals("")){
+		if(sDate.equals("") && eDate.equals("")){
 			eDate = CurrentTime.getStringDate();
 			sDate = CurrentTime.getFinalDate(-2);
 		}
