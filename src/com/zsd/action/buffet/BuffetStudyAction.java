@@ -105,8 +105,8 @@ public class BuffetStudyAction extends DispatchAction {
 			eDate = CurrentTime.getStringDate();
 			sDate = CurrentTime.getFinalDate(-2);
 		}
-		if(comStatus.equals(-1)){
-			comStatus = 0;
+		if(comStatus.equals(0)){
+			comStatus = -1;
 		}
 		String msg = "error";
 		Map<String,Object> map = new HashMap<String,Object>();
