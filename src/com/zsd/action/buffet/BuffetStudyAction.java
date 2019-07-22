@@ -126,7 +126,7 @@ public class BuffetStudyAction extends DispatchAction {
 					map_d.put("studyResult", bs.getStudyResult());//1:未完成，2:已完成
 					map_d.put("allNumber", bs.getSendNumber());
 					map_d.put("comNumber", bs.getComNumber());
-					map_d.put("sendUserInfo", bs.getUser().getNickName());
+					map_d.put("sendUserInfo", bs.getUser().getRealName());
 					map_d.put("sendDate", bs.getSendTime().substring(0, 10));
 					list_d.add(map_d);
 				}
