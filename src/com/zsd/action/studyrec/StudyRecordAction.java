@@ -29,21 +29,18 @@ import com.zsd.module.BuffetQueInfo;
 import com.zsd.module.BuffetSendInfo;
 import com.zsd.module.BuffetStudyDetailInfo;
 import com.zsd.module.JoinLoreRelation;
-import com.zsd.module.LoreInfo;
 import com.zsd.module.NetTeacherStudent;
 import com.zsd.module.StudyDetailInfo;
 import com.zsd.module.StudyLogInfo;
 import com.zsd.module.Subject;
 import com.zsd.module.json.LoreTreeMenuJson;
 import com.zsd.module.json.MyTreeNode;
-import com.zsd.page.PageConst;
 import com.zsd.service.BuffetAbilityRelationInfoManager;
 import com.zsd.service.BuffetMindRelationInfoManager;
 import com.zsd.service.BuffetQueInfoManager;
 import com.zsd.service.BuffetSendInfoManager;
 import com.zsd.service.BuffetStudyDetailManager;
 import com.zsd.service.JoinLoreRelationManager;
-import com.zsd.service.LoreInfoManager;
 import com.zsd.service.NetTeacherStudentManager;
 import com.zsd.service.StudyDetailManager;
 import com.zsd.service.StudyLogManager;
@@ -504,7 +501,7 @@ public class StudyRecordAction extends DispatchAction {
 				map_d.put("loreName", slInfo.getLoreInfo().getLoreName());//知识点名称
 				map_d.put("mainLoreId", slInfo.getLoreInfo().getMainLoreId());//引用知识点
 				map_d.put("stuId", slInfo.getUser().getId());//学生编号
-				List<BuffetSendInfo> bsList = bsManager.listBsInfoById(stuLogId);
+				List<BuffetSendInfo> bsList = bsManager.listBsInfoByStudyLogId(stuLogId);
 				if(bsList.isEmpty() && sendFlag.equals(0)){
 					map_d.put("bs_id",0);
 					map_d.put("bs_sendTime", "");
@@ -930,11 +927,9 @@ public class StudyRecordAction extends DispatchAction {
 	 * @return
 	 * @throws Exception
 	 */
-	public ActionForward sendBuffetDetil1(ActionMapping mapping, ActionForm form,
+	public ActionForward sendBuffetDetiTj(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		BuffetStudyDetailManager bsdManager = (BuffetStudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_STUDY_DETAIL_INFO);
-		BuffetMindRelationInfoManager bmrManager = (BuffetMindRelationInfoManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_MIND_RELATION_INFO);
-		BuffetAbilityRelationInfoManager barManager= (BuffetAbilityRelationInfoManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_ABILITY_RELATION_INFO);
 		Integer bsId = CommonTools.getFinalInteger("bsId",request);
 		Map<String,Object> map = new HashMap<String,Object>();
 		List<BuffetStudyDetailInfo> bsdlist = bsdManager.listInfoByBsId(bsId);

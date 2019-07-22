@@ -117,6 +117,20 @@ public class BuffetSendInfoManagerImpl implements BuffetSendInfoManager {
 			HibernateUtil.closeSession();
 		}
 	}
+	@Override
+	public List<BuffetSendInfo> listBsInfoByStudyLogId(Integer studyLogid)
+			throws WEBException {
+		try {
+			bsDao = (BuffetSendInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_BUFFET_SEND_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return bsDao.findBsInfoByStudyLogId(sess, studyLogid);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("根据学习记录主键查询自助餐发送信息时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
 
 
 }

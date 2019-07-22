@@ -72,4 +72,13 @@ public interface BuffetSendInfoManager {
 	 * @throws WEBException
 	 */
 	boolean updateBuffetSend(Integer id,Integer isfinish,Integer completeNumber)throws WEBException;
+	/**
+	 * 根据学习记录主键查询自助餐发送信息
+	 * @author zdf
+	 * 2019-7-22 上午09:13:58
+	 * @param studyLogid 学习记录编号
+	 * @return
+	 * @throws WEBException
+	 */
+	 List<BuffetSendInfo> listBsInfoByStudyLogId(Integer studyLogid)throws WEBException;
 }

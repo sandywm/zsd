@@ -93,4 +93,13 @@ public interface BuffetSendInfoDao {
 	 */
 	List<BuffetSendInfo> findPageInfoByOption(Session sess, Integer stuId,Integer subId, Integer isfinish, 
 			String sDate, String eDate,Integer pageNo,Integer pageSize);
+	/**
+	 * 根据学习记录主键查询自助餐发送信息
+	 * @author zdf
+	 * 2019-7-22 上午09:10:51
+	 * @param sess
+	 * @param studyLogid 学习记录编号
+	 * @return
+	 */
+	List<BuffetSendInfo> findBsInfoByStudyLogId(Session sess,Integer studyLogid);
 }

@@ -90,4 +90,11 @@ public class BuffetSendInfoDaoImpl implements BuffetSendInfoDao {
 		return sess.createQuery(hql).setFirstResult(offset).setMaxResults(pageSize).list();
 	}
 
+	@Override
+	public List<BuffetSendInfo> findBsInfoByStudyLogId(Session sess,
+			Integer studyLogid) {
+		String hql="from BuffetSendInfo as bs where bs.studyLogInfo.id ="+studyLogid;
+		return sess.createQuery(hql).list();
+	}
+
 }
