@@ -111,12 +111,12 @@ public class BuffetStudyAction extends DispatchAction {
 		String msg = "error";
 		Map<String,Object> map = new HashMap<String,Object>();
 		if(userId > 0){
-			Integer count = bsm.listBsInfoByOption(userId, subId, comStatus, sDate, eDate).size();
-			if(count > 0){
+			List<BuffetSendInfo> bsList = bsm.listPageInfoByOption(userId, subId, comStatus, sDate, eDate, pageNo, pageSize);
+//			Integer count = bsm.listBsInfoByOption(userId, subId, comStatus, sDate, eDate).size();
+			if(bsList.size() > 0){
 				msg = "success";
-				Integer countPage = PageConst.getPageCount(count, pageSize);
-				pageNo = PageConst.getPageNo(pageNo, countPage);
-				List<BuffetSendInfo> bsList = bsm.listPageInfoByOption(userId, subId, comStatus, sDate, eDate, pageNo, pageSize);
+//				Integer countPage = PageConst.getPageCount(count, pageSize);
+//				pageNo = PageConst.getPageNo(pageNo, countPage);
 				List<Object> list_d = new ArrayList<Object>();
 				for(BuffetSendInfo bs : bsList){
 					Map<String,Object> map_d = new HashMap<String,Object>();
@@ -131,7 +131,7 @@ public class BuffetStudyAction extends DispatchAction {
 					list_d.add(map_d);
 				}
 				map.put("studyList", list_d);
-				map.put("countPage", countPage);
+//				map.put("countPage", countPage);
 			}else{
 				msg = "noInfo";
 			}

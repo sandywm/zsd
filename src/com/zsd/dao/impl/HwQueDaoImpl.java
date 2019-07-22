@@ -65,6 +65,12 @@ public class HwQueDaoImpl implements HwQueDao{
 		if(!inUse.equals(-1)){
 			hql += " and hq.inUse = "+inUse;
 		}
+		if(currNumFlag){
+			hql += " order by hq.num desc";
+			return sess.createQuery(hql).setFirstResult(0).setMaxResults(1).list();
+		}else{
+			hql += " order by hq.orders asc";
+		}
 		return sess.createQuery(hql).list();
 	}
 
