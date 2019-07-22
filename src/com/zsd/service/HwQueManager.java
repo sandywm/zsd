@@ -19,13 +19,13 @@ public interface HwQueManager {
 	 * @param answer 答案
 	 * @param resolution 解析
 	 * @param queType 题型一
-	 * @param order 排序
+	 * @param orders 排序
 	 * @param operateUserName 操作人员姓名
 	 * @return
 	 * @throws WEBException
 	 */
 	Integer addHW(Integer btId,Integer loreId,Integer num,String title,String subject,String answer,
-			String resolution,String queType,Integer order,
+			String resolution,String queType,Integer orders,
 			String operateUserName) throws WEBException;
 	
 	/**

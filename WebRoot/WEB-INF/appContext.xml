@@ -49,4 +49,5 @@
 	<app id="apply_class_info_Web" class="com.zsd.service.impl.ApplyClassManagerImpl"/>
 	<app id="buffet_mind_relation_info_Web" class="com.zsd.service.impl.BuffetMindRelationInfoManagerImpl"/>
 	<app id="buffet_ability_relation_info_Web" class="com.zsd.service.impl.BuffetAbilityRelationInfoManagerImpl"/>
+	<app id="hw_que_info_Web" class="com.zsd.service.impl.HwQueManagerImpl"/>
 </appContext>

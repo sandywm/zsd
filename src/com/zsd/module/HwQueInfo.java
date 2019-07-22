@@ -32,20 +32,6 @@ public class HwQueInfo implements java.io.Serializable {
 	public HwQueInfo() {
 	}
 
-	/** minimal constructor */
-	public HwQueInfo(LoreInfo loreInfo, BuffetTypeInfo buffetTypeInfo,
-			Integer num, String title, String subject, String answer,
-			Integer orders, Integer inUse) {
-		this.loreInfo = loreInfo;
-		this.buffetTypeInfo = buffetTypeInfo;
-		this.num = num;
-		this.title = title;
-		this.subject = subject;
-		this.answer = answer;
-		this.orders = orders;
-		this.inUse = inUse;
-	}
-
 	/** full constructor */
 	public HwQueInfo(LoreInfo loreInfo, BuffetTypeInfo buffetTypeInfo,
 			Integer num, String title, String subject, String answer,

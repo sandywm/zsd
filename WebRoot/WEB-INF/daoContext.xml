@@ -51,4 +51,5 @@
 	<dao id="apply_class_info_Dao" class="com.zsd.dao.impl.ApplyClassDaoImpl" />
 	<dao id="buffet_mind_relation_info_Dao" class="com.zsd.dao.impl.BuffetMindRelationInfoDaoImpl" />
 	<dao id="buffet_ability_relation_info_Dao" class="com.zsd.dao.impl.BuffetAbilityRelationInfoDaoImpl" />
+	<dao id="hw_que_info_Dao" class="com.zsd.dao.impl.HwQueDaoImpl" />
 </daoContext>

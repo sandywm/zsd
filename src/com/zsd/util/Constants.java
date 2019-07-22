@@ -81,6 +81,9 @@ public class Constants {
 	public static final String WEB_APPLY_CLASS_INFO = "apply_class_info_Web";
 	public static final String WEB_BUFFET_MIND_RELATION_INFO = "buffet_mind_relation_info_Web";
 	public static final String WEB_BUFFET_ABILITY_RELATION_INFO = "buffet_ability_relation_info_Web";
+	public static final String WEB_HW_QUE_INFO = "hw_que_info_Web";
+	public static final String WEB_HW_MIND_RELATION_INFO = "hw_mind_relation_Web";
+	public static final String WEB_HW_ABILITY_RELATION_INFO = "hw_ability_relation_Web";
 	
 	
 	//-------------------DAO-------------------------//
@@ -135,5 +138,8 @@ public class Constants {
 	public static final String DAO_APPLY_CLASS_INFO = "apply_class_info_Dao";
 	public static final String DAO_BUFFET_MIND_RELATION_INFO = "buffet_mind_relation_info_Dao";
 	public static final String DAO_BUFFET_ABILITY_RELATION_INFO = "buffet_ability_relation_info_Dao";
+	public static final String DAO_HW_QUE_INFO = "hw_que_info_Dao";
+	public static final String DAO_HW_MIND_RELATION_INFO = "hw_mind_relation_Dao";
+	public static final String DAO_HW_ABILITY_RELATION_INFO = "hw_ability_relation_Dao";
 }
 
