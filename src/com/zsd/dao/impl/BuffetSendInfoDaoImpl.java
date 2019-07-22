@@ -52,10 +52,10 @@ public class BuffetSendInfoDaoImpl implements BuffetSendInfoDao {
 			hql+=" and bs.studyResult="+isfinish;
 		}
 		if (!starttime.equals("")){
-			hql += " and bs.sendTime >= '"+ starttime + "'";
+			hql += " and substring(bs.sendTime,1,10) >= '"+ starttime + "'";
 		}
 		if (!endtime.equals("")) {
-			hql += " and bs.sendTime <='" + endtime +"'";
+			hql += " and substring(bs.sendTime,1,10) <='" + endtime +"'";
 		}
 		return sess.createQuery(hql).list();
 	}
@@ -80,8 +80,8 @@ public class BuffetSendInfoDaoImpl implements BuffetSendInfoDao {
 			hql+=" and bs.studyResult="+isfinish;
 		}
 		if (!sDate.equals("") && !eDate.equals("")){
-			hql += " and bs.sendTime >= '"+ sDate + "'";
-			hql += " and bs.sendTime <='" + eDate +"'";
+			hql += " and substring(bs.sendTime,1,10) >= '"+ sDate + "'";
+			hql += " and substring(bs.sendTime,1,10) <='" + eDate +"'";
 		}
 		int offset = (pageNo - 1) * pageSize;
 		if (offset < 0) {
