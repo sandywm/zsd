@@ -17,6 +17,8 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
 
 import com.zsd.factory.AppFactory;
+import com.zsd.module.HwAbilityRelationInfo;
+import com.zsd.module.HwMindRelationInfo;
 import com.zsd.module.HwQueInfo;
 import com.zsd.page.PageConst;
 import com.zsd.service.HwAbilityRelationManager;
@@ -77,20 +79,39 @@ public class HomeWorkAction extends DispatchAction {
 			List<HwQueInfo> hqList = hqm.listPageInfoByLoreId(loreId, pageNo, pageSize);
 			msg = "success";
 			List<Object> list_d = new ArrayList<Object>();
-			for(HwQueInfo hq : hqList){
-				Map<String,Object> map_d = new HashMap<String,Object>();
-				map_d.put("id", hq.getId());
-				map_d.put("btName", hq.getBuffetTypeInfo().getTypes());
-				map_d.put("loreName", hq.getLoreInfo().getLoreName());
-				map_d.put("", hq);
-				map_d.put("", hq);
-				map_d.put("", hq);
-				map_d.put("", hq);
-				map_d.put("", hq);
-				map_d.put("", hq);
-				map_d.put("", hq);
+			if(hqList.size() > 0){
+				for(HwQueInfo hq : hqList){
+					Map<String,Object> map_d = new HashMap<String,Object>();
+					Integer hwId = hq.getId();
+					map_d.put("id", hwId);
+					map_d.put("btName", hq.getBuffetTypeInfo().getTypes());
+					map_d.put("loreName", hq.getLoreInfo().getLoreName());
+					map_d.put("hwTitle", hq.getTitle());
+					String mindStr = "";
+					String abilityStr = "";
+					List<HwMindRelationInfo> hmrList = hmrm.listInfoByOpt(0, hwId);
+					for(HwMindRelationInfo hmr : hmrList){
+						mindStr += hmr.getBuffetMindTypeInfo().getMind() + ",";
+					}
+					if(!mindStr.equals("")){
+						mindStr = mindStr.substring(0, mindStr.length() - 1);
+					}
+					List<HwAbilityRelationInfo>  harList = harm.listInfoByOpt(0, hwId);
+					for(HwAbilityRelationInfo har : harList){
+						abilityStr += har.getBuffetAbilityTypeInfo().getAbility();
+					}
+					map_d.put("mindStr", mindStr);
+					map_d.put("abilityStr", abilityStr);
+					map_d.put("inUse", hq.getInUse().equals(0) ? "有效" : "无效");
+					list_d.add(map_d);
+				}
+				map.put("data", list_d);
+				map.put("count", count);
+				map.put("code", 0);
 			}
 		}
+		map.put("msg", msg);
+		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
 }
