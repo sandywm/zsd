@@ -37,6 +37,15 @@ public interface HwMindRelationDao {
 	void update(Session sess,HwMindRelationInfo hmr);
 	
 	/**
+	 * 删除指定家庭作业思维类型关联信息
+	 * @author wm
+	 * @date 2019-7-23 上午11:05:27
+	 * @param sess
+	 * @param hmr
+	 */
+	void delete(Session sess,HwMindRelationInfo hmr);
+	
+	/**
 	 * 根据条件获取系统家庭作业思维类型关联信息列表
 	 * @author wm
 	 * @date 2019-7-22 上午09:13:13

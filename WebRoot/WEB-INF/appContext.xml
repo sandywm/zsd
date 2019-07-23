@@ -50,4 +50,6 @@
 	<app id="buffet_mind_relation_info_Web" class="com.zsd.service.impl.BuffetMindRelationInfoManagerImpl"/>
 	<app id="buffet_ability_relation_info_Web" class="com.zsd.service.impl.BuffetAbilityRelationInfoManagerImpl"/>
 	<app id="hw_que_info_Web" class="com.zsd.service.impl.HwQueManagerImpl"/>
+	<app id="hw_mind_relation_Web" class="com.zsd.service.impl.HwMindRelationManagerImpl"/>
+	<app id="hw_ability_relation_Web" class="com.zsd.service.impl.HwAbilityRelationManagerImpl"/>
 </appContext>

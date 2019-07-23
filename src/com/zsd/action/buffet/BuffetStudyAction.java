@@ -216,6 +216,8 @@ public class BuffetStudyAction extends DispatchAction {
 					list_d.add(map_d);
 				}
 				map.put("bsdList", list_d);
+				map.put("loreName", bsdList.get(0).getBuffetSendInfo().getStudyLogInfo().getLoreInfo().getLoreName());
+				map.put("subDetail", "针对该知识点而设定的自助餐诊断题目共"+bsdList.size()+"题");
 			}else{
 				msg = "error";
 			}

@@ -104,9 +104,13 @@ public class BuffetAllManagerImpl implements BuffetAllManager{
 				Integer bmtId = Integer.parseInt(bmtIdStr.split(",")[i]);
 				BuffetMindRelationInfo bmr = new BuffetMindRelationInfo(baDao.getBMTEntityById(sess, bmtId),bq);
 				baDao.saveBMR(sess, bmr);
+				if(i % 10 == 0){//批插入的对象立即写入数据库并释放内存
+					sess.flush();
+					sess.clear();
+					tran.commit();
+					tran = sess.beginTransaction();
+				}
 			}
-			sess.flush();
-			sess.clear();
 			tran.commit();
 			return true;
 		} catch (Exception e) {

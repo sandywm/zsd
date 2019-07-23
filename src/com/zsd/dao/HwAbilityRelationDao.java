@@ -23,18 +23,27 @@ public interface HwAbilityRelationDao {
 	 * @author wm
 	 * @date 2019-7-22 上午09:12:47
 	 * @param sess
-	 * @param hmr
+	 * @param har
 	 */
-	void save(Session sess,HwAbilityRelationInfo hmr);
+	void save(Session sess,HwAbilityRelationInfo har);
 	
 	/**
 	 * 修改系统家庭作业能力类型关联信息
 	 * @author wm
 	 * @date 2019-7-22 上午09:13:06
 	 * @param sess
-	 * @param hmr
+	 * @param har
 	 */
-	void update(Session sess,HwAbilityRelationInfo hmr);
+	void update(Session sess,HwAbilityRelationInfo har);
+	
+	/**
+	 * 删除系统家庭作业能力类型关联信息
+	 * @author wm
+	 * @date 2019-7-23 上午11:11:50
+	 * @param sess
+	 * @param har
+	 */
+	void delete(Session sess,HwAbilityRelationInfo har);
 	
 	/**
 	 * 根据条件获取系统家庭作业能力类型关联信息列表

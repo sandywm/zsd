@@ -46,4 +46,10 @@ public class HwMindRelationDaoImpl implements HwMindRelationDao{
 		}
 		return sess.createQuery(hql).list();
 	}
+
+	@Override
+	public void delete(Session sess, HwMindRelationInfo hmr) {
+		// TODO Auto-generated method stub
+		sess.delete(hmr);
+	}
 }

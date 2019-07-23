@@ -96,6 +96,10 @@
     <action path="/buffetStudy" parameter="action" scope="request" type="com.zsd.action.buffet.BuffetStudyAction">
       <set-property property="cancellable" value="true" />
     </action>
+    <!-- 家庭作业 -->
+    <action path="/hw" parameter="action" scope="request"  type="com.zsd.action.homework.HomeWorkAction">
+      <set-property property="cancellable" value="true" />
+    </action>
   </action-mappings>
 
   <message-resources parameter="com.yourcompany.struts.ApplicationResources" />

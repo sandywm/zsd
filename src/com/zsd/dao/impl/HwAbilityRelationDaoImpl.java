@@ -22,15 +22,15 @@ public class HwAbilityRelationDaoImpl implements HwAbilityRelationDao{
 	}
 
 	@Override
-	public void save(Session sess, HwAbilityRelationInfo hmr) {
+	public void save(Session sess, HwAbilityRelationInfo har) {
 		// TODO Auto-generated method stub
-		sess.save(hmr);
+		sess.save(har);
 	}
 
 	@Override
-	public void update(Session sess, HwAbilityRelationInfo hmr) {
+	public void update(Session sess, HwAbilityRelationInfo har) {
 		// TODO Auto-generated method stub
-		sess.update(hmr);
+		sess.update(har);
 	}
 
 	@Override
@@ -45,5 +45,11 @@ public class HwAbilityRelationDaoImpl implements HwAbilityRelationDao{
 			hql += " and har.buffetAbilityTypeInfo.id = "+batId;
 		}
 		return sess.createQuery(hql).list();
+	}
+
+	@Override
+	public void delete(Session sess, HwAbilityRelationInfo har) {
+		// TODO Auto-generated method stub
+		sess.delete(har);
 	}
 }
