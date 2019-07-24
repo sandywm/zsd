@@ -496,11 +496,11 @@
 					$('.spaceBox').hide().html(spaceSelBox);
 					for(var i=0;i<json.btList.length;i++){
 						if(json.btList[i].selFlag){
-							$('#baseTypeInp').val(json.btList[i].baId);
+							$('#baseTypeInp').val(json.btList[i].btId);
 							$('#baseTypeTxt').html(json.btList[i].btName);
 							
 						}
-					}
+					} 
 					for(var i=0;i<json.bmList.length;i++){
 						if(json.bmList[i].selFlag){
 							$('input[name=mindType]').each(function(j){

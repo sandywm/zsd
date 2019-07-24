@@ -138,7 +138,6 @@
 					//批量生成知识点编码
 					$('#zsdCodeBtn').on('click',function(){
 						cptId = $('#chapterInp').val();//获取章节Id
-						alert(cptId)
 						if(cptId != ''){
 							var codeRes = baseDataMet.createLoreCode(cptId);
 							console.log(codeRes)
