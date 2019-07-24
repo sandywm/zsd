@@ -201,7 +201,7 @@ public class BuffetAction extends DispatchAction {
 				}
 				for(Iterator<BuffetMindRelationInfo> it_m = bmrList.iterator() ; it_m.hasNext();){
 					BuffetMindRelationInfo bmr = it_m.next();
-					swType = bmr.getBuffetMindTypeInfo().getMind() + ",";
+					swType += bmr.getBuffetMindTypeInfo().getMind() + ",";
 				}
 				if(!swType.equals("")){
 					swType = swType.substring(0, swType.length() - 1);

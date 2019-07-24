@@ -169,6 +169,7 @@ public class BuffetStudyAction extends DispatchAction {
 				List<Object> list_d = new ArrayList<Object>();
 				for(BuffetStudyDetailInfo bsd : bsdList){
 					Map<String,Object> map_d = new HashMap<String,Object>();
+					map_d.put("bsdId", bsd.getId());
 					map_d.put("bsId", bsId);
 					StudyLogInfo sl = bsd.getBuffetSendInfo().getStudyLogInfo();
 					map_d.put("studyLogId", sl.getId());
@@ -357,9 +358,8 @@ public class BuffetStudyAction extends DispatchAction {
 		JoinLoreRelationManager jlrm = (JoinLoreRelationManager) AppFactory.instance(null).getApp(Constants.WEB_JOIN_LORE_RELATE_INFO);
 		LoreInfoManager lm = (LoreInfoManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
 		Integer buffetId = CommonTools.getFinalInteger("buffetId", request);
-//		Integer currBasicLoreId = CommonTools.getFinalInteger("currBasicLoreId", request);;//通用知识点--自助餐属于该知识点名下
 		Integer currLoreId = CommonTools.getFinalInteger("currLoreId", request);;//出版社下知识点编号(最初学习记录中的知识点编号)
-		Integer currBasicLoreId = 0;
+		Integer currBasicLoreId = 0;//通用知识点--自助餐属于该知识点名下
 		String relateLoreIdStr = "";//该出版社下的关联知识点
 		Integer editionId = 0;//当前知识点所在的出版社
 		String msg = "error";

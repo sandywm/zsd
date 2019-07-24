@@ -21,10 +21,12 @@ import com.zsd.module.HwAbilityRelationInfo;
 import com.zsd.module.HwMindRelationInfo;
 import com.zsd.module.HwQueInfo;
 import com.zsd.page.PageConst;
+import com.zsd.service.BuffetQueInfoManager;
 import com.zsd.service.HwAbilityRelationManager;
 import com.zsd.service.HwMindRelationManager;
 import com.zsd.service.HwQueManager;
 import com.zsd.tools.CommonTools;
+import com.zsd.tools.CurrentTime;
 import com.zsd.util.Constants;
 
 /** 
@@ -111,6 +113,115 @@ public class HomeWorkAction extends DispatchAction {
 			}
 		}
 		map.put("msg", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 设置自助餐题库有/无效状态
+	 * @author wm
+	 * @date 2019-7-24 上午10:25:20
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward setInUseStatus(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		HwQueManager hqm = (HwQueManager) AppFactory.instance(null).getApp(Constants.WEB_HW_QUE_INFO);
+		Integer hwId = CommonTools.getFinalInteger("hwId", request);
+		Integer inUse = CommonTools.getFinalInteger("inUse", request);//有效状态（0：有效，1：无效）
+		Map<String,String> map = new HashMap<String,String>();
+		String msg = "error";
+		boolean flag = hqm.updateInUseById(hwId, inUse, CommonTools.getLoginAccount(request));
+		if(flag){
+			msg = "success";
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 浏览指定知识下系统家庭作业
+	 * @author wm
+	 * @date 2019-7-24 上午10:58:22
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getHwDetailData(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		HwQueManager hqm = (HwQueManager) AppFactory.instance(null).getApp(Constants.WEB_HW_QUE_INFO);
+		HwMindRelationManager hmrm = (HwMindRelationManager) AppFactory.instance(null).getApp(Constants.WEB_HW_MIND_RELATION_INFO);
+		HwAbilityRelationManager harm = (HwAbilityRelationManager) AppFactory.instance(null).getApp(Constants.WEB_HW_ABILITY_RELATION_INFO);
+		Integer loreId = CommonTools.getFinalInteger("loreId", request);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "noInfo";
+		List<Object> list_d_xqjf = new ArrayList<Object>();
+		List<Object> list_d_ffgn = new ArrayList<Object>();
+		List<Object> list_d_swxl = new ArrayList<Object>();
+		List<Object> list_d_zlkf = new ArrayList<Object>();
+		List<Object> list_d_nlpy = new ArrayList<Object>();
+		List<Object> list_d_zksl = new ArrayList<Object>();
+		List<HwQueInfo> hqList = hqm.listInfoByOpt(loreId, 0, -1, false);
+		if(hqList.size() > 0){
+			for(HwQueInfo hq : hqList){
+				Map<String,Object> map_d = new HashMap<String,Object>();
+				Integer hwId = hq.getId();
+				List<HwMindRelationInfo> hmrList = hmrm.listInfoByOpt(0, hwId);
+				List<HwAbilityRelationInfo>  harList = harm.listInfoByOpt(0, hwId);
+				String swType = "";
+				String nlType = "";
+				for(HwMindRelationInfo hmr : hmrList){
+					swType += hmr.getBuffetMindTypeInfo().getMind() + ",";
+				}
+				for(HwAbilityRelationInfo har : harList){
+					nlType += har.getBuffetAbilityTypeInfo().getAbility() + ",";
+				}
+				if(!swType.equals("")){
+					swType = swType.substring(0, swType.length() - 1);
+				}
+				if(!nlType.equals("")){
+					nlType = nlType.substring(0, nlType.length() - 1);
+				}
+				String hqType = hq.getBuffetTypeInfo().getTypes();
+				map_d.put("hqTitle", hq.getTitle());
+				map_d.put("hqType", hq.getQueType());
+				map_d.put("swType", swType);
+				map_d.put("nlType", nlType);
+				map_d.put("subject", hq.getSubject());
+				map_d.put("hqAnswer", hq.getAnswer());
+				map_d.put("hqResolution", hq.getResolution());//解析
+				if(hqType.equals("兴趣激发")){
+					list_d_xqjf.add(map_d);
+				}else if(hqType.equals("方法归纳")){
+					list_d_ffgn.add(map_d);
+				}else if(hqType.equals("思维训练")){
+					list_d_swxl.add(map_d);
+				}else if(hqType.equals("智力开发")){
+					list_d_zlkf.add(map_d);
+				}else if(hqType.equals("能力培养")){
+					list_d_nlpy.add(map_d);
+				}else if(hqType.equals("中/高考涉猎")){
+					list_d_zksl.add(map_d);
+				}
+			}
+			map.put("xqjf", list_d_xqjf);
+			map.put("ffgn", list_d_ffgn);
+			map.put("swxl", list_d_swxl);
+			map.put("zlkf", list_d_zlkf);
+			map.put("nlpy", list_d_nlpy);
+			map.put("zksl", list_d_zksl);
+		}
+		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}

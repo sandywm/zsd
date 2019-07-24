@@ -124,9 +124,9 @@
 		<mapping resource="com/zsd/xml/HwAbilityRelationInfo.hbm.xml" />
 		<mapping resource="com/zsd/xml/HwQueInfo.hbm.xml" />
 		<mapping resource="com/zsd/xml/SendHwInfo.hbm.xml" />
-
-
-
+		<mapping resource="com/zsd/xml/NetTeacherStudioNewsInfo.hbm.xml" />
+		<mapping resource="com/zsd/xml/NetTeacherStudioRelationInfo.hbm.xml" />
+		<mapping resource="com/zsd/xml/NetTeacherStudioInfo.hbm.xml" />
 	</session-factory>
 
 </hibernate-configuration>
