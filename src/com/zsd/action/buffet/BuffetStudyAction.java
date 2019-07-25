@@ -310,7 +310,7 @@ public class BuffetStudyAction extends DispatchAction {
 						}
 					}
 					for(int i = 0 ; i < answerOptionArray.size() ; i++){
-						answerOptionStr[i] = answerOptionArray.get(i).toString().replaceAll("&#wmd;", "'");
+						answerOptionStr[i] = answerOptionArray.get(i).toString();
 					}
 				}
 				//修改自助餐答题情况

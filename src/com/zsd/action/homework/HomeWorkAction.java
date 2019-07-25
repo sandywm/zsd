@@ -18,23 +18,18 @@ import org.apache.struts.actions.DispatchAction;
 
 import com.zsd.action.base.Transcode;
 import com.zsd.factory.AppFactory;
-import com.zsd.module.BuffetAbilityRelationInfo;
 import com.zsd.module.BuffetAbilityTypeInfo;
-import com.zsd.module.BuffetMindRelationInfo;
 import com.zsd.module.BuffetMindTypeInfo;
-import com.zsd.module.BuffetQueInfo;
 import com.zsd.module.BuffetTypeInfo;
 import com.zsd.module.HwAbilityRelationInfo;
 import com.zsd.module.HwMindRelationInfo;
 import com.zsd.module.HwQueInfo;
 import com.zsd.page.PageConst;
 import com.zsd.service.BuffetAllManager;
-import com.zsd.service.BuffetQueInfoManager;
 import com.zsd.service.HwAbilityRelationManager;
 import com.zsd.service.HwMindRelationManager;
 import com.zsd.service.HwQueManager;
 import com.zsd.tools.CommonTools;
-import com.zsd.tools.CurrentTime;
 import com.zsd.util.Constants;
 
 /** 
@@ -73,7 +68,7 @@ public class HomeWorkAction extends DispatchAction {
 	 * @return
 	 * @throws Exception 
 	 */
-	public ActionForward goHwData(ActionMapping mapping, ActionForm form,
+	public ActionForward getHwPageData(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
 		HwQueManager hqm = (HwQueManager) AppFactory.instance(null).getApp(Constants.WEB_HW_QUE_INFO);
@@ -126,7 +121,7 @@ public class HomeWorkAction extends DispatchAction {
 	}
 	
 	/**
-	 * 设置自助餐题库有/无效状态
+	 * 设置家庭作业题库有/无效状态
 	 * @author wm
 	 * @date 2019-7-24 上午10:25:20
 	 * @param mapping
@@ -228,6 +223,7 @@ public class HomeWorkAction extends DispatchAction {
 			map.put("zlkf", list_d_zlkf);
 			map.put("nlpy", list_d_nlpy);
 			map.put("zksl", list_d_zksl);
+			msg = "success";
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
@@ -408,6 +404,52 @@ public class HomeWorkAction extends DispatchAction {
 				map.put("queSub", hw.getSubject());
 				map.put("queAnswer", hw.getAnswer());
 				map.put("queResolution", hw.getResolution());
+			}
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 修改指定的系统家庭作业
+	 * @author wm
+	 * @date 2019-7-25 上午11:06:24
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward updateHwDetail(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		HwQueManager hqm = (HwQueManager) AppFactory.instance(null).getApp(Constants.WEB_HW_QUE_INFO);
+		HwMindRelationManager hmrm = (HwMindRelationManager) AppFactory.instance(null).getApp(Constants.WEB_HW_MIND_RELATION_INFO);
+		HwAbilityRelationManager harm = (HwAbilityRelationManager) AppFactory.instance(null).getApp(Constants.WEB_HW_ABILITY_RELATION_INFO);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "error";
+		Integer hwId = CommonTools.getFinalInteger("hwId", request);//题库编号
+		String queType = Transcode.unescape_new1("queType", request);//类型
+		String mindIdStr = CommonTools.getFinalStr("mindIdStr", request);//思维类型编号逗号拼接
+		String abilityIdStr = CommonTools.getFinalStr("abilityIdStr", request);//能力类型编号逗号拼接
+		String queSub = Transcode.unescape_new1("queSub", request);//题干
+		String queAnswer = Transcode.unescape_new1("queAnswer", request);//答案，多个用逗号隔开
+		String queResolution = Transcode.unescape_new1("queResolution", request);//解析
+		if(hwId > 0){
+			HwQueInfo hw = hqm.getEntityById(hwId);
+			if(hw != null){
+				if(!mindIdStr.equals("") && !abilityIdStr.equals("")){
+					boolean flag = hqm.updateInfoById(hwId, queSub, queAnswer, queResolution, queType, CommonTools.getLoginAccount(request));
+					if(flag){
+						hmrm.delHMR(hwId);
+						harm.delHAR(hwId);
+						hmrm.addHMR(mindIdStr, hwId);
+						harm.addHAR(abilityIdStr, hwId);
+						msg = "success";
+					}
+				}
 			}
 		}
 		map.put("result", msg);

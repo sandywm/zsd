@@ -10,7 +10,6 @@ import com.zsd.dao.BuffetSendInfoDao;
 import com.zsd.dao.BuffetStudyDetailDao;
 import com.zsd.exception.WEBException;
 import com.zsd.factory.DaoFactory;
-import com.zsd.module.BuffetQueInfo;
 import com.zsd.module.BuffetStudyDetailInfo;
 import com.zsd.service.BuffetStudyDetailManager;
 import com.zsd.tools.CurrentTime;
@@ -19,7 +18,6 @@ import com.zsd.util.Constants;
 
 public class BuffetStudyDetailManagerImpl implements BuffetStudyDetailManager{
 
-	private static final BuffetQueInfo BuffetSendInfo = null;
 	BuffetSendInfoDao bsDao = null;
 	BuffetQueInfoDao bqDao = null;
 	BuffetStudyDetailDao bsdDao = null;
@@ -47,6 +45,7 @@ public class BuffetStudyDetailManagerImpl implements BuffetStudyDetailManager{
 		try {
 			bsdDao = (BuffetStudyDetailDao) DaoFactory.instance(null).getDao(Constants.DAO_BUFFET_STUDY_DETAIL_INFO);
 			Session sess = HibernateUtil.currentSession();
+			tran = sess.beginTransaction();
 			BuffetStudyDetailInfo bsd = bsdDao.getEntityById(sess, bsdId);
 			if(bsd != null){
 				bsd.setMyAnswer(myAnswer);
@@ -79,6 +78,7 @@ public class BuffetStudyDetailManagerImpl implements BuffetStudyDetailManager{
 		try {
 			bsdDao = (BuffetStudyDetailDao) DaoFactory.instance(null).getDao(Constants.DAO_BUFFET_STUDY_DETAIL_INFO);
 			Session sess = HibernateUtil.currentSession();
+			tran = sess.beginTransaction();
 			BuffetStudyDetailInfo bsd = bsdDao.getEntityById(sess, bsdId);
 			if(bsd != null){
 				if(!traceCompleteFlag.equals(-1)){
