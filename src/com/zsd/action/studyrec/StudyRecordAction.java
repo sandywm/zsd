@@ -932,14 +932,14 @@ public class StudyRecordAction extends DispatchAction {
 		BuffetStudyDetailManager bsdManager = (BuffetStudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_STUDY_DETAIL_INFO);
 		Integer bsId = CommonTools.getFinalInteger("bsId",request);
 		Map<String,Object> map = new HashMap<String,Object>();
-		List<BuffetStudyDetailInfo> bsdlist = bsdManager.listInfoByBsId(bsId);
+		List<BuffetStudyDetailInfo> bsdlist = bsdManager.listBsdInfoByBsdId(bsId);
 		int total =bsdlist.size();
 		int rightNum =0;
 		int errorNum=0;
 		if(total>0){
 			for (Iterator<BuffetStudyDetailInfo> itr = bsdlist.iterator(); itr.hasNext();) {
 				BuffetStudyDetailInfo bsdInfo = (BuffetStudyDetailInfo) itr.next();
-				if(bsdInfo.getCurrComStatus().equals(1)){
+				if(bsdInfo.getResult().equals(1)){
 					rightNum+=1;
 				}
 			}

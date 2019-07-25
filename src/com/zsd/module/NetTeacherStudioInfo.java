@@ -15,6 +15,7 @@ public class NetTeacherStudioInfo implements java.io.Serializable {
 	private Integer id;
 	private NetTeacherInfo netTeacherInfo;
 	private String studioName;
+	private String studioCode;
 	private Integer maxNum;
 	private String studioProfile;
 
@@ -27,9 +28,10 @@ public class NetTeacherStudioInfo implements java.io.Serializable {
 
 	/** full constructor */
 	public NetTeacherStudioInfo(NetTeacherInfo netTeacherInfo,
-			String studioName, Integer maxNum, String studioProfile) {
+			String studioName, String studioCode, Integer maxNum, String studioProfile) {
 		this.netTeacherInfo = netTeacherInfo;
 		this.studioName = studioName;
+		this.studioCode = studioCode;
 		this.maxNum = maxNum;
 		this.studioProfile = studioProfile;
 	}
@@ -74,6 +76,16 @@ public class NetTeacherStudioInfo implements java.io.Serializable {
 
 	public void setStudioProfile(String studioProfile) {
 		this.studioProfile = studioProfile;
+	}
+
+
+	public String getStudioCode() {
+		return studioCode;
+	}
+
+
+	public void setStudioCode(String studioCode) {
+		this.studioCode = studioCode;
 	}
 
 }

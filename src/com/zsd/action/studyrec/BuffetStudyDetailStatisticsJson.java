@@ -15,10 +15,10 @@ import com.zsd.util.Constants;
 
 public class BuffetStudyDetailStatisticsJson {
 	
-	private String currMindSuccRate;//当前巴菲特思维正确率数组xx,yy,....
-	private String currMindNumber;//当前巴菲特思维题数量
+	private String currMindSuccRate;//当前思维正确率数组
+	private String currMindNumber;//当前思维题数量
 	private String currAbilitySuccRate;//当前能力正确率数组
-	private String currAbilityNumber;//当前巴菲特能力题数量
+	private String currAbilityNumber;//当前巴能力题数量
 
 	
 	public String getCurrMindSuccRate() {

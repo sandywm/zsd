@@ -101,4 +101,13 @@ public interface BuffetStudyDetailManager {
 	 */
 	Integer addBuffetStudyDetil(Integer buffetSendId, Integer buffetId,String realAnswer, String myAnswer, Integer result,
 			String addTime, String a, String b, String c, String d,String e, String f)throws WEBException;
+	/**
+	 * 根据自助餐发送编号获取自助餐完成学习详情信息
+	 * @author zdf
+	 * 2019-7-22 上午10:30:08
+	 * @param bsId
+	 * @return
+	 * @throws WEBException
+	 */
+	List<BuffetStudyDetailInfo> listBsdInfoByBsdId(Integer bsId)throws WEBException;
 }

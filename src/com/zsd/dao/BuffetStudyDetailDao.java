@@ -56,4 +56,13 @@ public interface BuffetStudyDetailDao {
 	 * @return
 	 */
 	List<BuffetStudyDetailInfo> findInfoByStuId(Session sess,Integer stuId,String subName,Integer succFlag);
+	/**
+	 * 根据自助餐发送编号获取自助餐完成学习详情表列表 
+	 * @author zdf
+	 * 2019-7-22 上午10:26:45
+	 * @param sess
+	 * @param bsId 自助餐发送编号
+	 * @return
+	 */
+	List<BuffetStudyDetailInfo> findBsdInfoByBsdId(Session sess,Integer bsId);
 }

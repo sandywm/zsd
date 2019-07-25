@@ -490,27 +490,31 @@ public class BuffetStudyAction extends DispatchAction {
 					Integer allNumber = bs.getSendNumber();//已发送的自助餐题量
 					Integer comNumber = bs.getComNumber();//已完成的自助餐题量
 					Integer isFinish = 0;
-					Integer result = bs.getStudyResult();//自助餐完成情况--0:错误，1：正确
-					if(bsd.getCurrComStatus().equals(0)){//溯源回来修改数据
-						flag = bsdm.updateStatusById(bsdId, 1, 1);//自助餐都完成了，肯定溯源也完成
-						if(flag){
-							Integer newComNumber = 0;
-							if(result.equals(0)){//溯源回来修改
-								//2:答题错误，进入溯源，溯源完成后，点击完成，这时completeNumber没+1，所以要执行增加
-								newComNumber = 1;
-								if(allNumber.equals(comNumber + 1)){//最后一题
-									isFinish = 2;
-								}
-								flag = bsm.updateBuffetSend(bsId, isFinish, newComNumber);//溯源回来加1
-							}
-						}
+					if(bs.getStudyResult().equals(2)){//发布自助餐全部完成时不能修改
+						flag = true;//不修改数据库直接返回
 					}else{
-						//一次性做正确时在insert方法中就修改了完成状态和溯源状态并修改了完成数，此时只需要修改结果状态
-						//之前提交过，不能再次修改或者之前一次性做对了
-						flag = true;
-						if(allNumber.equals(comNumber)){//最后一题
-							if(!result.equals(2)){
-								flag = bsm.updateBuffetSend(bsId, 2, 0);
+						Integer result = bs.getStudyResult();//自助餐完成情况--0:错误，1：正确
+						if(bsd.getCurrComStatus().equals(0)){//溯源回来修改数据
+							flag = bsdm.updateStatusById(bsdId, 1, 1);//自助餐都完成了，肯定溯源也完成
+							if(flag){
+								Integer newComNumber = 0;
+								if(result.equals(0)){//溯源回来修改
+									//2:答题错误，进入溯源，溯源完成后，点击完成，这时completeNumber没+1，所以要执行增加
+									newComNumber = 1;
+									if(allNumber.equals(comNumber + 1)){//最后一题
+										isFinish = 2;
+									}
+									flag = bsm.updateBuffetSend(bsId, isFinish, newComNumber);//溯源回来加1
+								}
+							}
+						}else{
+							//一次性做正确时在insert方法中就修改了完成状态和溯源状态并修改了完成数，此时只需要修改结果状态
+							//之前提交过，不能再次修改或者之前一次性做对了
+							flag = true;
+							if(allNumber.equals(comNumber)){//最后一题
+								if(!result.equals(2)){
+									flag = bsm.updateBuffetSend(bsId, 2, 0);
+								}
 							}
 						}
 					}
@@ -604,9 +608,13 @@ public class BuffetStudyAction extends DispatchAction {
 		Integer userId = CommonTools.getLoginUserId(request);
 		String buffetName = "";
 		Integer buffetLorestudyLogId = 0;
+		String loreName = "";
+		String subDetail = "";
 		String msg = "error";
 		BuffetStudyDetailInfo bsd = bsdm.getEntityById(bsdId);
 		if(bsd != null){
+			loreName = bsd.getBuffetQueInfo().getTitle();
+			subDetail = "检测你对该知识点的掌握情况";
 			StudyLogInfo sLog = bsd.getBuffetSendInfo().getStudyLogInfo();
 			Integer basicLoreId = sLog.getLoreInfo().getId();//发布巴菲特的学习的知识点编号
 			Integer realUserId = sLog.getUser().getId();
@@ -861,6 +869,8 @@ public class BuffetStudyAction extends DispatchAction {
 			map.put("loreType", loreTypeName);
 			map.put("nextLoreIdArray", nextLoreIdArray);
 			map.put("studyLogId", buffetLorestudyLogId);
+			map.put("loreName", loreName);
+			map.put("subDetail", subDetail);
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
@@ -926,9 +936,13 @@ public class BuffetStudyAction extends DispatchAction {
 		Integer basicLoreId = 0;
 		Integer buffetId = 0;
 		String buffetName = "";
+		String loreName = "";
+		String subDetail = "";
 		String msg = "error";
 		BuffetStudyDetailInfo bsd = bsdm.getEntityById(bsdId);
 		if(bsd != null){
+			loreName = bsd.getBuffetQueInfo().getTitle();
+			subDetail = "当前自助餐的“溯源路线图”如下";
 			StudyLogInfo sLog = bsd.getBuffetSendInfo().getStudyLogInfo();
 			basicLoreId = sLog.getLoreInfo().getId();////发布巴菲特的学习的知识点编号
 			Integer realUserId = sLog.getUser().getId();
@@ -1194,6 +1208,8 @@ public class BuffetStudyAction extends DispatchAction {
 			map.put("buffetId", buffetId);
 			map.put("buffetName", buffetName);
 			map.put("bsdId", bsdId);
+			map.put("loreName", loreName);
+			map.put("subDetail", subDetail);
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
@@ -1241,6 +1257,8 @@ public class BuffetStudyAction extends DispatchAction {
 		Integer userId = CommonTools.getLoginUserId(request);
 		Integer loreId = 0;
 		Integer currentLoreId = 0;
+		String loreName = "";
+		String subDetail = "";
 		String msg = "error";
 		Map<String,Object> map = new HashMap<String,Object>();
 		BuffetStudyDetailInfo bsd = bsdm.getEntityById(bsdId);
@@ -1248,6 +1266,7 @@ public class BuffetStudyAction extends DispatchAction {
 			if(loreType.equals("")){
 				loreType = "针对性诊断";
 			}
+			loreName = bsd.getBuffetQueInfo().getTitle();
 			Integer realUserId = bsd.getBuffetSendInfo().getStudyLogInfo().getUser().getId();
 			if(realUserId.equals(userId)){
 				msg = "success";
@@ -1286,6 +1305,7 @@ public class BuffetStudyAction extends DispatchAction {
 						lqList_old.addAll(lqm.listInfoByLoreId(loreId, loreType, 0));//全部题列表
 					}
 					if(loreType.equals("针对性诊断")){//将做过的题的情况和未做过的题都列出来
+						subDetail = "针对该知识点而设定的题目共计"+lqList_old.size()+"题";
 						for(Integer i = 0 ; i < lqList_old.size() ; i++){
 							LoreQuestion lq = lqList_old.get(i);
 							Map<String,Object> map_d = new HashMap<String,Object>();
@@ -1339,6 +1359,7 @@ public class BuffetStudyAction extends DispatchAction {
 						//3:诊断题做完，继续诊断的话，之前该知识点没有做对的题（全部题-做对的题）
 						//4:诊断题没做,下次的诊断题是该知识点所有的再次诊断题
 						Integer access = blsl.getAccess();
+						subDetail = "针对该知识点而设定的题目共计"+lqList_old.size()+"题";
 						if(access == 4){
 							for(Integer i = 0 ; i < lqList_old.size() ; i++){
 								LoreQuestion lq = lqList_old.get(i);
@@ -1556,6 +1577,7 @@ public class BuffetStudyAction extends DispatchAction {
 							 }
 						 }
 					}
+					subDetail = "针对该知识点而设定的题目共计"+lqList_old.size()+"题";
 					for(Integer i = 0 ; i < lqList_old.size() ; i++){
 						LoreQuestion lq = lqList_old.get(i);
 						Integer lqId_old = lq.getId();
@@ -1615,6 +1637,8 @@ public class BuffetStudyAction extends DispatchAction {
 				}
 				map.put("lqList", list_d);
 				map.put("bsdId", bsdId);
+				map.put("loreName", loreName);
+				map.put("subDetail", subDetail);
 			}
 		}
 		map.put("result", msg);

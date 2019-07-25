@@ -54,6 +54,13 @@ public class BuffetStudyDetailDaoImpl implements BuffetStudyDetailDao{
 		return sess.createQuery(hql).list();
 	}
 
+	@Override
+	public List<BuffetStudyDetailInfo> findBsdInfoByBsdId(Session sess,
+			Integer bsId) {
+		String hql = " from  BuffetStudyDetailInfo as bsd where bsd.buffetSendInfo.id = "+bsId+"  and bsd.result != -1";
+		return sess.createQuery(hql).list();
+	}
+
 	
 
 }

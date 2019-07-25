@@ -16,11 +16,19 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
 
+import com.zsd.action.base.Transcode;
 import com.zsd.factory.AppFactory;
+import com.zsd.module.BuffetAbilityRelationInfo;
+import com.zsd.module.BuffetAbilityTypeInfo;
+import com.zsd.module.BuffetMindRelationInfo;
+import com.zsd.module.BuffetMindTypeInfo;
+import com.zsd.module.BuffetQueInfo;
+import com.zsd.module.BuffetTypeInfo;
 import com.zsd.module.HwAbilityRelationInfo;
 import com.zsd.module.HwMindRelationInfo;
 import com.zsd.module.HwQueInfo;
 import com.zsd.page.PageConst;
+import com.zsd.service.BuffetAllManager;
 import com.zsd.service.BuffetQueInfoManager;
 import com.zsd.service.HwAbilityRelationManager;
 import com.zsd.service.HwMindRelationManager;
@@ -220,6 +228,187 @@ public class HomeWorkAction extends DispatchAction {
 			map.put("zlkf", list_d_zlkf);
 			map.put("nlpy", list_d_nlpy);
 			map.put("zksl", list_d_zksl);
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 获取当前题型的题数
+	 * @author wm
+	 * @date 2019-7-24 下午04:26:56
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getCurrMaxNum(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		HwQueManager hqm = (HwQueManager) AppFactory.instance(null).getApp(Constants.WEB_HW_QUE_INFO);
+		Integer btId = CommonTools.getFinalInteger("btId", request);//基础类型编号
+		Integer loreId = CommonTools.getFinalInteger("loreId", request);//知识点编号
+		Map<String,Integer> map = new HashMap<String,Integer>();
+		List<HwQueInfo> bqList = hqm.listInfoByOpt(loreId, btId, -1, true);
+		Integer num = 1;
+		if(bqList.size() > 0){
+			num = bqList.get(0).getNum() + 1;
+		}
+		map.put("currNum", num);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 增加系统家庭作业
+	 * @author wm
+	 * @date 2019-7-24 下午04:28:29
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward addHw(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		HwQueManager hqm = (HwQueManager) AppFactory.instance(null).getApp(Constants.WEB_HW_QUE_INFO);
+		HwMindRelationManager hmrm = (HwMindRelationManager) AppFactory.instance(null).getApp(Constants.WEB_HW_MIND_RELATION_INFO);
+		HwAbilityRelationManager harm = (HwAbilityRelationManager) AppFactory.instance(null).getApp(Constants.WEB_HW_ABILITY_RELATION_INFO);
+		BuffetAllManager bam = (BuffetAllManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_ALL_INFO);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "error";
+		Integer btId = CommonTools.getFinalInteger("btId", request);//基础类型编号
+		Integer loreId = CommonTools.getFinalInteger("loreId", request);
+		String mindIdStr = CommonTools.getFinalStr("mindStr", request);//思维类型编号逗号拼接
+		String abilityIdStr = CommonTools.getFinalStr("abilityIdStr", request);//能力类型编号逗号拼接
+		String title = "";//标题
+		List<HwQueInfo> bqList = hqm.listInfoByOpt(loreId, btId, -1, true);
+		Integer orders = 0;//排序
+		Integer num = 1;
+		String btName = bam.getEntityByBtId(btId).getTypes();
+		if(bqList.size() > 0){
+			num = bqList.get(0).getNum() + 1;
+			orders = bqList.get(0).getOrders() + 1;
+		}else{
+			if(btName.equals("兴趣激发")){
+				orders = 1;
+			}else if(btName.equals("方法归纳")){
+				orders = 101;
+			}else if(btName.equals("思维训练")){
+				orders = 201;
+			}else if(btName.equals("智力开发")){
+				orders = 301;
+			}else if(btName.equals("能力培养")){
+				orders = 401;
+			}else if(btName.equals("中/高考涉猎")){
+				orders = 501;
+			}
+		}
+		title = btName + "第" + num + "题";
+		String queSub =  Transcode.unescape_new1("queSub", request);//题干
+		String queAnswer = Transcode.unescape_new1("queAnswer", request);//答案
+		String queResolution = Transcode.unescape_new1("queResolution", request);//解析
+		String queType = Transcode.unescape_new1("queType", request);//题干类型
+		if(!mindIdStr.equals("") && !abilityIdStr.equals("")){
+			Integer hwId = hqm.addHW(btId, loreId, num, title, queSub, queAnswer, queResolution, queType, orders, CommonTools.getLoginAccount(request));
+			if(hwId > 0){
+				hmrm.addHMR(mindIdStr, hwId);
+				harm.addHAR(abilityIdStr, hwId);
+				msg = "success";
+			}
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 获取指定系统家庭作业详情
+	 * @author wm
+	 * @date 2019-7-24 下午05:10:23
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getHwDetail(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		HwQueManager hqm = (HwQueManager) AppFactory.instance(null).getApp(Constants.WEB_HW_QUE_INFO);
+		HwMindRelationManager hmrm = (HwMindRelationManager) AppFactory.instance(null).getApp(Constants.WEB_HW_MIND_RELATION_INFO);
+		HwAbilityRelationManager harm = (HwAbilityRelationManager) AppFactory.instance(null).getApp(Constants.WEB_HW_ABILITY_RELATION_INFO);
+		BuffetAllManager bam = (BuffetAllManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_ALL_INFO);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "error";
+		Integer hwId = CommonTools.getFinalInteger("hwId", request);//指定系统家庭作业编号
+		if(hwId > 0){
+			HwQueInfo hw = hqm.getEntityById(hwId);
+			if(hw != null){
+				msg = "success";
+				map.put("hwId", hw.getId());
+				map.put("hwType", hw.getQueType());
+				List<BuffetTypeInfo> btList = bam.listBTInfo();
+				List<Object> list_bt = new ArrayList<Object>();
+				List<Object> list_mind = new ArrayList<Object>();
+				List<Object> list_ability = new ArrayList<Object>();
+				for(BuffetTypeInfo bt : btList){
+					Map<String,Object> map_d = new HashMap<String,Object>();
+					map_d.put("btId", bt.getId());
+					map_d.put("btName", bt.getTypes());
+					if(hw.getBuffetTypeInfo().getId().equals(bt.getId())){
+						map_d.put("selFlag", true);
+					}else{
+						map_d.put("selFlag", false);
+					}
+					list_bt.add(map_d);
+				}
+				map.put("btList", list_bt);
+				List<BuffetMindTypeInfo> bmList = bam.listBMTInfo();
+				List<HwMindRelationInfo> hmrList = hmrm.listInfoByOpt(0, hwId);
+				for(BuffetMindTypeInfo bmt : bmList){
+					Map<String,Object> map_d = new HashMap<String,Object>();
+					map_d.put("bmId", bmt.getId());
+					map_d.put("bmName", bmt.getMind());
+					boolean selFlag = false;
+					for(HwMindRelationInfo hmr : hmrList){
+						if(hmr.getBuffetMindTypeInfo().getId().equals(bmt.getId())){
+							selFlag = true;
+							break;
+						}
+					}
+					map_d.put("selFlag", selFlag);
+					list_mind.add(map_d);
+				}
+				map.put("bmList", list_mind);
+				List<BuffetAbilityTypeInfo> baList = bam.listBATInfo();
+				List<HwAbilityRelationInfo>  harList = harm.listInfoByOpt(0, hwId);
+				for(BuffetAbilityTypeInfo bat : baList){
+					Map<String,Object> map_d = new HashMap<String,Object>();
+					map_d.put("baId", bat.getId());
+					map_d.put("baName", bat.getAbility());
+					boolean selFlag = false;
+					for(HwAbilityRelationInfo har : harList){
+						if(har.getBuffetAbilityTypeInfo().getId().equals(bat.getId())){
+							selFlag = true;
+							break;
+						}
+					}
+					map_d.put("selFlag", selFlag);
+					list_ability.add(map_d);
+				}
+				map.put("baList", list_ability);
+				map.put("hwTitle", hw.getTitle());
+				map.put("queSub", hw.getSubject());
+				map.put("queAnswer", hw.getAnswer());
+				map.put("queResolution", hw.getResolution());
+			}
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);

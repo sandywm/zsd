@@ -20,6 +20,11 @@
                 <comment>工作室名称</comment>
             </column>
         </property>
+        <property name="studioCode" type="java.lang.String">
+            <column name="studio_code" length="30" not-null="true">
+                <comment>工作室邀请码</comment>
+            </column>
+        </property>
         <property name="maxNum" type="java.lang.Integer">
             <column name="max_num" not-null="true">
                 <comment>容纳最大人数(默认100）</comment>

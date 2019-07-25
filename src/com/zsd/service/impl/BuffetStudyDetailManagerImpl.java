@@ -173,4 +173,20 @@ public class BuffetStudyDetailManagerImpl implements BuffetStudyDetailManager{
 		}
 	}
 
+	@Override
+	public List<BuffetStudyDetailInfo> listBsdInfoByBsdId(Integer bsId)
+			throws WEBException {
+		try {
+			bsdDao = (BuffetStudyDetailDao) DaoFactory.instance(null).getDao(Constants.DAO_BUFFET_STUDY_DETAIL_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return bsdDao.findBsdInfoByBsdId(sess, bsId);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new WEBException("根据自助餐发送编号获取自助餐完成学习详情信息时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
 }
