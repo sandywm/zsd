@@ -366,7 +366,7 @@ public class BuffetStudyAction extends DispatchAction {
 		Map<String,String> map = new HashMap<String,String>();
 		if(buffetId > 0){
 			currBasicLoreId = bm.getEntityById(buffetId).getLoreInfo().getId();//该自助餐在哪个知识点名下(通用版)
-			List<BuffetLoreRelateInfo> blrList = blrm.listInfoByOpt(buffetId, currBasicLoreId);
+			List<BuffetLoreRelateInfo> blrList = blrm.listInfoByOpt(buffetId, 0);
 			if(blrList.size() == 0){//表示该巴菲特下没有关联，需要查询与之合并的知识点，查询合并的知识点有无巴菲特题
 				//step1:根据通用知识点获取与之合并的其他知识点
 				JoinLoreRelation jlr = jlrm.getInfoByLoreId(currBasicLoreId);
