@@ -354,36 +354,36 @@ public class BuffetStudyAction extends DispatchAction {
 	public ActionForward showRelationByBuffetAndLore(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		BuffetLoreRelateInfoManager blrm = (BuffetLoreRelateInfoManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_LORE_RELATE_INFO);
-		BuffetQueInfoManager bm = (BuffetQueInfoManager)  AppFactory.instance(null).getApp(Constants.WEB_BUFFET_QUE_INFO);
-		JoinLoreRelationManager jlrm = (JoinLoreRelationManager) AppFactory.instance(null).getApp(Constants.WEB_JOIN_LORE_RELATE_INFO);
+//		BuffetQueInfoManager bm = (BuffetQueInfoManager)  AppFactory.instance(null).getApp(Constants.WEB_BUFFET_QUE_INFO);
+//		JoinLoreRelationManager jlrm = (JoinLoreRelationManager) AppFactory.instance(null).getApp(Constants.WEB_JOIN_LORE_RELATE_INFO);
 		LoreInfoManager lm = (LoreInfoManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
 		Integer buffetId = CommonTools.getFinalInteger("buffetId", request);
 		Integer currLoreId = CommonTools.getFinalInteger("currLoreId", request);;//出版社下知识点编号(最初学习记录中的知识点编号)
-		Integer currBasicLoreId = 0;//通用知识点--自助餐属于该知识点名下
+//		Integer currBasicLoreId = 0;//通用知识点--自助餐属于该知识点名下
 		String relateLoreIdStr = "";//该出版社下的关联知识点
 		Integer editionId = 0;//当前知识点所在的出版社
 		String msg = "error";
 		Map<String,String> map = new HashMap<String,String>();
 		if(buffetId > 0){
-			currBasicLoreId = bm.getEntityById(buffetId).getLoreInfo().getId();//该自助餐在哪个知识点名下(通用版)
+//			currBasicLoreId = bm.getEntityById(buffetId).getLoreInfo().getId();//该自助餐在哪个知识点名下(通用版)
 			List<BuffetLoreRelateInfo> blrList = blrm.listInfoByOpt(buffetId, 0);
-			if(blrList.size() == 0){//表示该巴菲特下没有关联，需要查询与之合并的知识点，查询合并的知识点有无巴菲特题
-				//step1:根据通用知识点获取与之合并的其他知识点
-				JoinLoreRelation jlr = jlrm.getInfoByLoreId(currBasicLoreId);
-				if(jlr != null){
-					String[] loreIdArray = jlr.getLoreIdArray().split(",");
-					for(Integer i = 0 ; i < loreIdArray.length ; i++){
-						Integer joinLoreId = Integer.parseInt(loreIdArray[i]);
-						//step2:查询合并的知识点下面有无关联知识点（合并知识点共用关联知识点）
-						if(!currBasicLoreId.equals(joinLoreId)){
-							blrList = blrm.listInfoByOpt(buffetId, joinLoreId);
-							if(blrList.size() > 0){
-								break;
-							}
-						}
-					}
-				}
-			}
+//			if(blrList.size() == 0){//表示该巴菲特下没有关联，需要查询与之合并的知识点，查询合并的知识点有无巴菲特题
+//				//step1:根据通用知识点获取与之合并的其他知识点
+//				JoinLoreRelation jlr = jlrm.getInfoByLoreId(currBasicLoreId);
+//				if(jlr != null){
+//					String[] loreIdArray = jlr.getLoreIdArray().split(",");
+//					for(Integer i = 0 ; i < loreIdArray.length ; i++){
+//						Integer joinLoreId = Integer.parseInt(loreIdArray[i]);
+//						//step2:查询合并的知识点下面有无关联知识点（合并知识点共用关联知识点）
+//						if(!currBasicLoreId.equals(joinLoreId)){
+//							blrList = blrm.listInfoByOpt(buffetId, joinLoreId);
+//							if(blrList.size() > 0){
+//								break;
+//							}
+//						}
+//					}
+//				}
+//			}
 			if(blrList.size() > 0){
 				LoreInfo lore = lm.getEntityById(currLoreId);
 				if(lore != null){
