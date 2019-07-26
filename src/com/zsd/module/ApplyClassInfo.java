@@ -16,8 +16,11 @@ public class ApplyClassInfo implements java.io.Serializable {
 	private User user;
 	private ClassInfo classInfo;
 	private String applyTime;
-	private String cancelTime;
-	private String cancelReason;
+	private String classDetail;
+	private Integer checkUserId;
+	private Integer checkStatus;
+	private String checkRemark;
+	private String checkTime;
 
 	// Constructors
 
@@ -25,21 +28,18 @@ public class ApplyClassInfo implements java.io.Serializable {
 	public ApplyClassInfo() {
 	}
 
-	/** minimal constructor */
-	public ApplyClassInfo(User user, ClassInfo classInfo, String applyTime) {
-		this.user = user;
-		this.classInfo = classInfo;
-		this.applyTime = applyTime;
-	}
-
 	/** full constructor */
-	public ApplyClassInfo(User user, ClassInfo classInfo, String applyTime,
-			String cancelTime, String cancelReason) {
+	public ApplyClassInfo(User user, ClassInfo classInfo,
+			String applyTime, String classDetail, Integer checkUserId,
+			Integer checkStatus, String checkRemark,String checkTime) {
 		this.user = user;
 		this.classInfo = classInfo;
 		this.applyTime = applyTime;
-		this.cancelTime = cancelTime;
-		this.cancelReason = cancelReason;
+		this.classDetail = classDetail;
+		this.checkUserId = checkUserId;
+		this.checkStatus = checkStatus;
+		this.checkRemark = checkRemark;
+		this.checkTime = checkTime;
 	}
 
 	// Property accessors
@@ -47,6 +47,7 @@ public class ApplyClassInfo implements java.io.Serializable {
 	public Integer getId() {
 		return this.id;
 	}
+
 
 	public void setId(Integer id) {
 		this.id = id;
@@ -76,20 +77,44 @@ public class ApplyClassInfo implements java.io.Serializable {
 		this.applyTime = applyTime;
 	}
 
-	public String getCancelTime() {
-		return this.cancelTime;
+	public String getClassDetail() {
+		return classDetail;
 	}
 
-	public void setCancelTime(String cancelTime) {
-		this.cancelTime = cancelTime;
+	public void setClassDetail(String classDetail) {
+		this.classDetail = classDetail;
 	}
 
-	public String getCancelReason() {
-		return this.cancelReason;
+	public Integer getCheckUserId() {
+		return checkUserId;
 	}
 
-	public void setCancelReason(String cancelReason) {
-		this.cancelReason = cancelReason;
+	public void setCheckUserId(Integer checkUserId) {
+		this.checkUserId = checkUserId;
 	}
 
+	public Integer getCheckStatus() {
+		return checkStatus;
+	}
+
+	public void setCheckStatus(Integer checkStatus) {
+		this.checkStatus = checkStatus;
+	}
+
+	public String getCheckRemark() {
+		return checkRemark;
+	}
+
+	public void setCheckRemark(String checkRemark) {
+		this.checkRemark = checkRemark;
+	}
+
+	public String getCheckTime() {
+		return checkTime;
+	}
+
+	public void setCheckTime(String checkTime) {
+		this.checkTime = checkTime;
+	}
+	
 }

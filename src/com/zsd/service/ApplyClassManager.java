@@ -13,21 +13,25 @@ public interface ApplyClassManager {
 	 * @date 2019-6-22 上午09:36:49
 	 * @param userId 用户编号
 	 * @param classId 班级编号
+	 * @param classDetail 申请时的班级详细信息（年级班级学科）
+	 * @param checkUserId 原班老师
 	 * @return
 	 * @throws WEBException
 	 */
-	Integer addApplyClassInfo(Integer userId,Integer classId) throws WEBException;
+	Integer addApplyClassInfo(Integer userId,Integer classId,String classDetail,Integer checkUserId) throws WEBException;
 	
 	/**
-	 * 取消老师接班信息
+	 * 审核老师接班信息
 	 * @author wm
 	 * @date 2019-6-22 上午09:37:12
 	 * @param id 主键编号
-	 * @param cancleReson 取消原因
+	 * @param checkUserId 原班老师
+	 * @param checkStatus 审核状态（1：同意，2：拒绝）
+	 * @param checkRemark 备注
 	 * @return
 	 * @throws WEBException
 	 */
-	boolean setCancleInfo(Integer id,String cancleReson) throws WEBException;
+	boolean setCancleInfo(Integer id,Integer checkUserId,Integer checkStatus,String checkRemark) throws WEBException;
 	
 	/**
 	 * 根据老师编号、有效状态获取信息列表

@@ -20,19 +20,34 @@
                 <comment>班级编号</comment>
             </column>
         </many-to-one>
+        <property name="classDetail" type="java.lang.String">
+            <column name="class_info" length="30" not-null="true">
+                <comment>班级信息（一年级三班数学）如果升学就采用</comment>
+            </column>
+        </property>
         <property name="applyTime" type="java.lang.String">
             <column name="apply_time" length="30" not-null="true">
                 <comment>接班时间</comment>
             </column>
         </property>
-        <property name="cancelTime" type="java.lang.String">
-            <column name="cancel_time" length="30">
-                <comment>取消时间</comment>
+        <property name="checkRemark" type="java.lang.String">
+            <column name="check_remark" length="50">
+                <comment>审核备注</comment>
             </column>
         </property>
-        <property name="cancelReason" type="java.lang.String">
-            <column name="cancel_reason" length="30">
-                <comment>取消原因(原班内老师上线,自行取消)</comment>
+        <property name="checkUserId" type="java.lang.Integer">
+            <column name="check_user_id">
+                <comment>原班老师(未审核时为0)</comment>
+            </column>
+        </property>
+        <property name="checkStatus" type="java.lang.Integer">
+            <column name="check_status">
+                <comment>审核状态(0:未处理，1：同意，2：拒绝)</comment>
+            </column>
+        </property>
+        <property name="checkTime" type="java.lang.String">
+            <column name="check_time">
+                <comment>审核时间</comment>
             </column>
         </property>
     </class>

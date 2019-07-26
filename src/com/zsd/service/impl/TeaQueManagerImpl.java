@@ -97,6 +97,7 @@ public class TeaQueManagerImpl implements TeaQueManager{
 				if(!queType.equals("")){
 					tq.setQueType(queType);
 				}
+				tq.setOperateUserDate(CurrentTime.getCurrentTime());
 				tqDao.update(sess, tq);
 				tran.commit();
 				return true;
@@ -141,6 +142,22 @@ public class TeaQueManagerImpl implements TeaQueManager{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			throw new WEBException("根据条件是否获取老师自传家庭作业信息列表记录列表条数出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public TeaQueInfo getEntityById(Integer tqId) throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			tqDao = (TeaQueDao) DaoFactory.instance(null).getDao(Constants.DAO_TEA_QUE_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return tqDao.getEntityById(sess, tqId);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new WEBException("根据编号获取老师自传家庭作业详情时出现异常!");
 		} finally{
 			HibernateUtil.closeSession();
 		}

@@ -24,11 +24,13 @@ import com.zsd.module.BuffetTypeInfo;
 import com.zsd.module.HwAbilityRelationInfo;
 import com.zsd.module.HwMindRelationInfo;
 import com.zsd.module.HwQueInfo;
+import com.zsd.module.TeaQueInfo;
 import com.zsd.page.PageConst;
 import com.zsd.service.BuffetAllManager;
 import com.zsd.service.HwAbilityRelationManager;
 import com.zsd.service.HwMindRelationManager;
 import com.zsd.service.HwQueManager;
+import com.zsd.service.LoreInfoManager;
 import com.zsd.service.TeaQueManager;
 import com.zsd.tools.CommonTools;
 import com.zsd.util.Constants;
@@ -490,14 +492,168 @@ public class HomeWorkAction extends DispatchAction {
 		// TODO Auto-generated method stub
 		TeaQueManager tqm = (TeaQueManager) AppFactory.instance(null).getApp(Constants.WEB_TEA_QUE_INFO);
 		Integer loreId = CommonTools.getFinalInteger("loreId", request);
-		Integer currUserId = CommonTools.getLoginUserId(request);
+		Integer currUserId = 0;
+		String msg = "暂无记录";
+		Map<String,Object> map = new HashMap<String,Object>();
 		String roleName = CommonTools.getLoginRoleName(request);
-		if(roleName.equals("老师")){
-			currUserId = 0;
-		}else if(roleName.equals("知识点管理员")){
-			
+		if(roleName.equals("老师") || roleName.equals("知识点管理员")){
+			if(roleName.equals("老师")){
+				currUserId = CommonTools.getLoginUserId(request);
+			}
+			Integer count = tqm.getCountByOpt(loreId, currUserId);
+			if(count > 0){
+				Integer pageSize = PageConst.getPageSize(String.valueOf(request.getParameter("limit")), 10);//等同于pageSize
+				Integer pageNo = CommonTools.getFinalInteger("page", request);//等同于pageNo
+				List<TeaQueInfo> tqList = tqm.listInfoByOpt(loreId, currUserId, true, pageNo, pageSize);
+				msg = "success";
+				List<Object> list_d = new ArrayList<Object>();
+				for(TeaQueInfo tq : tqList){
+					Map<String,Object> map_d = new HashMap<String,Object>();
+					map_d.put("tqId", tq.getId());
+					map_d.put("queTitle", tq.getQueTitle());
+					map_d.put("tqType", "针对性诊断");
+					map_d.put("inUse", tq.getInUse().equals(0) ? "有效" : "无效");
+					map_d.put("addTeaName", tq.getUser().getRealName());//上传题老师
+					list_d.add(map_d);
+				}
+				map.put("data", list_d);
+				map.put("count", count);
+				map.put("code", 0);
+			}
 		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+
+	/**
+	 * 获取指定题库详情
+	 * @author wm
+	 * @date 2019-7-26 下午04:39:15
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getTeaQueDetail(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		TeaQueManager tqm = (TeaQueManager) AppFactory.instance(null).getApp(Constants.WEB_TEA_QUE_INFO);
+		Integer tqId = CommonTools.getFinalInteger("tqId", request);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "error";
+		TeaQueInfo tq = tqm.getEntityById(tqId);
+		String roleName = CommonTools.getLoginRoleName(request);
+		boolean flag = false;
+		if(tq != null){
+			if(roleName.equals("老师")){
+				if(tq.getUser().getId().equals(CommonTools.getLoginUserId(request))){
+					flag = true;
+				}
+			}else if(roleName.equals("知识点管理员")){
+				flag = true;
+			}
+			if(flag){
+				msg = "success";
+				map.put("tqId", tq.getId());
+				map.put("queTitle", tq.getQueTitle());
+				map.put("queSub", tq.getQueSub());
+				map.put("loreName", tq.getLoreInfo().getLoreName());
+				map.put("queType", tq.getQueType());
+				map.put("queType2", tq.getQueType2());
+				map.put("queAnswer", tq.getQueAnswer());
+				map.put("queResolution", tq.getQueResolution());
+			}
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
 	
+	/**
+	 * 修改指定老师上传的题库详情
+	 * @author wm
+	 * @date 2019-7-26 下午05:10:25
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward updateTeaQue(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		TeaQueManager tqm = (TeaQueManager) AppFactory.instance(null).getApp(Constants.WEB_TEA_QUE_INFO);
+		Integer tqId = CommonTools.getFinalInteger("tqId", request);
+		String queSub = Transcode.unescape_new1("queSub", request);
+		String queAnswer = Transcode.unescape_new1("queAnswer", request);
+		String queResolution = Transcode.unescape_new1("queResolution", request);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "error";
+		Boolean flag = false;
+		String roleName = CommonTools.getLoginRoleName(request);
+		TeaQueInfo tq = tqm.getEntityById(tqId);
+		if(tq != null){
+			if(roleName.equals("老师")){
+				if(tq.getUser().getId().equals(CommonTools.getLoginUserId(request))){
+					flag = true;
+				}
+			}else if(roleName.equals("知识点管理员")){
+				flag = true;
+			}
+			if(flag){
+				flag = tqm.updateInfoById(tqId, queSub, queAnswer, queResolution, "");
+				if(flag){
+					msg = "success";
+				}
+			}
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 老师增加家庭作业题库
+	 * @author wm
+	 * @date 2019-7-26 下午05:18:50
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward addTeaQue(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		TeaQueManager tqm = (TeaQueManager) AppFactory.instance(null).getApp(Constants.WEB_TEA_QUE_INFO);
+		LoreInfoManager lm = (LoreInfoManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
+		Integer loreId = CommonTools.getFinalInteger("loreId", request);
+		String queType = Transcode.unescape_new1("queType", request);
+		String queSub = Transcode.unescape_new1("queSub", request);
+		String queAnswer = Transcode.unescape_new1("queAnswer", request);
+		String queResolution = Transcode.unescape_new1("queResolution", request);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "error";
+		String roleName = CommonTools.getLoginRoleName(request);
+		if(roleName.equals("老师") && loreId > 0){
+			Integer userId = CommonTools.getLoginUserId(request);
+			List<TeaQueInfo> tqList = tqm.listInfoByOpt(loreId, userId, false, 0, 0);
+			Integer currNum = 1;
+			if(tqList.size() > 0){
+				currNum = tqList.get(tqList.size() - 1).getQueNum() + 1;
+			}
+			Integer tqId = tqm.addTQ(loreId, 0, lm.getEntityById(loreId).getLoreName() + "第" + currNum + "题", queSub, queAnswer, queResolution, queType, "其他", userId);
+			if(tqId > 0){
+				msg = "success";
+			}
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
 }

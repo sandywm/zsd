@@ -76,4 +76,14 @@ public interface TeaQueManager {
 	 * @throws WEBException
 	 */
 	Integer getCountByOpt(Integer loreId,Integer teaId) throws WEBException;
+	
+	/**
+	 * 根据编号获取老师自传家庭作业详情
+	 * @author wm
+	 * @date 2019-7-26 下午04:41:25
+	 * @param tqId
+	 * @return
+	 * @throws WEBException
+	 */
+	TeaQueInfo getEntityById(Integer tqId) throws WEBException;
 }

@@ -5,15 +5,12 @@ import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import com.zsd.dao.ActRoleInfoDao;
 import com.zsd.dao.ApplyClassDao;
 import com.zsd.dao.ClassInfoDao;
 import com.zsd.dao.UserDao;
 import com.zsd.exception.WEBException;
 import com.zsd.factory.DaoFactory;
 import com.zsd.module.ApplyClassInfo;
-import com.zsd.module.ClassInfo;
-import com.zsd.module.User;
 import com.zsd.service.ApplyClassManager;
 import com.zsd.tools.CurrentTime;
 import com.zsd.tools.HibernateUtil;
@@ -26,7 +23,7 @@ public class ApplyClassManagerImpl implements ApplyClassManager{
 	ApplyClassDao acDao = null;
 	Transaction tran = null;
 	@Override
-	public Integer addApplyClassInfo(Integer userId, Integer classId)
+	public Integer addApplyClassInfo(Integer userId, Integer classId,String classDetail,Integer checkUserId)
 			throws WEBException {
 		// TODO Auto-generated method stub
 		try {
@@ -35,7 +32,8 @@ public class ApplyClassManagerImpl implements ApplyClassManager{
 			acDao = (ApplyClassDao) DaoFactory.instance(null).getDao(Constants.DAO_APPLY_CLASS_INFO);
 			Session sess = HibernateUtil.currentSession();
 			tran = sess.beginTransaction();
-			ApplyClassInfo ac = new  ApplyClassInfo(uDao.get(sess, userId), cDao.get(sess, classId), CurrentTime.getCurrentTime(),"","");
+			ApplyClassInfo ac = new  ApplyClassInfo(uDao.get(sess, userId), cDao.get(sess, classId), CurrentTime.getCurrentTime(),classDetail,
+					checkUserId,0,"","");
 			acDao.save(sess, ac);
 			tran.commit();
 			return ac.getId();
@@ -49,7 +47,7 @@ public class ApplyClassManagerImpl implements ApplyClassManager{
 	}
 
 	@Override
-	public boolean setCancleInfo(Integer id,String cancleReson) throws WEBException {
+	public boolean setCancleInfo(Integer id,Integer checkUserId,Integer checkStatus,String checkRemark) throws WEBException {
 		// TODO Auto-generated method stub
 		try {
 			acDao = (ApplyClassDao) DaoFactory.instance(null).getDao(Constants.DAO_APPLY_CLASS_INFO);
@@ -57,8 +55,10 @@ public class ApplyClassManagerImpl implements ApplyClassManager{
 			tran = sess.beginTransaction();
 			ApplyClassInfo ac = acDao.getEntityById(sess, id);
 			if(ac != null){
-				ac.setCancelTime(CurrentTime.getCurrentTime());
-				ac.setCancelReason(cancleReson);
+				ac.setCheckUserId(checkUserId);
+				ac.setCheckTime(CurrentTime.getCurrentTime());
+				ac.setCheckStatus(checkStatus);
+				ac.setCheckRemark(checkRemark);
 				acDao.update(sess, ac);
 				tran.commit();
 				return true;
@@ -67,7 +67,7 @@ public class ApplyClassManagerImpl implements ApplyClassManager{
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			throw new WEBException("取消老师接班信息时出现异常!");
+			throw new WEBException("审核老师接班信息时出现异常!");
 		} finally{
 			HibernateUtil.closeSession();
 		}
