@@ -456,4 +456,28 @@ public class HomeWorkAction extends DispatchAction {
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
+	
+	/**
+	 * 导向老师题库页面
+	 * @author wm
+	 * @date 2019-7-26 上午09:23:05
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	public ActionForward goTeaQuePage(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) {
+		// TODO Auto-generated method stub
+		return mapping.findForward("tqPage");
+	}
+	
+	public ActionForward getTeaQuePageData(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		
+		return null;
+	}
+	
 }

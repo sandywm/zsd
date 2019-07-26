@@ -31,16 +31,6 @@ public class TeaQueInfo implements java.io.Serializable {
 	public TeaQueInfo() {
 	}
 
-	/** minimal constructor */
-	public TeaQueInfo(User user, LoreInfo loreInfo, Integer queNum,
-			String queTitle, Integer inUse) {
-		this.user = user;
-		this.loreInfo = loreInfo;
-		this.queNum = queNum;
-		this.queTitle = queTitle;
-		this.inUse = inUse;
-	}
-
 	/** full constructor */
 	public TeaQueInfo(User user, LoreInfo loreInfo, Integer queNum,
 			String queTitle, String queSub, String queAnswer,

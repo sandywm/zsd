@@ -45,6 +45,7 @@
 	<app id="buffet_send_info_Web" class="com.zsd.service.impl.BuffetSendInfoManagerImpl"/>
 	<app id="buffet_study_detail_info_Web" class="com.zsd.service.impl.BuffetStudyDetailManagerImpl"/>
 	<app id="buffet_lore_study_log_info_Web" class="com.zsd.service.impl.BuffetLoreStudyLogManagerImpl"/>
+	<app id="buffet_lore_study_deail_info_Web" class="com.zsd.service.impl.BuffetLoreStudyDetailManagerImpl"/>></app>
 	<app id="town_info_Web" class="com.zsd.service.impl.TownManagerImpl"/>
 	<app id="apply_class_info_Web" class="com.zsd.service.impl.ApplyClassManagerImpl"/>
 	<app id="buffet_mind_relation_info_Web" class="com.zsd.service.impl.BuffetMindRelationInfoManagerImpl"/>
@@ -52,4 +53,5 @@
 	<app id="hw_que_info_Web" class="com.zsd.service.impl.HwQueManagerImpl"/>
 	<app id="hw_mind_relation_Web" class="com.zsd.service.impl.HwMindRelationManagerImpl"/>
 	<app id="hw_ability_relation_Web" class="com.zsd.service.impl.HwAbilityRelationManagerImpl"/>
+	<app id="tea_que_Web" class="com.zsd.service.impl.TeaQueManagerImpl"/>
 </appContext>

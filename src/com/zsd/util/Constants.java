@@ -76,7 +76,7 @@ public class Constants {
 	public static final String WEB_BUFFET_SEND_INFO = "buffet_send_info_Web";
 	public static final String WEB_BUFFET_STUDY_DETAIL_INFO = "buffet_study_detail_info_Web";
 	public static final String WEB_BUFFET_LORE_STUDY_LOG_INFO = "buffet_lore_study_log_info_Web";
-	public static final String WEB_BUFFET_LORE_STUDY_DETAIL_INFO = "buffet_lore_study_log_info_Web";
+	public static final String WEB_BUFFET_LORE_STUDY_DETAIL_INFO = "buffet_lore_study_deail_info_Web";
 	public static final String WEB_TOWN_INFO = "town_info_Web";
 	public static final String WEB_APPLY_CLASS_INFO = "apply_class_info_Web";
 	public static final String WEB_BUFFET_MIND_RELATION_INFO = "buffet_mind_relation_info_Web";
@@ -84,6 +84,7 @@ public class Constants {
 	public static final String WEB_HW_QUE_INFO = "hw_que_info_Web";
 	public static final String WEB_HW_MIND_RELATION_INFO = "hw_mind_relation_Web";
 	public static final String WEB_HW_ABILITY_RELATION_INFO = "hw_ability_relation_Web";
+	public static final String WEB_TEA_QUE_INFO = "tea_que_Web";
 	
 	
 	//-------------------DAO-------------------------//
@@ -133,7 +134,7 @@ public class Constants {
 	public static final String DAO_BUFFET_SEND_INFO = "buffet_send_info_Dao";
 	public static final String DAO_BUFFET_STUDY_DETAIL_INFO = "buffet_study_detail_info_Dao";
 	public static final String DAO_BUFFET_LORE_STUDY_LOG_INFO = "buffet_lore_study_log_info_Dao";
-	public static final String DAO_BUFFET_LORE_STUDY_DETAIL_INFO = "buffet_lore_study_log_info_Dao";
+	public static final String DAO_BUFFET_LORE_STUDY_DETAIL_INFO = "buffet_lore_study_detail_info_Dao";
 	public static final String DAO_TOWN_INFO = "town_info_Dao";
 	public static final String DAO_APPLY_CLASS_INFO = "apply_class_info_Dao";
 	public static final String DAO_BUFFET_MIND_RELATION_INFO = "buffet_mind_relation_info_Dao";
@@ -141,5 +142,6 @@ public class Constants {
 	public static final String DAO_HW_QUE_INFO = "hw_que_info_Dao";
 	public static final String DAO_HW_MIND_RELATION_INFO = "hw_mind_relation_Dao";
 	public static final String DAO_HW_ABILITY_RELATION_INFO = "hw_ability_relation_Dao";
+	public static final String DAO_TEA_QUE_INFO = "tea_que_Dao";
 }
 
