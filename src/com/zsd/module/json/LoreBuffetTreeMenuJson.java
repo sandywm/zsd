@@ -9,10 +9,12 @@ import com.zsd.module.BuffetLoreRelateInfo;
 import com.zsd.module.BuffetQueInfo;
 import com.zsd.module.LoreInfo;
 import com.zsd.module.LoreRelateInfo;
+import com.zsd.module.StudyLogInfo;
 import com.zsd.service.BuffetLoreRelateInfoManager;
 import com.zsd.service.BuffetQueInfoManager;
 import com.zsd.service.LoreInfoManager;
 import com.zsd.service.LoreRelateManager;
+import com.zsd.service.StudyLogManager;
 import com.zsd.util.Constants;
 
 @SuppressWarnings({"unchecked" ,"rawtypes"})
@@ -345,7 +347,7 @@ public class LoreBuffetTreeMenuJson {
 			}
 		}
 		
-		List<LoreTreeMenu> l = this.getBuffetTreeMenuList(result);
+		List<LoreTreeMenu> l = this.getBuffetTreeMenuList_1(result,currLoreId);
 	    List<MyTreeNode> tree = new ArrayList<MyTreeNode>();
 	    this.loreList = new ArrayList();
 	    this.num = 0;
@@ -360,15 +362,16 @@ public class LoreBuffetTreeMenuJson {
 	}
 	
 	/**
-	 * 获取有巴菲特关联知识树节点
+	 * 获取有巴菲特关联知识树节点(学习时)
 	 * @author wm
 	 * @date 2019-6-27 下午04:55:10
 	 * @param blrList
 	 * @return
 	 * @throws Exception
 	 */
-	public List<LoreTreeMenu> getBuffetTreeMenuList(List<BuffetLoreRelateInfo> blrList) throws Exception{
+	public List<LoreTreeMenu> getBuffetTreeMenuList_1(List<BuffetLoreRelateInfo> blrList,Integer currLoreId) throws Exception{
 		LoreRelateManager lrm = (LoreRelateManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_RELATE_INFO);
+		LoreInfoManager lm = (LoreInfoManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
 		List<LoreTreeMenu> secondResult = new ArrayList<LoreTreeMenu>();
 		List<LoreTreeMenu> result = new ArrayList<LoreTreeMenu>();
 		if(blrList.size() > 0){
@@ -382,13 +385,34 @@ public class LoreBuffetTreeMenuJson {
 				LoreTreeMenu ltMenu = new LoreTreeMenu();
 				BuffetLoreRelateInfo blr = it.next();
 				Integer relateLoreId = blr.getLoreInfoByLoreId().getId();
-				String relateLoreName = blr.getLoreInfoByLoreId().getLoreName();
-				ltMenu.setId(relateLoreId);
-				ltMenu.setName(relateLoreName);
-				ltMenu.setMenus(this.getSubTreeMenuList(lrm.listRelateInfoByOpt(relateLoreId, 0, 0, "desc")));	
-				//2015-09-25 只显示启用的关联知识点（wm）
-				//ltMenu.setMenus(this.getSubTreeMenuList(lrm.listUsedRelateByLoreId(relateLoreId)));	
-				secondResult.add(ltMenu);
+				//新增加
+				String relateLoreName = ""; 
+				if(currLoreId > 0){//需要和studyLog中的知识点为相同出版社下
+					LoreInfo lore_init = lm.getEntityById(currLoreId);
+					if(lore_init != null){
+						Integer studyLoreEdiId = lore_init.getChapter().getEducation().getEdition().getId();
+						List<LoreInfo> lList = lm.listInfoByMainLoreId(relateLoreId);
+						for(LoreInfo lore : lList){
+							if(lore.getChapter().getEducation().getEdition().getId().equals(studyLoreEdiId)){
+								relateLoreId = lore.getId();
+								relateLoreName = lore.getLoreName();
+								ltMenu.setId(relateLoreId);
+								ltMenu.setName(relateLoreName);
+								ltMenu.setMenus(this.getSubTreeMenuList(lrm.listRelateInfoByOpt(relateLoreId, 0, 0, "desc")));	
+								secondResult.add(ltMenu);
+								break;
+							}
+						}
+					}
+				}else{
+					relateLoreName = blr.getLoreInfoByLoreId().getLoreName();
+					ltMenu.setId(relateLoreId);
+					ltMenu.setName(relateLoreName);
+					ltMenu.setMenus(this.getSubTreeMenuList(lrm.listRelateInfoByOpt(relateLoreId, 0, 0, "desc")));	
+					//2015-09-25 只显示启用的关联知识点（wm）
+					//ltMenu.setMenus(this.getSubTreeMenuList(lrm.listUsedRelateByLoreId(relateLoreId)));	
+					secondResult.add(ltMenu);
+				}
 			}
 			ltMenu_first.setMenus(secondResult);
 			result.add(ltMenu_first);

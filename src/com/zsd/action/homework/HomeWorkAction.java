@@ -29,6 +29,7 @@ import com.zsd.service.BuffetAllManager;
 import com.zsd.service.HwAbilityRelationManager;
 import com.zsd.service.HwMindRelationManager;
 import com.zsd.service.HwQueManager;
+import com.zsd.service.TeaQueManager;
 import com.zsd.tools.CommonTools;
 import com.zsd.util.Constants;
 
@@ -473,10 +474,29 @@ public class HomeWorkAction extends DispatchAction {
 		return mapping.findForward("tqPage");
 	}
 	
+	/**
+	 * 分页获取指定知识点下（指定老师的题库列表）--如果是知识点管理员看的是所有老师上传的题库列表
+	 * @author wm
+	 * @date 2019-7-26 上午09:37:17
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
 	public ActionForward getTeaQuePageData(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
-		
+		TeaQueManager tqm = (TeaQueManager) AppFactory.instance(null).getApp(Constants.WEB_TEA_QUE_INFO);
+		Integer loreId = CommonTools.getFinalInteger("loreId", request);
+		Integer currUserId = CommonTools.getLoginUserId(request);
+		String roleName = CommonTools.getLoginRoleName(request);
+		if(roleName.equals("老师")){
+			currUserId = 0;
+		}else if(roleName.equals("知识点管理员")){
+			
+		}
 		return null;
 	}
 	
