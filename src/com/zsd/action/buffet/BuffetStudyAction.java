@@ -1247,6 +1247,7 @@ public class BuffetStudyAction extends DispatchAction {
 		BuffetLoreStudyLogManager blslm = (BuffetLoreStudyLogManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_LORE_STUDY_LOG_INFO);
 		BuffetLoreStudyDetailManager blsdm = (BuffetLoreStudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_LORE_STUDY_DETAIL_INFO);
 		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
+		LoreInfoManager lm = (LoreInfoManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
 		Integer bsdId = CommonTools.getFinalInteger("bsdId", request);
 		String nextLoreIdArray = CommonTools.getFinalStr("nextLoreIdArray", request);
 		String loreType = Transcode.unescape_new1("loreType", request);//针对性诊断和再次诊断
@@ -1261,6 +1262,14 @@ public class BuffetStudyAction extends DispatchAction {
 		if(bsd != null){
 			if(loreType.equals("")){
 				loreType = "针对性诊断";
+			}
+			if(loreId > 0 && loreType.equals("针对性诊断")){
+				LoreInfo lore = lm.getEntityById(loreId);
+				if(lore != null){
+					loreName = lore.getLoreName();
+					String[] pathArr = CommonTools.getLorePath(loreId, "diagnosis");
+					map.put("path", pathArr[0]);
+				}
 			}
 			loreName = bsd.getBuffetQueInfo().getTitle();
 			Integer realUserId = bsd.getBuffetSendInfo().getStudyLogInfo().getUser().getId();
