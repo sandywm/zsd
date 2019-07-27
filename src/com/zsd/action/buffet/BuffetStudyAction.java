@@ -671,23 +671,6 @@ public class BuffetStudyAction extends DispatchAction {
 						if(stepComplelte.equals(0)){//0:表示本阶段未完成（未做完题标记）
 							if(step.equals(1)){//诊断题未做完---loreId==currentLoreId
 								//无需第一阶段
-								Integer answerNumber = 0;
-								String[] pathArray = path.split(":");
-								String[] nextPathArray = pathArray[1].split(",");
-								Integer nextPathLength = nextPathArray.length;
-								buttonValue = "启动溯源";
-								loreTaskName = "1级关联知识点诊断";
-								for(Integer k = 0 ; k < nextPathLength ; k++){
-									String[] nextDetailPathArray = nextPathArray[k].split("\\|");
-									for(Integer l = 0 ; l < nextDetailPathArray.length ; l++){
-										nextLoreIdArray += nextDetailPathArray[l] + ",";
-										Integer quoteLoreId = CommonTools.getQuoteLoreId(Integer.parseInt(nextDetailPathArray[l]));
-										List<LoreQuestion> lqList = lqm.listInfoByLoreId(quoteLoreId, loreTypeName, 0);
-										answerNumber += lqList.size();
-									}
-								}
-								money *= answerNumber;
-								nextLoreIdArray = nextLoreIdArray.substring(0, nextLoreIdArray.length() - 1);
 							}else if(step.equals(2)){//表示已经开始下级关联子知识点的诊断loreId不等于currentLoreId
 								Integer answerNumber = 0;
 								String[] pathArray = path.split(":");
@@ -1806,7 +1789,7 @@ public class BuffetStudyAction extends DispatchAction {
 							}
 							//此处由于是巴菲特关联知识点，巴菲特作为第一节，知识点作为第2节，所有首次插入巴菲特知识点学习记录时step默认数值为2
 							step = 2;
-							studyLogId = blslm.addBLSLog(stuId, bsdId, subjectId, oldStepMoney, stepComplete, isFinish, oldStepMoney, 0, currTime, 1);
+							studyLogId = blslm.addBLSLog(stuId, bsdId, subjectId, step, stepComplete, isFinish, oldStepMoney, 0, currTime, 1);
 							if(studyLogId > 0){
 								updateFlag = true;
 							}
