@@ -1757,11 +1757,13 @@ public class BuffetStudyAction extends DispatchAction {
 							answerOptionStr[i] = answerOptionArray.get(i).toString();
 						}
 						BuffetLoreStudyLogInfo blsl = blslm.getEntityByBsdId(bsdId); 
-						isFinish = blsl.getIsFinish();
-						if(isFinish.equals(2)){//如果状态为2，说明是新开的题，studyLogId清0.
-							studyLogId = 0;
-						}else{
-							studyLogId = blsl.getId();
+						if(blsl != null){
+							isFinish = blsl.getIsFinish();
+							if(isFinish.equals(2)){//如果状态为2，说明是新开的题，studyLogId清0.
+								studyLogId = 0;
+							}else{
+								studyLogId = blsl.getId();
+							}
 						}
 						if(studyLogId > 0){//表示是继续之前的未做完的题（修改log里面的记录）
 							step = blsl.getStep();
