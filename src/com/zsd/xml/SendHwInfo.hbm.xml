@@ -80,5 +80,10 @@
                 <comment>溯源标记[0(不溯源),1(溯源)]</comment>
             </column>
         </property>
+         <property name="inUse" type="java.lang.Integer">
+            <column name="in_use" not-null="true">
+                <comment>有效状态[0(有效),1(无效)]</comment>
+            </column>
+        </property>
     </class>
 </hibernate-mapping>

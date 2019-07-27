@@ -17,7 +17,7 @@ public class ApplyClassInfo implements java.io.Serializable {
 	private ClassInfo classInfo;
 	private String applyTime;
 	private String classDetail;
-	private Integer checkUserId;
+	private Integer toUserId;
 	private Integer checkStatus;
 	private String checkRemark;
 	private String checkTime;
@@ -30,13 +30,13 @@ public class ApplyClassInfo implements java.io.Serializable {
 
 	/** full constructor */
 	public ApplyClassInfo(User user, ClassInfo classInfo,
-			String applyTime, String classDetail, Integer checkUserId,
+			String applyTime, String classDetail, Integer toUserId,
 			Integer checkStatus, String checkRemark,String checkTime) {
 		this.user = user;
 		this.classInfo = classInfo;
 		this.applyTime = applyTime;
 		this.classDetail = classDetail;
-		this.checkUserId = checkUserId;
+		this.toUserId = toUserId;
 		this.checkStatus = checkStatus;
 		this.checkRemark = checkRemark;
 		this.checkTime = checkTime;
@@ -85,12 +85,12 @@ public class ApplyClassInfo implements java.io.Serializable {
 		this.classDetail = classDetail;
 	}
 
-	public Integer getCheckUserId() {
-		return checkUserId;
+	public Integer getToUserId() {
+		return toUserId;
 	}
 
-	public void setCheckUserId(Integer checkUserId) {
-		this.checkUserId = checkUserId;
+	public void setToUserId(Integer toUserId) {
+		this.toUserId = toUserId;
 	}
 
 	public Integer getCheckStatus() {

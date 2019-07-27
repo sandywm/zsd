@@ -109,7 +109,7 @@ public class NetTeacherAction extends DispatchAction {
 		String dataRange = Transcode.unescape_new("dataRan", request);//时间范围
 		String description = Transcode.unescape_new("desc", request); //描述
 		Integer type = CommonTools.getFinalInteger("type", request); //类型
-		String addData = Transcode.unescape("addData", request); //添加时间
+		String addData = Transcode.unescape_new1("addData", request); //添加时间
 		Integer ntbId = ntbManager.addNtbInfo(ntId, title, dataRange, description, type, addData);
 		Map<String, String> map = new HashMap<String, String>();
 		if(ntbId>0){
@@ -320,7 +320,7 @@ public class NetTeacherAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response)throws Exception {
 		NetTeacherInfoManager ntManager = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
 		Integer userId=CommonTools.getLoginUserId(request);
-		String bName = Transcode.unescape("bName", request);
+		String bName = Transcode.unescape_new("bName", request);
 		String bNum = CommonTools.getFinalStr("bNum",request);
 		boolean ntFlag=ntManager.updateNtByBankCard(userId, bName, bNum);
 		Map<String, String> map = new HashMap<String, String>();
@@ -493,7 +493,7 @@ public class NetTeacherAction extends DispatchAction {
 		Integer ntId = ntlist.get(0).getId();
 		Integer paySta=CommonTools.getFinalInteger("paySta", request);
 		Integer bindFlag= CommonTools.getFinalInteger("bindFlag", request);
-		String stuName=Transcode.unescape("stuName", request);
+		String stuName=Transcode.unescape_new("stuName", request);
 		Integer count = ntsManager.getNtsBystunameOrBindSta(ntId, paySta, bindFlag, stuName);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg ="暂无记录";

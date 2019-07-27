@@ -11,8 +11,8 @@
             <generator class="native" />
         </id>
         <many-to-one name="user" class="com.zsd.module.User" lazy="false">
-            <column name="user_id" not-null="true">
-                <comment>老师编号</comment>
+            <column name="apply_user_id" not-null="true">
+                <comment>申请老师编号</comment>
             </column>
         </many-to-one>
         <many-to-one name="classInfo" class="com.zsd.module.ClassInfo" lazy="false">
@@ -35,9 +35,9 @@
                 <comment>审核备注</comment>
             </column>
         </property>
-        <property name="checkUserId" type="java.lang.Integer">
-            <column name="check_user_id">
-                <comment>原班老师(未审核时为0)</comment>
+        <property name="toUserId" type="java.lang.Integer">
+            <column name="to_user_id">
+                <comment>被申请接班老师编号</comment>
             </column>
         </property>
         <property name="checkStatus" type="java.lang.Integer">

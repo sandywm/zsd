@@ -5,8 +5,6 @@ import java.net.URLDecoder;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.zsd.tools.CommonTools;
-
 public class Transcode {
 
 	public static String MyTranscodeUTF(String name) throws Exception{
@@ -40,47 +38,7 @@ public class Transcode {
         }  
         return tmp.toString();  
     }  
-	//自己定义的反编译函数
-    public static String unescape(String src,HttpServletRequest request) { 
-    	src = String.valueOf(src);
-    	if(src.equals("null") || src.equals("")){
-    		return "";
-    	}else{
-    		String cilentInfo = CommonTools.getCilentInfo_new(request);
-    		if(cilentInfo.equals("andriodApp")){//新版本安卓无需转码
-				return src;
-    		}
-    		Integer inputStrLength = src.length();
-    		StringBuffer tmp = new StringBuffer();  
-            tmp.ensureCapacity(inputStrLength);  
-            int lastPos = 0, pos = 0;  
-            char ch;  
-            while (lastPos < src.length()) {  
-                pos = src.indexOf("%", lastPos);  
-                if (pos == lastPos) {  
-                    if (src.charAt(pos + 1) == 'u') {  
-                        ch = (char) Integer.parseInt(src.substring(pos + 2, pos + 6), 16);  
-                        tmp.append(ch);  
-                        lastPos = pos + 6;  
-                    } else {  
-                        ch = (char) Integer.parseInt(src.substring(pos + 1, pos + 3), 16);  
-                        tmp.append(ch);  
-                        lastPos = pos + 3;  
-                    }  
-                } else {  
-                    if (pos == -1) {  
-                        tmp.append(src.substring(lastPos));  
-                        lastPos = src.length();  
-                    } else {  
-                        tmp.append(src.substring(lastPos, pos));  
-                        lastPos = pos;  
-                    }  
-                }  
-            }  
-            return tmp.toString().replaceAll(" ","");
-    	}
-    }  
-    
+
     /**
      * 自定义反编译函数-new
      * @author  Administrator

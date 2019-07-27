@@ -6,6 +6,7 @@ import org.hibernate.Session;
 
 import com.zsd.dao.ApplyClassDao;
 import com.zsd.module.ApplyClassInfo;
+import com.zsd.tools.CommonTools;
 
 @SuppressWarnings("unchecked")
 public class ApplyClassDaoImpl implements ApplyClassDao{
@@ -34,15 +35,48 @@ public class ApplyClassDaoImpl implements ApplyClassDao{
 	}
 
 	@Override
-	public List<ApplyClassInfo> findInfoByOpt(Session sess, Integer userId,
-			Integer validStatus) {
+	public List<ApplyClassInfo> findPageInfoByOpt(Session sess, Integer userId,Integer toUserId,Integer checkStatus,String sDate,String eDate,Integer pageNo,Integer pageSize) {
 		// TODO Auto-generated method stub
-		String hql = " from ApplyClassInfo as ac where ac.user.id = "+userId;
-		if(validStatus.equals(0)){
-			hql  += " and ac.cancelTime = ''";
-		}else{
-			hql  += " and ac.cancelTime != ''";
+		String hql = " from ApplyClassInfo as ac where ac.checkStatus = "+checkStatus;
+		if(userId > 0){
+			hql  += " and ac.user.id = "+userId;
 		}
+		if(toUserId > 0){
+			hql += " and ac.toUserId = "+toUserId;
+		}
+		if(!sDate.equals("") && !eDate.equals("")){
+			hql += " and substring(bs.applyTime,1,10) >= '"+ sDate + "' and substring(bs.applyTime,1,10) >= '"+ eDate + "'";
+		}
+		int offset = (pageNo - 1) * pageSize;
+		if (offset < 0) {
+			offset = 0;
+		}
+		return sess.createQuery(hql).setFirstResult(offset).setMaxResults(pageSize).list();
+	}
+
+	@Override
+	public Integer getCountByOpt(Session sess, Integer userId,
+			Integer toUserId, Integer checkStatus,String sDate,String eDate) {
+		// TODO Auto-generated method stub
+		String hql = "select count(ac.id) from ApplyClassInfo as ac where ac.checkStatus = "+checkStatus;
+		if(userId > 0){
+			hql  += " and ac.user.id = "+userId;
+		}
+		if(toUserId > 0){
+			hql += " and ac.toUserId = "+toUserId;
+		}
+		if(!sDate.equals("") && !eDate.equals("")){
+			hql += " and substring(bs.applyTime,1,10) >= '"+ sDate + "' and substring(bs.applyTime,1,10) >= '"+ eDate + "'";
+		}
+		Object countObj = sess.createQuery(hql).uniqueResult();
+		return CommonTools.longToInt(countObj);
+	}
+
+	@Override
+	public List<ApplyClassInfo> findMyUnCheckApplyInfo(Session sess,
+			Integer toUserId) {
+		// TODO Auto-generated method stub
+		String hql = " from ApplyClassInfo as ac where ac.toUserId = "+toUserId + " and ac.checkStatus = 0";
 		return sess.createQuery(hql).list();
 	}
 

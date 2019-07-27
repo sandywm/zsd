@@ -47,7 +47,8 @@ public class ApplyClassManagerImpl implements ApplyClassManager{
 	}
 
 	@Override
-	public boolean setCancleInfo(Integer id,Integer checkUserId,Integer checkStatus,String checkRemark) throws WEBException {
+	public boolean setCancleInfo(Integer id, Integer checkStatus,
+			String checkRemark) throws WEBException {
 		// TODO Auto-generated method stub
 		try {
 			acDao = (ApplyClassDao) DaoFactory.instance(null).getDao(Constants.DAO_APPLY_CLASS_INFO);
@@ -55,7 +56,6 @@ public class ApplyClassManagerImpl implements ApplyClassManager{
 			tran = sess.beginTransaction();
 			ApplyClassInfo ac = acDao.getEntityById(sess, id);
 			if(ac != null){
-				ac.setCheckUserId(checkUserId);
 				ac.setCheckTime(CurrentTime.getCurrentTime());
 				ac.setCheckStatus(checkStatus);
 				ac.setCheckRemark(checkRemark);
@@ -74,17 +74,52 @@ public class ApplyClassManagerImpl implements ApplyClassManager{
 	}
 
 	@Override
-	public List<ApplyClassInfo> listInfoByOpt(Integer userId,
-			Integer validStatus) throws WEBException {
+	public List<ApplyClassInfo> listPageInfoByOpt(Integer userId,
+			Integer toUserId, Integer checkStatus,String sDate,String eDate, Integer pageNo,
+			Integer pageSize) throws WEBException {
 		// TODO Auto-generated method stub
 		try {
 			acDao = (ApplyClassDao) DaoFactory.instance(null).getDao(Constants.DAO_APPLY_CLASS_INFO);
 			Session sess = HibernateUtil.currentSession();
-			return acDao.findInfoByOpt(sess, userId, validStatus);
+			return acDao.findPageInfoByOpt(sess, userId, toUserId, checkStatus, sDate, eDate, pageNo, pageSize);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			throw new WEBException("根据老师编号、有效状态获取信息列表时出现异常!");
+			throw new WEBException("根据申请老师编号、被申请老师编号、审核状态分页获取信息列表时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public Integer getCountByOpt(Integer userId, Integer toUserId,
+			Integer checkStatus,String sDate,String eDate) throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			acDao = (ApplyClassDao) DaoFactory.instance(null).getDao(Constants.DAO_APPLY_CLASS_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return acDao.getCountByOpt(sess, userId, toUserId, checkStatus, sDate, eDate);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new WEBException("根据申请老师编号、被申请老师编号、审核状态分页获取信息记录条数时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public List<ApplyClassInfo> listMyUnCheckApplyInfo(Integer toUserId)
+			throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			acDao = (ApplyClassDao) DaoFactory.instance(null).getDao(Constants.DAO_APPLY_CLASS_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return acDao.findMyUnCheckApplyInfo(sess, toUserId);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new WEBException("获取未处理的接班申请列表时出现异常!");
 		} finally{
 			HibernateUtil.closeSession();
 		}

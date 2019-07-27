@@ -25,22 +25,48 @@ public interface ApplyClassManager {
 	 * @author wm
 	 * @date 2019-6-22 上午09:37:12
 	 * @param id 主键编号
-	 * @param checkUserId 原班老师
 	 * @param checkStatus 审核状态（1：同意，2：拒绝）
 	 * @param checkRemark 备注
 	 * @return
 	 * @throws WEBException
 	 */
-	boolean setCancleInfo(Integer id,Integer checkUserId,Integer checkStatus,String checkRemark) throws WEBException;
+	boolean setCancleInfo(Integer id,Integer checkStatus,String checkRemark) throws WEBException;
 	
 	/**
-	 * 根据老师编号、有效状态获取信息列表
+	 * 根据申请老师编号、被申请老师编号、审核状态分页获取信息列表
 	 * @author wm
 	 * @date 2019-6-22 上午09:38:28
-	 * @param userId 老师用户编号
-	 * @param validStatus 有效状态(0:正在接班,1:被取消)
+	 * @param userId 申请老师用户编号（0表示全部）
+	 * @param toUserId 被接管班级老师编号（0表示全部）
+	 * @param checkStatus 审核状态(0:未处理，1：同意，2：拒绝)
+	 * @param sDate 开始时间
+	 * @param eDate 结束时间
 	 * @return
 	 * @throws WEBException
 	 */
-	List<ApplyClassInfo> listInfoByOpt(Integer userId,Integer validStatus) throws WEBException;
+	List<ApplyClassInfo> listPageInfoByOpt(Integer userId,Integer toUserId,Integer checkStatus,String sDate,String eDate,Integer pageNo,Integer pageSize) throws WEBException;
+	
+	/**
+	 * 根据申请老师编号、被申请老师编号、审核状态获取信息记录条数
+	 * @author wm
+	 * @date 2019-7-27 上午11:35:01
+	 * @param userId 申请老师用户编号（0表示全部）
+	 * @param toUserId 被接管班级老师编号（0表示全部）
+	 * @param checkStatus 审核状态(0:未处理，1：同意，2：拒绝)
+	 * @param sDate 开始时间
+	 * @param eDate 结束时间
+	 * @return
+	 * @throws WEBException
+	 */
+	Integer getCountByOpt(Integer userId,Integer toUserId,Integer checkStatus,String sDate,String eDate) throws WEBException;
+	
+	/**
+	 * 获取未处理的接班申请列表
+	 * @author wm
+	 * @date 2019-7-27 上午11:59:31
+	 * @param toUserId 被申请接班的老师编号
+	 * @return
+	 * @throws WEBException
+	 */
+	List<ApplyClassInfo> listMyUnCheckApplyInfo(Integer toUserId) throws WEBException;
 }
