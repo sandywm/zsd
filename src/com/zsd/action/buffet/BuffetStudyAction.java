@@ -1807,6 +1807,7 @@ public class BuffetStudyAction extends DispatchAction {
 									coin = 0;
 									experience = 0;
 								}else{
+									coin =  10;
 									experience += Constants.EXPERIENCE;
 								}
 							}
