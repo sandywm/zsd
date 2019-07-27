@@ -265,7 +265,7 @@ public class BuffetStudyAction extends DispatchAction {
 					}else{
 						result = 0;
 					}
-					dataBaseAnswerChar = answerOptionArrayStr.replaceAll("&#wmd;", "'");
+					dataBaseAnswerChar = answerOptionArrayStr;
 				}else{
 					JSONArray answerOptionArray = JSON.parseArray(answerOptionArrayStr);
 					String[] dataBaseAnswerArray = realAnswer.split(",");
@@ -1663,10 +1663,10 @@ public class BuffetStudyAction extends DispatchAction {
 		UserManager um = (UserManager)AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
 		Integer bsdId = CommonTools.getFinalInteger("bsdId", request);//自助餐学习记录编号
 		Integer questionStep = Integer.parseInt(request.getParameter("questionStep"));//题的顺序
-		String myAnswer = Transcode.unescape("myAnswer",request);//选择的答案
-		String answerOptionArrayStr = Transcode.unescape("answerOptionArray",request);//做题时的选项
+		String myAnswer = Transcode.unescape_new1("myAnswer",request);//选择的答案
+		String answerOptionArrayStr = Transcode.unescape_new1("answerOptionArray",request);//做题时的选项
 		Integer lqId = CommonTools.getFinalInteger("lqId", request);//做题的编号
-		String loreType = Transcode.unescape(request.getParameter("loreType"),request);//针对性诊断，巩固训练，再次诊断
+		String loreType = Transcode.unescape_new1(request.getParameter("loreType"),request);//针对性诊断，巩固训练，再次诊断
 		Integer stuId = CommonTools.getLoginUserId(request);
 		Integer result = 0;//0为错,1为对
 		boolean flag = false;
@@ -1808,6 +1808,7 @@ public class BuffetStudyAction extends DispatchAction {
 			}
 		}
 		map.put("result", msg);
+		map.put("studyResult", result);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}

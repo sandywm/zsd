@@ -2344,7 +2344,7 @@ public class OnlineStudyAction extends DispatchAction {
 						}else{
 							result = 0;
 						}
-						dataBaseAnswerChar = answerOptionArrayStr.replaceAll("&#wmd;", "'");
+						dataBaseAnswerChar = answerOptionArrayStr;
 					}else{
 						JSONArray answerOptionArray = JSON.parseArray(answerOptionArrayStr);
 						String[] dataBaseAnswerArray = realAnser.split(",");
@@ -2385,7 +2385,7 @@ public class OnlineStudyAction extends DispatchAction {
 							}
 						}
 						for(int i = 0 ; i < answerOptionArray.size() ; i++){
-							answerOptionStr[i] = answerOptionArray.get(i).toString().replaceAll("&#wmd;", "'");
+							answerOptionStr[i] = answerOptionArray.get(i).toString();
 						}
 						boolean updateFlag = false;
 						/**
