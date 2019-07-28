@@ -50,5 +50,10 @@
                 <comment>全部题数</comment>
             </column>
         </property>
+        <property name="hwsdAddStatus" type="java.lang.Integer">
+            <column name="hwsd_add_status" not-null="true">
+                <comment>自动创建题库标记(0：未创建，1：已创建)</comment>
+            </column>
+        </property>
     </class>
 </hibernate-mapping>

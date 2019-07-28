@@ -23,7 +23,7 @@ public class ApplyClassManagerImpl implements ApplyClassManager{
 	ApplyClassDao acDao = null;
 	Transaction tran = null;
 	@Override
-	public Integer addApplyClassInfo(Integer userId, Integer classId,String classDetail,Integer checkUserId)
+	public Integer addApplyClassInfo(Integer userId, Integer classId,String classDetail,Integer checkUserId,Integer applyOpt)
 			throws WEBException {
 		// TODO Auto-generated method stub
 		try {
@@ -32,7 +32,7 @@ public class ApplyClassManagerImpl implements ApplyClassManager{
 			acDao = (ApplyClassDao) DaoFactory.instance(null).getDao(Constants.DAO_APPLY_CLASS_INFO);
 			Session sess = HibernateUtil.currentSession();
 			tran = sess.beginTransaction();
-			ApplyClassInfo ac = new  ApplyClassInfo(uDao.get(sess, userId), cDao.get(sess, classId), CurrentTime.getCurrentTime(),classDetail,
+			ApplyClassInfo ac = new  ApplyClassInfo(uDao.get(sess, userId), cDao.get(sess, classId), applyOpt,CurrentTime.getCurrentTime(),classDetail,
 					checkUserId,0,"","");
 			acDao.save(sess, ac);
 			tran.commit();

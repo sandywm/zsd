@@ -21,6 +21,7 @@ public class HwStudyTjInfo implements java.io.Serializable {
 	private Integer succNum;
 	private Integer errorNum;
 	private Integer allNum;
+	private Integer hwsdAddStatus;
 
 	// Constructors
 
@@ -31,7 +32,7 @@ public class HwStudyTjInfo implements java.io.Serializable {
 	/** full constructor */
 	public HwStudyTjInfo(SendHwInfo sendHwInfo, User user, Integer comStatus,
 			String comDate, Integer hwScore, Integer succNum, Integer errorNum,
-			Integer allNum) {
+			Integer allNum,Integer hwsdAddStatus) {
 		this.sendHwInfo = sendHwInfo;
 		this.user = user;
 		this.comStatus = comStatus;
@@ -40,6 +41,7 @@ public class HwStudyTjInfo implements java.io.Serializable {
 		this.succNum = succNum;
 		this.errorNum = errorNum;
 		this.allNum = allNum;
+		this.hwsdAddStatus = hwsdAddStatus;
 	}
 
 	// Property accessors
@@ -115,4 +117,13 @@ public class HwStudyTjInfo implements java.io.Serializable {
 	public void setAllNum(Integer allNum) {
 		this.allNum = allNum;
 	}
+
+	public Integer getHwsdAddStatus() {
+		return hwsdAddStatus;
+	}
+
+	public void setHwsdAddStatus(Integer hwsdAddStatus) {
+		this.hwsdAddStatus = hwsdAddStatus;
+	}
+	
 }

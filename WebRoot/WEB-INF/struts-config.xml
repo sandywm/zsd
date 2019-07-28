@@ -100,6 +100,10 @@
     <action path="/hw" parameter="action" scope="request"  type="com.zsd.action.homework.HomeWorkAction">
       <set-property property="cancellable" value="true" />
     </action>
+    <!-- 接管班级 -->
+    <action path="/applyClass" parameter="action" scope="request"  type="com.zsd.action.applyClass.ApplyClassAction">
+      <set-property property="cancellable" value="true" />
+    </action>
   </action-mappings>
 
   <message-resources parameter="com.yourcompany.struts.ApplicationResources" />

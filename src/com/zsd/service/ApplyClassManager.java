@@ -15,10 +15,11 @@ public interface ApplyClassManager {
 	 * @param classId 班级编号
 	 * @param classDetail 申请时的班级详细信息（年级班级学科）
 	 * @param checkUserId 原班老师
+	 * @param applyOpt 申请状态（0：临时，1：永久）
 	 * @return
 	 * @throws WEBException
 	 */
-	Integer addApplyClassInfo(Integer userId,Integer classId,String classDetail,Integer checkUserId) throws WEBException;
+	Integer addApplyClassInfo(Integer userId,Integer classId,String classDetail,Integer checkUserId,Integer applyOpt) throws WEBException;
 	
 	/**
 	 * 审核老师接班信息
@@ -52,7 +53,7 @@ public interface ApplyClassManager {
 	 * @date 2019-7-27 上午11:35:01
 	 * @param userId 申请老师用户编号（0表示全部）
 	 * @param toUserId 被接管班级老师编号（0表示全部）
-	 * @param checkStatus 审核状态(0:未处理，1：同意，2：拒绝)
+	 * @param checkStatus 审核状态(-1:全部,0:未处理，1：同意，2：拒绝)
 	 * @param sDate 开始时间
 	 * @param eDate 结束时间
 	 * @return

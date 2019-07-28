@@ -21,6 +21,7 @@
   <StrutsActivity path="/reportCenter.do" location="950,1850" dimension="276,104" />
   <StrutsActivity path="/studyRecord.do" location="50,2050" dimension="293,104" />
   <StrutsActivity path="/buffetStudy.do" location="1550,1250" dimension="270,104" />
+  <StrutsActivity path="/hw.do" location="1550,1850" dimension="299,104" />
   <StrutsActivity path="/Module/schoolManager/jsp/schoolManager.jsp" location="1250,250" dimension="316,53" />
   <StrutsActivity path="/Module/gradeSubManager/jsp/gradeSubManager.jsp" location="1250,650" dimension="354,53" />
   <StrutsActivity path="/Module/subManager/jsp/subManager.jsp" location="1250,850" dimension="282,53" />
@@ -36,7 +37,7 @@
   <StrutsActivity path="/###.jsp" location="950,250" dimension="81,53" />
   <StrutsActivity path="/register.jsp" location="650,250" dimension="102,53" />
   <StrutsActivity path="/Module/buffetManager/jsp/lexManager.jsp" location="50,1650" dimension="290,53" />
-  <StrutsActivity path="/hw.do" />
+  <StrutsActivity path="/applyClass.do" location="650,2050" dimension="295,104" />
   <StrutsTransition id="/chapter.do,chapterPage,/Module/chapter/jsp/chapter.jsp,1" routingType="0">
     <AutomaticBendpoints>
       <AbsolutePoint location="310,502" />

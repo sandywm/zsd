@@ -36,7 +36,7 @@ public class HwStudyTjDaoImpl implements HwStudyTjDao{
 
 	@Override
 	public List<HwStudyTjInfo> findPageInfoByOpt(Session sess,
-			Integer hwSendId, Integer stuId, Integer comStatus, Integer pageNo,
+			Integer hwSendId, Integer stuId, Integer comStatus, boolean pageFlag,Integer pageNo,
 			Integer pageSize) {
 		// TODO Auto-generated method stub
 		String hql = " from HwStudyTjInfo as hwtj where 1 = 1";
@@ -49,11 +49,15 @@ public class HwStudyTjDaoImpl implements HwStudyTjDao{
 		if(comStatus >= 0){
 			hql += " and hwtj.comStatus = "+comStatus;
 		}
-		int offset = (pageNo - 1) * pageSize;
-		if (offset < 0) {
-			offset = 0;
+		hql += " order by hwtj.hwScore desc";
+		if(pageFlag){
+			int offset = (pageNo - 1) * pageSize;
+			if (offset < 0) {
+				offset = 0;
+			}
+			return sess.createQuery(hql).setFirstResult(offset).setMaxResults(pageSize).list();
 		}
-		return sess.createQuery(hql).setFirstResult(offset).setMaxResults(pageSize).list();
+		return sess.createQuery(hql).list();
 	}
 
 	@Override

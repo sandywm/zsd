@@ -43,7 +43,7 @@ public interface ApplyClassDao {
 	 * @param sess
 	 * @param userId 申请老师用户编号（0表示全部）
 	 * @param toUserId 被接管班级老师编号（0表示全部）
-	 * @param checkStatus 审核状态(0:未处理，1：同意，2：拒绝)
+	 * @param checkStatus 审核状态(-1:全部,0:未处理，1：同意，2：拒绝)
 	 * @param sDate 开始时间
 	 * @param eDate 结束时间
 	 * @return

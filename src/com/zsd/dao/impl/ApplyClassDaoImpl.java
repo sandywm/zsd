@@ -37,12 +37,15 @@ public class ApplyClassDaoImpl implements ApplyClassDao{
 	@Override
 	public List<ApplyClassInfo> findPageInfoByOpt(Session sess, Integer userId,Integer toUserId,Integer checkStatus,String sDate,String eDate,Integer pageNo,Integer pageSize) {
 		// TODO Auto-generated method stub
-		String hql = " from ApplyClassInfo as ac where ac.checkStatus = "+checkStatus;
+		String hql = " from ApplyClassInfo as ac where 1 = 1";
 		if(userId > 0){
 			hql  += " and ac.user.id = "+userId;
 		}
 		if(toUserId > 0){
 			hql += " and ac.toUserId = "+toUserId;
+		}
+		if(checkStatus >= 0){
+			hql += " and ac.checkStatus = "+checkStatus;
 		}
 		if(!sDate.equals("") && !eDate.equals("")){
 			hql += " and substring(bs.applyTime,1,10) >= '"+ sDate + "' and substring(bs.applyTime,1,10) >= '"+ eDate + "'";

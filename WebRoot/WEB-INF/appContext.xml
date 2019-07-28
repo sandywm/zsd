@@ -54,4 +54,7 @@
 	<app id="hw_mind_relation_Web" class="com.zsd.service.impl.HwMindRelationManagerImpl"/>
 	<app id="hw_ability_relation_Web" class="com.zsd.service.impl.HwAbilityRelationManagerImpl"/>
 	<app id="tea_que_Web" class="com.zsd.service.impl.TeaQueManagerImpl"/>
+	<app id="send_hw_Web" class="com.zsd.service.impl.SendHwManagerImpl"/>
+	<app id="hw_study_tj_Web" class="com.zsd.service.impl.HwStudyTjManagerImpl"/>
+	<app id="hw_study_detail_Web" class="com.zsd.service.impl.HwStudyDetailManagerImpl"/>
 </appContext>

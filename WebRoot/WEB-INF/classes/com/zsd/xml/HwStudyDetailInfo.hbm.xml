@@ -32,7 +32,7 @@
         </property>
         <property name="result" type="java.lang.Integer">
             <column name="result" not-null="true">
-                <comment>答题结果(0:错,1:对)</comment>
+                <comment>答题结果(-1:未做,0:错,1:对)</comment>
             </column>
         </property>
         <property name="addTime" type="java.lang.String">

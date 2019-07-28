@@ -85,6 +85,11 @@ public class Constants {
 	public static final String WEB_HW_MIND_RELATION_INFO = "hw_mind_relation_Web";
 	public static final String WEB_HW_ABILITY_RELATION_INFO = "hw_ability_relation_Web";
 	public static final String WEB_TEA_QUE_INFO = "tea_que_Web";
+	public static final String WEB_SEND_HW_INFO = "send_hw_Web";
+	public static final String WEB_HW_STUDY_TJ_INFO = "hw_study_tj_Web";
+	public static final String WEB_HW_STUDY_DETAIL_INFO = "hw_study_detail_Web";
+	public static final String WEB_HW_TRACE_STUDY_LOG_INFO = "hw_trace_study_log_Web";
+	public static final String WEB_HW_TRACE_STUDY_DETAIL_INFO = "hw_trace_study_detail_Web";
 	
 	
 	//-------------------DAO-------------------------//
@@ -143,5 +148,10 @@ public class Constants {
 	public static final String DAO_HW_MIND_RELATION_INFO = "hw_mind_relation_Dao";
 	public static final String DAO_HW_ABILITY_RELATION_INFO = "hw_ability_relation_Dao";
 	public static final String DAO_TEA_QUE_INFO = "tea_que_Dao";
+	public static final String DAO_SEND_HW_INFO = "send_hw_Dao";
+	public static final String DAO_HW_STUDY_TJ_INFO = "hw_study_tj_Dao";
+	public static final String DAO_HW_STUDY_DETAIL_INFO = "hw_study_detail_Dao";
+	public static final String DAO_HW_TRACE_STUDY_LOG_INFO = "hw_trace_study_log_Dao";
+	public static final String DAO_HW_TRACE_STUDY_DETAIL_INFO = "hw_trace_study_detail_Dao";
 }
 

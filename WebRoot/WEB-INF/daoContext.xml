@@ -56,4 +56,7 @@
 	<dao id="hw_mind_relation_Dao" class="com.zsd.dao.impl.HwMindRelationDaoImpl" />
 	<dao id="hw_ability_relation_Dao" class="com.zsd.dao.impl.HwAbilityRelationDaoImpl" />
 	<dao id="tea_que_Dao" class="com.zsd.dao.impl.TeaQueDaoImpl" />
+	<dao id="send_hw_Dao" class="com.zsd.dao.impl.SendHwDaoImpl" />
+	<dao id="hw_study_tj_Dao" class="com.zsd.dao.impl.HwStudyTjDaoImpl" />
+	<dao id="hw_study_detail_Dao" class="com.zsd.dao.impl.HwStudyDetailDaoImpl" />
 </daoContext>

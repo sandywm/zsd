@@ -20,6 +20,11 @@
                 <comment>班级编号</comment>
             </column>
         </many-to-one>
+        <property name="applyOpt" type="java.lang.Integer">
+            <column name="apply_opt">
+                <comment>申请状态(0：临时，1：永久)</comment>
+            </column>
+        </property>
         <property name="classDetail" type="java.lang.String">
             <column name="class_info" length="30" not-null="true">
                 <comment>班级信息（一年级三班数学）如果升学就采用</comment>
