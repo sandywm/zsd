@@ -606,13 +606,14 @@ public class BuffetStudyAction extends DispatchAction {
 		Integer buffetLorestudyLogId = 0;
 		String loreName = "";
 		String subDetail = "";
+		Integer basicLoreId = 0;
 		String msg = "error";
 		BuffetStudyDetailInfo bsd = bsdm.getEntityById(bsdId);
 		if(bsd != null){
 			loreName = bsd.getBuffetQueInfo().getTitle();
 			subDetail = "检测你对该知识点的掌握情况";
 			StudyLogInfo sLog = bsd.getBuffetSendInfo().getStudyLogInfo();
-			Integer basicLoreId = sLog.getLoreInfo().getId();//发布巴菲特的学习的知识点编号
+			basicLoreId = sLog.getLoreInfo().getId();//发布巴菲特的学习的知识点编号
 			Integer realUserId = sLog.getUser().getId();
 			if(realUserId.equals(userId)){
 				msg = "success";
@@ -867,6 +868,7 @@ public class BuffetStudyAction extends DispatchAction {
 			map.put("studyLogId", buffetLorestudyLogId);
 			map.put("loreName", loreName);
 			map.put("subDetail", subDetail);
+			map.put("basicLoreId", basicLoreId);
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
