@@ -66,8 +66,19 @@ public interface ApplyClassManager {
 	 * @author wm
 	 * @date 2019-7-27 上午11:59:31
 	 * @param toUserId 被申请接班的老师编号
+	 * @param classId 班级编号(0时不查询)
 	 * @return
 	 * @throws WEBException
 	 */
-	List<ApplyClassInfo> listMyUnCheckApplyInfo(Integer toUserId) throws WEBException;
+	List<ApplyClassInfo> listMyUnCheckApplyInfo(Integer toUserId,Integer classId) throws WEBException;
+	
+	/**
+	 * 获取指定编号的实体信息
+	 * @author wm
+	 * @date 2019-7-29 上午09:40:17
+	 * @param id
+	 * @return
+	 * @throws WEBException
+	 */
+	ApplyClassInfo getEntityById(Integer id) throws WEBException;
 }

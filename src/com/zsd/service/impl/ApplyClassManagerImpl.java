@@ -109,17 +109,33 @@ public class ApplyClassManagerImpl implements ApplyClassManager{
 	}
 
 	@Override
-	public List<ApplyClassInfo> listMyUnCheckApplyInfo(Integer toUserId)
+	public List<ApplyClassInfo> listMyUnCheckApplyInfo(Integer toUserId,Integer classId)
 			throws WEBException {
 		// TODO Auto-generated method stub
 		try {
 			acDao = (ApplyClassDao) DaoFactory.instance(null).getDao(Constants.DAO_APPLY_CLASS_INFO);
 			Session sess = HibernateUtil.currentSession();
-			return acDao.findMyUnCheckApplyInfo(sess, toUserId);
+			return acDao.findMyUnCheckApplyInfo(sess, toUserId,classId);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			throw new WEBException("获取未处理的接班申请列表时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public ApplyClassInfo getEntityById(Integer id) throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			acDao = (ApplyClassDao) DaoFactory.instance(null).getDao(Constants.DAO_APPLY_CLASS_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return acDao.getEntityById(sess, id);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new WEBException("获取指定编号的实体信息时出现异常!");
 		} finally{
 			HibernateUtil.closeSession();
 		}

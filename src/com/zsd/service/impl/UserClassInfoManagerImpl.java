@@ -114,5 +114,55 @@ public class UserClassInfoManagerImpl implements UserClassInfoManager {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	@Override
+	public boolean updateInfoByOpt(Integer id, Integer userId,
+			Integer applyUserId, String applyUsreName, Integer status)
+			throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			userDao = (UserDao) DaoFactory.instance(null).getDao(Constants.DAO_USER_INFO);
+			ucDao = (UserClassInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_USER_CLASS_INFO);
+			Session sess  = HibernateUtil.currentSession();
+			tran = sess.beginTransaction();
+			User user = userDao.get(sess, userId);
+			UserClassInfo  ucInfo = ucDao.get(sess, id);
+			if(ucInfo != null){
+				if(userId > 0 && status.equals(2)){//此处大于0肯定是永久接班
+					ucInfo.setUser(user);
+					ucInfo.setAppUserId(0);
+					ucInfo.setAppUserInfo("");
+					ucInfo.setStatus(status);
+				}else if(userId.equals(0) && status.equals(1) && applyUserId > 0){
+					ucInfo.setAppUserId(applyUserId);
+					ucInfo.setAppUserInfo(applyUsreName);
+					ucInfo.setStatus(status);
+				}
+				ucDao.update(sess, ucInfo);
+				tran.commit();
+				return true;
+			}
+			return false;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("根据主键修改班级老师、接班老师编号、接班老师信息、接班状态信息时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+	@Override
+	public UserClassInfo getEntityByOpt(Integer userId, Integer classId,
+			Integer roleId) throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			 ucDao = (UserClassInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_USER_CLASS_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return ucDao.getEntityByOpt(sess, userId, classId, roleId);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("根据老师编号、班级编号、角色编号获取老师班级信息表时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
 
 }

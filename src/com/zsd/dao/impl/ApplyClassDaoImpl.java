@@ -77,9 +77,12 @@ public class ApplyClassDaoImpl implements ApplyClassDao{
 
 	@Override
 	public List<ApplyClassInfo> findMyUnCheckApplyInfo(Session sess,
-			Integer toUserId) {
+			Integer toUserId,Integer classId) {
 		// TODO Auto-generated method stub
 		String hql = " from ApplyClassInfo as ac where ac.toUserId = "+toUserId + " and ac.checkStatus = 0";
+		if(classId > 0){
+			hql += " and ac.classInfo.id = "+classId;
+		}
 		return sess.createQuery(hql).list();
 	}
 

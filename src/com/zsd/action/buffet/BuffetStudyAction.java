@@ -2007,6 +2007,7 @@ public class BuffetStudyAction extends DispatchAction {
 			}else{
 				loreTypeName = "知识清单";
 			}
+			msg = "success";
 			List<LoreQuestion> lqList = lqm.listInfoByLoreId(quoteLoreId, loreTypeName, 0);
 			if(lqList.size() > 0){
 				Integer lqId = lqList.get(0).getId();
@@ -2029,6 +2030,7 @@ public class BuffetStudyAction extends DispatchAction {
 			}
 		}else if(loreTypeName.equals("example")){//解题示范
 			loreTypeName = "解题示范";
+			msg = "success";
 			List<LoreQuestion> lqList = lqm.listInfoByLoreId(quoteLoreId, loreTypeName, 0);
 			if(lqList.size() > 0){
 				List<Object> list_d = new ArrayList<Object>();
@@ -2046,6 +2048,7 @@ public class BuffetStudyAction extends DispatchAction {
 			}
 		}else if(loreTypeName.equals("practice")){//巩固训练
 			loreTypeName = "巩固训练";
+			msg = "success";
 			if(currLoreId > 0){
 				List<LoreQuestion> lqList = lqm.listInfoByLoreId(quoteLoreId, loreTypeName, 0);
 				if(lqList.size() > 0){

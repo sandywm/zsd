@@ -70,7 +70,8 @@ public interface ApplyClassDao {
 	 * @date 2019-7-27 下午04:14:08
 	 * @param sess
 	 * @param toUserId 被申请接班的老师编号
+	 * @param classId 班级编号(0时不查询)
 	 * @return
 	 */
-	List<ApplyClassInfo> findMyUnCheckApplyInfo(Session sess,Integer toUserId);
+	List<ApplyClassInfo> findMyUnCheckApplyInfo(Session sess,Integer toUserId,Integer classId);
 }

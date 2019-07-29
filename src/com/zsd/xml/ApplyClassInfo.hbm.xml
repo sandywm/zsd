@@ -22,7 +22,7 @@
         </many-to-one>
         <property name="applyOpt" type="java.lang.Integer">
             <column name="apply_opt">
-                <comment>申请状态(0：临时，1：永久)</comment>
+                <comment>申请状态(1：临时，2：永久)</comment>
             </column>
         </property>
         <property name="classDetail" type="java.lang.String">

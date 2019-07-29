@@ -83,4 +83,17 @@ public class UserClassInfoDaoImpl implements UserClassInfoDao {
 		return CommonTools.longToInt(countObj);
 	}
 
+	@Override
+	public UserClassInfo getEntityByOpt(Session sess, Integer userId,
+			Integer classId, Integer roleId) {
+		// TODO Auto-generated method stub
+		String hql = " from UserClassInfo as uci where uci.classInfo.id = " +classId+ " and uci.roleInfo.id = "+roleId;
+		hql += " and uci.user.id = "+userId;
+		List<UserClassInfo> ucList = sess.createQuery(hql).list();
+		if(ucList.size() > 0){
+			return ucList.get(0);
+		}
+		return null;
+	}
+
 }

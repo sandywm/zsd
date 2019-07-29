@@ -107,4 +107,15 @@ public interface UserClassInfoDao {
 	 */
 	Integer getUciByOpt(Session sess,Integer classId,Integer roleId);
 
+	/**
+	 * 根据老师编号、班级编号、角色编号获取老师班级信息表
+	 * @author wm
+	 * @date 2019-7-29 上午10:36:06
+	 * @param sess
+	 * @param userId  老师编号
+	 * @param classId 班级编号
+	 * @param roleId 角色编号
+	 * @return
+	 */
+	UserClassInfo getEntityByOpt(Session sess,Integer userId,Integer classId,Integer roleId);
 }

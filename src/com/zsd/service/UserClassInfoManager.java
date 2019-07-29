@@ -2,6 +2,7 @@ package com.zsd.service;
 
 import java.util.List;
 
+
 import com.zsd.exception.WEBException;
 import com.zsd.module.UserClassInfo;
 
@@ -71,4 +72,30 @@ public interface UserClassInfoManager {
 	 * @throws WEBException
 	 */
 	List<UserClassInfo> listTeaInfoByOpt(Integer classId,Integer roleId)throws WEBException;
+	
+	/**
+	 * 根据主键修改班级老师、接班老师编号、接班老师信息、接班状态信息
+	 * @author wm
+	 * @date 2019-7-29 上午10:24:42
+	 * @param id
+	 * @param userId 班级老师（0不修改）
+	 * @param applyUserId 接班老师编号（0不修改）
+	 * @param applyUsreName 接班老师信息（""不修改）
+	 * @param status 接班状态信息（0不修改）
+	 * @return
+	 * @throws WEBException
+	 */
+	boolean updateInfoByOpt(Integer id,Integer userId,Integer applyUserId,String applyUsreName,Integer status)throws WEBException;
+	
+	/**
+	 * 根据老师编号、班级编号、角色编号获取老师班级信息表
+	 * @author wm
+	 * @date 2019-7-29 上午10:36:06
+	 * @param userId  老师编号
+	 * @param classId 班级编号
+	 * @param roleId 角色编号
+	 * @return
+	 * @throws WEBException
+	 */
+	UserClassInfo getEntityByOpt(Integer userId,Integer classId,Integer roleId)throws WEBException ;
 }
