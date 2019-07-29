@@ -319,23 +319,43 @@ public class ApplyClassAction extends DispatchAction {
 				School sch = sList.get(0);
 				Integer schoolType = sch.getSchoolType();//小学(1),初中(2),高中(3)
 				Integer yearSystem = sch.getYearSystem();//3,4,5,6
-				if(schoolType.equals(1)){
-					for(int i = 1 ; i <= yearSystem ; i++){
-						String gradeName_tmp = Convert.NunberConvertChinese(yearSystem);
-						map_d.put(gradeName_tmp, gradeName_tmp);
+				List<Object> list_d = new ArrayList<Object>();
+				String currentTime = CurrentTime.getStringDate();
+				Integer startNum = 1;
+				Integer endNum = 1;
+				if(schoolType.equals(1)){//5,6
+					endNum = yearSystem;
+				}else if(schoolType.equals(2)){//3,4
+					if(yearSystem.equals(3)){
+						startNum = 7;
+					}else{
+						startNum = 6;
 					}
-				}else if(schoolType.equals(2)){
-					if(yearSystem.equals(4)){
-						map_d.put("六年级", "六年级");
-					}
-					map_d.put("七年级", "七年级");
-					map_d.put("八年级", "八年级");
-					map_d.put("九年级", "九年级");
+					endNum = 10;
 				}else if(schoolType.equals(3)){
-					map_d.put("高一", "高一");
-					map_d.put("高二", "高二");
-					map_d.put("高三", "高三");
+					startNum = 10;
+					endNum = 12;
 				}
+				for(int gradeNo = startNum ; gradeNo <= endNum ; gradeNo++){
+					String gradeName_tmp = Convert.NunberConvertChinese(gradeNo);
+					map_d.put("gradeName", gradeName_tmp);
+					map_d.put("selFlag", gradeName_tmp.equals(gradeName) ? true : false);
+					//获取指定年级下的真实班级列表
+					List<ClassInfo> cList = cm.listClassInfoByOption(gradeNo, currentTime, schoolId, "");
+					List<Object> list_d1 = new ArrayList<Object>();
+					if(cList.size() > 0){
+						for(ClassInfo c : cList){
+							Map<String,Object> map_d1 = new HashMap<String,Object>();
+							map_d1.put("classId", c.getId());
+							map_d1.put("className", c.getClassName());
+							map_d1.put("selFlag", c.getId().equals(owerClassId) ? true : false);
+							list_d1.add(map_d1);
+						}
+					}
+					map_d.put("classList", list_d1);
+					list_d.add(map_d);
+				}
+				map.put("gradeClassList", list_d);
 			}
 		}
 		return null;

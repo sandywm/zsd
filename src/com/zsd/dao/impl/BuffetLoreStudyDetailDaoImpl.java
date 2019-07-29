@@ -74,7 +74,7 @@ public class BuffetLoreStudyDetailDaoImpl implements BuffetLoreStudyDetailDao{
 	public List<BuffetLoreStudyDetailInfo> findLastInfoByLogId(Session sess,
 			Integer studyLogId) {
 		// TODO Auto-generated method stub
-		String hql = " from BuffetLoreStudyDetailInfo as blsd where blsd.buffetLoreStudyLogInfo.id = "+studyLogId;
+		String hql = " from BuffetLoreStudyDetailInfo as blsd where blsd.buffetLoreStudyLogInfo.id = "+studyLogId + " order by blsd.id desc";
 		return sess.createQuery(hql).setFirstResult(0).setMaxResults(1).list();
 	}
 

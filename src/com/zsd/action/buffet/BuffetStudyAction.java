@@ -835,6 +835,8 @@ public class BuffetStudyAction extends DispatchAction {
 										loreTaskName = stepNumber+"级关联知识点("+currentLoreName+")学习";
 									}
 								}else{//关联性诊断题全部做完(诊断的最后一级)
+									String[] studyPathArr = ltmj.getStudyPath(path, pathChi);
+									studyPath = studyPathArr[0];
 									String[] pathArray = studyPath.split(":");
 									Integer stepNumber = pathArray.length  - 1;
 									String currentLoreName = lm.getEntityById(currentLoreId).getLoreName();
@@ -955,6 +957,7 @@ public class BuffetStudyAction extends DispatchAction {
 				//通过buffet_study_detail_id获取buffet_lore_study_log_id
 				BuffetLoreStudyLogInfo blsl = blslm.getEntityByBsdId(bsdId);
 				if(blsl == null){//表示第一次，还未进行巴菲特知识点学习
+					option = 1;
 					currentLoreId = buffetId;//目的为了获取当前级别(把第一级巴菲特编号赋值给currLoreId)
 					String[] pathArray = path.split(":");
 					Integer currentI = CommonTools.getCurrentStep(pathArray, currentLoreId);
@@ -1986,12 +1989,18 @@ public class BuffetStudyAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
 		LoreInfoManager lm = (LoreInfoManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
+		BuffetStudyDetailManager bsdm = (BuffetStudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_STUDY_DETAIL_INFO);
 		String loreTypeName = CommonTools.getFinalStr("loreTypeName", request);//五步类型video,guide,loreList,example,practice
 		Integer currLoreId = CommonTools.getFinalInteger("currentLoreId", request);//即将要学习的知识点（就是map接口中的nextLoreIdArray--学习时为单个id）
 		Integer bsdId = CommonTools.getFinalInteger("bsdId", request);
 		String msg = "noInfo";
 		Map<String,Object> map = new HashMap<String,Object>();
 		Integer quoteLoreId = CommonTools.getQuoteLoreId(currLoreId);
+		BuffetStudyDetailInfo bsd = bsdm.getEntityById(bsdId);
+		if(bsd != null){
+			map.put("loreName", bsd.getBuffetQueInfo().getTitle());
+			map.put("subDetail", "检测你对该知识点的掌握情况");
+		}
 		if(loreTypeName.equals("video")){//视频讲解
 			List<LoreQuestion> lqList = lqm.listInfoByLoreId(quoteLoreId, "知识讲解", 0);
 			if(lqList.size() > 0){
