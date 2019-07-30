@@ -59,4 +59,7 @@
 	<dao id="send_hw_Dao" class="com.zsd.dao.impl.SendHwDaoImpl" />
 	<dao id="hw_study_tj_Dao" class="com.zsd.dao.impl.HwStudyTjDaoImpl" />
 	<dao id="hw_study_detail_Dao" class="com.zsd.dao.impl.HwStudyDetailDaoImpl" />
+	<dao id="net_teacher_studio_Dao" class="com.zsd.dao.impl.NetTeacherStudioDaoImpl" />
+	<dao id="net_teacher_studio_news_Dao" class="com.zsd.dao.impl.NetTeacherStudioNewsDaoImpl" />
+	<dao id="net_teacher_studio_relation_Dao" class="com.zsd.dao.impl.NetTeacherStudioRelationDaoImpl" />
 </daoContext>

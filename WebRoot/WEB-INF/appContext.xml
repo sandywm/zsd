@@ -57,4 +57,7 @@
 	<app id="send_hw_Web" class="com.zsd.service.impl.SendHwManagerImpl"/>
 	<app id="hw_study_tj_Web" class="com.zsd.service.impl.HwStudyTjManagerImpl"/>
 	<app id="hw_study_detail_Web" class="com.zsd.service.impl.HwStudyDetailManagerImpl"/>
+	<app id="net_teacher_studio_Web" class="com.zsd.service.impl.NetTeacherStudioManagerImpl"/>
+	<app id="net_teacher_studio_news_Web" class="com.zsd.service.impl.NetTeacherStudioNewsManagerImpl"/>
+	<app id="net_teacher_studio_relation_Web" class="com.zsd.service.impl.NetTeacherStudioRelationManagerImpl"/>
 </appContext>

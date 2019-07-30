@@ -38,6 +38,7 @@
   <StrutsActivity path="/register.jsp" location="650,250" dimension="102,53" />
   <StrutsActivity path="/Module/buffetManager/jsp/lexManager.jsp" location="50,1650" dimension="290,53" />
   <StrutsActivity path="/applyClass.do" location="650,2050" dimension="295,104" />
+  <StrutsActivity path="/ntStudio.do" />
   <StrutsTransition id="/chapter.do,chapterPage,/Module/chapter/jsp/chapter.jsp,1" routingType="0">
     <AutomaticBendpoints>
       <AbsolutePoint location="310,502" />

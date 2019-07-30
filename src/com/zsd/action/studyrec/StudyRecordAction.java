@@ -937,6 +937,7 @@ public class StudyRecordAction extends DispatchAction {
 		int total =bsdlist.size();
 		int rightNum =0;
 		int errorNum=0;
+		String  rate = "0.00";//完成率
 		if(total>0){
 			for (Iterator<BuffetStudyDetailInfo> itr = bsdlist.iterator(); itr.hasNext();) {
 				BuffetStudyDetailInfo bsdInfo = (BuffetStudyDetailInfo) itr.next();
@@ -944,10 +945,11 @@ public class StudyRecordAction extends DispatchAction {
 					rightNum+=1;
 				}
 			}
+			errorNum = total-rightNum;
+			DecimalFormat df  = new DecimalFormat("######0.00");
+			rate  = df.format(((double)rightNum / (double)total) * 100);
 		}
-		errorNum = total-rightNum;
-		DecimalFormat df  = new DecimalFormat("######0.00");
-		String  rate  = df.format(((double)rightNum / (double)total) * 100);
+	
 		List<BuffetStudyDetailStatisticsJson> bsdJson = new BuffetStudyDetailStatisticsJson().getBsdStatisticsJson(bsdlist);
 		map.put("total", total);
 		map.put("rightNum", rightNum);
