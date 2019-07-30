@@ -1134,7 +1134,7 @@ public class OnlineStudyAction extends DispatchAction {
 										//1：当前题全部做对，直接进入第三步-当前知识典的上一级关联知识典的学习
 										//2：关联性诊断题全部做完，需要进入到第三步--关联知识典的学习
 										if(access == 1){//当前题全部正确
-											Integer stepNumber = CommonTools.getCurrentStep(studyPath.split(":"), currentLoreId) - 1;
+											Integer stepNumber = CommonTools.getCurrentStep(path.split(":"), currentLoreId) - 1;
 											studyPath = CommonTools.getStudyPath_new(studyPath, studyPathChi,currentLoreId)[0];
 											//获取studyPath_new的第二组的数据中的第一组数据
 											nextLoreIdArray = studyPath.split(":")[1].split("\\|")[0];
