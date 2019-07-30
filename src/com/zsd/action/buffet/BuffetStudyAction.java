@@ -727,7 +727,7 @@ public class BuffetStudyAction extends DispatchAction {
 											 //当前阶段刚做过的再次诊断题列表
 											 Integer completeTimes = lastList.get(0).getCompleteTimes();
 											 //获取不是当前级别所有做正确的再次诊断题
-											 blsdm.listPretRightInfoByLogId(buffetLorestudyLogId, currentLoreId, loreTypeName, completeTimes);
+											 sdList_pre_right = blsdm.listPretRightInfoByLogId(buffetLorestudyLogId, currentLoreId, loreTypeName, completeTimes);
 										 }
 									 }
 									money *= (lqList_all.size() - sdList_pre_right.size());//一直显示全部题的金币数
@@ -737,6 +737,8 @@ public class BuffetStudyAction extends DispatchAction {
 									pathType = "study";
 									loreTypeName = "再次诊断";
 									String[] pathArray = path.split(":");
+									String[] studyPathArr = ltmj.getStudyPath(path, pathChi);
+									studyPath = studyPathArr[0];
 									String studyPath_new = CommonTools.getCurrentStudyPath_new(studyPath, currentLoreId);//获取当前知识点以后的知识点
 									if(studyPath_new.split(":").length == 1){
 										buttonValue = "本知识点学习";
@@ -1050,6 +1052,9 @@ public class BuffetStudyAction extends DispatchAction {
 						}else{//本阶段答题完成，但本知识点所有的关联性诊断未完成
 							//不会存在access=1的情况，1表示当前题全部正确，如果是全部正确的话，那么stepComplete>0
 							if(step == 3){//
+								String[] studyPathArr = ltmj.getStudyPath(path,pathChi);
+								studyPath = studyPathArr[0];
+								studyPathChi = studyPathArr[1];
 								if(access.equals(4)){//第一次进入再次诊断（列出再次诊断全部题）
 									option = 2;
 									success = 4;
@@ -1061,9 +1066,6 @@ public class BuffetStudyAction extends DispatchAction {
 									if(nextLoreIdArray.equals(String.valueOf(buffetId))){
 										nextLoreStep = "本知识点";
 									}
-									String[] studyPathArr = ltmj.getStudyPath(path,pathChi);
-									studyPath = studyPathArr[0];
-									studyPathChi = studyPathArr[1];
 								}else if(access.equals(41)){
 									option = 2;
 									success = 4;
@@ -1076,9 +1078,6 @@ public class BuffetStudyAction extends DispatchAction {
 									if(nextLoreIdArray.equals(String.valueOf(buffetId))){
 										nextLoreStep = "本知识点";
 									}
-									String[] studyPathArr = ltmj.getStudyPath(path,pathChi);
-									studyPath = studyPathArr[0];
-									studyPathChi = studyPathArr[1];
 								}else if(access.equals(3)){//之前没把再次诊断全部做对（列出做错的再次诊断题）
 									option = 2;
 									success = 4;
@@ -1134,6 +1133,9 @@ public class BuffetStudyAction extends DispatchAction {
 									option = 2;
 									nextLoreIdArray = String.valueOf(buffetId);
 									success = 6;//进入巴菲特的解析
+									String[] studyPathArr = ltmj.getStudyPath(path,pathChi);
+									studyPath = studyPathArr[0];
+									studyPathChi = studyPathArr[1];
 								}
 							}else{
 								if(blsl.getAccess().equals(2)){//本阶段题部分正确
@@ -1266,7 +1268,6 @@ public class BuffetStudyAction extends DispatchAction {
 		Integer loreId = 0;
 		Integer currentLoreId = 0;
 		String loreName = "";
-		String subDetail = "";
 		String msg = "error";
 		Map<String,Object> map = new HashMap<String,Object>();
 		BuffetStudyDetailInfo bsd = bsdm.getEntityById(bsdId);
@@ -1321,7 +1322,6 @@ public class BuffetStudyAction extends DispatchAction {
 						lqList_old.addAll(lqm.listInfoByLoreId(loreId, loreType, 0));//全部题列表
 					}
 					if(loreType.equals("针对性诊断")){//将做过的题的情况和未做过的题都列出来
-						subDetail = "针对该知识点而设定的题目共计"+lqList_old.size()+"题";
 						for(Integer i = 0 ; i < lqList_old.size() ; i++){
 							LoreQuestion lq = lqList_old.get(i);
 							Map<String,Object> map_d = new HashMap<String,Object>();
@@ -1375,7 +1375,6 @@ public class BuffetStudyAction extends DispatchAction {
 						//3:诊断题做完，继续诊断的话，之前该知识点没有做对的题（全部题-做对的题）
 						//4:诊断题没做,下次的诊断题是该知识点所有的再次诊断题
 						Integer access = blsl.getAccess();
-						subDetail = "针对该知识点而设定的题目共计"+lqList_old.size()+"题";
 						if(access == 4){
 							for(Integer i = 0 ; i < lqList_old.size() ; i++){
 								LoreQuestion lq = lqList_old.get(i);
@@ -1593,7 +1592,6 @@ public class BuffetStudyAction extends DispatchAction {
 							 }
 						 }
 					}
-					subDetail = "针对该知识点而设定的题目共计"+lqList_old.size()+"题";
 					for(Integer i = 0 ; i < lqList_old.size() ; i++){
 						LoreQuestion lq = lqList_old.get(i);
 						Integer lqId_old = lq.getId();
@@ -1654,7 +1652,7 @@ public class BuffetStudyAction extends DispatchAction {
 				map.put("lqList", list_d);
 				map.put("bsdId", bsdId);
 				map.put("loreName", loreName);
-				map.put("subDetail", subDetail);
+				map.put("subDetail", "针对该知识点而设定的题目共计"+list_d.size()+"题");
 			}
 		}
 		map.put("result", msg);
@@ -1686,7 +1684,7 @@ public class BuffetStudyAction extends DispatchAction {
 		String myAnswer = Transcode.unescape_new1("myAnswer",request);//选择的答案
 		String answerOptionArrayStr = Transcode.unescape_new1("answerOptionArray",request);//做题时的选项
 		Integer lqId = CommonTools.getFinalInteger("lqId", request);//做题的编号
-		String loreType = Transcode.unescape_new1(request.getParameter("loreType"),request);//针对性诊断，巩固训练，再次诊断
+		String loreType = "";//针对性诊断，巩固训练，再次诊断
 		Integer stuId = CommonTools.getLoginUserId(request);
 		Integer result = 0;//0为错,1为对
 		boolean flag = false;
@@ -1710,6 +1708,7 @@ public class BuffetStudyAction extends DispatchAction {
 			if(bsd != null){
 				LoreQuestion lq = lqm.getEntityByLqId(lqId);
 				if(lq != null){
+					loreType = lq.getLoreTypeName();
 					subjectId = bsd.getBuffetSendInfo().getStudyLogInfo().getSubject().getId();
 					dataBaseAnswer = lq.getQueAnswer();
 					questionType = lq.getQueType();

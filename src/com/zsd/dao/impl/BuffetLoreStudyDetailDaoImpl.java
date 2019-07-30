@@ -56,7 +56,7 @@ public class BuffetLoreStudyDetailDaoImpl implements BuffetLoreStudyDetailDao{
 			String loreTypeName, Integer completeTimes) {
 		// TODO Auto-generated method stub
 		String hql = " from BuffetLoreStudyDetailInfo as blsd where blsd.buffetLoreStudyLogInfo.id = "+studyLogId;
-		hql += " and blsd.loreQuestion.loreTypeName = '"+loreTypeName+"' and sd.result = 1 and blsd.loreInfo.id = "+loreId + " and blsd.completeTimes != "+completeTimes;
+		hql += " and blsd.loreQuestion.loreTypeName = '"+loreTypeName+"' and blsd.result = 1 and blsd.loreInfo.id = "+loreId + " and blsd.completeTimes != "+completeTimes;
 		return sess.createQuery(hql).list();
 	}
 
@@ -66,7 +66,7 @@ public class BuffetLoreStudyDetailDaoImpl implements BuffetLoreStudyDetailDao{
 			Integer completeTimes) {
 		// TODO Auto-generated method stub
 		String hql = " from BuffetLoreStudyDetailInfo as blsd where blsd.buffetLoreStudyLogInfo.id = "+studyLogId;
-		hql += " and blsd.loreInfo.id = "+loreId + " and sd.loreQuestion.loreTypeName='"+loreTypeName+"' and blsd.completeTimes = "+completeTimes;
+		hql += " and blsd.loreInfo.id = "+loreId + " and blsd.loreQuestion.loreTypeName='"+loreTypeName+"' and blsd.completeTimes = "+completeTimes;
 		return sess.createQuery(hql).list();
 	}
 
