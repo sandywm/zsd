@@ -308,6 +308,7 @@ public class ApplyClassAction extends DispatchAction {
 		Integer currUserId = CommonTools.getLoginUserId(request);
 		UserClassInfo uc = ucm.getEntityByOpt(currUserId, 4);
 		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "noInfo";
 		if(uc != null){
 			Integer owerClassId = uc.getClassInfo().getId();
 			String buildeClassDate = uc.getClassInfo().getBuildeClassDate();
@@ -358,6 +359,8 @@ public class ApplyClassAction extends DispatchAction {
 				map.put("gradeClassList", list_d);
 			}
 		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
 	

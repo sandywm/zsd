@@ -90,6 +90,9 @@ public class Constants {
 	public static final String WEB_HW_STUDY_DETAIL_INFO = "hw_study_detail_Web";
 	public static final String WEB_HW_TRACE_STUDY_LOG_INFO = "hw_trace_study_log_Web";
 	public static final String WEB_HW_TRACE_STUDY_DETAIL_INFO = "hw_trace_study_detail_Web";
+	public static final String WEB_NET_TEACHER_STUDIO = "net_teacher_studio_Web";
+	public static final String WEB_NET_TEACHER_STUDIO_NEWS = "net_teacher_studio_news_Web";
+	public static final String WEB_NET_TEACHER_STUDIO_RELATION = "net_teacher_studio_relation_Web";
 	
 	
 	//-------------------DAO-------------------------//
@@ -153,5 +156,8 @@ public class Constants {
 	public static final String DAO_HW_STUDY_DETAIL_INFO = "hw_study_detail_Dao";
 	public static final String DAO_HW_TRACE_STUDY_LOG_INFO = "hw_trace_study_log_Dao";
 	public static final String DAO_HW_TRACE_STUDY_DETAIL_INFO = "hw_trace_study_detail_Dao";
+	public static final String DAO_NET_TEACHER_STUDIO = "net_teacher_studio_Dao";
+	public static final String DAO_NET_TEACHER_STUDIO_NEWS = "net_teacher_studio_news_Dao";
+	public static final String DAO_NET_TEACHER_STUDIO_RELATION = "net_teacher_studio_relation_Dao";
 }
 

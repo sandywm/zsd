@@ -501,6 +501,7 @@ public class StudyRecordAction extends DispatchAction {
 				map_d.put("loreName", slInfo.getLoreInfo().getLoreName());//知识点名称
 				map_d.put("mainLoreId", slInfo.getLoreInfo().getMainLoreId());//引用知识点
 				map_d.put("stuId", slInfo.getUser().getId());//学生编号
+				map_d.put("stuName", slInfo.getUser().getRealName());//学生真实姓名
 				List<BuffetSendInfo> bsList = bsManager.listBsInfoByStudyLogId(stuLogId);
 				if(bsList.isEmpty() && sendFlag.equals(0)){
 					map_d.put("bs_id",0);
@@ -837,7 +838,7 @@ public class StudyRecordAction extends DispatchAction {
 				if(bqInfo!=null){
 					realAnswer = bqInfo.getAnswer();
 					//插入巴菲特学习情况（初始）
-					bsdManager.addBuffetStudyDetil(bsId, buffetId, realAnswer, "", -1, null, "","","","","","");
+					bsdManager.addBuffetStudyDetil(bsId, buffetId, realAnswer, "", -1, null, bqInfo.getA(),bqInfo.getB(),bqInfo.getC(),bqInfo.getD(),bqInfo.getE(),bqInfo.getF());
 				}
 			}
 		 status="success";	

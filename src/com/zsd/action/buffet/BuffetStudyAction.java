@@ -1061,6 +1061,9 @@ public class BuffetStudyAction extends DispatchAction {
 									if(nextLoreIdArray.equals(String.valueOf(buffetId))){
 										nextLoreStep = "本知识点";
 									}
+									String[] studyPathArr = ltmj.getStudyPath(path,pathChi);
+									studyPath = studyPathArr[0];
+									studyPathChi = studyPathArr[1];
 								}else if(access.equals(41)){
 									option = 2;
 									success = 4;
@@ -1073,6 +1076,9 @@ public class BuffetStudyAction extends DispatchAction {
 									if(nextLoreIdArray.equals(String.valueOf(buffetId))){
 										nextLoreStep = "本知识点";
 									}
+									String[] studyPathArr = ltmj.getStudyPath(path,pathChi);
+									studyPath = studyPathArr[0];
+									studyPathChi = studyPathArr[1];
 								}else if(access.equals(3)){//之前没把再次诊断全部做对（列出做错的再次诊断题）
 									option = 2;
 									success = 4;

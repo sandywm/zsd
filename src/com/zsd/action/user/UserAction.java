@@ -34,6 +34,7 @@ import com.zsd.service.GradeSubjectManager;
 import com.zsd.service.InviteCodeInfoManager;
 import com.zsd.service.NetTeacherInfoManager;
 import com.zsd.service.NetTeacherStudentManager;
+import com.zsd.service.NetTeacherStudioManager;
 import com.zsd.service.RoleInfoManager;
 import com.zsd.service.RoleUserInfoManager;
 import com.zsd.service.SchoolManager;
@@ -112,6 +113,7 @@ public class UserAction extends DispatchAction {
 		StudentParentInfoManager spManager = (StudentParentInfoManager) AppFactory.instance(null).getApp(Constants.WEB_STUDENT_PARENT_INFO);
 		NetTeacherInfoManager ntManager = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
 		GradeSubjectManager gsManager = (GradeSubjectManager) AppFactory.instance(null).getApp(Constants.WEB_GRADE_SUBJECT_INFO);
+		NetTeacherStudioManager ntStudioManager = (NetTeacherStudioManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDIO);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String userAccount =CommonTools.getFinalStr("userAccount",request);
 		String xsAccount = CommonTools.getFinalStr("xsAccount",request);
@@ -274,7 +276,9 @@ public class UserAction extends DispatchAction {
 						Integer ntRoleId = ntlist.get(0).getId();
 						ruManager.addRoleUserInfo(userId, ntRoleId, "", "", "", "", 0, 0, 0, 0);
 					}
-					ntManager.addNtInfo(userId, subId, schoolType, baseMoney, "", "", "", "", "", "", "", "", 0, 0, 0); //添加网络导师基本信息
+					Integer teaId = ntManager.addNtInfo(userId, subId, schoolType, baseMoney, "", "", "", "", "", "", "", "", 0, 0, 0); //添加网络导师基本信息
+					
+					ntStudioManager.addNTStudio(teaId, userAccount+"的工作室", InviteCode.getRandomAllStr(6), 100, "");
 					msg = "success";//注册用户成功
 				}
 			  }else{
