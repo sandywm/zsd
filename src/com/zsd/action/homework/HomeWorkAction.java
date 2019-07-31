@@ -712,14 +712,18 @@ public class HomeWorkAction extends DispatchAction {
 		SendHwManager swm = (SendHwManager) AppFactory.instance(null).getApp(Constants.WEB_SEND_HW_INFO);
 		Integer currUserId = CommonTools.getLoginUserId(request);
 		Integer roleId = CommonTools.getLoginRoleId(request);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "noInfo";
 		List<SendHwInfo> shList = swm.listPageInfoByOpt(currUserId, 0, -1, 0, "", "", false, 1, 1);
 		if(shList.size() > 0){
+			msg = "success";
 			for(Integer i = 0 ; i < shList.size() ; i++){
 				if(i.equals(2)){
 					break;
 				}
 				SendHwInfo shw = shList.get(i);
 				Map<String,Object> map_d = new HashMap<String,Object>();
+				
 			}
 		}
 		return null;
