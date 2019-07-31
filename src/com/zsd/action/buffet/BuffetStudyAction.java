@@ -1781,21 +1781,27 @@ public class BuffetStudyAction extends DispatchAction {
 							}
 						}
 						if(studyLogId > 0){//表示是继续之前的未做完的题（修改log里面的记录）
-							step = blsl.getStep();
-							if(isFinish.equals(1)){//表示本知识点还未完成
-								if(stepComplete.equals(1)){//表示该阶段已经完成
-									//将step增加1，stepComplete重新清0
-									step++;
-									stepComplete = 0;
-									oldStepMoney = 0;
+							if(blsdm.listLastInfoByLogId(studyLogId).get(0).getLoreQuestion().getId().equals(lqId)){
+								updateFlag = false;
+								msg = "reSubmit";//不能重复提交
+							}else{
+								updateFlag = true;
+								step = blsl.getStep();
+								if(isFinish.equals(1)){//表示本知识点还未完成
+									if(stepComplete.equals(1)){//表示该阶段已经完成
+										//将step增加1，stepComplete重新清0
+										step++;
+										stepComplete = 0;
+										oldStepMoney = 0;
+									}
 								}
-							}
-							if(loreType.equals("巩固训练")){
-								//巩固训练只修改access状态为31，只要不是最后的提交，下次还会继续停留在学习当前知识点的状态
-								//-1表示不修改对应值
-								updateFlag = blslm.updateStudyLog(studyLogId, 3, 0, -1, -1, 31, "");
-							}else{//
-								updateFlag = blslm.updateStudyLog(studyLogId, step, stepComplete, isFinish, oldStepMoney, 0, currTime);
+								if(loreType.equals("巩固训练")){
+									//巩固训练只修改access状态为31，只要不是最后的提交，下次还会继续停留在学习当前知识点的状态
+									//-1表示不修改对应值
+									updateFlag = blslm.updateStudyLog(studyLogId, 3, 0, -1, -1, 31, "");
+								}else{//
+									updateFlag = blslm.updateStudyLog(studyLogId, step, stepComplete, isFinish, oldStepMoney, 0, currTime);
+								}
 							}
 						}else{//表示新开的题
 							//step值为1，stepComplete为0，isFinish为1;

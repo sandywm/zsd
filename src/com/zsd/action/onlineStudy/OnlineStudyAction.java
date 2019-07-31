@@ -2320,19 +2320,19 @@ public class OnlineStudyAction extends DispatchAction {
 						StudyLogInfo sl = slm.getEntityById(studyLogId);
 						logType = sl.getLogType();
 						subjectId = sl.getSubject().getId();
-						flag = sdm.checkSuccCompleteFlag(studyLogId, lqId, currDate);
-						if(!flag){//当当前题错误或者没做时
-							//判断上次答题时间（正常答题不会出现，防止URL提交）
-							List<StudyDetailInfo> sdList = sdm.listLastInfoByLogId(studyLogId, 0, "");
-							String lastAddTime = sdList.get(0).getAddTime();
-							long diffS = CurrentTime.compareDateTime(currTime, lastAddTime);//相差毫秒数
-							if(diffS > 5000){//间隔5秒以上
-								//允许做题
-								flag = false;
-							}else{
-								flag = false;
-							}
-						}
+//						flag = sdm.checkSuccCompleteFlag(studyLogId, lqId, currDate);
+//						if(!flag){//当当前题错误或者没做时
+//							//判断上次答题时间（正常答题不会出现，防止URL提交）
+//							List<StudyDetailInfo> sdList = sdm.listLastInfoByLogId(studyLogId, 0, "");
+//							String lastAddTime = sdList.get(0).getAddTime();
+//							long diffS = CurrentTime.compareDateTime(currTime, lastAddTime);//相差毫秒数
+//							if(diffS > 5000){//间隔5秒以上
+//								//允许做题
+//								flag = false;
+//							}else{
+//								flag = false;
+//							}
+//						}
 					}else{
 						subjectId = lq.getLoreInfo().getChapter().getEducation().getGradeSubject().getSubject().getId();
 					}
@@ -2414,38 +2414,46 @@ public class OnlineStudyAction extends DispatchAction {
 						}else{//表示是继续之前的未做完的题（修改log里面的记录）
 							StudyLogInfo  sl = slm.getEntityById(studyLogId);
 							if(sl != null){
-								step = sl.getStep();
-								oldStepMoney = sl.getCurrentGold();
-								isFinish = sl.getIsFinish();
-								access = sl.getAccess();
-								if(result == 1){
-									oldStepMoney++;
-								}
-								stepComplete = sl.getStepComplete();
-								if(isFinish == 1){//表示本知识点还未完成
-									if(stepComplete == 1){//表示该阶段已经完成
-										//将step增加1，stepComplete重新清0
-										step++;
-										stepComplete = 0;
-										oldStepMoney = 0;
-									}else{//当前级关联知识点已经完成access的值为1
-										if(access == 1){//表示该阶段知识点已经完成，需要进入下一级关联知识点学习
-											
+								//获取该记录里面最后一道题
+								if(sdm.listLastInfoByLogId(studyLogId, 0, "").get(0).getLoreQuestion().getId().equals(lqId)){
+									updateFlag = false;
+//									System.out.println("不能重复提交");
+									msg = "reSubmit";//不能重复提交
+								}else{
+									updateFlag = true;
+									step = sl.getStep();
+									oldStepMoney = sl.getCurrentGold();
+									isFinish = sl.getIsFinish();
+									access = sl.getAccess();
+									if(result == 1){
+										oldStepMoney++;
+									}
+									stepComplete = sl.getStepComplete();
+									if(isFinish == 1){//表示本知识点还未完成
+										if(stepComplete == 1){//表示该阶段已经完成
+											//将step增加1，stepComplete重新清0
+											step++;
+											stepComplete = 0;
+											oldStepMoney = 0;
+										}else{//当前级关联知识点已经完成access的值为1
+											if(access == 1){//表示该阶段知识点已经完成，需要进入下一级关联知识点学习
+												
+											}
 										}
 									}
+									if(loreType.equals("巩固训练")){//巩固训练不检查
+										//巩固训练只修改access状态为31，只要不是最后的提交，下次还会继续停留在学习当前知识点的状态
+										//当currentLoreId和知识点的loreId(本知识点)
+										if(currentLoreId.equals(loreId)){
+											//表示是本知识点的学习（巩固训练）
+											updateFlag = slm.updateStudyLog(studyLogId, 4, 0, -1, -1, 31, "");
+										}else{
+											updateFlag = slm.updateStudyLog(studyLogId, 3, 0, -1, -1, 31, "");
+										}
+									}else{
+										updateFlag = slm.updateStudyLog(studyLogId, step, stepComplete, isFinish, oldStepMoney, 0, currTime);
+									}
 								}
-							}
-							if(loreType.equals("巩固训练")){//巩固训练不检查
-								//巩固训练只修改access状态为31，只要不是最后的提交，下次还会继续停留在学习当前知识点的状态
-								//当currentLoreId和知识点的loreId(本知识点)
-								if(currentLoreId.equals(loreId)){
-									//表示是本知识点的学习（巩固训练）
-									updateFlag = slm.updateStudyLog(studyLogId, 4, 0, -1, -1, 31, "");
-								}else{
-									updateFlag = slm.updateStudyLog(studyLogId, 3, 0, -1, -1, 31, "");
-								}
-							}else{
-								updateFlag = slm.updateStudyLog(studyLogId, step, stepComplete, isFinish, oldStepMoney, 0, currTime);
 							}
 						}
 						if(studyLogId > 0 && updateFlag == true){
