@@ -723,7 +723,16 @@ public class HomeWorkAction extends DispatchAction {
 				}
 				SendHwInfo shw = shList.get(i);
 				Map<String,Object> map_d = new HashMap<String,Object>();
-				
+				map_d.put("sendHwId", shw.getId());
+				map_d.put("classId", shw.getClassInfo().getId());
+				map_d.put("classInfo", shw.getClassInfo());
+				map_d.put("endDate", shw.getEndDate());
+				map_d.put("hwTitle", shw.getSendDate().substring(0, 10)+"家庭作业");
+				map_d.put("loreId", shw.getLoreInfo().getId());
+				map_d.put("loreInfo", shw.getHwTitle());//第一单元:数据的收集和整理
+				map_d.put("", shw);
+				map_d.put("", shw);
+				map_d.put("", shw);
 			}
 		}
 		return null;
