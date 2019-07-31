@@ -141,4 +141,20 @@ public class ApplyClassManagerImpl implements ApplyClassManager{
 		}
 	}
 
+	@Override
+	public List<ApplyClassInfo> listAllUnCheckApplyInfo() throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			acDao = (ApplyClassDao) DaoFactory.instance(null).getDao(Constants.DAO_APPLY_CLASS_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return acDao.findAllUnCheckApplyInfo(sess);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new WEBException("获取平台所有未处理的申请列表时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
 }

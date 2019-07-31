@@ -24,6 +24,7 @@ import com.zsd.module.BuffetTypeInfo;
 import com.zsd.module.HwAbilityRelationInfo;
 import com.zsd.module.HwMindRelationInfo;
 import com.zsd.module.HwQueInfo;
+import com.zsd.module.SendHwInfo;
 import com.zsd.module.TeaQueInfo;
 import com.zsd.page.PageConst;
 import com.zsd.service.BuffetAllManager;
@@ -31,8 +32,10 @@ import com.zsd.service.HwAbilityRelationManager;
 import com.zsd.service.HwMindRelationManager;
 import com.zsd.service.HwQueManager;
 import com.zsd.service.LoreInfoManager;
+import com.zsd.service.SendHwManager;
 import com.zsd.service.TeaQueManager;
 import com.zsd.tools.CommonTools;
+import com.zsd.tools.CurrentTime;
 import com.zsd.util.Constants;
 
 /** 
@@ -654,6 +657,65 @@ public class HomeWorkAction extends DispatchAction {
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 导向老师的家庭作业页面
+	 * @author wm
+	 * @date 2019-7-31 上午10:19:51
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward goTeaHwPage(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		return mapping.findForward("teaHwPage");
+	}
+	
+	/**
+	 * 导向学生家庭作业页面
+	 * @author wm
+	 * @date 2019-7-31 上午10:21:49
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward goStuHwPage(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		return mapping.findForward("stuHwPage");
+	}
+	
+	/**
+	 * 获取家庭作业发送列表（老师）
+	 * @author wm
+	 * @date 2019-7-31 上午10:26:35
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getSendHwData(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		TeaQueManager tqm = (TeaQueManager) AppFactory.instance(null).getApp(Constants.WEB_TEA_QUE_INFO);
+		SendHwManager swm = (SendHwManager) AppFactory.instance(null).getApp(Constants.WEB_SEND_HW_INFO);
+		Integer currUserId = CommonTools.getLoginUserId(request);
+		Integer roleId = CommonTools.getLoginRoleId(request);
+		List<SendHwInfo> shList = swm.listPageInfoByOpt(currUserId, 0, -1, 0, "", "", false, 1, 1);
+		if(shList.size() > 0){
+			SendHwInfo sendHw_1 = shList.get(0);
+		}
 		return null;
 	}
 }

@@ -86,4 +86,11 @@ public class ApplyClassDaoImpl implements ApplyClassDao{
 		return sess.createQuery(hql).list();
 	}
 
+	@Override
+	public List<ApplyClassInfo> findAllUnCheckApplyInfo(Session sess) {
+		// TODO Auto-generated method stub
+		String hql = " from ApplyClassInfo as ac where ac.checkStatus = 0";
+		return sess.createQuery(hql).list();
+	}
+
 }

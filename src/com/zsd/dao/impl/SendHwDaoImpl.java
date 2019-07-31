@@ -39,7 +39,10 @@ public class SendHwDaoImpl implements SendHwDao{
 			Integer classId, Integer hwType, Integer inUse, String sDate, String eDate,boolean pageFlag,
 			Integer pageNo, Integer pageSize) {
 		// TODO Auto-generated method stub
-		String hql = " from SendHwInfo as shw where substring(shw.sendDate,1,10) >= '"+ sDate + "' and substring(shw.sendDate,1,10) >= '"+ eDate + "'";
+		String hql = " from SendHwInfo as shw where 1=1";
+		if(!sDate.equals("") && !eDate.equals("")){
+			hql += " and substring(shw.sendDate,1,10) >= '"+ sDate + "' and substring(shw.sendDate,1,10) >= '"+ eDate + "'";
+		}
 		if(sendUserId > 0){
 			hql += " and shw.user.id = "+sendUserId;
 		}
@@ -52,6 +55,7 @@ public class SendHwDaoImpl implements SendHwDao{
 		if(inUse >= 0){
 			hql += " and shw.inUse = "+inUse;
 		}
+		hql += " order by shw.sendDate desc";
 		if(pageFlag){
 			int offset = (pageNo - 1) * pageSize;
 			if (offset < 0) {
@@ -66,7 +70,10 @@ public class SendHwDaoImpl implements SendHwDao{
 	public Integer getCountByOpt(Session sess, Integer sendUserId,
 			Integer classId, Integer hwType ,Integer inUse, String sDate, String eDate) {
 		// TODO Auto-generated method stub
-		String hql = "select count(shw.id) from SendHwInfo as shw where substring(shw.sendDate,1,10) >= '"+ sDate + "' and substring(shw.sendDate,1,10) >= '"+ eDate + "'";
+		String hql = "select count(shw.id) from SendHwInfo as shw where 1=1";
+		if(!sDate.equals("") && !eDate.equals("")){
+			hql += " and substring(shw.sendDate,1,10) >= '"+ sDate + "' and substring(shw.sendDate,1,10) >= '"+ eDate + "'";
+		}
 		if(sendUserId > 0){
 			hql += " and shw.user.id = "+sendUserId;
 		}

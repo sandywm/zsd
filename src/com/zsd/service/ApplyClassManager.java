@@ -81,4 +81,13 @@ public interface ApplyClassManager {
 	 * @throws WEBException
 	 */
 	ApplyClassInfo getEntityById(Integer id) throws WEBException;
+	
+	/**
+	 * 获取平台所有未处理的申请列表
+	 * @author wm
+	 * @date 2019-7-31 上午09:56:55
+	 * @return
+	 * @throws WEBException
+	 */
+	List<ApplyClassInfo> listAllUnCheckApplyInfo() throws WEBException;
 }

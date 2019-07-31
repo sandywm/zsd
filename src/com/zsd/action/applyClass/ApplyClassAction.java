@@ -288,6 +288,34 @@ public class ApplyClassAction extends DispatchAction {
 		return null;
 	}
 	
+	/**
+	 * 自动处理每天没被处理的申请（每晚12:00:01）
+	 * @author wm
+	 * @date 2019-7-31 上午09:53:53
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward autoDealApplyClass(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		ApplyClassManager acm = (ApplyClassManager) AppFactory.instance(null).getApp(Constants.WEB_APPLY_CLASS_INFO);
+		List<ApplyClassInfo> acList = acm.listAllUnCheckApplyInfo();
+		String msg = "error";
+		Map<String,String> map = new HashMap<String,String>();
+		if(acList.size() > 0){
+			for(ApplyClassInfo ac : acList){
+				Integer acId = ac.getId();
+				acm.setCancleInfo(acId, 2, "系统自动拒绝");
+			}
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
 	
 	/**
 	 * 获取指定学校年级下的有效班级列表（已被创建的班级）
@@ -379,19 +407,25 @@ public class ApplyClassAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
 		ApplyClassManager acm = (ApplyClassManager) AppFactory.instance(null).getApp(Constants.WEB_APPLY_CLASS_INFO);
-		UserClassInfoManager ucm = (UserClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
 		ClassInfoManager cm = (ClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_CLASS_INFO);
 		Integer applyOpt = CommonTools.getFinalInteger("applyOpt", request);//1：临时，2：永久
 		Integer currUserId = CommonTools.getLoginUserId(request);
 		Integer classId = CommonTools.getFinalInteger("classId", request);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "error";
 		if(classId > 0){
 			List<ClassInfo> cList = cm.listClassInfoById(classId);
 			if(cList.size() > 0){
 				String buildeClassDate = cList.get(0).getBuildeClassDate();
 				String classDetail = Convert.dateConvertGradeName(buildeClassDate) + cList.get(0).getClassName();//当前所在的年级班级
-				acm.addApplyClassInfo(currUserId, classId, classDetail, 0, applyOpt);
+				Integer acId = acm.addApplyClassInfo(currUserId, classId, classDetail, 0, applyOpt);
+				if(acId > 0){
+					msg = "success";
+				}
 			}
 		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
 }

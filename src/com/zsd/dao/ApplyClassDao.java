@@ -74,4 +74,13 @@ public interface ApplyClassDao {
 	 * @return
 	 */
 	List<ApplyClassInfo> findMyUnCheckApplyInfo(Session sess,Integer toUserId,Integer classId);
+	
+	/**
+	 * 获取平台所有未处理的申请列表
+	 * @author wm
+	 * @date 2019-7-31 上午09:55:53
+	 * @param sess
+	 * @return
+	 */
+	List<ApplyClassInfo> findAllUnCheckApplyInfo(Session sess);
 }
