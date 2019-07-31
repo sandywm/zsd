@@ -714,7 +714,13 @@ public class HomeWorkAction extends DispatchAction {
 		Integer roleId = CommonTools.getLoginRoleId(request);
 		List<SendHwInfo> shList = swm.listPageInfoByOpt(currUserId, 0, -1, 0, "", "", false, 1, 1);
 		if(shList.size() > 0){
-			SendHwInfo sendHw_1 = shList.get(0);
+			for(Integer i = 0 ; i < shList.size() ; i++){
+				if(i.equals(2)){
+					break;
+				}
+				SendHwInfo shw = shList.get(i);
+				Map<String,Object> map_d = new HashMap<String,Object>();
+			}
 		}
 		return null;
 	}

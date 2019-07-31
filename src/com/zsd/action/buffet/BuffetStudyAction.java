@@ -260,83 +260,87 @@ public class BuffetStudyAction extends DispatchAction {
 			msg = "success";
 			BuffetStudyDetailInfo bsd = bsdm.getEntityById(bsdId);
 			if(bsd != null){
-				Integer bsId = bsd.getBuffetSendInfo().getId();
-				BuffetQueInfo bq = bsd.getBuffetQueInfo();
-				String buffetType = bq.getBuffetTypeInfo().getTypes();
-				String realAnswer = bq.getAnswer();
-				if(buffetType.equals("问答题") || buffetType.equals("填空题")){
-					if(myAnswer.indexOf("正确") >= 0){
-						result = 1;
+				if(bsd.getResult().equals(-1)){
+					Integer bsId = bsd.getBuffetSendInfo().getId();
+					BuffetQueInfo bq = bsd.getBuffetQueInfo();
+					String buffetType = bq.getBuffetTypeInfo().getTypes();
+					String realAnswer = bq.getAnswer();
+					if(buffetType.equals("问答题") || buffetType.equals("填空题")){
+						if(myAnswer.indexOf("正确") >= 0){
+							result = 1;
+						}else{
+							result = 0;
+						}
+						dataBaseAnswerChar = answerOptionArrayStr;
 					}else{
-						result = 0;
+						JSONArray answerOptionArray = JSON.parseArray(answerOptionArrayStr);
+						String[] dataBaseAnswerArray = realAnswer.split(",");
+						for(int j = 0; j < dataBaseAnswerArray.length; j++){
+							for(int i = 0; i < answerOptionArray.size(); i++){
+								String answerOption = answerOptionArray.get(i).toString();
+								if(answerOption.indexOf("Module/commonJs/ueditor/jsp/lore") >= 0){
+									//表示答案选项是图片--截取前面的路径
+									answerOption = answerOption.replace("Module/commonJs/ueditor/jsp/lore/", "");
+								}
+								if(dataBaseAnswerArray[j].equals(answerOption)){
+									dataBaseAnswerChar += Convert.NumberConvertBigChar(i)+",";
+									break;
+								}
+							}
+						}
+						dataBaseAnswerChar = dataBaseAnswerChar.substring(0, dataBaseAnswerChar.length() - 1);
+						if(buffetType.equals("多选题")){
+							flag = false;//顺序可以不同
+						}else{//不是多选题答案需要完全匹配(填空选择题、单选题，判断题)
+							flag = true;
+						}
+						if(flag){//完全匹配
+							if(dataBaseAnswerChar.equals(myAnswer)){
+								result = 1;
+							}else{
+								result = 0;
+							}
+						}else{//答案顺序可以不同
+							String[] myAnserArray = myAnswer.split(",");
+							String[] realAnswerArray = dataBaseAnswerChar.split(",");
+							String newMyAnswer = CommonTools.arraySort(myAnserArray);//排序后我的答案
+							String newRealAnswer = CommonTools.arraySort(realAnswerArray);//排序后后台正确答案
+							if(newMyAnswer.equals(newRealAnswer)){
+								result = 1;
+							}else{
+								result = 0;
+							}
+						}
+						for(int i = 0 ; i < answerOptionArray.size() ; i++){
+							answerOptionStr[i] = answerOptionArray.get(i).toString();
+						}
 					}
-					dataBaseAnswerChar = answerOptionArrayStr;
+					//修改自助餐答题情况
+					boolean upFlag = bsdm.updateBuffetStudyDetailById(bsdId, myAnswer, result, CurrentTime.getCurrentTime(), 
+							answerOptionStr[0], answerOptionStr[1], answerOptionStr[2],
+					        answerOptionStr[3], answerOptionStr[4], answerOptionStr[5]);
+					if(bsd.getResult().equals(0)){//第一次做巴菲特题时才修改状态
+						bsm.updateBuffetSend(bsId, 1, 0);
+					}
+					Integer coin = 0;//自助餐不增加金币数
+					Integer experience = Constants.EXPERIENCE;
+					if(upFlag){
+						if(result.equals(1)){
+							experience += Constants.EXPERIENCE;
+							//当巴菲特题直接正确时--需要修改buffetStudyDetail中的traceCompleteFlag和currCompleteFlag的值为1
+							bsdm.updateStatusById(bsdId, 1, 1);
+							//修改自助餐发送记录中的完成次数
+							bsm.updateBuffetSend(bsId, 0, 1);
+						}
+						um.updateUser(userId, coin, experience, 0, 0);
+					}
+					map.put("studyResult", result);
 				}else{
-					JSONArray answerOptionArray = JSON.parseArray(answerOptionArrayStr);
-					String[] dataBaseAnswerArray = realAnswer.split(",");
-					for(int j = 0; j < dataBaseAnswerArray.length; j++){
-						for(int i = 0; i < answerOptionArray.size(); i++){
-							String answerOption = answerOptionArray.get(i).toString();
-							if(answerOption.indexOf("Module/commonJs/ueditor/jsp/lore") >= 0){
-								//表示答案选项是图片--截取前面的路径
-								answerOption = answerOption.replace("Module/commonJs/ueditor/jsp/lore/", "");
-							}
-							if(dataBaseAnswerArray[j].equals(answerOption)){
-								dataBaseAnswerChar += Convert.NumberConvertBigChar(i)+",";
-								break;
-							}
-						}
-					}
-					dataBaseAnswerChar = dataBaseAnswerChar.substring(0, dataBaseAnswerChar.length() - 1);
-					if(buffetType.equals("多选题")){
-						flag = false;//顺序可以不同
-					}else{//不是多选题答案需要完全匹配(填空选择题、单选题，判断题)
-						flag = true;
-					}
-					if(flag){//完全匹配
-						if(dataBaseAnswerChar.equals(myAnswer)){
-							result = 1;
-						}else{
-							result = 0;
-						}
-					}else{//答案顺序可以不同
-						String[] myAnserArray = myAnswer.split(",");
-						String[] realAnswerArray = dataBaseAnswerChar.split(",");
-						String newMyAnswer = CommonTools.arraySort(myAnserArray);//排序后我的答案
-						String newRealAnswer = CommonTools.arraySort(realAnswerArray);//排序后后台正确答案
-						if(newMyAnswer.equals(newRealAnswer)){
-							result = 1;
-						}else{
-							result = 0;
-						}
-					}
-					for(int i = 0 ; i < answerOptionArray.size() ; i++){
-						answerOptionStr[i] = answerOptionArray.get(i).toString();
-					}
-				}
-				//修改自助餐答题情况
-				boolean upFlag = bsdm.updateBuffetStudyDetailById(bsdId, myAnswer, result, CurrentTime.getCurrentTime(), 
-						answerOptionStr[0], answerOptionStr[1], answerOptionStr[2],
-				        answerOptionStr[3], answerOptionStr[4], answerOptionStr[5]);
-				if(bsd.getResult().equals(0)){//第一次做巴菲特题时才修改状态
-					bsm.updateBuffetSend(bsId, 1, 0);
-				}
-				Integer coin = 0;//自助餐不增加金币数
-				Integer experience = Constants.EXPERIENCE;
-				if(upFlag){
-					if(result.equals(1)){
-						experience += Constants.EXPERIENCE;
-						//当巴菲特题直接正确时--需要修改buffetStudyDetail中的traceCompleteFlag和currCompleteFlag的值为1
-						bsdm.updateStatusById(bsdId, 1, 1);
-						//修改自助餐发送记录中的完成次数
-						bsm.updateBuffetSend(bsId, 0, 1);
-					}
-					um.updateUser(userId, coin, experience, 0, 0);
+					msg = "reSubmit";//不能重复提交
 				}
 			}
 		}
 		map.put("result", msg);
-		map.put("studyResult", result);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
