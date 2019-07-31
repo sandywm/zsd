@@ -380,11 +380,18 @@ public class ApplyClassAction extends DispatchAction {
 		// TODO Auto-generated method stub
 		ApplyClassManager acm = (ApplyClassManager) AppFactory.instance(null).getApp(Constants.WEB_APPLY_CLASS_INFO);
 		UserClassInfoManager ucm = (UserClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
+		ClassInfoManager cm = (ClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_CLASS_INFO);
 		Integer applyOpt = CommonTools.getFinalInteger("applyOpt", request);//1：临时，2：永久
 		Integer currUserId = CommonTools.getLoginUserId(request);
 		Integer classId = CommonTools.getFinalInteger("classId", request);
-		
-		acm.addApplyClassInfo(currUserId, classId, "", 0, applyOpt);
+		if(classId > 0){
+			List<ClassInfo> cList = cm.listClassInfoById(classId);
+			if(cList.size() > 0){
+				String buildeClassDate = cList.get(0).getBuildeClassDate();
+				String classDetail = Convert.dateConvertGradeName(buildeClassDate) + cList.get(0).getClassName();//当前所在的年级班级
+				acm.addApplyClassInfo(currUserId, classId, classDetail, 0, applyOpt);
+			}
+		}
 		return null;
 	}
 }

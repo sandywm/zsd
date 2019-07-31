@@ -89,6 +89,7 @@ public class BuffetStudyAction extends DispatchAction {
 		Integer comStatus = CommonTools.getFinalInteger("comStatus", request);//完成状态，默认未全部0
 		String sDate = CommonTools.getFinalStr("sDate", request);
 		String eDate = CommonTools.getFinalStr("eDate", request);
+		String opt = CommonTools.getFinalStr("opt", request);//默认为正常滑动，其他的时候为做完题后返回
 		Integer pageNo = CommonTools.getFinalInteger("pageNo", request);//默认为1
 		Integer pageSize = CommonTools.getFinalInteger("pageSize", request);//默认为10
 		if(pageSize <= 0){
@@ -107,6 +108,10 @@ public class BuffetStudyAction extends DispatchAction {
 		String msg = "error";
 		Map<String,Object> map = new HashMap<String,Object>();
 		if(userId > 0){
+			if(!opt.equals("")){//做完题后自动返回
+				pageSize = pageNo * pageSize;
+				pageNo = 1;
+			}
 			List<BuffetSendInfo> bsList = bsm.listPageInfoByOption(userId, subId, comStatus, sDate, eDate, pageNo, pageSize);
 //			Integer count = bsm.listBsInfoByOption(userId, subId, comStatus, sDate, eDate).size();
 			if(bsList.size() > 0){
