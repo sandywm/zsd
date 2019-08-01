@@ -24,6 +24,7 @@ import com.zsd.module.BuffetTypeInfo;
 import com.zsd.module.HwAbilityRelationInfo;
 import com.zsd.module.HwMindRelationInfo;
 import com.zsd.module.HwQueInfo;
+import com.zsd.module.HwStudyTjInfo;
 import com.zsd.module.SendHwInfo;
 import com.zsd.module.TeaQueInfo;
 import com.zsd.page.PageConst;
@@ -31,6 +32,7 @@ import com.zsd.service.BuffetAllManager;
 import com.zsd.service.HwAbilityRelationManager;
 import com.zsd.service.HwMindRelationManager;
 import com.zsd.service.HwQueManager;
+import com.zsd.service.HwStudyTjManager;
 import com.zsd.service.LoreInfoManager;
 import com.zsd.service.SendHwManager;
 import com.zsd.service.TeaQueManager;
@@ -708,19 +710,18 @@ public class HomeWorkAction extends DispatchAction {
 	public ActionForward getSendHwData(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
-		TeaQueManager tqm = (TeaQueManager) AppFactory.instance(null).getApp(Constants.WEB_TEA_QUE_INFO);
 		SendHwManager swm = (SendHwManager) AppFactory.instance(null).getApp(Constants.WEB_SEND_HW_INFO);
+		HwStudyTjManager tjm = (HwStudyTjManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_TJ_INFO);
 		Integer currUserId = CommonTools.getLoginUserId(request);
 		Integer roleId = CommonTools.getLoginRoleId(request);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "noInfo";
-		List<SendHwInfo> shList = swm.listPageInfoByOpt(currUserId, 0, -1, 0, "", "", false, 1, 1);
+		String currentTime = CurrentTime.getStringDate();
+		List<SendHwInfo> shList = swm.listPageInfoByOpt(currUserId, 0, -1, 0, currentTime, currentTime, false, 1, 1);
 		if(shList.size() > 0){
 			msg = "success";
+			List<Object> list_d = new ArrayList<Object>();
 			for(Integer i = 0 ; i < shList.size() ; i++){
-				if(i.equals(2)){
-					break;
-				}
 				SendHwInfo shw = shList.get(i);
 				Map<String,Object> map_d = new HashMap<String,Object>();
 				map_d.put("sendHwId", shw.getId());
@@ -730,11 +731,31 @@ public class HomeWorkAction extends DispatchAction {
 				map_d.put("hwTitle", shw.getSendDate().substring(0, 10)+"家庭作业");
 				map_d.put("loreId", shw.getLoreInfo().getId());
 				map_d.put("loreInfo", shw.getHwTitle());//第一单元:数据的收集和整理
-				map_d.put("", shw);
-				map_d.put("", shw);
-				map_d.put("", shw);
+				List<HwStudyTjInfo> tjList = tjm.listInfoByOpt(shw.getId(), 0, -1, false, 1, 1);
+				Integer zsComNum = 0;//按时完成
+				Integer bzComNum = 0;//补做完成
+				Integer unComNum = 0;//未
+				if(tjList.size() > 0){
+					for(HwStudyTjInfo tj : tjList){
+						Integer comStatus = tj.getComStatus();
+						if(comStatus.equals(0)){
+							unComNum++;
+						}else if(comStatus.equals(1)){
+							zsComNum++;
+						}else if(comStatus.equals(2)){
+							bzComNum++;
+						}
+					}
+				}
+				map_d.put("zsComNum", bzComNum);
+				map_d.put("bzComNum", bzComNum);
+				map_d.put("unComNum", unComNum);
+				list_d.add(map_d);
 			}
+			map.put("sendHwList", list_d);
 		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
 }

@@ -495,22 +495,20 @@ public class BuffetStudyAction extends DispatchAction {
 					Integer allNumber = bs.getSendNumber();//已发送的自助餐题量
 					Integer comNumber = bs.getComNumber();//已完成的自助餐题量
 					Integer isFinish = 0;
-					if(bs.getStudyResult().equals(2)){//发布自助餐全部完成时不能修改
+					Integer result = bs.getStudyResult();//自助餐完成情况--1：未完成，2：已完成
+					if(result.equals(2)){//发布自助餐全部完成时不能修改
 						flag = true;//不修改数据库直接返回
 					}else{
-						Integer result = bs.getStudyResult();//自助餐完成情况--0:错误，1：正确
 						if(bsd.getCurrComStatus().equals(0)){//溯源回来修改数据
 							flag = bsdm.updateStatusById(bsdId, 1, 1);//自助餐都完成了，肯定溯源也完成
 							if(flag){
 								Integer newComNumber = 0;
-								if(result.equals(0)){//溯源回来修改
-									//2:答题错误，进入溯源，溯源完成后，点击完成，这时completeNumber没+1，所以要执行增加
-									newComNumber = 1;
-									if(allNumber.equals(comNumber + 1)){//最后一题
-										isFinish = 2;
-									}
-									flag = bsm.updateBuffetSend(bsId, isFinish, newComNumber);//溯源回来加1
+								//2:答题错误，进入溯源，溯源完成后，点击完成，这时completeNumber没+1，所以要执行增加
+								newComNumber = 1;
+								if(allNumber.equals(comNumber + 1)){//最后一题
+									isFinish = 2;
 								}
+								flag = bsm.updateBuffetSend(bsId, isFinish, newComNumber);//溯源回来加1
 							}
 						}else{
 							//一次性做正确时在insert方法中就修改了完成状态和溯源状态并修改了完成数，此时只需要修改结果状态
