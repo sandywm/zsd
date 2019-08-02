@@ -717,22 +717,30 @@ public class HomeWorkAction extends DispatchAction {
 		HwStudyTjManager tjm = (HwStudyTjManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_TJ_INFO);
 		Integer currUserId = CommonTools.getLoginUserId(request);
 		Integer classId = CommonTools.getFinalInteger("classId", request);
+		Integer opt = CommonTools.getFinalInteger("opt", request);//0:首页，1：作业记录页面
 		Integer roleId = CommonTools.getLoginRoleId(request);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "noInfo";
-		String currentTime = CurrentTime.getStringDate();
+		String sDate = CommonTools.getFinalStr("sDate", request);
+		String eDate = CommonTools.getFinalStr("eDate", request);
 		boolean pageFlag = false;
 		Integer pageNo = 1;
 		Integer pageSize = 10;
-		if(classId > 0){
+		if(opt.equals(1)){
 			pageFlag = true;
 			pageNo = CommonTools.getFinalInteger("pageNo", request);
 			pageSize = CommonTools.getFinalInteger("pageSize", request);
 			if(pageSize <= 0){
 				pageSize = 10;
 			}
+			if(sDate.equals("") && eDate.equals("")){
+				sDate = CurrentTime.getStringDate();
+				eDate = CurrentTime.getFinalDate(2);
+			}
+		}else{
+			sDate = eDate = CurrentTime.getStringDate();
 		}
-		List<SendHwInfo> shList = swm.listPageInfoByOpt(currUserId, classId, -1, 0, currentTime, currentTime, pageFlag, pageNo, pageSize);
+		List<SendHwInfo> shList = swm.listPageInfoByOpt(currUserId, classId, -1, 0, sDate, eDate, pageFlag, pageNo, pageSize);
 		if(shList.size() > 0){
 			msg = "success";
 			List<Object> list_d = new ArrayList<Object>();

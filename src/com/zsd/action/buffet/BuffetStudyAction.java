@@ -1971,18 +1971,21 @@ public class BuffetStudyAction extends DispatchAction {
 	public ActionForward checkAllBuffetCompleteFlag(ActionMapping mapping ,ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		BuffetStudyDetailManager bsdm = (BuffetStudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_STUDY_DETAIL_INFO);
-		Integer buffetSendId = CommonTools.getFinalInteger("bsId", request);
+		Integer bsdId = CommonTools.getFinalInteger("bsdId", request);
 		boolean flag = true;
 		Map<String,Object> map = new HashMap<String,Object>();
-		List<BuffetStudyDetailInfo> bsdList = bsdm.listInfoByBsId(buffetSendId);
-		if(bsdList.size() > 0){
-			for(BuffetStudyDetailInfo bsd : bsdList){
-				Integer traceFlag = bsd.getTraceComStatus();
-				if(traceFlag.equals(1)){//该巴菲特题已经完成
-					flag = false;
-				}else{//被人恶意提交
-					flag = true;
-					break;
+		BuffetStudyDetailInfo bsd_curr = bsdm.getEntityById(bsdId);
+		if(bsd_curr != null){
+			List<BuffetStudyDetailInfo> bsdList = bsdm.listInfoByBsId(bsd_curr.getBuffetSendInfo().getId());
+			if(bsdList.size() > 0){
+				for(BuffetStudyDetailInfo bsd : bsdList){
+					Integer traceFlag = bsd.getTraceComStatus();
+					if(traceFlag.equals(1)){//该巴菲特题已经完成
+						flag = false;
+					}else{//被人恶意提交
+						flag = true;
+						break;
+					}
 				}
 			}
 		}
