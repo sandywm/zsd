@@ -96,4 +96,13 @@ public class UserClassInfoDaoImpl implements UserClassInfoDao {
 		return null;
 	}
 
+	@Override
+	public List<UserClassInfo> findTeaInfoByOpt(Session sess, Integer userId,
+			Integer roleId) {
+		// TODO Auto-generated method stub
+		String hql = " from UserClassInfo as uci whereuci.user.id = " +userId+ " and uci.roleInfo.id = "+roleId;
+		hql += " or uci.appUserId = "+userId;
+		return sess.createQuery(hql).list();
+	}
+
 }

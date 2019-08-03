@@ -109,10 +109,19 @@ public class UserClassInfoManagerImpl implements UserClassInfoManager {
 		}
 	}
 	@Override
-	public List<UserClassInfo> listTeaInfoByOpt(Integer classId, Integer roleId)
+	public List<UserClassInfo> listTeaInfoByOpt(Integer userId, Integer roleId)
 			throws WEBException {
 		// TODO Auto-generated method stub
-		return null;
+		try {
+			 ucDao = (UserClassInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_USER_CLASS_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return ucDao.findTeaInfoByOpt(sess, userId, roleId);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("获取指定老师的班级列表(包括临时、永久接班的老师)信息时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
 	}
 	@Override
 	public boolean updateInfoByOpt(Integer id, Integer userId,

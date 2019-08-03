@@ -118,4 +118,15 @@ public interface UserClassInfoDao {
 	 * @return
 	 */
 	UserClassInfo getEntityByOpt(Session sess,Integer userId,Integer classId,Integer roleId);
+	
+	/**
+	 * 获取班内老师的班级列表(包括临时接班的老师)
+	 * @author wm
+	 * @date 2019-8-3 下午05:01:50
+	 * @param sess
+	 * @param userId 老师编号
+	 * @param roleId 老师角色
+	 * @return
+	 */
+	List<UserClassInfo> findTeaInfoByOpt(Session sess,Integer userId,Integer roleId);
 }

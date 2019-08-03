@@ -5,6 +5,8 @@
 package com.zsd.action.homework;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,12 +23,17 @@ import com.zsd.factory.AppFactory;
 import com.zsd.module.BuffetAbilityTypeInfo;
 import com.zsd.module.BuffetMindTypeInfo;
 import com.zsd.module.BuffetTypeInfo;
+import com.zsd.module.ClassInfo;
 import com.zsd.module.HwAbilityRelationInfo;
 import com.zsd.module.HwMindRelationInfo;
 import com.zsd.module.HwQueInfo;
+import com.zsd.module.HwStudyDetailInfo;
 import com.zsd.module.HwStudyTjInfo;
+import com.zsd.module.LoreQuestion;
 import com.zsd.module.SendHwInfo;
 import com.zsd.module.TeaQueInfo;
+import com.zsd.module.User;
+import com.zsd.module.UserClassInfo;
 import com.zsd.page.PageConst;
 import com.zsd.service.BuffetAllManager;
 import com.zsd.service.HwAbilityRelationManager;
@@ -38,6 +45,7 @@ import com.zsd.service.LoreInfoManager;
 import com.zsd.service.LoreQuestionManager;
 import com.zsd.service.SendHwManager;
 import com.zsd.service.TeaQueManager;
+import com.zsd.service.UserClassInfoManager;
 import com.zsd.tools.CommonTools;
 import com.zsd.tools.Convert;
 import com.zsd.tools.CurrentTime;
@@ -51,6 +59,22 @@ import com.zsd.util.Constants;
  * @struts.action validate="true"
  */
 public class HomeWorkAction extends DispatchAction {
+	
+	/**
+	 * 班级列表按照降序排列（九年级1班）
+	 * @author Administrator
+	 * @createDate 2019-8-3
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private class SortCName implements Comparator {
+		@Override
+	    public int compare(Object obj0, Object obj1) {
+	      Map<String, String> map0 = (Map) obj0;
+	      Map<String, String> map1 = (Map) obj1;
+	      int flag = map0.get("cName").toString().compareTo(map1.get("cName").toString());
+	      return -flag; // 不取反，则按正序排列
+	    }
+	 }
 	
 	/**
 	 * 导向系统家庭作业题库页面
@@ -699,6 +723,92 @@ public class HomeWorkAction extends DispatchAction {
 		return mapping.findForward("stuHwPage");
 	}
 	
+	
+	/**
+	 * 获取老师自己所有的班级列表(包括临时接管)--作业记录时用
+	 * @author wm
+	 * @date 2019-8-3 下午04:56:49
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unchecked")
+	public ActionForward getMyClassData(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		UserClassInfoManager ucm = (UserClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
+		Integer currUserId = CommonTools.getLoginUserId(request);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "noInfo";
+		List<UserClassInfo> ucList = ucm.listTeaInfoByOpt(currUserId, 4);
+		if(ucList.size() > 0){
+			msg = "success";
+			List<Object> list_d = new ArrayList<Object>();
+			for(UserClassInfo uc : ucList){
+				ClassInfo c = uc.getClassInfo();
+				Map<String,Object> map_d = new HashMap<String,Object>();
+				map_d.put("cId", c.getId());
+				String buildeClassDate = c.getBuildeClassDate();
+				String gradeName = Convert.dateConvertGradeName(buildeClassDate);//当前所在的年级
+				map_d.put("cName", gradeName+c.getClassName());
+				map_d.put("status", uc.getStatus());//1:临时接管，2：永久接管
+				list_d.add(map_d);
+			}
+			SortCName sort = new SortCName();
+			Collections.sort(list_d, sort);
+			map.put("cList", list_d);
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 获取老师自己所有的班级列表(包括临时接管)--发布作业时用
+	 * @author wm
+	 * @date 2019-8-3 下午05:58:26
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getMyClassData_1(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		UserClassInfoManager ucm = (UserClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
+		Integer currUserId = CommonTools.getLoginUserId(request);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "noInfo";
+		List<UserClassInfo> ucList = ucm.listTeaInfoByOpt(currUserId, 4);
+		if(ucList.size() > 0){
+			msg = "success";
+			Map<String,Object> map_d = new HashMap<String,Object>();
+			List<Object> list_d = new ArrayList<Object>();
+			String gradeInfo = "";
+			for(UserClassInfo uc : ucList){
+				ClassInfo c = uc.getClassInfo();
+				Map<String,Object> map_d1 = new HashMap<String,Object>();
+				map_d1.put("cId", c.getId());
+				String buildeClassDate = c.getBuildeClassDate();
+				map_d1.put("cName", c.getClassName());
+				map_d1.put("status", uc.getStatus());//1:临时接管，2：永久接管
+				String gradeName = Convert.dateConvertGradeName(buildeClassDate);//当前所在的年级
+				
+				list_d.add(map_d1);
+			}
+			SortCName sort = new SortCName();
+			Collections.sort(list_d, sort);
+			map.put("cList", list_d);
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
 	/**
 	 * 获取家庭作业发送列表（老师）
 	 * @author wm
@@ -880,7 +990,7 @@ public class HomeWorkAction extends DispatchAction {
 	}
 	
 	/**
-	 * 获取指定发送作业的题目完成详细情况
+	 * 获取指定发送作业的题目正确率
 	 * @param mapping
 	 * @param form
 	 * @param request
@@ -895,14 +1005,17 @@ public class HomeWorkAction extends DispatchAction {
 		HwStudyTjManager tjm = (HwStudyTjManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_TJ_INFO);
 		HwStudyDetailManager hsdm = (HwStudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_DETAIL_INFO);
 		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
+		HwQueManager hqm = (HwQueManager) AppFactory.instance(null).getApp(Constants.WEB_HW_QUE_INFO);
+		TeaQueManager tqm = (TeaQueManager) AppFactory.instance(null).getApp(Constants.WEB_TEA_QUE_INFO);
 		Integer currUserId = CommonTools.getLoginUserId(request);
 		Integer hwSendId = CommonTools.getFinalInteger("hwSendId", request);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "error";
-		String currentDate = CurrentTime.getStringDate();
 		if(hwSendId > 0){
 			SendHwInfo hwInfo = swm.getEntityById(hwSendId);
 			if(hwInfo != null && hwInfo.getUser().equals(currUserId)){
+				//获取该作业的总人数
+				Integer stuNum_all = tjm.getCountByOpt(hwSendId, 0, -1);
 				msg = "success";
 				Integer hwType = hwInfo.getHwType();
 				String hwTypeChi = "";
@@ -917,17 +1030,363 @@ public class HomeWorkAction extends DispatchAction {
 				String sysQueIdArr = hwInfo.getSysQueIdArr();
 				String hwQueIdArr = hwInfo.getHwQueIdArr();
 				String teaQueIdArr = hwInfo.getTeaQueIdArr();
+				List<Object> list_d = new ArrayList<Object>();
 				if(!sysQueIdArr.equals("")){//系统题库--知识点 下面的题库
-					
+					String[] sysQueIdArray =  sysQueIdArr.split(",");
+					for(Integer i = 0 ; i < sysQueIdArray.length ; i++){
+						LoreQuestion lq = lqm.getEntityByLqId(Integer.parseInt(sysQueIdArray[i]));
+						if(lq != null){
+							Map<String,Object> map_d = new HashMap<String,Object>();
+							map_d.put("hwSendId", hwSendId);
+							map_d.put("hwId", lq.getId());
+							map_d.put("hwType", "sys");//系统题库
+							Integer succNum = 0;//正确人数
+							List<HwStudyDetailInfo> hsdList = hsdm.listInfoByOpt(hwSendId, 0, lq.getId(), "sys");
+							if(hsdList.size() > 0){
+								for(HwStudyDetailInfo hsd : hsdList){
+									if(hsd.getResult().equals(1)){
+										succNum++;
+									}
+								}
+							}
+							map_d.put("succRate", succNum * 100 / stuNum_all);
+							list_d.add(map_d);
+						}
+					}
 				}
 				if(!hwQueIdArr.equals("")){//系统上传的家庭作业
-					
+					String[] hwQueIdArray =  hwQueIdArr.split(",");
+					for(Integer i = 0 ; i < hwQueIdArray.length ; i++){
+						HwQueInfo hq = hqm.getEntityById(Integer.parseInt(hwQueIdArray[i]));
+						if(hq != null){
+							Map<String,Object> map_d = new HashMap<String,Object>();
+							map_d.put("hwSendId", hwSendId);
+							map_d.put("hwId", hq.getId());
+							map_d.put("hwType", "hw");//家庭作业题库
+							Integer succNum = 0;//正确人数
+							List<HwStudyDetailInfo> hsdList = hsdm.listInfoByOpt(hwSendId, 0, hq.getId(), "hw");
+							if(hsdList.size() > 0){
+								for(HwStudyDetailInfo hsd : hsdList){
+									if(hsd.getResult().equals(1)){
+										succNum++;
+									}
+								}
+							}
+							map_d.put("succRate", succNum * 100 / stuNum_all);
+							list_d.add(map_d);
+						}
+					}
 				}
 				if(!teaQueIdArr.equals("")){//老师上传的家庭作业
-					
+					String[] teaQueIdArray =  teaQueIdArr.split(",");
+					for(Integer i = 0 ; i < teaQueIdArray.length ; i++){
+						TeaQueInfo tq = tqm.getEntityById(Integer.parseInt(teaQueIdArray[i]));
+						if(tq != null){
+							Map<String,Object> map_d = new HashMap<String,Object>();
+							map_d.put("hwSendId", hwSendId);
+							map_d.put("hwId", tq.getId());
+							map_d.put("hwType", "tea");//老师题库
+							Integer succNum = 0;//正确人数
+							List<HwStudyDetailInfo> hsdList = hsdm.listInfoByOpt(hwSendId, 0, tq.getId(), "tea");
+							if(hsdList.size() > 0){
+								for(HwStudyDetailInfo hsd : hsdList){
+									if(hsd.getResult().equals(1)){
+										succNum++;
+									}
+								}
+							}
+							map_d.put("succRate", succNum * 100 / stuNum_all);
+							list_d.add(map_d);
+						}
+					}
 				}
+				map.put("queList", list_d);
 			}
 		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 获取指定题目的详细情况
+	 * @author wm
+	 * @date 2019-8-3 上午10:03:22
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getSpecHwQueComSubDetail(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		SendHwManager swm = (SendHwManager) AppFactory.instance(null).getApp(Constants.WEB_SEND_HW_INFO);
+		HwStudyTjManager tjm = (HwStudyTjManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_TJ_INFO);
+		HwStudyDetailManager hsdm = (HwStudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_DETAIL_INFO);
+		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
+		HwQueManager hqm = (HwQueManager) AppFactory.instance(null).getApp(Constants.WEB_HW_QUE_INFO);
+		TeaQueManager tqm = (TeaQueManager) AppFactory.instance(null).getApp(Constants.WEB_TEA_QUE_INFO);
+		Integer currUserId = CommonTools.getLoginUserId(request);
+		Integer hwSendId = CommonTools.getFinalInteger("hwSendId", request);
+		Integer hwId = CommonTools.getFinalInteger("hwId", request);
+		String hwType = CommonTools.getFinalStr("hwType", request);//题目类型（hw,sys,tea）
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "error";
+		if(hwSendId > 0 && hwId > 0){
+			SendHwInfo hwInfo = swm.getEntityById(hwSendId);
+			if(hwInfo != null && hwInfo.getUser().equals(currUserId)){
+				msg = "success";
+				//获取该作业的总人数
+				Integer stuNum_all = tjm.getCountByOpt(hwSendId, 0, -1);
+				String sysQueIdArr = hwInfo.getSysQueIdArr();
+				String hwQueIdArr = hwInfo.getHwQueIdArr();
+				String teaQueIdArr = hwInfo.getTeaQueIdArr();
+				List<Object> list_d = new ArrayList<Object>();
+				if(!sysQueIdArr.equals("")){//系统题库--知识点 下面的题库
+					String[] sysQueIdArray =  sysQueIdArr.split(",");
+					for(Integer i = 0 ; i < sysQueIdArray.length ; i++){
+						LoreQuestion lq = lqm.getEntityByLqId(Integer.parseInt(sysQueIdArray[i]));
+						if(lq != null){
+							Map<String,Object> map_d = new HashMap<String,Object>();
+							map_d.put("hwId", lq.getId());
+							boolean selFlag = false;
+							if(hwType.equals("sys")){
+								if(hwId.equals(lq.getId())){
+									selFlag = true;
+								}
+							}
+							map_d.put("selFlag",selFlag);
+							//获取题库详情
+							map_d.put("lqSub", lq.getQueSub());
+							String queType = lq.getQueType();
+							map_d.put("lqType", queType);
+							map_d.put("answerA", lq.getA());
+							map_d.put("answerB", lq.getB());
+							map_d.put("answerC", lq.getC());
+							map_d.put("answerD", lq.getD());
+							map_d.put("answerE", lq.getE());
+							map_d.put("answerF", lq.getF());
+							String queAnswer = lq.getQueAnswer();
+							//需要匹配出选项
+							if(queType.equals("单选题") || queType.equals("多选题") || queType.equals("填空选择题") || queType.equals("判断题")){
+								String queAnswer_text = "";
+								String[] answerQueArr = queAnswer.replaceAll("&#wmd;", "'").split(",");
+								String replaceStr = "Module/commonJs/ueditor/jsp/lore/";
+								for(Integer j = 0 ; j < answerQueArr.length ; j++){
+									if(answerQueArr[j].equals(lq.getA().replace(replaceStr,""))){
+										queAnswer_text += "A,";
+										continue;
+									}
+									if(answerQueArr[j].equals(lq.getB().replace(replaceStr,""))){
+										queAnswer_text += "B,";
+										continue;
+									}
+									if(answerQueArr[j].equals(lq.getC().replace(replaceStr,""))){
+										queAnswer_text += "C,";
+										continue;
+									}
+									if(answerQueArr[j].equals(lq.getD().replace(replaceStr,""))){
+										queAnswer_text += "D,";
+										continue;
+									}
+									if(answerQueArr[j].equals(lq.getE().replace(replaceStr,""))){
+										queAnswer_text += "E,";
+										continue;
+									}
+									if(answerQueArr[j].equals(lq.getF().replace(replaceStr,""))){
+										queAnswer_text += "F,";
+										continue;
+									}
+								}
+								if(!queAnswer_text.equals("")){
+									queAnswer_text = queAnswer_text.substring(0, queAnswer_text.length() - 1);
+								}
+								map_d.put("queAnswer", queAnswer_text);
+							}else if(queType.equals("问答题") || queType.equals("填空题")){
+								map_d.put("queAnswer", queAnswer);//直接给出答案
+							}
+							Integer succNum = 0;//正确人数
+							Integer errorNum = 0;//错误人数
+							Integer unNum = 0;//未做人数
+							List<HwStudyDetailInfo> hsdList = hsdm.listInfoByOpt(hwSendId, 0, lq.getId(), "sys");
+							List<Object> list_d_succ = new ArrayList<Object>();
+							List<Object> list_d_error = new ArrayList<Object>();
+							List<Object> list_d_unCom = new ArrayList<Object>();
+							if(hsdList.size() > 0){
+								for(HwStudyDetailInfo hsd : hsdList){
+									if(hsd.getResult().equals(1)){
+										succNum++;
+										Map<String,Object> map_d_1 = new HashMap<String,Object>();
+										User stu = hsd.getHwStudyTjInfo().getUser();
+										map_d_1.put("stuName", stu.getRealName());
+										map_d_1.put("headImg", stu.getPortrait());
+										list_d_succ.add(map_d_1);
+									}else if(hsd.getResult().equals(0)){
+										errorNum++;
+										Map<String,Object> map_d_1 = new HashMap<String,Object>();
+										User stu = hsd.getHwStudyTjInfo().getUser();
+										map_d_1.put("stuName", stu.getRealName());
+										map_d_1.put("headImg", stu.getPortrait());
+										list_d_error.add(map_d_1);
+									}else{
+										unNum++;
+										Map<String,Object> map_d_1 = new HashMap<String,Object>();
+										User stu = hsd.getHwStudyTjInfo().getUser();
+										map_d_1.put("stuName", stu.getRealName());
+										map_d_1.put("headImg", stu.getPortrait());
+										list_d_unCom.add(map_d_1);
+									}
+								}
+							}
+							map_d.put("succStuList", list_d_succ);
+							map_d.put("errorStuList", list_d_error);
+							map_d.put("unComStuList", list_d_unCom);
+							map_d.put("succRate", succNum * 100 / stuNum_all);//得分率
+							list_d.add(map_d);
+						}
+					}
+				}
+				if(!hwQueIdArr.equals("")){//系统上传的家庭作业
+					String[] hwQueIdArray =  hwQueIdArr.split(",");
+					for(Integer i = 0 ; i < hwQueIdArray.length ; i++){
+						HwQueInfo hq = hqm.getEntityById(Integer.parseInt(hwQueIdArray[i]));
+						if(hq != null){
+							Map<String,Object> map_d = new HashMap<String,Object>();
+							map_d.put("hwId", hq.getId());
+							boolean selFlag = false;
+							if(hwType.equals("hw")){
+								if(hwId.equals(hq.getId())){
+									selFlag = true;
+								}
+							}
+							map_d.put("selFlag",selFlag);
+							
+							map_d.put("lqSub", hq.getSubject());
+							map_d.put("lqType", hq.getQueType());
+							map_d.put("queAnswer", hq.getAnswer());
+							
+							Integer succNum = 0;//正确人数
+							Integer errorNum = 0;//错误人数
+							Integer unNum = 0;//未做人数
+							List<HwStudyDetailInfo> hsdList = hsdm.listInfoByOpt(hwSendId, 0, hq.getId(), "hw");
+							List<Object> list_d_succ = new ArrayList<Object>();
+							List<Object> list_d_error = new ArrayList<Object>();
+							List<Object> list_d_unCom = new ArrayList<Object>();
+							if(hsdList.size() > 0){
+								for(HwStudyDetailInfo hsd : hsdList){
+									if(hsd.getResult().equals(1)){
+										succNum++;
+										Map<String,Object> map_d_1 = new HashMap<String,Object>();
+										User stu = hsd.getHwStudyTjInfo().getUser();
+										map_d_1.put("stuName", stu.getRealName());
+										map_d_1.put("headImg", stu.getPortrait());
+										list_d_succ.add(map_d_1);
+									}else if(hsd.getResult().equals(0)){
+										errorNum++;
+										Map<String,Object> map_d_1 = new HashMap<String,Object>();
+										User stu = hsd.getHwStudyTjInfo().getUser();
+										map_d_1.put("stuName", stu.getRealName());
+										map_d_1.put("headImg", stu.getPortrait());
+										list_d_error.add(map_d_1);
+									}else{
+										unNum++;
+										Map<String,Object> map_d_1 = new HashMap<String,Object>();
+										User stu = hsd.getHwStudyTjInfo().getUser();
+										map_d_1.put("stuName", stu.getRealName());
+										map_d_1.put("headImg", stu.getPortrait());
+										list_d_unCom.add(map_d_1);
+									}
+								}
+							}
+							map_d.put("succStuList", list_d_succ);
+							map_d.put("errorStuList", list_d_error);
+							map_d.put("unComStuList", list_d_unCom);
+							map_d.put("succRate", succNum * 100 / stuNum_all);
+							list_d.add(map_d);
+						}
+					}
+				}
+				if(!teaQueIdArr.equals("")){//老师上传的家庭作业
+					String[] teaQueIdArray =  teaQueIdArr.split(",");
+					for(Integer i = 0 ; i < teaQueIdArray.length ; i++){
+						TeaQueInfo tq = tqm.getEntityById(Integer.parseInt(teaQueIdArray[i]));
+						if(tq != null){
+							Map<String,Object> map_d = new HashMap<String,Object>();
+							map_d.put("hwId", tq.getId());
+							boolean selFlag = false;
+							if(hwType.equals("tea")){
+								if(hwId.equals(tq.getId())){
+									selFlag = true;
+								}
+							}
+							map_d.put("selFlag",selFlag);
+							
+							map_d.put("lqSub", tq.getQueSub());
+							map_d.put("lqType", tq.getQueType());
+							map_d.put("queAnswer", tq.getQueAnswer());
+							
+							Integer succNum = 0;//正确人数
+							Integer errorNum = 0;//错误人数
+							Integer unNum = 0;//未做人数
+							List<HwStudyDetailInfo> hsdList = hsdm.listInfoByOpt(hwSendId, 0, tq.getId(), "tea");
+							List<Object> list_d_succ = new ArrayList<Object>();
+							List<Object> list_d_error = new ArrayList<Object>();
+							List<Object> list_d_unCom = new ArrayList<Object>();
+							if(hsdList.size() > 0){
+								for(HwStudyDetailInfo hsd : hsdList){
+									if(hsd.getResult().equals(1)){
+										succNum++;
+										Map<String,Object> map_d_1 = new HashMap<String,Object>();
+										User stu = hsd.getHwStudyTjInfo().getUser();
+										map_d_1.put("stuName", stu.getRealName());
+										map_d_1.put("headImg", stu.getPortrait());
+										list_d_succ.add(map_d_1);
+									}else if(hsd.getResult().equals(0)){
+										errorNum++;
+										Map<String,Object> map_d_1 = new HashMap<String,Object>();
+										User stu = hsd.getHwStudyTjInfo().getUser();
+										map_d_1.put("stuName", stu.getRealName());
+										map_d_1.put("headImg", stu.getPortrait());
+										list_d_error.add(map_d_1);
+									}else{
+										unNum++;
+										Map<String,Object> map_d_1 = new HashMap<String,Object>();
+										User stu = hsd.getHwStudyTjInfo().getUser();
+										map_d_1.put("stuName", stu.getRealName());
+										map_d_1.put("headImg", stu.getPortrait());
+										list_d_unCom.add(map_d_1);
+									}
+								}
+							}
+							map_d.put("succStuList", list_d_succ);
+							map_d.put("errorStuList", list_d_error);
+							map_d.put("unComStuList", list_d_unCom);
+							map_d.put("succRate", succNum * 100 / stuNum_all);
+							list_d.add(map_d);
+						}
+					}
+				}
+				map.put("queList", list_d);
+			}
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	public ActionForward test(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		SendHwManager swm = (SendHwManager) AppFactory.instance(null).getApp(Constants.WEB_SEND_HW_INFO);
+		HwStudyTjManager tjm = (HwStudyTjManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_TJ_INFO);
+		HwStudyDetailManager hsdm = (HwStudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_DETAIL_INFO);
+		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
+		HwQueManager hqm = (HwQueManager) AppFactory.instance(null).getApp(Constants.WEB_HW_QUE_INFO);
+		TeaQueManager tqm = (TeaQueManager) AppFactory.instance(null).getApp(Constants.WEB_TEA_QUE_INFO);
+		Integer currUserId = CommonTools.getLoginUserId(request);
+	
 		return null;
 	}
 }
