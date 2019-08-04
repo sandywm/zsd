@@ -539,10 +539,28 @@ public class CurrentTime {
     	return "";
     }
     
+    /**
+     * 根据条件获取当前时间的年，月，日
+     * @author wm
+     * @date 2019-8-4 下午05:55:36
+     * @param opt
+     * @return
+     */
+    public static int getSpecInfo(String opt){
+    	Calendar cale = Calendar.getInstance();  
+    	if(opt.equals("year")){
+    		return cale.get(Calendar.YEAR);
+    	}else if(opt.equals("month")){
+    		return cale.get(Calendar.MONTH) + 1; 
+    	}else{
+    		return cale.get(Calendar.MONTH) + 1; 
+    	}
+    }
+    
 	public static void main(String args[]) throws Exception{
 		String aa = "2019-01-01";
 		String bb = "2019-01-03";
-		System.out.println(CurrentTime.compareDate(aa, bb) + 1);
+		System.out.println(CurrentTime.getSpecInfo("month"));
 		
 //		System.out.println(CurrentTime.compareDate("2014-01-30", "2014-02-01"));
 //		float outPenalty = Float.parseFloat("0.1");

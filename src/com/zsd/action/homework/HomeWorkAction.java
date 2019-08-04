@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -23,19 +24,28 @@ import com.zsd.factory.AppFactory;
 import com.zsd.module.BuffetAbilityTypeInfo;
 import com.zsd.module.BuffetMindTypeInfo;
 import com.zsd.module.BuffetTypeInfo;
+import com.zsd.module.Chapter;
 import com.zsd.module.ClassInfo;
+import com.zsd.module.Edition;
+import com.zsd.module.Education;
 import com.zsd.module.HwAbilityRelationInfo;
 import com.zsd.module.HwMindRelationInfo;
 import com.zsd.module.HwQueInfo;
 import com.zsd.module.HwStudyDetailInfo;
 import com.zsd.module.HwStudyTjInfo;
+import com.zsd.module.LoreInfo;
 import com.zsd.module.LoreQuestion;
 import com.zsd.module.SendHwInfo;
+import com.zsd.module.StudyLogInfo;
 import com.zsd.module.TeaQueInfo;
 import com.zsd.module.User;
 import com.zsd.module.UserClassInfo;
 import com.zsd.page.PageConst;
 import com.zsd.service.BuffetAllManager;
+import com.zsd.service.ChapterManager;
+import com.zsd.service.ClassInfoManager;
+import com.zsd.service.EditionManager;
+import com.zsd.service.EducationManager;
 import com.zsd.service.HwAbilityRelationManager;
 import com.zsd.service.HwMindRelationManager;
 import com.zsd.service.HwQueManager;
@@ -72,7 +82,23 @@ public class HomeWorkAction extends DispatchAction {
 	      Map<String, String> map0 = (Map) obj0;
 	      Map<String, String> map1 = (Map) obj1;
 	      int flag = map0.get("cName").toString().compareTo(map1.get("cName").toString());
-	      return -flag; // 不取反，则按正序排列
+	      return flag; // 不取反，则按正序排列
+	    }
+	 }
+	
+	/**
+	 * 按照班级号升序排列
+	 * @author Administrator
+	 * @createDate 2019-8-4
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static class SortGName implements Comparator {
+		@Override
+	    public int compare(Object obj0, Object obj1) {
+	      Map<String, String> map0 = (Map) obj0;
+	      Map<String, String> map1 = (Map) obj1;
+	      int flag = map0.get("gradeNo").toString().compareTo(map1.get("gradeNo").toString());
+	      return flag; // 不取反，则按正序排列
 	    }
 	 }
 	
@@ -314,7 +340,7 @@ public class HomeWorkAction extends DispatchAction {
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "error";
 		Integer btId = CommonTools.getFinalInteger("btId", request);//基础类型编号
-		Integer loreId = CommonTools.getFinalInteger("loreId", request);
+		Integer loreId = CommonTools.getFinalInteger("loreId", request);//通用版下的知识点编号
 		String mindIdStr = CommonTools.getFinalStr("mindStr", request);//思维类型编号逗号拼接
 		String abilityIdStr = CommonTools.getFinalStr("abilityIdStr", request);//能力类型编号逗号拼接
 		String title = "";//标题
@@ -523,7 +549,8 @@ public class HomeWorkAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
 		TeaQueManager tqm = (TeaQueManager) AppFactory.instance(null).getApp(Constants.WEB_TEA_QUE_INFO);
-		Integer loreId = CommonTools.getFinalInteger("loreId", request);
+		Integer loreId = CommonTools.getFinalInteger("loreId", request);//出版社下的知识点编号
+		LoreInfoManager lm = (LoreInfoManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
 		Integer currUserId = 0;
 		String msg = "暂无记录";
 		Map<String,Object> map = new HashMap<String,Object>();
@@ -531,6 +558,12 @@ public class HomeWorkAction extends DispatchAction {
 		if(roleName.equals("老师") || roleName.equals("知识点管理员")){
 			if(roleName.equals("老师")){
 				currUserId = CommonTools.getLoginUserId(request);
+			}
+			LoreInfo lore = lm.getEntityById(loreId);
+			Integer ediId = lore.getChapter().getEducation().getEdition().getId();
+			if(ediId > 1){//老师增加题库时选择的是其他版本
+				//需要把其他版本的知识点转成通用版知识点
+				loreId = lore.getMainLoreId();
 			}
 			Integer count = tqm.getCountByOpt(loreId, currUserId);
 			if(count > 0){
@@ -673,6 +706,12 @@ public class HomeWorkAction extends DispatchAction {
 		String msg = "error";
 		String roleName = CommonTools.getLoginRoleName(request);
 		if(roleName.equals("老师") && loreId > 0){
+			LoreInfo lore = lm.getEntityById(loreId);
+			Integer ediId = lore.getChapter().getEducation().getEdition().getId();
+			if(ediId > 1){//老师增加题库时选择的是其他版本
+				//需要把其他版本的知识点转成通用版知识点
+				loreId = lore.getMainLoreId();
+			}
 			Integer userId = CommonTools.getLoginUserId(request);
 			List<TeaQueInfo> tqList = tqm.listInfoByOpt(loreId, userId, false, 0, 0);
 			Integer currNum = 1;
@@ -743,23 +782,25 @@ public class HomeWorkAction extends DispatchAction {
 		Integer currUserId = CommonTools.getLoginUserId(request);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "noInfo";
-		List<UserClassInfo> ucList = ucm.listTeaInfoByOpt(currUserId, 4);
-		if(ucList.size() > 0){
-			msg = "success";
-			List<Object> list_d = new ArrayList<Object>();
-			for(UserClassInfo uc : ucList){
-				ClassInfo c = uc.getClassInfo();
-				Map<String,Object> map_d = new HashMap<String,Object>();
-				map_d.put("cId", c.getId());
-				String buildeClassDate = c.getBuildeClassDate();
-				String gradeName = Convert.dateConvertGradeName(buildeClassDate);//当前所在的年级
-				map_d.put("cName", gradeName+c.getClassName());
-				map_d.put("status", uc.getStatus());//1:临时接管，2：永久接管
-				list_d.add(map_d);
+		if(currUserId > 0){
+			List<UserClassInfo> ucList = ucm.listTeaInfoByOpt(currUserId, 4);
+			if(ucList.size() > 0){
+				msg = "success";
+				List<Object> list_d = new ArrayList<Object>();
+				for(UserClassInfo uc : ucList){
+					ClassInfo c = uc.getClassInfo();
+					Map<String,Object> map_d = new HashMap<String,Object>();
+					map_d.put("cId", c.getId());
+					String buildeClassDate = c.getBuildeClassDate();
+					String gradeName = Convert.dateConvertGradeName(buildeClassDate);//当前所在的年级
+					map_d.put("cName", gradeName+c.getClassName());
+					map_d.put("status", uc.getStatus());//1:临时接管，2：永久接管
+					list_d.add(map_d);
+				}
+				SortCName sort = new SortCName();
+				Collections.sort(list_d, sort);
+				map.put("cList", list_d);
 			}
-			SortCName sort = new SortCName();
-			Collections.sort(list_d, sort);
-			map.put("cList", list_d);
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
@@ -777,6 +818,7 @@ public class HomeWorkAction extends DispatchAction {
 	 * @return
 	 * @throws Exception
 	 */
+	@SuppressWarnings("unchecked")
 	public ActionForward getMyClassData_1(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
@@ -784,26 +826,72 @@ public class HomeWorkAction extends DispatchAction {
 		Integer currUserId = CommonTools.getLoginUserId(request);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "noInfo";
-		List<UserClassInfo> ucList = ucm.listTeaInfoByOpt(currUserId, 4);
-		if(ucList.size() > 0){
-			msg = "success";
-			Map<String,Object> map_d = new HashMap<String,Object>();
-			List<Object> list_d = new ArrayList<Object>();
-			String gradeInfo = "";
-			for(UserClassInfo uc : ucList){
-				ClassInfo c = uc.getClassInfo();
-				Map<String,Object> map_d1 = new HashMap<String,Object>();
-				map_d1.put("cId", c.getId());
-				String buildeClassDate = c.getBuildeClassDate();
-				map_d1.put("cName", c.getClassName());
-				map_d1.put("status", uc.getStatus());//1:临时接管，2：永久接管
-				String gradeName = Convert.dateConvertGradeName(buildeClassDate);//当前所在的年级
-				
-				list_d.add(map_d1);
+		if(currUserId > 0){
+			List<UserClassInfo> ucList = ucm.listTeaInfoByOpt(currUserId, 4);
+			if(ucList.size() > 0){
+				msg = "success";
+				String gradeInfo = "";//1年级
+				String classInfo = "";
+				String classIdInfo = "";
+				for(UserClassInfo uc : ucList){
+					ClassInfo c = uc.getClassInfo();
+					String buildeClassDate = c.getBuildeClassDate();
+					String gradeName = Convert.dateConvertGradeName(buildeClassDate);//当前所在的年级
+					String className = c.getClassName();
+					Integer classId = c.getId();
+					String[] classInfoArr = classInfo.split(",");
+					String[] classIdInfoArr = classIdInfo.split(",");
+					if(gradeInfo.contains(gradeName)){
+						String[] gradeInfoArr = gradeInfo.split(",");
+						for(int j = 0 ; j < gradeInfoArr.length ; j++){
+							if(gradeInfoArr[j].equals(gradeName)){
+								classInfoArr[j] = classInfoArr[j]+":"+className;
+								classInfo = "";
+								for(int k = 0 ; k < classInfoArr.length ; k++){
+									classInfo += classInfoArr[k] + ",";
+								}
+								
+								classIdInfoArr[j] = classIdInfoArr[j]+":"+classId;
+								classIdInfo = "";
+								for(int k = 0 ; k < classIdInfoArr.length ; k++){
+									classIdInfo += classIdInfoArr[k] + ",";
+								}
+								break;
+							}
+						}
+					}else{
+						gradeInfo += gradeName + ",";
+						classInfo += className + ",";
+						classIdInfo += classId + ",";
+					}
+				}
+				gradeInfo = gradeInfo.substring(0,gradeInfo.length() - 1);
+				classInfo = classInfo.substring(0,classInfo.length() - 1);
+				classIdInfo = classIdInfo.substring(0, classIdInfo.length() - 1);
+				String[] gradeArr = gradeInfo.split(",");
+				List<Object> list_a = new ArrayList<Object>();
+				for(int i = 0 ; i < gradeArr.length ; i++){
+					Map<String,Object> map_d = new HashMap<String,Object>();
+					map_d.put("gradeName", gradeArr[i]);
+					map_d.put("gradeNo", Convert.ChineseConvertNumber(gradeArr[i]));
+					String[] classArr = classInfo.split(",")[i].split(":");
+					String[] classIdArr = classIdInfo.split(",")[i].split(":");
+					List<Object> list_a1 = new ArrayList<Object>();
+					for(int j = 0 ; j < classArr.length ; j++){
+						Map<String,Object> map_d1 = new HashMap<String,Object>();
+						map_d1.put("cName", classArr[j]);
+						map_d1.put("classId", classIdArr[j]);
+						list_a1.add(map_d1);
+					}
+					SortCName sort = new SortCName();
+					Collections.sort(list_a1, sort);
+					map_d.put("cList", list_a1);
+					list_a.add(map_d);
+				}
+				SortGName sort = new SortGName();
+				Collections.sort(list_a, sort);
+				map.put("gcList", list_a);
 			}
-			SortCName sort = new SortCName();
-			Collections.sort(list_d, sort);
-			map.put("cList", list_d);
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
@@ -1376,7 +1464,18 @@ public class HomeWorkAction extends DispatchAction {
 		return null;
 	}
 	
-	public ActionForward test(ActionMapping mapping, ActionForm form,
+	/**
+	 * 根据老师所选年级班级获取章节知识点列表并根据时间定位上下册
+	 * @author wm
+	 * @date 2019-8-4 下午05:23:43
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getChapterLoreData(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
 		SendHwManager swm = (SendHwManager) AppFactory.instance(null).getApp(Constants.WEB_SEND_HW_INFO);
@@ -1385,8 +1484,113 @@ public class HomeWorkAction extends DispatchAction {
 		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
 		HwQueManager hqm = (HwQueManager) AppFactory.instance(null).getApp(Constants.WEB_HW_QUE_INFO);
 		TeaQueManager tqm = (TeaQueManager) AppFactory.instance(null).getApp(Constants.WEB_TEA_QUE_INFO);
+		ClassInfoManager cm = (ClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_TEA_QUE_INFO);
+		UserClassInfoManager ucm = (UserClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
+		EducationManager em = (EducationManager) AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
+		ChapterManager cpm = (ChapterManager) AppFactory.instance(null).getApp(Constants.WEB_CHAPTER_INFO);
+		EditionManager edim = (EditionManager) AppFactory.instance(null).getApp(Constants.WEB_EDITION_INFO);
+		LoreInfoManager lm = (LoreInfoManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
 		Integer currUserId = CommonTools.getLoginUserId(request);
-	
+		String currentDate = CurrentTime.getStringDate();
+		Integer month = CurrentTime.getSpecInfo("month");
+		String classIdStr = CommonTools.getFinalStr("classId", request);//多个逗号隔开
+		String eduVolume = Transcode.unescape_new1("eduVolume", request);//上/下册
+		Integer ediId = CommonTools.getFinalInteger("ediId", request);//出版社
+		Integer hwType = CommonTools.getFinalInteger("hwType", request);//作业类型1-家庭作业,2-课后复习,3-课前预习
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "noInfo";
+		if(currUserId > 0 && !classIdStr.equals("") && hwType > 0){
+			UserClassInfo uc = ucm.getEntityByOpt(currUserId, 4);
+			if(uc != null){
+				Integer subId = uc.getSubjectId();//老师所教的学科
+				String[] classIdArr = classIdStr.split(",");
+				Integer classId_tmp = Integer.parseInt(classIdArr[0]);
+				List<ClassInfo> cList = cm.listClassInfoById(classId_tmp);
+				if(cList.size() > 0){
+					String gradeName = Convert.dateConvertGradeName(cList.get(0).getBuildeClassDate());//老师所在的年级
+					if(eduVolume.equals("")){
+						if(month >= 3 && month < 9){//下册
+							eduVolume = "上册";
+						}else{
+							eduVolume = "下册";
+						}
+						//没选出版社时出版社获取最近一次发送的家庭作业出版社
+						List<SendHwInfo> shwList = swm.listPageInfoByOpt(currUserId, 0, 0, -1, "", "", false, 0, 0);
+						if(shwList.size() > 0){
+							SendHwInfo shw = shwList.get(0);
+							ediId = shw.getLoreInfo().getChapter().getEducation().getEdition().getId();
+						}else{
+							ediId = 2;
+						}
+					}
+					//出版社列表
+					List<Edition> ediList = edim.listInfoByShowStatus(0, -1);
+					List<Object> list_d = new ArrayList<Object>();
+					for(Edition edi : ediList){
+						Map<String,Object> map_d = new HashMap<String,Object>();
+						map_d.put("ediId", edi.getId());
+						map_d.put("ediName", edi.getEdiName());
+						if(ediId.equals(edi.getId())){
+							map_d.put("selFlag", true);
+						}else{
+							map_d.put("selFlag", false);
+						}
+						list_d.add(map_d);
+					}
+					map.put("ediList", list_d);
+					//上下册数据
+					List<Object> list_d1 = new ArrayList<Object>();
+					Map<String,Object> map_d = new HashMap<String,Object>();
+					map_d.put("eduVolume", "上册");
+					if(eduVolume.equals("上册")){
+						map_d.put("selFlag", true);
+					}else{
+						map_d.put("selFlag", false);
+					}
+					list_d1.add(map_d);
+					map_d = new HashMap<String,Object>();
+					map_d.put("eduVolume", "下册");
+					if(eduVolume.equals("上册")){
+						map_d.put("selFlag", true);
+					}else{
+						map_d.put("selFlag", false);
+					}
+					list_d1.add(map_d);
+					map.put("eduVolumeList", list_d);
+					//章节知识点列表
+					List<Education> eduList = em.listInfoByOpt(ediId, gradeName, subId, eduVolume);//获取
+					if(eduList.size() > 0){
+						List<Object> list_d2 = new ArrayList<Object>();
+						Integer eduId = eduList.get(0).getId();
+						List<Chapter> cptList = cpm.ListInfoByEduId(eduId);
+						if(cptList.size() > 0){
+							for(Iterator<Chapter> it = cptList.iterator() ; it.hasNext();){
+								Chapter cpt = it.next();
+								Map<String,Object> map_d1 = new HashMap<String,Object>();
+								map_d1.put("cptId", cpt.getId());
+								map_d1.put("cptName", cpt.getChapterName());
+								List<Object> list_d3 = new ArrayList<Object>();
+								List<LoreInfo> lList = lm.listInfoByCptId(cpt.getId());
+								for(LoreInfo lore : lList){
+									Map<String,Object> map_d_1 = new HashMap<String,Object>();
+									map_d_1.put("loreId", lore.getId());
+									map_d_1.put("loreName", lore.getLoreName());
+									//获取该老师有没有发送指定类型下该知识点的作业
+									list_d3.add(map_d_1);
+								}
+								map_d1.put("loreList", list_d3);
+								list_d2.add(map_d1);
+							}
+							map.put("cptList", list_d2);
+						}
+					}
+					for(int i = 0 ; i < classIdArr.length ; i++){
+						Integer classId = Integer.parseInt(classIdArr[i]);
+						
+					}
+				}
+			}
+		}
 		return null;
 	}
 }

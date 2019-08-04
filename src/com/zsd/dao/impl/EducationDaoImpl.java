@@ -94,7 +94,10 @@ public class EducationDaoImpl implements EducationDao{
 	public List<Education> findInfoByOpt(Session sess, Integer ediId,
 			String gName, Integer subId, String eduVolume) {
 		// TODO Auto-generated method stub
-		String hql = " from Education as edu where edu.edition.id = "+ediId + " and edu.eduVolume = '"+eduVolume+"'";
+		String hql = " from Education as edu where edu.edition.id = "+ediId;
+		if(!eduVolume.equals("")){
+			hql += " and edu.eduVolume = '"+eduVolume+"'";
+		}
 		hql += " and edu.gradeSubject.gradeName = '"+gName+"' and edu.gradeSubject.subject.id = "+subId;
 		return sess.createQuery(hql).list();
 	}

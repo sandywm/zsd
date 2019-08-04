@@ -1,6 +1,12 @@
 package com.zsd.tools;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import net.sourceforge.pinyin4j.PinyinHelper;
 import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
@@ -391,7 +397,139 @@ public class Convert {
 	public static String replaceSpecChar(String specChar){
 		return specChar.replaceAll("&#39;", "'").replaceAll("&quot;", "\"");
 	}
+	
+	/**
+	 * 按照班级名次升序排列
+	 * @author Administrator
+	 * @createDate 2019-8-4
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static class SortCName implements Comparator {
+		@Override
+	    public int compare(Object obj0, Object obj1) {
+	      Map<String, String> map0 = (Map) obj0;
+	      Map<String, String> map1 = (Map) obj1;
+	      int flag = map0.get("cName").toString().compareTo(map1.get("cName").toString());
+	      return flag; // 不取反，则按正序排列
+	    }
+	 }
+	
+	/**
+	 * 按照班级号升序排列
+	 * @author Administrator
+	 * @createDate 2019-8-4
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static class SortGName implements Comparator {
+		@Override
+	    public int compare(Object obj0, Object obj1) {
+	      Map<String, String> map0 = (Map) obj0;
+	      Map<String, String> map1 = (Map) obj1;
+	      int flag = map0.get("gradeNo").toString().compareTo(map1.get("gradeNo").toString());
+	      return flag; // 不取反，则按正序排列
+	    }
+	 }
+	
 	public static void main(String[] args){
-		System.out.println(Convert.MoneyToCNFormat(157894.26));
+//		System.out.println(Convert.MoneyToCNFormat(157894.26));
+		Map<String,Object> map = new HashMap<String,Object>();
+//		List<Object> list_d1 = new ArrayList<Object>();
+//		for(int j = 1 ; j <= 2 ; j++){
+//			Map<String,Object> map_1 = new HashMap<String,Object>();
+//			map_1.put("gradeName", j+"年级");
+//			List<Object> list_d2 = new ArrayList<Object>();
+//			for(int i = 1 ; i <= 2 ; i++){
+//				Map<String,Object> map_2 = new HashMap<String,Object>();
+//				map_2.put("classId", i);
+//				map_2.put("className", i+"班");
+//				list_d2.add(map_2);
+//			}
+//			map_1.put("cList", list_d2);
+//			list_d1.add(map_1);
+//		}
+//		map.put("cInfo", list_d1);
+//		System.out.println(map);
+		String gradeClassStr = "二年级:3班:1,一年级:5班:5,三年级:1班:1,二年级:2班:2,一年级:2班:2,三年级:2班:2";
+		String gradeInfo = "";//二年级,一年级,三年级
+		String classInfo = "";//1班:2班,1班,1班
+		String classIdInfo = "";//1:2,1,1
+		String[] gradeClassArr = gradeClassStr.split(",");
+		for(int i = 0 ; i < gradeClassArr.length ; i++){
+			String gradeName = gradeClassArr[i].split(":")[0];
+			String className = gradeClassArr[i].split(":")[1];
+			String classIdStr = gradeClassArr[i].split(":")[2];
+			String[] classInfoArr = classInfo.split(",");
+			String[] classIdInfoArr = classIdInfo.split(",");
+			if(gradeInfo.contains(gradeName)){
+				String[] gradeInfoArr = gradeInfo.split(",");
+				for(int j = 0 ; j < gradeInfoArr.length ; j++){
+					if(gradeInfoArr[j].equals(gradeName)){
+						classInfoArr[j] = classInfoArr[j]+":"+className;
+						classInfo = "";
+						for(int k = 0 ; k < classInfoArr.length ; k++){
+							classInfo += classInfoArr[k] + ",";
+						}
+						
+						classIdInfoArr[j] = classIdInfoArr[j]+":"+classIdStr;
+						classIdInfo = "";
+						for(int k = 0 ; k < classIdInfoArr.length ; k++){
+							classIdInfo += classIdInfoArr[k] + ",";
+						}
+						
+						break;
+					}
+				}
+			}else{
+				gradeInfo += gradeName + ",";
+				classInfo += className + ",";
+				classIdInfo += classIdStr + ",";
+			}
+		}
+		gradeInfo = gradeInfo.substring(0,gradeInfo.length() - 1);
+		classInfo = classInfo.substring(0,classInfo.length() - 1);
+		classIdInfo = classIdInfo.substring(0, classIdInfo.length() - 1);
+		String[] gradeArr = gradeInfo.split(",");
+		List<Object> list_a = new ArrayList<Object>();
+		for(int i = 0 ; i < gradeArr.length ; i++){
+			Map<String,Object> map_d = new HashMap<String,Object>();
+			map_d.put("gradeName", gradeArr[i]);
+			map_d.put("gradeNo", Convert.ChineseConvertNumber(gradeArr[i]));
+			String[] classArr = classInfo.split(",")[i].split(":");
+			String[] classIdArr = classIdInfo.split(",")[i].split(":");
+			List<Object> list_a1 = new ArrayList<Object>();
+			for(int j = 0 ; j < classArr.length ; j++){
+				Map<String,Object> map_d1 = new HashMap<String,Object>();
+				map_d1.put("cName", classArr[j]);
+				map_d1.put("classId", classIdArr[j]);
+				list_a1.add(map_d1);
+			}
+			SortCName sort = new SortCName();
+			Collections.sort(list_a1, sort);
+			map_d.put("cList", list_a1);
+			list_a.add(map_d);
+		}
+		SortGName sort = new SortGName();
+		Collections.sort(list_a, sort);
+		map.put("gName", list_a);
+		System.out.println(map);
+		System.out.println(gradeInfo);
+		System.out.println(classInfo);
+		
+		
+		
+		for(Map.Entry<String, Object> entry : map.entrySet()){
+//			String key = entry.getKey();
+//			if(key.equals("gradeName")){
+//				String mapValue = (String) entry.getValue();
+//				for(int i = 0 ; i < gradeNameStr.split(",").length ; i++){
+//					String[] classArr = gradeNameStr.split(",")[i].split(":");
+//					System.out.println(classArr[0]);
+//					if(mapValue.equals(classArr[0])){
+//						System.out.println("same");
+//					}
+//				}
+//			}
+//			
+		}
 	}
 }

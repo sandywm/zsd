@@ -49,7 +49,7 @@ public class SendHwDaoImpl implements SendHwDao{
 		if(classId > 0){
 			hql += " and shw.classInfo.id = "+classId;
 		}
-		if(hwType >= 0){
+		if(hwType > 0){
 			hql += " and shw.hwType.id = "+hwType;
 		}
 		if(inUse >= 0){

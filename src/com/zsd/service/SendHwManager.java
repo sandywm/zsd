@@ -59,7 +59,7 @@ public interface SendHwManager {
 	 * @date 2019-7-28 上午09:38:54
 	 * @param sendUserId 发送老师编号(0表示全部)
 	 * @param classId 班级编号（0表示全部）
-	 * @param hwType 作业类型（-1全部,1-家庭作业,2-课后复习,3-课前预习）
+	 * @param hwType 作业类型（0全部,1-家庭作业,2-课后复习,3-课前预习）
 	 * @param inUse  有效状态(-1全部,0：有效，1：无效)
 	 * @param sDate 开始时间
 	 * @param eDate 结束时间
@@ -78,7 +78,7 @@ public interface SendHwManager {
 	 * @date 2019-7-28 上午09:44:04
 	 * @param sendUserId 发送老师编号(0表示全部)
 	 * @param classId 班级编号（0表示全部）
-	 * @param hwType 作业类型（-1全部,1-家庭作业,2-课后复习,3-课前预习）
+	 * @param hwType 作业类型（0全部,1-家庭作业,2-课后复习,3-课前预习）
 	 * @param inUse  有效状态(-1全部,0：有效，1：无效)
 	 * @param sDate 开始时间
 	 * @param eDate 结束时间
