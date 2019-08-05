@@ -45,7 +45,7 @@ public class SendHwManagerImpl implements SendHwManager{
 					hwTitle, className, sDao.get(sess, subId),
 					CurrentTime.getCurrentTime(), endDate, hwType,
 					sysQueIdArr, hwQueIdArr, teaQueIdArr,
-					coin, traceStatus,0);
+					coin, traceStatus,0,0,"");
 			shwDao.save(sess, shw);
 			tran.commit();
 			return shw.getId();

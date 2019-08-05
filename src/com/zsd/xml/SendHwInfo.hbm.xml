@@ -85,5 +85,15 @@
                 <comment>有效状态[0(有效),1(无效)]</comment>
             </column>
         </property>
+        <property name="checkStatus" type="java.lang.Integer">
+            <column name="check_status" not-null="true">
+                <comment>检查状态[0(未检查),1(已检查)]</comment>
+            </column>
+        </property>
+        <property name="checkTime" type="java.lang.String">
+            <column name="check_time" length="30">
+                <comment>检查时间</comment>
+            </column>
+        </property>
     </class>
 </hibernate-mapping>

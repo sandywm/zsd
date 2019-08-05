@@ -28,6 +28,8 @@ public class SendHwInfo implements java.io.Serializable {
 	private Integer coin;
 	private Integer traceStatus;
 	private Integer inUse;
+	private Integer checkStatus;
+	private String checkTime;
 
 	// Constructors
 
@@ -40,7 +42,7 @@ public class SendHwInfo implements java.io.Serializable {
 			String hwTitle, String className, Subject subject,
 			String sendDate, String endDate, Integer hwType,
 			String sysQueIdArr, String hwQueIdArr, String teaQueIdArr,
-			Integer coin, Integer traceStatus,Integer inUse) {
+			Integer coin, Integer traceStatus,Integer inUse,Integer checkStatus,String checkTime) {
 		this.user = user;
 		this.loreInfo = loreInfo;
 		this.classInfo = classInfo;
@@ -56,6 +58,8 @@ public class SendHwInfo implements java.io.Serializable {
 		this.coin = coin;
 		this.traceStatus = traceStatus;
 		this.inUse = inUse;
+		this.checkStatus = checkStatus;
+		this.checkTime = checkTime;
 	}
 
 	// Property accessors
@@ -187,6 +191,22 @@ public class SendHwInfo implements java.io.Serializable {
 
 	public void setInUse(Integer inUse) {
 		this.inUse = inUse;
+	}
+
+	public Integer getCheckStatus() {
+		return checkStatus;
+	}
+
+	public void setCheckStatus(Integer checkStatus) {
+		this.checkStatus = checkStatus;
+	}
+
+	public String getCheckTime() {
+		return checkTime;
+	}
+
+	public void setCheckTime(String checkTime) {
+		this.checkTime = checkTime;
 	}
 	
 }

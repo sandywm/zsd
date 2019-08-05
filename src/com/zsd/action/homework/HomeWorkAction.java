@@ -464,6 +464,7 @@ public class HomeWorkAction extends DispatchAction {
 				map.put("hwTitle", hw.getTitle());
 				map.put("queSub", hw.getSubject());
 				map.put("queAnswer", hw.getAnswer());
+				map.put("queOptNum", hw.getAnswer().split(",").length);
 				map.put("queResolution", hw.getResolution());
 			}
 		}
@@ -1577,6 +1578,7 @@ public class HomeWorkAction extends DispatchAction {
 									map_d_1.put("loreId", lore.getId());
 									map_d_1.put("loreName", lore.getLoreName());
 									//获取该老师有没有发送指定类型下该知识点的作业
+//									swm.listPageInfoByOpt(currUserId, classId, hwType, 0, "", "", false, 0, 0);
 									list_d3.add(map_d_1);
 								}
 								map_d1.put("loreList", list_d3);
