@@ -1,5 +1,7 @@
 package com.zsd.service.impl;
 
+import java.util.List;
+
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -36,6 +38,21 @@ public class NetTeacherStudioRelationManagerImpl implements
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new WEBException("增加网络导师工作室老师信息时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public List<NetTeacherStudioRelationInfo> listInfoByNtStudioId(
+			Integer ntStudioId) throws WEBException {
+		try {
+			ntsrDao = (NetTeacherStudioRelationDao) DaoFactory.instance(null).getDao(Constants.DAO_NET_TEACHER_STUDIO_RELATION);
+			Session sess  = HibernateUtil.currentSession();
+			return ntsrDao.findInfoByNtStudioId(sess, ntStudioId);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("根据工作室编号获取工作室老师信息列表时出现异常!");
 		} finally{
 			HibernateUtil.closeSession();
 		}

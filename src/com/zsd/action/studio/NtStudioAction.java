@@ -4,7 +4,9 @@
  */
 package com.zsd.action.studio;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -16,10 +18,17 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
 
+import com.zsd.action.base.Transcode;
 import com.zsd.factory.AppFactory;
+import com.zsd.module.NetTeacherInfo;
+import com.zsd.module.NetTeacherStudent;
 import com.zsd.module.NetTeacherStudioInfo;
+import com.zsd.module.NetTeacherStudioRelationInfo;
+import com.zsd.service.NetTeacherInfoManager;
+import com.zsd.service.NetTeacherStudentManager;
 import com.zsd.service.NetTeacherStudioManager;
 import com.zsd.service.NetTeacherStudioNewsManager;
+import com.zsd.service.NetTeacherStudioRelationManager;
 import com.zsd.tools.CommonTools;
 import com.zsd.tools.CurrentTime;
 import com.zsd.util.Constants;
@@ -41,9 +50,9 @@ public class NtStudioAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		NetTeacherStudioManager ntStudioManager = (NetTeacherStudioManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDIO);
 		Integer id=CommonTools.getFinalInteger("ntStudioId", request);
-		String studioName =CommonTools.getFinalStr("studioName",request);
+		String studioName =Transcode.unescape_new("studioName",request);
 		Integer maxNum=CommonTools.getFinalInteger("maxNum", request);
-		String studioProfile =CommonTools.getFinalStr("studioProfile",request);
+		String studioProfile =Transcode.unescape_new("studioProfile",request);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "fail";
 		boolean flag = ntStudioManager.updateNTStudio(id, studioName, maxNum, studioProfile);
@@ -68,6 +77,8 @@ public class NtStudioAction extends DispatchAction {
 	public ActionForward getNTStudio(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		NetTeacherStudioManager ntStudioManager = (NetTeacherStudioManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDIO);
+		NetTeacherStudioRelationManager ntsrManager = (NetTeacherStudioRelationManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDIO_RELATION);
+		NetTeacherStudentManager ntsManager = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT); 
 		Integer userId=CommonTools.getLoginUserId(request);
 		Map<String,Object> map = new HashMap<String,Object>();
 		List<NetTeacherStudioInfo> ntStudiolist= ntStudioManager.listNTStudioByuId(userId);
@@ -76,6 +87,20 @@ public class NtStudioAction extends DispatchAction {
 		map.put("studioName", ntStudio.getStudioName());
 		map.put("studioCode", ntStudio.getStudioCode());
 		map.put("studioProfile", ntStudio.getStudioProfile());
+		List<Object> list_d = new ArrayList<Object>();
+		List<NetTeacherStudioRelationInfo> ntsrlist = ntsrManager.listInfoByNtStudioId(ntStudio.getId());
+		for (Iterator<NetTeacherStudioRelationInfo> itr = ntsrlist.iterator(); itr.hasNext();) {
+			NetTeacherStudioRelationInfo ntsrInfo = (NetTeacherStudioRelationInfo) itr.next();
+			Map<String,Object> map_d= new HashMap<String,Object>();
+			Integer teaId = ntsrInfo.getTeaId();
+			List<NetTeacherStudent> ntslist = ntsManager.listByntId(teaId);
+			map_d.put("ntName", ntslist.get(0).getNetTeacherInfo().getUser().getRealName());
+			map_d.put("freetrial", ntsManager.getByStuNum(teaId, -1));
+			map_d.put("free", ntsManager.getByStuNum(teaId, 2));
+			map_d.put("pay", ntsManager.getByStuNum(teaId, 1));
+			list_d.add(map_d);
+		}
+		map.put("ntStudioInfo", list_d);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
@@ -94,8 +119,8 @@ public class NtStudioAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		NetTeacherStudioNewsManager ntsNewsManager = (NetTeacherStudioNewsManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDIO_NEWS);
 		Integer ntStudioId=CommonTools.getFinalInteger("ntStudioId", request);
-		String newsTitle =CommonTools.getFinalStr("newsTitle",request);
-		String newsContent =CommonTools.getFinalStr("newsContent",request);
+		String newsTitle = Transcode.unescape_new("newsTitle",request);
+		String newsContent =Transcode.unescape_new("newsContent",request);
 		String sendTime = CurrentTime.getCurrentTime();
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "fail";
@@ -107,6 +132,38 @@ public class NtStudioAction extends DispatchAction {
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
-	
+	/**
+	 * 通过工作室邀请码加入工作室
+	 * @author zdf
+	 * 2019-7-31 上午09:49:18
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward addNtStudioRelation(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		NetTeacherStudioManager ntStudioManager = (NetTeacherStudioManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDIO);
+		NetTeacherStudioRelationManager ntsrManager = (NetTeacherStudioRelationManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDIO_RELATION);
+		NetTeacherInfoManager ntManager = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
+		String studioCode =CommonTools.getFinalStr("studioCode",request);
+		Integer userId=CommonTools.getLoginUserId(request);
+		List<NetTeacherStudioInfo> ntStudiolist = ntStudioManager.listNTStudioBystudioCode(studioCode);
+		List<NetTeacherInfo> ntlist =ntManager.listntInfoByuserId(userId);
+		Integer teaId =ntlist.get(0).getId();
+		Integer  ntStudioId = ntStudiolist.get(0).getId();
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "fail";
+		Integer flag =ntsrManager.addNTStudioRelation(ntStudioId, teaId, CurrentTime.getCurrentTime(), "");
+		if(flag > 0){
+			msg ="success";
+		}
+		map.put("msg", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+		
+	}
 	
 }

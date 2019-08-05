@@ -1,6 +1,9 @@
 package com.zsd.service;
 
+import java.util.List;
+
 import com.zsd.exception.WEBException;
+import com.zsd.module.NetTeacherStudioRelationInfo;
 
 public interface NetTeacherStudioRelationManager {
 	/**
@@ -15,5 +18,13 @@ public interface NetTeacherStudioRelationManager {
 	 * @throws WEBException
 	 */
 	Integer addNTStudioRelation(Integer ntStudioId,Integer teaId, String addTime,String outTime)throws WEBException;
-
+	/**
+	 * sss
+	 * @author zdf
+	 * 2019-7-30 上午09:42:40
+	 * @param ntStudioId
+	 * @return
+	 * @throws WEBException
+	 */
+	List<NetTeacherStudioRelationInfo> listInfoByNtStudioId(Integer ntStudioId)throws WEBException;
 }

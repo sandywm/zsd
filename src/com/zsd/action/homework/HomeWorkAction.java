@@ -1503,6 +1503,7 @@ public class HomeWorkAction extends DispatchAction {
 			UserClassInfo uc = ucm.getEntityByOpt(currUserId, 4);
 			if(uc != null){
 				Integer subId = uc.getSubjectId();//老师所教的学科
+				String subName = uc.getSubjectName();//老师所在的学科
 				String[] classIdArr = classIdStr.split(",");
 				Integer classId_tmp = Integer.parseInt(classIdArr[0]);
 				List<ClassInfo> cList = cm.listClassInfoById(classId_tmp);

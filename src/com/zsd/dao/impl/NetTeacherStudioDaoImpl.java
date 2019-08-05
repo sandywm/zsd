@@ -45,4 +45,12 @@ public class NetTeacherStudioDaoImpl implements NetTeacherStudioDao {
 		return  sess.createQuery(hql).list();
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<NetTeacherStudioInfo> findNTStudioBystudioCode(Session sess,
+			String studioCode) {
+		String hql=" from NetTeacherStudioInfo as nts where nts.studioCode = '"+ studioCode+"'";
+		return  sess.createQuery(hql).list();
+	}
+
 }

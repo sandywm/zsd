@@ -1,5 +1,7 @@
 package com.zsd.dao;
 
+import java.util.List;
+
 import org.hibernate.Session;
 
 import com.zsd.module.NetTeacherStudioRelationInfo;
@@ -52,4 +54,13 @@ public interface NetTeacherStudioRelationDao {
 	 * @param ntsr 需要更新网络老师工作室老师信息
 	 */
 	void update(Session sess,NetTeacherStudioRelationInfo ntsr);
+	/**
+	 * 根据工作室编号获取工作室老师信息
+	 * @author zdf
+	 * 2019-7-30 上午09:18:06
+	 * @param sess
+	 * @param ntStudioId 工作室编号
+	 * @return
+	 */
+	List<NetTeacherStudioRelationInfo> findInfoByNtStudioId(Session sess, Integer ntStudioId);
 }

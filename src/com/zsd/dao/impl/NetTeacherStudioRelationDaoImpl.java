@@ -1,5 +1,7 @@
 package com.zsd.dao.impl;
 
+import java.util.List;
+
 import org.hibernate.Session;
 
 import com.zsd.dao.NetTeacherStudioRelationDao;
@@ -33,6 +35,14 @@ public class NetTeacherStudioRelationDaoImpl implements
 	@Override
 	public void update(Session sess, NetTeacherStudioRelationInfo ntsr) {
 		sess.update(ntsr);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<NetTeacherStudioRelationInfo> findInfoByNtStudioId(
+			Session sess, Integer ntStudioId) {
+		String hql=" from  NetTeacherStudioRelationInfo as ntsr where  ntsr.netTeacherStudioInfo.id="+ntStudioId;
+		return  sess.createQuery(hql).list();
 	}
 
 }

@@ -40,5 +40,14 @@ public interface NetTeacherStudioManager {
 	 * @throws WEBException
 	 */
 	 List<NetTeacherStudioInfo> listNTStudioByuId(Integer userId)throws WEBException;
+	 /**
+	  * 根据工作室邀请码获取工作室信息
+	  * @author zdf
+	  * 2019-7-31 上午09:55:41
+	  * @param studioCode 邀请码
+	  * @return
+	  * @throws WEBException
+	  */
+	 List<NetTeacherStudioInfo> listNTStudioBystudioCode(String studioCode)throws WEBException;
 
 }

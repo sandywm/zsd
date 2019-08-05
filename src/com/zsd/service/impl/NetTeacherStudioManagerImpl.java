@@ -83,4 +83,19 @@ public class NetTeacherStudioManagerImpl implements NetTeacherStudioManager {
 		}
 	}
 
+	@Override
+	public List<NetTeacherStudioInfo> listNTStudioBystudioCode(String studioCode)
+			throws WEBException {
+		try {
+			ntStudioDao = (NetTeacherStudioDao) DaoFactory.instance(null).getDao(Constants.DAO_NET_TEACHER_STUDIO);
+			Session sess  = HibernateUtil.currentSession();
+			return ntStudioDao.findNTStudioBystudioCode(sess, studioCode);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("根据工作室邀请码获取网络导师工作室信息时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
 }

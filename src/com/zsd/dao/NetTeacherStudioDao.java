@@ -62,6 +62,15 @@ public interface NetTeacherStudioDao {
 	 * @return
 	 */
 	List<NetTeacherStudioInfo> findNTStudioByuId(Session sess,Integer userId);
+	/**
+	 * 根据工作室邀请码获取工作室信息
+	 * @author zdf
+	 * 2019-7-31 上午09:53:26
+	 * @param sess
+	 * @param studioCode 邀请码
+	 * @return
+	 */
+	List<NetTeacherStudioInfo> findNTStudioBystudioCode(Session sess,String studioCode );
 	
 
 }

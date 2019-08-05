@@ -21,7 +21,6 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
 
-import com.zsd.action.base.Transcode;
 import com.zsd.factory.AppFactory;
 import com.zsd.module.BuffetAbilityRelationInfo;
 import com.zsd.module.BuffetMindRelationInfo;
@@ -709,10 +708,13 @@ public class StudyRecordAction extends DispatchAction {
 		BuffetMindRelationInfoManager bmrManager = (BuffetMindRelationInfoManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_MIND_RELATION_INFO);
 		BuffetAbilityRelationInfoManager barManager= (BuffetAbilityRelationInfoManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_ABILITY_RELATION_INFO);
 		StudyLogManager slm = (StudyLogManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_LOG_INFO);
-		Integer studyLogId=CommonTools.getFinalInteger("studyLogId", request);//学习记录编号
+		//Integer studyLogId=CommonTools.getFinalInteger("studyLogId", request);//学习记录编号
+		Integer studyLogId=8;
 //		Integer loreId=CommonTools.getFinalInteger("loreId", request);//知识点编号	
-		Integer basicLoreId = CommonTools.getFinalInteger("quoteLoreId", request);//存在自助餐题库的知识点
-		String buffetTypeName=Transcode.unescape_new("buffetTypeName",request);
+		//Integer basicLoreId = CommonTools.getFinalInteger("quoteLoreId", request);//存在自助餐题库的知识点
+		Integer basicLoreId = 1726;
+		//String buffetTypeName=Transcode.unescape_new("buffetTypeName",request);
+		String buffetTypeName="思维训练";
 		String msg = "error";
 //		LoreInfo loreInfo =  loreManager.getEntityById(loreId);
 //		Integer basicLoreId = 0;//通用版知识点编号
@@ -738,6 +740,7 @@ public class StudyRecordAction extends DispatchAction {
 						map_d.put("queType", bqInfo.getQueType());//题型
 						map_d.put("title", bqInfo.getTitle());//自助餐题库标题
 						map_d.put("subject", bqInfo.getSubject());//题干
+						String[] answer  =bqInfo.getAnswer().trim().split(",");//正确答案
 						if(!bqInfo.getA().equals("")){
 							map_d.put("A", bqInfo.getA());	
 						}
@@ -756,7 +759,32 @@ public class StudyRecordAction extends DispatchAction {
 						if(!bqInfo.getF().equals("")){
 							map_d.put("F", bqInfo.getF());
 						}
-						map_d.put("answer", bqInfo.getAnswer());
+						if(bqInfo.getQueType().equals("单选题") || bqInfo.getQueType().equals("多选题") || bqInfo.getQueType().equals("填空选择题") ){
+							String ansName="";
+							for(int i = 0 ; i < answer.length ; i++){
+								if(answer[i].equals(bqInfo.getA().replace("Module/commonJs/ueditor/jsp/lore/",""))){
+									ansName += "A,";
+								}
+								if(answer[i].equals(bqInfo.getB().replace("Module/commonJs/ueditor/jsp/lore/",""))){
+									ansName += "B,";
+								}
+								if(answer[i].equals(bqInfo.getC().replace("Module/commonJs/ueditor/jsp/lore/",""))){
+									ansName += "C,";
+								}
+								if(answer[i].equals(bqInfo.getD().replace("Module/commonJs/ueditor/jsp/lore/",""))){
+									ansName += "D,";
+								}
+								if(answer[i].equals(bqInfo.getE().replace("Module/commonJs/ueditor/jsp/lore/",""))){
+									ansName += "E,";
+								}
+								if(answer[i].equals(bqInfo.getF().replace("Module/commonJs/ueditor/jsp/lore/",""))){
+									ansName += "F,";
+								}
+							}
+							map_d.put("answer", ansName.equals("") ? 1: ansName.substring(0,ansName.length()-1));
+						}else{
+							map_d.put("answer", bqInfo.getAnswer());
+						}
 						map_d.put("resolution", bqInfo.getResolution());
 						map_d.put("tips", bqInfo.getTips());
 						 List<BuffetMindRelationInfo> bmrList = 	bmrManager.listBmrInfoBybqId(bqInfo.getId());
@@ -909,7 +937,34 @@ public class StudyRecordAction extends DispatchAction {
 			map_d.put("D", bsdInfo.getD());
 			map_d.put("E", bsdInfo.getE());
 			map_d.put("F", bsdInfo.getF());
-			map_d.put("realAnswer", bsdInfo.getRealAnswer());//正确答案
+			String [] answer =  bsdInfo.getRealAnswer().split(",");
+			if(bsdInfo.getBuffetQueInfo().getQueType().equals("单选题") || bsdInfo.getBuffetQueInfo().getQueType().equals("多选题") || bsdInfo.getBuffetQueInfo().getQueType().equals("填空选择题")){
+				String ansName="";
+				for(int i = 0 ; i < answer.length ; i++){
+					if(answer[i].equals(bsdInfo.getA().replace("Module/commonJs/ueditor/jsp/lore/",""))){
+						ansName += "A,";
+					}
+					if(answer[i].equals(bsdInfo.getB().replace("Module/commonJs/ueditor/jsp/lore/",""))){
+						ansName += "B,";
+					}
+					if(answer[i].equals(bsdInfo.getC().replace("Module/commonJs/ueditor/jsp/lore/",""))){
+						ansName += "C,";
+					}
+					if(answer[i].equals(bsdInfo.getD().replace("Module/commonJs/ueditor/jsp/lore/",""))){
+						ansName += "D,";
+					}
+					if(answer[i].equals(bsdInfo.getE().replace("Module/commonJs/ueditor/jsp/lore/",""))){
+						ansName += "E,";
+					}
+					if(answer[i].equals(bsdInfo.getF().replace("Module/commonJs/ueditor/jsp/lore/",""))){
+						ansName += "F,";
+					}
+				}
+				map_d.put("realAnswer",ansName.equals("")?"": ansName.substring(0,ansName.length()-1));
+			}else{
+				map_d.put("realAnswer",  bsdInfo.getRealAnswer());
+			}
+			//map_d.put("realAnswer", bsdInfo.getRealAnswer());//正确答案
 			map_d.put("myAnswer", bsdInfo.getMyAnswer());//我的答案
 			list_d.add(map_d);
 		}
