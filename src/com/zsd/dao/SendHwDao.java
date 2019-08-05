@@ -45,6 +45,7 @@ public interface SendHwDao {
 	 * @param classId 接收班级编号(0表示全部)
 	 * @param hwType 作业类型(0-全部,1,2,3)
 	 * @param inUse 有效状态（-1全部，0：有效，1：无效）
+	 * @param checkStatus 作业检查状态(-1全部，0:未检查，1:已检查)
 	 * @param sDate 开始日期
 	 * @param eDate 结束日期
 	 * @param pageFlag 分页标记（true-分页）
@@ -52,7 +53,7 @@ public interface SendHwDao {
 	 * @param pageSize
 	 * @return
 	 */
-	List<SendHwInfo> findPageInfoByOpt(Session sess,Integer sendUserId,Integer classId,Integer hwType,Integer inUse,
+	List<SendHwInfo> findPageInfoByOpt(Session sess,Integer sendUserId,Integer classId,Integer hwType,Integer checkStatus,Integer inUse,
 			String sDate,String eDate,boolean pageFlag,Integer pageNo,Integer pageSize);
 	
 	/**
@@ -64,9 +65,10 @@ public interface SendHwDao {
 	 * @param classId 接收班级编号(0表示全部)
 	 * @param hwType 作业类型(0-全部,1,2,3)
 	 * @param inUse 有效状态（-1全部，0：有效，1：无效）
+	 * @param checkStatus 作业检查状态(-1全部，0:未检查，1:已检查)
 	 * @param sDate 开始日期
 	 * @param eDate 结束日期
 	 * @return
 	 */
-	Integer getCountByOpt(Session sess,Integer sendUserId,Integer classId,Integer hwType,Integer inUse,String sDate,String eDate);
+	Integer getCountByOpt(Session sess,Integer sendUserId,Integer classId,Integer hwType,Integer checkStatus,Integer inUse,String sDate,String eDate);
 }

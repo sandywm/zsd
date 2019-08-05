@@ -36,7 +36,7 @@ public class SendHwDaoImpl implements SendHwDao{
 
 	@Override
 	public List<SendHwInfo> findPageInfoByOpt(Session sess, Integer sendUserId,
-			Integer classId, Integer hwType, Integer inUse, String sDate, String eDate,boolean pageFlag,
+			Integer classId, Integer hwType,Integer checkStatus, Integer inUse, String sDate, String eDate,boolean pageFlag,
 			Integer pageNo, Integer pageSize) {
 		// TODO Auto-generated method stub
 		String hql = " from SendHwInfo as shw where 1=1";
@@ -55,6 +55,9 @@ public class SendHwDaoImpl implements SendHwDao{
 		if(inUse >= 0){
 			hql += " and shw.inUse = "+inUse;
 		}
+		if(checkStatus >= 0){
+			hql += " and shw.checkStatus = "+checkStatus;
+		}
 		hql += " order by shw.sendDate desc";
 		if(pageFlag){
 			int offset = (pageNo - 1) * pageSize;
@@ -68,7 +71,7 @@ public class SendHwDaoImpl implements SendHwDao{
 
 	@Override
 	public Integer getCountByOpt(Session sess, Integer sendUserId,
-			Integer classId, Integer hwType ,Integer inUse, String sDate, String eDate) {
+			Integer classId, Integer hwType ,Integer checkStatus,Integer inUse, String sDate, String eDate) {
 		// TODO Auto-generated method stub
 		String hql = "select count(shw.id) from SendHwInfo as shw where 1=1";
 		if(!sDate.equals("") && !eDate.equals("")){
@@ -85,6 +88,9 @@ public class SendHwDaoImpl implements SendHwDao{
 		}
 		if(inUse >= 0){
 			hql += " and shw.inUse = "+inUse;
+		}
+		if(checkStatus >= 0){
+			hql += " and shw.checkStatus = "+checkStatus;
 		}
 		Object countObj = sess.createQuery(hql).uniqueResult();
 		return CommonTools.longToInt(countObj);

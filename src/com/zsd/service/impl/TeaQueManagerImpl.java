@@ -113,14 +113,14 @@ public class TeaQueManagerImpl implements TeaQueManager{
 	}
 
 	@Override
-	public List<TeaQueInfo> listInfoByOpt(Integer loreId, Integer teaId,
+	public List<TeaQueInfo> listInfoByOpt(Integer loreId, Integer teaId,Integer inUse,
 			boolean pageFlag, Integer pageNo, Integer pageSize)
 			throws WEBException {
 		// TODO Auto-generated method stub
 		try {
 			tqDao = (TeaQueDao) DaoFactory.instance(null).getDao(Constants.DAO_TEA_QUE_INFO);
 			Session sess = HibernateUtil.currentSession();
-			return tqDao.findInfoByOpt(sess, loreId, teaId, pageFlag, pageNo, pageSize);
+			return tqDao.findInfoByOpt(sess, loreId, teaId, inUse, pageFlag, pageNo, pageSize);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -131,13 +131,13 @@ public class TeaQueManagerImpl implements TeaQueManager{
 	}
 
 	@Override
-	public Integer getCountByOpt(Integer loreId, Integer teaId)
+	public Integer getCountByOpt(Integer loreId, Integer teaId,Integer inUse)
 			throws WEBException {
 		// TODO Auto-generated method stub
 		try {
 			tqDao = (TeaQueDao) DaoFactory.instance(null).getDao(Constants.DAO_TEA_QUE_INFO);
 			Session sess = HibernateUtil.currentSession();
-			return tqDao.getCountByOpt(sess, loreId, teaId);
+			return tqDao.getCountByOpt(sess, loreId, teaId, inUse);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

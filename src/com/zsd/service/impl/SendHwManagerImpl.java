@@ -109,13 +109,13 @@ public class SendHwManagerImpl implements SendHwManager{
 
 	@Override
 	public List<SendHwInfo> listPageInfoByOpt(Integer sendUserId,
-			Integer classId, Integer hwType, Integer inUse, String sDate,
+			Integer classId, Integer hwType,Integer checkStatus, Integer inUse, String sDate,
 			String eDate, boolean pageFlag, Integer pageNo, Integer pageSize) throws WEBException {
 		// TODO Auto-generated method stub
 		try {
 			shwDao = (SendHwDao) DaoFactory.instance(null).getDao(Constants.DAO_SEND_HW_INFO);
 			Session sess = HibernateUtil.currentSession();
-			return shwDao.findPageInfoByOpt(sess, sendUserId, classId, hwType, inUse, sDate, eDate, pageFlag, pageNo, pageSize);
+			return shwDao.findPageInfoByOpt(sess, sendUserId, classId, hwType, checkStatus, inUse, sDate, eDate, pageFlag, pageNo, pageSize);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -127,17 +127,42 @@ public class SendHwManagerImpl implements SendHwManager{
 
 	@Override
 	public Integer getCountByOpt(Integer sendUserId, Integer classId,
-			Integer hwType, Integer inUse, String sDate, String eDate)
+			Integer hwType,Integer checkStatus, Integer inUse, String sDate, String eDate)
 			throws WEBException {
 		// TODO Auto-generated method stub
 		try {
 			shwDao = (SendHwDao) DaoFactory.instance(null).getDao(Constants.DAO_SEND_HW_INFO);
 			Session sess = HibernateUtil.currentSession();
-			return shwDao.getCountByOpt(sess, sendUserId, classId, hwType, inUse, sDate, eDate);
+			return shwDao.getCountByOpt(sess, sendUserId, classId, hwType, checkStatus, inUse, sDate, eDate);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			throw new WEBException("根据条件获取家庭主页信息记录条数时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public boolean updateCheckInfoById(Integer id) throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			shwDao = (SendHwDao) DaoFactory.instance(null).getDao(Constants.DAO_SEND_HW_INFO);
+			Session sess = HibernateUtil.currentSession();
+			tran = sess.beginTransaction();
+			SendHwInfo shw = shwDao.getEntityById(sess, id);
+			if(shw != null){
+				shw.setCheckStatus(1);
+				shw.setCheckTime(CurrentTime.getCurrentTime());
+				shwDao.update(sess, shw);
+				tran.commit();
+				return true;
+			}
+			return false;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new WEBException("修改检查作业时出现异常!");
 		} finally{
 			HibernateUtil.closeSession();
 		}

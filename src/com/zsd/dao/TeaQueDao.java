@@ -44,11 +44,12 @@ public interface TeaQueDao {
 	 * @param loreId 知识点编号(0表示全部)
 	 * @param teaId 老师编号(0表示全部)
 	 * @param pageFlag 分页标记(true：分页,false：不分页)
+	 * @param inUse 有效状态(-1表示全部,0：有效，1：无效)
 	 * @param pageNo
 	 * @param pageSize
 	 * @return
 	 */
-	List<TeaQueInfo> findInfoByOpt(Session sess,Integer loreId,Integer teaId,boolean pageFlag,Integer pageNo,Integer pageSize);
+	List<TeaQueInfo> findInfoByOpt(Session sess,Integer loreId,Integer teaId,Integer inUse,boolean pageFlag,Integer pageNo,Integer pageSize);
 	
 	/**
 	 * 根据条件是否获取老师自传家庭作业信息列表记录条数
@@ -57,7 +58,8 @@ public interface TeaQueDao {
 	 * @param sess
 	 * @param loreId 知识点编号(0表示全部)
 	 * @param teaId 老师编号(0表示全部)
+	 * @param inUse 有效状态(-1表示全部,0：有效，1：无效)
 	 * @return
 	 */
-	Integer getCountByOpt(Session sess,Integer loreId,Integer teaId);
+	Integer getCountByOpt(Session sess,Integer loreId,Integer teaId,Integer inUse);
 }

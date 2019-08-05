@@ -44,6 +44,16 @@ public interface SendHwManager {
 	boolean updateInfoById(Integer id,Integer coin,Integer traceStatus,Integer inUse) throws WEBException;
 	
 	/**
+	 * 修改作业检查状态为已完成
+	 * @author wm
+	 * @date 2019-8-5 上午11:30:15
+	 * @param id
+	 * @return
+	 * @throws WEBException
+	 */
+	boolean updateCheckInfoById(Integer id)throws WEBException;
+	
+	/**
 	 * 根据主键获取信息
 	 * @author wm
 	 * @date 2019-7-28 上午09:38:42
@@ -61,6 +71,7 @@ public interface SendHwManager {
 	 * @param classId 班级编号（0表示全部）
 	 * @param hwType 作业类型（0全部,1-家庭作业,2-课后复习,3-课前预习）
 	 * @param inUse  有效状态(-1全部,0：有效，1：无效)
+	 * @param checkStatus 作业检查状态(-1全部，0:未检查，1:已检查)
 	 * @param sDate 开始时间
 	 * @param eDate 结束时间
 	 * @param pageFlag 分页标记(true：分页)
@@ -69,7 +80,7 @@ public interface SendHwManager {
 	 * @return
 	 * @throws WEBException
 	 */
-	List<SendHwInfo> listPageInfoByOpt(Integer sendUserId,Integer classId,Integer hwType,Integer inUse,
+	List<SendHwInfo> listPageInfoByOpt(Integer sendUserId,Integer classId,Integer hwType,Integer checkStatus,Integer inUse,
 			String sDate,String eDate,boolean pageFlag, Integer pageNo,Integer pageSize) throws WEBException;
 	
 	/**
@@ -80,11 +91,12 @@ public interface SendHwManager {
 	 * @param classId 班级编号（0表示全部）
 	 * @param hwType 作业类型（0全部,1-家庭作业,2-课后复习,3-课前预习）
 	 * @param inUse  有效状态(-1全部,0：有效，1：无效)
+	 * @param checkStatus 作业检查状态(-1全部，0:未检查，1:已检查)
 	 * @param sDate 开始时间
 	 * @param eDate 结束时间
 	 * @return
 	 * @throws WEBException
 	 */
-	Integer getCountByOpt(Integer sendUserId,Integer classId,Integer hwType,Integer inUse,
+	Integer getCountByOpt(Integer sendUserId,Integer classId,Integer hwType,Integer checkStatus,Integer inUse,
 			String sDate,String eDate) throws WEBException;
 }

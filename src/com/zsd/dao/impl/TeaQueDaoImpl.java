@@ -36,7 +36,7 @@ public class TeaQueDaoImpl implements TeaQueDao{
 
 	@Override
 	public List<TeaQueInfo> findInfoByOpt(Session sess, Integer loreId,
-			Integer teaId, boolean pageFlag, Integer pageNo, Integer pageSize) {
+			Integer teaId,Integer inUse, boolean pageFlag, Integer pageNo, Integer pageSize) {
 		// TODO Auto-generated method stub
 		String hql = " from TeaQueInfo as tq where 1 = 1";
 		if(loreId > 0){
@@ -44,6 +44,9 @@ public class TeaQueDaoImpl implements TeaQueDao{
 		}
 		if(teaId > 0){
 			hql += " and tq.user.id = "+teaId;
+		}
+		if(inUse >= 0){
+			hql += " and tq.inUse = "+inUse;
 		}
 		if(pageFlag){
 			int offset = (pageNo - 1) * pageSize;
@@ -57,7 +60,7 @@ public class TeaQueDaoImpl implements TeaQueDao{
 	}
 
 	@Override
-	public Integer getCountByOpt(Session sess, Integer loreId, Integer teaId) {
+	public Integer getCountByOpt(Session sess, Integer loreId, Integer teaId,Integer inUse) {
 		// TODO Auto-generated method stub
 		String hql = "select count(tq.id) from TeaQueInfo as tq where 1 = 1";
 		if(loreId > 0){
@@ -65,6 +68,9 @@ public class TeaQueDaoImpl implements TeaQueDao{
 		}
 		if(teaId > 0){
 			hql += " and tq.user.id = "+teaId;
+		}
+		if(inUse >= 0){
+			hql += " and tq.inUse = "+inUse;
 		}
 		Object countObj = sess.createQuery(hql).uniqueResult();
 		return CommonTools.longToInt(countObj);

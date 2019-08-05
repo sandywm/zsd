@@ -59,12 +59,13 @@ public interface TeaQueManager {
 	 * @param loreId 知识点编号(0表示全部)
 	 * @param teaId 老师编号(0表示全部)
 	 * @param pageFlag 分页标记(true：分页,false：不分页)
+	 * @param inUse 有效状态(-1表示全部,0：有效，1：无效)
 	 * @param pageNo
 	 * @param pageSize
 	 * @return
 	 * @throws WEBException
 	 */
-	List<TeaQueInfo> listInfoByOpt(Integer loreId,Integer teaId,boolean pageFlag,Integer pageNo,Integer pageSize) throws WEBException;
+	List<TeaQueInfo> listInfoByOpt(Integer loreId,Integer teaId,Integer inUse,boolean pageFlag,Integer pageNo,Integer pageSize) throws WEBException;
 	
 	/**
 	 * 根据条件是否获取老师自传家庭作业信息列表记录条数
@@ -72,10 +73,11 @@ public interface TeaQueManager {
 	 * @date 2019-7-25 下午05:25:42
 	 * @param loreId 知识点编号(0表示全部)
 	 * @param teaId 老师编号(0表示全部)
+	 * @param inUse 有效状态(-1表示全部,0：有效，1：无效)
 	 * @return
 	 * @throws WEBException
 	 */
-	Integer getCountByOpt(Integer loreId,Integer teaId) throws WEBException;
+	Integer getCountByOpt(Integer loreId,Integer teaId,Integer inUse) throws WEBException;
 	
 	/**
 	 * 根据编号获取老师自传家庭作业详情
