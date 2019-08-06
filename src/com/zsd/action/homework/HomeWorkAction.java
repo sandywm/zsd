@@ -825,6 +825,50 @@ public class HomeWorkAction extends DispatchAction {
 	}
 	
 	/**
+	 * 设置老师上传题的有/无效
+	 * @author wm
+	 * @date 2019-8-6 下午04:55:20
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward setTeaInUseStatus(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		TeaQueManager tqm = (TeaQueManager) AppFactory.instance(null).getApp(Constants.WEB_TEA_QUE_INFO);
+		Integer tqId = CommonTools.getFinalInteger("tqId", request);
+		Integer inUse = CommonTools.getFinalInteger("inUse", request);//有效状态（0：有效，1：无效）
+		String roleName = CommonTools.getLoginRoleName(request);
+		Map<String,String> map = new HashMap<String,String>();
+		String msg = "error";
+		if(roleName.equals("老师") || roleName.equals("知识点管理员")){
+			boolean flag = false;
+			if(roleName.equals("老师")){
+				TeaQueInfo tq = tqm.getEntityById(tqId);
+				if(tq != null){
+					if(tq.getUser().getId().equals(CommonTools.getLoginUserId(request))){
+						flag = true;
+					}
+				}
+			}else{
+				flag = true;
+			}
+			if(flag){
+				flag = tqm.updateInUseById(tqId, inUse);
+				if(flag){
+					msg = "success";
+				}
+			}
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
 	 * 导向老师的家庭作业页面
 	 * @author wm
 	 * @date 2019-7-31 上午10:19:51
