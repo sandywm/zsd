@@ -123,6 +123,7 @@ public class UserClassInfoManagerImpl implements UserClassInfoManager {
 			HibernateUtil.closeSession();
 		}
 	}
+	
 	@Override
 	public boolean updateInfoByOpt(Integer id, Integer userId,
 			Integer applyUserId, String applyUsreName, Integer status)
@@ -169,6 +170,31 @@ public class UserClassInfoManagerImpl implements UserClassInfoManager {
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new WEBException("根据老师编号、班级编号、角色编号获取老师班级信息表时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public Integer addUcInfo(Integer userId, Integer classId, Integer roleId,
+			Integer subId, String subName) throws WEBException {
+		try {
+			roleinfoDao = (RoleInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_ROLE_INFO);
+			userDao = (UserDao) DaoFactory.instance(null).getDao(Constants.DAO_USER_INFO);
+			cDao = (ClassInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_CLASS_INFO);
+			ucDao = (UserClassInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_USER_CLASS_INFO);
+			Session sess  = HibernateUtil.currentSession();
+			tran = sess.beginTransaction();
+			User user = userDao.get(sess, userId);
+			RoleInfo roleInfo = roleinfoDao.get(sess, roleId);
+			ClassInfo classInfo = cDao.get(sess, classId);
+			UserClassInfo  ucInfo = new  UserClassInfo(user, roleInfo, classInfo, subId, subName, 0, "", 0);
+			ucDao.save(sess, ucInfo);
+			tran.commit();
+			return ucInfo.getId();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("(班内老师)增加用户班级信息时出现异常!");
 		} finally{
 			HibernateUtil.closeSession();
 		}

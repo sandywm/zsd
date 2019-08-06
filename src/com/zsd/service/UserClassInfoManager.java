@@ -8,7 +8,7 @@ import com.zsd.module.UserClassInfo;
 
 public interface UserClassInfoManager {
 	/**
-	 *  添加用户编辑信息（学生绑定班级）
+	 *  添加用户班级信息（学生绑定班级）
 	 * @author zong
 	 * @date  2019-5-5 下午04:53:49
 	 * @param userId 用户编号
@@ -18,6 +18,19 @@ public interface UserClassInfoManager {
 	 * @throws WEBException
 	 */
 	Integer addUcInfo(Integer userId,Integer classId,Integer roleId) throws WEBException;
+	/**
+	 * 添加用户班级信息（班内老师绑定班级）
+	 * @author zdf
+	 * 2019-8-6 上午10:06:05
+	 * @param userId 用户编号
+	 * @param classId 班级编号
+	 * @param roleId 角色编号
+	 * @param subId 科目编号
+	 * @param subName 科目名称
+	 * @return
+	 * @throws WEBException
+	 */
+	Integer addUcInfo(Integer userId,Integer classId,Integer roleId,Integer subId,String subName) throws WEBException;
 	/**
 	 * 根据用户编号获取用户班级信息
 	 * @author zong

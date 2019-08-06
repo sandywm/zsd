@@ -780,37 +780,39 @@ public class CommonTools {
 //	    System.out.println(CommonTools.getCurrentStudyPath_new(bb, 7397));
 //	    System.out.println(CommonTools.getSelfArea_taobao("123.52.203.75"));
 //	    System.out.println(CurrentTime.convertTimestampToString_1(CurrentTime.getCurrentTime1()));
-		File file = new File("d:/new4.json");
-		InputStreamReader br = new InputStreamReader(new FileInputStream(file),"utf-8");//读取文件,同时指定编码
-		StringBuffer sb = new StringBuffer();
-        char[] ch = new char[128];  //一次读取128个字符
-        int len = 0;
-        while((len = br.read(ch,0, ch.length)) != -1){
-            sb.append(ch, 0, len);
-        }
-        String s = sb.toString();
-        if(!s.equals("")){
-        	JSONObject dataJson = JSON.parseObject(s); 
-            JSONArray features = dataJson.getJSONArray("areaList");// 找到features json数组
-            //第一级
-            for(int i = 0 ; i < features.size() ; i++){
-            	JSONArray features1 = features.getJSONObject(i).getJSONArray("children");
-                //第二级
-            	for(int j = 0 ; j < features1.size() ; j++){
-            		JSONArray features2 = features1.getJSONObject(j).getJSONArray("children");
-            		for(int k = 0 ; k < features2.size() ; k++){
-            			 //第三级
-            			JSONObject obj2 = features2.getJSONObject(k);
-            			String countyCode = obj2.getString("code");
-            			String countyName = obj2.getString("name");
-                        JSONArray features3 = obj2.getJSONArray("children");
-                        for(Integer num = 0 ; num < features3.size() ; num++){
-                        	JSONObject obj3 = features3.getJSONObject(num);
-                        	System.out.println(countyCode+"--"+ countyName +"--" + obj3.getString("code") + "   " + obj3.getString("name"));
-                        }
-            		}
-            	}
-            }
-        }
+//		File file = new File("d:/new4.json");
+//		InputStreamReader br = new InputStreamReader(new FileInputStream(file),"utf-8");//读取文件,同时指定编码
+//		StringBuffer sb = new StringBuffer();
+//        char[] ch = new char[128];  //一次读取128个字符
+//        int len = 0;
+//        while((len = br.read(ch,0, ch.length)) != -1){
+//            sb.append(ch, 0, len);
+//        }
+//        String s = sb.toString();
+//        if(!s.equals("")){
+//        	JSONObject dataJson = JSON.parseObject(s); 
+//            JSONArray features = dataJson.getJSONArray("areaList");// 找到features json数组
+//            //第一级
+//            for(int i = 0 ; i < features.size() ; i++){
+//            	JSONArray features1 = features.getJSONObject(i).getJSONArray("children");
+//                //第二级
+//            	for(int j = 0 ; j < features1.size() ; j++){
+//            		JSONArray features2 = features1.getJSONObject(j).getJSONArray("children");
+//            		for(int k = 0 ; k < features2.size() ; k++){
+//            			 //第三级
+//            			JSONObject obj2 = features2.getJSONObject(k);
+//            			String countyCode = obj2.getString("code");
+//            			String countyName = obj2.getString("name");
+//                        JSONArray features3 = obj2.getJSONArray("children");
+//                        for(Integer num = 0 ; num < features3.size() ; num++){
+//                        	JSONObject obj3 = features3.getJSONObject(num);
+//                        	System.out.println(countyCode+"--"+ countyName +"--" + obj3.getString("code") + "   " + obj3.getString("name"));
+//                        }
+//            		}
+//            	}
+//            }
+//        }
+		String aa = "";
+		System.out.println(aa.split(",").length);
 	}
 }

@@ -35,10 +35,7 @@ import com.zsd.module.HwStudyDetailInfo;
 import com.zsd.module.HwStudyTjInfo;
 import com.zsd.module.LoreInfo;
 import com.zsd.module.LoreQuestion;
-import com.zsd.module.LoreQuestionSubInfo;
 import com.zsd.module.SendHwInfo;
-import com.zsd.module.StudyDetailInfo;
-import com.zsd.module.StudyLogInfo;
 import com.zsd.module.TeaQueInfo;
 import com.zsd.module.User;
 import com.zsd.module.UserClassInfo;
@@ -58,6 +55,7 @@ import com.zsd.service.LoreQuestionManager;
 import com.zsd.service.SendHwManager;
 import com.zsd.service.TeaQueManager;
 import com.zsd.service.UserClassInfoManager;
+import com.zsd.service.UserManager;
 import com.zsd.tools.CommonTools;
 import com.zsd.tools.Convert;
 import com.zsd.tools.CurrentTime;
@@ -575,10 +573,14 @@ public class HomeWorkAction extends DispatchAction {
 				List<TeaQueInfo> tqList = tqm.listInfoByOpt(loreId, currUserId, -1,true, pageNo, pageSize);
 				msg = "success";
 				List<Object> list_d = new ArrayList<Object>();
+				String queTitlePre = "";
+				if(roleName.equals("知识点管理员")){
+					queTitlePre = tqList.get(0).getUser().getRealName() + "老师上传";
+				}
 				for(TeaQueInfo tq : tqList){
 					Map<String,Object> map_d = new HashMap<String,Object>();
 					map_d.put("tqId", tq.getId());
-					map_d.put("queTitle", tq.getQueTitle());
+					map_d.put("queTitle", queTitlePre + tq.getQueTitle());
 					map_d.put("tqType", "针对性诊断");
 					map_d.put("inUse", tq.getInUse().equals(0) ? "有效" : "无效");
 					map_d.put("addTeaName", tq.getUser().getRealName());//上传题老师
@@ -616,17 +618,19 @@ public class HomeWorkAction extends DispatchAction {
 		String roleName = CommonTools.getLoginRoleName(request);
 		boolean flag = false;
 		if(tq != null){
+			String queTitle = tq.getQueTitle();
 			if(roleName.equals("老师")){
 				if(tq.getUser().getId().equals(CommonTools.getLoginUserId(request))){
 					flag = true;
 				}
 			}else if(roleName.equals("知识点管理员")){
 				flag = true;
+				queTitle = tq.getUser().getRealName() + "老师上传" + queTitle;
 			}
 			if(flag){
 				msg = "success";
 				map.put("tqId", tq.getId());
-				map.put("queTitle", tq.getQueTitle());
+				map.put("queTitle", queTitle);
 				map.put("queSub", tq.getQueSub());
 				map.put("loreName", tq.getLoreInfo().getLoreName());
 				map.put("queType", tq.getQueType());
@@ -678,6 +682,47 @@ public class HomeWorkAction extends DispatchAction {
 					msg = "success";
 				}
 			}
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 获取老师上传题库时的标题
+	 * @author wm
+	 * @date 2019-8-6 下午04:22:38
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getCurrMaxTeaQueNum(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		TeaQueManager tqm = (TeaQueManager) AppFactory.instance(null).getApp(Constants.WEB_TEA_QUE_INFO);
+		LoreInfoManager lm = (LoreInfoManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
+		Integer loreId = CommonTools.getFinalInteger("loreId", request);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "error";
+		String roleName = CommonTools.getLoginRoleName(request);
+		if(roleName.equals("老师") && loreId > 0){
+			LoreInfo lore = lm.getEntityById(loreId);
+			Integer ediId = lore.getChapter().getEducation().getEdition().getId();
+			if(ediId > 1){//老师增加题库时选择的是其他版本
+				//需要把其他版本的知识点转成通用版知识点
+				loreId = lore.getMainLoreId();
+			}
+			Integer userId = CommonTools.getLoginUserId(request);
+			List<TeaQueInfo> tqList = tqm.listInfoByOpt(loreId, userId, -1,false, 0, 0);
+			Integer currNum = 1;
+			if(tqList.size() > 0){
+				currNum = tqList.get(tqList.size() - 1).getQueNum() + 1;
+			}
+			map.put("currNum", "第" + currNum + "题");
+			msg = "success";
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
@@ -1530,7 +1575,7 @@ public class HomeWorkAction extends DispatchAction {
 	}
 	
 	/**
-	 * 根据老师所选年级班级获取章节知识点列表并根据时间定位上下册并根据上次作业定位出版社
+	 * 根据老师所选年级班级获取章节知识点列表并根据时间定位上下册并根据上次作业定位出版社（老师发布作业）
 	 * @author wm
 	 * @date 2019-8-4 下午05:23:43
 	 * @param mapping
@@ -1657,7 +1702,7 @@ public class HomeWorkAction extends DispatchAction {
 	}
 	
 	/**
-	 * 根据所选章节知识点获取题库列表
+	 * 根据所选章节知识点获取题库列表（老师发布作业）
 	 * @author wm
 	 * @date 2019-8-5 下午05:19:12
 	 * @param mapping
@@ -1670,18 +1715,17 @@ public class HomeWorkAction extends DispatchAction {
 	public ActionForward getLoreQuestionData(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
-		SendHwManager swm = (SendHwManager) AppFactory.instance(null).getApp(Constants.WEB_SEND_HW_INFO);
-		ClassInfoManager cm = (ClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_TEA_QUE_INFO);
-		UserClassInfoManager ucm = (UserClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
 		LoreInfoManager lm = (LoreInfoManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
 		HwQueManager hqm = (HwQueManager) AppFactory.instance(null).getApp(Constants.WEB_HW_QUE_INFO);
 		TeaQueManager tqm = (TeaQueManager) AppFactory.instance(null).getApp(Constants.WEB_TEA_QUE_INFO);
 		LoreQuestionManager lqm = (LoreQuestionManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
+		HwMindRelationManager hmrm = (HwMindRelationManager) AppFactory.instance(null).getApp(Constants.WEB_HW_MIND_RELATION_INFO);
+		HwAbilityRelationManager harm = (HwAbilityRelationManager) AppFactory.instance(null).getApp(Constants.WEB_HW_ABILITY_RELATION_INFO);
+		ClassInfoManager cm = (ClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_CLASS_INFO);
 		Integer currUserId = CommonTools.getLoginUserId(request);
 		String classIdStr = CommonTools.getFinalStr("classId", request);//多个逗号隔开
 		Integer hwType = CommonTools.getFinalInteger("hwType", request);//作业类型1-家庭作业,2-课后复习,3-课前预习
 		Integer loreId = CommonTools.getFinalInteger("loreId", request);//之前选中的的知识点编号
-		String buffetTypeName = Transcode.unescape_new1("buffetTypeName", request);//家庭作业时才传递
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "noInfo";
 		if(currUserId > 0 && !classIdStr.equals("") && hwType > 0 && loreId > 0){
@@ -1689,47 +1733,293 @@ public class HomeWorkAction extends DispatchAction {
 			if(lore != null){
 				Integer basicLoreId = lore.getMainLoreId();//通用知识点编号
 				if(hwType.equals(1)){//获取系统家庭作业题库内容
-					List<HwQueInfo> hqList = hqm.listInfoByLoreAndBuffetType(basicLoreId, buffetTypeName);
+					List<HwQueInfo> hqList = hqm.listInfoByLoreAndBuffetType(basicLoreId, "");
+					List<Object> list_d_xqjf = new ArrayList<Object>();
+					List<Object> list_d_ffgn = new ArrayList<Object>();
+					List<Object> list_d_swxl = new ArrayList<Object>();
+					List<Object> list_d_zlkf = new ArrayList<Object>();
+					List<Object> list_d_nlpy = new ArrayList<Object>();
+					List<Object> list_d_zksl = new ArrayList<Object>();
 					if(hqList.size() > 0){
+						msg = "success";
 						for(HwQueInfo hq : hqList){
 							Map<String,Object> map_d = new HashMap<String,Object>();
-							
+							Integer hwId = hq.getId();
+							List<HwAbilityRelationInfo> harList = harm.listInfoByOpt(0,hwId);
+							List<HwMindRelationInfo> hmrList = hmrm.listInfoByOpt(0, hwId);
+							String swType = "";
+							String nlType = "";
+							for(Iterator<HwAbilityRelationInfo> it_a = harList.iterator() ; it_a.hasNext();){
+								HwAbilityRelationInfo har = it_a.next();
+								nlType += har.getBuffetAbilityTypeInfo().getAbility() + ",";
+							}
+							for(Iterator<HwMindRelationInfo> it_m = hmrList.iterator() ; it_m.hasNext();){
+								HwMindRelationInfo bmr = it_m.next();
+								swType += bmr.getBuffetMindTypeInfo().getMind() + ",";
+							}
+							if(!swType.equals("")){
+								swType = swType.substring(0, swType.length() - 1);
+							}
+							if(!nlType.equals("")){
+								nlType = nlType.substring(0, nlType.length() - 1);
+							}
+							String buffetType = hq.getBuffetTypeInfo().getTypes();
+							map_d.put("lqId", hq.getId());
+							map_d.put("queType", "hw");//sys,hw,tea
+							map_d.put("lqType", hq.getQueType());
+							map_d.put("lqTitle", hq.getTitle());
+							map_d.put("lqSub", hq.getSubject());
+							map_d.put("swType", swType);
+							map_d.put("nlType", nlType);
+							map_d.put("lqAnswer", hq.getAnswer());
+							map_d.put("lqResolution", hq.getResolution());
+							if(buffetType.equals("兴趣激发")){
+								list_d_xqjf.add(map_d);
+							}else if(buffetType.equals("方法归纳")){
+								list_d_ffgn.add(map_d);
+							}else if(buffetType.equals("思维训练")){
+								list_d_swxl.add(map_d);
+							}else if(buffetType.equals("智力开发")){
+								list_d_zlkf.add(map_d);
+							}else if(buffetType.equals("能力培养")){
+								list_d_nlpy.add(map_d);
+							}else if(buffetType.equals("中/高考涉猎")){
+								list_d_zksl.add(map_d);
+							}
 						}
+						map.put("xqjf", list_d_xqjf);
+						map.put("ffgn", list_d_ffgn);
+						map.put("swxl", list_d_swxl);
+						map.put("zlkf", list_d_zlkf);
+						map.put("nlpy", list_d_nlpy);
+						map.put("zksl", list_d_zksl);
 					}
 				}else{//获取系统题库和老师上传题库
 					List<LoreQuestion> lqList = lqm.listInfoByLoreId(basicLoreId, "针对性诊断", 0);
 					List<TeaQueInfo> tqList = tqm.listInfoByOpt(basicLoreId, currUserId, 0,false, 0, 0);
 					List<Object> list_d = new ArrayList<Object>();
 					if(lqList.size() > 0){
+						msg = "success";
 						for(LoreQuestion lq : lqList){
 							Map<String,Object> map_d = new HashMap<String,Object>();
 							map_d.put("lqId", lq.getId());
 							map_d.put("queType", "sys");//sys,hw,tea
 							map_d.put("lqType", lq.getQueType());
+							map_d.put("lqTitle", lq.getQueTitle());
 							map_d.put("lqSub", lq.getQueSub());
-							map_d.put("answerA", lq.getA());
-							map_d.put("answerB", lq.getB());
-							map_d.put("answerC", lq.getC());
-							map_d.put("answerD", lq.getD());
-							map_d.put("answerE", lq.getE());
-							map_d.put("answerF", lq.getF());
+							String answerA = lq.getA();
+							String answerB = lq.getB();
+							String answerC = lq.getC();
+							String answerD = lq.getD();
+							String answerE = lq.getE();
+							String answerF = lq.getF();
+							map_d.put("answerA", answerA);//选项A
+							map_d.put("answerB", answerB);//选项B
+							map_d.put("answerC", answerC);//选项C
+							map_d.put("answerD", answerD);//选项D
+							map_d.put("answerE", answerE);//选项E
+							map_d.put("answerF", answerF);//选项F
+							String queAnswer = lq.getQueAnswer();
+							//需要匹配出选项
+							String[] answerQueArr = queAnswer.split(",");
+							String queAnswer_text = "";
+							String replaceStr = "Module/commonJs/ueditor/jsp/lore/";
+							for(Integer i = 0 ; i < answerQueArr.length ; i++){
+								if(answerQueArr[i].equals(answerA.replace(replaceStr,""))){
+									queAnswer_text += "A,";
+									continue;
+								}
+								if(answerQueArr[i].equals(answerB.replace(replaceStr,""))){
+									queAnswer_text += "B,";
+									continue;
+								}
+								if(answerQueArr[i].equals(answerC.replace(replaceStr,""))){
+									queAnswer_text += "C,";
+									continue;
+								}
+								if(answerQueArr[i].equals(answerD.replace(replaceStr,""))){
+									queAnswer_text += "D,";
+									continue;
+								}
+								if(answerQueArr[i].equals(answerE.replace(replaceStr,""))){
+									queAnswer_text += "E,";
+									continue;
+								}
+								if(answerQueArr[i].equals(answerF.replace(replaceStr,""))){
+									queAnswer_text += "F,";
+									continue;
+								}
+							}
+							if(!queAnswer_text.equals("")){
+								queAnswer_text = queAnswer_text.substring(0, queAnswer_text.length() - 1);
+							}
+							map_d.put("lqAnswer", queAnswer_text);
+							map_d.put("lqResolution", lq.getQueResolution());
 							list_d.add(map_d);
 						}
 					}
-					if(tqList.size() > 0){
+					if(tqList.size() > 0){//老师上传题
+						msg = "success";
 						for(TeaQueInfo tq : tqList){
 							Map<String,Object> map_d = new HashMap<String,Object>();
 							map_d.put("lqId", tq.getId());
 							map_d.put("queType", "tea");//sys,hw,tea
 							map_d.put("lqType", tq.getQueType());
+							map_d.put("lqTitle", tq.getQueTitle());
 							map_d.put("lqSub", tq.getQueSub());
+							map_d.put("lqAnswer", tq.getQueAnswer());
+							map_d.put("lqResolution", tq.getQueResolution());
 							list_d.add(map_d);
+						}
+					}
+					if(msg.equals("success")){
+						map.put("lqList", list_d);
+					}
+				}
+			}
+		}
+		map.put("result", msg);
+		if(msg.equals("success")){
+			map.put("classId", classIdStr);
+			String[] classIdArr = classIdStr.split(",");
+			List<Object> list_d = new ArrayList<Object>();
+			for(int i = 0 ; i <  classIdArr.length; i++){
+				Integer classId = Integer.parseInt(classIdArr[i]);
+				List<ClassInfo> cList = cm.listClassInfoById(classId);
+				if(cList.size() > 0){
+					ClassInfo c = cList.get(0);
+					String buildeClassDate = c.getBuildeClassDate();
+					String gradeName = Convert.dateConvertGradeName(buildeClassDate);//当前所在的年级
+					Map<String,Object> map_d = new HashMap<String,Object>();
+					map_d.put("classId", c.getId());
+					map_d.put("className", gradeName+c.getClassName());
+					list_d.add(map_d);
+				}
+			}
+			map.put("classList", list_d);
+			map.put("hwType", hwType);
+			map.put("loreId", loreId);
+			map.put("endDate", CurrentTime.getStringDate());
+		}
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 老师发送作业(老师发布作业)
+	 * 如果hwType为家庭作业时lqIdStr格式为lqId1:hw,lqId2:hw,......
+	 * 如果hwType为课前/后作业时lqIdStr格式为lqId1:tea,lqId2:tea,lqId3:sys,lqId4:sys......
+	 * @author wm
+	 * @date 2019-8-6 上午10:30:11
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward sendHw(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		LoreInfoManager lm = (LoreInfoManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
+		SendHwManager swm = (SendHwManager)AppFactory.instance(null).getApp(Constants.WEB_SEND_HW_INFO);
+		UserClassInfoManager ucm = (UserClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
+		ClassInfoManager cm = (ClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_CLASS_INFO);
+		HwStudyTjManager tjm = (HwStudyTjManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_TJ_INFO);
+		HwStudyDetailManager hsdm = (HwStudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_DETAIL_INFO);
+		Integer currUserId = CommonTools.getLoginUserId(request);
+		String classIdStr = CommonTools.getFinalStr("classId", request);//多个逗号隔开
+		Integer hwType = CommonTools.getFinalInteger("hwType", request);//作业类型1-家庭作业,2-课后复习,3-课前预习
+		Integer loreId = CommonTools.getFinalInteger("loreId", request);//之前选中的的知识点编号
+		String lqIdStr = CommonTools.getFinalStr("lqId", request);//多个逗号隔开
+		String endDate = CommonTools.getFinalStr("endDate", request);//截止日期
+		Integer traceStatus = CommonTools.getFinalInteger("traceStatus", request);//溯源标记-0(不溯源),1(溯源)
+		Integer subId = 0;
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "error";
+		if(currUserId > 0 && !classIdStr.equals("") && hwType > 0 && loreId > 0 && !lqIdStr.equals("")){
+			if(ucm.getEntityByOpt(currUserId, 4) != null){//必须是班内老师才能发送
+				msg = "success";
+				String[] lqIdArr = lqIdStr.split(",");
+				String[] classIdArr = classIdStr.split(",");
+				subId = lm.getEntityById(loreId).getChapter().getEducation().getGradeSubject().getSubject().getId();
+				String hwTypeChi = "";
+				if(hwType.equals(1)){
+					hwTypeChi = "家庭作业";
+				}else if(hwType.equals(2)){
+					hwTypeChi = "课后复习";
+				}else if(hwType.equals(3)){
+					hwTypeChi = "课前预习";
+				}
+				String sysQueIdArr = "";
+				String hwQueIdArr = "";
+				String teaQueIdArr = "";
+				String queIdStr = "";
+				String queAreaStr = "";
+				for(int j = 0 ; j < lqIdArr.length ; j++){
+					String lqId = lqIdArr[j].split(":")[0];
+					String queArea = lqIdArr[j].split(":")[1];
+					queIdStr += lqId + ",";
+					queAreaStr += queArea + ",";
+					if(queArea.equals("hw")){
+						hwQueIdArr += lqId + ",";
+					}else if(queArea.equals("sys")){
+						sysQueIdArr += lqId + ",";
+					}else if(queArea.equals("tea")){
+						teaQueIdArr += lqId + ",";
+					}
+				}
+				if(!queIdStr.equals("") && !queAreaStr.equals("")){
+					queIdStr = queIdStr.substring(0, queIdStr.length() - 1);
+					queAreaStr = queAreaStr.substring(0, queAreaStr.length() - 1);
+				}
+				Integer allNum = 0;
+				if(!sysQueIdArr.equals("")){
+					sysQueIdArr = sysQueIdArr.substring(0, sysQueIdArr.length() - 1);
+					allNum += sysQueIdArr.split(",").length;
+				}else if(!hwQueIdArr.equals("")){
+					hwQueIdArr = hwQueIdArr.substring(0, hwQueIdArr.length() - 1);
+					allNum += hwQueIdArr.split(",").length;
+				}else if(!teaQueIdArr.equals("")){
+					teaQueIdArr = teaQueIdArr.substring(0, teaQueIdArr.length() - 1);
+					allNum += teaQueIdArr.split(",").length;
+				}
+				for(int i = 0 ; i < classIdArr.length ; i++){
+					Integer classId = Integer.parseInt(classIdArr[i]);
+					List<ClassInfo> cList = cm.listClassInfoById(classId);
+					if(cList.size() > 0){
+						ClassInfo c = cList.get(0);
+						String buildeClassDate = c.getBuildeClassDate();
+						String gradeName = Convert.dateConvertGradeName(buildeClassDate);//当前所在的年级
+						String className = gradeName+c.getClassName();
+						//step:1增加指定班级的发送家庭作业记录
+						Integer hwSendId = swm.addSendHw(currUserId, CurrentTime.getStringDate()+hwTypeChi, loreId, classId, className, subId, endDate, hwType, sysQueIdArr, hwQueIdArr, teaQueIdArr, 0, traceStatus);
+						if(hwSendId > 0){
+							//获取该班级所有学生
+							List<UserClassInfo> ucList = ucm.listUcInfoByOpt(classId, 2, 1, 10000);
+							if(ucList.size() > 0){
+								String stuIdStr = "";
+								for(UserClassInfo uc : ucList){
+									stuIdStr += uc.getUser().getId() + ",";
+								}
+								//step:2增加家庭作业统计表数据
+								tjm.addBatchHwStudyTj(hwSendId, stuIdStr, allNum);
+								//获取指定班级指定发送编号的发送记录列表
+								List<HwStudyTjInfo> tjList = tjm.listInfoByOpt(hwSendId, 0, -1, false, 0, 0);
+								if(tjList.size() > 0){
+									for(HwStudyTjInfo tj : tjList){
+										//step:3增加家庭作业做题记录表
+										hsdm.addBatchHWSD(tj.getId(), queIdStr, queAreaStr);
+									}
+								}
+							}
 						}
 					}
 				}
 			}
-			
 		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
 }

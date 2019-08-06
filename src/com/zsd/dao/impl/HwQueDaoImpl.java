@@ -78,7 +78,10 @@ public class HwQueDaoImpl implements HwQueDao{
 	public List<HwQueInfo> findInfoByLoreAndBuffetType(Session sess,
 			Integer loreId, String buffetTypeName) {
 		// TODO Auto-generated method stub
-		String hql = " from HwQueInfo as hq where hq.loreInfo.id = "+loreId + " and hq.buffetTypeInfo.types = '"+buffetTypeName+"'";
+		String hql = " from HwQueInfo as hq where hq.loreInfo.id = "+loreId;
+		if(!buffetTypeName.equals("")){
+			hql += " and hq.buffetTypeInfo.types = '"+buffetTypeName+"'";
+		}
 		return sess.createQuery(hql).list();
 	}
 

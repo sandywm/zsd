@@ -103,56 +103,73 @@ public class LoginAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		UserManager uManager = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
 		RoleUserInfoManager ruManager = (RoleUserInfoManager) AppFactory.instance(null).getApp(Constants.WEB_ROLE_USER_INFO);
+		HttpSession session = request.getSession(false);
 		MD5 md5 = new MD5();
 		Map<String,Object> map = new HashMap<String,Object>();
 		String account =CommonTools.getFinalStr("account",request);
 		String pwd = CommonTools.getFinalStr("password",request);
+		String vercode = CommonTools.getFinalStr("vercode",request);//验证码
+		//获取图片中的随机数字
+		String vercode2 = (String)session.getAttribute("rand");
 		String password=md5.calcMD5(pwd);
 		String msg = "error";
+		//客户端信息
+		String clientInfo = CommonTools.getCilentInfo_new(request);
+		boolean uFlag= false;
 		if(account!=""&& password!=""){
-			boolean uFlag = uManager.userLogin(account, password);
-			if(uFlag){
-				//登录成功
-				String currdate = CurrentTime.getCurrentTime();
-				List<User> uList = uManager.listInfoByAccount(account);
-				Integer uid = uList.get(0).getId();
-				String  userAcc = uList.get(0).getUserAccount();
-				String portrait = uList.get(0).getPortrait();
-				//判断用户账号有效状态
-				Integer status = uList.get(0).getAccountStatus();
-				List<RoleUserInfo> ruList = ruManager.listUserRoleInfoByuserId(uid);
-				Integer roleId =0;
-				if(!ruList.isEmpty()){
-					roleId = ruList.get(0).getRoleInfo().getId();
+			if(clientInfo.equals("pc")){
+				if(!vercode.equals(vercode2)){
+					msg = "vercodeFail";//验证码不匹配 
+				}else{
+				  uFlag = uManager.userLogin(account, password);
 				}
-				if(status.equals(1)){//状态 0:无效,1:有效
-					Integer loginStatus = uList.get(0).getLoginStatus();//每次登陆，loginStatus自动加1，满50时恢复0状态
-					if(loginStatus < 50){
-						loginStatus++;
-					}else{
-						loginStatus = 0;
-					}
-					//修改用户的登录IP、登录时间、登录次数
-					uManager.updateUserLogin(uid, currdate, CommonTools.getIpAddress(request), uList.get(0).getLoginTimes() + 1, loginStatus);
-					if(portrait.equals("")){
-						portrait="Module/commonJs/ueditor/jsp/head/defaultHead.jpg";
-					}
-					map.put("loginStatus", loginStatus);
-					map.put("roleId", roleId);
-					map.put("userAcc", userAcc);
-					map.put("password", pwd);
-					map.put("portrait", portrait);
-					map.put("userId", uid);
-					msg = "success";
-				}else{//账号无效
-					msg = "lock";
-				}
-				msg = "success";
-				
 			}else{
-				msg = "fail";
+				uFlag = uManager.userLogin(account, password);
 			}
 		}
+		
+		if(uFlag){
+			//登录成功
+			String currdate = CurrentTime.getCurrentTime();
+			List<User> uList = uManager.listInfoByAccount(account);
+			Integer uid = uList.get(0).getId();
+			String  userAcc = uList.get(0).getUserAccount();
+			String portrait = uList.get(0).getPortrait();
+			//判断用户账号有效状态
+			Integer status = uList.get(0).getAccountStatus();
+			List<RoleUserInfo> ruList = ruManager.listUserRoleInfoByuserId(uid);
+			Integer roleId =0;
+			if(!ruList.isEmpty()){
+				roleId = ruList.get(0).getRoleInfo().getId();
+			}
+			if(status.equals(1)){//状态 0:无效,1:有效
+				Integer loginStatus = uList.get(0).getLoginStatus();//每次登陆，loginStatus自动加1，满50时恢复0状态
+				if(loginStatus < 50){
+					loginStatus++;
+				}else{
+					loginStatus = 0;
+				}
+				//修改用户的登录IP、登录时间、登录次数
+				uManager.updateUserLogin(uid, currdate, CommonTools.getIpAddress(request), uList.get(0).getLoginTimes() + 1, loginStatus);
+				if(portrait.equals("")){
+					portrait="Module/commonJs/ueditor/jsp/head/defaultHead.jpg";
+				}
+				map.put("loginStatus", loginStatus);
+				map.put("roleId", roleId);
+				map.put("userAcc", userAcc);
+				map.put("password", pwd);
+				map.put("portrait", portrait);
+				map.put("userId", uid);
+				msg = "success";
+			}else{//账号无效
+				msg = "lock";
+			}
+			msg = "success";
+			
+		}else{
+			msg = "fail";
+		}
+		
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
 		return null;

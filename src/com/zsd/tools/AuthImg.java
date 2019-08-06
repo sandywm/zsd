@@ -1,11 +1,14 @@
 package com.zsd.tools;
 
 
+import java.io.IOException;
+import java.util.Random;
+
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
-import javax.servlet.*;
-import javax.servlet.http.*;
-import java.io.*;
-import java.util.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 public class AuthImg extends HttpServlet {
 	/**
 	 * 
@@ -18,7 +21,6 @@ public class AuthImg extends HttpServlet {
     //servlet的响应方法
     public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
-    	System.out.println(String.valueOf(request.getParameter("userId")));
     	//设置响应的文件头
         response.setHeader("Pragma","No-cache");
         response.setHeader("Cache-Control","no-cache");

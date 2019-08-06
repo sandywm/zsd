@@ -237,7 +237,8 @@ public class UserAction extends DispatchAction {
 										List<GradeSubject> gslist = gsManager.listSpecInfoByGname(gName);//根据年级名获取学科列表
 										for (Iterator<GradeSubject> itr = gslist.iterator(); itr.hasNext();) {
 											GradeSubject gs = (GradeSubject) itr.next();
-											Integer sId = gs.getSubject().getId();
+											Integer sId = gs.getSubject().getId();//学科编号
+											String subName = gs.getSubject().getSubName(); //学科名称
 											//生成班内老师账户
 											Integer teaId=uManager.addUser("t"+schoolId+sId+ciId, "", new MD5().calcMD5("123456"), "",currTime, lastLoginIp, currTime, schoolId, "", yearSystem, prov, city);
 											//老师绑定角色
@@ -245,7 +246,7 @@ public class UserAction extends DispatchAction {
 											if(rlist.size() > 0){
 												Integer teaRoId = rlist.get(0).getId();
 												ruManager.addRoleUserInfo(teaId, teaRoId, "", "", "", "", 0, 0, 0, 0);
-												ucManager.addUcInfo(teaId, ciId, teaRoId); //绑定班级
+												ucManager.addUcInfo(teaId, ciId, teaRoId,sId,subName); //绑定班级
 											}
 										}
 									}

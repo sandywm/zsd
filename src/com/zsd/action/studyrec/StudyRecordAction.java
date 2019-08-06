@@ -21,6 +21,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
 
+import com.zsd.action.base.Transcode;
 import com.zsd.factory.AppFactory;
 import com.zsd.module.BuffetAbilityRelationInfo;
 import com.zsd.module.BuffetMindRelationInfo;
@@ -708,13 +709,10 @@ public class StudyRecordAction extends DispatchAction {
 		BuffetMindRelationInfoManager bmrManager = (BuffetMindRelationInfoManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_MIND_RELATION_INFO);
 		BuffetAbilityRelationInfoManager barManager= (BuffetAbilityRelationInfoManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_ABILITY_RELATION_INFO);
 		StudyLogManager slm = (StudyLogManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_LOG_INFO);
-		//Integer studyLogId=CommonTools.getFinalInteger("studyLogId", request);//学习记录编号
-		Integer studyLogId=8;
+		Integer studyLogId=CommonTools.getFinalInteger("studyLogId", request);//学习记录编号
 //		Integer loreId=CommonTools.getFinalInteger("loreId", request);//知识点编号	
-		//Integer basicLoreId = CommonTools.getFinalInteger("quoteLoreId", request);//存在自助餐题库的知识点
-		Integer basicLoreId = 1726;
-		//String buffetTypeName=Transcode.unescape_new("buffetTypeName",request);
-		String buffetTypeName="思维训练";
+		Integer basicLoreId = CommonTools.getFinalInteger("quoteLoreId", request);//存在自助餐题库的知识点
+		String buffetTypeName=Transcode.unescape_new("buffetTypeName",request);
 		String msg = "error";
 //		LoreInfo loreInfo =  loreManager.getEntityById(loreId);
 //		Integer basicLoreId = 0;//通用版知识点编号
