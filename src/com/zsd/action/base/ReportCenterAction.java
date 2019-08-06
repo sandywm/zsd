@@ -21,17 +21,12 @@ import com.zsd.module.StudyAllTjInfo;
 import com.zsd.module.StudyStuQfTjInfo;
 import com.zsd.module.StudyStuTjInfo;
 import com.zsd.module.Subject;
-import com.zsd.module.User;
 import com.zsd.module.UserClassInfo;
 import com.zsd.service.ClassInfoManager;
 import com.zsd.service.GradeSubjectManager;
-import com.zsd.service.LoreQuestionManager;
-import com.zsd.service.RelationZdResultManager;
 import com.zsd.service.SchoolManager;
 import com.zsd.service.StudentParentInfoManager;
 import com.zsd.service.StudyAllTjInfoManager;
-import com.zsd.service.StudyDetailManager;
-import com.zsd.service.StudyLogManager;
 import com.zsd.service.StudyStuQfTjManager;
 import com.zsd.service.StudyStuTjInfoManager;
 import com.zsd.service.SubjectManager;
@@ -46,12 +41,6 @@ import com.zsd.util.Constants;
  * @version 2019年6月11日 下午4:30:04
  */
 public class ReportCenterAction  extends DispatchAction{
-	
-	private static Map<String,Object> getTjMap(List<StudyStuQfTjInfo> tjList){
-		Map<String,Object> map = new HashMap<String,Object>();
-		return map;
-	}
-	
 	
 	/**
 	 * 能力报告页面
@@ -228,6 +217,7 @@ public class ReportCenterAction  extends DispatchAction{
 			List<StudyStuQfTjInfo> tjList = new ArrayList<StudyStuQfTjInfo>();
 			//学生和学生所在班级的平均统计信息进行对比
 			if(roleId.equals(2) || roleId.equals(6)){//学生\家长
+				Integer schoolId_tmp = 0;
 				if(userId > 0){
 					axisName1 = "我的统计";
 					if(roleId.equals(6)){//家长
@@ -240,6 +230,7 @@ public class ReportCenterAction  extends DispatchAction{
 					//获取学生所在的班级
 					UserClassInfo uc = ucm.getEntityByOpt(userId, 2);
 					if(uc != null){
+						schoolId_tmp = uc.getUser().getSchoolId();
 						classId = uc.getClassInfo().getId();
 						String className_temp = uc.getClassInfo().getClassName();
 						Integer gradeNumber = Convert.dateConvertGradeNumber(uc.getClassInfo().getBuildeClassDate());
@@ -248,7 +239,9 @@ public class ReportCenterAction  extends DispatchAction{
 					}
 					//学生和家长身份时，只需要用到起始时间，学科，班级编号
 				}
-				tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, "", "", "", "", 0, 0, "", classId);//获取指定班级的统计信息
+				if(schoolId_tmp > 0){//其他学校不参与统计
+					tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, "", "", "", "", 0, 0, "", classId);//获取指定班级的统计信息
+				}
 			}else if(roleId.equals(4)){//老师(班内)
 				//需要条件起始时间(必须)，学科(必须)，年级名称(不必须)，班级编号(必须)，学生编号(不必须)
 				//当选择的是班级时--一年级一班和一年级所有班级的平均值对比

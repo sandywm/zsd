@@ -2651,17 +2651,6 @@ public class OnlineStudyAction extends DispatchAction {
 			if(studyLogId > 0){
 				sl = slm.getEntityById(studyLogId);
 			}
-			//获取指定学生，指定科目，指定日期的勤奋报告统计信息
-			StudyStuQfTjInfo qftj = tjm.getEntityByOpt(stuId, subId, CurrentTime.getStringDate());
-			Integer oneZdSuccNum = 0;//一次性通过总数
-			Integer oneZdFailNum = 0;//一次性未通过总数
-			Integer againXxSuccNum = 0;//再次诊断(学习)通过
-			Integer againXxFailNum = 0;//再次诊断(学习)未通过
-			Integer noRelateNum = 0;//未溯源个数
-			Integer relateZdFailNum = 0;//关联诊断未通过
-			Integer relateXxSuccNum = 0;//关联学习通过
-			Integer relateXxFailNum = 0;//关联未学习通过
-			String rate = "";//转化率
 			
 			if(step == 3){//再次诊断时用
 				if(access == 1){//再次诊断全部正确
@@ -2715,6 +2704,16 @@ public class OnlineStudyAction extends DispatchAction {
 					}
 				}
 			}
+			Integer oneZdSuccNum = 0;//一次性通过总数
+			Integer oneZdFailNum = 0;//一次性未通过总数
+			Integer againXxSuccNum = 0;//再次诊断(学习)通过
+			Integer againXxFailNum = 0;//再次诊断(学习)未通过
+			Integer noRelateNum = 0;//未溯源个数
+			Integer relateZdFailNum = 0;//关联诊断未通过
+			Integer relateXxSuccNum = 0;//关联学习通过
+			Integer relateXxFailNum = 0;//关联未学习通过
+			String rate = "";//转化率
+			
 			//step=0表示不对step进行修改
 			Integer step_curr = 0;
 			Integer zdxzd_flag = 0;//默认为未通过
@@ -2750,7 +2749,7 @@ public class OnlineStudyAction extends DispatchAction {
 							//-1为未做
 						rzrm.addRZR(studyLogId, loreId_curr, zdxzd_flag, -1, -1, 0, 0);
 					}
-					if(currentStepLoreArray.length > 0){
+					if(currentStepLoreArray.length > 0){//其他学校不参与
 						if(access.equals(1)){//当前关联知识点的针对性诊断全部正确
 							noRelateNum = -1;//关联诊断完成，未溯源个数-1
 						}else{//未完全正确或全部错误
@@ -2829,22 +2828,26 @@ public class OnlineStudyAction extends DispatchAction {
 					noRelateNum = 1;
 				}
 			}
-			if(qftj != null){
-				//修改
-				Integer fmNum = qftj.getOneZdFailNum() + oneZdFailNum + qftj.getRelateZdFailNum() + relateZdFailNum;//一次性通过总数+关联诊断未通过
-				Integer againXxSuccNum_real = qftj.getAgainXxSuccNum() + againXxSuccNum;//再次诊断学习通过次数
-				if(fmNum > 0 && againXxSuccNum_real > 0){
-					rate = Convert.convertInputNumber_1(againXxSuccNum_real * 100.0  / fmNum) + "%";//转换率
+			if(schoolId > 0){//其他学校不参与统计
+				//获取指定学生，指定科目，指定日期的勤奋报告统计信息
+				StudyStuQfTjInfo qftj = tjm.getEntityByOpt(stuId, subId, CurrentTime.getStringDate());
+				if(qftj != null){
+					//修改
+					Integer fmNum = qftj.getOneZdFailNum() + oneZdFailNum + qftj.getRelateZdFailNum() + relateZdFailNum;//一次性通过总数+关联诊断未通过
+					Integer againXxSuccNum_real = qftj.getAgainXxSuccNum() + againXxSuccNum;//再次诊断学习通过次数
+					if(fmNum > 0 && againXxSuccNum_real > 0){
+						rate = Convert.convertInputNumber_1(againXxSuccNum_real * 100.0  / fmNum) + "%";//转换率
+					}
+					tjm.updateTjInfoById(qftj.getId(), oneZdSuccNum, oneZdFailNum, againXxSuccNum, againXxFailNum, noRelateNum, relateZdFailNum, relateXxSuccNum, relateXxFailNum, rate);
+				}else{
+					//增加
+					Integer fmNum = oneZdFailNum + relateZdFailNum;//一次性通过总数+关联诊断未通过
+					Integer againXxSuccNum_real = againXxSuccNum;//再次诊断学习通过次数
+					if(fmNum > 0 && againXxSuccNum_real > 0){
+						rate = Convert.convertInputNumber_1(againXxSuccNum_real * 100.0  / fmNum) + "%";//转换率
+					}
+					tjm.addQFTJ(stuId, subId, oneZdSuccNum, oneZdFailNum, againXxSuccNum, againXxFailNum, noRelateNum, relateZdFailNum, relateXxSuccNum, relateXxFailNum, rate, prov, city, county, schoolType, schoolId, gradeName, classId);
 				}
-				tjm.updateTjInfoById(qftj.getId(), oneZdSuccNum, oneZdFailNum, againXxSuccNum, againXxFailNum, noRelateNum, relateZdFailNum, relateXxSuccNum, relateXxFailNum, rate);
-			}else{
-				//增加
-				Integer fmNum = oneZdFailNum + relateZdFailNum;//一次性通过总数+关联诊断未通过
-				Integer againXxSuccNum_real = againXxSuccNum;//再次诊断学习通过次数
-				if(fmNum > 0 && againXxSuccNum_real > 0){
-					rate = Convert.convertInputNumber_1(againXxSuccNum_real * 100.0  / fmNum) + "%";//转换率
-				}
-				tjm.addQFTJ(stuId, subId, oneZdSuccNum, oneZdFailNum, againXxSuccNum, againXxFailNum, noRelateNum, relateZdFailNum, relateXxSuccNum, relateXxFailNum, rate, prov, city, county, schoolType, schoolId, gradeName, classId);
 			}
 			if(flag){
 				msg = "success";
