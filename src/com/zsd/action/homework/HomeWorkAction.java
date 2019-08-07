@@ -638,6 +638,7 @@ public class HomeWorkAction extends DispatchAction {
 				map.put("queType", tq.getQueType());
 				map.put("queType2", tq.getQueType2());
 				map.put("queAnswer", tq.getQueAnswer());
+				map.put("queOptNum", tq.getQueAnswer().split(",").length);
 				map.put("queResolution", tq.getQueResolution());
 			}
 		}
@@ -2086,16 +2087,23 @@ public class HomeWorkAction extends DispatchAction {
 		return mapping.findForward("hwReportPage");
 	}
 	
+	/**
+	 * 获取指定班级的家庭作业报告数据
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
 	public ActionForward getHwReportData(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
-		LoreInfoManager lm = (LoreInfoManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
 		SendHwManager swm = (SendHwManager)AppFactory.instance(null).getApp(Constants.WEB_SEND_HW_INFO);
 		HwStudyTjManager tjm = (HwStudyTjManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_TJ_INFO);
 		UserClassInfoManager ucm = (UserClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
 		String preDate = CurrentTime.getFinalDate(CurrentTime.getStringDate(), -1);//获取昨天的时间
 		Integer classId = CommonTools.getFinalInteger("classId", request);
-		Integer currUserId = CommonTools.getLoginUserId(request);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "error";
 		Integer stuNum = 0;
@@ -2103,6 +2111,7 @@ public class HomeWorkAction extends DispatchAction {
 		if(classId > 0){
 			List<SendHwInfo> sendList = swm.listPageInfoByOpt(0, classId, 0, -1, 0, preDate, preDate, false, 0, 0);
 			if(sendList.size() > 0){
+				msg = "success";
 				for(SendHwInfo shw : sendList){
 					Integer zsComNum = 0;
 					Integer bzComNum = 0;
@@ -2137,6 +2146,7 @@ public class HomeWorkAction extends DispatchAction {
 					}
 				}
 			}else{
+				msg = "noInfo";
 				List<UserClassInfo> ucList = ucm.listUcInfoByOpt(classId, 2, 1, 10000);
 				stuNum = ucList.size();
 				if(stuNum > 0){
@@ -2153,6 +2163,8 @@ public class HomeWorkAction extends DispatchAction {
 				}
 			}
 		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
 }
