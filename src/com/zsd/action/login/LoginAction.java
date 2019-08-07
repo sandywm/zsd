@@ -124,7 +124,11 @@ public class LoginAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		UserManager uManager = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
 		RoleUserInfoManager ruManager = (RoleUserInfoManager) AppFactory.instance(null).getApp(Constants.WEB_ROLE_USER_INFO);
-		HttpSession session = request.getSession(false);
+		/**
+		 * true:若存在会话则返回该会话，否则新建一个会话。
+		 * false:若存在会话则返回该会话，否则返回NULL
+		 */
+		HttpSession session = request.getSession(true);
 		MD5 md5 = new MD5();
 		Map<String,Object> map = new HashMap<String,Object>();
 		String account =CommonTools.getFinalStr("account",request);
