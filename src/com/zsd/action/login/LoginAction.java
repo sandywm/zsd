@@ -139,7 +139,7 @@ public class LoginAction extends DispatchAction {
 		boolean uFlag= false;
 		if(account!=""&& password!=""){
 			uFlag = DataBaseSqlVerify.checkSql(account);
-			if(uFlag){
+			if(!uFlag){
 				uFlag = uManager.userLogin(account, password);
 			}
 		}
