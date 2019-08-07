@@ -168,6 +168,7 @@ public class LoginAction extends DispatchAction {
 					session.setAttribute(Constants.LOGIN_ACCOUNT, userAcc);
 					session.setAttribute(Constants.LOGIN_USER_ROLE_ID, roleId);
 					session.setAttribute(Constants.LOGIN_USER_ROLE_NAME, roleName);
+					session.setAttribute(Constants.LOGIN_STATUS, loginStatus);
 				}
 			}else{//账号无效
 				msg = "lock";

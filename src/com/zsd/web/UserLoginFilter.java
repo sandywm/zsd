@@ -1,6 +1,7 @@
 package com.zsd.web;
 
 import com.zsd.factory.AppFactory;
+import com.zsd.service.UserManager;
 import com.zsd.tools.CommonTools;
 import com.zsd.tools.DataBaseSqlVerify;
 import com.zsd.util.Constants;
@@ -80,37 +81,34 @@ public class UserLoginFilter implements Filter{
 		}
 		Integer loginFlag_dataBase = -1;
 		if(userId.equals(0)){
-//			if(!requesturi.endsWith("/login.do") 
-//					&& !requesturi.endsWith("/baseInfo.do")
-//					&& !requesturi.endsWith("/common.do")
-//					&& !requesturi.endsWith("/school.do")
-//					&& !requesturi.endsWith("/baseInfo.do")
-//					&& !requesturi.endsWith("/chapter.do")
-//					&& !requesturi.endsWith("/mod.do")
-//					&& !requesturi.endsWith("/lore.do")
-//					&& !requesturi.endsWith("/authImg")
-//					&& !requesturi.endsWith("jsp")
-//					&& !requesturi.endsWith("css") 
-//					&& !requesturi.endsWith("js")
-//					&& !requesturi.endsWith("png")
-//					&& !requesturi.endsWith("gif")
-//					&& !requesturi.endsWith("jpg")
-//					&& !requesturi.endsWith("jpeg")
-//					&& !requesturi.endsWith("ico")
-//					&& !requesturi.endsWith("ttf")
-//					&& !requesturi.endsWith("json")
-//					&& !requesturi.endsWith(httpServletRequest.getContextPath()+ "/")){
-//                String url = "window.top.location.href='login.do?action=loginOut'";
-//				String authorizeScript = "由于您60分钟内没上线，系统已强制您下线，请重新登录！";
-//				Ability.PrintAuthorizeScript(url,authorizeScript, httpServletResponse);
-//                return;
-//            }
+			if(!requesturi.endsWith("/login.do") 
+					&& !requesturi.endsWith("/baseInfo.do")
+					&& !requesturi.endsWith("/common.do")
+					&& !requesturi.endsWith("/school.do")
+					&& !requesturi.endsWith("/login.do")
+					&& !requesturi.endsWith("/authImg")
+					&& !requesturi.endsWith("jsp")
+					&& !requesturi.endsWith("css") 
+					&& !requesturi.endsWith("js")
+					&& !requesturi.endsWith("png")
+					&& !requesturi.endsWith("gif")
+					&& !requesturi.endsWith("jpg")
+					&& !requesturi.endsWith("jpeg")
+					&& !requesturi.endsWith("ico")
+					&& !requesturi.endsWith("ttf")
+					&& !requesturi.endsWith("json")
+					&& !requesturi.endsWith(httpServletRequest.getContextPath()+ "/")){
+                String url = "window.top.location.href='login.do?action=loginOut'";
+				String authorizeScript = "由于您60分钟内没上线，系统已强制您下线，请重新登录！";
+				Ability.PrintAuthorizeScript(url,authorizeScript, httpServletResponse);
+                return;
+            }
 			chain.doFilter(request, response);
 		}else{
 			try {
-				
+				UserManager um = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
 				//获取数据库中指定currentUser的loginFlag
-				
+				loginFlag_dataBase = um.listEntityById(userId).get(0).getLoginStatus();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

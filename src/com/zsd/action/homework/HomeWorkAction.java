@@ -2066,4 +2066,36 @@ public class HomeWorkAction extends DispatchAction {
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
+	
+	/**
+	 * 导向家庭作业报告页面
+	 * @author wm
+	 * @date 2019-8-7 上午08:42:01
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward goHwReportPage(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		return mapping.findForward("hwReportPage");
+	}
+	
+	public ActionForward getHwReportData(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		LoreInfoManager lm = (LoreInfoManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
+		SendHwManager swm = (SendHwManager)AppFactory.instance(null).getApp(Constants.WEB_SEND_HW_INFO);
+		String preDate = CurrentTime.getFinalDate(CurrentTime.getStringDate(), -1);//获取昨天的时间
+		Integer classId = CommonTools.getFinalInteger("classId", request);
+		Integer currUserId = CommonTools.getLoginUserId(request);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "error";
+		//获取指定班级指定时间的作业
+		
+		return null;
+	}
 }
