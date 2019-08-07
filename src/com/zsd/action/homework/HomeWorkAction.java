@@ -768,7 +768,7 @@ public class HomeWorkAction extends DispatchAction {
 			if(tqList.size() > 0){
 				currNum = tqList.get(tqList.size() - 1).getQueNum() + 1;
 			}
-			Integer tqId = tqm.addTQ(loreId, 0, lm.getEntityById(loreId).getLoreName() + "第" + currNum + "题", queSub, queAnswer, queResolution, queType, "其他", userId);
+			Integer tqId = tqm.addTQ(loreId, currNum, lm.getEntityById(loreId).getLoreName() + "第" + currNum + "题", queSub, queAnswer, queResolution, queType, "其他", userId);
 			if(tqId > 0){
 				msg = "success";
 			}
@@ -2091,15 +2091,67 @@ public class HomeWorkAction extends DispatchAction {
 		// TODO Auto-generated method stub
 		LoreInfoManager lm = (LoreInfoManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
 		SendHwManager swm = (SendHwManager)AppFactory.instance(null).getApp(Constants.WEB_SEND_HW_INFO);
+		HwStudyTjManager tjm = (HwStudyTjManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_TJ_INFO);
+		UserClassInfoManager ucm = (UserClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
 		String preDate = CurrentTime.getFinalDate(CurrentTime.getStringDate(), -1);//获取昨天的时间
 		Integer classId = CommonTools.getFinalInteger("classId", request);
 		Integer currUserId = CommonTools.getLoginUserId(request);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "error";
+		Integer stuNum = 0;
 		//获取指定班级指定时间的作业
-		List<SendHwInfo> sendList = swm.listPageInfoByOpt(0, classId, 0, -1, 0, preDate, preDate, false, 0, 0);
-		if(sendList.size() > 0){
-			
+		if(classId > 0){
+			List<SendHwInfo> sendList = swm.listPageInfoByOpt(0, classId, 0, -1, 0, preDate, preDate, false, 0, 0);
+			if(sendList.size() > 0){
+				for(SendHwInfo shw : sendList){
+					Integer zsComNum = 0;
+					Integer bzComNum = 0;
+					Integer unComNum = 0;
+					List<HwStudyTjInfo> tjList = tjm.listInfoByOpt(shw.getId(), 0, -1, false, 0, 0);
+					stuNum = tjList.size();
+					if(stuNum > 0){
+						List<Object> list_zs = new ArrayList<Object>();
+						List<Object> list_bz = new ArrayList<Object>();
+						List<Object> list_un = new ArrayList<Object>();
+						for(HwStudyTjInfo tj : tjList){
+							User user = tj.getUser();
+							Map<String,Object> map_d = new HashMap<String,Object>();
+							Integer comStatus = tj.getComStatus();
+							map_d.put("userId", user.getId());
+							map_d.put("userName", user.getRealName());
+							map_d.put("userPortrait", user.getPortrait());
+							if(comStatus.equals(0)){
+								unComNum++;
+								list_un.add(map_d);
+							}else if(comStatus.equals(1)){
+								zsComNum++;
+								list_zs.add(map_d);
+							}else if(comStatus.equals(2)){
+								bzComNum++;
+								list_bz.add(map_d);
+							}
+						}
+						map.put("unComUserList", list_un);
+						map.put("zsComUserList", list_zs);
+						map.put("bzComUserList", list_bz);
+					}
+				}
+			}else{
+				List<UserClassInfo> ucList = ucm.listUcInfoByOpt(classId, 2, 1, 10000);
+				stuNum = ucList.size();
+				if(stuNum > 0){
+					List<Object> list_d = new ArrayList<Object>();
+					for(UserClassInfo uc : ucList){
+						User user = uc.getUser();
+						Map<String,Object> map_d = new HashMap<String,Object>();
+						map_d.put("userId", user.getId());
+						map_d.put("userName", user.getRealName());
+						map_d.put("userPortrait", user.getPortrait());
+						list_d.add(map_d);
+					}
+					map.put("userList", list_d);
+				}
+			}
 		}
 		return null;
 	}
