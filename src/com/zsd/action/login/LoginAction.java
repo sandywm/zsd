@@ -161,7 +161,6 @@ public class LoginAction extends DispatchAction {
 				Integer status = uList.get(0).getAccountStatus();
 				List<RoleUserInfo> ruList = ruManager.listUserRoleInfoByuserId(uid);
 				Integer roleId =0;
-				String roleName = "";
 				if(!ruList.isEmpty()){
 					if(clientInfo.equals("pc")){
 						List<Object> list_d = new ArrayList<Object>();
@@ -174,7 +173,6 @@ public class LoginAction extends DispatchAction {
 						map.put("roleList", list_d);
 					}else{
 						roleId = ruList.get(0).getRoleInfo().getId();
-						roleName = ruList.get(0).getRoleInfo().getRoleName();
 					}
 					if(status.equals(1)){//状态 0:无效,1:有效
 						Integer loginStatus = uList.get(0).getLoginStatus();//每次登陆，loginStatus自动加1，满50时恢复0状态
@@ -192,8 +190,6 @@ public class LoginAction extends DispatchAction {
 						if(clientInfo.equals("pc")){
 							session.setAttribute(Constants.LOGIN_USER_ID, uid);
 							session.setAttribute(Constants.LOGIN_ACCOUNT, userAcc);
-							session.setAttribute(Constants.LOGIN_USER_ROLE_ID, roleId);
-							session.setAttribute(Constants.LOGIN_USER_ROLE_NAME, roleName);
 							session.setAttribute(Constants.LOGIN_STATUS, loginStatus);
 						}else{
 							map.put("loginStatus", loginStatus);

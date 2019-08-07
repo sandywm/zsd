@@ -12,6 +12,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -75,6 +76,7 @@ public class UserAction extends DispatchAction {
 	public ActionForward goPage(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
+		Integer roleId = CommonTools.getFinalInteger("roleId", request);
 		String roleName = Transcode.unescape_new("roleName", request);
 		String urlPage = "";
 		if(roleName.equals("超级管理员") || roleName.equals("知识点管理员")){
@@ -82,6 +84,9 @@ public class UserAction extends DispatchAction {
 		}else{
 			urlPage = "welcomePage";
 		}
+		HttpSession session = request.getSession(false);
+		session.setAttribute(Constants.LOGIN_USER_ROLE_ID, roleId);
+		session.setAttribute(Constants.LOGIN_USER_ROLE_NAME, roleName);
 		return mapping.findForward(urlPage);
 	}
 	
