@@ -1,4 +1,4 @@
-var provVal = '',cityVal='',countyVal='',provIndex=0,cityIndex=0;//用于编辑时匹配当前省市index索引
+var provVal = '',cityVal='',countyVal='',townVal='',provIndex=0,cityIndex=0,currTownVal=0;//用于编辑时匹配当前省市index索引
 layui.define(["form","jquery"],function(exports){
     var form = layui.form,
     $ = layui.jquery,
@@ -44,14 +44,22 @@ layui.define(["form","jquery"],function(exports){
             	$("select[name=area]").attr('disabled',false);
             	for(var i=0;i<countyData.length;i++){
             		if(countyVal == countyData[i].name){
-            			countyStr += '<option value="'+ countyData[i].name +'" selected>'+ countyData[i].name +'</option>';
+            			countyStr += '<option value="' + countyData[i].value + '-'+ countyData[i].name +'" selected>'+ countyData[i].name +'</option>';
+            			currTownVal = countyData[i].value;
             		}else{
-            			countyStr += '<option value="'+ countyData[i].name +'">'+ countyData[i].name +'</option>';
+            			countyStr += '<option value="' + countyData[i].value + '-'+ countyData[i].name +'">'+ countyData[i].name +'</option>';
             		}
             	}
             	$("select[name=area]").html(countyStr);
             	form.render();
             }
+            
+            if(townVal != ''){
+            	var tonwStr = '<option value="">请选择乡/镇</option>';
+            	that.getTownData(currTownVal,'loadTown');
+            	$("select[name=town]").attr('disabled',false);
+            }
+            
             
             //form.render();
             form.on('select(province)', function (proData) {
@@ -60,13 +68,14 @@ layui.define(["form","jquery"],function(exports){
                 $('#provInp').val(value);
                 $('#cityInp').val('');
                 $('#countyInp').val('');
+                $("select[name=town]").html('<option value="">请选择乡/镇</option>').attr("disabled", "disabled");
                 if (value != '') {
                 	that.citys(data[$(this).index() - 1].children);
                 } else {
                     $("select[name=city]").html('').attr("disabled", "disabled");
 					$("select[name=area]").html('').attr("disabled", "disabled");
-					form.render();
                 }
+                form.render();
             });
         })
     }
@@ -83,45 +92,72 @@ layui.define(["form","jquery"],function(exports){
             var value = cityData.value;
             $('#cityInp').val(value);
             $('#countyInp').val('');
+            $("select[name=town]").html('<option value="">请选择乡/镇</option>').attr("disabled", "disabled");
             if (value != '') {
             	that.areas(citys[$(this).index() - 1].children);
             } else {
                 $("select[name=area]").html('').attr("disabled", "disabled");
-                form.render();
             }
+            form.render();
         });
     };
     
     //加载县/区数据
     Address.prototype.areas = function(areas) {
+    	var _this = this;
         var areaHtml = '<option value="">请选择县/区</option>';
         for (var i = 0; i < areas.length; i++) {
-            areaHtml += '<option value="' + areas[i].name + '">' + areas[i].name + '</option>';
+            areaHtml += '<option value="' + areas[i].value + '-'+ areas[i].name +'">' + areas[i].name + '</option>';
         }
         $("select[name=area]").html(areaHtml).removeAttr("disabled");
         form.render();
 
 		form.on('select(area)', function (areaData) {
-		    var value = areaData.value;
-		    $('#countyInp').val(value);
-			/*layer.load('1');
-			$.ajax({
-				url: 'http://passer-by.com/data_location/town/' + value + '.json',
-				dataType: 'json',
-				success: function(res) {
-					layer.closeAll('loading');
+		    var value = areaData.value.split('-')[0];
+		    var name = areaData.value.split('-')[1];
+		    $('#countyInp').val(name);
+			layer.load('1');
+			_this.getTownData(value,'selTown');
+		});
+		
+		//选择乡镇
+		form.on('select(town)', function (data) {
+			var townVal = data.value;
+			$('#townInp').val(townVal);
+		});
+    };
+    //加载乡镇数据根据countyCode
+    Address.prototype.getTownData = function(value,opt){
+    	$.ajax({
+			url: '/baseInfo.do?action=getSpecTownData',
+			dataType: 'json',
+			data:{countyCode:value},
+			success: function(json) {
+				layer.closeAll('loading');
+				if(json.result == 'success'){
+					var townList = json.townList;
 					var townHtml = '<option value="">请选择乡/镇</option>';
-					for(var attr in res){
-						townHtml += '<option value="' + attr + '">' + res[attr] + '</option>';
+					for(var i=0;i<townList.length;i++){
+						if(opt == 'selTown'){
+							townHtml += '<option value="' + townList[i].townName + '">' + townList[i].townName + '</option>';
+						}else{
+							if(townVal == townList[i].townName){
+								townHtml += '<option value="' + townList[i].townName + '" selected>' + townList[i].townName + '</option>';
+							}else{
+								townHtml += '<option value="' + townList[i].townName + '">' + townList[i].townName + '</option>';
+							}
+						}
 					}
 					$("select[name=town]").html(townHtml).removeAttr("disabled");
 					form.render();
+				}else if(json.result == 'noInfo'){
+					layer.msg('暂无乡/镇',{icon:5,anim:6,time:2000});
 				}
-			});*/
+				
+			}
 		});
-		
-    }
-	
+    };
+    
     var address = new Address();
     exports("address",function(){
         address.provinces();

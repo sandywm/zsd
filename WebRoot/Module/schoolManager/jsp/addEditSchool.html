@@ -8,7 +8,10 @@
 	<script src="/plugins/pace/pace.min.js" type="text/javascript"></script>	
   	<title>添加编辑学校信息</title>
   	<style>
-  		.layui-form-select dl { max-height:210px; }
+  		.province ~ .layui-form-select dl { max-height:260px; }
+  		.city ~ .layui-form-select dl { max-height:210px; }
+  		.country ~ .layui-form-select dl { max-height:210px; }
+  		.town ~ .layui-form-select dl { max-height:160px; }
   	</style>
 </head>
 <body style="background:#fff;">
@@ -17,7 +20,7 @@
 			<div class="itemDiv">
 				<label class="layui-form-label" style="width:60px">学校名称</label>
 				<div class="layui-input-inline layui-form">
-					<input id="schNameInp" style="width:194px;" class="layui-input" placeholder="请输入学校名称(30字以内)" maxlength="30"/>
+					<input id="schNameInp" style="width:194px;" class="layui-input" autocomplete="off" placeholder="请输入学校名称(30字以内)" maxlength="30"/>
 				</div>
 			</div>
 			<div class="itemDiv">
@@ -45,7 +48,7 @@
 				<label class="layui-form-label" style="width:60px">省份</label>
 				<div class="layui-input-inline">
 					<input type="hidden" id="provInp"/>
-					<select  name="province" lay-filter="province" class="province">
+					<select class="province" name="province" lay-filter="province" class="province">
 				       	<option value="">请选择省份</option>
 				     </select>
 				</div>
@@ -56,7 +59,7 @@
 				<label class="layui-form-label" style="width:60px">城市</label>
 				<input type="hidden" id="cityInp"/>
 				<div class="layui-input-inline">
-					<select name="city" lay-filter="city" disabled>
+					<select class="city" name="city" lay-filter="city" disabled>
 				       	<option value="">请选择城市</option>
 				     </select>
 				</div>
@@ -65,8 +68,19 @@
 				<label class="layui-form-label" style="width:60px">县/区</label>
 				<input type="hidden" id="countyInp"/>
 				<div class="layui-input-inline">
-					<select name="area" lay-filter="area" disabled>
+					<select class="country" name="area" lay-filter="area" disabled>
 				       	<option value="">请选择县/区</option>
+				     </select>
+				</div>
+			</div>
+		</div>
+		<div class="layui-clear">
+			<div class="itemDiv">
+				<label class="layui-form-label" style="width:60px">乡/镇</label>
+				<input type="hidden" id="townInp"/>
+				<div class="layui-input-inline">
+					<select class="town" name="town" lay-filter="town" disabled>
+				       	<option value="">请选择乡/镇</option>
 				     </select>
 				</div>
 			</div>
@@ -138,6 +152,7 @@
 							provInpVal = $('#provInp').val(),
 							cityInpVal = $('#cityInp').val(),
 							countyInpVal = $('#countyInp').val(),
+							townInpVal = $('#townInp').val(),
 							regCHN = /^[\u4E00-\u9FA5]+$/; //检测是否中文;
 						if(schNameInpVal == ''){
 							layer.msg('请填写学校名字',{icon:5,anim:6,time:1500});
@@ -155,17 +170,20 @@
 							layer.msg('请选择城市',{icon:5,anim:6,time:1500});
 						}else if(countyInpVal == ''){
 							layer.msg('请选择县/区',{icon:5,anim:6,time:1500});
+						}else if(townInpVal == ''){
+							layer.msg('请选择乡/镇',{icon:5,anim:6,time:1500});
 						}else{
 							var url = '';
 							if(parent.globalOpts == 'edit'){
 								url = '/school.do?action=updateSchool';
 								var field = {schoolId:schId,schoolName:escape(schNameInpVal),
 											yearSystem:yearSysInpVal,schoolType:schTypeInpVal,prov:provInpVal,
-											city:cityInpVal,county:countyInpVal,town:''};
+											city:cityInpVal,county:countyInpVal,town:townInpVal};
 							}else{
 								url = '/school.do?action=addSchool';
-								var field = {schoolName:escape(schNameInpVal),prov:provInpVal,city:cityInpVal,county:countyInpVal,town:'',yearSystem:yearSysInpVal,schoolType:schTypeInpVal};
+								var field = {schoolName:escape(schNameInpVal),prov:provInpVal,city:cityInpVal,county:countyInpVal,town:townInpVal,yearSystem:yearSysInpVal,schoolType:schTypeInpVal};
 							}
+							console.log(field)
 							layer.load('1');
 							$.ajax({
 								type:'post',
@@ -205,6 +223,7 @@
 					        		provVal = json.prov;
 					        		cityVal = json.city;
 					        		countyVal = json.county;
+					        		townVal = json.town;
 					        		$('#provInp').val(json.prov);
 					                $('#cityInp').val(json.city);
 					                $('#countyInp').val(json.county);
@@ -224,7 +243,7 @@
 						        		}
 						        	});
 					        		layui.address();
-					        		_this.renderSchInfo();
+					        		//_this.renderSchInfo();
 					        	}else if(json['result'] == 'noInfo'){
 					        		layer.msg('暂无此学校信息',{icon:5,anim:6,time:1500});
 					        	}

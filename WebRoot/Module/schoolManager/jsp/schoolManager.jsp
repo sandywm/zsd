@@ -25,7 +25,7 @@
 	  						<!-- 查询条件 -->
 		  					<div class="layui-form searchForm layui-clear">
 		  						<div class="itemDivs" style="width:180px;">
-		  							<input id="schNameInp" class="layui-input" placeholder="请输入学校名称(30字以内)" maxlength="30"/>
+		  							<input id="schNameInp" class="layui-input" autocomplete="off" placeholder="请输入学校名称(30字以内)" maxlength="30"/>
 		  						</div>
 		  						<div class="itemDivs" style="width:130px;">
 		  							<input type="hidden" id="schTypeInp" value="0"/>
@@ -136,6 +136,7 @@
 							{field : 'prov', title: '省份',align:'center'},
 							{field : 'city', title: '城市',align:'center'},
 							{field : 'county', title: '县/区', align:'center'},
+							{field : 'town', title: '乡/镇', align:'center'},
 							{field : '', title: '操作',  fixed: 'right', align:'center',templet : function(d){
 								return '<a class="layui-btn layui-btn-xs editBtn" opts="edit" schoolName="'+ d.schoolName +'" lay-event="editSchool"  schId="'+ d.id +'"><i class="layui-icon layui-icon-edit"></i>编辑</a>';
 							}},
