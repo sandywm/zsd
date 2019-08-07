@@ -268,6 +268,10 @@ public class SchoolAction extends DispatchAction {
 		String city = Transcode.unescape_new("city", request);
 		String county = Transcode.unescape_new("county", request);
 		String town = Transcode.unescape_new("town", request);
+		String  provCode =CommonTools.getFinalStr("provCode",request);
+		String  cityCode =CommonTools.getFinalStr("cityCode",request);
+		String  countyCode =CommonTools.getFinalStr("countyCode",request);
+		String  townCode =CommonTools.getFinalStr("townCode",request);
 		Integer schoolType = CommonTools.getFinalInteger("schoolType", request);//学段(小学 初中 高中）
 		Integer yearSystem = CommonTools.getFinalInteger("yearSystem", request); //学年制
 		String lastLoginIp = CommonTools.getIpAddress(request); //最后登录Ip
@@ -281,37 +285,49 @@ public class SchoolAction extends DispatchAction {
 			    mRId = mRList.get(0).getId();
 			}
 			if(prov!=""){
-				List<RoleUserInfo> provRu = ruManager.listUserRoleInfoByPosition(prov, "", "", 0, 0, 0, 0);
+				List<RoleUserInfo> provRu = ruManager.listUserRoleInfoByPosition(prov, "", "","", 0, 0, 0, 0);
 				//创建省管理员
 				if(provRu.isEmpty()){
 					//生成省管理员账户
-					Integer provMid=uManager.addUser("prov"+Convert.getFirstSpell(prov), "", new MD5().calcMD5("123456"), "",currTime, lastLoginIp, currTime, scId, "", yearSystem, prov, city);
+					Integer provMid=uManager.addUser("prov"+provCode, "", new MD5().calcMD5("123456"), "",currTime, lastLoginIp, currTime, scId, "", yearSystem, prov, city);
 					//绑定省管理员角色
 					ruManager.addRoleUserInfo(provMid, mRId, prov, "", "", "", 0, 0, 0, 0);
 				}
 			}
 			if(prov!=""&&city !=""){
-				List<RoleUserInfo> cityRu = ruManager.listUserRoleInfoByPosition(prov, city, "", 0, 0, 0, 0);
+				List<RoleUserInfo> cityRu = ruManager.listUserRoleInfoByPosition(prov, city, "","", 0, 0, 0, 0);
 				//创建市管理员
 				if(cityRu.isEmpty()){
 					//生成市管理员账户
-					Integer cityMid=uManager.addUser("city"+Convert.getFirstSpell(city), "", new MD5().calcMD5("123456"), "",currTime, lastLoginIp, currTime, scId, "", yearSystem, prov, city);
+					Integer cityMid=uManager.addUser("city"+cityCode, "", new MD5().calcMD5("123456"), "",currTime, lastLoginIp, currTime, scId, "", yearSystem, prov, city);
 					//绑定市管理员角色
 					ruManager.addRoleUserInfo(cityMid, mRId, prov, city, "", "", 0, 0, 0, 0);
 				}
 			}
 			if(prov!=""&&city !=""&&county!=""){
-				List<RoleUserInfo> cnyRu = ruManager.listUserRoleInfoByPosition(prov, city, county, 0, 0, 0, 0);
+				List<RoleUserInfo> cnyRu = ruManager.listUserRoleInfoByPosition(prov, city, county,"", 0, 0, 0, 0);
 				//创建县管理员
 				if(cnyRu.isEmpty()){
 					//生成县管理员账户
-					Integer cnyMid=uManager.addUser("cny"+Convert.getFirstSpell(county), "", new MD5().calcMD5("123456"), "",currTime, lastLoginIp, currTime, scId, "", yearSystem, prov, city);
+					Integer cnyMid=uManager.addUser("cny"+countyCode, "", new MD5().calcMD5("123456"), "",currTime, lastLoginIp, currTime, scId, "", yearSystem, prov, city);
 					//绑定县管理员角色
 					ruManager.addRoleUserInfo(cnyMid, mRId, prov, city, county, "", 0, 0, 0, 0);
 				}
 			}
-			if(prov!=""&&city !=""&&county!=""&&schoolType!=0){
-				List<RoleUserInfo> sctRu = ruManager.listUserRoleInfoByPosition(prov, city, county, schoolType, 0, 0, 0);
+			
+			if(prov!=""&&city !=""&&county!=""&& town!=""){
+				List<RoleUserInfo> townRu = ruManager.listUserRoleInfoByPosition(prov, city, county,town, 0, 0, 0, 0);
+				//创建乡镇街道管理员
+				if(townRu.isEmpty()){
+					//生成乡镇街道管理员账户
+					Integer cnyMid=uManager.addUser("town"+townCode, "", new MD5().calcMD5("123456"), "",currTime, lastLoginIp, currTime, scId, "", yearSystem, prov, city);
+					//绑定乡镇街道管理员角色
+					ruManager.addRoleUserInfo(cnyMid, mRId, prov, city, county, town, 0, 0, 0, 0);
+				}
+			}
+			
+			if(prov!=""&&city !=""&&county!=""&& town!=""&&schoolType!=0){
+				List<RoleUserInfo> sctRu = ruManager.listUserRoleInfoByPosition(prov, city, county,town, schoolType, 0, 0, 0);
 				//创建学段管理员
 				if(sctRu.isEmpty()){
 					//生成学段管理员账户
@@ -320,8 +336,8 @@ public class SchoolAction extends DispatchAction {
 					ruManager.addRoleUserInfo(sctMid, mRId, prov, city, county, "", schoolType, 0, 0, 0);
 				}
 			}
-			if(prov!=""&&city !=""&&county!=""&&schoolType!=0 && scId !=0){
-				List<RoleUserInfo> schRu = ruManager.listUserRoleInfoByPosition(prov, city, county, schoolType, scId, 0, 0);
+			if(prov!=""&&city !=""&&county!=""&&town!=""&&schoolType!=0 && scId !=0){
+				List<RoleUserInfo> schRu = ruManager.listUserRoleInfoByPosition(prov, city, county,town, schoolType, scId, 0, 0);
 				//创建学校管理员
 				if(schRu.isEmpty()){
 					//生成学校管理员账户
@@ -332,14 +348,14 @@ public class SchoolAction extends DispatchAction {
 			}
 			if(schoolType==1){
 				for (int g = 1; g <=yearSystem; g++) {//年级
-					getGenGraManager(ruManager, uManager, prov, city, county,
+					getGenGraManager(ruManager, uManager, prov, city, county,town,
 							schoolType, yearSystem, lastLoginIp, currTime,
 							scId, mRId, g);
 					//getGenRela(ruManager,uManager,rManager,prov, city, yearSystem, lastLoginIp, currTime,scId, g,county,schoolType,mRId);//生成班内老师
 				}
 			}else if(schoolType==2&&yearSystem==3){//年级
 				for(int g =7;g<=9;g++){
-					getGenGraManager(ruManager, uManager, prov, city, county,
+					getGenGraManager(ruManager, uManager, prov, city, county,town,
 							schoolType, yearSystem, lastLoginIp, currTime,
 							scId, mRId, g);
 					//getGenRela(ruManager,uManager,rManager,prov, city, yearSystem, lastLoginIp, currTime,scId, g,county,schoolType,mRId);//生成班内老师
@@ -347,14 +363,14 @@ public class SchoolAction extends DispatchAction {
 				
 			}else if(schoolType==2&&yearSystem==4){//年级
 				for(int g=6;g<=9;g++){
-					getGenGraManager(ruManager, uManager, prov, city, county,
+					getGenGraManager(ruManager, uManager, prov, city, county,town,
 							schoolType, yearSystem, lastLoginIp, currTime,
 							scId, mRId, g);
 					//getGenRela(ruManager,uManager,rManager,prov, city, yearSystem, lastLoginIp, currTime,scId, g,county,schoolType,mRId);//生成班内老师
 				}
 			}else{
 				for(int g=10;g<=12;g++){//年级
-					List<RoleUserInfo> gRu = ruManager.listUserRoleInfoByPosition(prov, city, county, schoolType, scId, g, 0);
+					List<RoleUserInfo> gRu = ruManager.listUserRoleInfoByPosition(prov, city, county,town, schoolType, scId, g, 0);
 					//创建年级管理员
 					if(gRu.isEmpty()){
 						//生成年级管理员账户
@@ -391,11 +407,11 @@ public class SchoolAction extends DispatchAction {
 	 * @throws WEBException
 	 */
 	private void getGenGraManager(RoleUserInfoManager ruManager,
-			UserManager uManager, String prov, String city, String county,
+			UserManager uManager, String prov, String city, String county,String town,
 			Integer schoolType, Integer yearSystem, String lastLoginIp,
 			String currTime, Integer scId, Integer mRId, int g)
 			throws WEBException {
-		List<RoleUserInfo> gRu = ruManager.listUserRoleInfoByPosition(prov, city, county, schoolType, scId, g, 0);
+		List<RoleUserInfo> gRu = ruManager.listUserRoleInfoByPosition(prov, city, county, town,schoolType, scId, g, 0);
 		//创建年级管理员
 		if(gRu.isEmpty()){
 			//生成年级管理员账户

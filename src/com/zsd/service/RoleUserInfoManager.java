@@ -54,7 +54,7 @@ public interface RoleUserInfoManager {
 	 * @return
 	 * @throws WEBException
 	 */
-	List<RoleUserInfo> listUserRoleInfoByPosition(String prov, String city, String county,Integer schoolType,
+	List<RoleUserInfo> listUserRoleInfoByPosition(String prov, String city, String county,String town,Integer schoolType,
 			Integer schoolId,Integer gradeNo,Integer classId)throws WEBException;
 	/**
 	 * 根据用户编号获取用户角色信息

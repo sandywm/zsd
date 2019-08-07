@@ -81,7 +81,7 @@ public interface RoleUserInfoDao {
 	 * @param classId	班级编号
 	 * @return
 	 */
-	List<RoleUserInfo> findUserRoleInfoByPosition(Session sess,String prov, String city, String county,Integer schoolType,
+	List<RoleUserInfo> findUserRoleInfoByPosition(Session sess,String prov, String city, String county,String town,Integer schoolType,
 													Integer schoolId,Integer gradeNo,Integer classId);
 	/**
 	 * 根据学校编号获取用户角色信息

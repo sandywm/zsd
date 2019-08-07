@@ -85,7 +85,6 @@ public class UserAction extends DispatchAction {
 		return mapping.findForward(urlPage);
 	}
 	
-	
 	/**
 	 * 
 	 * @author zong

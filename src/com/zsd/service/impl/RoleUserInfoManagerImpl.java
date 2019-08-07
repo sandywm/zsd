@@ -76,12 +76,12 @@ public class RoleUserInfoManagerImpl implements RoleUserInfoManager {
 
 	@Override
 	public List<RoleUserInfo> listUserRoleInfoByPosition(String prov,
-			String city, String county,Integer schoolType,
+			String city, String county,String town,Integer schoolType,
 			Integer schoolId,Integer gradeNo,Integer classId) throws WEBException {
 		try {
 			ruinfoDao = (RoleUserInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_ROLE_USER_INFO);
 			Session sess  = HibernateUtil.currentSession();
-			return ruinfoDao.findUserRoleInfoByPosition(sess, prov, city, county, schoolType, schoolId, gradeNo, classId);
+			return ruinfoDao.findUserRoleInfoByPosition(sess, prov, city, county,town, schoolType, schoolId, gradeNo, classId);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new WEBException("根据省市县获取角色信息列表时出现异常!");

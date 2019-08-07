@@ -4,6 +4,7 @@
  */
 package com.zsd.action.login;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -146,7 +147,6 @@ public class LoginAction extends DispatchAction {
 				uFlag = uManager.userLogin(account, password);
 			}
 		}
-		
 		if(uFlag){
 			//登录成功
 			String currdate = CurrentTime.getCurrentTime();
@@ -160,8 +160,19 @@ public class LoginAction extends DispatchAction {
 			Integer roleId =0;
 			String roleName = "";
 			if(!ruList.isEmpty()){
-				roleId = ruList.get(0).getRoleInfo().getId();
-				roleName = ruList.get(0).getRoleInfo().getRoleName();
+				if(clientInfo.equals("pc")){
+					List<Object> list_d = new ArrayList<Object>();
+					for(RoleUserInfo ru : ruList){
+						Map<String,Object> map_d = new HashMap<String,Object>();
+						map_d.put("roleId", ru.getRoleInfo().getId());
+						map_d.put("roleName", ru.getRoleInfo().getRoleName());
+						list_d.add(map_d);
+					}
+					map.put("roleList", list_d);
+				}else{
+					roleId = ruList.get(0).getRoleInfo().getId();
+					roleName = ruList.get(0).getRoleInfo().getRoleName();
+				}
 			}
 			if(status.equals(1)){//状态 0:无效,1:有效
 				Integer loginStatus = uList.get(0).getLoginStatus();//每次登陆，loginStatus自动加1，满50时恢复0状态
@@ -175,12 +186,6 @@ public class LoginAction extends DispatchAction {
 				if(portrait.equals("")){
 					portrait="Module/commonJs/ueditor/jsp/head/defaultHead.jpg";
 				}
-				map.put("loginStatus", loginStatus);
-				map.put("roleId", roleId);
-				map.put("userAcc", userAcc);
-				map.put("password", pwd);
-				map.put("portrait", portrait);
-				map.put("userId", uid);
 				msg = "success";
 				if(clientInfo.equals("pc")){
 					session.setAttribute(Constants.LOGIN_USER_ID, uid);
@@ -188,6 +193,13 @@ public class LoginAction extends DispatchAction {
 					session.setAttribute(Constants.LOGIN_USER_ROLE_ID, roleId);
 					session.setAttribute(Constants.LOGIN_USER_ROLE_NAME, roleName);
 					session.setAttribute(Constants.LOGIN_STATUS, loginStatus);
+				}else{
+					map.put("loginStatus", loginStatus);
+					map.put("roleId", roleId);
+					map.put("userAcc", userAcc);
+					map.put("password", pwd);
+					map.put("portrait", portrait);
+					map.put("userId", uid);
 				}
 			}else{//账号无效
 				msg = "lock";
@@ -197,7 +209,6 @@ public class LoginAction extends DispatchAction {
 		}else{
 			msg = "fail";
 		}
-		
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
 		return null;
@@ -438,12 +449,14 @@ public class LoginAction extends DispatchAction {
 								String pr="";
 								String ct="";
 								String county="";
+								String town = "";
 								Integer schType=0;
 								String schoolName="";
 								if(!scLists.isEmpty()){
 									pr= scLists.get(0).getProv();
 									ct= scLists.get(0).getCity();
 									county=scLists.get(0).getCounty();
+									town = scLists.get(0).getTown();
 									schType=scLists.get(0).getSchoolType();
 									schoolName= scLists.get(0).getSchoolName();
 								}
@@ -458,7 +471,7 @@ public class LoginAction extends DispatchAction {
 									Integer cMid=uManager.addUser("c"+ciId, "", new MD5().calcMD5("123456"), "",currTime, lastLoginIp, currTime, schoolId, "", yearSystem, prov, city);
 									
 									//绑定班级管理员角色
-									Integer ruNo =ruManager.addRoleUserInfo(cMid, mRoId, pr, ct, county, "", schType, schoolId, gradeNo, ciId);
+									Integer ruNo =ruManager.addRoleUserInfo(cMid, mRoId, pr, ct, county, town, schType, schoolId, gradeNo, ciId);
 										
 									if(ruNo>0){//班内学科老师
 										String gName = Convert.NunberConvertChinese(gradeNo);//年级名

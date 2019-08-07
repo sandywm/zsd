@@ -45,7 +45,7 @@ public class RoleUserInfoDaoImpl implements RoleUserInfoDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<RoleUserInfo> findUserRoleInfoByPosition(Session sess,
-			String prov, String city, String county,Integer schoolType,
+			String prov, String city, String county,String town,Integer schoolType,
 			Integer schoolId,Integer gradeNo,Integer classId) {
 		String hql = " from RoleUserInfo as ru where ru.prov ='"+prov+"'";
 		if(city!=""){
@@ -53,6 +53,9 @@ public class RoleUserInfoDaoImpl implements RoleUserInfoDao {
 		}
 		if(county!=""){
 			hql+=" and ru.county='"+county+"'";
+		}
+		if(town != ""){
+			hql+="  and ru.town ='"+town+"'";
 		}
 		if(schoolType!=0){
 			hql+=" and ru.schoolType="+schoolType;
