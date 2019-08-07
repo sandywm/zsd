@@ -209,44 +209,51 @@ public class UserAction extends DispatchAction {
 									Integer classId = ciList.get(0).getId();
 									ucManager.addUcInfo(userId, classId, roleId); //3 绑定用户班级
 								}else{//班级不存在
-									Integer mRoId =0;
-									List<RoleInfo> mRList = rManager.listRoleInfo("管理员");
-									if(mRList.size()>0){
-									    mRoId = mRList.get(0).getId();
-									}
-									List<RoleUserInfo> rulist = ruManager.listUserRoleInfoBySchId(schoolId);
+									List<School> scLists = scManager.listInfoById(schoolId);
 									String pr="";
 									String ct="";
 									String county="";
 									Integer schType=0;
-									if(!rulist.isEmpty()){
-										pr= rulist.get(0).getProv();
-										ct= rulist.get(0).getCity();
-										county=rulist.get(0).getCounty();
-										schType=rulist.get(0).getSchoolType();
+									String schoolName="";
+									if(!scLists.isEmpty()){
+										pr= scLists.get(0).getProv();
+										ct= scLists.get(0).getCity();
+										county=scLists.get(0).getCounty();
+										schType=scLists.get(0).getSchoolType();
+										schoolName= scLists.get(0).getSchoolName();
 									}
+
 									Integer ciId = ciManager.addClassInfo(schoolId,className,Convert.gradeNoToBuildeClassDate(gradeNo));//创建班级
-									String currTime=CurrentTime.getCurrentTime();
-									Integer cMid=uManager.addUser("c"+ciId, "", new MD5().calcMD5("123456"), "",currTime, lastLoginIp, currTime, schoolId, "", yearSystem, prov, city);
 									
-									//绑定班级管理员角色
-									Integer ruNo =ruManager.addRoleUserInfo(cMid, mRoId, pr, ct, county, "", schType, schoolId, gradeNo, ciId);
+									if(!schoolName.contains("其他学校")){
+										Integer mRoId =0;
+										List<RoleInfo> mRList = rManager.listRoleInfo("管理员");
+										if(mRList.size()>0){
+										    mRoId = mRList.get(0).getId();
+										}
 										
-									if(ruNo>0){//班内学科老师
-										String gName = Convert.NunberConvertChinese(gradeNo);//年级名
-										List<GradeSubject> gslist = gsManager.listSpecInfoByGname(gName);//根据年级名获取学科列表
-										for (Iterator<GradeSubject> itr = gslist.iterator(); itr.hasNext();) {
-											GradeSubject gs = (GradeSubject) itr.next();
-											Integer sId = gs.getSubject().getId();//学科编号
-											String subName = gs.getSubject().getSubName(); //学科名称
-											//生成班内老师账户
-											Integer teaId=uManager.addUser("t"+schoolId+sId+ciId, "", new MD5().calcMD5("123456"), "",currTime, lastLoginIp, currTime, schoolId, "", yearSystem, prov, city);
-											//老师绑定角色
-											List<RoleInfo> rlist = rManager.listRoleInfo("老师");
-											if(rlist.size() > 0){
-												Integer teaRoId = rlist.get(0).getId();
-												ruManager.addRoleUserInfo(teaId, teaRoId, "", "", "", "", 0, 0, 0, 0);
-												ucManager.addUcInfo(teaId, ciId, teaRoId,sId,subName); //绑定班级
+										String currTime=CurrentTime.getCurrentTime();
+										Integer cMid=uManager.addUser("c"+ciId, "", new MD5().calcMD5("123456"), "",currTime, lastLoginIp, currTime, schoolId, "", yearSystem, prov, city);
+										
+										//绑定班级管理员角色
+										Integer ruNo =ruManager.addRoleUserInfo(cMid, mRoId, pr, ct, county, "", schType, schoolId, gradeNo, ciId);
+											
+										if(ruNo>0){//班内学科老师
+											String gName = Convert.NunberConvertChinese(gradeNo);//年级名
+											List<GradeSubject> gslist = gsManager.listSpecInfoByGname(gName);//根据年级名获取学科列表
+											for (Iterator<GradeSubject> itr = gslist.iterator(); itr.hasNext();) {
+												GradeSubject gs = (GradeSubject) itr.next();
+												Integer sId = gs.getSubject().getId();//学科编号
+												String subName = gs.getSubject().getSubName(); //学科名称
+												//生成班内老师账户
+												Integer teaId=uManager.addUser("t"+schoolId+sId+ciId, "", new MD5().calcMD5("123456"), "",currTime, lastLoginIp, currTime, schoolId, "", yearSystem, prov, city);
+												//老师绑定角色
+												List<RoleInfo> rlist = rManager.listRoleInfo("老师");
+												if(rlist.size() > 0){
+													Integer teaRoId = rlist.get(0).getId();
+													ruManager.addRoleUserInfo(teaId, teaRoId, "", "", "", "", 0, 0, 0, 0);
+													ucManager.addUcInfo(teaId, ciId, teaRoId,sId,subName); //绑定班级
+												}
 											}
 										}
 									}
@@ -293,12 +300,6 @@ public class UserAction extends DispatchAction {
 						roleId = jzlist.get(0).getId();
 						//家长 绑定角色
 						Integer jzRuId=ruManager.addRoleUserInfo(userId, roleId, "", "", "", "", 0, 0, 0, 0);
-					
-						/*if(jzRuId>0){
-						//生成学生账户
-						 xsId = uManager.addUser(userAccount+"_xs", "", new MD5().calcMD5("123456"), "", lastLoginDate, lastLoginIp, signDate, schoolId, CurrentTime.getFinalDateTime(30), yearSystem, prov, city);
-						}*/
-						
 						//获取学生角色信息
 						List<RoleInfo> xslist = rManager.listRoleInfo("学生");
 						if(xslist.size() > 0){
@@ -310,56 +311,56 @@ public class UserAction extends DispatchAction {
 						spManager.addSpInfo(userId, xsId);
 						msg = "success";//注册用户成功
 						if(xsId>0){//绑定角色成功
-							/*List<InviteCodeInfo> icList = icManager.listIcInfoByicCode(inviteCode);
-							if(icList.size()>0){//导师邀请码
-								Integer teaId=icList.get(0).getInviteId();
-								ntsManager.addNTS(xsId, teaId, CurrentTime.getCurrentTime(), -1, CurrentTime.getFinalDateTime(7), 0, "", "", 0);//4 缃戠粶瀵煎笀瀛︾敓缁戝畾
-							}*/
 							List<ClassInfo> ciList = ciManager.listClassInfoByOption(gradeNo, CurrentTime.getCurrentTime(), schoolId, className);
 							if(ciList.size()>0){
 								Integer classId = ciList.get(0).getId();
 								ucManager.addUcInfo(xsId, classId, roleId); //3 绑定用户班级
 							}else{//班级不存在
-								Integer mRoId =0;
-								List<RoleInfo> mRList = rManager.listRoleInfo("管理员");
-								if(mRList.size()>0){
-								    mRoId = mRList.get(0).getId();
-								}
-								List<RoleUserInfo> rulist = ruManager.listUserRoleInfoBySchId(schoolId);
+								List<School> scLists = scManager.listInfoById(schoolId);
 								String pr="";
-								String ct=""; 
+								String ct="";
 								String county="";
 								Integer schType=0;
-								if(!rulist.isEmpty()){
-									pr= rulist.get(0).getProv();
-									ct= rulist.get(0).getCity();
-									county=rulist.get(0).getCounty();
-									schType=rulist.get(0).getSchoolType();
+								String schoolName="";
+								if(!scLists.isEmpty()){
+									pr= scLists.get(0).getProv();
+									ct= scLists.get(0).getCity();
+									county=scLists.get(0).getCounty();
+									schType=scLists.get(0).getSchoolType();
+									schoolName= scLists.get(0).getSchoolName();
 								}
 								Integer ciId = ciManager.addClassInfo(schoolId,className,Convert.gradeNoToBuildeClassDate(gradeNo));//创建班级
-								String currTime=CurrentTime.getCurrentTime();
-								Integer cMid=uManager.addUser("c"+ciId, "", new MD5().calcMD5("123456"), "",currTime, lastLoginIp, currTime, schoolId, "", yearSystem, prov, city);
-								
-								//绑定班级管理员角色
-								Integer ruNo =ruManager.addRoleUserInfo(cMid, mRoId, pr, ct, county, "", schType, schoolId, gradeNo, ciId);
+								if(!schoolName.contains("其他学校")){
+									Integer mRoId =0;
+									List<RoleInfo> mRList = rManager.listRoleInfo("管理员");
+									if(mRList.size()>0){
+									    mRoId = mRList.get(0).getId();
+									}
+									String currTime=CurrentTime.getCurrentTime();
+									Integer cMid=uManager.addUser("c"+ciId, "", new MD5().calcMD5("123456"), "",currTime, lastLoginIp, currTime, schoolId, "", yearSystem, prov, city);
 									
-								if(ruNo>0){//班内学科老师
-									String gName = Convert.NunberConvertChinese(gradeNo);//年级名
-									List<GradeSubject> gslist = gsManager.listSpecInfoByGname(gName);//根据年级名获取学科列表
-									for (Iterator<GradeSubject> itr = gslist.iterator(); itr.hasNext();) {
-										GradeSubject gs = (GradeSubject) itr.next();
-										Integer sId = gs.getSubject().getId();
-										//生成班内老师账户
-										Integer teaId=uManager.addUser("t"+schoolId+sId+ciId, "", new MD5().calcMD5("123456"), "",currTime, lastLoginIp, currTime, schoolId, "", yearSystem, prov, city);
-										//老师绑定角色
-										List<RoleInfo> rlist = rManager.listRoleInfo("老师");
-										if(rlist.size() > 0){
-											Integer teaRoId = rlist.get(0).getId();
-											ruManager.addRoleUserInfo(teaId, teaRoId, "", "", "", "", 0, 0, 0, 0);
-											ucManager.addUcInfo(teaId, ciId, teaRoId); //绑定班级
+									//绑定班级管理员角色
+									Integer ruNo =ruManager.addRoleUserInfo(cMid, mRoId, pr, ct, county, "", schType, schoolId, gradeNo, ciId);
+										
+									if(ruNo>0){//班内学科老师
+										String gName = Convert.NunberConvertChinese(gradeNo);//年级名
+										List<GradeSubject> gslist = gsManager.listSpecInfoByGname(gName);//根据年级名获取学科列表
+										for (Iterator<GradeSubject> itr = gslist.iterator(); itr.hasNext();) {
+											GradeSubject gs = (GradeSubject) itr.next();
+											Integer sId = gs.getSubject().getId();
+											//生成班内老师账户
+											Integer teaId=uManager.addUser("t"+schoolId+sId+ciId, "", new MD5().calcMD5("123456"), "",currTime, lastLoginIp, currTime, schoolId, "", yearSystem, prov, city);
+											//老师绑定角色
+											List<RoleInfo> rlist = rManager.listRoleInfo("老师");
+											if(rlist.size() > 0){
+												Integer teaRoId = rlist.get(0).getId();
+												ruManager.addRoleUserInfo(teaId, teaRoId, "", "", "", "", 0, 0, 0, 0);
+												ucManager.addUcInfo(teaId, ciId, teaRoId); //绑定班级
+											}
 										}
 									}
 								}
+								
 								ucManager.addUcInfo(xsId, ciId, roleId); //学生用户 绑定班级	
 							}
 						}

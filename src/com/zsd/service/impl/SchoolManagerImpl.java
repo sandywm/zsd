@@ -124,7 +124,6 @@ public class SchoolManagerImpl implements SchoolManager{
 			Session sess  = HibernateUtil.currentSession();
 			return sDao.findSpecInfoById(sess, id);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			throw new WEBException("获取指定学校详细信息时出现异常!");
 		} finally{

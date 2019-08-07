@@ -209,6 +209,7 @@ public class HomeWorkAction extends DispatchAction {
 		return null;
 	}
 	
+	
 	/**
 	 * 浏览指定知识下系统家庭作业
 	 * @author wm
@@ -318,6 +319,7 @@ public class HomeWorkAction extends DispatchAction {
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
+	
 	
 	/**
 	 * 增加系统家庭作业
@@ -2095,7 +2097,10 @@ public class HomeWorkAction extends DispatchAction {
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "error";
 		//获取指定班级指定时间的作业
-		
+		List<SendHwInfo> sendList = swm.listPageInfoByOpt(0, classId, 0, -1, 0, preDate, preDate, false, 0, 0);
+		if(sendList.size() > 0){
+			
+		}
 		return null;
 	}
 }
