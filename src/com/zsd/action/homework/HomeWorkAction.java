@@ -818,6 +818,7 @@ public class HomeWorkAction extends DispatchAction {
 				map_d.put("queSub", tq.getQueSub());
 				map_d.put("queAnswer", tq.getQueAnswer());
 				map_d.put("inUse", tq.getInUse().equals(0) ? "有效" : "无效");
+				map_d.put("queResolution", tq.getQueResolution());
 				list_d.add(map_d);
 			}
 			map.put("tqList", list_d);
@@ -2116,6 +2117,7 @@ public class HomeWorkAction extends DispatchAction {
 					Integer zsComNum = 0;
 					Integer bzComNum = 0;
 					Integer unComNum = 0;
+					Integer shwType = shw.getHwType();
 					List<HwStudyTjInfo> tjList = tjm.listInfoByOpt(shw.getId(), 0, -1, false, 0, 0);
 					stuNum = tjList.size();
 					if(stuNum > 0){
@@ -2140,6 +2142,7 @@ public class HomeWorkAction extends DispatchAction {
 								list_bz.add(map_d);
 							}
 						}
+						
 						map.put("unComUserList", list_un);
 						map.put("zsComUserList", list_zs);
 						map.put("bzComUserList", list_bz);
