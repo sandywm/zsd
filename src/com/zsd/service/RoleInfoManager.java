@@ -43,6 +43,16 @@ public interface RoleInfoManager {
 	 * @throws WEBException
 	 */
 	public List<RoleInfo> listAllRoleInfo() throws WEBException;
+	
+	/**
+	 * 根据角色编号获取角色信息
+	 * @author wm
+	 * @date 2019-8-7 下午06:51:17
+	 * @param roleId
+	 * @return
+	 * @throws WEBException
+	 */
+	RoleInfo getEntityById(Integer roleId) throws WEBException;
 
 
 }

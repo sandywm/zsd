@@ -77,4 +77,14 @@ public interface RoleInfoDao {
 	 * @return
 	 */
 	List<RoleInfo> findRoleInfo(Session sess,String roleName);
+	
+	/**
+	 * 根据角色编号获取角色信息
+	 * @author wm
+	 * @date 2019-8-7 下午06:49:13
+	 * @param sess
+	 * @param roleId
+	 * @return
+	 */
+	RoleInfo getEntityById(Session sess,int roleId);
 }

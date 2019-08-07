@@ -82,4 +82,19 @@ public class RoleInfoManagerImpl implements RoleInfoManager {
 		}
 	}
 
+	@Override
+	public RoleInfo getEntityById(Integer roleId) throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			roleinfoDao = (RoleInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_ROLE_INFO);
+			Session sess  = HibernateUtil.currentSession();
+			return roleinfoDao.getEntityById(sess, roleId);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("根据角色编号获取角色信息时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
 }

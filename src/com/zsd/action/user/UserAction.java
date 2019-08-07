@@ -76,17 +76,22 @@ public class UserAction extends DispatchAction {
 	public ActionForward goPage(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
+		RoleInfoManager rm = (RoleInfoManager) AppFactory.instance(null).getApp(Constants.WEB_ROLE_INFO);
 		Integer roleId = CommonTools.getFinalInteger("roleId", request);
-		String roleName = Transcode.unescape_new("roleName", request);
+		String roleName = "";
 		String urlPage = "";
-		if(roleName.equals("超级管理员") || roleName.equals("知识点管理员")){
-			urlPage = "managerPage";
-		}else{
-			urlPage = "welcomePage";
+		if(roleId > 0){
+			RoleInfo role = rm.getEntityById(roleId);
+			roleName = role.getRoleName();
+			if(roleName.equals("超级管理员") || roleName.equals("知识点管理员")){
+				urlPage = "managerPage";
+			}else{
+				urlPage = "welcomePage";
+			}
+			HttpSession session = request.getSession(false);
+			session.setAttribute(Constants.LOGIN_USER_ROLE_ID, roleId);
+			session.setAttribute(Constants.LOGIN_USER_ROLE_NAME, roleName);
 		}
-		HttpSession session = request.getSession(false);
-		session.setAttribute(Constants.LOGIN_USER_ROLE_ID, roleId);
-		session.setAttribute(Constants.LOGIN_USER_ROLE_NAME, roleName);
 		return mapping.findForward(urlPage);
 	}
 	
