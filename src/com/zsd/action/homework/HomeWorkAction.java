@@ -2113,6 +2113,9 @@ public class HomeWorkAction extends DispatchAction {
 			List<SendHwInfo> sendList = swm.listPageInfoByOpt(0, classId, 0, -1, 0, preDate, preDate, false, 0, 0);
 			if(sendList.size() > 0){
 				msg = "success";
+				Integer[] tjHwArr = {0,0,0};
+				Integer[] tjKhArr = {0,0,0};
+				Integer[] tjKqArr = {0,0,0};
 				for(SendHwInfo shw : sendList){
 					Integer zsComNum = 0;
 					Integer bzComNum = 0;
@@ -2142,12 +2145,28 @@ public class HomeWorkAction extends DispatchAction {
 								list_bz.add(map_d);
 							}
 						}
-						
+						if(shwType.equals(1)){//家庭作业
+							tjHwArr[0] = zsComNum;
+							tjHwArr[1] = bzComNum;
+							tjHwArr[2] = unComNum;
+						}else if(shwType.equals(2)){//课后复习
+							tjKhArr[0] = zsComNum;
+							tjKhArr[1] = bzComNum;
+							tjKhArr[2] = unComNum;
+						}else if(shwType.equals(3)){//课前预习
+							tjKqArr[0] = zsComNum;
+							tjKqArr[1] = bzComNum;
+							tjKqArr[2] = unComNum;
+						}
+						//学生信息
 						map.put("unComUserList", list_un);
 						map.put("zsComUserList", list_zs);
 						map.put("bzComUserList", list_bz);
 					}
 				}
+				map.put("unCom", tjHwArr);
+				map.put("zsCom", tjKhArr);
+				map.put("bzComt", tjKqArr);
 			}else{
 				msg = "noInfo";
 				List<UserClassInfo> ucList = ucm.listUcInfoByOpt(classId, 2, 1, 10000);
