@@ -7,9 +7,6 @@ var noGradInfo = '';//根据科目联动年级时用到 存在年级 清空 不�
 layui.define(['form'],function(exports){
 	var $ = layui.jquery,form=layui.form;
     var obj = {
-    	data : {
-    		lcIdDet : 0 //任务详情中的lcId
-    	},
     	getId : function(id){
     		return document.getElementById(id);
     	},

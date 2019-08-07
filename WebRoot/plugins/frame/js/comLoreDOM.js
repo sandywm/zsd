@@ -28,24 +28,28 @@ layui.define(['form','element','upLoadFiles','buffetLoreDOM','buffetLoreMet'],fu
     		var loreTopStr = '';
     		//知识点title
     		loreTopStr += '<fieldset class="layui-elem-field layui-field-title"><legend id="zsdName"></legend></fieldset>';
-    		//top 基础题型
-    		loreTopStr += '<input id="basicTypeInp" type="hidden" value="知识清单"/>';
-    		loreTopStr += '<div class="typeBox layui-clear"><span>基础题型：</span>';
-    		loreTopStr += '<div class="typeCon">';
-    		if(globalOpts == 'add'){
-    			loreTopStr += '<input type="radio" inpType="zsqd" class="basicTypeRad" isCreateInp="1" name="queTypeRad" lay-filter="qusTypeFilter" value="知识清单" title="知识清单" checked>';
-        		loreTopStr += '<input type="radio" inpType="zhuti" class="basicTypeRad" isCreateInp="0" name="queTypeRad" lay-filter="qusTypeFilter" value="点拨指导" title="点拨指导">';
-        		loreTopStr += '<input type="radio" inpType="jtsf" class="basicTypeRad" isCreateInp="0" name="queTypeRad" lay-filter="qusTypeFilter" value="解题示范" title="解题示范">';
-        		loreTopStr += '<input type="radio" inpType="ggxl" class="basicTypeRad" isCreateInp="0" name="queTypeRad" lay-filter="qusTypeFilter" value="巩固训练" title="巩固训练">';
-        		loreTopStr += '<input type="radio" inpType="zdxzd" class="basicTypeRad" isCreateInp="0" name="queTypeRad" lay-filter="qusTypeFilter" value="针对性诊断" title="针对性诊断">';
-        		loreTopStr += '<input type="radio" inpType="zczd" class="basicTypeRad" isCreateInp="0" name="queTypeRad" lay-filter="qusTypeFilter" value="再次诊断" title="再次诊断">';
-        		loreTopStr += '<input type="radio" inpType="zsjj" class="basicTypeRad" isCreateInp="0" name="queTypeRad" lay-filter="qusTypeFilter" value="知识讲解" title="知识讲解"></div>';
-    		}else if(globalOpts == 'edit'){
-    			loreTopStr += '<p id="basicTypeTxt"></p>';
+    		if(currPage == 'lorePage'){
+    			//top 基础题型
+        		loreTopStr += '<input id="basicTypeInp" type="hidden" value="知识清单"/>';
+        		loreTopStr += '<div class="typeBox layui-clear"><span>基础题型：</span>';
+        		loreTopStr += '<div class="typeCon">';
+        		if(globalOpts == 'add'){
+        			loreTopStr += '<input type="radio" inpType="zsqd" class="basicTypeRad" isCreateInp="1" name="queTypeRad" lay-filter="qusTypeFilter" value="知识清单" title="知识清单" checked>';
+            		loreTopStr += '<input type="radio" inpType="zhuti" class="basicTypeRad" isCreateInp="0" name="queTypeRad" lay-filter="qusTypeFilter" value="点拨指导" title="点拨指导">';
+            		loreTopStr += '<input type="radio" inpType="jtsf" class="basicTypeRad" isCreateInp="0" name="queTypeRad" lay-filter="qusTypeFilter" value="解题示范" title="解题示范">';
+            		loreTopStr += '<input type="radio" inpType="ggxl" class="basicTypeRad" isCreateInp="0" name="queTypeRad" lay-filter="qusTypeFilter" value="巩固训练" title="巩固训练">';
+            		loreTopStr += '<input type="radio" inpType="zdxzd" class="basicTypeRad" isCreateInp="0" name="queTypeRad" lay-filter="qusTypeFilter" value="针对性诊断" title="针对性诊断">';
+            		loreTopStr += '<input type="radio" inpType="zczd" class="basicTypeRad" isCreateInp="0" name="queTypeRad" lay-filter="qusTypeFilter" value="再次诊断" title="再次诊断">';
+            		loreTopStr += '<input type="radio" inpType="zsjj" class="basicTypeRad" isCreateInp="0" name="queTypeRad" lay-filter="qusTypeFilter" value="知识讲解" title="知识讲解"></div>';
+        		}else if(globalOpts == 'edit'){
+        			loreTopStr += '<p id="basicTypeTxt"></p>';
+        		}
+        		loreTopStr += '</div>';
     		}
-    		loreTopStr += '</div>';
     		loreTopStr += '<div class="tiganTypeBox"></div>';
-    		loreTopStr += '<div class="lexTypeBox"></div>';
+    		if(currPage == 'lorePage'){
+    			loreTopStr += '<div class="lexTypeBox"></div>';
+    		}
     		return loreTopStr;
     	},
     	//创建对应主要内容 
@@ -122,13 +126,15 @@ layui.define(['form','element','upLoadFiles','buffetLoreDOM','buffetLoreMet'],fu
     			//解析
     			loreConStr += '<div class="layui-form-item"><label class="layui-form-label">解析：</label>';
     			loreConStr += '<div class="layui-input-block"><div id="conAnaly_'+ nowType +'_'+ currNum +'"></div></div></div>';
-    			//提示
-    			loreConStr += '<div class="layui-form-item layui-form"><label class="layui-form-label">提示：</label>';
-    			loreConStr += '<div class="layui-input-block selTipsBox">';
-    			loreConStr += '<input type="hidden" id="tipsInp_'+ nowType +'" class="tipsInp"/>';
-    			loreConStr += '<select id="selTipsSel_'+ nowType +'" lay-filter="selTipsSel"></select>';
-    			loreConStr += '<div id="tipsCon_'+ nowType +'" class="tipsCon"></div>';
-    			loreConStr += '</div></div>';
+    			if(currPage == 'lorePage'){
+    				//提示
+        			loreConStr += '<div class="layui-form-item layui-form"><label class="layui-form-label">提示：</label>';
+        			loreConStr += '<div class="layui-input-block selTipsBox">';
+        			loreConStr += '<input type="hidden" id="tipsInp_'+ nowType +'" class="tipsInp"/>';
+        			loreConStr += '<select id="selTipsSel_'+ nowType +'" lay-filter="selTipsSel"></select>';
+        			loreConStr += '<div id="tipsCon_'+ nowType +'" class="tipsCon"></div>';
+        			loreConStr += '</div></div>';
+    			}
     		}
     		if(nowType == 'zhuti'){
     			loreConStr += '<p class="zhutiNote">注：如果不区分重点、难点、关键点、易混点，就把内容直接写入主题里面，重点、难点、关键点、易混点内容留空！</p>';

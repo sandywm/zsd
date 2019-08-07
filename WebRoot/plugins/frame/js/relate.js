@@ -47,7 +47,7 @@ layui.define(['table','form','scrollBar'],function(exports){
     			result_answer_text = '';
     			isAddClickFlag = false;
     			currNum = 0;//每次返回重置currNum 便于回显的一个匹配
-    		}else if(currPage == 'buffetPage'){
+    		}else if(currPage == 'buffetPage' || currPage == 'sysHwPage' || currPage == 'teaHwPage'){
     			$('.queType').hide().html('');
     			$('.quesAddEditBox').hide();
     			$('.comQuesBox').html('').hide();

@@ -96,9 +96,9 @@ layui.define(['form','table','relate'],function(exports){
 		    				alert(currPage + "-----------")
 		    				$('#editInp').val(json.data[0].id);//默认第一个出版社的值赋给隐藏变量
 		    			}*/
-		    			if(currPage == 'lorePage' || currPage == 'buffetPage' || currPage == 'chapterPage' || currPage == 'loreCataPage' || currPage == 'relateManager'){
+		    			if(currPage == 'lorePage' || currPage == 'buffetPage' || currPage == 'chapterPage' || currPage == 'loreCataPage' || currPage == 'relateManager' || currPage == 'sysHwPage' || currPage == 'teaHwPage'){
 		    				$('#editInp').val(json.data[0].id);//默认第一个出版社的值赋给隐藏变量
-		    				if(currPage == 'lorePage' || currPage == 'buffetPage' || currPage == 'relateManager'){
+		    				if(currPage == 'lorePage' || currPage == 'buffetPage' || currPage == 'relateManager' || currPage == 'sysHwPage' || currPage == 'teaHwPage'){
 		    					editAll = json.data[0].id + ':' + json.data[0].ediName;
 		    				}
 		    			}
@@ -178,11 +178,11 @@ layui.define(['form','table','relate'],function(exports){
 							$('#chapterInp').val('');
 							$('#chapterSel').html('<option value="">请选择章节</option>');
 							_this.getLoreCataList('');
-						}else if(currPage == 'lorePage' || currPage == 'buffetPage'){
+						}else if(currPage == 'lorePage' || currPage == 'buffetPage' || currPage == 'sysHwPage' || currPage == 'teaHwPage'){
 							//加载根据章节获取知识点的列表
 							_this.getLoreList('');
 						}
-						if(currPage == 'chapterPage' || currPage == 'loreCataPage' || currPage == 'lorePage' || currPage == 'buffetPage' || currPage == 'relatePage' || currPage=='lexRelatePage'){
+						if(currPage == 'chapterPage' || currPage == 'loreCataPage' || currPage == 'lorePage' || currPage == 'buffetPage' || currPage == 'relatePage' || currPage=='lexRelatePage' || currPage == 'sysHwPage' || currPage == 'teaHwPage'){
 							_this.getChapterList('');
 						}
 	        		}
@@ -210,7 +210,7 @@ layui.define(['form','table','relate'],function(exports){
 						$('#eduColumeInp').val(json.eduList[0].eduId);//将教材第一个value赋给隐藏变量
 						$('#eduColumeSel').html(strHtml);
 						form.render();
-						if(currPage == 'lorePage' || currPage == 'buffetPage' || currPage == 'loreCataPage' || currPage == 'chapterPage' || currPage == 'relatePage'||currPage=='lexRelatePage'){//不是关联知识点模块的统一加载章节列表
+						if(currPage == 'lorePage' || currPage == 'buffetPage' || currPage == 'loreCataPage' || currPage == 'chapterPage' || currPage == 'relatePage'||currPage=='lexRelatePage' || currPage == 'sysHwPage' || currPage == 'teaHwPage'){//不是关联知识点模块的统一加载章节列表
 							if(currPage == 'relatePage'){
 								$('#eduColumeInp').val(_this.data.eduId);
 								$('#eduColumeSel').val(_this.data.eduId);
@@ -225,7 +225,7 @@ layui.define(['form','table','relate'],function(exports){
 							//每次选择你年级需要重新清空chaptId 因为教材信息已经清空
 							$('#chapterInp').val('');
 							_this.getLoreCataList('');
-						}else if(currPage == 'lorePage' || currPage == 'buffetPage'){
+						}else if(currPage == 'lorePage' || currPage == 'buffetPage' || currPage == 'sysHwPage' || currPage == 'teaHwPage'){
 							$('.tipsTxt_lore').hide();
 							_this.getLoreList('');
 						}
@@ -233,7 +233,7 @@ layui.define(['form','table','relate'],function(exports){
 		        		layer.msg('暂无教材信息',{time:1200});
 		        		$('#eduColumeInp').val('');
 						$('#eduColumeSel').html('<option value="">请选择教材</option>');
-						if(currPage == 'lorePage' || currPage == 'buffetPage' || currPage == 'loreCataPage' || currPage == 'chapterPage'){
+						if(currPage == 'lorePage' || currPage == 'buffetPage' || currPage == 'loreCataPage' || currPage == 'chapterPage' || currPage == 'sysHwPage' || currPage == 'teaHwPage'){
 							_this.getChapterList('');
 						}
 						
@@ -244,7 +244,7 @@ layui.define(['form','table','relate'],function(exports){
 							_this.getLoreCataList('');
 						}else if(currPage == 'chapterPage'){
 							$('.tipsTxt').hide();
-						}else if(currPage == 'lorePage' || currPage == 'buffetPage'){
+						}else if(currPage == 'lorePage' || currPage == 'buffetPage' || currPage == 'sysHwPage' || currPage == 'teaHwPage'){
 							$('.tipsTxt_lore').hide();
 							_this.getLoreList('');
 						}
@@ -257,10 +257,17 @@ layui.define(['form','table','relate'],function(exports){
     	getLoreList : function(cptId){
     		layer.load('1');
     		var _this = this;
-    		if(currPage == 'lorePage' || currPage == 'buffetPage'){
+    		if(currPage == 'lorePage' || currPage == 'buffetPage' || currPage == 'sysHwPage' || currPage == 'teaHwPage'){
     			var editVal = $('#editInp').val();
         		if(editVal == 1){
-        			currPage == 'lorePage' ? loreSetWid = '375' : loreSetWid = '300';
+        			//currPage == 'lorePage' ? loreSetWid = '375' : loreSetWid = '300';
+        			if(currPage == 'lorePage'){
+        				loreSetWid = '375';
+        			}else if(currPage == 'buffetPage'){
+        				loreSetWid = '300';
+        			}else{
+        				loreSetWid = '220';
+        			}
         		}else{
         			currPage == 'lorePage' ? loreSetWid = '220' : loreSetWid = '100';
         		}
@@ -282,11 +289,11 @@ layui.define(['form','table','relate'],function(exports){
     				text: {none : '暂无相关数据'},
     				cols : [[
     					{field : '', title: '序号', type:'numbers', align:'center'},
-    					{field : 'subName', title: '学科', width:'120', align:'center' },
-    					{field : 'gradeName', title: '年级',width:'120',align:'center'},
-    					{field : 'eduVolume', title: '教材',width:'120',align:'center'},
-    					{field : 'cptName', title: '章节',width:'280',align:'center'},
-    					{field : 'loreName', title: '知识点名称',width:'280',align:'center'},
+    					{field : 'subName', title: '学科', width:'150', align:'center' },
+    					{field : 'gradeName', title: '年级',width:'150',align:'center'},
+    					{field : 'eduVolume', title: '教材',width:'150',align:'center'},
+    					{field : 'cptName', title: '章节',width:'320',align:'center'},
+    					{field : 'loreName', title: '知识点名称',width:'320',align:'center'},
     					{field : 'inUse',title: '是否有效',width:'120',align:'center',templet:function(d){
     						var str = '';
     						d.inUse == '有效'? str='<span class="sucColor">有效</span>' : tmpStr='<span class="warningCol">无效</span>';
@@ -365,7 +372,7 @@ layui.define(['form','table','relate'],function(exports){
 						layer.closeAll('loading');
 					}
 				});
-			}else if(currPage == 'loreCataPage' || currPage == 'lorePage' || currPage == 'buffetPage' || currPage == 'relatePage' || currPage == 'lexRelatePage'){
+			}else if(currPage == 'loreCataPage' || currPage == 'lorePage' || currPage == 'buffetPage' || currPage == 'relatePage' || currPage == 'lexRelatePage' || currPage == 'sysHwPage' || currPage == 'teaHwPage'){
 				var _this = this;
 				//知识点目录管理 01：生成章节select chapterSel
 				$.ajax({
@@ -508,7 +515,7 @@ layui.define(['form','table','relate'],function(exports){
 				obj.getEduColumeByGsEdId(value, gsId);
 				if(currPage == 'loreCataPage'){
 					currEditName == '通用版' ? $('#addLoreCata').show() : $('#addLoreCata').hide();
-				}else if(currPage == 'lorePage' || currPage == 'buffetPage' || currPage == 'relateManager'){
+				}else if(currPage == 'lorePage' || currPage == 'buffetPage' || currPage == 'sysHwPage' || currPage == 'relateManager' || currPage == 'teaHwPage'){
 					editAll = allValue;//用于知识点管理下关联知识点匹配当前关联知识点所在的出版社
 				}
 			}
@@ -536,7 +543,7 @@ layui.define(['form','table','relate'],function(exports){
 	form.on('select(gradeSel)', function(data){
 		var value = data.value;
 		if(value == ''){
-			if(currPage == 'chapterPage' || currPage == 'loreCataPage' || currPage == 'lorePage' || currPage == 'buffetPage' || currPage == 'relatePage' || currPage == 'lexRelatePage'){
+			if(currPage == 'chapterPage' || currPage == 'loreCataPage' || currPage == 'lorePage' || currPage == 'buffetPage' || currPage == 'relatePage' || currPage == 'lexRelatePage' || currPage == 'sysHwPage' || currPage == 'teaHwPage'){
 				if($('#gradeInp').val() != 0){
 					//章节管理 知识点目录管理
 					obj.getChapterList('');
@@ -554,7 +561,7 @@ layui.define(['form','table','relate'],function(exports){
 					$('#chapterSel').html('<option value="">请选择章节</option>');
 					//每次选择你年级需要重新清空chaptId 因为教材信息已经清空
 					obj.getLoreCataList('');
-				}else if(currPage == 'lorePage' || currPage == 'buffetPage'){
+				}else if(currPage == 'lorePage' || currPage == 'buffetPage' || currPage == 'sysHwPage' || currPage == 'teaHwPage'){
 					//加载根据章节获取知识点的列表
 					$('.tipsTxt_lore').hide();
 					obj.getLoreList('');
@@ -588,7 +595,7 @@ layui.define(['form','table','relate'],function(exports){
 				//每次选择你年级需要重新清空chaptId 因为教材信息已经清空
 				$('#chapterInp').val('');
 				obj.getLoreCataList('');
-			}else if(currPage == 'lorePage'&& $('#chapterInp').val()!= '' || currPage == 'buffetPage'&& $('#chapterInp').val()!= ''){
+			}else if(currPage == 'lorePage'&& $('#chapterInp').val()!= '' || currPage == 'buffetPage'&& $('#chapterInp').val()!= '' || currPage == 'sysHwPage' && $('#chapterInp').val()!= '' || currPage == 'teaHwPage' && $('#chapterInp').val()!= ''){
 				//加载根据章节获取知识点的列表
 				$('#chapterInp').val('');
 				obj.getLoreList('');
@@ -611,7 +618,7 @@ layui.define(['form','table','relate'],function(exports){
 			$('#zsdCodeBtn').show();
 			//加载章节对应知识点目录
 			obj.getLoreCataList(value);
-		}else if(currPage == 'lorePage' || currPage == 'buffetPage' || currPage == 'relatePage' || currPage == 'lexRelatePage'){
+		}else if(currPage == 'lorePage' || currPage == 'buffetPage' || currPage == 'relatePage' || currPage == 'lexRelatePage' || currPage == 'sysHwPage' || currPage == 'teaHwPage'){
 			//加载根据章节获取知识点的列表
 			obj.getLoreList(value);
 		}

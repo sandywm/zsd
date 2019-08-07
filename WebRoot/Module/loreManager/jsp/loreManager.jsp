@@ -780,7 +780,6 @@
 						loreDOM.switchTxt(loreType);
 						UE.delEditor('con_'+ loreType +'_'+currNum);
 						loreDOM.initUeditor('con_'+ loreType +'_'+currNum);
-						//this.subLore();
 					}
 					form.render();
 					

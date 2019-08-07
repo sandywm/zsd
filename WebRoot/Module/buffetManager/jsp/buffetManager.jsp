@@ -60,11 +60,6 @@
 						</select> 
 					</div>
 				</div>
-				<!-- div class="itemDivs" style="margin-right:0px;">
-					<div class="layui-input-inline">
-						<button id="queryBtn" class="layui-btn"><i class="layui-icon layui-icon-search"></i></button>
-					</div>
-				</div -->
 			</div>
 		</div>
 		<div class="layui-fluid" style="margin-top:50px;padding:0;">
@@ -388,8 +383,6 @@
 							}else if(globalOpts == 'edit'){
 								var url = '/buffet.do?action=updateBuffetDetail';
 							}
-							console.log(field)
-							console.log(url);
 							layer.load('1');
 							$.ajax({
 								type:'post',
@@ -399,7 +392,6 @@
 						        success:function (json){
 						        	layer.closeAll('loading');
 						        	if(json['result'] == 'success'){
-						        		console.log(json)
 						        		var title = globalOpts == 'add' ? '添加成功' : '编辑成功';
 						        		layer.msg(title,{icon:1,time:1000},function(){
 						        			if(globalOpts == 'add'){
@@ -477,18 +469,17 @@
 				},
 				//回显题库列表每个对应的详情 （编辑)
 				renderbuffetTypeInfo : function(json){
-					console.log(json)
 					var maxSelBox = blDOM.creaMaxSel(),
-					spaceSelBox = blDOM.creaMaxSpace(),
-					ansType = blDOM.createAnsType(),//问题类型
-					selAnsTxt = blDOM.createSelAnsTxt(),
-					selAnsImg = blDOM.createSelAnsImg(),
-					ansSingle = blDOM.createAnsSingle(),
-					ansMulti = blDOM.createAnsMulti(),
-					wendaStr = blDOM.wendaTypeDOM(loreType),
-					judgeStr = blDOM.judgeQueType(),
-					tkSelStr = blDOM.createTkSelDOM(),
-					tkTypeStr = blDOM.createTkTypeDOM(loreType);
+						spaceSelBox = blDOM.creaMaxSpace(),
+						ansType = blDOM.createAnsType(),//问题类型
+						selAnsTxt = blDOM.createSelAnsTxt(),
+						selAnsImg = blDOM.createSelAnsImg(),
+						ansSingle = blDOM.createAnsSingle(),
+						ansMulti = blDOM.createAnsMulti(),
+						wendaStr = blDOM.wendaTypeDOM(loreType),
+						judgeStr = blDOM.judgeQueType(),
+						tkSelStr = blDOM.createTkSelDOM(),
+						tkTypeStr = blDOM.createTkTypeDOM(loreType);
 				
 					//增加关联词条
 					//$('.queType').append(tiganTypeDOM + lexStrDOM);
@@ -657,8 +648,8 @@
 								lexContent = '';
 				        		page.renderbuffetTypeInfo(json);
 				        		//page.subLore();
-				        	}else if(json.result == 'noInfo'){
-				        		layer.msg('暂无信息',{icon:5,anim:6,time:2000});
+				        	}else if(json.result == 'error'){
+				        		layer.msg('服务器错误',{icon:5,anim:6,time:2000});
 				        	}
 				        	
 				        }
@@ -668,7 +659,6 @@
 						buffetTit = $(this).attr('buffetTit'),
 						inUse = $(this).attr('inUse'),
 						inUseTxt = $(this).attr('inUseTxt');
-				
 					layer.confirm('是否要将[<span style="color:#F47837;">' + buffetTit + '</span>]设置为' + '[<span style="color:#F47837;">'+ inUseTxt +']</span>', {
 						title:'提示',
 					  	skin: 'layui-layer-molv',
@@ -683,12 +673,12 @@
 					        url:'/buffet.do?action=setInUseStatus',
 					        success:function (json){
 					        	layer.closeAll('loading');
-					        	if(json.msg == 'success'){
+					        	if(json.result == 'success'){
 					        		layer.msg('设置成功',{icon:1,time:1000},function(){
-						        		buffet.getBuffetList(loreId);
-						        		layer.close(index);
+					        			layer.close(index);					        			
+						        		buffet.getBuffetList(loreBigId);
 	   				        		});
-					        	}else if(json.msg == 'error'){
+					        	}else if(json.result == 'error'){
 					        		layer.msg('设置失败，请稍后重试',{icon:5,anim:6,time:2000});
 					        	}
 					        }

@@ -76,6 +76,7 @@
   					<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="lex.do?action=goLexPage" tab-id="10">词库管理</a></li>
   					<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="buffet.do?action=goBuffetPage" tab-id="11">自助餐管理</a></li>
   					<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="lqe.do?action=goLqePage" tab-id="12">错题管理</a></li>
+  					<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="hw.do?action=goHwPage" tab-id="13">系统家庭作业管理</a></li>
   				</ul>
   			</div>
   		</div>
@@ -89,7 +90,8 @@
 	            <div class="layui-tab-content">
 	                <div class="layui-tab-item layui-show">
 	                	<iframe id="mainIframe" src="lore.do?action=goLoreQuePage" frameborder="0" scrolling="yes" width="100%" height="100%"></iframe>
-	                	<!-- iframe id="mainIframe" src="user.do?action=goWelcomePage" frameborder="0" scrolling="yes" width="100%" height="100%"></iframe -->
+	                	<!-- iframe id="mainIframe" src="buffet.do?action=goBuffetPage" frameborder="0" scrolling="yes" width="100%" height="100%"></iframe>
+	                	<iframe id="mainIframe" src="user.do?action=goWelcomePage" frameborder="0" scrolling="yes" width="100%" height="100%"></iframe -->
 	                </div>
 	            </div>
 	        </div>

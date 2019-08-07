@@ -1,0 +1,88 @@
+.itemDivs{
+	float:left;
+	margin-right:15px;
+}
+/* 网络导师审核查看详情 */
+.verifyBox{
+	height:400px;
+}
+.comVerifyBox{
+	width:320px;
+	height:380px;
+	float:left;
+	margin:10px 0 0 8px;
+	border:1px solid #ccc;
+}
+.comVerifyBox strong.modTit{
+	width:100%;
+	height:40px;
+	line-height:40px;
+	text-align:center;
+	font-size:16px;
+	font-weight:normal;
+	color:#666;
+	display:block;
+	margin-bottom:10px;
+}
+.modInp {
+	line-height:38px;
+	margin-bottom:10px;
+	font-size:14px;
+	color:#666;
+}
+.modInp span,
+.modInp input{
+	float:left;
+}
+.modInp span{
+	width:72px;
+	text-align:right;
+}
+.modInp input{
+	width:70%;
+	margin-left:10px;
+}
+.innerImgBox{
+	float:left;
+	margin-left:22px;
+}
+.innerImgBox.spec{
+	float:none;
+	margin-left:0;
+}
+.imgBox{
+	width:128px;
+	height:128px;
+	border:1px solid #ccc;
+}
+.innerImgBox.spec .imgBox{
+	margin:0 auto;	
+}
+.innerImgBox p{
+	text-align:center;
+	margin-top:5px;
+	color:#666;
+}
+.verfiyBtnBox{
+	text-align:center;
+	margin-top:15px;
+}
+.verfiyBtnBox a{
+	width:80px;
+	height:32px;
+	line-height:32px;
+	text-align:center;
+	display:inline-block;
+}
+.verfiyBtnBox a:hover{
+	opacity:.8;
+}
+.verfiyBtnBox a.passBtn{
+	background:#009688;
+	color:#fff;
+}
+.verfiyBtnBox a.noPassBtn{
+	background:#ccc;
+	color:#666;
+	margin-right:10px;
+}

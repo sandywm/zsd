@@ -83,6 +83,9 @@
 	line-height:38px;
 	margin-bottom:10px;
 }
+.typeBox.noMargBot{
+	margin-bottom:0;
+}
 .typeBox span,
 .typeBox div.typeCon{
 	float:left;
@@ -227,9 +230,10 @@
 .multiAnsBox{
 	margin:-6px 0 0 5px;
 }
-.answerSelectTxt ,
-.singleAns,
-.multiAns{
+.answSelType {
+	margin-bottom:10px;
+}
+.answerSelectTxt{
 	margin-top:10px;
 }
 .txtAnsw{

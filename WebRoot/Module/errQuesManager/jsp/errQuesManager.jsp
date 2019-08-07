@@ -145,7 +145,6 @@
 				},
 				//加载错误列表
 				loadErrList : function(){
-					layer.load('1');
 					var errType = $('#errorType').val(),
 						stDate = $('#stDate').val(),
 						edDate = $('#edDate').val(),
@@ -165,8 +164,8 @@
 							return;
 						}
 					}
-					
 					var field = {opt:'admin',errorType:errType,sDate:stDate,eDate:edDate,checkStatus:upStaInp};
+					layer.load('1');
 					table.render({
 						elem: '#errListTab',
 						height: 'full-200',

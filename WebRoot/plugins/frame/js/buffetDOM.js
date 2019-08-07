@@ -28,7 +28,7 @@ layui.define(['form','buffetLoreMet'],function(exports){
     		baseStr += '<div class="layui-form" style="float:left;width:92%;">';
     		if(globalOpts == 'add'){
     			baseStr += '<input type="radio" name="baseType" lay-filter="baseTypeFilter" value="1" title="兴趣激发"><input type="radio" lay-filter="baseTypeFilter" name="baseType" value="2" title="方法归纳">';
-        		baseStr += '<input type="radio" name="baseType" lay-filter="baseTypeFilter" value="3" title="思维训练"><input type="radio" lay-filter="baseTypeFilter" name="baseType" value="4" title="思维训练">';
+        		baseStr += '<input type="radio" name="baseType" lay-filter="baseTypeFilter" value="3" title="思维训练"><input type="radio" lay-filter="baseTypeFilter" name="baseType" value="4" title="智力开发">';
         		baseStr += '<input type="radio" name="baseType" lay-filter="baseTypeFilter" value="5" title="能力培养"><input type="radio" lay-filter="baseTypeFilter" name="baseType" value="6" title="中/高考涉猎 ">';
     		}else{
     			baseStr += '<p id="baseTypeTxt"></p>';
@@ -81,13 +81,15 @@ layui.define(['form','buffetLoreMet'],function(exports){
     		//解析
     		bfCon += '<div class="layui-form-item"><label class="layui-form-label">解析：</label>';
     		bfCon += '<div class="layui-input-block"><div id="conAnaly_'+ nowType +'_'+ currNum +'"></div></div></div>';
-    		//提示
-    		bfCon += '<div class="layui-form-item layui-form"><label class="layui-form-label">提示：</label>';
-    		bfCon += '<div class="layui-input-block selTipsBox">';
-    		bfCon += '<input type="hidden" id="tipsInp_'+ nowType +'" class="tipsInp"/>';
-    		bfCon += '<select id="selTipsSel_'+ nowType +'" lay-filter="selTipsSel"></select>';
-    		bfCon += '<div id="tipsCon_'+ nowType +'" class="tipsCon"></div>';
-    		bfCon += '</div></div>';
+    		if(currPage == 'buffetPage'){
+    			//提示
+        		bfCon += '<div class="layui-form-item layui-form"><label class="layui-form-label">提示：</label>';
+        		bfCon += '<div class="layui-input-block selTipsBox">';
+        		bfCon += '<input type="hidden" id="tipsInp_'+ nowType +'" class="tipsInp"/>';
+        		bfCon += '<select id="selTipsSel_'+ nowType +'" lay-filter="selTipsSel"></select>';
+        		bfCon += '<div id="tipsCon_'+ nowType +'" class="tipsCon"></div>';
+        		bfCon += '</div></div>';
+    		}
     		bfCon += '</div>';
     		return bfCon;
     	},
@@ -116,12 +118,17 @@ layui.define(['form','buffetLoreMet'],function(exports){
     	},
     	loadLoreDetail : function(loreId){
     		layer.load('1');
-			var _this = this;
+    		var _this = this;
+    		if(currPage == 'buffetPage'){
+    			var url = '/buffet.do?action=getBuffetQueData';
+    		}else if(currPage == 'sysHwPage'){
+    			var url = '/hw.do?action=getHwDetailData';
+    		}
 			$.ajax({
 				type:'post',
 			    dataType:'json',
 			    data:{loreId:loreId},
-			    url:'/buffet.do?action=getBuffetQueData',
+			    url:url,
 			    success:function (json){
 			    	layer.closeAll('loading');	
 			    	if(json.result == 'success'){
@@ -133,7 +140,11 @@ layui.define(['form','buffetLoreMet'],function(exports){
 				    	_this.renderZgkslInfo(json.zkslt);
 				    	blMet.goTarget();
 			    	}else if(json.result == 'noInfo'){
-			    		layer.msg('暂无此知识点的巴菲特题库信息',{time:1500});
+			    		if(currPage == 'buffetPage'){
+			    			layer.msg('暂无此知识点的巴菲特题库信息',{time:1500});
+			    		}else if(currPage == 'sysHwPage'){
+			    			layer.msg('暂无此知识点的家庭作业',{time:1500});
+			    		}
 			    	}
 			    	
 			    }
@@ -168,86 +179,108 @@ layui.define(['form','buffetLoreMet'],function(exports){
 				var listStr = '';
 				for(var i=0;i<list.length;i++){
 					listStr += '<div class="listLore">';
-					//标题
-					listStr += '<strong class="smTit">标题：'+ list[i].bqTitle +'  <span class="queTypeTxt">'+ list[i].bqType +'</span></strong>';
+					if(currPage == 'buffetPage'){
+						//标题
+						listStr += '<strong class="smTit">标题：'+ list[i].bqTitle +'  <span class="queTypeTxt">'+ list[i].bqType +'</span></strong>';
+					}else{
+						//标题
+						listStr += '<strong class="smTit">标题：'+ list[i].hqTitle +'  <span class="queTypeTxt">'+ list[i].hqType +'</span></strong>';
+					}
 					//思维类型
 					listStr += '<strong class="smTit">思维类型：<span class="queTypeTxt">'+ list[i].swType +'</span></strong>';
 					//能力类型
 					listStr += '<strong class="smTit">能力类型：<span class="queTypeTxt">'+ list[i].nlType +'</span></strong>';
 					//题干
 					listStr += '<div class="con"><p class="titP">题干：</p><div>'+ list[i].subject +'</div></div>';
-					//选项
-					listStr += '<div class="conSelOpt">';
-						if(list[i].answerA != ''){
-							listStr += '<div class="comOpt layui-clear"><span class="queSelWord">A：</span>';
-								if(blMet.checkAnswerImg(list[i].answerA)){
-									listStr += '<p><img src="'+ list[i].answerA +'"/></p>';
-								}else{
-									listStr += '<p>'+ list[i].answerA.replace("<","&lt") +'</p>';
-								}
-							listStr += '</div>';
-						}
-						if(list[i].answerB != ''){
-							listStr += '<div class="comOpt layui-clear"><span class="queSelWord">B：</span>';
-								if(blMet.checkAnswerImg(list[i].answerB)){
-									listStr += '<p><img src="'+ list[i].answerB +'"/></p>';
-								}else{
-									listStr += '<p>'+ list[i].answerB.replace("<","&lt") +'</p>';
-								}
-							listStr += '</div>';
-						}
-						if(list[i].answerC != ''){
-							listStr += '<div class="comOpt layui-clear"><span class="queSelWord">C：</span>';
-								if(blMet.checkAnswerImg(list[i].answerC)){
-									listStr += '<p><img src="'+ list[i].answerC +'"/></p>';
-								}else{
-									listStr += '<p>'+ list[i].answerC.replace("<","&lt") +'</p>';
-								}
-							listStr += '</div>';
-						}
-						if(list[i].answerD != ''){
-							listStr += '<div class="comOpt layui-clear"><span class="queSelWord">D：</span>';
-								if(blMet.checkAnswerImg(list[i].answerD)){
-									listStr += '<p><img src="'+ list[i].answerD +'"/></p>';
-								}else{
-									listStr += '<p>'+ list[i].answerD.replace("<","&lt") +'</p>';
-								}
-							listStr += '</div>';
-						}
-						if(list[i].answerE != ''){
-							listStr += '<div class="comOpt layui-clear"><span class="queSelWord">E：</span>';
-								if(blMet.checkAnswerImg(list[i].answerE)){
-									listStr += '<p><img src="'+ list[i].answerE +'"/></p>';
-								}else{
-									listStr += '<p>'+ list[i].answerE.replace("<","&lt") +'</p>';
-								}
-							listStr += '</div>';
-						}
-						if(list[i].answerF != ''){
-							listStr += '<div class="comOpt layui-clear"><span class="queSelWord">F：</span>';
-								if(blMet.checkAnswerImg(list[i].answerF)){
-									listStr += '<p><img src= "'+ list[i].answerF +'"/></p>';
-								}else{
-									listStr += '<p>'+ list[i].answerF.replace("<","&lt") +'</p>';
-								}
-							listStr += '</div>';
-						}
-					listStr += '</div>';
+					if(currPage == 'buffetPage'){
+						//选项
+						listStr += '<div class="conSelOpt">';
+							if(list[i].answerA != ''){
+								listStr += '<div class="comOpt layui-clear"><span class="queSelWord">A：</span>';
+									if(blMet.checkAnswerImg(list[i].answerA)){
+										listStr += '<p><img src="'+ list[i].answerA +'"/></p>';
+									}else{
+										listStr += '<p>'+ list[i].answerA.replace("<","&lt") +'</p>';
+									}
+								listStr += '</div>';
+							}
+							if(list[i].answerB != ''){
+								listStr += '<div class="comOpt layui-clear"><span class="queSelWord">B：</span>';
+									if(blMet.checkAnswerImg(list[i].answerB)){
+										listStr += '<p><img src="'+ list[i].answerB +'"/></p>';
+									}else{
+										listStr += '<p>'+ list[i].answerB.replace("<","&lt") +'</p>';
+									}
+								listStr += '</div>';
+							}
+							if(list[i].answerC != ''){
+								listStr += '<div class="comOpt layui-clear"><span class="queSelWord">C：</span>';
+									if(blMet.checkAnswerImg(list[i].answerC)){
+										listStr += '<p><img src="'+ list[i].answerC +'"/></p>';
+									}else{
+										listStr += '<p>'+ list[i].answerC.replace("<","&lt") +'</p>';
+									}
+								listStr += '</div>';
+							}
+							if(list[i].answerD != ''){
+								listStr += '<div class="comOpt layui-clear"><span class="queSelWord">D：</span>';
+									if(blMet.checkAnswerImg(list[i].answerD)){
+										listStr += '<p><img src="'+ list[i].answerD +'"/></p>';
+									}else{
+										listStr += '<p>'+ list[i].answerD.replace("<","&lt") +'</p>';
+									}
+								listStr += '</div>';
+							}
+							if(list[i].answerE != ''){
+								listStr += '<div class="comOpt layui-clear"><span class="queSelWord">E：</span>';
+									if(blMet.checkAnswerImg(list[i].answerE)){
+										listStr += '<p><img src="'+ list[i].answerE +'"/></p>';
+									}else{
+										listStr += '<p>'+ list[i].answerE.replace("<","&lt") +'</p>';
+									}
+								listStr += '</div>';
+							}
+							if(list[i].answerF != ''){
+								listStr += '<div class="comOpt layui-clear"><span class="queSelWord">F：</span>';
+									if(blMet.checkAnswerImg(list[i].answerF)){
+										listStr += '<p><img src= "'+ list[i].answerF +'"/></p>';
+									}else{
+										listStr += '<p>'+ list[i].answerF.replace("<","&lt") +'</p>';
+									}
+								listStr += '</div>';
+							}
+						listStr += '</div>';
+					}
 					//答案
 					listStr += '<div class="conAns"><span class="ansTit">答案：</span>';
-					listStr += '<span class="ansTxtSpan">'+ list[i].queAnswer +'</span>';
+					if(currPage == 'buffetPage'){
+						listStr += '<span class="ansTxtSpan">'+ list[i].queAnswer +'</span>';
+					}else{
+						listStr += '<span class="ansTxtSpan">'+ list[i].hqAnswer +'</span>';
+					}
 					listStr += '</div>';
-					//解析
-					if(list[i].queResolution != ''){
-						listStr += '<div class="con hasMargTop"><p class="titP">解析：</p><div>'+ list[i].queResolution +'</div></div>';
-					}
-					//关联此条
-					if(list[i].lexTitle != '' && list[i].lexTitle != undefined){
-						listStr += '<div class="queTips"><p class="titP">关联词条：</p><p class="tipsConView">'+ list[i].lexTitle +'</p></div>';
-					}
-					//提示
-					if(list[i].queTipTitle != '' && list[i].queTipTitle != undefined){
-						listStr += '<div class="queTips"><p class="titP">提示：</p><p class="tipsConView">'+ list[i].queTipTitle +'</p></div>';
+					if(currPage == 'sysHwPage'){
+						//解析
+						if(list[i].hqResolution != ''){
+							listStr += '<div class="con hasMargTop"><p class="titP">解析：</p><div>'+ list[i].hqResolution +'</div></div>';
+						}else{
+							listStr += '<div class="con hasMargTop"><p class="titP">解析：</p><div class="noAnayTxt">暂无解析！</div></div>';
+						}
+					}else{
+						//解析
+						if(list[i].queResolution != ''){
+							listStr += '<div class="con hasMargTop"><p class="titP">解析：</p><div>'+ list[i].queResolution +'</div></div>';
+						}else{
+							listStr += '<div class="con hasMargTop"><p class="titP">解析：</p><div class="noAnayTxt">暂无解析！</div></div>';
+						}
+						//关联此条
+						if(list[i].lexTitle != '' && list[i].lexTitle != undefined){
+							listStr += '<div class="queTips"><p class="titP">关联词条：</p><p class="tipsConView">'+ list[i].lexTitle +'</p></div>';
+						}
+						//提示
+						if(list[i].queTipTitle != '' && list[i].queTipTitle != undefined){
+							listStr += '<div class="queTips"><p class="titP">提示：</p><p class="tipsConView">'+ list[i].queTipTitle +'</p></div>';
+						}
 					}
 					listStr += '</div>';
 				}
@@ -256,7 +289,12 @@ layui.define(['form','buffetLoreMet'],function(exports){
     	}
     };
     form.on('radio(baseTypeFilter)',function(data){
-    	var value = data.value,tit = $(this).attr('title');
+    	var value = data.value,tit = $(this).attr('title'),url = '';
+    	if(currPage == 'buffetPage'){
+    		url = '/buffet.do?action=getCurrMaxNum';
+    	}else if(currPage == 'sysHwPage'){
+    		url = '/hw.do?action=getCurrMaxNum';
+    	}
     	$('#baseTypeInp').val(value);
     	layer.load('1');
     	$.ajax({
@@ -264,7 +302,7 @@ layui.define(['form','buffetLoreMet'],function(exports){
 	        dataType:'json',
 	        data:{loreId:loreBigId,btId:value},
 	        async:false,
-	        url:'/buffet.do?action=getCurrMaxNum',
+	        url:url,
 	        success:function (json){
 	        	layer.closeAll('loading');	
 	        	$('#zzcInp_0').val(tit + '第' + json.currNum + '题');

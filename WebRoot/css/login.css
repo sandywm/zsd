@@ -1,0 +1,167 @@
+body{
+	
+}
+.loginBg{
+	position:absolute;
+	left:0;
+	right:0;
+	top:0;
+	bottom:0;
+	z-index:1;
+	background: -webkit-linear-gradient(left top, #7368ed , #256bff); /* Safari 5.1 - 6.0 */
+    background: -o-linear-gradient(bottom right, #7368ed, #256bff); /* Opera 11.1 - 12.0 */
+    background: -moz-linear-gradient(bottom right, #7368ed, #256bff); /* Firefox 3.6 - 15 */
+    background: linear-gradient(to bottom right, #7368ed , #256bff); /* 标准的语法 */
+}
+.loginWrap{
+	width: 1000px;
+	height: 400px;
+	background: #fff;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	margin-top: -200px;
+	margin-left:-500px ;
+	border-radius: 4px;
+	box-shadow: 0 0 15px rgba(0,0,0,.3);
+	z-index:5;
+}
+.innerWrap{
+	position: absolute;
+	left: 100px;
+	right: 50px;
+	top: 50px;
+	bottom: 20px;
+}
+.innerWrap .leftLoginDec{
+	height: 100%;
+	float: left;
+}
+.innerWrap .leftLoginDec img{
+	height: 320px;
+}
+.rightLoginForm{
+	width: 300px;
+	height: 320px;
+	float: right;
+}
+.rightLoginForm strong{
+	width: 100%;
+	height: 40px;
+	line-height: 40px;
+	font-size: 20px;
+	color: #333;
+	text-align: center;
+	display: block;
+	margin-bottom: 20px;
+}
+.formBox{
+	width: 100%;
+	height: 40px;
+	line-height: 40px;
+	border:1px solid #ccc;
+	border-radius: 4px;
+	margin-bottom: 20px;
+}
+.formBox input{
+	width:80%;
+	height: 100%;
+	border:none;
+	background: transparent;
+	float: left;
+	padding-left:5%;
+}
+.formBox input::-webkit-input-placeholder{
+	font-weight: normal;
+}
+.formBox span.iconBox{
+	width: 15%;
+	height: 100%;
+	float: right;
+	text-align: center;
+}
+.formBox span.iconBox i{
+	color:#999;
+	font-size:20px;
+}
+.formBox.vercodeBox input{
+	width: 55%;
+}
+.formBox.vercodeBox span.iconBox{
+	width: 35%;
+	margin-right: 5%;
+	cursor: pointer;
+}
+.formBox.vercodeBox span.iconBox img{
+	width:110px;
+	float: left;
+	margin-top: 5px;
+}
+.loginBtnWrap label{
+	float: left;
+	height: 40px;
+	line-height: 40px;
+	position: relative;
+	font-size: 14px;
+	color: #666;
+}
+.loginBtnWrap label input{
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	left: 0;
+	top: 0;
+	z-index: 5;
+	cursor: pointer;
+	opacity:0;
+	filter:alpha(opacity=0);
+}
+.loginBtnWrap label span{
+	width: 14px;
+	height: 14px;
+	border:1px solid #999999;
+	border-radius: 2px;
+	float: left;
+	margin:12px 5px 0 0;
+	position:realtive;
+}
+.loginBtnWrap label span i{
+	position:absolute;
+	left:2px;
+	top:1px;
+	font-size:12px;
+	font-weight:600;
+	color:#fff;
+	displaty:none;
+}
+.loginBtnWrap label.active span{
+	border:1px solid #4d47f1;
+	background:#4d47f1;
+}
+.loginBtnWrap label.active span i{
+	display:block;
+}
+.loginBtnWrap label p{
+	float: left;
+}
+.loginBtnWrap a{
+	float: right;
+	width: 120px;
+	height: 40px;
+	line-height: 40px;
+	text-align: center;
+	background: #4d47f1;
+	color: #fff;
+	font-size: 15px;
+	border-radius: 4px;
+}
+.findPassWrap{
+	height: 20px;
+	line-height: 20px;
+	margin-top: 5px;
+}
+.findPassWrap a{
+	float: right;
+	color: #666;
+	font-size: 13px;
+}

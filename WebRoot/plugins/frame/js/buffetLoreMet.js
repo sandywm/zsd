@@ -61,7 +61,7 @@ layui.define(['form','buffetLoreDOM'],function(exports){
     					break;
     				}
     			}
-    			options[i].value = "";
+				options[i].value = "";
     			options[i].checked = false;
     		}
     		
@@ -154,8 +154,7 @@ layui.define(['form','buffetLoreDOM'],function(exports){
 	        			result_answer = '';
 	        			result_answer_text = '';
 					}
-	        		
-	        		//答案选项图片上传个数/答案选项文字输入框上传个数
+					//答案选项图片上传个数/答案选项文字输入框上传个数
 					_this.setAnswerSelect(value);
 				}
     		}
@@ -171,7 +170,7 @@ layui.define(['form','buffetLoreDOM'],function(exports){
     			this.getId(name+"_"+i).style.display = "none";
     		}
     		if(answerType == "pic"){
-    			//清空图片答案的src
+				//清空图片答案的src
     			this.clearAnsSelImgSrc(parseInt(newMaxNumber)+1);
     		}else{
     			//清空文字答案的value
@@ -258,7 +257,6 @@ layui.define(['form','buffetLoreDOM'],function(exports){
     			$('.getSrcLayer').stop().show().animate({opacity:1},300,function(){
     				$('.getImgSrcBox').show();
     			});
-    			
         	    answerSelectImg = imgId;
     	    	var oldImgSrc = "defImg.png";
     	    	var currentImgSrc = document.getElementById(answerSelectImg).src;
@@ -502,7 +500,6 @@ layui.define(['form','buffetLoreDOM'],function(exports){
     	clearAllAnswer : function(){
     		$('.clearSelAnsBtn').on('click',function(){
     			$('#result_answer_new_tk').html('暂未选择答案').addClass('noSel').removeClass('hasSel');
-    			//getId("content_answer").value = "";
     			result_answer = "";//复选框value
     			result_answer_text = "";//复选框text
     		});
@@ -547,16 +544,27 @@ layui.define(['form','buffetLoreDOM'],function(exports){
 					result_answer = '';
 					$('.spaceBox').html('');
 					$('#nowTxt_'+loreType).html('');
-					$('.maxChoice').html(maxSelBox);
+					if(currPage == 'lorePage' || currPage == 'buffetPage'){
+						$('.maxChoice').html(maxSelBox);
+					}
 					$('#wendaTypeWrap_'+loreType).hide();
 					$('#tkTypeWrap_' + loreType).hide().html('');
 					if(value == '单选题'){
-						$('#answerSelectDiv_' + loreType).show().html(ansType + selAnsTxt + selAnsImg + ansSingle);
+						if(currPage == 'lorePage' || currPage == 'buffetPage'){
+							$('#answerSelectDiv_' + loreType).show().html(ansType + selAnsTxt + selAnsImg + ansSingle);
+							this.inputBlur();
+						}else{
+							$('#answerSelectDiv_' + loreType).show().html(ansSingle);
+						}
 					}else if(value == '多选题'){
 						//multiAnsArr.length = 0;//每次切换至多选题清空多选题答案length
-						$('#answerSelectDiv_' + loreType).show().html(ansType + selAnsTxt + selAnsImg + ansMulti);
+						if(currPage == 'lorePage' || currPage == 'buffetPage'){
+							$('#answerSelectDiv_' + loreType).show().html(ansType + selAnsTxt + selAnsImg + ansMulti);
+							this.inputBlur();
+						}else{
+							$('#answerSelectDiv_' + loreType).show().html(ansMulti);
+						}
 					}
-					this.inputBlur();
 				}else if(value == '填空题'){
 					$('.maxChoice').html('');
 					$('#wendaTypeWrap_'+loreType).hide();
@@ -567,12 +575,18 @@ layui.define(['form','buffetLoreDOM'],function(exports){
 					$('#tkInp_' + loreType).val(this.data.tkOriginAnsTxt);
 					
 				}else if(value == '填空选择题'){
-					$('.maxChoice').html(maxSelBox);
+					if(currPage == 'lorePage' || currPage == 'buffetPage'){
+						$('.maxChoice').html(maxSelBox);
+					}
 					$('.spaceBox').html(spaceSelBox);
 					$('#wendaTypeWrap_'+loreType).hide();
 					$('#tkTypeWrap_' + loreType).hide().html('');
-					$('#answerSelectDiv_' + loreType).show().html(ansType + selAnsTxt + selAnsImg + tkSelStr);
-					this.inputBlur();
+					if(currPage == 'lorePage' || currPage == 'buffetPage'){
+						$('#answerSelectDiv_' + loreType).show().html(ansType + selAnsTxt + selAnsImg + tkSelStr);
+						this.inputBlur();
+					}else{
+						$('#answerSelectDiv_' + loreType).show().html(tkSelStr);
+					}
 					this.addItemTk();
 					this.clearAllAnswer();
 				}else if(value == '问答题'){
@@ -918,9 +932,6 @@ layui.define(['form','buffetLoreDOM'],function(exports){
 		$('#result_answer_new_tk').removeClass('hasSel').addClass('noSel').html('暂未选择答案');
 		result_answer = '';
 		result_answer_text = '';
-		/*for(var i = parseInt(value)+ 1; i <= 6;i++){
-			
-		}*/
 	});
 	//了解 理解 应用 综合form select
 	form.on('select(tiganType1Sel)',function(data){

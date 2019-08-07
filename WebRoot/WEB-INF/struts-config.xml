@@ -98,7 +98,8 @@
     </action>
     <!-- 家庭作业 -->
     <action path="/hw" parameter="action" scope="request"  type="com.zsd.action.homework.HomeWorkAction">
-      <set-property property="cancellable" value="true" />
+     <forward name="hwPage" path="/Module/sysHwManager/jsp/sysHwManager.jsp"></forward><!-- 系统家庭作业 -->
+     <forward name="tqPage" path="/Module/teaHwManager/jsp/teaHwManager.jsp"></forward><!-- 班内老师家庭作业 -->
     </action>
     <action path="/ntStudio" parameter="action" scope="request" type="com.zsd.action.studio.NtStudioAction">
       <set-property property="cancellable" value="true" />
