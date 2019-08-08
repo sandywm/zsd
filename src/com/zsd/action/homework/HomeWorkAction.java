@@ -249,10 +249,10 @@ public class HomeWorkAction extends DispatchAction {
 				String swType = "";//思维
 				String nlType = "";//能力
 				for(HwMindRelationInfo hmr : hmrList){
-					swType += hmr.getBuffetMindTypeInfo().getMind() + ",";
+					swType += hmr.getBuffetMindTypeInfo().getMind() + "、";
 				}
 				for(HwAbilityRelationInfo har : harList){
-					nlType += har.getBuffetAbilityTypeInfo().getAbility() + ",";
+					nlType += har.getBuffetAbilityTypeInfo().getAbility() + "、";
 				}
 				if(!swType.equals("")){
 					swType = swType.substring(0, swType.length() - 1);
