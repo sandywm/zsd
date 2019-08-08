@@ -78,7 +78,7 @@
 	color:#666;
 }
 .listLore .con div img{
-	width:80%;
+	max-width:80%;
 }
 .listLore .con div img.showVideoBtn{
 	width:100px;
@@ -129,6 +129,9 @@
 .conAns span.ansTxtSpan{
 	font-weight:600;
 	color:#F47837;
+}
+.conAns span.ansTxtSpan.hasInUse{
+	color:#009688;
 }
 .tipsConView{
 	color:#666;

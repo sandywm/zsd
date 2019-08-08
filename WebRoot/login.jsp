@@ -2,12 +2,18 @@
 <!DOCTYPE html> 
 <html>
   <head>
-    <title>专利管理系统--用户登录</title>
+    <title>知识典--用户登录</title>
 	<link href="/plugins/layui/css/layui.css" rel="stylesheet" type="text/css"/>
 	<link href="/plugins/layui/css/modules/layui-icon-extend/iconfont.css" rel="stylesheet" type="text/css"/>
 	<link href="/plugins/pace/pace-theme-flash.min.css" rel="stylesheet" type="text/css"/>
 	<link href="/css/login.css" rel="stylesheet" type="text/css"/>
 	<script src="/plugins/pace/pace.min.js"></script>
+	<style>
+		.layui-layer-molv .layui-layer-title{background:#4d47f1 !important;}
+		.layui-layer-molv .layui-layer-btn a{background:#4d47f1 !important;border-color:#4d47f1 !important; }
+		.layui-layer-molv .layui-layer-btn .layui-layer-btn1{background:none !important;}
+		.layui-form-radio>i:hover, .layui-form-radioed>i{color:#4d47f1 !important;}
+	</style>
   </head>
   
   <body>   
@@ -49,6 +55,7 @@
 			</div>
 		</div>
 	</div>
+	<input id="roleIdInp" type="hidden"/>
 	<script src="/plugins/jquery/jquery.min.js"></script>
 	<script src="/plugins/jquery/jquery.cookie.js"></script>
 	<script src="/plugins/jquery/jquery.base64.js"></script>
@@ -124,9 +131,19 @@
 				    			    	$.cookie("pwd", ''); 
 				    			    }
 				        		}
-				        		window.location.href = "hw.do?action=goTeaQuePage";
+				        		var roleList = json["roleList"];
+				        		console.log(roleList);
+				        		if(roleList.length == 1){//一种身份
+				        			window.location.href = "user.do?action=goPage&roleId=" + roleList[0].roleId;
+				        		}else if(roleList.length > 1){//多种身份
+				        			listRole(roleList);				        			
+				        		}
+				        		
+				        		//window.location.href = "hw.do?action=goTeaQuePage";
 				        	}else if(json.result == 'fail'){
 				        		layer.msg("账号密码错误");
+				        	}else if(json.result == 'vercodeFail'){
+				        		layer.msg("验证码错误");
 				        	}else if(json.result == 'lock'){
 				        		layer.msg("该账号无效,已被锁定");
 				        	}else if(json.result == 'error'){
@@ -134,6 +151,44 @@
 				        	}
 				        }
 				    });
+				}
+			}
+			function listRole(list){
+				layui.use('form',function(){
+					var html = '';
+					var form = layui.form;
+					html += '<div class="layui-form" style="width:90%;margin:0 auto;">';
+					html += '<div class="layui-input-inline">';
+					for(i=0; i<list.length; i++){
+						html += '<input type="radio" name="roleSel" value="'+ list[i].roleId +'" title="'+ list[i].roleName +'">';
+					}
+					html += '</div></div>';
+					$("#roleIdInp").val("");
+					layer.open({
+						title : '系统检测到您当前账户绑有多重身份，请选择一种身份登录',
+						skin:'layui-layer-molv',
+						type : 1, 
+						content:html, 
+						area : ['470px','200px'],
+						btn : ['进入系统','取消'],
+						yes: function(index, layero){
+							goPage();
+						}
+					});
+					form.on('radio', function(data){
+					    $("#roleIdInp").val(data.value); 
+					    //$("#roleNameInp").val(data.elem.title);
+					}); 
+					form.render();
+				});
+			}
+			//多重身份下的页面跳转
+			function goPage(){
+				var roleId =  $("#roleIdInp").val();
+				if(roleId == ""){
+					layer.msg("请选择一个身份进入系统");
+				}else{
+					window.location.href = "user.do?action=goPage&roleId=" + roleId;
 				}
 			}
 			function setCookie(){

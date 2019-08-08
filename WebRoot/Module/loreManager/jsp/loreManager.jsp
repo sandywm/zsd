@@ -531,7 +531,7 @@
 								resCon = resCon.substring(0,resCon.lastIndexOf('&zsd&'));
 								if(loreType == 'zsqd'){
 									if(globalOpts == 'add'){
-										field = {loreId:loreBigId,loreType:loreTypeZHN,queTitle:resTit,queSub:resCon};
+										field = {loreId:loreBigId,loreType:loreTypeZHN,queTitle:resTit,queSub:escape(resCon)};
 									}else{
 										tmpLqsIdUpObj = blMet.getLqsId('zsqd');
 										if(tmpLqsIdUpObj.lqsIdArr.length > 0){
@@ -539,11 +539,11 @@
 										}else{
 											lqsIdStr_up='';
 										}
-										field = {lqId:lqBigId,lqsIdStr_up:lqsIdStr_up,/*lqsIdStr_del:lqsIdStr_del,*/lqsTitleStr:resTit,lqsConStr:resCon};
+										field = {lqId:lqBigId,lqsIdStr_up:lqsIdStr_up,lqsTitleStr:resTit,lqsConStr:escape(resCon)};
 									}
 								}else if(loreType == 'zd'){
 									if(globalOpts == 'add'){
-										field = {loreId:loreBigId,loreType:loreTypeZHN,titleZd:resTit,contentZd:resCon};
+										field = {loreId:loreBigId,loreType:loreTypeZHN,titleZd:resTit,contentZd:escape(resCon)};
 									}else{
 										tmpLqsIdUpObj = blMet.getLqsId('zd');
 										if(tmpLqsIdUpObj.lqsIdArr.length > 0){
@@ -552,14 +552,14 @@
 											lqsIdStr_up='';
 										}
 										if(tmpLqsIdUpObj.zeroFlag){//表示编辑的时候新增加了
-											field = {lqId:lqBigId,lqsType:smLoreTypeZHN,lqsIdStr_up:lqsIdStr_up,/*lqsIdStr_del:lqsIdStr_del,*/lqsTitleStr:resTit,lqsConStr:resCon};
+											field = {lqId:lqBigId,lqsType:smLoreTypeZHN,lqsIdStr_up:lqsIdStr_up,lqsTitleStr:resTit,lqsConStr:escape(resCon)};
 										}else{
-											field = {lqId:lqBigId,lqsIdStr_up:lqsIdStr_up,/*lqsIdStr_del:lqsIdStr_del,*/lqsTitleStr:resTit,lqsConStr:resCon};
+											field = {lqId:lqBigId,lqsIdStr_up:lqsIdStr_up,lqsTitleStr:resTit,lqsConStr:escape(resCon)};
 										}
 									}
 								}else if(loreType == 'nd'){
 									if(globalOpts == 'add'){
-										field = {loreId:loreBigId,loreType:loreTypeZHN,titleNd:resTit,contentNd:resCon};
+										field = {loreId:loreBigId,loreType:loreTypeZHN,titleNd:resTit,contentNd:escape(resCon)};
 									}else{
 										tmpLqsIdUpObj = blMet.getLqsId('nd');
 										if(tmpLqsIdUpObj.lqsIdArr.length > 0){
@@ -568,15 +568,15 @@
 											lqsIdStr_up='';
 										}
 										if(tmpLqsIdUpObj.zeroFlag){
-											field = {lqId:lqBigId,lqsType:smLoreTypeZHN,lqsIdStr_up:lqsIdStr_up,/*lqsIdStr_del:lqsIdStr_del,*/lqsTitleStr:resTit,lqsConStr:resCon};
+											field = {lqId:lqBigId,lqsType:smLoreTypeZHN,lqsIdStr_up:lqsIdStr_up,lqsTitleStr:resTit,lqsConStr:escape(resCon)};
 										}else{
-											field = {lqId:lqBigId,lqsIdStr_up:lqsIdStr_up,/*lqsIdStr_del:lqsIdStr_del,*/lqsTitleStr:resTit,lqsConStr:resCon};
+											field = {lqId:lqBigId,lqsIdStr_up:lqsIdStr_up,lqsTitleStr:resTit,lqsConStr:escape(resCon)};
 										}
 										
 									}
 								}else if(loreType == 'gjd'){
 									if(globalOpts == 'add'){
-										field = {loreId:loreBigId,loreType:loreTypeZHN,titleGjd:resTit,contentGjd:resCon};
+										field = {loreId:loreBigId,loreType:loreTypeZHN,titleGjd:resTit,contentGjd:escape(resCon)};
 									}else{
 										tmpLqsIdUpObj = blMet.getLqsId('gjd');
 										if(tmpLqsIdUpObj.lqsIdArr.length > 0){
@@ -585,14 +585,14 @@
 											lqsIdStr_up='';
 										}
 										if(tmpLqsIdUpObj.zeroFlag){
-											field = {lqId:lqBigId,lqsType:smLoreTypeZHN,lqsIdStr_up:lqsIdStr_up,/*lqsIdStr_del:lqsIdStr_del,*/lqsTitleStr:resTit,lqsConStr:resCon};
+											field = {lqId:lqBigId,lqsType:smLoreTypeZHN,lqsIdStr_up:lqsIdStr_up,lqsTitleStr:resTit,lqsConStr:escape(resCon)};
 										}else{
-											field = {lqId:lqBigId,lqsIdStr_up:lqsIdStr_up,/*lqsIdStr_del:lqsIdStr_del,*/lqsTitleStr:resTit,lqsConStr:resCon};
+											field = {lqId:lqBigId,lqsIdStr_up:lqsIdStr_up,lqsTitleStr:resTit,lqsConStr:escape(resCon)};
 										}
 									}
 								}else if(loreType == 'yhd'){
 									if(globalOpts == 'add'){
-										field = {loreId:loreBigId,loreType:loreTypeZHN,titleYhd:resTit,contentYhd:resCon};
+										field = {loreId:loreBigId,loreType:loreTypeZHN,titleYhd:resTit,contentYhd:escape(resCon)};
 									}else{
 										tmpLqsIdUpObj = blMet.getLqsId('yhd');
 										if(tmpLqsIdUpObj.lqsIdArr.length > 0){
@@ -601,16 +601,16 @@
 											lqsIdStr_up='';
 										}
 										if(tmpLqsIdUpObj.zeroFlag){
-											field = {lqId:lqBigId,lqsType:smLoreTypeZHN,lqsIdStr_up:lqsIdStr_up,/*lqsIdStr_del:lqsIdStr_del,*/lqsTitleStr:resTit,lqsConStr:resCon};
+											field = {lqId:lqBigId,lqsType:smLoreTypeZHN,lqsIdStr_up:lqsIdStr_up,lqsTitleStr:resTit,lqsConStr:escape(resCon)};
 										}else{
-											field = {lqId:lqBigId,lqsIdStr_up:lqsIdStr_up,/*lqsIdStr_del:lqsIdStr_del,*/lqsTitleStr:resTit,lqsConStr:resCon};
+											field = {lqId:lqBigId,lqsIdStr_up:lqsIdStr_up,lqsTitleStr:resTit,lqsConStr:escape(resCon)};
 										}
 									}
 								}
 							}else if(loreType == 'zhuti'){
 								resCon = resCon.substring(0,resCon.lastIndexOf('&zsd&'));
 								if(globalOpts == 'add'){
-									field = {loreId:loreBigId,loreType:loreTypeZHN,contentZt:resCon};
+									field = {loreId:loreBigId,loreType:loreTypeZHN,contentZt:escape(resCon)};
 								}else{
 									tmpLqsIdUpObj = blMet.getLqsId('zhuti');
 									if(tmpLqsIdUpObj.lqsIdArr.length > 0){
@@ -619,17 +619,17 @@
 										lqsIdStr_up='';
 									}
 									if(tmpLqsIdUpObj.zeroFlag){
-										field = {lqId:lqBigId,lqsType:smLoreTypeZHN,lqsIdStr_up:lqsIdStr_up,lqsConStr:resCon};
+										field = {lqId:lqBigId,lqsType:smLoreTypeZHN,lqsIdStr_up:lqsIdStr_up,lqsConStr:escape(resCon)};
 									}else{
-										field = {lqId:lqBigId,lqsIdStr_up:lqsIdStr_up,lqsConStr:resCon};
+										field = {lqId:lqBigId,lqsIdStr_up:lqsIdStr_up,lqsConStr:escape(resCon)};
 									}
 								}
 								
 							}else if(loreType == 'jtsf'){
 								if(globalOpts == 'add'){
-									field = {loreId:loreBigId,loreType:loreTypeZHN,queSub:resCon,queAnswer:resAns,queResolution:resAnaly};
+									field = {loreId:loreBigId,loreType:loreTypeZHN,queSub:escape(resCon),queAnswer:escape(resAns),queResolution:escape(resAnaly)};
 								}else{
-									field = {lqId:lqBigId,queSub:resCon,queAnswer:resAns,queResolution:resAnaly};
+									field = {lqId:lqBigId,queSub:escape(resCon),queAnswer:escape(resAns),queResolution:escape(resAnaly)};
 								}
 							}else if(loreType == 'ggxl' || loreType == 'zdxzd' || loreType == 'zczd'){
 								var queTipsId = $('#tipsInp_' + loreType).val() == '' ? 0 : $('#tipsInp_' + loreType).val()	,
@@ -641,55 +641,55 @@
 											answerD = answSelTypeInpVal == 1 ? _this.convertEngToChi($('#answSelInpTxt4').val()) : $('#answerSelect4').attr('currSrc'),
 											answerE = answSelTypeInpVal == 1 ? _this.convertEngToChi($('#answSelInpTxt5').val()) : $('#answerSelect5').attr('currSrc'),
 											answerF = answSelTypeInpVal == 1 ? _this.convertEngToChi($('#answSelInpTxt6').val()) : $('#answerSelect6').attr('currSrc'),
-											fieldCom = {queType:tiganTypeInpVal,queType2:tiganType1InpVal,queSub:currUeEditCon,queTipId:queTipsId,queResolution:currUeEditAnaly,
-													lexId:lexId,answerA:answerA,answerB:answerB,answerC:answerC,answerD:answerD,answerE:answerE,answerF:answerF};
+											fieldCom = {queType:escape(tiganTypeInpVal),queType2:escape(tiganType1InpVal),queSub:escape(currUeEditCon),queTipId:queTipsId,queResolution:escape(currUeEditAnaly),
+													lexId:lexId,answerA:escape(answerA),answerB:escape(answerB),answerC:escape(answerC),answerD:escape(answerD),answerE:escape(answerE),answerF:escape(answerF)};
 								
 								}else if(tiganTypeInpVal == '判断题'){
-									var fieldCom = {queType:tiganTypeInpVal,queType2:tiganType1InpVal,queSub:currUeEditCon,queTipId:queTipsId,queResolution:currUeEditAnaly,
-											lexId:lexId,answerA:$('#ansSelJudgeInp1').val(),answerB:$('#ansSelJudgeInp2').val()};
+									var fieldCom = {queType:escape(tiganTypeInpVal),queType2:escape(tiganType1InpVal),queSub:escape(currUeEditCon),queTipId:queTipsId,queResolution:escape(currUeEditAnaly),
+											lexId:lexId,answerA:escape($('#ansSelJudgeInp1').val()),answerB:escape($('#ansSelJudgeInp2').val())};
 								}else if(tiganTypeInpVal == '填空题' || tiganTypeInpVal == '问答题'){
-									var fieldCom = {queType:tiganTypeInpVal,queType2:tiganType1InpVal,queSub:currUeEditCon,queTipId:queTipsId,queResolution:currUeEditAnaly,
+									var fieldCom = {queType:escape(tiganTypeInpVal),queType2:escape(tiganType1InpVal),queSub:escape(currUeEditCon),queTipId:queTipsId,queResolution:escape(currUeEditAnaly),
 											lexId:lexId};
 								}
 								if(tiganTypeInpVal == '单选题'){
 									if(globalOpts == 'add'){
-										field = {loreId:loreBigId,loreType:loreTypeZHN,queAnswer:ans_singleInpVal};
+										field = {loreId:loreBigId,loreType:loreTypeZHN,queAnswer:escape(ans_singleInpVal)};
 									}else{
-										field = {lqId:lqBigId,queAnswer:ans_singleInpVal};
+										field = {lqId:lqBigId,queAnswer:escape(ans_singleInpVal)};
 									}
 								}else if(tiganTypeInpVal == '多选题'){
 									var multiAnsStr = multiAnsArr.join(',');
 									if(globalOpts == 'add'){
-										field = {loreId:loreBigId,loreType:loreTypeZHN,queAnswer:multiAnsStr};
+										field = {loreId:loreBigId,loreType:loreTypeZHN,queAnswer:escape(multiAnsStr)};
 									}else{
-										field = {lqId:lqBigId,queAnswer:multiAnsStr};
+										field = {lqId:lqBigId,queAnswer:escape(multiAnsStr)};
 									}
 								}else if(tiganTypeInpVal == '填空选择题'){
 									var tmpResAnsTk = result_answer_text.substring(0,result_answer_text.lastIndexOf(','));
 									if(globalOpts == 'add'){
-										field = {loreId:loreBigId,loreType:loreTypeZHN,queAnswer:tmpResAnsTk};
+										field = {loreId:loreBigId,loreType:loreTypeZHN,queAnswer:escape(tmpResAnsTk)};
 									}else{
-										field = {lqId:lqBigId,queAnswer:tmpResAnsTk};										
+										field = {lqId:lqBigId,queAnswer:escape(tmpResAnsTk)};										
 									}
 								}else if(tiganTypeInpVal == '判断题'){
 									var judgeInpVal = $('#judgeInp').val();
 									if(globalOpts == 'add'){
-										field = {loreId:loreBigId,loreType:loreTypeZHN,queAnswer:judgeInpVal};
+										field = {loreId:loreBigId,loreType:loreTypeZHN,queAnswer:escape(judgeInpVal)};
 									}else{
-										field = {lqId:lqBigId,queAnswer:judgeInpVal};	
+										field = {lqId:lqBigId,queAnswer:escape(judgeInpVal)};	
 									}
 								}else if(tiganTypeInpVal == '填空题'){
 									var tkVal = $('#tkInp_' + loreType).val();
 									if(globalOpts == 'add'){
-										field = {loreId:loreBigId,loreType:loreTypeZHN,queAnswer:tkVal};
+										field = {loreId:loreBigId,loreType:loreTypeZHN,queAnswer:escape(tkVal)};
 									}else{
-										field = {lqId:lqBigId,queAnswer:tkVal};
+										field = {lqId:lqBigId,queAnswer:escape(tkVal)};
 									}
 								}else if(tiganTypeInpVal == '问答题'){
 									if(globalOpts == 'add'){
-										field = {loreId:loreBigId,loreType:loreTypeZHN,queAnswer:currUeEditAns};
+										field = {loreId:loreBigId,loreType:loreTypeZHN,queAnswer:escape(currUeEditAns)};
 									}else{
-										field = {lqId:lqBigId,queAnswer:currUeEditAns};
+										field = {lqId:lqBigId,queAnswer:escape(currUeEditAns)};
 									}
 								}
 								
@@ -697,9 +697,9 @@
 								field = Object.assign(field,fieldCom);
 							}else if(loreType == 'zsjj'){
 								if(globalOpts == 'add'){
-									field = {loreId:loreBigId,loreType:loreTypeZHN,queSub:resCon,queAnswer:zsjjInpVal};
+									field = {loreId:loreBigId,loreType:loreTypeZHN,queSub:escape(resCon),queAnswer:escape(zsjjInpVal)};
 								}else{
-									field = {lqId:lqBigId,queSub:resCon,queAnswer:zsjjInpVal};
+									field = {lqId:lqBigId,queSub:escape(resCon),queAnswer:escape(zsjjInpVal)};
 								}
 								
 							}

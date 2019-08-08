@@ -36,9 +36,7 @@ layui.define(['form','table','buffetLoreMet'],function(exports){
 					}},
 					{field : '', title: '操作',align:'center',templet : function(d){
 						var fixStr = '';
-						if(editId == 1){
-							fixStr += '<a class="layui-btn layui-btn-xs editBtn" opts="edit" hwId="'+ d.id +'" lay-event="editFun"><i class="layui-icon layui-icon-edit"></i>修改</a>';
-						}
+						fixStr += '<a class="layui-btn layui-btn-xs editBtn" opts="edit" hwId="'+ d.id +'" lay-event="editFun"><i class="layui-icon layui-icon-edit"></i>修改</a>';
 						if(d.inUse == '有效'){
 							fixStr += '<a class="layui-btn layui-btn-xs layui-btn-danger setBtn" opts="set" lay-event="setIsInUseFun" inUse="1" inUseTxt="无效" hwTit="'+ d.hwTitle +'" hwId="'+ d.id +'"><i class="layui-icon layui-icon-set"></i>设为无效</a>';
 						}else{
@@ -80,7 +78,7 @@ layui.define(['form','table','buffetLoreMet'],function(exports){
 					}},
 					{field : '', title: '操作',align:'center',templet : function(d){
 						var fixStr = '';
-						if(editId == 1){
+						if(roleName == '老师'){
 							fixStr += '<a class="layui-btn layui-btn-xs editBtn" opts="edit" tqId="'+ d.tqId +'" lay-event="editFun"><i class="layui-icon layui-icon-edit"></i>修改</a>';
 						}
 						if(d.inUse == '有效'){
@@ -92,11 +90,66 @@ layui.define(['form','table','buffetLoreMet'],function(exports){
 					}},
 				]],
 				done : function(res, curr, count){
-					console.log(res)
 					layer.closeAll('loading');
 				}
 			});
     	},
+    	//浏览班内老师家庭作业详情
+    	createViewLoreDOM : function(){
+    		var strLore = '<div class="viewLoreWrap">';
+    		strLore += '<div class="loreDetCon" style="top:0px;">';
+			//针对性诊断
+			strLore += '<div class="comLoreCon zdxzdLore" style="margin-top:10px;"><div id="zdxzdLore"></div></div>';
+			strLore += '</div></div>';
+			return strLore;
+    	},
+    	//浏览班内老师家庭作业详情信息
+		loadTeaHwDetail : function(loreId){
+			layer.load('1');
+			var _this = this;
+			$.ajax({
+				type:'post',
+			    dataType:'json',
+			    data:{loreId:loreId},
+			    url:'/hw.do?action=getTeaDetailData',
+			    success:function (json){
+			    	layer.closeAll('loading');	
+			    	console.log(json)
+			    	if(json.result == 'success'){
+				    	_this.renderTeaHwDet(json.tqList);
+			    	}else if(json.result == 'noInfo'){
+			    		layer.msg('暂无此知识点下的家庭作业信息',{icon:5,anim:6,time:2000});
+			    	}
+			    }
+			});
+		},
+		//班内老师家庭作业浏览详情
+		renderTeaHwDet : function(list){
+			var listStr = '';
+			for(var i=0;i<list.length;i++){
+				listStr += '<div class="listLore">';
+				listStr += '<strong class="smTit">标题：'+ list[i].queTitle +'  <span class="queTypeTxt">'+ list[i].queType +'</span></strong>';
+				//题干
+				listStr += '<div class="con"><p class="titP">题干：</p><div>'+ list[i].queSub +'</div></div>';
+				//答案
+				listStr += '<div class="conAns"><span class="ansTit">答案：</span>';
+				listStr += '<span class="ansTxtSpan">'+ list[i].queAnswer +'</span>';
+				listStr += '</div>';
+				//解析
+				if(list[i].queResolution != ''){
+					listStr += '<div class="con hasMargTop"><p class="titP">解析：</p><div>'+ list[i].queResolution +'</div></div>';
+				}
+				//是否有效
+				listStr += '<div class="conAns"><span class="ansTit">是否有效：</span>';
+				if(list[i].inUse == '无效'){
+					listStr += '<span class="ansTxtSpan">无效</span>';
+				}else{
+					listStr += '<span class="ansTxtSpan hasInUse">有效</span>';
+				}
+				listStr += '</div></div>';
+			}
+			$('#zdxzdLore').html(listStr);
+		},
     	//初始化家庭作业详情
     	initAnswerOption : function(realAnswer){
     		var options,questionType = $('#tiganTypeInp').val();

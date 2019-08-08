@@ -48,6 +48,7 @@
 				<label class="layui-form-label" style="width:60px">省份</label>
 				<div class="layui-input-inline">
 					<input type="hidden" id="provInp"/>
+					<input type="hidden" id="provCode"/>
 					<select class="province" name="province" lay-filter="province" class="province">
 				       	<option value="">请选择省份</option>
 				     </select>
@@ -58,6 +59,7 @@
 			<div class="itemDiv">
 				<label class="layui-form-label" style="width:60px">城市</label>
 				<input type="hidden" id="cityInp"/>
+				<input type="hidden" id="cityCode"/>
 				<div class="layui-input-inline">
 					<select class="city" name="city" lay-filter="city" disabled>
 				       	<option value="">请选择城市</option>
@@ -67,6 +69,7 @@
 			<div class="itemDiv">
 				<label class="layui-form-label" style="width:60px">县/区</label>
 				<input type="hidden" id="countyInp"/>
+				<input type="hidden" id="countyCode"/>
 				<div class="layui-input-inline">
 					<select class="country" name="area" lay-filter="area" disabled>
 				       	<option value="">请选择县/区</option>
@@ -78,6 +81,7 @@
 			<div class="itemDiv">
 				<label class="layui-form-label" style="width:60px">乡/镇</label>
 				<input type="hidden" id="townInp"/>
+				<input type="hidden" id="townCode"/>
 				<div class="layui-input-inline">
 					<select class="town" name="town" lay-filter="town" disabled>
 				       	<option value="">请选择乡/镇</option>
@@ -150,9 +154,13 @@
 							schTypeInpVal = $('#schTypeInp').val(),
 							yearSysInpVal = $('#yearSysInp').val(),
 							provInpVal = $('#provInp').val(),
+							provCode = $('#provCode').val(),
 							cityInpVal = $('#cityInp').val(),
+							cityCode = $('#cityCode').val(),
 							countyInpVal = $('#countyInp').val(),
+							countyCode = $('#countyCode').val(),
 							townInpVal = $('#townInp').val(),
+							townCode = $('#townCode').val(),
 							regCHN = /^[\u4E00-\u9FA5]+$/; //检测是否中文;
 						if(schNameInpVal == ''){
 							layer.msg('请填写学校名字',{icon:5,anim:6,time:1500});
@@ -177,11 +185,11 @@
 							if(parent.globalOpts == 'edit'){
 								url = '/school.do?action=updateSchool';
 								var field = {schoolId:schId,schoolName:escape(schNameInpVal),
-											yearSystem:yearSysInpVal,schoolType:schTypeInpVal,prov:provInpVal,
-											city:cityInpVal,county:countyInpVal,town:townInpVal};
+											yearSystem:yearSysInpVal,schoolType:schTypeInpVal,prov:escape(provInpVal),
+											city:escape(cityInpVal),county:escape(countyInpVal),town:escape(townInpVal)};
 							}else{
 								url = '/school.do?action=addSchool';
-								var field = {schoolName:escape(schNameInpVal),prov:provInpVal,city:cityInpVal,county:countyInpVal,town:townInpVal,yearSystem:yearSysInpVal,schoolType:schTypeInpVal};
+								var field = {schoolName:escape(schNameInpVal),prov:escape(provInpVal),provCode:provCode,city:escape(cityInpVal),cityCode:cityCode,county:escape(countyInpVal),countyCode:countyCode,town:escape(townInpVal),townCode:townCode,yearSystem:yearSysInpVal,schoolType:schTypeInpVal};
 							}
 							console.log(field)
 							layer.load('1');

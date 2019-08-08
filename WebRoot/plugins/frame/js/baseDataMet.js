@@ -2,7 +2,7 @@
  * @Description: 基础配置
  * @author: hlf
  */
-var noGradInfo = '';//根据科目联动年级时用到 存在年级 清空 不存在有值 noGradInfo
+var noGradInfo = '',roleName='';//根据科目联动年级时用到 存在年级 清空 不存在有值 noGradInfo
 var currPage;//用于标识是否是当前页面
 //自定义模块
 layui.define(['form','table','relate'],function(exports){
@@ -79,6 +79,7 @@ layui.define(['form','table','relate'],function(exports){
 		//获取所有出版社列表
 		getEditionList : function(selObj){
 			layer.load('1');
+			var currIndex = 0;
 			$.ajax({
 				type:'post',
 		        dataType:'json',
@@ -89,16 +90,19 @@ layui.define(['form','table','relate'],function(exports){
 		        	if(json['msg'] == 'success'){
 		        		var str_edit = '';
 		        		layer.closeAll('loading');
-		    			for(var i=0;i<json.data.length;i++){
+		        		if(roleName == '老师'){
+		        			currIndex = 1;
+		        		}
+		    			for(var i=currIndex;i<json.data.length;i++){
 		    				str_edit += '<option value="'+ json.data[i].id +':'+ json.data[i].ediName +'">'+ json.data[i].ediName +'</option>';
 		    			}
 		    			/*if(currPage != 'educPage' || currPage != 'relatePage'){
 		    				alert(currPage + "-----------")
 		    				$('#editInp').val(json.data[0].id);//默认第一个出版社的值赋给隐藏变量
 		    			}*/
-		    			if(currPage == 'lorePage' || currPage == 'buffetPage' || currPage == 'chapterPage' || currPage == 'loreCataPage' || currPage == 'relateManager' || currPage == 'sysHwPage' || currPage == 'teaHwPage'){
+		    			if(currPage == 'lorePage' || currPage == 'buffetPage' || currPage == 'chapterPage' || currPage == 'loreCataPage' || currPage == 'relateManager' || currPage == 'sysHwPage'){
 		    				$('#editInp').val(json.data[0].id);//默认第一个出版社的值赋给隐藏变量
-		    				if(currPage == 'lorePage' || currPage == 'buffetPage' || currPage == 'relateManager' || currPage == 'sysHwPage' || currPage == 'teaHwPage'){
+		    				if(currPage == 'lorePage' || currPage == 'buffetPage' || currPage == 'relateManager'){
 		    					editAll = json.data[0].id + ':' + json.data[0].ediName;
 		    				}
 		    			}
@@ -108,8 +112,16 @@ layui.define(['form','table','relate'],function(exports){
 		    			$('#' + selObj).append(str_edit);
 		    			if(currPage == 'relatePage'){
 		    				$('#editionSel').attr('disabled',true).val(parent.editAll);
-		    			}else if(currPage == 'lexRelatePage'){
+		    			}else if(currPage == 'lexRelatePage' || currPage == 'sysHwPage'){
 		    				$('#editionSel').attr('disabled',true).val('1:通用版');
+		    			}else if(currPage == 'teaHwPage'){
+		    				if(roleName == '老师'){
+		    					//去除通用版
+		    					$('#editInp').val(2);//人教版
+		    				}else if(roleName == '知识点管理员'){//只显示通用版
+		    					$('#editInp').val(1);//默认第一个出版社的值赋给隐藏变量
+			    				$('#editionSel').attr('disabled',true).val('1:通用版');
+		    				}
 		    			}
 		    			form.render();
 		        	}else if(json['msg'] == 'noInfo'){
@@ -265,11 +277,19 @@ layui.define(['form','table','relate'],function(exports){
         				loreSetWid = '375';
         			}else if(currPage == 'buffetPage'){
         				loreSetWid = '300';
-        			}else{
+        			}else if(currPage == 'sysHwPage'){
         				loreSetWid = '220';
+        			}else if(currPage == 'teaHwPage'){
+        				loreSetWid = '160';
         			}
         		}else{
-        			currPage == 'lorePage' ? loreSetWid = '220' : loreSetWid = '100';
+        			if(currPage == 'lorePage'){
+        				loreSetWid = '220';
+        			}else if(currPage == 'teaHwPage'){
+        				loreSetWid = '220';
+        			}else{
+        				loreSetWid = '100';
+        			}
         		}
         		//每次加载调用下清除返回方法
         		relate.comBackFun();
@@ -302,15 +322,25 @@ layui.define(['form','table','relate'],function(exports){
     					{field : '', title: '操作', width:loreSetWid, fixed:'right', align:'center',templet : function(d){
     						var fixStr = '';
     						if(editVal == 1){//通用版
-    							fixStr += '<a class="layui-btn layui-btn-xs addTikuBtn" opts="add" lay-event="addFun" loreName="'+ d.loreName +'" loreId="'+ d.loreId +'"><i class="layui-icon layui-icon-add-circle"></i>添加</a>';
-    							fixStr += '<a class="layui-btn layui-btn-xs layui-btn-primary editBtn" opts="edit" lay-event="editFun" loreName="'+ d.loreName +'" loreId="'+ d.loreId +'"><i class="layui-icon layui-icon-edit"></i>编辑</a>';
-    							fixStr += '<a class="layui-btn layui-btn-xs layui-btn-normal viewBtn" opts="view" lay-event="viewFun" loreName="'+ d.loreName +'" loreId="'+ d.loreId +'"><i class="layui-icon layui-icon-search"></i>浏览</a>';
-    							if(currPage == 'buffetPage'){
-    								fixStr += '<a class="layui-btn layui-btn-xs" opts="merge" lay-event="mergeLoreFun" loreName="'+ d.loreName +'" loreId="'+ d.loreId +'"><i class="iconfont layui-extend-hebing"></i>合并知识点</a>';
+    							if(currPage == 'teaHwPage' && roleName == '知识点管理员'){
+    								fixStr += '<a class="layui-btn layui-btn-xs layui-btn-primary editBtn" opts="edit" lay-event="editFun" loreName="'+ d.loreName +'" loreId="'+ d.loreId +'"><i class="layui-icon layui-icon-edit"></i>编辑</a>';
+    								fixStr += '<a class="layui-btn layui-btn-xs layui-btn-normal viewBtn" opts="view" lay-event="viewFun" loreName="'+ d.loreName +'" loreId="'+ d.loreId +'"><i class="layui-icon layui-icon-search"></i>浏览</a>';
+    							}else{
+    								fixStr += '<a class="layui-btn layui-btn-xs addTikuBtn" opts="add" lay-event="addFun" loreName="'+ d.loreName +'" loreId="'+ d.loreId +'"><i class="layui-icon layui-icon-add-circle"></i>添加</a>';
+        							fixStr += '<a class="layui-btn layui-btn-xs layui-btn-primary editBtn" opts="edit" lay-event="editFun" loreName="'+ d.loreName +'" loreId="'+ d.loreId +'"><i class="layui-icon layui-icon-edit"></i>编辑</a>';
+        							fixStr += '<a class="layui-btn layui-btn-xs layui-btn-normal viewBtn" opts="view" lay-event="viewFun" loreName="'+ d.loreName +'" loreId="'+ d.loreId +'"><i class="layui-icon layui-icon-search"></i>浏览</a>';
+        							if(currPage == 'buffetPage'){
+        								fixStr += '<a class="layui-btn layui-btn-xs" opts="merge" lay-event="mergeLoreFun" loreName="'+ d.loreName +'" loreId="'+ d.loreId +'"><i class="iconfont layui-extend-hebing"></i>合并知识点</a>';
+        							}
     							}
+    							
     						}else{
     							if(currPage == 'buffetPage'){//自助餐其他版本就一个浏览功能
     								fixStr += '<a class="layui-btn layui-btn-xs layui-btn-normal viewBtn" opts="view" lay-event="viewFun" loreName="'+ d.loreName +'" loreId="'+ d.loreId +'"><i class="layui-icon layui-icon-search"></i>浏览</a>';
+    							}else if(currPage == 'teaHwPage' && roleName == '老师'){
+    								fixStr += '<a class="layui-btn layui-btn-xs addTikuBtn" opts="add" lay-event="addFun" loreName="'+ d.loreName +'" loreId="'+ d.loreId +'"><i class="layui-icon layui-icon-add-circle"></i>添加</a>';
+        							fixStr += '<a class="layui-btn layui-btn-xs layui-btn-primary editBtn" opts="edit" lay-event="editFun" loreName="'+ d.loreName +'" loreId="'+ d.loreId +'"><i class="layui-icon layui-icon-edit"></i>编辑</a>';
+        							fixStr += '<a class="layui-btn layui-btn-xs layui-btn-normal viewBtn" opts="view" lay-event="viewFun" loreName="'+ d.loreName +'" loreId="'+ d.loreId +'"><i class="layui-icon layui-icon-search"></i>浏览</a>';
     							}
     						}
     						if(currPage == 'lorePage'){

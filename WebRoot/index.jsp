@@ -14,9 +14,15 @@
 	<link href="/plugins/pace/pace-theme-flash.min.css" rel="stylesheet" type="text/css"/>
 	<script src="/plugins/pace/pace.min.js"></script>
 	<script type="text/javascript">
-		var roleName = "${sessionScope.login_user_role_name}",
-			loginType = "${sessionScope.login_type}";
+		var roleName = "${sessionScope.login_user_role_name}";
+		sessionStorage.setItem("roleName", roleName);
 	</script>
+	<style>
+		.layui-layer-molv .layui-layer-title{background:#4d47f1 !important;}
+		.layui-layer-molv .layui-layer-btn a{background:#4d47f1 !important;border-color:#4d47f1 !important; }
+		.layui-layer-molv .layui-layer-btn .layui-layer-btn1{background:none !important;border-color:#ccc !important;}
+		.layui-form-radio>i:hover, .layui-form-radioed>i{color:#4d47f1 !important;}
+	</style>
   </head>
   
   <body class="layui-layout-body">
@@ -48,10 +54,10 @@
 	                	<i class="layui-icon layui-icon-username headsmIcon"></i>
 	                   	<span id="userName">黄利峰</span><span class="layui-nav-more"></span>
 	                </a>
-	                <dl class="layui-nav-child">
+	                <!-- dl class="layui-nav-child">
 	                    <dd class="navLi"><a href="javascript:void(0)" tab-id="1" path="user.do?action=goUserDetailPage">基本资料</a></dd>
 	                    <dd class="navLi"><a href="javascript:void(0)" tab-id="2" path="user.do?action=goUpdatePassPage">密码设置</a></dd>
-	                </dl>
+	                </dl -->
 	            </li>
 	            <li class="tuichu">
 	            	 <a id="loginOut" href="javascript:;" title="退出">
@@ -77,6 +83,7 @@
   					<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="buffet.do?action=goBuffetPage" tab-id="11">自助餐管理</a></li>
   					<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="lqe.do?action=goLqePage" tab-id="12">错题管理</a></li>
   					<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="hw.do?action=goHwPage" tab-id="13">系统家庭作业管理</a></li>
+  					<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="hw.do?action=goTeaQuePage" tab-id="14">老师家庭作业管理</a></li>
   				</ul>
   			</div>
   		</div>
@@ -89,7 +96,7 @@
 	            </ul>
 	            <div class="layui-tab-content">
 	                <div class="layui-tab-item layui-show">
-	                	<iframe id="mainIframe" src="lore.do?action=goLoreQuePage" frameborder="0" scrolling="yes" width="100%" height="100%"></iframe>
+	                	<iframe id="mainIframe" src="hw.do?action=goTeaQuePage" frameborder="0" scrolling="yes" width="100%" height="100%"></iframe>
 	                	<!-- iframe id="mainIframe" src="buffet.do?action=goBuffetPage" frameborder="0" scrolling="yes" width="100%" height="100%"></iframe>
 	                	<iframe id="mainIframe" src="user.do?action=goWelcomePage" frameborder="0" scrolling="yes" width="100%" height="100%"></iframe -->
 	                </div>
@@ -230,6 +237,15 @@
 					//$(".layui-footer").animate({left:'200px'});
 					i--;
 				}		
+			});
+	        $("#loginOut").on('click',function(){
+				layer.confirm('确认退出系统么？', {
+				  title:'提示',
+				  skin: 'layui-layer-molv',
+				  btn: ['确定','取消'] //按钮
+				},function(){
+					window.location.href = "login.do?action=loginOut";
+				});
 			});
 			//左侧导航栏收缩提示
 			$('#animation-left-nav').hover(function(){

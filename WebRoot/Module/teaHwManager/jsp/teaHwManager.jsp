@@ -109,6 +109,7 @@
 				table = layui.table,
 				baseDataMet = layui.baseDataMet,sysHw = layui.sysHwManager,blMet = layui.buffetLoreMet,loreDOM = layui.comLoreDOM,
 				blDOM = layui.buffetLoreDOM,relate=layui.relate;
+				roleName = sessionStorage.getItem("roleName");
 			var page = {
 				init : function(){
 					this.initDOM();
@@ -216,33 +217,33 @@
 							}
 						}
 						if(resFlag){
-							var fieldCom = {loreId:loreBigId,queType:tiganTypeInpVal,queSub:currUeEditCon,queResolution:currUeEditAnaly};
+							var fieldCom = {loreId:loreBigId,queType:escape(tiganTypeInpVal),queSub:escape(currUeEditCon),queResolution:escape(currUeEditAnaly)};
 							if(tiganTypeInpVal == '单选题'){
 								if(globalOpts == 'add'){
-									field = {queAnswer:ans_singleInpVal};
+									field = {queAnswer:escape(ans_singleInpVal)};
 								}else{
-									field = {tqId:bigHwId,queAnswer:ans_singleInpVal};
+									field = {tqId:bigHwId,queAnswer:escape(ans_singleInpVal)};
 								}
 							}else if(tiganTypeInpVal == '多选题'){
 								var multiAnsStr = multiAnsArr.join(',');
 								if(globalOpts == 'add'){
-									field = {queAnswer:multiAnsStr};
+									field = {queAnswer:escape(multiAnsStr)};
 								}else{
-									field = {tqId:bigHwId,queAnswer:multiAnsStr};
+									field = {tqId:bigHwId,queAnswer:escape(multiAnsStr)};
 								}
 							}else if(tiganTypeInpVal == '填空选择题'){
 								var tmpResAnsTk = result_answer_text.substring(0,result_answer_text.lastIndexOf(','));
 								if(globalOpts == 'add'){
-									field = {queAnswer:tmpResAnsTk};
+									field = {queAnswer:escape(tmpResAnsTk)};
 								}else{
-									field = {tqId:bigHwId,queAnswer:tmpResAnsTk};										
+									field = {tqId:bigHwId,queAnswer:escape(tmpResAnsTk)};										
 								}
 							}else if(tiganTypeInpVal == '判断题'){
 								var judgeInpVal = $('#judgeInp').val();
 								if(globalOpts == 'add'){
-									field = {queAnswer:judgeInpVal};
+									field = {queAnswer:escape(judgeInpVal)};
 								}else{
-									field = {tqId:bigHwId,queAnswer:judgeInpVal};	
+									field = {tqId:bigHwId,queAnswer:escape(judgeInpVal)};	
 								}
 							}
 							//进行对象组合
@@ -252,8 +253,6 @@
 							}else if(globalOpts == 'edit'){
 								var url = '/hw.do?action=updateTeaQue';
 							}
-							console.log(field)
-							console.log(url)
 							layer.load('1');
 							$.ajax({
 								type:'post',
@@ -274,6 +273,7 @@
 						        				relate.comBackFun();
 												$('.loreQuesList').show();
 												$('#currLoc').html('知识点[<span style="color:#F47837;">'+ loreNameBig +'</span>]&gt;题库列表<a class="addEditBack" href="javascript:void(0)">返回知识点列表&gt;</a>');
+												//sysHw.getTeaHwList(loreBigId);
 												_this.bindEvent();
 						        			}
 		   				        		});
@@ -318,29 +318,24 @@
 						tkSelStr = blDOM.createTkSelDOM(),
 						tkTypeStr = blDOM.createTkTypeDOM(loreType);
 					$('.spaceBox').hide().html(spaceSelBox);
-					$('#tiganTypeInp').val(json.hwType);
-					$('#tiganTypeTxt').html(json.hwType);
+					$('#tiganTypeInp').val(json.queType);
+					$('#tiganTypeTxt').html(json.queType);
 					//匹配最大选项（单选题 多选题 填空选择题）
-					if(json.hwType == '单选题' || json.hwType == '多选题' || json.hwType == '填空选择题' || json.hwType == '判断题'){
-						//$('.maxChoice').show();
+					if(json.queType == '单选题' || json.queType == '多选题' || json.queType == '填空选择题' || json.queType == '判断题'){
 						$('#ansSelWrap_' + loreType).show();
-						//$('#maxSelInpNum').val(json.queOptNum);//初始化最大选项
-						
 						realAnswer = json.queAnswer;
-						if(json.hwType == '单选题'){
-							//$('#maxChoiceNumSel').val(json.queOptNum);
+						if(json.queType == '单选题'){
 							answerNum = json.queOptNum; //将当前选择的最大选项赋给answerNum
 							result_answer = json.queAnswer + ",";
 							
 							$('#answerSelectDiv_' + loreType).show().html(ansSingle);
 							$('#ans_singleInp').val(json.queAnswer);
-							//blMet.initShowInpByMaxOptNum(json.queOptNum,'answerBox_singel');
 							form.render();
-						}else if(json.hwType == '多选题'){
+						}else if(json.queType == '多选题'){
 							answerNum = json.queOptNum; //将当前选择的最大选项赋给answerNum
 							$('#answerSelectDiv_' + loreType).show().html(ansMulti);
 							form.render();
-						}else if(json.hwType == '填空选择题'){
+						}else if(json.queType == '填空选择题'){
 							answerNum = json.queOptNum; //将当前选择的最大选项赋给answerNum
 							$('.spaceBox').show();
 							$('#spaceNumInp').val(json.queOptNum);//初始化填空数量value
@@ -348,17 +343,15 @@
 							$('#spaceNumSel').val(json.queOptNum);
 							$('#answerSelectDiv_' + loreType).show().html(tkSelStr);
 							form.render();
-						}else if(json.hwType == '判断题'){
-							$('.maxChoice').html('');
+						}else if(json.queType == '判断题'){
 							$('.spaceBox').html('');
 							$('#answerSelectDiv_' + loreType).show().html(judgeStr);
 							$('#judgeInp').val(json.queAnswer);
 						}
 						sysHw.initAnswerOption(realAnswer);
-						$('#'+loreType + 'Inp_' + currNum).val(json.hwTitle).attr('disabled',true);
-						buffetDOM.initUeditorContent('con_'+ loreType +'_' + currNum,json.queSub);//题干
-						buffetDOM.initUeditorContent('conAnaly_'+ loreType +'_' + currNum,json.queResolution);//解析
-						//lorePrac.initAnswerOption(lorePrac.findAnserType(answer1),answer1,answer2,answer3,answer4,answer5,answer6);
+						$('#'+loreType + 'Inp_' + currNum).val(json.queTitle).attr('disabled',true);
+						loreDOM.initUeditorContent('con_'+ loreType +'_' + currNum,json.queSub);//题干
+						loreDOM.initUeditorContent('conAnaly_'+ loreType +'_' + currNum,json.queResolution);//解析
 					}
 				},
 				bindEvent : function(){
@@ -395,7 +388,6 @@
 				        success:function (json){
 				        	layer.closeAll('loading');	
 				        	if(json.result == 'success'){
-				        		console.log(json)
 				        		realAnswer = '';//每次修改知识点下不同题库 清空全局变量 realAnswer
 				        		result_answer = '';
 				        		result_answer_text = '';
@@ -404,7 +396,7 @@
 				        		$('#currLoc').html('<em style="font-style:normal;float:right;">返回[<a class="backBtn_tiku" href="javascript:void(0)">'+ loreNameBig +'</a>]题库列表</em>');
 								page.bindEvent();
 								page.addLoreQuesInit();
-				        	//	page.renderHwInfo(json);
+				        		page.renderHwInfo(json);
 				        	}else if(json.result == 'error'){
 				        		layer.msg('服务器错误',{icon:5,anim:6,time:2000});
 				        	}
@@ -427,13 +419,13 @@
 							type:'post',
 					        dataType:'json',
 					        data:field,
-					        url:'/hw.do?action=setInUseStatus',
+					        url:'/hw.do?action=setTeaInUseStatus',
 					        success:function (json){
 					        	layer.closeAll('loading');
 					        	if(json.result == 'success'){
 					        		layer.msg('设置成功',{icon:1,time:1000},function(){
 					        			layer.close(index);
-						        		sysHw.getSysHwList(loreBigId);
+						        		sysHw.getTeaHwList(loreBigId);
 	   				        		});
 					        	}else if(json.result == 'error'){
 					        		layer.msg('设置失败，请稍后重试',{icon:5,anim:6,time:2000});
@@ -474,7 +466,7 @@
 				}else if(obj.event == 'viewFun'){//浏览已添加的家庭作业
 					var loreName = $(this).attr('loreName');
 					loreId = $(this).attr('loreId');
-					var viewLore = buffetDOM.createViewLoreDOM();
+					var viewLore = sysHw.createViewLoreDOM();
 					layer.open({
 						title:'浏览章节[<span style="color:#F47837;">'+ loreName +'</span>]下的家庭作业',
 						type: 1,
@@ -484,7 +476,7 @@
 					  	shadeClose :false,
 					  	content: viewLore
 					});	
-					buffetDOM.loadLoreDetail(loreId);
+					sysHw.loadTeaHwDetail(loreId);
 				}
 			});
 			page.init();
