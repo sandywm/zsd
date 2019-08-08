@@ -10,10 +10,10 @@ layui.define(["form","jquery"],function(exports){
         $.get("/plugins/frame/json/area.json", function (data) {
             for (var i = 0; i < data.length; i++) {
             	if(provVal != '' && provVal == data[i].name){
-            		proHtml += '<option value="' + data[i].name + '" selected>' + data[i].name + '</option>';
+            		proHtml += '<option value="'+ data[i].value +'-' + data[i].name + '" selected>' + data[i].name + '</option>';
             		provIndex = i;
             	}else{
-            		proHtml += '<option value="' + data[i].name + '">' + data[i].name + '</option>';
+            		proHtml += '<option value="'+ data[i].value +'-' + data[i].name + '">' + data[i].name + '</option>';
             	}
             }
             //初始化省数据
@@ -27,10 +27,10 @@ layui.define(["form","jquery"],function(exports){
             	that.citys(cityData);
             	for(var i=0;i<cityData.length;i++){
             		if(cityVal == cityData[i].name){
-            			cityStr += '<option value="'+ cityData[i].name +'" selected>'+ cityData[i].name +'</option>';
+            			cityStr += '<option value="'+ cityData[i].value +'-'+ cityData[i].name +'" selected>'+ cityData[i].name +'</option>';
             			cityIndex = i;
             		}else{
-            			cityStr += '<option value="'+ cityData[i].name +'">'+ cityData[i].name +'</option>';
+            			cityStr += '<option value="'+ cityData[i].value +'-'+ cityData[i].name +'">'+ cityData[i].name +'</option>';
             		}
             	}
             	$("select[name=city]").html(cityStr);
@@ -64,10 +64,16 @@ layui.define(["form","jquery"],function(exports){
             //form.render();
             form.on('select(province)', function (proData) {
                 $("select[name=area]").html('<option value="">请选择县/区</option>');
-                var value = proData.value;
-                $('#provInp').val(value);
+                var value = proData.value.split('-')[0],
+                	name = proData.value.split('-')[1];
+                $('#provInp').val(name);
+                $('#provCode').val(value);
                 $('#cityInp').val('');
+                $('#cityCode').val('');
                 $('#countyInp').val('');
+                $('#countyCode').val('');
+                $('#townInp').val('');
+                $('#townCode').val('');
                 $("select[name=town]").html('<option value="">请选择乡/镇</option>').attr("disabled", "disabled");
                 if (value != '') {
                 	that.citys(data[$(this).index() - 1].children);
@@ -83,15 +89,20 @@ layui.define(["form","jquery"],function(exports){
     Address.prototype.citys = function(citys) {
         var cityHtml = '<option value="">请选择市</option>',that = this;
         for (var i = 0; i < citys.length; i++) {
-        	cityHtml += '<option value="' + citys[i].name + '">' + citys[i].name + '</option>';
+        	cityHtml += '<option value="'+ citys[i].value +'-' + citys[i].name + '">' + citys[i].name + '</option>';
         }
         $("select[name=city]").html(cityHtml).removeAttr("disabled");
         form.render();
         form.on('select(city)', function (cityData) {
 			$("select[name=area]").html('<option value="">请选择县/区</option>');
-            var value = cityData.value;
-            $('#cityInp').val(value);
+            var value = cityData.value.split('-')[0],
+            	name = cityData.value.split('-')[1];
+            $('#cityInp').val(name);
+            $('#cityCode').val(value);
             $('#countyInp').val('');
+            $('#countyCode').val('');
+            $('#townInp').val('');
+            $('#townCode').val('');
             $("select[name=town]").html('<option value="">请选择乡/镇</option>').attr("disabled", "disabled");
             if (value != '') {
             	that.areas(citys[$(this).index() - 1].children);
@@ -116,13 +127,18 @@ layui.define(["form","jquery"],function(exports){
 		    var value = areaData.value.split('-')[0];
 		    var name = areaData.value.split('-')[1];
 		    $('#countyInp').val(name);
+		    $('#countyCode').val(value);
+		    $('#townInp').val('');
+            $('#townCode').val('');
 			layer.load('1');
 			_this.getTownData(value,'selTown');
 		});
 		
 		//选择乡镇
 		form.on('select(town)', function (data) {
-			var townVal = data.value;
+			var value = data.value.split('-')[0];
+			var townVal = data.value.split('-')[1];
+			$('#townCode').val(value);
 			$('#townInp').val(townVal);
 		});
     };
@@ -139,12 +155,12 @@ layui.define(["form","jquery"],function(exports){
 					var townHtml = '<option value="">请选择乡/镇</option>';
 					for(var i=0;i<townList.length;i++){
 						if(opt == 'selTown'){
-							townHtml += '<option value="' + townList[i].townName + '">' + townList[i].townName + '</option>';
+							townHtml += '<option value="'+ townList[i].townCode +'-' + townList[i].townName + '">' + townList[i].townName + '</option>';
 						}else{
 							if(townVal == townList[i].townName){
-								townHtml += '<option value="' + townList[i].townName + '" selected>' + townList[i].townName + '</option>';
+								townHtml += '<option value="'+ townList[i].townCode +'-' + townList[i].townName + '" selected>' + townList[i].townName + '</option>';
 							}else{
-								townHtml += '<option value="' + townList[i].townName + '">' + townList[i].townName + '</option>';
+								townHtml += '<option value="'+ townList[i].townCode +'-' + townList[i].townName + '">' + townList[i].townName + '</option>';
 							}
 						}
 					}

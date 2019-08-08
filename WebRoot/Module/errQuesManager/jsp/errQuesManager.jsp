@@ -383,31 +383,31 @@
 								answerD = answSelTypeInpVal == 1 ? _this.convertEngToChi($('#answSelInpTxt4').val()) : $('#answerSelect4').attr('currSrc'),
 								answerE = answSelTypeInpVal == 1 ? _this.convertEngToChi($('#answSelInpTxt5').val()) : $('#answerSelect5').attr('currSrc'),
 								answerF = answSelTypeInpVal == 1 ? _this.convertEngToChi($('#answSelInpTxt6').val()) : $('#answerSelect6').attr('currSrc'),
-								fieldCom = {lqId:lqBigId,lqeId:lqeId,cyStatus:cyStatus,queType:tiganTypeInpVal,queType2:tiganType1InpVal,queSub:currUeEditCon,queTipId:queTipsId,queResolution:currUeEditAnaly,
-										lexId:lexId,answerA:answerA,answerB:answerB,answerC:answerC,answerD:answerD,answerE:answerE,answerF:answerF};
+								fieldCom = {lqId:lqBigId,lqeId:lqeId,cyStatus:cyStatus,queType:escape(tiganTypeInpVal),queType2:escape(tiganType1InpVal),queSub:escape(currUeEditCon),queTipId:queTipsId,queResolution:escape(currUeEditAnaly),
+										lexId:lexId,answerA:escape(answerA),answerB:escape(answerB),answerC:escape(answerC),answerD:escape(answerD),answerE:escape(answerE),answerF:escape(answerF)};
 						}else if(tiganTypeInpVal == '判断题'){
-							var fieldCom = {lqId:lqBigId,lqeId:lqeId,cyStatus:cyStatus,queType:tiganTypeInpVal,queType2:tiganType1InpVal,queSub:currUeEditCon,queTipId:queTipsId,queResolution:currUeEditAnaly,
-									lexId:lexId,answerA:$('#ansSelJudgeInp1').val(),answerB:$('#ansSelJudgeInp2').val()};
+							var fieldCom = {lqId:lqBigId,lqeId:lqeId,cyStatus:cyStatus,queType:escape(tiganTypeInpVal),queType2:escape(tiganType1InpVal),queSub:escape(currUeEditCon),queTipId:queTipsId,queResolution:escape(currUeEditAnaly),
+									lexId:lexId,answerA:escape($('#ansSelJudgeInp1').val()),answerB:escape($('#ansSelJudgeInp2').val())};
 						}else if(tiganTypeInpVal == '填空题' || tiganTypeInpVal == '问答题'){
-							var fieldCom = {lqId:lqBigId,lqeId:lqeId,cyStatus:cyStatus,queType:tiganTypeInpVal,queType2:tiganType1InpVal,queSub:currUeEditCon,queTipId:queTipsId,queResolution:currUeEditAnaly,
+							var fieldCom = {lqId:lqBigId,lqeId:lqeId,cyStatus:cyStatus,queType:escape(tiganTypeInpVal),queType2:escape(tiganType1InpVal),queSub:escape(currUeEditCon),queTipId:queTipsId,queResolution:escape(currUeEditAnaly),
 									lexId:lexId};
 						}
 						if(tiganTypeInpVal == '单选题'){
-							field = {queAnswer:ans_singleInpVal};
+							field = {queAnswer:escape(ans_singleInpVal)};
 						}else if(tiganTypeInpVal == '多选题'){
 							var multiAnsStr = multiAnsArr.join(',');
-							field = {queAnswer:multiAnsStr};
+							field = {queAnswer:escape(multiAnsStr)};
 						}else if(tiganTypeInpVal == '填空选择题'){
 							var tmpResAnsTk = result_answer_text.substring(0,result_answer_text.lastIndexOf(','));
-							field = {queAnswer:tmpResAnsTk};		
+							field = {queAnswer:escape(tmpResAnsTk)};		
 						}else if(tiganTypeInpVal == '判断题'){
 							var judgeInpVal = $('#judgeInp').val();
-							field = {queAnswer:judgeInpVal};	
+							field = {queAnswer:escape(judgeInpVal)};	
 						}else if(tiganTypeInpVal == '填空题'){
 							var tkVal = $('#tkInp_' + loreType).val();
-							field = {queAnswer:tkVal};
+							field = {queAnswer:escape(tkVal)};
 						}else if(tiganTypeInpVal == '问答题'){
-							field = {queAnswer:currUeEditAns};
+							field = {queAnswer:escape(currUeEditAns)};
 						}
 						//进行对象组合
 						field = Object.assign(field,fieldCom);

@@ -9,12 +9,12 @@
   <action-mappings >
   	<!-- 登录动作 -->
     <action path="/login"  parameter="action" scope="request" type="com.zsd.action.login.LoginAction">
-      <!--forward name="signPage" path="/register.jsp"></forward--><!-- 注册界面 -->
+    	<forward name="loginOut" path="/login.jsp"></forward><!-- 知识点/超级管理员退出后 -->
     </action>
     <!-- 用户管理 -->
     <action path="/user" parameter="action" scope="request" type="com.zsd.action.user.UserAction">
-      <!--forward name="managerPage" path="/register.jsp"></forward--><!-- 知识点/超级管理员登录后欢迎界面 -->
-      <!--forward name="welcomePage" path="/register.jsp"></forward--><!-- 普通用户登录后欢迎界面 -->
+      <forward name="managerPage" path="/index.jsp"></forward><!-- 知识点/超级管理员登录后欢迎界面 -->
+      <forward name="welcomePage" path="/Module/welcome/jsp/welcome.jsp"></forward><!-- 普通用户登录后欢迎界面 -->
     </action>
     <!-- 基础数据 -->
     <action path="/baseInfo" parameter="action" scope="request" type="com.zsd.action.base.BaseInfoAction">

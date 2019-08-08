@@ -120,21 +120,23 @@
 								}
 							},
 							onClick :function(node){
-								loreBigId = node.attributes.loreId,
-								loreBigName = node.attributes.loreName;
-								layer.open({
-									title:'',
-									type: 2, 
-								  	area: ['1000px', '560px'],
-								  	fixed: true, //不固定
-								  	maxmin: false, 
-								  	shadeClose :false,
-								  	closeBtn:0,
-								  	content: '/Module/loreManager/jsp/loreRelate.html',
-								  	end : function(){
-								  		window.localStorage.removeItem("relateObj");
-								  	}
-								});	
+								if(node.attributes != undefined){
+									loreBigId = node.attributes.loreId,
+									loreBigName = node.attributes.loreName;
+									layer.open({
+										title:'',
+										type: 2, 
+									  	area: ['1000px', '560px'],
+									  	fixed: true, //不固定
+									  	maxmin: false, 
+									  	shadeClose :false,
+									  	closeBtn:0,
+									  	content: '/Module/loreManager/jsp/loreRelate.html',
+									  	end : function(){
+									  		window.localStorage.removeItem("relateObj");
+									  	}
+									});	
+								}
 							}
 					 	});
 					});

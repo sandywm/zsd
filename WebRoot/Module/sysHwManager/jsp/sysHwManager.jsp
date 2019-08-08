@@ -13,6 +13,12 @@
 	<link href="/Module/commonJs/ueditor/themes/default/css/ueditor.min.css" type="text/css" rel="stylesheet" />
 	<link href="/plugins/pace/pace-theme-flash.min.css" rel="stylesheet" type="text/css"/>
 	<script src="/plugins/pace/pace.min.js" type="text/javascript"></script>	
+	<style>
+		.layui-form-radio *{color:#333}
+		.layui-form-checkbox[lay-skin=primary] span{
+			color:#333 !important;
+		}
+	</style>
     </head>
 	<body style="background:#f2f2f2;">
 		<div class="layui-card-header loreHeader">
@@ -93,6 +99,7 @@
 	<script src="/Module/commonJs/ueditor/ueditor.all.min.js"></script>
 	<script type="text/javascript">
 		var loreType = 'zzc';//自助餐
+		
 		var infoBySubOpt = 'getGradeOpt',//根据学科获取年级的信息
 			infoByGsEdOpt='geteduC',//根据年级出版社获取教材信息 need
 			addEditFlag  = false,editAll='',//出版社全拼id:name
@@ -227,33 +234,33 @@
 						}
 						if(resFlag){
 							var mindResStr=mindResArr.join(','),abilityResStr=abilityResArr.join(',');
-							var fieldCom = {loreId:loreBigId,btId:baseTypeInpVal,mindIdStr:mindResStr,abilityIdStr:abilityResStr,queSub:currUeEditCon,queResolution:currUeEditAnaly,queType:tiganTypeInpVal};
+							var fieldCom = {loreId:loreBigId,btId:baseTypeInpVal,mindIdStr:mindResStr,abilityIdStr:abilityResStr,queSub:escape(currUeEditCon),queResolution:escape(currUeEditAnaly),queType:escape(tiganTypeInpVal)};
 							if(tiganTypeInpVal == '单选题'){
 								if(globalOpts == 'add'){
-									field = {queAnswer:ans_singleInpVal};
+									field = {queAnswer:escape(ans_singleInpVal)};
 								}else{
-									field = {hwId:bigHwId,queAnswer:ans_singleInpVal};
+									field = {hwId:bigHwId,queAnswer:escape(ans_singleInpVal)};
 								}
 							}else if(tiganTypeInpVal == '多选题'){
 								var multiAnsStr = multiAnsArr.join(',');
 								if(globalOpts == 'add'){
-									field = {queAnswer:multiAnsStr};
+									field = {queAnswer:escape(multiAnsStr)};
 								}else{
-									field = {hwId:bigHwId,queAnswer:multiAnsStr};
+									field = {hwId:bigHwId,queAnswer:escape(multiAnsStr)};
 								}
 							}else if(tiganTypeInpVal == '填空选择题'){
 								var tmpResAnsTk = result_answer_text.substring(0,result_answer_text.lastIndexOf(','));
 								if(globalOpts == 'add'){
-									field = {queAnswer:tmpResAnsTk};
+									field = {queAnswer:escape(tmpResAnsTk)};
 								}else{
-									field = {hwId:bigHwId,queAnswer:tmpResAnsTk};										
+									field = {hwId:bigHwId,queAnswer:escape(tmpResAnsTk)};										
 								}
 							}else if(tiganTypeInpVal == '判断题'){
 								var judgeInpVal = $('#judgeInp').val();
 								if(globalOpts == 'add'){
-									field = {queAnswer:judgeInpVal};
+									field = {queAnswer:escape(judgeInpVal)};
 								}else{
-									field = {hwId:bigHwId,queAnswer:judgeInpVal};	
+									field = {hwId:bigHwId,queAnswer:escape(judgeInpVal)};	
 								}
 							}
 							//进行对象组合
@@ -283,6 +290,7 @@
 						        				relate.comBackFun();
 												$('.loreQuesList').show();
 												$('#currLoc').html('知识点[<span style="color:#F47837;">'+ loreNameBig +'</span>]&gt;题库列表<a class="addEditBack" href="javascript:void(0)">返回知识点列表&gt;</a>');
+												//sysHw.getSysHwList(loreBigId);
 												_this.bindEvent();
 						        			}
 		   				        		});
@@ -359,17 +367,14 @@
 					if(json.hwType == '单选题' || json.hwType == '多选题' || json.hwType == '填空选择题' || json.hwType == '判断题'){
 						//$('.maxChoice').show();
 						$('#ansSelWrap_' + loreType).show();
-						//$('#maxSelInpNum').val(json.queOptNum);//初始化最大选项
 						
 						realAnswer = json.queAnswer;
 						if(json.hwType == '单选题'){
-							//$('#maxChoiceNumSel').val(json.queOptNum);
 							answerNum = json.queOptNum; //将当前选择的最大选项赋给answerNum
 							result_answer = json.queAnswer + ",";
 							
 							$('#answerSelectDiv_' + loreType).show().html(ansSingle);
 							$('#ans_singleInp').val(json.queAnswer);
-							//blMet.initShowInpByMaxOptNum(json.queOptNum,'answerBox_singel');
 							form.render();
 						}else if(json.hwType == '多选题'){
 							answerNum = json.queOptNum; //将当前选择的最大选项赋给answerNum
@@ -384,7 +389,6 @@
 							$('#answerSelectDiv_' + loreType).show().html(tkSelStr);
 							form.render();
 						}else if(json.hwType == '判断题'){
-							$('.maxChoice').html('');
 							$('.spaceBox').html('');
 							$('#answerSelectDiv_' + loreType).show().html(judgeStr);
 							$('#judgeInp').val(json.queAnswer);

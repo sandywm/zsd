@@ -325,54 +325,54 @@
 									answerD = answSelTypeInpVal == 1 ? _this.convertEngToChi($('#answSelInpTxt4').val()) : $('#answerSelect4').attr('currSrc'),
 									answerE = answSelTypeInpVal == 1 ? _this.convertEngToChi($('#answSelInpTxt5').val()) : $('#answerSelect5').attr('currSrc'),
 									answerF = answSelTypeInpVal == 1 ? _this.convertEngToChi($('#answSelInpTxt6').val()) : $('#answerSelect6').attr('currSrc'),
-									fieldCom = {queType:tiganTypeInpVal,mindStr:mindResStr,abilityIdStr:abilityResStr,queSub:currUeEditCon,queTipId:queTipsId,queResolution:currUeEditAnaly,
-											lexId:lexId,answerA:answerA,answerB:answerB,answerC:answerC,answerD:answerD,answerE:answerE,answerF:answerF};
+									fieldCom = {queType:escape(tiganTypeInpVal),mindStr:mindResStr,abilityIdStr:abilityResStr,queSub:escape(currUeEditCon),queTipId:queTipsId,queResolution:escape(currUeEditAnaly),
+											lexId:lexId,answerA:escape(answerA),answerB:escape(answerB),answerC:escape(answerC),answerD:escape(answerD),answerE:escape(answerE),answerF:escape(answerF)};
 							}else if(tiganTypeInpVal == '判断题'){
-								var fieldCom = {queType:tiganTypeInpVal,mindStr:mindResStr,abilityIdStr:abilityResStr,queSub:currUeEditCon,queTipId:queTipsId,queResolution:currUeEditAnaly,
-										lexId:lexId,answerA:$('#ansSelJudgeInp1').val(),answerB:$('#ansSelJudgeInp2').val()};
+								var fieldCom = {queType:escape(tiganTypeInpVal),mindStr:mindResStr,abilityIdStr:abilityResStr,queSub:currUeEditCon,queTipId:queTipsId,queResolution:escape(currUeEditAnaly),
+										lexId:lexId,answerA:escape($('#ansSelJudgeInp1').val()),answerB:escape($('#ansSelJudgeInp2').val())};
 							}else if(tiganTypeInpVal == '填空题' || tiganTypeInpVal == '问答题'){
-								var fieldCom = {queType:tiganTypeInpVal,mindStr:mindResStr,abilityIdStr:abilityResStr,queSub:currUeEditCon,queTipId:queTipsId,queResolution:currUeEditAnaly,
+								var fieldCom = {queType:escape(tiganTypeInpVal),mindStr:mindResStr,abilityIdStr:abilityResStr,queSub:escape(currUeEditCon),queTipId:queTipsId,queResolution:escape(currUeEditAnaly),
 										lexId:lexId};
 							}
 							if(tiganTypeInpVal == '单选题'){
 								if(globalOpts == 'add'){
-									field = {loreId:loreBigId,btId:baseTypeInpVal,queAnswer:ans_singleInpVal};
+									field = {loreId:loreBigId,btId:baseTypeInpVal,queAnswer:escape(ans_singleInpVal)};
 								}else{
-									field = {buffetId:bigBuffetId,queAnswer:ans_singleInpVal};
+									field = {buffetId:bigBuffetId,queAnswer:escape(ans_singleInpVal)};
 								}
 							}else if(tiganTypeInpVal == '多选题'){
 								var multiAnsStr = multiAnsArr.join(',');
 								if(globalOpts == 'add'){
-									field = {loreId:loreBigId,btId:baseTypeInpVal,queAnswer:multiAnsStr};
+									field = {loreId:loreBigId,btId:baseTypeInpVal,queAnswer:escape(multiAnsStr)};
 								}else{
-									field = {buffetId:bigBuffetId,queAnswer:multiAnsStr};
+									field = {buffetId:bigBuffetId,queAnswer:escape(multiAnsStr)};
 								}
 							}else if(tiganTypeInpVal == '填空选择题'){
 								var tmpResAnsTk = result_answer_text.substring(0,result_answer_text.lastIndexOf(','));
 								if(globalOpts == 'add'){
-									field = {loreId:loreBigId,btId:baseTypeInpVal,queAnswer:tmpResAnsTk};
+									field = {loreId:loreBigId,btId:baseTypeInpVal,queAnswer:escape(tmpResAnsTk)};
 								}else{
-									field = {buffetId:bigBuffetId,queAnswer:tmpResAnsTk};										
+									field = {buffetId:bigBuffetId,queAnswer:escape(tmpResAnsTk)};										
 								}
 							}else if(tiganTypeInpVal == '判断题'){
 								var judgeInpVal = $('#judgeInp').val();
 								if(globalOpts == 'add'){
-									field = {loreId:loreBigId,btId:baseTypeInpVal,queAnswer:judgeInpVal};
+									field = {loreId:loreBigId,btId:baseTypeInpVal,queAnswer:escape(judgeInpVal)};
 								}else{
-									field = {buffetId:bigBuffetId,queAnswer:judgeInpVal};	
+									field = {buffetId:bigBuffetId,queAnswer:escape(judgeInpVal)};	
 								}
 							}else if(tiganTypeInpVal == '填空题'){
 								var tkVal = $('#tkInp_' + loreType).val();
 								if(globalOpts == 'add'){
-									field = {loreId:loreBigId,btId:baseTypeInpVal,queAnswer:tkVal};
+									field = {loreId:loreBigId,btId:baseTypeInpVal,queAnswer:escape(tkVal)};
 								}else{
-									field = {buffetId:bigBuffetId,queAnswer:tkVal};
+									field = {buffetId:bigBuffetId,queAnswer:escape(tkVal)};
 								}
 							}else if(tiganTypeInpVal == '问答题'){
 								if(globalOpts == 'add'){
-									field = {loreId:loreBigId,btId:baseTypeInpVal,queAnswer:currUeEditAns};
+									field = {loreId:loreBigId,btId:baseTypeInpVal,queAnswer:escape(currUeEditAns)};
 								}else{
-									field = {buffetId:bigBuffetId,queAnswer:currUeEditAns};
+									field = {buffetId:bigBuffetId,queAnswer:escape(currUeEditAns)};
 								}
 							}
 							
@@ -403,6 +403,7 @@
 						        				relate.comBackFun();
 												$('.loreQuesList').show();
 												$('#currLoc').html('知识点[<span style="color:#F47837;">'+ loreNameBig +'</span>]&gt;题库列表<a class="addEditBack" href="javascript:void(0)">返回知识点列表&gt;</a>');
+												//buffet.getBuffetList(loreBigId);
 												_this.bindEvent();
 						        			}
 		   				        		});
@@ -647,7 +648,6 @@
 								page.addLoreQuesInit();
 								lexContent = '';
 				        		page.renderbuffetTypeInfo(json);
-				        		//page.subLore();
 				        	}else if(json.result == 'error'){
 				        		layer.msg('服务器错误',{icon:5,anim:6,time:2000});
 				        	}
