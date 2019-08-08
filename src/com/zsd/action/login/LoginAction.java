@@ -346,14 +346,17 @@ public class LoginAction extends DispatchAction {
 									String pr="";
 									String ct="";
 									String county="";
+									String town = "";
 									Integer schType=0;
 									String schoolName="";
 									if(!scLists.isEmpty()){
-										pr= scLists.get(0).getProv();
-										ct= scLists.get(0).getCity();
-										county=scLists.get(0).getCounty();
-										schType=scLists.get(0).getSchoolType();
-										schoolName= scLists.get(0).getSchoolName();
+										School sch = scLists.get(0);
+										pr= sch.getProv();
+										ct= sch.getCity();
+										county=sch.getCounty();
+										town = sch.getTown();
+										schType=sch.getSchoolType();
+										schoolName= sch.getSchoolName();
 									}
 
 									Integer ciId = ciManager.addClassInfo(schoolId,className,Convert.gradeNoToBuildeClassDate(gradeNo));//创建班级
@@ -369,7 +372,7 @@ public class LoginAction extends DispatchAction {
 										Integer cMid=uManager.addUser("c"+ciId, "", new MD5().calcMD5("123456"), "",currTime, lastLoginIp, currTime, schoolId, "", yearSystem, prov, city);
 										
 										//绑定班级管理员角色
-										Integer ruNo =ruManager.addRoleUserInfo(cMid, mRoId, pr, ct, county, "", schType, schoolId, gradeNo, ciId);
+										Integer ruNo =ruManager.addRoleUserInfo(cMid, mRoId, pr, ct, county, town, schType, schoolId, gradeNo, ciId);
 											
 										if(ruNo>0){//班内学科老师
 											String gName = Convert.NunberConvertChinese(gradeNo);//年级名
@@ -457,12 +460,13 @@ public class LoginAction extends DispatchAction {
 								Integer schType=0;
 								String schoolName="";
 								if(!scLists.isEmpty()){
-									pr= scLists.get(0).getProv();
-									ct= scLists.get(0).getCity();
-									county=scLists.get(0).getCounty();
-									town = scLists.get(0).getTown();
-									schType=scLists.get(0).getSchoolType();
-									schoolName= scLists.get(0).getSchoolName();
+									School sch = scLists.get(0);
+									pr= sch.getProv();
+									ct= sch.getCity();
+									county=sch.getCounty();
+									town = sch.getTown();
+									schType=sch.getSchoolType();
+									schoolName= sch.getSchoolName();
 								}
 								Integer ciId = ciManager.addClassInfo(schoolId,className,Convert.gradeNoToBuildeClassDate(gradeNo));//创建班级
 								if(!schoolName.contains("其他学校")){
