@@ -800,28 +800,33 @@ public class HomeWorkAction extends DispatchAction {
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "noInfo";
 		String roleName = CommonTools.getLoginRoleName(request);
-		if(roleName.equals("老师") && loreId > 0 && currUserId > 0){
-			LoreInfo lore = lm.getEntityById(loreId);
-			Integer ediId = lore.getChapter().getEducation().getEdition().getId();
-			if(ediId > 1){//老师增加题库时选择的是其他版本
-				//需要把其他版本的知识点转成通用版知识点
-				loreId = lore.getMainLoreId();
+		if(roleName.equals("知识点管理员") || roleName.equals("老师")){
+			if(loreId > 0 && currUserId > 0){
+				if(roleName.equals("知识点管理员")){
+					currUserId = 0;
+				}
+				LoreInfo lore = lm.getEntityById(loreId);
+				Integer ediId = lore.getChapter().getEducation().getEdition().getId();
+				if(ediId > 1){//老师增加题库时选择的是其他版本
+					//需要把其他版本的知识点转成通用版知识点
+					loreId = lore.getMainLoreId();
+				}
+				List<TeaQueInfo> tqList = tqm.listInfoByOpt(loreId, currUserId, -1,false, 0, 0);
+				msg = "success";
+				List<Object> list_d = new ArrayList<Object>();
+				for(TeaQueInfo tq : tqList){
+					Map<String,Object> map_d = new HashMap<String,Object>();
+					map_d.put("tqId", tq.getId());
+					map_d.put("queTitle", tq.getQueTitle());
+					map_d.put("queType", tq.getQueType());
+					map_d.put("queSub", tq.getQueSub());
+					map_d.put("queAnswer", tq.getQueAnswer());
+					map_d.put("inUse", tq.getInUse().equals(0) ? "有效" : "无效");
+					map_d.put("queResolution", tq.getQueResolution());
+					list_d.add(map_d);
+				}
+				map.put("tqList", list_d);
 			}
-			List<TeaQueInfo> tqList = tqm.listInfoByOpt(loreId, currUserId, -1,false, 0, 0);
-			msg = "success";
-			List<Object> list_d = new ArrayList<Object>();
-			for(TeaQueInfo tq : tqList){
-				Map<String,Object> map_d = new HashMap<String,Object>();
-				map_d.put("tqId", tq.getId());
-				map_d.put("queTitle", tq.getQueTitle());
-				map_d.put("queType", tq.getQueType());
-				map_d.put("queSub", tq.getQueSub());
-				map_d.put("queAnswer", tq.getQueAnswer());
-				map_d.put("inUse", tq.getInUse().equals(0) ? "有效" : "无效");
-				map_d.put("queResolution", tq.getQueResolution());
-				list_d.add(map_d);
-			}
-			map.put("tqList", list_d);
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
@@ -2032,6 +2037,7 @@ public class HomeWorkAction extends DispatchAction {
 					teaQueIdArr = teaQueIdArr.substring(0, teaQueIdArr.length() - 1);
 					allNum += teaQueIdArr.split(",").length;
 				}
+//				swm.listPageInfoByOpt(currUserId, classId, hwType, checkStatus, inUse, sDate, eDate, false, 0, 0);
 				for(int i = 0 ; i < classIdArr.length ; i++){
 					Integer classId = Integer.parseInt(classIdArr[i]);
 					List<ClassInfo> cList = cm.listClassInfoById(classId);
@@ -2111,11 +2117,11 @@ public class HomeWorkAction extends DispatchAction {
 		//获取指定班级指定时间的作业
 		if(classId > 0){
 			List<SendHwInfo> sendList = swm.listPageInfoByOpt(0, classId, 0, -1, 0, preDate, preDate, false, 0, 0);
+			Integer[] tjHwArr = {0,0,0};
+			Integer[] tjKhArr = {0,0,0};
+			Integer[] tjKqArr = {0,0,0};
 			if(sendList.size() > 0){
 				msg = "success";
-				Integer[] tjHwArr = {0,0,0};
-				Integer[] tjKhArr = {0,0,0};
-				Integer[] tjKqArr = {0,0,0};
 				for(SendHwInfo shw : sendList){
 					Integer zsComNum = 0;
 					Integer bzComNum = 0;
@@ -2183,6 +2189,9 @@ public class HomeWorkAction extends DispatchAction {
 					}
 					map.put("userList", list_d);
 				}
+				map.put("unCom", tjHwArr);
+				map.put("zsCom", tjKhArr);
+				map.put("bzComt", tjKqArr);
 			}
 		}
 		map.put("result", msg);
