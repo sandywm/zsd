@@ -157,14 +157,17 @@ public class HomeWorkAction extends DispatchAction {
 					String abilityStr = "";
 					List<HwMindRelationInfo> hmrList = hmrm.listInfoByOpt(0, hwId);
 					for(HwMindRelationInfo hmr : hmrList){
-						mindStr += hmr.getBuffetMindTypeInfo().getMind() + ",";
+						mindStr += hmr.getBuffetMindTypeInfo().getMind() + "、";
 					}
 					if(!mindStr.equals("")){
 						mindStr = mindStr.substring(0, mindStr.length() - 1);
 					}
 					List<HwAbilityRelationInfo>  harList = harm.listInfoByOpt(0, hwId);
 					for(HwAbilityRelationInfo har : harList){
-						abilityStr += har.getBuffetAbilityTypeInfo().getAbility();
+						abilityStr += har.getBuffetAbilityTypeInfo().getAbility() + "、";
+					}
+					if(!abilityStr.equals("")){
+						abilityStr = abilityStr.substring(0, abilityStr.length() - 1);
 					}
 					map_d.put("mindStr", mindStr);
 					map_d.put("abilityStr", abilityStr);
@@ -2117,9 +2120,9 @@ public class HomeWorkAction extends DispatchAction {
 		//获取指定班级指定时间的作业
 		if(classId > 0){
 			List<SendHwInfo> sendList = swm.listPageInfoByOpt(0, classId, 0, -1, 0, preDate, preDate, false, 0, 0);
-			Integer[] tjHwArr = {0,0,0};
-			Integer[] tjKhArr = {0,0,0};
-			Integer[] tjKqArr = {0,0,0};
+			Integer[] tjHwArr = {0,0,0};//家庭作业
+			Integer[] tjKhArr = {0,0,0};//课后复习
+			Integer[] tjKqArr = {0,0,0};//课前预习
 			if(sendList.size() > 0){
 				msg = "success";
 				for(SendHwInfo shw : sendList){
@@ -2140,14 +2143,18 @@ public class HomeWorkAction extends DispatchAction {
 							map_d.put("userId", user.getId());
 							map_d.put("userName", user.getRealName());
 							map_d.put("userPortrait", user.getPortrait());
+							map_d.put("sendHwId", shw.getId());
 							if(comStatus.equals(0)){
 								unComNum++;
+								map_d.put("stuComType", "unCom");
 								list_un.add(map_d);
 							}else if(comStatus.equals(1)){
 								zsComNum++;
+								map_d.put("stuComType", "zsCom");
 								list_zs.add(map_d);
 							}else if(comStatus.equals(2)){
 								bzComNum++;
+								map_d.put("stuComType", "bzCom");
 								list_bz.add(map_d);
 							}
 						}
@@ -2185,6 +2192,8 @@ public class HomeWorkAction extends DispatchAction {
 						map_d.put("userId", user.getId());
 						map_d.put("userName", user.getRealName());
 						map_d.put("userPortrait", user.getPortrait());
+						map_d.put("sendHwId", 0);
+						map_d.put("stuComType", "");
 						list_d.add(map_d);
 					}
 					map.put("userList", list_d);
@@ -2196,6 +2205,25 @@ public class HomeWorkAction extends DispatchAction {
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 获取指定学生的学习记录
+	 * @author wm
+	 * @date 2019-8-8 上午08:49:06
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getSpecStuStudyDetail(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		SendHwManager swm = (SendHwManager)AppFactory.instance(null).getApp(Constants.WEB_SEND_HW_INFO);
+	
 		return null;
 	}
 }
