@@ -162,4 +162,19 @@ public class SchoolManagerImpl implements SchoolManager{
 		}
 	}
 
+	@Override
+	public boolean checkSchName(String schName, String prov, String city,
+			String county, String town, Integer schoolType) throws WEBException {
+		try {
+			sDao = (SchoolDao) DaoFactory.instance(null).getDao(Constants.DAO_SCHOOL_INFO);
+			Session sess  = HibernateUtil.currentSession();
+			return sDao.checkSchName(sess, schName, prov, city, county, town, schoolType);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("查看学校名称是否存在时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
 }

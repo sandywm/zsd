@@ -129,4 +129,18 @@ public interface SchoolDao {
 	 * @return
 	 */
 	List<School> findInfoBySName(Session sess,String sName);
+	/**
+	 * 查看学校名是否存在
+	 * @author zdf
+	 * 2019-8-7 下午05:33:53
+	 * @param sess
+	 * @param schName 学校名称
+	 * @param prov 省
+	 * @param city 市
+	 * @param county 县
+	 * @param town 乡 镇 街道
+	 * @param schoolType 学段
+	 * @return
+	 */
+	boolean  checkSchName(Session sess,String schName,String prov,String city,String county,String town,Integer schoolType);
 }

@@ -147,4 +147,34 @@ public class SchoolDaoImpl implements SchoolDao{
 		return sess.createQuery(hql).list();
 	}
 
+	@Override
+	public boolean checkSchName(Session sess, String schName, String prov,
+			String city, String county, String town, Integer schoolType) {
+		boolean flag = true;
+		String hql = "from School as sch where 1=1";
+		if(!schName.equals("")){
+			hql += " and sch.schoolName like '"+schName+"'";
+		}
+		if(!prov.equals("")){
+			hql += " and sch.prov = '"+prov+"'";
+		}
+		if(!city.equals("")){
+			hql += " and sch.city = '"+city+"'";
+		}
+		if(!county.equals("")){
+			hql += " and sch.county = '"+county+"'";
+		}
+		if(!town.equals("")){
+			hql += " and sch.town = '"+town+"'";
+		}
+		if(schoolType > 0){
+			hql += " and sch.schoolType = "+schoolType;
+		}
+		List<School> sch=sess.createQuery(hql).list();
+		if(sch.isEmpty()){
+			flag = false;
+		}
+		return flag;
+	}
+  
 }

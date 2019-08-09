@@ -421,6 +421,33 @@ public class SchoolAction extends DispatchAction {
 		}
 	}
 	/**
+	 * 检查学校名称是否存在
+	 * @author zdf
+	 * 2019-8-7 下午05:54:34
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward checkSchoolName(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		SchoolManager sm = (SchoolManager) AppFactory.instance(null).getApp(Constants.WEB_SCHOOL_INFO);
+		String schoolName = Transcode.unescape_new("schoolName", request);
+		String prov = Transcode.unescape_new("prov", request);
+		String city = Transcode.unescape_new("city", request);
+		String county = Transcode.unescape_new("county", request);
+		String town = Transcode.unescape_new("town", request);
+		Integer schoolType = CommonTools.getFinalInteger("schoolType", request);
+		boolean flag =sm.checkSchName(schoolName, prov, city, county, town, schoolType);
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("result", flag);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+		
+	}
+	/**
 	 * 添加学校后生成班级,班内老师账户,绑定角色，绑定班级
 	 * @author zong
 	 * 2019-5-7下午05:22:54
@@ -477,4 +504,6 @@ public class SchoolAction extends DispatchAction {
 			}
 		}
 	}*/
+	
+
 }

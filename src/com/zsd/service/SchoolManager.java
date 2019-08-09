@@ -123,4 +123,18 @@ public interface SchoolManager {
 	 * @throws WEBException
 	 */
 	List<School> listInfoBySName(String sName)throws WEBException;
+	/**
+	 * 判断学校名称是否存在
+	 * @author zdf
+	 * 2019-8-7 下午05:50:06
+	 * @param schName 学校名称
+	 * @param prov 省
+	 * @param city 市
+	 * @param county 县
+	 * @param town 乡镇街道
+	 * @param schoolType 学段
+	 * @return
+	 * @throws WEBException
+	 */
+	boolean checkSchName(String schName, String prov,String city, String county, String town, Integer schoolType)throws WEBException;
 }
