@@ -2126,6 +2126,7 @@ public class HomeWorkAction extends DispatchAction {
 		Integer classId = CommonTools.getFinalInteger("classId", request);
 		Integer hwType = CommonTools.getFinalInteger("hwType", request);
 		Map<String,Object> map = new HashMap<String,Object>();
+//		测试
 		String msg = "error";
 		Integer stuNum = 0;
 		//获取指定班级指定时间的作业
