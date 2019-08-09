@@ -138,16 +138,14 @@
 				        		}else if(roleList.length > 1){//多种身份
 				        			listRole(roleList);				        			
 				        		}
-				        		
-				        		//window.location.href = "hw.do?action=goTeaQuePage";
 				        	}else if(json.result == 'fail'){
 				        		layer.msg("账号密码错误");
 				        	}else if(json.result == 'vercodeFail'){
 				        		layer.msg("验证码错误");
 				        	}else if(json.result == 'lock'){
 				        		layer.msg("该账号无效,已被锁定");
-				        	}else if(json.result == 'error'){
-				        		layer.msg("登录异常");
+				        	}else if(json.result == 'roleErr'){
+				        		layer.msg("暂无此角色身份");
 				        	}
 				        }
 				    });
