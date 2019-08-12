@@ -71,4 +71,7 @@ public interface SendHwDao {
 	 * @return
 	 */
 	Integer getCountByOpt(Session sess,Integer sendUserId,Integer classId,Integer hwType,Integer checkStatus,Integer inUse,String sDate,String eDate);
+	
+	List<SendHwInfo> findPageInfoByOpt(Session sess,Integer subId,Integer classId,Integer hwType,Integer checkStatus,Integer inUse,
+			String sDate,String eDate);
 }

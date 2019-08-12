@@ -2121,8 +2121,8 @@ public class HomeWorkAction extends DispatchAction {
 		SendHwManager swm = (SendHwManager)AppFactory.instance(null).getApp(Constants.WEB_SEND_HW_INFO);
 		HwStudyTjManager tjm = (HwStudyTjManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_TJ_INFO);
 		UserClassInfoManager ucm = (UserClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
-		String eDate  = CurrentTime.getStringDate();
-		String sDate = CurrentTime.getFinalDate(CurrentTime.getStringDate(), -6);//获取最近6天的时间
+		String eDate  = CommonTools.getFinalStr("currDate", request);
+		String sDate = "";
 		Integer classId = CommonTools.getFinalInteger("classId", request);
 		Integer hwType = CommonTools.getFinalInteger("hwType", request);
 		Map<String,Object> map = new HashMap<String,Object>();
@@ -2131,6 +2131,10 @@ public class HomeWorkAction extends DispatchAction {
 		Integer stuNum = 0;
 		//获取指定班级指定时间的作业
 		if(classId > 0){
+			if(eDate.equals("")){
+				eDate = CurrentTime.getStringDate();
+			}
+			sDate = CurrentTime.getFinalDate(CurrentTime.getStringDate(), -6);//获取最近6天的时间
 			if(hwType.equals(0)){
 				hwType = 1;
 			}
@@ -2138,6 +2142,14 @@ public class HomeWorkAction extends DispatchAction {
 			Integer[] tjHwArr = {0,0,0};//家庭作业
 			Integer[] tjKhArr = {0,0,0};//课后复习
 			Integer[] tjKqArr = {0,0,0};//课前预习
+			String axisNameStr = sDate + ",";//xAxis-data
+			String yAxisZsNumStr = "";//yAxis-data
+			String yAxisBzNumStr = "";//yAxis-data
+			String yAxisUnNumStr = "";//yAxis-data
+			for(int i = 5 ; i > 0 ; i--){
+				axisNameStr += CurrentTime.getFinalDate(CurrentTime.getStringDate(), -i) + ",";
+			}
+			axisNameStr += eDate;
 			if(sendList.size() > 0){
 				msg = "success";
 				for(SendHwInfo shw : sendList){

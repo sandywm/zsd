@@ -96,4 +96,12 @@ public class SendHwDaoImpl implements SendHwDao{
 		return CommonTools.longToInt(countObj);
 	}
 
+	@Override
+	public List<SendHwInfo> findPageInfoByOpt(Session sess, Integer subId,
+			Integer classId, Integer hwType, Integer checkStatus,
+			Integer inUse, String sDate, String eDate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

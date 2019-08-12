@@ -63,5 +63,4 @@ public interface HwStudyTjDao {
 	 */
 	Integer getCountByOpt(Session sess,Integer hwSendId,Integer stuId,Integer comStatus);
 	
-	
 }
