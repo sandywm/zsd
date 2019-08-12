@@ -64,7 +64,7 @@ public interface SendHwManager {
 	SendHwInfo getEntityById(Integer id) throws WEBException;
 	
 	/**
-	 * 根据条件分页获取家庭作业信息列表
+	 * 根据条件分页获取家庭作业信息列表(发送日期将序排列)
 	 * @author wm
 	 * @date 2019-7-28 上午09:38:54
 	 * @param sendUserId 发送老师编号(0表示全部)

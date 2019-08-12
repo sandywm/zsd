@@ -37,7 +37,7 @@ public interface SendHwDao {
 	void update(Session sess,SendHwInfo sw);
 	
 	/**
-	 * 根据条件分页获取发布家庭作业记录列表
+	 * 根据条件分页获取发布家庭作业记录列表(发送日期将序排列)
 	 * @author wm
 	 * @date 2019-7-27 下午04:54:15
 	 * @param sess

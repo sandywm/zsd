@@ -2125,6 +2125,7 @@ public class HomeWorkAction extends DispatchAction {
 		String sDate = "";
 		Integer classId = CommonTools.getFinalInteger("classId", request);
 		Integer hwType = CommonTools.getFinalInteger("hwType", request);
+		String specDate = CommonTools.getFinalStr("specDate", request);
 		Map<String,Object> map = new HashMap<String,Object>();
 //		测试
 		String msg = "error";
@@ -2139,24 +2140,43 @@ public class HomeWorkAction extends DispatchAction {
 				hwType = 1;
 			}
 			List<SendHwInfo> sendList = swm.listPageInfoByOpt(0, classId, hwType, -1, 0, sDate, eDate, false, 0, 0);
-			Integer[] tjHwArr = {0,0,0};//家庭作业
-			Integer[] tjKhArr = {0,0,0};//课后复习
-			Integer[] tjKqArr = {0,0,0};//课前预习
-			String axisNameStr = sDate + ",";//xAxis-data
-			String yAxisZsNumStr = "";//yAxis-data
-			String yAxisBzNumStr = "";//yAxis-data
-			String yAxisUnNumStr = "";//yAxis-data
+			String axisNameStr = sDate.substring(5) + ",";//xAxis-data
 			for(int i = 5 ; i > 0 ; i--){
-				axisNameStr += CurrentTime.getFinalDate(CurrentTime.getStringDate(), -i) + ",";
+				axisNameStr += CurrentTime.getFinalDate(CurrentTime.getStringDate(), -i).substring(5) + ",";
 			}
-			axisNameStr += eDate;
-			if(sendList.size() > 0){
+			axisNameStr += eDate.substring(5);
+			String[] axisNameArr = {axisNameStr.split(",")[0],axisNameStr.split(",")[1],axisNameStr.split(",")[2],
+					axisNameStr.split(",")[3],axisNameStr.split(",")[4],axisNameStr.split(",")[5],axisNameStr.split(",")[6]};
+			Integer[] zsNumArr = {0,0,0,0,0,0,0};
+			Integer[] bzNumArr = {0,0,0,0,0,0,0};
+			Integer[] unNumArr = {0,0,0,0,0,0,0};
+			Integer sendHwSize = sendList.size();
+			List<Object> list_all_stu = new ArrayList<Object>();//所有学生列表
+			if(sendHwSize > 0){
 				msg = "success";
-				for(SendHwInfo shw : sendList){
+				Integer i = 0;
+				if(sendHwSize < 7){//有些天没有发送
+					List<UserClassInfo> ucList = ucm.listUcInfoByOpt(classId, 2, 1, 10000);
+					stuNum = ucList.size();
+					if(stuNum > 0){
+						for(UserClassInfo uc : ucList){
+							User user = uc.getUser();
+							Map<String,Object> map_d = new HashMap<String,Object>();
+							map_d.put("userId", user.getId());
+							map_d.put("userName", user.getRealName());
+							map_d.put("userPortrait", user.getPortrait());
+							map_d.put("sendHwId", 0);
+							map_d.put("stuComType", "");
+							list_all_stu.add(map_d);
+						}
+					}
+				}
+				for(Integer j = sendHwSize - 1 ; j >= 0 ; j--){
+					SendHwInfo shw = sendList.get(j);
 					Integer zsComNum = 0;
 					Integer bzComNum = 0;
 					Integer unComNum = 0;
-					Integer shwType = shw.getHwType();
+					String sendDate = shw.getSendDate().substring(5, 10);
 					List<HwStudyTjInfo> tjList = tjm.listInfoByOpt(shw.getId(), 0, -1, false, 0, 0);
 					stuNum = tjList.size();
 					if(stuNum > 0){
@@ -2165,48 +2185,42 @@ public class HomeWorkAction extends DispatchAction {
 						List<Object> list_un = new ArrayList<Object>();
 						for(HwStudyTjInfo tj : tjList){
 							User user = tj.getUser();
-							Map<String,Object> map_d = new HashMap<String,Object>();
+							Map<String,Object> map_d_1 = new HashMap<String,Object>();
 							Integer comStatus = tj.getComStatus();
-							map_d.put("userId", user.getId());
-							map_d.put("userName", user.getRealName());
-							map_d.put("userPortrait", user.getPortrait());
-							map_d.put("sendHwId", shw.getId());
+							map_d_1.put("userId", user.getId());
+							map_d_1.put("userName", user.getRealName());
+							map_d_1.put("userPortrait", user.getPortrait());
+							map_d_1.put("sendHwId", shw.getId());
 							if(comStatus.equals(0)){
 								unComNum++;
-								map_d.put("stuComType", "unCom");
-								list_un.add(map_d);
+								map_d_1.put("stuComType", "unCom");
+								list_un.add(map_d_1);
 							}else if(comStatus.equals(1)){
 								zsComNum++;
-								map_d.put("stuComType", "zsCom");
-								list_zs.add(map_d);
+								map_d_1.put("stuComType", "zsCom");
+								list_zs.add(map_d_1);
 							}else if(comStatus.equals(2)){
 								bzComNum++;
-								map_d.put("stuComType", "bzCom");
-								list_bz.add(map_d);
+								map_d_1.put("stuComType", "bzCom");
+								list_bz.add(map_d_1);
 							}
 						}
-						if(shwType.equals(1)){//家庭作业
-							tjHwArr[0] = zsComNum;
-							tjHwArr[1] = bzComNum;
-							tjHwArr[2] = unComNum;
-						}else if(shwType.equals(2)){//课后复习
-							tjKhArr[0] = zsComNum;
-							tjKhArr[1] = bzComNum;
-							tjKhArr[2] = unComNum;
-						}else if(shwType.equals(3)){//课前预习
-							tjKqArr[0] = zsComNum;
-							tjKqArr[1] = bzComNum;
-							tjKqArr[2] = unComNum;
+						if(axisNameStr.contains(sendDate)){
+							zsNumArr[i] = zsComNum;
+							bzNumArr[i] = bzComNum;
+							unNumArr[i] = unComNum;
 						}
 						//学生信息
-						map.put("unComUserList", list_un);
-						map.put("zsComUserList", list_zs);
-						map.put("bzComUserList", list_bz);
+						if(axisNameStr.contains(sendDate)){
+							map.put("unComUserList_"+sendDate, list_un);
+							map.put("zsComUserList_"+sendDate, list_zs);
+							map.put("bzComUserList_"+sendDate, list_bz);
+						}else{
+							map.put("userList", list_all_stu);
+						}
+						i++;
 					}
 				}
-				map.put("unCom", tjHwArr);
-				map.put("zsCom", tjKhArr);
-				map.put("bzComt", tjKqArr);
 			}else{
 				msg = "noInfo";
 				List<UserClassInfo> ucList = ucm.listUcInfoByOpt(classId, 2, 1, 10000);
@@ -2225,10 +2239,12 @@ public class HomeWorkAction extends DispatchAction {
 					}
 					map.put("userList", list_d);
 				}
-				map.put("unCom", tjHwArr);
-				map.put("zsCom", tjKhArr);
-				map.put("bzComt", tjKqArr);
 			}
+			map.put("xAxisData", axisNameArr);
+			map.put("yAxisZsData", zsNumArr);
+			map.put("yAxisBzData", bzNumArr);
+			map.put("yAxisUnData", unNumArr);
+			map.put("specDate", eDate.substring(0,5)+specDate);
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);

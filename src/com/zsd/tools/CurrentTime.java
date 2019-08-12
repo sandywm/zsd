@@ -558,9 +558,11 @@ public class CurrentTime {
     }
     
 	public static void main(String args[]) throws Exception{
-		String aa = "2019-01-01";
+		String aa = "2019-01-01 11:11:12";
 		String bb = "2019-01-03";
-		System.out.println(CurrentTime.getSpecInfo("month"));
+		String cc = "11-11,11-12,11-13,11-14,11-15,11-16,11-17";
+		String dd = "11-16";
+		System.out.println(bb.substring(0, 5));
 		
 //		System.out.println(CurrentTime.compareDate("2014-01-30", "2014-02-01"));
 //		float outPenalty = Float.parseFloat("0.1");
