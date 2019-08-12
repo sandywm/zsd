@@ -1725,7 +1725,7 @@ public class HomeWorkAction extends DispatchAction {
 					map_d_edu = new HashMap<String,Object>();
 					map_d_edu.put("eduVolumeValue", "下册");
 					map_d_edu.put("eduVolumeShow", gradeName+subName+"下册");
-					if(eduVolume.equals("上册")){
+					if(eduVolume.equals("下册")){
 						map_d_edu.put("selFlag", true);
 					}else{
 						map_d_edu.put("selFlag", false);
