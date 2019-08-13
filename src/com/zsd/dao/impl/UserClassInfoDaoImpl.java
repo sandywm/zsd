@@ -105,4 +105,12 @@ public class UserClassInfoDaoImpl implements UserClassInfoDao {
 		return sess.createQuery(hql).list();
 	}
 
+	@Override
+	public List<UserClassInfo> findInfoByOpt(Session sess, Integer classId,
+			Integer roleId) {
+		// TODO Auto-generated method stub
+		String hql = " from UserClassInfo as uci where uci.classInfo.id = " +classId+ " and uci.roleInfo.id = "+roleId;
+		return sess.createQuery(hql).list();
+	}
+
 }

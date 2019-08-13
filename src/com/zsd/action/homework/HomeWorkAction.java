@@ -1945,9 +1945,10 @@ public class HomeWorkAction extends DispatchAction {
 		}
 		map.put("result", msg);
 		if(msg.equals("success")){
-			map.put("classId", classIdStr);
+			map.put("classIdStr", classIdStr);
+			String classNameStr = "";
 			String[] classIdArr = classIdStr.split(",");
-			List<Object> list_d = new ArrayList<Object>();
+//			List<Object> list_d = new ArrayList<Object>();
 			for(int i = 0 ; i <  classIdArr.length; i++){
 				Integer classId = Integer.parseInt(classIdArr[i]);
 				List<ClassInfo> cList = cm.listClassInfoById(classId);
@@ -1955,13 +1956,15 @@ public class HomeWorkAction extends DispatchAction {
 					ClassInfo c = cList.get(0);
 					String buildeClassDate = c.getBuildeClassDate();
 					String gradeName = Convert.dateConvertGradeName(buildeClassDate);//当前所在的年级
-					Map<String,Object> map_d = new HashMap<String,Object>();
-					map_d.put("classId", c.getId());
-					map_d.put("className", gradeName+c.getClassName());
-					list_d.add(map_d);
+//					Map<String,Object> map_d = new HashMap<String,Object>();
+//					map_d.put("classId", c.getId());
+//					map_d.put("className", gradeName+c.getClassName());
+//					list_d.add(map_d);
+					classNameStr += gradeName+c.getClassName() + ",";
 				}
 			}
-			map.put("classList", list_d);
+			map.put("classNameStr", classNameStr.substring(0, classNameStr.length() - 1));
+//			map.put("classList", list_d);
 			map.put("hwType", hwType);
 			map.put("loreId", loreId);
 			map.put("endDate", CurrentTime.getStringDate());
@@ -1993,7 +1996,7 @@ public class HomeWorkAction extends DispatchAction {
 		HwStudyTjManager tjm = (HwStudyTjManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_TJ_INFO);
 		HwStudyDetailManager hsdm = (HwStudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_DETAIL_INFO);
 		Integer currUserId = CommonTools.getLoginUserId(request);
-		String classIdStr = CommonTools.getFinalStr("classId", request);//多个逗号隔开
+		String classIdStr = CommonTools.getFinalStr("classIdStr", request);//多个逗号隔开
 		Integer hwType = CommonTools.getFinalInteger("hwType", request);//作业类型1-家庭作业,2-课后复习,3-课前预习
 		Integer loreId = CommonTools.getFinalInteger("loreId", request);//之前选中的的知识点编号
 		String lqIdStr = CommonTools.getFinalStr("lqId", request);//多个逗号隔开
@@ -2108,6 +2111,9 @@ public class HomeWorkAction extends DispatchAction {
 	
 	/**
 	 * 获取指定班级的家庭作业报告数据
+	 * noInfo时为全部无记录
+	 * success时部分有记录，（specDate为空时）初始进来时，判断unComUserList_eDate有无，存在则获取，不存在则获取userList
+	 * 当点击横坐标指定日期时（specDate不为空时），判断unComUserList_specDate有无，存在则获取，不存在则获取userList
 	 * @param mapping
 	 * @param form
 	 * @param request
@@ -2156,7 +2162,7 @@ public class HomeWorkAction extends DispatchAction {
 				msg = "success";
 				Integer i = 0;
 				if(sendHwSize < 7){//有些天没有发送
-					List<UserClassInfo> ucList = ucm.listUcInfoByOpt(classId, 2, 1, 10000);
+					List<UserClassInfo> ucList = ucm.listInfoByOpt(classId, 2);
 					stuNum = ucList.size();
 					if(stuNum > 0){
 						for(UserClassInfo uc : ucList){
@@ -2167,6 +2173,7 @@ public class HomeWorkAction extends DispatchAction {
 							map_d.put("userPortrait", user.getPortrait());
 							map_d.put("sendHwId", 0);
 							map_d.put("stuComType", "");
+							map_d.put("classId", uc.getClassInfo().getId());
 							list_all_stu.add(map_d);
 						}
 					}
@@ -2204,6 +2211,7 @@ public class HomeWorkAction extends DispatchAction {
 								map_d_1.put("stuComType", "bzCom");
 								list_bz.add(map_d_1);
 							}
+							map_d_1.put("classId", shw.getClassInfo().getId());
 						}
 						if(axisNameStr.contains(sendDate)){
 							zsNumArr[i] = zsComNum;
@@ -2223,7 +2231,7 @@ public class HomeWorkAction extends DispatchAction {
 				}
 			}else{
 				msg = "noInfo";
-				List<UserClassInfo> ucList = ucm.listUcInfoByOpt(classId, 2, 1, 10000);
+				List<UserClassInfo> ucList = ucm.listInfoByOpt(classId, 2);
 				stuNum = ucList.size();
 				if(stuNum > 0){
 					List<Object> list_d = new ArrayList<Object>();
@@ -2253,6 +2261,7 @@ public class HomeWorkAction extends DispatchAction {
 	
 	/**
 	 * 获取指定学生的学习记录
+	 * 在图表页面点击一个学生过来时都传递，当在指定学生记录中切换班级时，默认为第一个学生的记录
 	 * @author wm
 	 * @date 2019-8-8 上午08:49:06
 	 * @param mapping
@@ -2266,7 +2275,24 @@ public class HomeWorkAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
 		SendHwManager swm = (SendHwManager)AppFactory.instance(null).getApp(Constants.WEB_SEND_HW_INFO);
-	
+		UserClassInfoManager ucm = (UserClassInfoManager)AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
+		Integer stuId = CommonTools.getFinalInteger("stuId", request);
+		Integer sendHwId = CommonTools.getFinalInteger("sendHwId", request); 
+		String stuComType = CommonTools.getFinalStr("stuComType", request);//状态(unCom,zsCom,bzCom,"")
+		Integer classId = CommonTools.getFinalInteger("classId", request);
+		Map<String,Object> map = new HashMap<String,Object>();
+		if(stuId > 0 && classId > 0){
+			List<UserClassInfo> ucList = ucm.listInfoByOpt(classId, 2);
+			List<Object> list_d = new ArrayList<Object>();
+			for(UserClassInfo uc : ucList){
+				User user = uc.getUser();
+				Map<String,Object> map_d = new HashMap<String,Object>();
+				map_d.put("userId", user.getId());
+				map_d.put("userName", user.getRealName());
+				map_d.put("userPortrait", user.getPortrait());
+				list_d.add(map_d);
+			}
+		}
 		return null;
 	}
 }

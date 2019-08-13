@@ -199,5 +199,20 @@ public class UserClassInfoManagerImpl implements UserClassInfoManager {
 			HibernateUtil.closeSession();
 		}
 	}
+	@Override
+	public List<UserClassInfo> listInfoByOpt(Integer classId, Integer roleId)
+			throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			ucDao = (UserClassInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_USER_CLASS_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return ucDao.findInfoByOpt(sess, classId, roleId);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("获取指定班级的指定身份的列表信息时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
 
 }

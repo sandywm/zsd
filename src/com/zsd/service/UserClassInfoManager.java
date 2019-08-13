@@ -111,4 +111,15 @@ public interface UserClassInfoManager {
 	 * @throws WEBException
 	 */
 	UserClassInfo getEntityByOpt(Integer userId,Integer classId,Integer roleId)throws WEBException ;
+	
+	/**
+	 * 获取指定班级的指定身份的列表
+	 * @author wm
+	 * @date 2019-8-13 上午09:53:25
+	 * @param classId 班级编号
+	 * @param roleId 角色编号
+	 * @return
+	 * @throws WEBException
+	 */
+	List<UserClassInfo> listInfoByOpt(Integer classId,Integer roleId)throws WEBException;
 }

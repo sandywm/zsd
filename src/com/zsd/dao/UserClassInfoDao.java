@@ -129,4 +129,15 @@ public interface UserClassInfoDao {
 	 * @return
 	 */
 	List<UserClassInfo> findTeaInfoByOpt(Session sess,Integer userId,Integer roleId);
+	
+	/**
+	 * 获取指定班级的指定身份的列表
+	 * @author wm
+	 * @date 2019-8-13 上午09:52:14
+	 * @param sess
+	 * @param classId 班级编号
+	 * @param roleId 角色编号
+	 * @return
+	 */
+	List<UserClassInfo> findInfoByOpt(Session sess,Integer classId,Integer roleId);
 }
