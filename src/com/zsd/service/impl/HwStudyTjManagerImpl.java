@@ -146,4 +146,56 @@ public class HwStudyTjManagerImpl implements HwStudyTjManager{
 		}
 	}
 
+	@Override
+	public List<HwStudyTjInfo> listInfoByOpt_1(Integer subId, Integer stuId,
+			Integer comStatus, String sDate, String eDate, boolean pageFlag,
+			Integer pageNo, Integer pageSize) throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			hstjDao = (HwStudyTjDao) DaoFactory.instance(null).getDao(Constants.DAO_HW_STUDY_TJ_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return hstjDao.findPageInfoByOpt_1(sess, subId, stuId, comStatus, sDate, eDate, pageFlag, pageNo, pageSize);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new WEBException("根据条件获取指定学生家庭作业列表（发送时间降序排列）时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public Integer getCountByOpt_1(Integer subId, Integer stuId,
+			Integer comStatus, String sDate, String eDate) throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			hstjDao = (HwStudyTjDao) DaoFactory.instance(null).getDao(Constants.DAO_HW_STUDY_TJ_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return hstjDao.getCountByOpt_1(sess, subId, stuId, comStatus, sDate, eDate);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new WEBException("根据条件获取指定学生家庭作业记录条数时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public List<HwStudyTjInfo> listInfoBySendHwId(Integer sendHwId)
+			throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			hstjDao = (HwStudyTjDao) DaoFactory.instance(null).getDao(Constants.DAO_HW_STUDY_TJ_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return hstjDao.findInfoBySendHwId(sess, sendHwId);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new WEBException("根据发送作业编号获取家庭作业记录时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
 }

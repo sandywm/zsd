@@ -57,4 +57,45 @@ public interface HwStudyTjManager {
 	 * @throws WEBException
 	 */
 	Integer getCountByOpt(Integer hwSendId,Integer stuId,Integer comStatus) throws WEBException;
+	
+	/**
+	 * 根据条件获取指定学生家庭作业列表（发送时间降序排列）
+	 * @author wm
+	 * @date 2019-8-13 上午11:04:19
+	 * @param subId 学科编号(0表示全部)
+	 * @param stuId 学生编号
+	 * @param comStatus 完成状态（-1表示全部，0-未完成，1-按时完成，2-补做完成）
+	 * @param sDate 开始时间(针对发送时间)
+	 * @param eDate 结束时间(针对发送时间)
+	 * @param pageFlag pageFlag 分页标记（true-分页）
+	 * @param pageNo
+	 * @param pageSize
+	 * @return
+	 * @throws WEBException
+	 */
+	List<HwStudyTjInfo> listInfoByOpt_1(Integer subId,Integer stuId,Integer comStatus,String sDate,String eDate,boolean pageFlag,Integer pageNo,Integer pageSize) throws WEBException;
+
+	/**
+	 * 根据条件获取指定学生家庭作业记录条数
+	 * @author wm
+	 * @date 2019-8-13 上午11:09:56
+	 * @param subId 学科编号(0表示全部)
+	 * @param stuId 学生编号
+	 * @param comStatus 完成状态（-1表示全部，0-未完成，1-按时完成，2-补做完成）
+	 * @param sDate 开始时间(针对发送时间)
+	 * @param eDate 结束时间(针对发送时间)
+	 * @return
+	 * @throws WEBException
+	 */
+	Integer getCountByOpt_1(Integer subId,Integer stuId,Integer comStatus,String sDate,String eDate) throws WEBException;
+	
+	/**
+	 * 根据发送作业编号获取家庭作业记录
+	 * @author wm
+	 * @date 2019-8-13 上午11:23:45
+	 * @param sendHwId 发送作业编号
+	 * @return
+	 * @throws WEBException
+	 */
+	List<HwStudyTjInfo> listInfoBySendHwId(Integer sendHwId) throws WEBException;
 }

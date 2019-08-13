@@ -108,14 +108,14 @@ public class SendHwManagerImpl implements SendHwManager{
 	}
 
 	@Override
-	public List<SendHwInfo> listPageInfoByOpt(Integer sendUserId,
+	public List<SendHwInfo> listPageInfoByOpt(Integer sendUserId,Integer subId,
 			Integer classId, Integer hwType,Integer checkStatus, Integer inUse, String sDate,
 			String eDate, boolean pageFlag, Integer pageNo, Integer pageSize) throws WEBException {
 		// TODO Auto-generated method stub
 		try {
 			shwDao = (SendHwDao) DaoFactory.instance(null).getDao(Constants.DAO_SEND_HW_INFO);
 			Session sess = HibernateUtil.currentSession();
-			return shwDao.findPageInfoByOpt(sess, sendUserId, classId, hwType, checkStatus, inUse, sDate, eDate, pageFlag, pageNo, pageSize);
+			return shwDao.findPageInfoByOpt(sess, sendUserId, subId, classId, hwType, checkStatus, inUse, sDate, eDate, pageFlag, pageNo, pageSize);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -126,14 +126,14 @@ public class SendHwManagerImpl implements SendHwManager{
 	}
 
 	@Override
-	public Integer getCountByOpt(Integer sendUserId, Integer classId,
+	public Integer getCountByOpt(Integer sendUserId,Integer subId, Integer classId,
 			Integer hwType,Integer checkStatus, Integer inUse, String sDate, String eDate)
 			throws WEBException {
 		// TODO Auto-generated method stub
 		try {
 			shwDao = (SendHwDao) DaoFactory.instance(null).getDao(Constants.DAO_SEND_HW_INFO);
 			Session sess = HibernateUtil.currentSession();
-			return shwDao.getCountByOpt(sess, sendUserId, classId, hwType, checkStatus, inUse, sDate, eDate);
+			return shwDao.getCountByOpt(sess, sendUserId, subId, classId, hwType, checkStatus, inUse, sDate, eDate);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

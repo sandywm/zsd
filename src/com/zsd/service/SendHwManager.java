@@ -68,6 +68,7 @@ public interface SendHwManager {
 	 * @author wm
 	 * @date 2019-7-28 上午09:38:54
 	 * @param sendUserId 发送老师编号(0表示全部)
+	 * @param subId 学科编号（同发送者编号只能存在一个）
 	 * @param classId 班级编号（0表示全部）
 	 * @param hwType 作业类型（0全部,1-家庭作业,2-课后复习,3-课前预习）
 	 * @param inUse  有效状态(-1全部,0：有效，1：无效)
@@ -80,7 +81,7 @@ public interface SendHwManager {
 	 * @return
 	 * @throws WEBException
 	 */
-	List<SendHwInfo> listPageInfoByOpt(Integer sendUserId,Integer classId,Integer hwType,Integer checkStatus,Integer inUse,
+	List<SendHwInfo> listPageInfoByOpt(Integer sendUserId,Integer subId,Integer classId,Integer hwType,Integer checkStatus,Integer inUse,
 			String sDate,String eDate,boolean pageFlag, Integer pageNo,Integer pageSize) throws WEBException;
 	
 	/**
@@ -88,6 +89,7 @@ public interface SendHwManager {
 	 * @author wm
 	 * @date 2019-7-28 上午09:44:04
 	 * @param sendUserId 发送老师编号(0表示全部)
+	 * @param subId 学科编号（同发送者编号只能存在一个）
 	 * @param classId 班级编号（0表示全部）
 	 * @param hwType 作业类型（0全部,1-家庭作业,2-课后复习,3-课前预习）
 	 * @param inUse  有效状态(-1全部,0：有效，1：无效)
@@ -97,6 +99,6 @@ public interface SendHwManager {
 	 * @return
 	 * @throws WEBException
 	 */
-	Integer getCountByOpt(Integer sendUserId,Integer classId,Integer hwType,Integer checkStatus,Integer inUse,
+	Integer getCountByOpt(Integer sendUserId,Integer subId,Integer classId,Integer hwType,Integer checkStatus,Integer inUse,
 			String sDate,String eDate) throws WEBException;
 }

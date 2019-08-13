@@ -78,4 +78,61 @@ public class HwStudyTjDaoImpl implements HwStudyTjDao{
 		return CommonTools.longToInt(countObj);
 	}
 
+	@Override
+	public List<HwStudyTjInfo> findPageInfoByOpt_1(Session sess, Integer subId,
+			Integer stuId, Integer comStatus, String sDate, String eDate,
+			boolean pageFlag, Integer pageNo, Integer pageSize) {
+		// TODO Auto-generated method stub
+		String hql = " from HwStudyTjInfo as hwtj where 1 = 1";
+		if(subId > 0){
+			hql += " and hwtj.sendHwInfo.subject.id = "+subId;
+		}
+		if(stuId > 0){
+			hql += " and hwtj.user.id = "+stuId;
+		}
+		if(comStatus >= 0){
+			hql += " and hwtj.comStatus = "+comStatus;
+		}
+		if(!sDate.equals("") && !eDate.equals("")){
+			hql += " and substring(hwtj.sendHwInfo.sendDate,1,10) >= '"+sDate+"' and substring(hwtj.sendHwInfo.sendDate,1,10) >= '"+eDate+"'";
+		}
+		hql += " order by hwtj.sendHwInfo.sendDate desc";
+		if(pageFlag){
+			int offset = (pageNo - 1) * pageSize;
+			if (offset < 0) {
+				offset = 0;
+			}
+			return sess.createQuery(hql).setFirstResult(offset).setMaxResults(pageSize).list();
+		}
+		return sess.createQuery(hql).list();
+	}
+
+	@Override
+	public Integer getCountByOpt_1(Session sess, Integer subId, Integer stuId,
+			Integer comStatus, String sDate, String eDate) {
+		// TODO Auto-generated method stub
+		String hql = "select count(hwtj.id) from HwStudyTjInfo as hwtj where 1 = 1";
+		if(subId > 0){
+			hql += " and hwtj.sendHwInfo.subject.id = "+subId;
+		}
+		if(stuId > 0){
+			hql += " and hwtj.user.id = "+stuId;
+		}
+		if(comStatus >= 0){
+			hql += " and hwtj.comStatus = "+comStatus;
+		}
+		if(!sDate.equals("") && !eDate.equals("")){
+			hql += " and substring(hwtj.sendHwInfo.sendDate,1,10) >= '"+sDate+"' and substring(hwtj.sendHwInfo.sendDate,1,10) >= '"+eDate+"'";
+		}
+		Object countObj = sess.createQuery(hql).uniqueResult();
+		return CommonTools.longToInt(countObj);
+	}
+
+	@Override
+	public List<HwStudyTjInfo> findInfoBySendHwId(Session sess, Integer sendHwId) {
+		// TODO Auto-generated method stub
+		String hql = " from HwStudyTjInfo as hwtj where hwtj.sendHwInfo.id = "+sendHwId;
+		return sess.createQuery(hql).list();
+	}
+
 }
