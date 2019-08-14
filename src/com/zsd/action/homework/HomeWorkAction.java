@@ -1077,6 +1077,8 @@ public class HomeWorkAction extends DispatchAction {
 		Integer currUserId = CommonTools.getLoginUserId(request);
 		Integer classId = CommonTools.getFinalInteger("classId", request);
 		Integer opt = CommonTools.getFinalInteger("opt", request);//0:首页，1：作业记录页面
+		Integer hwType = CommonTools.getFinalInteger("hwType", request);//作业类型1-家庭作业,2-课后复习,3-课前预习
+		Integer checkStatus = CommonTools.getFinalInteger("checkStatus", request);//检查状态（0:未检查，1:已检查）
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "noInfo";
 		String sDate = CommonTools.getFinalStr("sDate", request);
@@ -1098,7 +1100,7 @@ public class HomeWorkAction extends DispatchAction {
 		}else{
 			sDate = eDate = CurrentTime.getStringDate();
 		}
-		List<SendHwInfo> shList = swm.listPageInfoByOpt(currUserId, 0, classId, -1, 0, -1,sDate, eDate, pageFlag, pageNo, pageSize);
+		List<SendHwInfo> shList = swm.listPageInfoByOpt(currUserId, 0, classId, hwType, checkStatus, -1,sDate, eDate, pageFlag, pageNo, pageSize);
 		if(shList.size() > 0){
 			msg = "success";
 			List<Object> list_d = new ArrayList<Object>();
@@ -1109,17 +1111,17 @@ public class HomeWorkAction extends DispatchAction {
 //				map_d.put("classId", shw.getClassInfo().getId());
 				map_d.put("classInfo", shw.getClassName());
 				map_d.put("endDate", shw.getEndDate());
-				Integer hwType = shw.getHwType();
+				Integer hwType_base = shw.getHwType();
 				String hwTypeChi = "";
-				if(hwType.equals(1)){
+				if(hwType_base.equals(1)){
 					hwTypeChi = "家庭作业";
-				}else if(hwType.equals(2)){
+				}else if(hwType_base.equals(2)){
 					hwTypeChi = "课后复习";
-				}else if(hwType.equals(3)){
+				}else if(hwType_base.equals(3)){
 					hwTypeChi = "课前预习";
 				}
 				map_d.put("hwTitle", shw.getSendDate().substring(0, 10)+hwTypeChi);
-				map_d.put("hwType", hwType);
+				map_d.put("hwType", hwType_base);
 //				map_d.put("loreId", shw.getLoreInfo().getId());
 				map_d.put("loreInfo", shw.getHwTitle());//第一单元:数据的收集和整理
 				List<HwStudyTjInfo> tjList = tjm.listInfoByOpt(shw.getId(), 0, -1, false, 1, 1);
