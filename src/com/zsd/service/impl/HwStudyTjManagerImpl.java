@@ -214,4 +214,12 @@ public class HwStudyTjManagerImpl implements HwStudyTjManager{
 		}
 	}
 
+	@Override
+	public List<HwStudyTjInfo> listInfoByOpt_2(Integer hwType, Integer subId,
+			Integer stuId, Integer comStatus, Integer pageNo, Integer pageSize)
+			throws WEBException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

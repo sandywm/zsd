@@ -7,6 +7,7 @@ import org.hibernate.Session;
 import com.zsd.dao.HwStudyTjDao;
 import com.zsd.module.HwStudyTjInfo;
 import com.zsd.tools.CommonTools;
+import com.zsd.tools.CurrentTime;
 
 @SuppressWarnings("unchecked")
 public class HwStudyTjDaoImpl implements HwStudyTjDao{
@@ -139,6 +140,33 @@ public class HwStudyTjDaoImpl implements HwStudyTjDao{
 		// TODO Auto-generated method stub
 		String hql = " from HwStudyTjInfo as hwtj where hwtj.sendHwInfo.id = "+sendHwId + " and hwtj.user.id = "+stuId;
 		return sess.createQuery(hql).list();
+	}
+
+	@Override
+	public List<HwStudyTjInfo> findPageInfoByOpt_2(Session sess,
+			Integer hwType, Integer subId, Integer stuId, Integer comStatus,
+			Integer pageNo, Integer pageSize) {
+		// TODO Auto-generated method stub
+		String hql = " from HwStudyTjInfo as hwtj where 1 = 1";
+		if(hwType > 0){
+			hql += " and hwtj.sendHwInfo.hwType = "+hwType;
+		}
+		if(subId > 0){
+			hql += " and hwtj.sendHwInfo.subject.id = "+subId;
+		}
+		if(stuId > 0){
+			hql += " and hwtj.user.id = "+stuId;
+		}
+		if(comStatus >= 0){
+			hql += " and hwtj.comStatus = "+comStatus;
+		}
+		hql += " and substring(hwtj.sendHwInfo.sendDate,1,10) < '"+CurrentTime.getStringDate()+"'";
+		hql += " order by hwtj.sendHwInfo.sendDate desc";
+		int offset = (pageNo - 1) * pageSize;
+		if (offset < 0) {
+			offset = 0;
+		}
+		return sess.createQuery(hql).setFirstResult(offset).setMaxResults(pageSize).list();
 	}
 
 }

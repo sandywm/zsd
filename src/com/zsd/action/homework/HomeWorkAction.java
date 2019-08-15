@@ -1987,7 +1987,7 @@ public class HomeWorkAction extends DispatchAction {
 		HwStudyTjManager tjm = (HwStudyTjManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_TJ_INFO);
 		HwStudyDetailManager hsdm = (HwStudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_DETAIL_INFO);
 		Integer currUserId = CommonTools.getLoginUserId(request);
-		String classIdStr = CommonTools.getFinalStr("classIdStr", request);//多个逗号隔开
+		String classIdStr = CommonTools.getFinalStr("classId", request);//多个逗号隔开
 		Integer hwType = CommonTools.getFinalInteger("hwType", request);//作业类型1-家庭作业,2-课后复习,3-课前预习
 		Integer loreId = CommonTools.getFinalInteger("loreId", request);//之前选中的的知识点编号
 		String lqIdStr = CommonTools.getFinalStr("lqId", request);//多个逗号隔开
@@ -2495,8 +2495,9 @@ public class HomeWorkAction extends DispatchAction {
 		String msg = "error";
 		String currDate = CurrentTime.getStringDate();
 		//step1:获取今日作业
-//		tjm.listInfoByOpt_1(0, 0, currUserId, comStatus, currDate, currDate, false, 0, 0)
+		List<HwStudyTjInfo> tjList_1 = tjm.listInfoByOpt_1(0, 0, currUserId, -1, currDate, currDate, false, 0, 0);
 		//step2:获取历史作业
+		
 		return null;
 	}
 }

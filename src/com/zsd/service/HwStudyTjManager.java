@@ -112,4 +112,19 @@ public interface HwStudyTjManager {
 	 * @throws WEBException
 	 */
 	HwStudyTjInfo getEntityById(Integer tjId) throws WEBException;
+	
+	/**
+	 * 获取今天以前的指定学生的历史作业记录
+	 * @author wm
+	 * @date 2019-8-15 下午05:12:33
+	 * @param hwType
+	 * @param subId
+	 * @param stuId
+	 * @param comStatus
+	 * @param pageNo
+	 * @param pageSize
+	 * @return
+	 * @throws WEBException
+	 */
+	List<HwStudyTjInfo> listInfoByOpt_2(Integer hwType,Integer subId,Integer stuId,Integer comStatus,Integer pageNo,Integer pageSize) throws WEBException;
 }
