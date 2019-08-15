@@ -1034,7 +1034,7 @@ public class HomeWorkAction extends DispatchAction {
 					List<Object> list_a1 = new ArrayList<Object>();
 					for(int j = 0 ; j < classArr.length ; j++){
 						Map<String,Object> map_d1 = new HashMap<String,Object>();
-						map_d1.put("className", classArr[j]);
+						map_d1.put("cName", classArr[j]);
 						map_d1.put("classId", classIdArr[j]);
 						//发送老师取0的话，有可能是临时老师发布的作业
 						if(swm.listPageInfoByOpt(0, subId, Integer.parseInt(classIdArr[j]), hwType, 0, 0, "", "", false, 0, 0).size() > 0){
@@ -2494,13 +2494,28 @@ public class HomeWorkAction extends DispatchAction {
 		LoreQuestionManager lqm = (LoreQuestionManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
 		Integer currUserId = CommonTools.getLoginUserId(request);
 		Integer pageNo = CommonTools.getFinalInteger("pageNo", request);
+		Integer pageSize = CommonTools.getFinalInteger("pageSize", request);
+		if(pageSize.equals(0)){
+			pageSize = 10;
+		}
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "error";
+		
 		String currDate = CurrentTime.getStringDate();
 		//step1:获取今日作业
 		List<HwStudyTjInfo> tjList_1 = tjm.listInfoByOpt_1(0, 0, currUserId, -1, currDate, currDate, false, 0, 0);
+		if(tjList_1.size() > 0){
+			for(HwStudyTjInfo tj : tjList_1){
+				
+			}
+		}
 		//step2:获取历史作业
-//		List<HwStudyTjInfo> tjList_2 = tjm.listInfoByOpt_2(0, 0, currUserId, -1, pageNo, pageSize);
+		List<HwStudyTjInfo> tjList_2 = tjm.listInfoByOpt_2(0, 0, currUserId, -1, pageNo, pageSize);
+		if(tjList_2.size() > 0){
+			for(HwStudyTjInfo tj : tjList_2){
+				
+			}
+		}
 		return null;
 	}
 }
