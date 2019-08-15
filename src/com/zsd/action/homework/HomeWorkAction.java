@@ -1113,6 +1113,8 @@ public class HomeWorkAction extends DispatchAction {
 				map_d.put("hwTitle", shw.getHwTitle());
 				map_d.put("hwType", shw.getHwType());
 				map_d.put("loreInfo", shw.getLoreInfo().getLoreName());//第一单元:数据的收集和整理
+				map_d.put("checkStatus", shw.getCheckStatus());//检查状态(1:未检查，2:已检查)
+				map_d.put("checkTime", shw.getCheckTime());
 				List<HwStudyTjInfo> tjList = tjm.listInfoByOpt(shw.getId(), 0, -1, false, 1, 1);
 				Integer zsComNum = 0;//按时完成
 				Integer bzComNum = 0;//补做完成
