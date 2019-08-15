@@ -219,7 +219,17 @@ public class HwStudyTjManagerImpl implements HwStudyTjManager{
 			Integer stuId, Integer comStatus, Integer pageNo, Integer pageSize)
 			throws WEBException {
 		// TODO Auto-generated method stub
-		return null;
+		try {
+			hstjDao = (HwStudyTjDao) DaoFactory.instance(null).getDao(Constants.DAO_HW_STUDY_TJ_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return hstjDao.findPageInfoByOpt_2(sess, hwType, subId, stuId, comStatus, pageNo, pageSize);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new WEBException("获取今天以前的指定学生的历史作业记录出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
 	}
 
 }

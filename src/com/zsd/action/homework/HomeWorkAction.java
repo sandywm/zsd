@@ -2491,13 +2491,14 @@ public class HomeWorkAction extends DispatchAction {
 		TeaQueManager tqm = (TeaQueManager) AppFactory.instance(null).getApp(Constants.WEB_TEA_QUE_INFO);
 		LoreQuestionManager lqm = (LoreQuestionManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
 		Integer currUserId = CommonTools.getLoginUserId(request);
+		Integer pageNo = CommonTools.getFinalInteger("pageNo", request);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "error";
 		String currDate = CurrentTime.getStringDate();
 		//step1:获取今日作业
 		List<HwStudyTjInfo> tjList_1 = tjm.listInfoByOpt_1(0, 0, currUserId, -1, currDate, currDate, false, 0, 0);
 		//step2:获取历史作业
-		
+//		List<HwStudyTjInfo> tjList_2 = tjm.listInfoByOpt_2(0, 0, currUserId, -1, pageNo, pageSize);
 		return null;
 	}
 }

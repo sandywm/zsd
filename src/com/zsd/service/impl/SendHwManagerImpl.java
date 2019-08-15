@@ -36,7 +36,7 @@ public class SendHwManagerImpl implements SendHwManager{
 		try {
 			uDao = (UserDao) DaoFactory.instance(null).getDao(Constants.DAO_USER_INFO);
 			cDao = (ClassInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_CLASS_INFO);
-			lDao = (LoreInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_USER_INFO);
+			lDao = (LoreInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_LORE_INFO);
 			sDao = (SubjectDao) DaoFactory.instance(null).getDao(Constants.DAO_SUBJECT_INFO);
 			shwDao = (SendHwDao) DaoFactory.instance(null).getDao(Constants.DAO_SEND_HW_INFO);
 			Session sess = HibernateUtil.currentSession();

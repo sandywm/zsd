@@ -117,10 +117,10 @@ public interface HwStudyTjManager {
 	 * 获取今天以前的指定学生的历史作业记录
 	 * @author wm
 	 * @date 2019-8-15 下午05:12:33
-	 * @param hwType
-	 * @param subId
-	 * @param stuId
-	 * @param comStatus
+	 * @param hwType 作业类型(0-全部,1-家庭作业,2-课后复习,3-课前预习)
+	 * @param subId 学科编号(0表示全部)
+	 * @param stuId 学生编号
+	 * @param comStatus 完成状态（-1表示全部，0-未完成，1-按时完成，2-补做完成）
 	 * @param pageNo
 	 * @param pageSize
 	 * @return
