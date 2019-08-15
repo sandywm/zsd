@@ -79,11 +79,14 @@ public class HwStudyTjDaoImpl implements HwStudyTjDao{
 	}
 
 	@Override
-	public List<HwStudyTjInfo> findPageInfoByOpt_1(Session sess, Integer subId,
+	public List<HwStudyTjInfo> findPageInfoByOpt_1(Session sess, Integer hwType,Integer subId,
 			Integer stuId, Integer comStatus, String sDate, String eDate,
 			boolean pageFlag, Integer pageNo, Integer pageSize) {
 		// TODO Auto-generated method stub
 		String hql = " from HwStudyTjInfo as hwtj where 1 = 1";
+		if(hwType > 0){
+			hql += " and hwtj.sendHwInfo.hwType = "+hwType;
+		}
 		if(subId > 0){
 			hql += " and hwtj.sendHwInfo.subject.id = "+subId;
 		}
@@ -108,10 +111,13 @@ public class HwStudyTjDaoImpl implements HwStudyTjDao{
 	}
 
 	@Override
-	public Integer getCountByOpt_1(Session sess, Integer subId, Integer stuId,
+	public Integer getCountByOpt_1(Session sess, Integer hwType,Integer subId, Integer stuId,
 			Integer comStatus, String sDate, String eDate) {
 		// TODO Auto-generated method stub
 		String hql = "select count(hwtj.id) from HwStudyTjInfo as hwtj where 1 = 1";
+		if(hwType > 0){
+			hql += " and hwtj.sendHwInfo.hwType = "+hwType;
+		}
 		if(subId > 0){
 			hql += " and hwtj.sendHwInfo.subject.id = "+subId;
 		}
@@ -129,9 +135,9 @@ public class HwStudyTjDaoImpl implements HwStudyTjDao{
 	}
 
 	@Override
-	public List<HwStudyTjInfo> findInfoBySendHwId(Session sess, Integer sendHwId) {
+	public List<HwStudyTjInfo> findInfoBySendHwId(Session sess, Integer sendHwId,Integer stuId) {
 		// TODO Auto-generated method stub
-		String hql = " from HwStudyTjInfo as hwtj where hwtj.sendHwInfo.id = "+sendHwId;
+		String hql = " from HwStudyTjInfo as hwtj where hwtj.sendHwInfo.id = "+sendHwId + " and hwtj.user.id = "+stuId;
 		return sess.createQuery(hql).list();
 	}
 

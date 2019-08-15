@@ -41,7 +41,7 @@ public class SendHwDaoImpl implements SendHwDao{
 		// TODO Auto-generated method stub
 		String hql = " from SendHwInfo as shw where 1=1";
 		if(!sDate.equals("") && !eDate.equals("")){
-			hql += " and substring(shw.sendDate,1,10) >= '"+ sDate + "' and substring(shw.sendDate,1,10) >= '"+ eDate + "'";
+			hql += " and substring(shw.sendDate,1,10) >= '"+ sDate + "' and substring(shw.sendDate,1,10) <= '"+ eDate + "'";
 		}
 		if(sendUserId > 0){
 			hql += " and shw.user.id = "+sendUserId;
@@ -77,7 +77,7 @@ public class SendHwDaoImpl implements SendHwDao{
 		// TODO Auto-generated method stub
 		String hql = "select count(shw.id) from SendHwInfo as shw where 1=1";
 		if(!sDate.equals("") && !eDate.equals("")){
-			hql += " and substring(shw.sendDate,1,10) >= '"+ sDate + "' and substring(shw.sendDate,1,10) >= '"+ eDate + "'";
+			hql += " and substring(shw.sendDate,1,10) >= '"+ sDate + "' and substring(shw.sendDate,1,10) <= '"+ eDate + "'";
 		}
 		if(sendUserId > 0){
 			hql += " and shw.user.id = "+sendUserId;

@@ -68,6 +68,7 @@ public interface HwStudyTjDao {
 	 * @author wm
 	 * @date 2019-8-13 上午11:07:35
 	 * @param sess
+	 * @param hwType 作业类型(0-全部,1-家庭作业,2-课后复习,3-课前预习)
 	 * @param subId 学科编号(0表示全部)
 	 * @param stuId 学生编号
 	 * @param comStatus 完成状态（-1表示全部，0-未完成，1-按时完成，2-补做完成）
@@ -78,13 +79,15 @@ public interface HwStudyTjDao {
 	 * @param pageSize
 	 * @return
 	 */
-	List<HwStudyTjInfo> findPageInfoByOpt_1(Session sess,Integer subId,Integer stuId,Integer comStatus,String sDate,String eDate,boolean pageFlag,Integer pageNo,Integer pageSize);
+	List<HwStudyTjInfo> findPageInfoByOpt_1(Session sess,Integer hwType,Integer subId,Integer stuId,Integer comStatus,String sDate,String eDate,
+			boolean pageFlag,Integer pageNo,Integer pageSize);
 	
 	/**
 	 * 根据条件获取指定学生家庭作业记录条数
 	 * @author wm
 	 * @date 2019-8-13 上午11:09:04
 	 * @param sess
+	 * @param hwType 作业类型(0-全部,1-家庭作业,2-课后复习,3-课前预习)
 	 * @param subId 学科编号(0表示全部)
 	 * @param stuId 学生编号
 	 * @param comStatus 完成状态（-1表示全部，0-未完成，1-按时完成，2-补做完成）
@@ -92,16 +95,17 @@ public interface HwStudyTjDao {
 	 * @param eDate 结束时间(针对发送时间)
 	 * @return
 	 */
-	Integer getCountByOpt_1(Session sess,Integer subId,Integer stuId,Integer comStatus,String sDate,String eDate);
+	Integer getCountByOpt_1(Session sess,Integer hwType,Integer subId,Integer stuId,Integer comStatus,String sDate,String eDate);
 	
 	/**
-	 * 根据发送作业编号获取家庭作业记录
+	 * 根据发送作业编号、学生编号获取家庭作业记录
 	 * @author wm
 	 * @date 2019-8-13 上午11:26:28
 	 * @param sess
 	 * @param sendHwId 发送作业编号
+	 * @param stuId 学生编号
 	 * @return
 	 */
-	List<HwStudyTjInfo> findInfoBySendHwId(Session sess,Integer sendHwId);
+	List<HwStudyTjInfo> findInfoBySendHwId(Session sess,Integer sendHwId,Integer stuId);
 	
 }
