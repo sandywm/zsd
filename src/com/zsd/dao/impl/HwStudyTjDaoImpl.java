@@ -97,7 +97,7 @@ public class HwStudyTjDaoImpl implements HwStudyTjDao{
 			hql += " and hwtj.comStatus = "+comStatus;
 		}
 		if(!sDate.equals("") && !eDate.equals("")){
-			hql += " and substring(hwtj.sendHwInfo.sendDate,1,10) >= '"+sDate+"' and substring(hwtj.sendHwInfo.sendDate,1,10) >= '"+eDate+"'";
+			hql += " and substring(hwtj.sendHwInfo.sendDate,1,10) >= '"+sDate+"' and substring(hwtj.sendHwInfo.sendDate,1,10) <= '"+eDate+"'";
 		}
 		hql += " order by hwtj.sendHwInfo.sendDate desc";
 		if(pageFlag){
@@ -128,7 +128,7 @@ public class HwStudyTjDaoImpl implements HwStudyTjDao{
 			hql += " and hwtj.comStatus = "+comStatus;
 		}
 		if(!sDate.equals("") && !eDate.equals("")){
-			hql += " and substring(hwtj.sendHwInfo.sendDate,1,10) >= '"+sDate+"' and substring(hwtj.sendHwInfo.sendDate,1,10) >= '"+eDate+"'";
+			hql += " and substring(hwtj.sendHwInfo.sendDate,1,10) >= '"+sDate+"' and substring(hwtj.sendHwInfo.sendDate,1,10) <= '"+eDate+"'";
 		}
 		Object countObj = sess.createQuery(hql).uniqueResult();
 		return CommonTools.longToInt(countObj);

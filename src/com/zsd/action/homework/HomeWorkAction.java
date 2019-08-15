@@ -2484,6 +2484,7 @@ public class HomeWorkAction extends DispatchAction {
 	public ActionForward getSelfHwData(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
+		SendHwManager swm = (SendHwManager)AppFactory.instance(null).getApp(Constants.WEB_SEND_HW_INFO);
 		HwStudyTjManager tjm = (HwStudyTjManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_TJ_INFO);
 		HwStudyDetailManager hsdm = (HwStudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_DETAIL_INFO);
 		HwQueManager hqm = (HwQueManager) AppFactory.instance(null).getApp(Constants.WEB_HW_QUE_INFO);
@@ -2492,6 +2493,10 @@ public class HomeWorkAction extends DispatchAction {
 		Integer currUserId = CommonTools.getLoginUserId(request);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "error";
+		String currDate = CurrentTime.getStringDate();
+		//step1:获取今日作业
+//		tjm.listInfoByOpt_1(0, 0, currUserId, comStatus, currDate, currDate, false, 0, 0)
+		//step2:获取历史作业
 		return null;
 	}
 }
