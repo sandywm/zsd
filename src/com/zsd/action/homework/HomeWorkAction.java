@@ -2053,7 +2053,7 @@ public class HomeWorkAction extends DispatchAction {
 						String gradeName = Convert.dateConvertGradeName(buildeClassDate);//当前所在的年级
 						String className = gradeName+c.getClassName();
 						//step:1增加指定班级的发送家庭作业记录
-						Integer hwSendId = swm.addSendHw(currUserId, CurrentTime.getStringDate()+hwTypeChi, loreId, classId, className, subId, endDate, hwType, sysQueIdArr, hwQueIdArr, teaQueIdArr, 0, traceStatus);
+						Integer hwSendId = swm.addSendHw(currUserId, CurrentTime.getStringDate().substring(5, 10)+hwTypeChi, loreId, classId, className, subId, endDate, hwType, sysQueIdArr, hwQueIdArr, teaQueIdArr, 0, traceStatus);
 						if(hwSendId > 0){
 							//获取该班级所有学生
 							List<UserClassInfo> ucList = ucm.listUcInfoByOpt(classId, 2, 1, 10000);
