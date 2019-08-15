@@ -35,7 +35,9 @@ import com.zsd.module.HwStudyDetailInfo;
 import com.zsd.module.HwStudyTjInfo;
 import com.zsd.module.LoreInfo;
 import com.zsd.module.LoreQuestion;
+import com.zsd.module.LoreQuestionSubInfo;
 import com.zsd.module.SendHwInfo;
+import com.zsd.module.StudyMapInfo;
 import com.zsd.module.TeaQueInfo;
 import com.zsd.module.User;
 import com.zsd.module.UserClassInfo;
@@ -53,9 +55,9 @@ import com.zsd.service.HwStudyTjManager;
 import com.zsd.service.LoreInfoManager;
 import com.zsd.service.LoreQuestionManager;
 import com.zsd.service.SendHwManager;
+import com.zsd.service.StudyMapManager;
 import com.zsd.service.TeaQueManager;
 import com.zsd.service.UserClassInfoManager;
-import com.zsd.service.UserManager;
 import com.zsd.tools.CommonTools;
 import com.zsd.tools.Convert;
 import com.zsd.tools.CurrentTime;
@@ -2511,6 +2513,17 @@ public class HomeWorkAction extends DispatchAction {
 					map_d.put("subName", hw.getSubject().getSubName());
 					map_d.put("teaName", hw.getUser().getRealName());
 					map_d.put("comStatus", tj.getComStatus());//作业完成状态0-未完成，1-按时完成，2-补做完成
+					Integer hwType = hw.getHwType();
+					String hwTypeChi = "";
+					if(hwType.equals(1)){
+						hwTypeChi = "家庭作业";
+					}else if(hwType.equals(2)){
+						hwTypeChi = "课后复习";
+					}else if(hwType.equals(3)){
+						hwTypeChi = "课前预习";
+					}
+					map_d.put("hwType", hwType);//课前预习会进入听说读写页面，完成后再进入题库页面
+					map_d.put("hwTypeChi", hwTypeChi);
 					list_d_1.add(map_d);
 				}
 			}
@@ -2538,13 +2551,209 @@ public class HomeWorkAction extends DispatchAction {
 					}else if(hwType.equals(3)){
 						hwTypeChi = "课前预习";
 					}
-					map_d.put("hwType", hwTypeChi);
+					map_d.put("hwType", hwType);//课前预习会进入听说读写页面，完成后再进入题库页面
+					map_d.put("hwTypeChi", hwTypeChi);
 					list_d_2.add(map_d);
 				}
 			}
 			map.put("preHwList", list_d_2);
 		}
 		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 获取听说读写内容(课前预习需要先进入)
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getSourceDetail(ActionMapping mapping ,ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		HwStudyTjManager tjm = (HwStudyTjManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_TJ_INFO);
+		LoreInfoManager lm = (LoreInfoManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
+		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
+		StudyMapManager smm = (StudyMapManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_MAP_INFO);
+		Integer tjId = CommonTools.getFinalInteger("tjId", request);
+		Integer currUserId = CommonTools.getLoginUserId(request);
+		String loreTypeName = Transcode.unescape_new1("loreTypeName", request);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "error";
+		if(tjId > 0 && currUserId > 0){
+			HwStudyTjInfo tj = tjm.getEntityById(tjId);
+			if(tj != null){
+				Integer loreId = tj.getSendHwInfo().getLoreInfo().getId();//发布家庭作业时的知识点编号
+				Integer quoteLoreId = lm.getEntityById(loreId).getMainLoreId();
+				List<LoreQuestion> lqList = lqm.listInfoByLoreId(quoteLoreId, loreTypeName, 0);
+				if(lqList.size() > 0){
+					msg = "success";
+					List<StudyMapInfo> smList = smm.listInfoByOpt(currUserId, loreId);
+					if(smList.size() > 0){//存在学习记录
+						StudyMapInfo sm = smList.get(0);
+						Integer currStep = sm.getCurrStep();
+						if(currStep.equals(0)){
+							if(loreTypeName.equals("知识讲解")){
+								smm.updateStepById(sm.getId(), 1);
+							}else{
+								msg = "zsjjNotStart";
+							}
+						}else if(currStep.equals(1)){
+							if(loreTypeName.equals("点拨指导")){
+								smm.updateStepById(sm.getId(), 2);
+							}else if(loreTypeName.equals("知识讲解")){
+								//知识讲解能点开，但是不更新层数
+							}else{
+								msg = "dbzdNotStart";
+							}
+						}else if(currStep.equals(2)){
+							if(loreTypeName.equals("知识清单")){
+								smm.updateStepById(sm.getId(), 3);
+							}else if(loreTypeName.equals("知识讲解") || loreTypeName.equals("点拨指导")){
+								//知识讲解,点拨指导都能点开，但是不更新层数
+							}else{//解题示范不能点开
+								msg = "zsqdNotStart";
+							}
+						}else if(currStep.equals(3)){
+							if(loreTypeName.equals("解题示范")){
+								smm.updateStepById(sm.getId(), 4);
+							}
+							//其他都能打开
+						}
+					}else{
+						smm.addSM(currUserId, loreId, 1);
+					}
+					if(msg.equals("success")){
+						if(loreTypeName.equals("知识讲解")){
+							String sourceDetail = lqList.get(0).getQueAnswer();
+							if(!sourceDetail.equals("")){
+								map.put("sourceDetail", sourceDetail);
+							}else{
+								msg = "noInfo";
+							}
+						}else if(loreTypeName.equals("点拨指导") || loreTypeName.equals("知识清单")){
+							Integer lqId = lqList.get(0).getId();
+							List<LoreQuestionSubInfo> lqsList = lqm.listLQSInfoByLqId(lqId,"");
+							if(lqsList.size() > 0){
+								List<Object> list_d = new ArrayList<Object>();
+								for(LoreQuestionSubInfo lqs : lqsList){
+									String loreType = lqs.getLoreTypeName();
+									Map<String,Object> map_d = new HashMap<String,Object>();
+									map_d.put("loreType", loreType);
+									map_d.put("lqsTitle", lqs.getLqsTitle());
+									map_d.put("lqsContent", lqs.getLqsContent());
+									list_d.add(map_d);
+								}
+								map.put("sourceDetailList", list_d);
+							}else{
+								msg = "noInfo";
+							}
+						}else if(loreTypeName.equals("解题示范")){
+							List<Object> list_d = new ArrayList<Object>();
+							for(LoreQuestion lq : lqList){
+								Map<String,Object> map_d = new HashMap<String,Object>();
+								map_d.put("lqId", lq.getId());
+								map_d.put("queTitle", lq.getQueTitle());
+								map_d.put("queSub", lq.getQueSub());
+								map_d.put("queAnswer", lq.getQueAnswer());
+								map_d.put("queResolution", lq.getQueResolution());
+								list_d.add(map_d);
+							}
+							map.put("sourceDetailList", list_d);
+						}
+					}
+				}
+			}
+		}
+		map.put("result", msg);
+		if(msg.equals("success")){
+			map.put("tjId", tjId);
+		}
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 获取作业题库列表数据
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getHwQuestion(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		HwStudyDetailManager hsdm = (HwStudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_DETAIL_INFO);
+		HwQueManager hqm = (HwQueManager) AppFactory.instance(null).getApp(Constants.WEB_HW_QUE_INFO);
+		TeaQueManager tqm = (TeaQueManager) AppFactory.instance(null).getApp(Constants.WEB_TEA_QUE_INFO);
+		LoreQuestionManager lqm = (LoreQuestionManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
+		Integer tjId = CommonTools.getFinalInteger("tjId", request);
+		Integer currUserId = CommonTools.getLoginUserId(request);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "error";
+		if(tjId > 0 && currUserId > 0){
+			List<HwStudyDetailInfo> hsdList = hsdm.listInfoByOpt(0, tjId, 0, "");
+			if (hsdList.size() > 0) {
+				msg = "success";
+				for(HwStudyDetailInfo hsd : hsdList){
+					Map<String,Object> map_d = new HashMap<String,Object>();
+					String queArea = hsd.getQueArea();//hw,sys,tea
+					Integer queId = hsd.getQueId();
+					map_d.put("lqId", queId);
+					map_d.put("queArea", queArea);
+					String myAnswer = hsd.getMyAnswer();
+					Integer result = hsd.getResult();
+					if(queArea.equals("hw")){//没有填空题和问答题
+						HwQueInfo hq = hqm.getEntityById(queId);
+						map_d.put("queSub", hq.getSubject());
+						map_d.put("lqType", hq.getQueType());
+						if(result >= 0){//做完题
+							map_d.put("myAnswer", myAnswer);
+							map_d.put("realAnswer", hq.getAnswer());
+							map_d.put("lqResolution", hq.getResolution());
+						}
+						map_d.put("result", result);//-1：未做,0:错,1:对
+					}else if(queArea.equals("sys")){
+						LoreQuestion lq = lqm.getEntityByLqId(queId);
+						map_d.put("queSub", lq.getQueSub());
+						map_d.put("lqType", lq.getQueType());
+						map_d.put("answerA", lq.getA());
+						map_d.put("answerB", lq.getB());
+						map_d.put("answerC", lq.getC());
+						map_d.put("answerD", lq.getD());
+						map_d.put("answerE", lq.getE());
+						map_d.put("answerF", lq.getF());
+						if(result >= 0){//做完题后才出正确答案
+							map_d.put("myAnswer", myAnswer);
+							map_d.put("realAnswer", lq.getQueAnswer());
+							map_d.put("lqResolution", lq.getQueResolution());
+						}
+						map_d.put("result", result);//-1：未做,0:错,1:对
+					}else if(queArea.equals("tea")){
+						TeaQueInfo tq = tqm.getEntityById(queId);
+						map_d.put("queSub", tq.getQueSub());
+						map_d.put("lqType", tq.getQueType());
+						if(result >= 0){//做完题后才出正确答案
+							map_d.put("myAnswer", myAnswer);
+							map_d.put("realAnswer", tq.getQueAnswer());
+							map_d.put("lqResolution", tq.getQueResolution());
+						}
+						map_d.put("result", result);//-1：未做,0:错,1:对
+					}
+				}
+			}else{
+				msg = "noInfo";
+			}
+		}
+		map.put("result", msg);
+		if(msg.equals("success")){
+			map.put("tjId", tjId);
+		}
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}

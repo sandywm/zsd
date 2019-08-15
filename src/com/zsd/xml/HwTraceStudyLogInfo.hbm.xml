@@ -10,9 +10,9 @@
             <column name="id" />
             <generator class="native" />
         </id>
-        <many-to-one name="sendHwInfo" class="com.zsd.module.SendHwInfo" lazy="false">
-            <column name="hw_send_id" not-null="true">
-                <comment>发送家庭作业编号</comment>
+        <many-to-one name="hwStudyTjInfo" class="com.zsd.module.HwStudyTjInfo" lazy="false">
+            <column name="hw_tj_id" not-null="true">
+                <comment>家庭作业统计编号</comment>
             </column>
         </many-to-one>
         <many-to-one name="user" class="com.zsd.module.User" lazy="false">

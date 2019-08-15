@@ -13,7 +13,7 @@ public class HwTraceStudyLogInfo implements java.io.Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	private Integer id;
-	private SendHwInfo sendHwInfo;
+	private HwStudyTjInfo hwStudyTjInfo;
 	private User user;
 	private LoreInfo loreInfo;
 	private Integer access;
@@ -34,11 +34,11 @@ public class HwTraceStudyLogInfo implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public HwTraceStudyLogInfo(SendHwInfo sendHwInfo, User user,LoreInfo loreInfo,
+	public HwTraceStudyLogInfo(HwStudyTjInfo hwStudyTjInfo, User user,LoreInfo loreInfo,
 			Integer access, String addTime, Integer step, Integer stepComplete,
 			Integer guideStatus, Integer isFinish, String sysAssess,
 			String teaAssess, Integer taskNumber, Integer finalScore) {
-		this.sendHwInfo = sendHwInfo;
+		this.hwStudyTjInfo = hwStudyTjInfo;
 		this.user = user;
 		this.loreInfo = loreInfo;
 		this.access = access;
@@ -62,13 +62,13 @@ public class HwTraceStudyLogInfo implements java.io.Serializable {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-
-	public SendHwInfo getSendHwInfo() {
-		return this.sendHwInfo;
+	
+	public HwStudyTjInfo getHwStudyTjInfo() {
+		return hwStudyTjInfo;
 	}
 
-	public void setSendHwInfo(SendHwInfo sendHwInfo) {
-		this.sendHwInfo = sendHwInfo;
+	public void setHwStudyTjInfo(HwStudyTjInfo hwStudyTjInfo) {
+		this.hwStudyTjInfo = hwStudyTjInfo;
 	}
 
 	public User getUser() {
