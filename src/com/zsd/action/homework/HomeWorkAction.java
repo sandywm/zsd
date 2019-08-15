@@ -2486,12 +2486,7 @@ public class HomeWorkAction extends DispatchAction {
 	public ActionForward getSelfHwData(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
-		SendHwManager swm = (SendHwManager)AppFactory.instance(null).getApp(Constants.WEB_SEND_HW_INFO);
 		HwStudyTjManager tjm = (HwStudyTjManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_TJ_INFO);
-		HwStudyDetailManager hsdm = (HwStudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_DETAIL_INFO);
-		HwQueManager hqm = (HwQueManager) AppFactory.instance(null).getApp(Constants.WEB_HW_QUE_INFO);
-		TeaQueManager tqm = (TeaQueManager) AppFactory.instance(null).getApp(Constants.WEB_TEA_QUE_INFO);
-		LoreQuestionManager lqm = (LoreQuestionManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
 		Integer currUserId = CommonTools.getLoginUserId(request);
 		Integer pageNo = CommonTools.getFinalInteger("pageNo", request);
 		Integer pageSize = CommonTools.getFinalInteger("pageSize", request);
@@ -2500,22 +2495,57 @@ public class HomeWorkAction extends DispatchAction {
 		}
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "error";
-		
 		String currDate = CurrentTime.getStringDate();
-		//step1:获取今日作业
-		List<HwStudyTjInfo> tjList_1 = tjm.listInfoByOpt_1(0, 0, currUserId, -1, currDate, currDate, false, 0, 0);
-		if(tjList_1.size() > 0){
-			for(HwStudyTjInfo tj : tjList_1){
-				
+		if(currUserId > 0){
+			msg = "success";
+			List<Object> list_d_1 = new ArrayList<Object>();
+			List<Object> list_d_2 = new ArrayList<Object>();
+			//step1:获取今日作业
+			List<HwStudyTjInfo> tjList_1 = tjm.listInfoByOpt_1(0, 0, currUserId, -1, currDate, currDate, false, 0, 0);
+			if(tjList_1.size() > 0){
+				for(HwStudyTjInfo tj : tjList_1){
+					Map<String,Object> map_d = new HashMap<String,Object>();
+					SendHwInfo hw = tj.getSendHwInfo();
+					map_d.put("tjId", tj.getId());
+					map_d.put("loreName", hw.getLoreInfo().getLoreName());
+					map_d.put("subName", hw.getSubject().getSubName());
+					map_d.put("teaName", hw.getUser().getRealName());
+					map_d.put("comStatus", tj.getComStatus());//作业完成状态0-未完成，1-按时完成，2-补做完成
+					list_d_1.add(map_d);
+				}
 			}
-		}
-		//step2:获取历史作业
-		List<HwStudyTjInfo> tjList_2 = tjm.listInfoByOpt_2(0, 0, currUserId, -1, pageNo, pageSize);
-		if(tjList_2.size() > 0){
-			for(HwStudyTjInfo tj : tjList_2){
-				
+			map.put("currHwList", list_d_1);
+			//step2:获取历史作业
+			List<HwStudyTjInfo> tjList_2 = tjm.listInfoByOpt_2(0, 0, currUserId, -1, pageNo, pageSize);
+			if(tjList_2.size() > 0){
+				for(HwStudyTjInfo tj : tjList_2){
+					Map<String,Object> map_d = new HashMap<String,Object>();
+					SendHwInfo hw = tj.getSendHwInfo();
+					map_d.put("tjId", tj.getId());
+					map_d.put("loreName", hw.getLoreInfo().getLoreName());
+					map_d.put("sendDate", hw.getSendDate().substring(0, 10));
+					map_d.put("endDate", hw.getEndDate());
+					map_d.put("comStatus", tj.getComStatus());//作业完成状态0-未完成，1-按时完成，2-补做完成
+					map_d.put("comDate", tj.getComDate().substring(0, 10));
+					map_d.put("subName", hw.getSubject().getSubName());
+					map_d.put("teaName", hw.getUser().getRealName());
+					Integer hwType = hw.getHwType();
+					String hwTypeChi = "";
+					if(hwType.equals(1)){
+						hwTypeChi = "家庭作业";
+					}else if(hwType.equals(2)){
+						hwTypeChi = "课后复习";
+					}else if(hwType.equals(3)){
+						hwTypeChi = "课前预习";
+					}
+					map_d.put("hwType", hwTypeChi);
+					list_d_2.add(map_d);
+				}
 			}
+			map.put("preHwList", list_d_2);
 		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
 }
