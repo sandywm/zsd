@@ -1135,9 +1135,9 @@ public class HomeWorkAction extends DispatchAction {
 				list_d.add(map_d);
 			}
 			map.put("sendHwList", list_d);
-			map.put("sDate", sDate);
-			map.put("eDate", eDate);
 		}
+		map.put("sDate", sDate);
+		map.put("eDate", eDate);
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
 		return null;
