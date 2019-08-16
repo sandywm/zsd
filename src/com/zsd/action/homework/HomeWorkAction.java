@@ -937,7 +937,7 @@ public class HomeWorkAction extends DispatchAction {
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "noInfo";
 		if(currUserId > 0){
-			List<UserClassInfo> ucList = ucm.listTeaInfoByOpt(currUserId, 4);
+			List<UserClassInfo> ucList = ucm.listTeaInfoByOpt(currUserId, Constants.TEA_ROLE_ID);
 			if(ucList.size() > 0){
 				msg = "success";
 				List<Object> list_d = new ArrayList<Object>();
@@ -983,7 +983,7 @@ public class HomeWorkAction extends DispatchAction {
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "noInfo";
 		if(currUserId > 0){
-			List<UserClassInfo> ucList = ucm.listTeaInfoByOpt(currUserId, 4);
+			List<UserClassInfo> ucList = ucm.listTeaInfoByOpt(currUserId, Constants.TEA_ROLE_ID);
 			if(ucList.size() > 0){
 				msg = "success";
 				String gradeInfo = "";//1年级
@@ -1081,6 +1081,7 @@ public class HomeWorkAction extends DispatchAction {
 		Integer opt = CommonTools.getFinalInteger("opt", request);//0:首页，1：作业记录页面
 		Integer hwType = CommonTools.getFinalInteger("hwType", request);//作业类型1-家庭作业,2-课后复习,3-课前预习--默认不传
 		Integer checkStatus = CommonTools.getFinalInteger("checkStatus", request);//检查状态（0:未检查，1:已检查）--默认传-1
+		String status = CommonTools.getFinalStr("status", request);////默认""为正常滑动，其他的时候为返回
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "noInfo";
 		String sDate = CommonTools.getFinalStr("sDate", request);
@@ -1101,6 +1102,10 @@ public class HomeWorkAction extends DispatchAction {
 			}
 		}else{
 			sDate = eDate = CurrentTime.getStringDate();
+		}
+		if(!opt.equals("")){//返回时
+			pageSize = pageNo * pageSize;
+			pageNo = 1;
 		}
 		List<SendHwInfo> shList = swm.listPageInfoByOpt(currUserId, 0, classId, hwType, checkStatus, -1,sDate, eDate, pageFlag, pageNo, pageSize);
 		if(shList.size() > 0){
@@ -1661,7 +1666,7 @@ public class HomeWorkAction extends DispatchAction {
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "noInfo";
 		if(currUserId > 0 && !classIdStr.equals("") && hwType > 0){
-			UserClassInfo uc = ucm.getEntityByOpt(currUserId, 4);
+			UserClassInfo uc = ucm.getEntityByOpt(currUserId, Constants.TEA_ROLE_ID);
 			if(uc != null){
 				msg = "success";
 				Integer subId = uc.getSubjectId();//老师所教的学科
@@ -2001,7 +2006,7 @@ public class HomeWorkAction extends DispatchAction {
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "error";
 		if(currUserId > 0 && !classIdStr.equals("") && hwType > 0 && loreId > 0 && !lqIdStr.equals("")){
-			if(ucm.getEntityByOpt(currUserId, 4) != null){//必须是班内老师才能发送
+			if(ucm.getEntityByOpt(currUserId, Constants.TEA_ROLE_ID) != null){//必须是班内老师才能发送
 				msg = "success";
 				String[] lqIdArr = lqIdStr.split(",");
 				String[] classIdArr = classIdStr.split(",");
@@ -2060,7 +2065,7 @@ public class HomeWorkAction extends DispatchAction {
 						Integer hwSendId = swm.addSendHw(currUserId, CurrentTime.getStringDate().substring(5, 10)+hwTypeChi, loreId, classId, className, subId, endDate, hwType, sysQueIdArr, hwQueIdArr, teaQueIdArr, 0, traceStatus);
 						if(hwSendId > 0){
 							//获取该班级所有学生
-							List<UserClassInfo> ucList = ucm.listUcInfoByOpt(classId, 2, 1, 10000);
+							List<UserClassInfo> ucList = ucm.listUcInfoByOpt(classId, Constants.STU_ROLE_ID, 1, 10000);
 							if(ucList.size() > 0){
 								String stuIdStr = "";
 								for(UserClassInfo uc : ucList){
@@ -2079,6 +2084,39 @@ public class HomeWorkAction extends DispatchAction {
 							}
 						}
 					}
+				}
+			}
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 检查作业
+	 * @author wm
+	 * @date 2019-8-16 上午09:39:47
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward checkHw(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		SendHwManager swm = (SendHwManager)AppFactory.instance(null).getApp(Constants.WEB_SEND_HW_INFO);
+		Integer sendHwId = CommonTools.getFinalInteger("hwSendId", request);
+		Integer currRoleId = CommonTools.getLoginRoleId(request);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "error";
+		if(sendHwId > 0 && currRoleId.equals(Constants.TEA_ROLE_ID)){
+			SendHwInfo hw = swm.getEntityById(sendHwId);
+			if(hw != null){
+				if(hw.getCheckStatus().equals(0)){
+					swm.updateCheckInfoById(sendHwId);
+					msg = "success";
 				}
 			}
 		}
@@ -2132,7 +2170,7 @@ public class HomeWorkAction extends DispatchAction {
 		String msg = "error";
 		Integer stuNum = 0;
 		//获取当前老师所在的班级任课信息
-		Integer subId = ucm.getEntityByOpt(currUserId, 4).getSubjectId();
+		Integer subId = ucm.getEntityByOpt(currUserId, Constants.TEA_ROLE_ID).getSubjectId();
 		//获取指定班级指定时间的作业
 		if(classId > 0 && currUserId > 0 && subId > 0){
 			if(eDate.equals("")){
@@ -2159,7 +2197,7 @@ public class HomeWorkAction extends DispatchAction {
 				msg = "success";
 				Integer i = 0;
 				if(sendHwSize < 7){//有些天没有发送
-					List<UserClassInfo> ucList = ucm.listInfoByOpt(classId, 2);
+					List<UserClassInfo> ucList = ucm.listInfoByOpt(classId, Constants.STU_ROLE_ID);
 					stuNum = ucList.size();
 					if(stuNum > 0){
 						for(UserClassInfo uc : ucList){
@@ -2275,10 +2313,10 @@ public class HomeWorkAction extends DispatchAction {
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "error";
 		//获取当前老师所在的班级任课信息
-		Integer subId = ucm.getEntityByOpt(currUserId, 4).getSubjectId();
+		Integer subId = ucm.getEntityByOpt(currUserId, Constants.TEA_ROLE_ID).getSubjectId();
 		if(subId > 0){
 			//获取指定班级下的学生列表
-			List<UserClassInfo> ucList = ucm.listInfoByOpt(classId, 2);
+			List<UserClassInfo> ucList = ucm.listInfoByOpt(classId, Constants.STU_ROLE_ID);
 			List<Object> list_d = new ArrayList<Object>();
 			Integer i = 0;
 			for(UserClassInfo uc : ucList){
