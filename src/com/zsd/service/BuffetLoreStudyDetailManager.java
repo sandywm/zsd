@@ -97,7 +97,7 @@ public interface BuffetLoreStudyDetailManager {
 	  * 根据学习记录编号获取有无当前知识点指定类型的答题记录
 	  * @author wm
 	  * @date 2019-6-28 下午03:47:08
-	  *@param studyLogId 学习记录编号
+	  * @param studyLogId 学习记录编号
 	  * @param currentLoreId 当前知识典编号
 	  * @param loreTypeName 答题类型
 	  * @return

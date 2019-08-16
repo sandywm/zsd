@@ -1175,35 +1175,33 @@ public class HomeWorkAction extends DispatchAction {
 			SendHwInfo hwInfo = swm.getEntityById(hwSendId);
 			if(hwInfo != null && hwInfo.getUser().getId().equals(currUserId)){
 				msg = "success";
-				Integer hwType = hwInfo.getHwType();
-				String hwTypeChi = "";
-				if(hwType.equals(1)){
-					hwTypeChi = "家庭作业";
-				}else if(hwType.equals(2)){
-					hwTypeChi = "课后复习";
-				}else if(hwType.equals(3)){
-					hwTypeChi = "课前预习";
-				}
-				map.put("hwTitle", hwInfo.getClassName()+hwInfo.getSendDate().substring(0, 10)+hwTypeChi+"作业详情");
+				map.put("hwTitle", hwInfo.getClassName()+hwInfo.getHwTitle()+"作业详情");
 				String endDate = hwInfo.getEndDate().substring(0, 10);
 				if(CurrentTime.compareDate(endDate, currentDate) > 0){
 					map.put("endStatus", "已截止");
 				}else{
 					map.put("endStatus", "正常");
 				}
-				map.put("loreInfo", hwInfo.getHwTitle());//第一单元:数据的收集和整理
-				Integer pageNo = CommonTools.getFinalInteger("pageNo", request);
-				Integer pageSize = CommonTools.getFinalInteger("pageSize", request);
-				List<HwStudyTjInfo> tjList = tjm.listInfoByOpt(hwSendId, 0, -1, true, pageNo, pageSize);
-				List<HwStudyTjInfo> tjList_all = tjm.listInfoByOpt(hwSendId, 0, -1, false, pageNo, pageSize);
-				Integer stuNum = tjList_all.size();
+				map.put("loreInfo", hwInfo.getLoreInfo().getLoreName());//数据的收集和整理
+//				Integer pageNo = CommonTools.getFinalInteger("pageNo", request);
+//				Integer pageSize = CommonTools.getFinalInteger("pageSize", request);
+				List<HwStudyTjInfo> tjList = tjm.listInfoByOpt(hwSendId, 0, -1, false, 0, 0);
+				Integer stuNum = tjList.size();
 				if(stuNum > 0){
 					Integer allScore = 0;
 					Double avgScore = 0.0;
 					Integer zsComNum = 0;//按时完成
 					Integer bzComNum = 0;//补做完成
 					Integer unComNum = 0;//未完成
-					for(HwStudyTjInfo tj :tjList_all){
+					List<Object> list_d = new ArrayList<Object>();
+					for(HwStudyTjInfo tj :tjList){
+						Map<String,Object> map_d = new HashMap<String,Object>();
+						map_d.put("tjId", tj.getId());
+						map_d.put("stuName", tj.getUser().getRealName());
+						map_d.put("hwScore", tj.getHwScore());
+						map_d.put("succNum", tj.getSuccNum());
+						map_d.put("errorNum", tj.getErrorNum());
+						map_d.put("unNum", tj.getAllNum() - tj.getErrorNum() - tj.getSuccNum());
 						allScore += tj.getHwScore();
 						Integer comStatus = tj.getComStatus();
 						if(comStatus.equals(0)){
@@ -1213,28 +1211,14 @@ public class HomeWorkAction extends DispatchAction {
 						}else if(comStatus.equals(2)){
 							bzComNum++;
 						}
+						list_d.add(map_d);
 					}
-					avgScore = Convert.convertInputNumber_2(allScore * 1.0 / stuNum);
+					map.put("stuInfo", list_d);
+					avgScore = Convert.convertInputNumber_5(allScore * 100.0 / stuNum);
 					map.put("avgScore", avgScore);
 					map.put("zsComNum", zsComNum);
 					map.put("bzComNum", bzComNum);
 					map.put("unComNum", unComNum);
-					if(tjList.size() > 0){
-						List<Object> list_d = new ArrayList<Object>();
-						for(HwStudyTjInfo tj :tjList){
-							Map<String,Object> map_d = new HashMap<String,Object>();
-							map_d.put("tjId", tj.getId());
-							map_d.put("stuName", tj.getUser().getRealName());
-							map_d.put("hwScore", tj.getHwScore());
-							map_d.put("succNum", tj.getSuccNum());
-							map_d.put("errorNum", tj.getErrorNum());
-							map_d.put("unNum", tj.getAllNum() - tj.getHwScore() - tj.getSuccNum());
-							list_d.add(map_d);
-						}
-						map.put("stuInfo", list_d);
-					}else{
-						msg = "noInfo";
-					}
 				}else{
 					msg = "noInfo";
 				}
@@ -2805,6 +2789,41 @@ public class HomeWorkAction extends DispatchAction {
 			map.put("tjId", tjId);
 		}
 		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 修改家庭作业做题统计表
+	 * @author wm
+	 * @date 2019-8-16 下午05:18:25
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward updateHwTjStatus(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		HwStudyDetailManager hsdm = (HwStudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_DETAIL_INFO);
+		HwStudyTjManager tjm = (HwStudyTjManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_TJ_INFO);
+		Integer tjId = CommonTools.getFinalInteger("tjId", request);
+		Integer currUserId = CommonTools.getLoginUserId(request);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "error";
+		if(tjId > 0 && currUserId > 0){
+			HwStudyTjInfo tj = tjm.getEntityById(tjId);
+			if(tj != null){
+				if(tj.getUser().getId().equals(currUserId)){
+					Integer allNum = tj.getAllNum();
+					Integer succNum = tj.getSuccNum();
+					if(tj.getAllNum().equals(tj.getSuccNum() + tj.getErrorNum())){//全部做完
+						
+					}
+				}
+			}
+		}
 		return null;
 	}
 	
