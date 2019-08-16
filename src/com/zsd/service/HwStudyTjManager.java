@@ -24,14 +24,12 @@ public interface HwStudyTjManager {
 	 * @date 2019-7-28 上午10:28:44
 	 * @param id
 	 * @param conStatus 完成状态（-1不修改，0-未完成，1-按时完成，2-补做完成）
-	 * @param hwScore 作业得分(0不修改)作业完成时才修改
 	 * @param succNum 正确题数(1增加，0不修改)
 	 * @param errorNum 错误题数(1增加，0不修改)
-	 * @param hwsdAddStatus 自动创建题库标记(-1表示不修改,0：未创建，1：已创建)
 	 * @return
 	 * @throws WEBException
 	 */
-	boolean updateInfoById(Integer id,Integer conStatus,Integer hwScore,Integer succNum,Integer errorNum,Integer hwsdAddStatus) throws WEBException;
+	boolean updateInfoById(Integer id, Integer conStatus,Integer succNum, Integer errorNum) throws WEBException;
 	
 	/**
 	 * 根据条件获取家庭作业统计记录列表

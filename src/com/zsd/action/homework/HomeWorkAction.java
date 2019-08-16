@@ -33,6 +33,7 @@ import com.zsd.module.HwMindRelationInfo;
 import com.zsd.module.HwQueInfo;
 import com.zsd.module.HwStudyDetailInfo;
 import com.zsd.module.HwStudyTjInfo;
+import com.zsd.module.HwTraceStudyLogInfo;
 import com.zsd.module.LoreInfo;
 import com.zsd.module.LoreQuestion;
 import com.zsd.module.LoreQuestionSubInfo;
@@ -41,6 +42,7 @@ import com.zsd.module.StudyMapInfo;
 import com.zsd.module.TeaQueInfo;
 import com.zsd.module.User;
 import com.zsd.module.UserClassInfo;
+import com.zsd.module.json.LoreTreeMenuJson;
 import com.zsd.page.PageConst;
 import com.zsd.service.BuffetAllManager;
 import com.zsd.service.ChapterManager;
@@ -52,6 +54,8 @@ import com.zsd.service.HwMindRelationManager;
 import com.zsd.service.HwQueManager;
 import com.zsd.service.HwStudyDetailManager;
 import com.zsd.service.HwStudyTjManager;
+import com.zsd.service.HwTraceStudyDetailManager;
+import com.zsd.service.HwTraceStudyLogManager;
 import com.zsd.service.LoreInfoManager;
 import com.zsd.service.LoreQuestionManager;
 import com.zsd.service.SendHwManager;
@@ -2793,7 +2797,77 @@ public class HomeWorkAction extends DispatchAction {
 	}
 	
 	/**
-	 * 修改家庭作业做题统计表
+	 * 修改做题信息
+	 * @author wm
+	 * @date 2019-8-16 下午06:34:16
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward updateHwStudyDetail(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		HwStudyTjManager tjm = (HwStudyTjManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_TJ_INFO);
+		HwQueManager hqm = (HwQueManager) AppFactory.instance(null).getApp(Constants.WEB_HW_QUE_INFO);
+		TeaQueManager tqm = (TeaQueManager) AppFactory.instance(null).getApp(Constants.WEB_TEA_QUE_INFO);
+		LoreQuestionManager lqm = (LoreQuestionManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
+		HwStudyDetailManager hsdm = (HwStudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_DETAIL_INFO);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "error";
+		Integer currUserId = CommonTools.getLoginUserId(request);
+		Integer hsdId = CommonTools.getFinalInteger("hsdId", request);
+		Integer tjId = CommonTools.getFinalInteger("tjId", request);
+		String myAnswer = CommonTools.getFinalStr("myAnswer", request);
+		if(hsdId > 0  && tjId > 0 && !myAnswer.equals("")){
+			HwStudyDetailInfo hsd = hsdm.getEntityById(hsdId);
+			if(hsd != null){
+				Integer lqId = hsd.getQueId();
+				String queArea = hsd.getQueArea();//题库范围（hw,sys,tea）
+				HwStudyTjInfo tj = tjm.getEntityById(tjId);
+				if(tj.getUser().getId().equals(currUserId)){
+					if(tj.getComStatus().equals(0)){
+						if(queArea.equals("hw")){
+							HwQueInfo hq = hqm.getEntityById(lqId);
+							if(hq != null){
+								String realAnswer = hq.getAnswer();
+								String lqType = hq.getQueType();
+								Integer result = -1;
+								if(lqType.equals("多选题")){//无序
+									String[] myAnserArray = myAnswer.split(",");
+									String[] realAnswerArray = realAnswer.split(",");
+									String newMyAnswer = CommonTools.arraySort(myAnserArray);//排序后我的答案
+									String newRealAnswer = CommonTools.arraySort(realAnswerArray);//排序后后台正确答案
+									if(newMyAnswer.equals(newRealAnswer)){
+										result = 1;//正确
+									}else{
+										result = 0;//错误
+									}
+								}else{//顺序必须要求一样
+									if(myAnswer.equals(realAnswer)){
+										result = 1;//正确
+									}else{
+										result = 0;//错误
+									}
+								}
+								hsdm.updateInfoById(hsdId, myAnswer, result);
+							}
+						}else if(queArea.equals("sys")){
+							lqm.getEntityByLqId(lqId);
+						}else if(queArea.equals("tea")){
+							tqm.getEntityById(lqId);
+						}
+					}
+				}
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * 修改家庭作业做题统计表完成状态(设置为补做完成或者按时完成)
 	 * @author wm
 	 * @date 2019-8-16 下午05:18:25
 	 * @param mapping
@@ -2806,7 +2880,6 @@ public class HomeWorkAction extends DispatchAction {
 	public ActionForward updateHwTjStatus(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
-		HwStudyDetailManager hsdm = (HwStudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_DETAIL_INFO);
 		HwStudyTjManager tjm = (HwStudyTjManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_TJ_INFO);
 		Integer tjId = CommonTools.getFinalInteger("tjId", request);
 		Integer currUserId = CommonTools.getLoginUserId(request);
@@ -2816,14 +2889,22 @@ public class HomeWorkAction extends DispatchAction {
 			HwStudyTjInfo tj = tjm.getEntityById(tjId);
 			if(tj != null){
 				if(tj.getUser().getId().equals(currUserId)){
-					Integer allNum = tj.getAllNum();
-					Integer succNum = tj.getSuccNum();
-					if(tj.getAllNum().equals(tj.getSuccNum() + tj.getErrorNum())){//全部做完
-						
+					if(tj.getComStatus().equals(0)){
+						if(tj.getAllNum().equals(tj.getSuccNum() + tj.getErrorNum())){//全部做完
+							Integer diffDays = CurrentTime.compareDate(CurrentTime.getStringDate(),tj.getSendHwInfo().getEndDate());
+							Integer comStatus = 2;//补做完成
+							if(diffDays >= 0){//按时完成
+								comStatus = 1;
+							}
+							tjm.updateInfoById(tj.getId(), comStatus, 0, 0);
+							msg = "success";
+						}
 					}
 				}
 			}
 		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
 	
@@ -2831,8 +2912,79 @@ public class HomeWorkAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
 		HwStudyDetailManager hsdm = (HwStudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_DETAIL_INFO);
+		HwTraceStudyLogManager slm = (HwTraceStudyLogManager) AppFactory.instance(null).getApp(Constants.WEB_HW_TRACE_STUDY_LOG_INFO);
+		HwTraceStudyDetailManager sdm = (HwTraceStudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_HW_TRACE_STUDY_DETAIL_INFO);
+		HwStudyTjManager tjm = (HwStudyTjManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_TJ_INFO);
+		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
 		Integer tjId = CommonTools.getFinalInteger("tjId", request);
-		
+		Integer userId = CommonTools.getLoginUserId(request);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String nextLoreIdArray = "";//下级知识典编号数组
+		Integer isFinish = 0;
+		Integer task = 1;//第几个任务数（课后复习任务数）
+		Integer money = Constants.COIN;
+		String loreTaskName = "";
+		String buttonValue = "开始挑战";
+		String path = "";//顺序路线图(诊断时)
+		String pathChi = "";
+		String studyPath = "";//反序路线图(学习时)
+		Integer stepCount = 0;//知识点有多少级
+		Integer loreCount = 0;//有多少知识点
+		String pathType = "diagnosis";//类型:diagnosis--诊断，study--学习
+		String loreTypeName = "针对性诊断";
+		Integer access = -1;
+		String buffetName = "";
+		Integer buffetLorestudyLogId = 0;
+		String loreName = "";
+		String subDetail = "";
+		Integer basicLoreId = 0;
+		String msg = "error";
+		if(userId > 0 && tjId > 0){
+			HwStudyTjInfo tj = tjm.getEntityById(tjId);
+			if(tj != null){
+				Integer sendLoreId = tj.getSendHwInfo().getLoreInfo().getId();//发送作业时的知识点编号
+				basicLoreId = tj.getSendHwInfo().getLoreInfo().getMainLoreId();//通用版知识点编号
+				//获取溯源路线
+				String[] pathArr = CommonTools.getLorePath(sendLoreId, pathType);
+				path =  pathArr[0];
+				pathChi = pathArr[1];
+				LoreTreeMenuJson ltmj = new LoreTreeMenuJson();
+				if(!path.equals("")){
+					stepCount = path.split(":").length;//多少级
+					loreCount = ltmj.getLoreNum(path);//多少个知识点
+				}
+				HwTraceStudyLogInfo sl = slm.getEntityByTjId(tjId);
+				if(sl == null){//没有数据，表示是第一次
+					task = 1;
+					loreTaskName = "针对性诊断";
+					loreTypeName = "针对性诊断";
+					//和知识点做题不同，直接进行第2级答题，第一级为作业题（8-15家庭作业）
+					Integer answerNumber = 0;
+					String[] pathArray = path.split(":");
+					if(pathArray.length == 1){
+						//表示当前知识点没有做关联知识点
+					}else{
+						String[] nextPathArray = pathArray[1].split(",");
+						Integer nextPathLength = nextPathArray.length;
+						buttonValue = "启动溯源";
+						loreTaskName = "1级关联知识点诊断";
+						for(Integer k = 0 ; k < nextPathLength ; k++){
+							String[] nextDetailPathArray = nextPathArray[k].split("\\|");
+							for(Integer l = 0 ; l < nextDetailPathArray.length ; l++){
+								nextLoreIdArray += nextDetailPathArray[l] + ",";
+								Integer quoteLoreId = CommonTools.getQuoteLoreId(Integer.parseInt(nextDetailPathArray[l]));
+								List<LoreQuestion> lqList = lqm.listInfoByLoreId(quoteLoreId, loreTypeName, 0);
+								answerNumber += lqList.size();
+							}
+						}
+						money *= answerNumber;
+						nextLoreIdArray = nextLoreIdArray.substring(0, nextLoreIdArray.length() - 1);
+					}
+				}else{
+					Integer studyLogId = sl.getId();
+				}
+			}
+		}
 		return null;
 	}
 }

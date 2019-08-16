@@ -61,9 +61,7 @@ public class HwStudyTjManagerImpl implements HwStudyTjManager{
 	}
 
 	@Override
-	public boolean updateInfoById(Integer id, Integer conStatus,
-			Integer hwScore, Integer succNum, Integer errorNum,Integer hwsdAddStatus)
-			throws WEBException {
+	public boolean updateInfoById(Integer id, Integer conStatus,Integer succNum, Integer errorNum)throws WEBException {
 		// TODO Auto-generated method stub
 		try {
 			hstjDao = (HwStudyTjDao) DaoFactory.instance(null).getDao(Constants.DAO_HW_STUDY_TJ_INFO);
@@ -94,9 +92,6 @@ public class HwStudyTjManagerImpl implements HwStudyTjManager{
 				}
 				if(errorNum.equals(1)){
 					hwTj.setErrorNum(hwTj.getErrorNum() + 1);
-				}
-				if(hwsdAddStatus.equals(0) || hwsdAddStatus.equals(1)){
-					hwTj.setHwsdAddStatus(hwsdAddStatus);
 				}
 				hstjDao.update(sess, hwTj);
 				tran.commit();
