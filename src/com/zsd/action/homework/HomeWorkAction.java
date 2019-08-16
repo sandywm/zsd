@@ -1081,7 +1081,7 @@ public class HomeWorkAction extends DispatchAction {
 		Integer opt = CommonTools.getFinalInteger("opt", request);//0:首页，1：作业记录页面
 		Integer hwType = CommonTools.getFinalInteger("hwType", request);//作业类型1-家庭作业,2-课后复习,3-课前预习--默认不传
 		Integer checkStatus = CommonTools.getFinalInteger("checkStatus", request);//检查状态（0:未检查，1:已检查）--默认传-1
-		String status = CommonTools.getFinalStr("status", request);////默认""为正常滑动，其他的时候为返回
+		String status = CommonTools.getFinalStr("status", request);//默认""为正常滑动，其他的时候为返回
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "noInfo";
 		String sDate = CommonTools.getFinalStr("sDate", request);
@@ -1103,7 +1103,7 @@ public class HomeWorkAction extends DispatchAction {
 		}else{
 			sDate = eDate = CurrentTime.getStringDate();
 		}
-		if(!opt.equals("")){//返回时
+		if(!status.equals("")){//返回时
 			pageSize = pageNo * pageSize;
 			pageNo = 1;
 		}
