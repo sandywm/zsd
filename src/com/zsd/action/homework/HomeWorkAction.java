@@ -1173,7 +1173,7 @@ public class HomeWorkAction extends DispatchAction {
 		String currentDate = CurrentTime.getStringDate();
 		if(hwSendId > 0){
 			SendHwInfo hwInfo = swm.getEntityById(hwSendId);
-			if(hwInfo != null && hwInfo.getUser().equals(currUserId)){
+			if(hwInfo != null && hwInfo.getUser().getId().equals(currUserId)){
 				msg = "success";
 				Integer hwType = hwInfo.getHwType();
 				String hwTypeChi = "";
@@ -2738,6 +2738,7 @@ public class HomeWorkAction extends DispatchAction {
 			List<HwStudyDetailInfo> hsdList = hsdm.listInfoByOpt(0, tjId, 0, "");
 			if (hsdList.size() > 0) {
 				msg = "success";
+				List<Object> list_d = new ArrayList<Object>();
 				for(HwStudyDetailInfo hsd : hsdList){
 					Map<String,Object> map_d = new HashMap<String,Object>();
 					String queArea = hsd.getQueArea();//hw,sys,tea
@@ -2749,7 +2750,8 @@ public class HomeWorkAction extends DispatchAction {
 					if(queArea.equals("hw")){//没有填空题和问答题
 						HwQueInfo hq = hqm.getEntityById(queId);
 						map_d.put("queSub", hq.getSubject());
-						map_d.put("lqType", hq.getQueType());
+						String lqType = hq.getQueType();
+						map_d.put("lqType", lqType);
 						if(result >= 0){//做完题
 							map_d.put("myAnswer", myAnswer);
 							map_d.put("realAnswer", hq.getAnswer());
@@ -2759,7 +2761,8 @@ public class HomeWorkAction extends DispatchAction {
 					}else if(queArea.equals("sys")){
 						LoreQuestion lq = lqm.getEntityByLqId(queId);
 						map_d.put("queSub", lq.getQueSub());
-						map_d.put("lqType", lq.getQueType());
+						String lqType = lq.getQueType();
+						map_d.put("lqType", lqType);
 						map_d.put("answerA", lq.getA());
 						map_d.put("answerB", lq.getB());
 						map_d.put("answerC", lq.getC());
@@ -2770,12 +2773,19 @@ public class HomeWorkAction extends DispatchAction {
 							map_d.put("myAnswer", myAnswer);
 							map_d.put("realAnswer", lq.getQueAnswer());
 							map_d.put("lqResolution", lq.getQueResolution());
+						}else{
+							if(lqType.equals("单选题") || lqType.equals("多选题") || lqType.equals("判断题") || lqType.equals("填空题") || lqType.equals("问答题")){
+								map_d.put("answerNum", 1);
+							}else{//填空选择题
+								map_d.put("answerNum", lq.getQueAnswer().split(",").length);
+							}
 						}
 						map_d.put("result", result);//-1：未做,0:错,1:对
 					}else if(queArea.equals("tea")){
 						TeaQueInfo tq = tqm.getEntityById(queId);
 						map_d.put("queSub", tq.getQueSub());
-						map_d.put("lqType", tq.getQueType());
+						String lqType = tq.getQueType();
+						map_d.put("lqType", lqType);
 						if(result >= 0){//做完题后才出正确答案
 							map_d.put("myAnswer", myAnswer);
 							map_d.put("realAnswer", tq.getQueAnswer());
@@ -2783,7 +2793,9 @@ public class HomeWorkAction extends DispatchAction {
 						}
 						map_d.put("result", result);//-1：未做,0:错,1:对
 					}
+					list_d.add(map_d);
 				}
+				map.put("hwList", list_d);
 			}else{
 				msg = "noInfo";
 			}
@@ -2793,6 +2805,15 @@ public class HomeWorkAction extends DispatchAction {
 			map.put("tjId", tjId);
 		}
 		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	public ActionForward getHwStudyMapData(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		HwStudyDetailManager hsdm = (HwStudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_DETAIL_INFO);
+		Integer tjId = CommonTools.getFinalInteger("tjId", request);
+		
 		return null;
 	}
 }
