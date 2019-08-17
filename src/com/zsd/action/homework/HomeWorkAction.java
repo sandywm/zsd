@@ -1257,7 +1257,7 @@ public class HomeWorkAction extends DispatchAction {
 		String msg = "error";
 		if(hwSendId > 0){
 			SendHwInfo hwInfo = swm.getEntityById(hwSendId);
-			if(hwInfo != null && hwInfo.getUser().equals(currUserId)){
+			if(hwInfo != null && hwInfo.getUser().getId().equals(currUserId)){
 				//获取该作业的总人数
 				Integer stuNum_all = tjm.getCountByOpt(hwSendId, 0, -1);
 				Integer hwType = hwInfo.getHwType();
@@ -1384,7 +1384,7 @@ public class HomeWorkAction extends DispatchAction {
 		String msg = "error";
 		if(hwSendId > 0 && hwId > 0){
 			SendHwInfo hwInfo = swm.getEntityById(hwSendId);
-			if(hwInfo != null && hwInfo.getUser().equals(currUserId)){
+			if(hwInfo != null && hwInfo.getUser().getId().equals(currUserId)){
 				msg = "success";
 				//获取该作业的总人数
 				Integer stuNum_all = tjm.getCountByOpt(hwSendId, 0, -1);
