@@ -2983,7 +2983,6 @@ public class HomeWorkAction extends DispatchAction {
 		String pathType = "diagnosis";//类型:diagnosis--诊断，study--学习
 		String loreTypeName = "针对性诊断";
 		Integer access = -1;
-		String loreName = "";
 		String subDetail = "";
 		Integer basicLoreId = 0;
 		String hwTitle = "";
@@ -3243,7 +3242,6 @@ public class HomeWorkAction extends DispatchAction {
 			map.put("loreType", loreTypeName);
 			map.put("nextLoreIdArray", nextLoreIdArray);
 			map.put("studyLogId", studyLogId);
-			map.put("loreName", loreName);
 			map.put("subDetail", subDetail);
 			map.put("basicLoreId", basicLoreId);
 		}
@@ -3263,13 +3261,12 @@ public class HomeWorkAction extends DispatchAction {
 	 * @return
 	 * @throws Exception
 	 */
-	/**public ActionForward getHwStudyTraceData(ActionMapping mapping, ActionForm form,
+	public ActionForward getHwStudyTraceData(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
 		HwTraceStudyLogManager slm = (HwTraceStudyLogManager) AppFactory.instance(null).getApp(Constants.WEB_HW_TRACE_STUDY_LOG_INFO);
 		HwTraceStudyDetailManager sdm = (HwTraceStudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_HW_TRACE_STUDY_DETAIL_INFO);
 		HwStudyTjManager tjm = (HwStudyTjManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_TJ_INFO);
-		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
 		LoreInfoManager lm = (LoreInfoManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
 		Integer tjId = CommonTools.getFinalInteger("tjId", request);
 		Integer userId = CommonTools.getLoginUserId(request);
@@ -3293,7 +3290,6 @@ public class HomeWorkAction extends DispatchAction {
 		String currentloreName_study = "";//当前5步学习法时的知识典名称
 		Integer basicLoreId = 0;
 		String hwTitle = "";
-		String loreName = "";
 		String subDetail = "";
 		if(userId > 0 && tjId > 0){
 			HwStudyTjInfo tj = tjm.getEntityById(tjId);
@@ -3418,9 +3414,9 @@ public class HomeWorkAction extends DispatchAction {
 										successStep = stepNumber+"级关联知识点的诊断题";
 										//获取studyPath_new的第二组的数据中的第一组数据
 										currentloreName_study = lm.getEntityById(Integer.parseInt(nextLoreIdArray)).getLoreName();
-										if(nextLoreIdArray.equals(String.valueOf(buffetId))){
-											nextLoreStep = "本知识点";
-										}
+//										if(nextLoreIdArray.equals(String.valueOf(buffetId))){
+//											nextLoreStep = "本知识点";
+//										}
 									}else if(access.equals(41)){
 										option = 2;
 										success = 4;
@@ -3430,9 +3426,9 @@ public class HomeWorkAction extends DispatchAction {
 										successStep = stepNumber+"级关联知识点("+currentLoreName+")";
 										//获取studyPath_new的第二组的数据中的第一组数据
 										currentloreName_study = lm.getEntityById(Integer.parseInt(nextLoreIdArray)).getLoreName();
-										if(nextLoreIdArray.equals(String.valueOf(buffetId))){
-											nextLoreStep = "本知识点";
-										}
+//										if(nextLoreIdArray.equals(String.valueOf(buffetId))){
+//											nextLoreStep = "本知识点";
+//										}
 									}else if(access.equals(3)){//之前没把再次诊断全部做对（列出做错的再次诊断题）
 										option = 2;
 										success = 4;
@@ -3442,9 +3438,9 @@ public class HomeWorkAction extends DispatchAction {
 										successStep = stepNumber+"级关联知识点("+currentLoreName+")";
 										//获取studyPath_new的第二组的数据中的第一组数据
 										currentloreName_study = lm.getEntityById(Integer.parseInt(nextLoreIdArray)).getLoreName();
-										if(nextLoreIdArray.equals(String.valueOf(buffetId))){
-											nextLoreStep = "本知识点";
-										}
+//										if(nextLoreIdArray.equals(String.valueOf(buffetId))){
+//											nextLoreStep = "本知识点";
+//										}
 									}else if(access.equals(31)){//再次诊断完成提交后（31）
 										option = 2;
 										success = 2;
@@ -3454,9 +3450,9 @@ public class HomeWorkAction extends DispatchAction {
 										successStep = stepNumber+"级关联知识点("+currentLoreName+")";
 										//获取studyPath_new的第二组的数据中的第一组数据
 										currentloreName_study = lm.getEntityById(Integer.parseInt(nextLoreIdArray)).getLoreName();
-										if(nextLoreIdArray.equals(String.valueOf(buffetId))){
-											nextLoreStep = "本知识点";
-										}
+//										if(nextLoreIdArray.equals(String.valueOf(buffetId))){
+//											nextLoreStep = "本知识点";
+//										}
 									}else if(access.equals(2)){//进入5步学习法
 										
 									}else if(access.equals(1)){//题做完，全部正确（需要定位到下一个知识点）
@@ -3467,9 +3463,9 @@ public class HomeWorkAction extends DispatchAction {
 										success = 5;//进入5步学习法
 										//获取studyPath_new的第二组的数据中的第一组数据
 										currentloreName_study = lm.getEntityById(Integer.parseInt(nextLoreIdArray)).getLoreName();
-										if(nextLoreIdArray.equals(String.valueOf(buffetId))){
-											nextLoreStep = "本知识点";
-										}
+//										if(nextLoreIdArray.equals(String.valueOf(buffetId))){
+//											nextLoreStep = "本知识点";
+//										}
 									}else if(access.equals(0)){//表示已经做了再次诊断题，但是没做完（将已做的题和未做的列出来）
 										//根据当前currentLoreId截取studyPath
 										option = 2;
@@ -3479,21 +3475,21 @@ public class HomeWorkAction extends DispatchAction {
 										success = 0;//再次诊断未做完
 										//获取studyPath_new的第二组的数据中的第一组数据
 										currentloreName_study = lm.getEntityById(Integer.parseInt(nextLoreIdArray)).getLoreName();
-										if(nextLoreIdArray.equals(String.valueOf(buffetId))){//同上，如何判定当前到了巴菲特的阶段
-											nextLoreStep = "本知识点";
-										}
+//										if(nextLoreIdArray.equals(String.valueOf(buffetId))){//同上，如何判定当前到了巴菲特的阶段
+//											nextLoreStep = "本知识点";
+//										}
 									}
 								}else if(step.equals(4)){//到4结束
 									if(access.equals(2)){//溯源完成
 										option = 2;
-										nextLoreIdArray = String.valueOf(buffetId);
-										success = 6;//进入巴菲特的解析
+										nextLoreIdArray = String.valueOf(tjId);
+										success = 6;//进入家庭作业题库列表
 										String[] studyPathArr = ltmj.getStudyPath(path,pathChi);
 										studyPath = studyPathArr[0];
 										studyPathChi = studyPathArr[1];
 									}
 								}else{
-									if(blsl.getAccess().equals(2)){//本阶段题部分正确
+									if(sl.getAccess().equals(2)){//本阶段题部分正确
 										nextLoreIdArray = "";
 										option = 1;
 										String[] pathArray = path.split(":");
@@ -3531,12 +3527,12 @@ public class HomeWorkAction extends DispatchAction {
 									}
 								}
 							}
-						}else if(blsl.getIsFinish().equals(2)){//表示全部完成
-							step = blsl.getStep();
+						}else if(sl.getIsFinish().equals(2)){//表示全部完成
+							step = sl.getStep();
 							//从detail表中获取指定logId的最后一条详情
-							List<BuffetLoreStudyDetailInfo> blsdList = blsdm.listLastInfoByLogId(studyLogId);
+							List<HwTraceStudyDetailInfo> sdList = sdm.listLastInfoByLogId(studyLogId);
 							//获取最后（最近）的一条答题详情
-							BuffetLoreStudyDetailInfo blsdLastInfo = blsdList.get(0);
+							HwTraceStudyDetailInfo blsdLastInfo = sdList.get(0);
 							//获取该题对应的知识点编号
 							currentLoreId = blsdLastInfo.getLoreQuestion().getLoreInfo().getId();
 							studyPath = "";
@@ -3546,7 +3542,6 @@ public class HomeWorkAction extends DispatchAction {
 								path = String.valueOf(currentLoreId);
 								nextLoreIdArray = String.valueOf(currentLoreId);
 							}else{//通过溯源完成的
-
 								option = 2;
 								nextLoreIdArray = "0";
 								successStep = "本知识点的诊断题";
@@ -3557,6 +3552,106 @@ public class HomeWorkAction extends DispatchAction {
 				}
 			}
 		}
+		if(msg.equals("success")){
+			map.put("option", option);
+			map.put("totalMoney", totalMoney);
+			map.put("success", success);
+			map.put("path", path);
+			map.put("pathChi", pathChi);
+			map.put("studyPath", studyPath);
+			map.put("studyPathChi", studyPathChi);
+			map.put("nextLoreIdArray", nextLoreIdArray);
+			map.put("successStep", successStep);
+			map.put("nextLoreStep", nextLoreStep);
+			map.put("currentloreName_study", currentloreName_study);
+			map.put("access", access);
+			map.put("tjId", tjId);//第一级编号
+			map.put("hwTitle", hwTitle);//第一级名称
+			map.put("subDetail", subDetail);
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
 		return null;
-	}**/
+	}
+	
+	/**
+	 * 获取
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getHwTraceQuestionData(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		HwTraceStudyLogManager slm = (HwTraceStudyLogManager) AppFactory.instance(null).getApp(Constants.WEB_HW_TRACE_STUDY_LOG_INFO);
+		HwTraceStudyDetailManager sdm = (HwTraceStudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_HW_TRACE_STUDY_DETAIL_INFO);
+		HwStudyTjManager tjm = (HwStudyTjManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_TJ_INFO);
+		LoreInfoManager lm = (LoreInfoManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
+		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
+		Integer tjId = CommonTools.getFinalInteger("tjId", request);
+		Integer userId = CommonTools.getLoginUserId(request);
+		String nextLoreIdArray = CommonTools.getFinalStr("nextLoreIdArray", request);
+		String loreType = Transcode.unescape_new1("loreType", request);//针对性诊断和再次诊断
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "error";
+		Integer loreId = 0;
+		Integer currentLoreId = 0;
+		String loreName = "";
+		if(tjId > 0 && userId > 0){
+			HwStudyTjInfo tj = tjm.getEntityById(tjId);
+			if(tj.getUser().getId().equals(userId)){
+				msg = "success";
+				if(loreType.equals("")){
+					loreType = "针对性诊断";
+				}
+				if(loreId > 0 && loreType.equals("针对性诊断")){
+					LoreInfo lore = lm.getEntityById(loreId);
+					if(lore != null){
+						loreName = lore.getLoreName();
+						String[] pathArr = CommonTools.getLorePath(loreId, "diagnosis");
+						map.put("path", pathArr[0]);
+					}
+				}
+				SendHwInfo sendHw = tj.getSendHwInfo();
+				loreName = sendHw.getHwTitle();//08-12家庭作业
+				Integer basicLoreId = sendHw.getLoreInfo().getId();//发送家庭作业时的知识点编号
+				//获取溯源路线
+				String[] pathArr = CommonTools.getLorePath(basicLoreId, "diagnosis");
+				String path =  pathArr[0];
+				path.split(":")[0] = String.valueOf(tjId);//把第一级替换成家庭作业统计编号
+				map.put("path", path);
+				List<LoreQuestion> lqList_old = new ArrayList<LoreQuestion>();
+				List<HwTraceStudyDetailInfo> sdList_used = new ArrayList<HwTraceStudyDetailInfo>();
+				HwTraceStudyLogInfo sLog = slm.getEntityByTjId(tjId);
+				Integer studyLogId = 0;
+				if(sLog != null){
+					studyLogId = sLog.getId();
+					List<Object> list_d = new ArrayList<Object>();
+					if(!nextLoreIdArray.equals("")){
+						 String[] nextLoreIdArray_1 = nextLoreIdArray.split(",");
+						 for(Integer i = 0 ; i < nextLoreIdArray_1.length ; i++){
+							 loreId = Integer.parseInt(nextLoreIdArray_1[i]);
+							 currentLoreId = loreId;
+							 //获取该知识典所有类型为loreType的题型[0为题状态为有效状态]
+							 lqList_old.addAll(lqm.listInfoByLoreId( CommonTools.getQuoteLoreId(currentLoreId), loreType, 0));//全部题列表
+							 if(loreType.equals("再次诊断")){//获取上次的学习情况(根据logId+nextLoreIdArray+loreType)获取答题正确的题
+								sdList_used.addAll(sdm.listCurrentRightInfoByLogId(studyLogId, currentLoreId, loreType));
+							 }else{//获取上次的学习情况(根据logId+nextLoreIdArray+loreType)--针对性诊断
+								sdList_used.addAll(sdm.listExistInfoByOption(studyLogId, currentLoreId, loreType));
+							 }
+						 }
+					}else{
+						//获取该知识典所有类型为loreType的题型[0为题状态为有效状态]
+						//要是没有下一级loreId就是发布自助餐时的学习记录中的知识点编号
+						loreId = sendHw.getLoreInfo().getMainLoreId();
+						lqList_old.addAll(lqm.listInfoByLoreId(loreId, loreType, 0));//全部题列表
+					}
+				}
+			}
+		}
+		return null;
+	}
 }
