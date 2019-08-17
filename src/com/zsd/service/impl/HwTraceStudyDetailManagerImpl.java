@@ -7,6 +7,7 @@ import org.hibernate.Transaction;
 
 import com.zsd.dao.HwTraceStudyDetailDao;
 import com.zsd.dao.HwTraceStudyLogDao;
+import com.zsd.dao.LoreInfoDao;
 import com.zsd.dao.LoreQuestionDao;
 import com.zsd.dao.UserDao;
 import com.zsd.exception.WEBException;
@@ -21,12 +22,13 @@ public class HwTraceStudyDetailManagerImpl implements HwTraceStudyDetailManager{
 
 	UserDao uDao = null;
 	HwTraceStudyLogDao hwLogDao = null;
+	LoreInfoDao lDao = null;
 	LoreQuestionDao lqDao = null;
 	HwTraceStudyDetailDao hwDetailDao = null;
 	Transaction tran = null;
 	@Override
 	public Integer addHTSDetail(Integer userId, Integer studyLogId,
-			Integer lqId, Integer questionStep, String realAnswer,
+			Integer lqId, Integer loreId,Integer questionStep, String realAnswer,
 			Integer result, String myAnswer, String a, String b, String c,
 			String d, String e, String f, Integer completeTimes)
 			throws WEBException {
@@ -34,12 +36,13 @@ public class HwTraceStudyDetailManagerImpl implements HwTraceStudyDetailManager{
 		try {
 			lqDao = (LoreQuestionDao) DaoFactory.instance(null).getDao(Constants.DAO_LORE_QUESTION_INFO);
 			uDao = (UserDao) DaoFactory.instance(null).getDao(Constants.DAO_USER_INFO);
+			lDao = (LoreInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_LORE_INFO);
 			hwDetailDao = (HwTraceStudyDetailDao) DaoFactory.instance(null).getDao(Constants.DAO_HW_TRACE_STUDY_DETAIL_INFO);
 			hwLogDao = (HwTraceStudyLogDao) DaoFactory.instance(null).getDao(Constants.DAO_HW_TRACE_STUDY_LOG_INFO);
 			Session sess = HibernateUtil.currentSession();
 			tran = sess.beginTransaction();
 			HwTraceStudyDetailInfo detail = new HwTraceStudyDetailInfo(hwLogDao.getEntityById(sess, studyLogId),
-					lqDao.getEntityById(sess, lqId), uDao.getEntityById(sess, userId).get(0), 
+					lqDao.getEntityById(sess, lqId), uDao.getEntityById(sess, userId).get(0),lDao.getEntityById(sess, loreId), 
 					result, CurrentTime.getCurrentTime(), questionStep, myAnswer,
 					realAnswer, a, b, c, d,e, f, completeTimes);
 			hwDetailDao.save(sess, detail);

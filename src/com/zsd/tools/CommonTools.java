@@ -812,7 +812,7 @@ public class CommonTools {
 //            	}
 //            }
 //        }
-		String aa = "";
-		System.out.println(aa.split(",").length);
+		double aa = 7 * 10.0 / 9;
+		System.out.println(Convert.convertInputNumber_6(aa));
 	}
 }

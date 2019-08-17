@@ -14,6 +14,7 @@ public interface HwTraceStudyDetailManager {
 	 * @param userId 学生编号
 	 * @param studyLogId 学习记录编号
 	 * @param lqId 题库编号
+	 * @param loreId 知识点编号
 	 * @param questionStep 问题步骤
 	 * @param realAnswer 真实答案
 	 * @param result 结果
@@ -28,7 +29,7 @@ public interface HwTraceStudyDetailManager {
 	 * @return
 	 * @throws WEBException
 	 */
-	Integer addHTSDetail(Integer userId,Integer studyLogId,Integer lqId,
+	Integer addHTSDetail(Integer userId,Integer studyLogId,Integer lqId,Integer loreId,
 			Integer questionStep,String realAnswer,Integer result,String myAnswer,
 			String a,String b,String c,String d,String e,String f,Integer completeTimes) throws WEBException;
 	

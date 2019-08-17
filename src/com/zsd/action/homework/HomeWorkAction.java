@@ -22,6 +22,7 @@ import org.apache.struts.actions.DispatchAction;
 import com.zsd.action.base.Transcode;
 import com.zsd.factory.AppFactory;
 import com.zsd.module.BuffetAbilityTypeInfo;
+import com.zsd.module.BuffetLoreStudyDetailInfo;
 import com.zsd.module.BuffetMindTypeInfo;
 import com.zsd.module.BuffetTypeInfo;
 import com.zsd.module.Chapter;
@@ -33,6 +34,7 @@ import com.zsd.module.HwMindRelationInfo;
 import com.zsd.module.HwQueInfo;
 import com.zsd.module.HwStudyDetailInfo;
 import com.zsd.module.HwStudyTjInfo;
+import com.zsd.module.HwTraceStudyDetailInfo;
 import com.zsd.module.HwTraceStudyLogInfo;
 import com.zsd.module.LoreInfo;
 import com.zsd.module.LoreQuestion;
@@ -1260,16 +1262,7 @@ public class HomeWorkAction extends DispatchAction {
 			if(hwInfo != null && hwInfo.getUser().getId().equals(currUserId)){
 				//获取该作业的总人数
 				Integer stuNum_all = tjm.getCountByOpt(hwSendId, 0, -1);
-				Integer hwType = hwInfo.getHwType();
-				String hwTypeChi = "";
-				if(hwType.equals(1)){
-					hwTypeChi = "家庭作业";
-				}else if(hwType.equals(2)){
-					hwTypeChi = "课后复习";
-				}else if(hwType.equals(3)){
-					hwTypeChi = "课前预习";
-				}
-				map.put("hwTitle", hwInfo.getClassName()+hwInfo.getSendDate().substring(0, 10)+hwTypeChi+"作业详情");
+				map.put("hwTitle", hwInfo.getClassName()+hwInfo.getHwTitle()+"作业详情");
 				if(stuNum_all > 0){
 					msg = "success";
 					String sysQueIdArr = hwInfo.getSysQueIdArr();
@@ -1294,7 +1287,7 @@ public class HomeWorkAction extends DispatchAction {
 										}
 									}
 								}
-								map_d.put("succRate", succNum * 100 / stuNum_all);
+								map_d.put("succRate", Convert.convertInputNumber_6(succNum * 100.0 / stuNum_all));
 								list_d.add(map_d);
 							}
 						}
@@ -1317,7 +1310,7 @@ public class HomeWorkAction extends DispatchAction {
 										}
 									}
 								}
-								map_d.put("succRate", succNum * 100 / stuNum_all);
+								map_d.put("succRate", Convert.convertInputNumber_6(succNum * 100.0 / stuNum_all));
 								list_d.add(map_d);
 							}
 						}
@@ -1340,7 +1333,7 @@ public class HomeWorkAction extends DispatchAction {
 										}
 									}
 								}
-								map_d.put("succRate", succNum * 100 / stuNum_all);
+								map_d.put("succRate", Convert.convertInputNumber_6(succNum * 100.0 / stuNum_all));
 								list_d.add(map_d);
 							}
 						}
@@ -2971,6 +2964,7 @@ public class HomeWorkAction extends DispatchAction {
 		HwTraceStudyDetailManager sdm = (HwTraceStudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_HW_TRACE_STUDY_DETAIL_INFO);
 		HwStudyTjManager tjm = (HwStudyTjManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_TJ_INFO);
 		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
+		LoreInfoManager lm = (LoreInfoManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
 		Integer tjId = CommonTools.getFinalInteger("tjId", request);
 		Integer userId = CommonTools.getLoginUserId(request);
 		Map<String,Object> map = new HashMap<String,Object>();
@@ -3037,6 +3031,158 @@ public class HomeWorkAction extends DispatchAction {
 					}
 				}else{
 					Integer studyLogId = sl.getId();
+					isFinish = sl.getIsFinish();
+					if(isFinish.equals(2)){//完成后不显示，无动作
+						
+					}else{//未通过，需要定位到现在需要学习的地方
+						Integer step = sl.getStep();
+						Integer stepComplelte = sl.getStepComplete();//本阶段整体完成情况
+						//access:1--当前级全部正确，2:当前级部分正确或者无正确
+						access = sl.getAccess();//本阶段详细完成情况（溯源诊断时分级完成情况）
+						//从detail表中获取指定logId的最后一条详情
+						List<HwTraceStudyDetailInfo> sdList = sdm.listLastInfoByLogId(studyLogId);
+						//获取该题对应的知识点编号
+						HwTraceStudyDetailInfo lastSd = sdList.get(0);
+						Integer currentLoreId = lastSd.getLoreInfo().getId();
+						if(stepComplelte.equals(0)){//0:表示本阶段未完成（未做完题标记）
+							if(step.equals(1)){//诊断题未做完---loreId==currentLoreId
+								//无需第一阶段
+							}else if(step.equals(2)){//表示已经开始下级关联子知识点的诊断loreId不等于currentLoreId
+								Integer answerNumber = 0;
+								String[] pathArray = path.split(":");
+								Integer currentI = CommonTools.getCurrentStep(pathArray, currentLoreId);
+								String[] currentPathArray = null;
+								if(access == 0){//表示关联性诊断当前级还未完成。
+									currentPathArray = pathArray[currentI].split("\\|");
+								}else{//表示关联性诊断当前级已经完成，需要进行关联性诊断的下一级子知识点的关联性诊断
+									currentPathArray = pathArray[currentI + 1].split("\\|");
+									currentI = currentI + 1;
+								}
+								Integer currentPathLength = currentPathArray.length;
+								task = currentI + 1;
+								buttonValue = "继续诊断";
+								loreTypeName = "针对性诊断";
+								loreTaskName = task - 1+"级关联知识点诊断";
+								for(Integer k = 0 ; k < currentPathLength ; k++){
+									nextLoreIdArray += currentPathArray[k] + ",";
+									//获取该知识典所有类型为针对性诊断的题型[0为题状态为有效状态]
+									Integer quoteLoreId = CommonTools.getQuoteLoreId(Integer.parseInt(currentPathArray[k]));
+									List<LoreQuestion> lqList = lqm.listInfoByLoreId(quoteLoreId, loreTypeName, 0);
+									answerNumber += lqList.size();
+								}
+								money *= answerNumber;
+								nextLoreIdArray = nextLoreIdArray.substring(0, nextLoreIdArray.length() - 1);
+							}else if(step.equals(3)){//关联知识点的学习阶段
+								if(access.equals(0)){//当前阶段未做完题
+									task = sl.getTaskNumber();
+									pathType = "diagnosis";
+									buttonValue = "继续诊断";
+									loreTypeName = "再次诊断";
+									String[] pathArray = path.split(":");
+									
+									Integer currentStep = CommonTools.getCurrentStep(pathArray, currentLoreId);
+									Integer stepNumber = currentStep;//因为是当前知识点的下一级
+
+									LoreInfo lore = lm.getEntityById(currentLoreId);
+									loreTaskName = stepNumber +"级关联知识点("+lore.getLoreName()+")诊断";
+									//做过的题和剩下的题拼装
+									//全部题
+									//根据全部再次诊断题除去该知识典做对的题就是目前需要在测试的再次诊断题
+									//获取该知识典所有类型为loreTypeName的题型[0为题状态为有效状态]
+									List<LoreQuestion> lqList_all = lqm.listInfoByLoreId(CommonTools.getQuoteLoreId(currentLoreId), loreTypeName, 0);
+									List<HwTraceStudyDetailInfo> sdList_pre_right = new ArrayList<HwTraceStudyDetailInfo>();
+									 if(lastSd != null){//表示存在最后一次诊断记录(列出的题为)
+										 if(lastSd.getLoreQuestion().getLoreTypeName().equals("再次诊断")){//说明最后做的一道题是再次诊断题，表示题还未做完
+											 //当前阶段刚做过的再次诊断题列表
+											 Integer completeTimes = lastSd.getCompleteTimes();
+											 //获取不是当前级别所有做正确的再次诊断题
+											 sdList_pre_right = sdm.listPretRightInfoByLogId(studyLogId, currentLoreId, loreTypeName, completeTimes);
+										 }
+									 }
+									money *= (lqList_all.size() - sdList_pre_right.size());//一直显示全部题的金币数
+									nextLoreIdArray = String.valueOf(currentLoreId);
+								}else if(access.equals(1)){//当前知识点的再次诊断完成，需要定位到下一个知识
+									task = sl.getTaskNumber();
+									pathType = "study";
+									loreTypeName = "再次诊断";
+									String[] pathArray = path.split(":");
+									String[] studyPathArr = ltmj.getStudyPath(path, pathChi);
+									studyPath = studyPathArr[0];
+									String studyPath_new = CommonTools.getCurrentStudyPath_new(studyPath, currentLoreId);//获取当前知识点以后的知识点
+									if(studyPath_new.split(":").length == 1){
+										buttonValue = "本知识点学习";
+										loreTaskName = "学习本知识点";
+										money = 0;
+										nextLoreIdArray = String.valueOf(currentLoreId);
+									}else{
+										buttonValue = "开始学习";
+										Integer currentLoreId_new = Integer.parseInt(studyPath_new.split(":")[0].split("\\|")[0]);
+										Integer currentStep = CommonTools.getCurrentStep(pathArray, currentLoreId_new);
+										Integer stepNumber = currentStep;
+										LoreInfo lore = lm.getEntityById(currentLoreId_new);
+										loreTaskName = stepNumber +"级关联知识点("+lore.getLoreName()+")学习";
+										money = 0;
+										nextLoreIdArray = String.valueOf(currentLoreId_new);
+									}
+								}else if(access.equals(2)){//五步学习
+									
+								}else if(access.equals(3)){//之前有做过再次诊断，但未全部正确（做错题的不重复列表）
+									task = sl.getTaskNumber();
+									pathType = "diagnosis";
+									buttonValue = "继续诊断";
+									loreTypeName = "再次诊断";
+									String[] pathArray = path.split(":");
+									
+									Integer currentStep = CommonTools.getCurrentStep(pathArray, currentLoreId);
+									Integer  stepNumber = currentStep;
+									LoreInfo lore = lm.getEntityById(currentLoreId);
+									loreTaskName = stepNumber +"级关联知识点("+lore.getLoreName()+")诊断";
+									//获取该知识典所有类型为loreTypeName的题型[0为题状态为有效状态]
+									//最对的题
+									List<HwTraceStudyDetailInfo> sdList_current_right = sdm.listCurrentRightInfoByLogId(buffetLorestudyLogId, currentLoreId, loreTypeName);
+									//该知识点类型为再次诊断的全部题
+									List<LoreQuestion> zcList = lqm.listInfoByLoreId(CommonTools.getQuoteLoreId(currentLoreId), loreTypeName, 0);
+									//该知识点答对的题
+									money *= zcList.size() - sdList_current_right.size();
+									nextLoreIdArray = String.valueOf(currentLoreId);
+								}else if(access.equals(31)){//未做完巩固训练
+									task = sl.getTaskNumber();
+									pathType = "study";
+									buttonValue = "继续学习";
+									loreTypeName = "再次诊断";
+									String[] pathArray = path.split(":");
+									
+									Integer currentStep = CommonTools.getCurrentStep(pathArray, currentLoreId);
+									Integer  stepNumber = currentStep;
+									LoreInfo lore = lm.getEntityById(currentLoreId);
+									loreTaskName = stepNumber +"级关联知识点("+lore.getLoreName()+")学习";
+									money = 0;//学习的没金币
+									nextLoreIdArray = String.valueOf(currentLoreId);
+								}else if(access.equals(4)){//第一次进入再次诊断(列出再次诊断的全部试题)
+									task = sl.getTaskNumber();
+									pathType = "diagnosis";
+									buttonValue = "再次诊断";
+									loreTypeName = "再次诊断";
+									String[] pathArray = path.split(":");
+									
+									Integer currentStep = CommonTools.getCurrentStep(pathArray, currentLoreId);
+									Integer stepNumber = currentStep;
+
+									LoreInfo lore = lm.getEntityById(currentLoreId);
+									loreTaskName = stepNumber +"级关联知识点("+lore.getLoreName()+")诊断";
+									//2014-10-22日修改（获取该知识典所有类型为loreTypeName的题型[0为题状态为有效状态]）
+									List<LoreQuestion> zcList = lqm.listInfoByLoreId(CommonTools.getQuoteLoreId(currentLoreId), loreTypeName, 0);
+									money *= zcList.size();
+									nextLoreIdArray = String.valueOf(currentLoreId);
+								}else if(access.equals(41)){
+									
+								}
+							}else if(step.equals(4)){
+								//进入巴菲特题库列表页面，溯源替换成看解析，点击我会了，修改buffetLoreStudyLog表中为完成状态，并直接进入下一题
+								
+							}
+						}
+					}
 				}
 			}
 		}

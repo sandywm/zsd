@@ -15,7 +15,6 @@ public class HwTraceStudyLogInfo implements java.io.Serializable {
 	private Integer id;
 	private HwStudyTjInfo hwStudyTjInfo;
 	private User user;
-	private LoreInfo loreInfo;
 	private Integer access;
 	private String addTime;
 	private Integer step;
@@ -34,13 +33,12 @@ public class HwTraceStudyLogInfo implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public HwTraceStudyLogInfo(HwStudyTjInfo hwStudyTjInfo, User user,LoreInfo loreInfo,
+	public HwTraceStudyLogInfo(HwStudyTjInfo hwStudyTjInfo, User user,
 			Integer access, String addTime, Integer step, Integer stepComplete,
 			Integer guideStatus, Integer isFinish, String sysAssess,
 			String teaAssess, Integer taskNumber, Integer finalScore) {
 		this.hwStudyTjInfo = hwStudyTjInfo;
 		this.user = user;
-		this.loreInfo = loreInfo;
 		this.access = access;
 		this.addTime = addTime;
 		this.step = step;
@@ -77,14 +75,6 @@ public class HwTraceStudyLogInfo implements java.io.Serializable {
 
 	public void setUser(User user) {
 		this.user = user;
-	}
-
-	public LoreInfo getLoreInfo() {
-		return loreInfo;
-	}
-
-	public void setLoreInfo(LoreInfo loreInfo) {
-		this.loreInfo = loreInfo;
 	}
 
 	public Integer getAccess() {

@@ -16,6 +16,7 @@ public class HwTraceStudyDetailInfo implements java.io.Serializable {
 	private HwTraceStudyLogInfo hwTraceStudyLogInfo;
 	private LoreQuestion loreQuestion;
 	private User user;
+	private LoreInfo loreInfo;
 	private Integer result;
 	private String addTime;
 	private Integer queStep;
@@ -37,13 +38,14 @@ public class HwTraceStudyDetailInfo implements java.io.Serializable {
 	
 	/** full constructor */
 	public HwTraceStudyDetailInfo(HwTraceStudyLogInfo hwTraceStudyLogInfo,
-			LoreQuestion loreQuestion, User user, 
+			LoreQuestion loreQuestion, User user, LoreInfo loreInfo,
 			Integer result, String addTime, Integer queStep, String myAnswer,
 			String realAnswer, String a, String b, String c, String d,
 			String e, String f, Integer completeTimes) {
 		this.hwTraceStudyLogInfo = hwTraceStudyLogInfo;
 		this.loreQuestion = loreQuestion;
 		this.user = user;
+		this.loreInfo = loreInfo;
 		this.result = result;
 		this.addTime = addTime;
 		this.queStep = queStep;
@@ -186,6 +188,14 @@ public class HwTraceStudyDetailInfo implements java.io.Serializable {
 
 	public void setCompleteTimes(Integer completeTimes) {
 		this.completeTimes = completeTimes;
+	}
+
+	public LoreInfo getLoreInfo() {
+		return loreInfo;
+	}
+
+	public void setLoreInfo(LoreInfo loreInfo) {
+		this.loreInfo = loreInfo;
 	}
 
 }

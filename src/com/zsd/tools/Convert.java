@@ -342,6 +342,18 @@ public class Convert {
 	}
 	
 	/**
+	 * 不保留小数的四舍五入
+	 * @author wm
+	 * @date 2019-8-17 上午10:15:44
+	 * @param inputD
+	 * @return
+	 */
+	public static Integer convertInputNumber_6(double inputD){
+		DecimalFormat    df   = new DecimalFormat("######0");
+		return Integer.parseInt(df.format(inputD));
+	}
+	
+	/**
 	 * 输入数字金额转换成中文大写，精确到分
 	 * @description
 	 * @author wm

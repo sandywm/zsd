@@ -25,6 +25,11 @@
                 <comment>学生编号</comment>
             </column>
         </many-to-one>
+        <many-to-one name="loreInfo" class="com.zsd.module.LoreInfo" lazy="false">
+            <column name="lore_id" not-null="true">
+                <comment>知识点编号</comment>
+            </column>
+        </many-to-one>
         <property name="result" type="java.lang.Integer">
             <column name="result" not-null="true">
                 <comment>答题结果(0:错,1:对)</comment>

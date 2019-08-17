@@ -5,7 +5,6 @@ import org.hibernate.Transaction;
 
 import com.zsd.dao.HwStudyTjDao;
 import com.zsd.dao.HwTraceStudyLogDao;
-import com.zsd.dao.LoreInfoDao;
 import com.zsd.dao.UserDao;
 import com.zsd.exception.WEBException;
 import com.zsd.factory.DaoFactory;
@@ -19,7 +18,6 @@ public class HwTraceStudyLogManagerImpl implements HwTraceStudyLogManager{
 
 	HwStudyTjDao tjDao = null;
 	UserDao uDao = null;
-	LoreInfoDao lDao = null;
 	HwTraceStudyLogDao hwLogDao = null;
 	Transaction tran = null;
 	@Override
@@ -29,11 +27,10 @@ public class HwTraceStudyLogManagerImpl implements HwTraceStudyLogManager{
 		try {
 			tjDao = (HwStudyTjDao) DaoFactory.instance(null).getDao(Constants.DAO_HW_STUDY_TJ_INFO);
 			uDao = (UserDao) DaoFactory.instance(null).getDao(Constants.DAO_USER_INFO);
-			lDao = (LoreInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_LORE_INFO);
 			hwLogDao = (HwTraceStudyLogDao) DaoFactory.instance(null).getDao(Constants.DAO_HW_TRACE_STUDY_LOG_INFO);
 			Session sess = HibernateUtil.currentSession();
 			tran = sess.beginTransaction();
-			HwTraceStudyLogInfo logInfo = new HwTraceStudyLogInfo(tjDao.getEntityById(sess, tjId), uDao.getEntityById(sess, stuId).get(0),lDao.getEntityById(sess, loreId),
+			HwTraceStudyLogInfo logInfo = new HwTraceStudyLogInfo(tjDao.getEntityById(sess, tjId), uDao.getEntityById(sess, stuId).get(0),
 					access, CurrentTime.getCurrentTime(), step, stepComplete,0, 1, "","", taskNumber, 0);
 			hwLogDao.save(sess, logInfo);
 			tran.commit();

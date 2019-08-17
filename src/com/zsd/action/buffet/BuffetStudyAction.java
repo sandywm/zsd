@@ -722,17 +722,13 @@ public class BuffetStudyAction extends DispatchAction {
 									//根据全部再次诊断题除去该知识典做对的题就是目前需要在测试的再次诊断题
 									//获取该知识典所有类型为loreTypeName的题型[0为题状态为有效状态]
 									List<LoreQuestion> lqList_all = lqm.listInfoByLoreId(CommonTools.getQuoteLoreId(currentLoreId), loreTypeName, 0);
-									//获取最后一道已做过的题
-//									 List<StudyDetail> lastList = sdManager.listLastInfoByOption(studyLogId, currentLoreId, "");
-									//从detail表中获取指定logId的最后一条详情
-									List<BuffetLoreStudyDetailInfo> lastList = blsdm.listLastInfoByLogId(buffetLorestudyLogId);
 									//获取最后（最近）的一条答题详情
 									BuffetLoreStudyDetailInfo lastInfo = blsdList.get(0);
 									 List<BuffetLoreStudyDetailInfo> sdList_pre_right = new ArrayList<BuffetLoreStudyDetailInfo>();
 									 if(lastInfo != null){//表示存在最后一次诊断记录(列出的题为)
 										 if(lastInfo.getLoreQuestion().getLoreTypeName().equals("再次诊断")){//说明最后做的一道题是再次诊断题，表示题还未做完
 											 //当前阶段刚做过的再次诊断题列表
-											 Integer completeTimes = lastList.get(0).getCompleteTimes();
+											 Integer completeTimes = lastInfo.getCompleteTimes();
 											 //获取不是当前级别所有做正确的再次诊断题
 											 sdList_pre_right = blsdm.listPretRightInfoByLogId(buffetLorestudyLogId, currentLoreId, loreTypeName, completeTimes);
 										 }
