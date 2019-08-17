@@ -1350,7 +1350,7 @@ public class HomeWorkAction extends DispatchAction {
 	}
 	
 	/**
-	 * 获取指定题目的详细情况
+	 * 获取指定题目的所有学生完成的简单统计--(分组显示学生人数)
 	 * @author wm
 	 * @date 2019-8-3 上午10:03:22
 	 * @param mapping
@@ -1560,7 +1560,7 @@ public class HomeWorkAction extends DispatchAction {
 	}
 	
 	/**
-	 * 获取指定题目的所有学生完成的详细情况
+	 * 获取指定题目的所有学生完成的详细统计(分组显示学生姓名和头像)
 	 * @author wm
 	 * @date 2019-8-17 上午11:28:42
 	 * @param mapping
@@ -3263,7 +3263,7 @@ public class HomeWorkAction extends DispatchAction {
 	 * @return
 	 * @throws Exception
 	 */
-	public ActionForward getHwStudyTraceData(ActionMapping mapping, ActionForm form,
+	/**public ActionForward getHwStudyTraceData(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
 		HwTraceStudyLogManager slm = (HwTraceStudyLogManager) AppFactory.instance(null).getApp(Constants.WEB_HW_TRACE_STUDY_LOG_INFO);
@@ -3558,5 +3558,5 @@ public class HomeWorkAction extends DispatchAction {
 			}
 		}
 		return null;
-	}
+	}**/
 }
