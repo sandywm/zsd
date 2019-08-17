@@ -22,7 +22,7 @@ public class HwTraceStudyLogManagerImpl implements HwTraceStudyLogManager{
 	Transaction tran = null;
 	@Override
 	public Integer addHwStudyLog(Integer tjId, Integer stuId, Integer loreId,
-			Integer step, Integer stepComplete, Integer access, Integer taskNumber) throws WEBException {
+			Integer step, Integer stepComplete, Integer currentGold,Integer access, Integer taskNumber) throws WEBException {
 		// TODO Auto-generated method stub
 		try {
 			tjDao = (HwStudyTjDao) DaoFactory.instance(null).getDao(Constants.DAO_HW_STUDY_TJ_INFO);
@@ -31,7 +31,7 @@ public class HwTraceStudyLogManagerImpl implements HwTraceStudyLogManager{
 			Session sess = HibernateUtil.currentSession();
 			tran = sess.beginTransaction();
 			HwTraceStudyLogInfo logInfo = new HwTraceStudyLogInfo(tjDao.getEntityById(sess, tjId), uDao.getEntityById(sess, stuId).get(0),
-					access, CurrentTime.getCurrentTime(), step, stepComplete,0, 1, "","", taskNumber, 0);
+					access, CurrentTime.getCurrentTime(), step, stepComplete,0, 1, taskNumber, currentGold,0);
 			hwLogDao.save(sess, logInfo);
 			tran.commit();
 			return logInfo.getId();
@@ -46,7 +46,7 @@ public class HwTraceStudyLogManagerImpl implements HwTraceStudyLogManager{
 
 	@Override
 	public boolean updateStudyLog(Integer id, Integer step,
-			Integer stepComplete, Integer isFinish, Integer access,
+			Integer stepComplete, Integer isFinish, Integer currentGold,Integer access,
 			Integer taskNumber) throws WEBException {
 		// TODO Auto-generated method stub
 		try {
@@ -55,19 +55,22 @@ public class HwTraceStudyLogManagerImpl implements HwTraceStudyLogManager{
 			tran = sess.beginTransaction();
 			HwTraceStudyLogInfo logInfo = hwLogDao.getEntityById(sess, id);
 			if(logInfo != null){
-				if(step.equals(-1)){
+				if(!step.equals(-1)){
 					logInfo.setStep(step);
 				}
-				if(stepComplete.equals(-1)){
+				if(!stepComplete.equals(-1)){
 					logInfo.setStepComplete(stepComplete);			
 				}
-				if(isFinish.equals(-1)){
+				if(!isFinish.equals(-1)){
 					logInfo.setIsFinish(isFinish);
 				}
-				if(access.equals(-1)){
+				if(!currentGold.equals(-1)){
+					logInfo.setCurrentGold(currentGold);
+				}
+				if(!access.equals(-1)){
 					logInfo.setAccess(access);
 				}
-				if(taskNumber.equals(-1)){
+				if(!taskNumber.equals(-1)){
 					logInfo.setTaskNumber(taskNumber);
 				}
 				hwLogDao.update(sess, logInfo);

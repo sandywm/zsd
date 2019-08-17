@@ -21,9 +21,8 @@ public class HwTraceStudyLogInfo implements java.io.Serializable {
 	private Integer stepComplete;
 	private Integer guideStatus;
 	private Integer isFinish;
-	private String sysAssess;
-	private String teaAssess;
 	private Integer taskNumber;
+	private Integer currentGold;
 	private Integer finalScore;
 
 	// Constructors
@@ -35,8 +34,7 @@ public class HwTraceStudyLogInfo implements java.io.Serializable {
 	/** full constructor */
 	public HwTraceStudyLogInfo(HwStudyTjInfo hwStudyTjInfo, User user,
 			Integer access, String addTime, Integer step, Integer stepComplete,
-			Integer guideStatus, Integer isFinish, String sysAssess,
-			String teaAssess, Integer taskNumber, Integer finalScore) {
+			Integer guideStatus, Integer isFinish, Integer taskNumber, Integer currentGold,Integer finalScore) {
 		this.hwStudyTjInfo = hwStudyTjInfo;
 		this.user = user;
 		this.access = access;
@@ -45,9 +43,8 @@ public class HwTraceStudyLogInfo implements java.io.Serializable {
 		this.stepComplete = stepComplete;
 		this.guideStatus = guideStatus;
 		this.isFinish = isFinish;
-		this.sysAssess = sysAssess;
-		this.teaAssess = teaAssess;
 		this.taskNumber = taskNumber;
+		this.currentGold = currentGold;
 		this.finalScore = finalScore;
 	}
 
@@ -125,22 +122,6 @@ public class HwTraceStudyLogInfo implements java.io.Serializable {
 		this.isFinish = isFinish;
 	}
 
-	public String getSysAssess() {
-		return this.sysAssess;
-	}
-
-	public void setSysAssess(String sysAssess) {
-		this.sysAssess = sysAssess;
-	}
-
-	public String getTeaAssess() {
-		return this.teaAssess;
-	}
-
-	public void setTeaAssess(String teaAssess) {
-		this.teaAssess = teaAssess;
-	}
-
 	public Integer getTaskNumber() {
 		return this.taskNumber;
 	}
@@ -156,4 +137,13 @@ public class HwTraceStudyLogInfo implements java.io.Serializable {
 	public void setFinalScore(Integer finalScore) {
 		this.finalScore = finalScore;
 	}
+
+	public Integer getCurrentGold() {
+		return currentGold;
+	}
+
+	public void setCurrentGold(Integer currentGold) {
+		this.currentGold = currentGold;
+	}
+	
 }

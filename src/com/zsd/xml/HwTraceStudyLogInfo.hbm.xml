@@ -50,19 +50,14 @@
                 <comment>完成状态(1:未完成,2:已完成)</comment>
             </column>
         </property>
-        <property name="sysAssess" type="java.lang.String">
-            <column name="sys_assess" length="200">
-                <comment>系统评价</comment>
-            </column>
-        </property>
-        <property name="teaAssess" type="java.lang.String">
-            <column name="tea_assess" length="200">
-                <comment>导师评价</comment>
-            </column>
-        </property>
         <property name="taskNumber" type="java.lang.Integer">
             <column name="task_number" not-null="true">
                 <comment>任务个数</comment>
+            </column>
+        </property>
+        <property name="currentGold" type="java.lang.Integer">
+            <column name="current_gold" not-null="true">
+                <comment>当前金币数</comment>
             </column>
         </property>
         <property name="finalScore" type="java.lang.Integer">

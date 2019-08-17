@@ -14,13 +14,14 @@ public interface HwTraceStudyLogManager {
 	 * @param loreId 发布作业的知识点编号
 	 * @param step 答题阶段
 	 * @param isFinish 完成状态
+	 * @param currentGold 当前阶段答题分数
 	 * @param access 本级知识点完成状态
 	 * @param taskNumber 任务个数
 	 * @return
 	 * @throws WEBException
 	 */
 	Integer addHwStudyLog(Integer tjId,Integer stuId,Integer loreId,Integer step,Integer stepComplete,
-			Integer access,Integer taskNumber) throws WEBException;
+			Integer currentGold,Integer access,Integer taskNumber) throws WEBException;
 	
 	/**
 	 * 修改家庭作业溯源学习记录信息
@@ -30,12 +31,13 @@ public interface HwTraceStudyLogManager {
 	 * @param step 答题阶段（共5段）-1不修改
 	 * @param stepComplete 该阶段完成状态（题有无做完）-1不修改
 	 * @param isFinish 该知识典完成状态-1不修改
+	 * @param currentGold 当前阶段答题分数-1不修改
 	 * @param access 本级知识点完成情况-1不修改
 	 * @param taskNumber 任务个数(为-1时不修改)
 	 * @return
 	 * @throws WEBException
 	 */
-	boolean updateStudyLog(Integer id,Integer step,Integer stepComplete,Integer isFinish,Integer access,Integer taskNumber)throws WEBException;
+	boolean updateStudyLog(Integer id,Integer step,Integer stepComplete,Integer isFinish,Integer currentGold,Integer access,Integer taskNumber)throws WEBException;
 	
 	/**
 	 * 根据主键获取溯源学习记录
