@@ -2028,10 +2028,12 @@ public class HomeWorkAction extends DispatchAction {
 				if(!sysQueIdArr.equals("")){
 					sysQueIdArr = sysQueIdArr.substring(0, sysQueIdArr.length() - 1);
 					allNum += sysQueIdArr.split(",").length;
-				}else if(!hwQueIdArr.equals("")){
+				}
+				if(!hwQueIdArr.equals("")){
 					hwQueIdArr = hwQueIdArr.substring(0, hwQueIdArr.length() - 1);
 					allNum += hwQueIdArr.split(",").length;
-				}else if(!teaQueIdArr.equals("")){
+				}
+				if(!teaQueIdArr.equals("")){
 					teaQueIdArr = teaQueIdArr.substring(0, teaQueIdArr.length() - 1);
 					allNum += teaQueIdArr.split(",").length;
 				}
@@ -2143,11 +2145,11 @@ public class HomeWorkAction extends DispatchAction {
 		SendHwManager swm = (SendHwManager)AppFactory.instance(null).getApp(Constants.WEB_SEND_HW_INFO);
 		HwStudyTjManager tjm = (HwStudyTjManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_TJ_INFO);
 		UserClassInfoManager ucm = (UserClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
-		String eDate  = CommonTools.getFinalStr("currDate", request);
+		String eDate  = CommonTools.getFinalStr("endDate", request);//时间控件的日期
 		String sDate = "";
 		Integer classId = CommonTools.getFinalInteger("classId", request);
 		Integer hwType = CommonTools.getFinalInteger("hwType", request);
-		String specDate = CommonTools.getFinalStr("specDate", request);
+		String specDate = CommonTools.getFinalStr("specDate", request);//点击横坐标的日期
 		Integer currUserId = CommonTools.getLoginUserId(request);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "error";
@@ -2156,17 +2158,18 @@ public class HomeWorkAction extends DispatchAction {
 		Integer subId = ucm.getEntityByOpt(currUserId, Constants.TEA_ROLE_ID).getSubjectId();
 		//获取指定班级指定时间的作业
 		if(classId > 0 && currUserId > 0 && subId > 0){
+			msg = "success";
 			if(eDate.equals("")){
 				eDate = CurrentTime.getStringDate();
 			}
-			sDate = CurrentTime.getFinalDate(CurrentTime.getStringDate(), -6);//获取最近6天的时间
+			sDate = CurrentTime.getFinalDate(eDate, -6);//获取最近6天的时间
 			if(hwType.equals(0)){
 				hwType = 1;
 			}
 			List<SendHwInfo> sendList = swm.listPageInfoByOpt(0, subId, classId, hwType, -1, 0, sDate, eDate, false, 0, 0);
 			String axisNameStr = sDate.substring(5) + ",";//xAxis-data
 			for(int i = 5 ; i > 0 ; i--){
-				axisNameStr += CurrentTime.getFinalDate(CurrentTime.getStringDate(), -i).substring(5) + ",";
+				axisNameStr += CurrentTime.getFinalDate(eDate, -i).substring(5) + ",";
 			}
 			axisNameStr += eDate.substring(5);
 			String[] axisNameArr = {axisNameStr.split(",")[0],axisNameStr.split(",")[1],axisNameStr.split(",")[2],
@@ -2177,7 +2180,6 @@ public class HomeWorkAction extends DispatchAction {
 			Integer sendHwSize = sendList.size();
 			List<Object> list_all_stu = new ArrayList<Object>();//所有学生列表
 			if(sendHwSize > 0){
-				msg = "success";
 				Integer i = 0;
 				if(sendHwSize < 7){//有些天没有发送
 					List<UserClassInfo> ucList = ucm.listInfoByOpt(classId, Constants.STU_ROLE_ID);
