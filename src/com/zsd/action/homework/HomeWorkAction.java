@@ -2352,6 +2352,7 @@ public class HomeWorkAction extends DispatchAction {
 					map_d.put("comStatusChi", comStatusChi);
 					list_d_hw.add(map_d);
 				}
+				map.put("hwList", list_d_hw);
 			}else{
 				msg = "noInfo";
 			}
@@ -2379,6 +2380,8 @@ public class HomeWorkAction extends DispatchAction {
 		HwQueManager hqm = (HwQueManager) AppFactory.instance(null).getApp(Constants.WEB_HW_QUE_INFO);
 		TeaQueManager tqm = (TeaQueManager) AppFactory.instance(null).getApp(Constants.WEB_TEA_QUE_INFO);
 		LoreQuestionManager lqm = (LoreQuestionManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
+		HwMindRelationManager hmrm = (HwMindRelationManager) AppFactory.instance(null).getApp(Constants.WEB_HW_MIND_RELATION_INFO);
+		HwAbilityRelationManager harm = (HwAbilityRelationManager) AppFactory.instance(null).getApp(Constants.WEB_HW_ABILITY_RELATION_INFO);
 		Integer tjId = CommonTools.getFinalInteger("tjId", request);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "error";
@@ -2396,7 +2399,27 @@ public class HomeWorkAction extends DispatchAction {
 					Integer result = hsd.getResult();
 					if(queArea.equals("hw")){//没有填空题和问答题
 						HwQueInfo hq = hqm.getEntityById(queId);
+						String mindStr = "";
+						String abilityStr = "";
+						List<HwMindRelationInfo> hmrList = hmrm.listInfoByOpt(0, hq.getId());
+						for(HwMindRelationInfo hmr : hmrList){
+							mindStr += hmr.getBuffetMindTypeInfo().getMind() + "、";
+						}
+						if(!mindStr.equals("")){
+							mindStr = mindStr.substring(0, mindStr.length() - 1);
+						}
+						List<HwAbilityRelationInfo>  harList = harm.listInfoByOpt(0, hq.getId());
+						for(HwAbilityRelationInfo har : harList){
+							abilityStr += har.getBuffetAbilityTypeInfo().getAbility() + "、";
+						}
+						if(!abilityStr.equals("")){
+							abilityStr = abilityStr.substring(0, abilityStr.length() - 1);
+						}
+						map_d.put("btName", hq.getBuffetTypeInfo().getTypes());
+						map_d.put("mindStr", mindStr);
+						map_d.put("abilityStr", abilityStr);
 						map_d.put("queSub", hq.getSubject());
+						map_d.put("lqType", hq.getQueType());
 						String realAnswer = hq.getAnswer();
 						if(result >= 0){//做完题后才出正确答案
 							map_d.put("realAnswer", realAnswer);
@@ -2429,6 +2452,7 @@ public class HomeWorkAction extends DispatchAction {
 						map_d.put("answerD", lq.getD());
 						map_d.put("answerE", lq.getE());
 						map_d.put("answerF", lq.getF());
+						map_d.put("lqType", lq.getQueType());
 						String realAnswer = lq.getQueAnswer();
 						if(result >= 0){//做完题后才出正确答案
 							map_d.put("realAnswer", realAnswer);
@@ -2477,13 +2501,16 @@ public class HomeWorkAction extends DispatchAction {
 					}else if(queArea.equals("tea")){
 						TeaQueInfo tq = tqm.getEntityById(queId);
 						map_d.put("queSub", tq.getQueSub());
+						map_d.put("lqType", tq.getQueType());
 						String realAnswer = tq.getQueAnswer();
 						if(result >= 0){//做完题后才出正确答案
 							map_d.put("realAnswer", realAnswer);
 						}
 						map_d.put("result", result);//-1：未做,0:错,1:对
 					}
-					map_d.put("myAnswer", myAnswer);
+					if(result >= 0){//做完题后才出正确答案
+						map_d.put("myAnswer", myAnswer);
+					}
 					map_d.put("queArea", queArea);
 					list_d.add(map_d);
 				}
