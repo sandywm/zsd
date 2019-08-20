@@ -2169,7 +2169,6 @@ public class HomeWorkAction extends DispatchAction {
 		String sDate = "";
 		Integer classId = CommonTools.getFinalInteger("classId", request);
 		Integer hwType = CommonTools.getFinalInteger("hwType", request);
-		String specDate = CommonTools.getFinalStr("specDate", request);//点击横坐标的日期
 		Integer currUserId = CommonTools.getLoginUserId(request);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "error";
@@ -2182,49 +2181,52 @@ public class HomeWorkAction extends DispatchAction {
 			if(eDate.equals("")){
 				eDate = CurrentTime.getStringDate();
 			}
-			sDate = CurrentTime.getFinalDate(eDate, -6);//获取最近6天的时间
+			sDate = CurrentTime.getFinalDate(eDate, -2);//获取最近2天的时间
 			if(hwType.equals(0)){
 				hwType = 1;
 			}
 			List<SendHwInfo> sendList = swm.listPageInfoByOpt(0, subId, classId, hwType, -1, 0, sDate, eDate, false, 0, 0);
-			String axisNameStr = sDate.substring(5) + ",";//xAxis-data
-			for(int i = 5 ; i > 0 ; i--){
-				axisNameStr += CurrentTime.getFinalDate(eDate, -i).substring(5) + ",";
-			}
-			axisNameStr += eDate.substring(5);
-			String[] axisNameArr = {axisNameStr.split(",")[0],axisNameStr.split(",")[1],axisNameStr.split(",")[2],
-					axisNameStr.split(",")[3],axisNameStr.split(",")[4],axisNameStr.split(",")[5],axisNameStr.split(",")[6]};
-			Integer[] zsNumArr = {0,0,0,0,0,0,0};
-			Integer[] bzNumArr = {0,0,0,0,0,0,0};
-			Integer[] unNumArr = {0,0,0,0,0,0,0};
+			String axisNameStr = sDate + ",";//xAxis-data
+			axisNameStr += CurrentTime.getFinalDate(eDate, -1) + ",";
+			axisNameStr += eDate;
+			String[] axisNameArr = {axisNameStr.split(",")[0],axisNameStr.split(",")[1],axisNameStr.split(",")[2]};
+			Integer[] zsNumArr = {0,0,0};
+			Integer[] bzNumArr = {0,0,0};
+			Integer[] unNumArr = {0,0,0};
 			Integer sendHwSize = sendList.size();
 			List<Object> list_all_stu = new ArrayList<Object>();//所有学生列表
-			if(sendHwSize > 0){
-				Integer i = 0;
-				if(sendHwSize < 7){//有些天没有发送
-					List<UserClassInfo> ucList = ucm.listInfoByOpt(classId, Constants.STU_ROLE_ID);
-					stuNum = ucList.size();
-					if(stuNum > 0){
-						for(UserClassInfo uc : ucList){
-							User user = uc.getUser();
-							Map<String,Object> map_d = new HashMap<String,Object>();
-							map_d.put("userId", user.getId());
-							map_d.put("userName", user.getRealName());
-							map_d.put("userPortrait", user.getPortrait());
-							map_d.put("sendHwId", 0);
-							map_d.put("stuComType", "");
-							map_d.put("comStatus", -1);
-							map_d.put("classId", uc.getClassInfo().getId());
-							list_all_stu.add(map_d);
-						}
+			if(sendHwSize < 3){
+				List<UserClassInfo> ucList = ucm.listInfoByOpt(classId, Constants.STU_ROLE_ID);
+				stuNum = ucList.size();
+				if(stuNum > 0){
+					for(UserClassInfo uc : ucList){
+						User user = uc.getUser();
+						Map<String,Object> map_d = new HashMap<String,Object>();
+						map_d.put("userId", user.getId());
+						map_d.put("userName", user.getRealName());
+						map_d.put("userPortrait", user.getPortrait());
+						map_d.put("sendHwId", 0);
+						map_d.put("stuComType", "");
+						map_d.put("comStatus", -1);
+						map_d.put("classId", uc.getClassInfo().getId());
+						list_all_stu.add(map_d);
 					}
 				}
+			}
+			if(sendHwSize > 0){
 				for(Integer j = sendHwSize - 1 ; j >= 0 ; j--){
 					SendHwInfo shw = sendList.get(j);
+					Integer i = 0;
 					Integer zsComNum = 0;
 					Integer bzComNum = 0;
 					Integer unComNum = 0;
-					String sendDate = shw.getSendDate().substring(5, 10);
+					String sendDate = shw.getSendDate().substring(0, 10);
+					for(int k = 0 ; k < axisNameArr.length ; k++){
+						if(axisNameArr[k].equals(sendDate)){
+							i = k;
+							break;
+						}
+					}
 					List<HwStudyTjInfo> tjList = tjm.listInfoByOpt(shw.getId(), 0, -1, false, 0, 0);
 					stuNum = tjList.size();
 					if(stuNum > 0){
@@ -2259,16 +2261,12 @@ public class HomeWorkAction extends DispatchAction {
 							zsNumArr[i] = zsComNum;
 							bzNumArr[i] = bzComNum;
 							unNumArr[i] = unComNum;
-						}
-						//学生信息
-						if(axisNameStr.contains(sendDate)){
 							map.put("unComUserList_"+sendDate, list_un);
 							map.put("zsComUserList_"+sendDate, list_zs);
 							map.put("bzComUserList_"+sendDate, list_bz);
 						}else{
 							map.put("userList", list_all_stu);
 						}
-						i++;
 					}
 				}
 			}else{
@@ -2279,7 +2277,7 @@ public class HomeWorkAction extends DispatchAction {
 			map.put("yAxisZsData", zsNumArr);
 			map.put("yAxisBzData", bzNumArr);
 			map.put("yAxisUnData", unNumArr);
-			map.put("specDate", eDate.substring(0,5)+specDate);
+			map.put("initDate", eDate);
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
