@@ -21,7 +21,7 @@ public class HwTraceStudyLogManagerImpl implements HwTraceStudyLogManager{
 	HwTraceStudyLogDao hwLogDao = null;
 	Transaction tran = null;
 	@Override
-	public Integer addHwStudyLog(Integer tjId, Integer stuId, Integer loreId,
+	public Integer addHwStudyLog(Integer tjId, Integer stuId,
 			Integer step, Integer stepComplete, Integer currentGold,Integer access, Integer taskNumber) throws WEBException {
 		// TODO Auto-generated method stub
 		try {
@@ -47,7 +47,7 @@ public class HwTraceStudyLogManagerImpl implements HwTraceStudyLogManager{
 	@Override
 	public boolean updateStudyLog(Integer id, Integer step,
 			Integer stepComplete, Integer isFinish, Integer currentGold,Integer access,
-			Integer taskNumber) throws WEBException {
+			Integer taskNumber,String addTime) throws WEBException {
 		// TODO Auto-generated method stub
 		try {
 			hwLogDao = (HwTraceStudyLogDao) DaoFactory.instance(null).getDao(Constants.DAO_HW_TRACE_STUDY_LOG_INFO);
@@ -72,6 +72,9 @@ public class HwTraceStudyLogManagerImpl implements HwTraceStudyLogManager{
 				}
 				if(!taskNumber.equals(-1)){
 					logInfo.setTaskNumber(taskNumber);
+				}
+				if(!addTime.equals("")){
+					logInfo.setAddTime(addTime);
 				}
 				hwLogDao.update(sess, logInfo);
 				tran.commit();
