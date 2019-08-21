@@ -100,7 +100,7 @@
 			base: '/plugins/frame/js/'
 		}).use(['layer','jquery','form','address','baseDataMet'],function(){
 			var layer = layui.layer,$ = layui.jquery,form = layui.form,baseDataMet = layui.baseDataMet;
-			
+			var globalExisFlag = false;
 			form.on('radio(showStaFilter)', function(data){
 				page.data.showStatus = data.value;
 			});  
@@ -144,8 +144,11 @@
 					$('#schNameInp').on('blur',function(){
 						if($(this).val() != ''){
 							var isExistFlag = _this.checkSchNameIsExist($(this).val());
+							globalExisFlag = isExistFlag;
 							if(isExistFlag){
 								layer.msg('该学校名称已存在，请重新输入',{icon:5,anim:6,time:1500});
+							}else{
+								globalExisFlag = false;
 							}
 						}
 					});
@@ -164,6 +167,8 @@
 							regCHN = /^[\u4E00-\u9FA5]+$/; //检测是否中文;
 						if(schNameInpVal == ''){
 							layer.msg('请填写学校名字',{icon:5,anim:6,time:1500});
+						}else if(globalExisFlag){
+							layer.msg('该学校名称已存在，请重新输入',{icon:5,anim:6,time:1500});
 						}else if(!regCHN.test(schNameInpVal)){
 							layer.msg('学校名字应为汉字',{icon:5,anim:6,time:1500});
 						}else if(schNameInpVal.length > 30){
