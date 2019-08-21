@@ -1105,8 +1105,8 @@ public class HomeWorkAction extends DispatchAction {
 				pageSize = 10;
 			}
 			if(sDate.equals("") && eDate.equals("")){
-				sDate = CurrentTime.getStringDate();
-				eDate = CurrentTime.getFinalDate(2);
+				eDate = CurrentTime.getStringDate();
+				sDate = CurrentTime.getFinalDate(-2);
 			}
 		}else{
 			sDate = eDate = CurrentTime.getStringDate();
