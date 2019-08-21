@@ -4,7 +4,7 @@
  */
 var noGradInfo = '',roleName='';//根据科目联动年级时用到 存在年级 清空 不存在有值 noGradInfo
 var currPage;//用于标识是否是当前页面
-//自定义模块
+//自定义模块 
 layui.define(['form','table','relate'],function(exports){
 	var $ = layui.jquery,form=layui.form,table=layui.table,relate=layui.relate;
 	var yearSyStr = '',gradeStr='';

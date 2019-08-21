@@ -6,7 +6,7 @@
 layui.define(['table','form','scrollBar'],function(exports){
 	var comScrollBar=layui.scrollBar,
 		table=layui.table,form=layui.form;
-    var obj = {
+    var obj = { 
     	//关联知识点下获取小知识点列表
     	renderLoreSmList : function(loreList){
     		var loreStr= '';

@@ -1,6 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java"%>
 <!DOCTYPE html> 
-<html>
+<html> 
   <head>
     <title>章节管理</title>
 	<meta http-equiv="pragma" content="no-cache">
