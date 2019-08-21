@@ -316,7 +316,7 @@ layui.define(['form','table','relate'],function(exports){
     					{field : 'loreName', title: '知识点名称',width:'320',align:'center'},
     					{field : 'inUse',title: '是否有效',width:'120',align:'center',templet:function(d){
     						var str = '';
-    						d.inUse == '有效'? str='<span class="sucColor">有效</span>' : tmpStr='<span class="warningCol">无效</span>';
+    						d.inUse == '有效'? str='<span class="sucColor">有效</span>' : str='<span class="warningCol">无效</span>';
     						return str;
     					}},
     					{field : '', title: '操作', width:loreSetWid, fixed:'right', align:'center',templet : function(d){
@@ -444,13 +444,13 @@ layui.define(['form','table','relate'],function(exports){
 				limits:[10,20,30,40],
 				text: {none : '暂无相关数据'},
 				cols : [[
-					{field : '', title: '序号', type:'numbers',fixed: 'left' , align:'center'},
+					{field : '', title: '序号', type:'numbers', align:'center'},
 					{field : 'mainLoreName', title: '引用知识点名称', align:'center' },
 					{field : 'loreName', title: '知识点名称',align:'center'},
 					{field : 'loreCode', title: '知识点编码',align:'center'},
 					{field : 'inUse',title: '是否有效',align:'center',templet:function(d){
 						var str = '';
-						d.inUse == '有效'? str='<span class="sucColor">有效</span>' : tmpStr='<span class="warningCol">无效</span>';
+						d.inUse == '有效'? str='<span class="sucColor">有效</span>' : str='<span class="warningCol">无效</span>';
 						return str;
 					}},
 					{field : 'freeStatus', title: '是否免费',align:'center',templet:function(d){
@@ -463,6 +463,7 @@ layui.define(['form','table','relate'],function(exports){
 					}},
 				]],
 				done : function(res, curr, count){
+					console.log(res)
 					layer.closeAll('loading');
 				}
 			});

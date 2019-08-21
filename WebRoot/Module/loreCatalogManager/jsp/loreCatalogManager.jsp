@@ -140,7 +140,6 @@
 						cptId = $('#chapterInp').val();//获取章节Id
 						if(cptId != ''){
 							var codeRes = baseDataMet.createLoreCode(cptId);
-							console.log(codeRes)
 							layer.open({
 								title:'',
 								type: 1,
