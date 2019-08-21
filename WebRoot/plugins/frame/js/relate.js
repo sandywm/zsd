@@ -328,7 +328,7 @@ layui.define(['table','form','scrollBar'],function(exports){
 				return;
 			}
 			if(currPage == 'lorePage'){
-				loreSetWid = '320';
+				loreSetWid = '375';
 			}else if(currPage == 'teaHwPage'){
 				if(roleName == '老师'){
 					loreSetWid = '220';

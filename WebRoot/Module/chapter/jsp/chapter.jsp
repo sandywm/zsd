@@ -20,9 +20,7 @@
 						<div class="layui-card-header posRel">
 	  						<span>章节管理</span>
 	  						<a id="addChapter" class="posAbs newAddBtn addBtnRt" opts='add' href="javascript:void(0)"><i class="layui-icon layui-icon-add-circle"></i>添加章节</a>
-	  					</div>
-	  					<div class="layui-card-body" pad15>
-	  						<div class="layui-form layui-clear">
+	  						<div class="layui-form layui-clear" style="float:right;margin-right:130px;">
 	  							<div class="itemDivs">
 		  							<div class="layui-input-inline">
 		  								<input type="hidden" id="subInp" value="0"/>
@@ -51,12 +49,14 @@
 										<select id="eduColumeSel" lay-filter="eduColumeSel"></select> 
 		  							</div>
 		  						</div>
-		  						<div class="itemDivs">
+		  						<div class="itemDivs" style="margin-right:0;">
 		  							<div class="layui-input-inline">
 		  								<button id="queryBtn" class="layui-btn"><i class="layui-icon layui-icon-search"></i></button>
 		  							</div>
 		  						</div>
 	  						</div>
+	  					</div>
+	  					<div class="layui-card-body" pad15>
 	  						<div id="editionList">
 	  							<p class="tipsTxt">请根据对应的条件对章节进行查看和管理！</p>
 	  							<table id="chapterTable" class="layui-table" lay-filter="chapterTable"></table>
