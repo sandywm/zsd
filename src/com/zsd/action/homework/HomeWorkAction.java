@@ -19,10 +19,11 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.zsd.action.base.Transcode;
 import com.zsd.factory.AppFactory;
 import com.zsd.module.BuffetAbilityTypeInfo;
-import com.zsd.module.BuffetLoreStudyDetailInfo;
 import com.zsd.module.BuffetMindTypeInfo;
 import com.zsd.module.BuffetTypeInfo;
 import com.zsd.module.Chapter;
@@ -64,6 +65,7 @@ import com.zsd.service.SendHwManager;
 import com.zsd.service.StudyMapManager;
 import com.zsd.service.TeaQueManager;
 import com.zsd.service.UserClassInfoManager;
+import com.zsd.service.UserManager;
 import com.zsd.tools.CommonTools;
 import com.zsd.tools.Convert;
 import com.zsd.tools.CurrentTime;
@@ -2168,7 +2170,7 @@ public class HomeWorkAction extends DispatchAction {
 		String eDate  = CommonTools.getFinalStr("endDate", request);//时间控件的日期
 		String sDate = "";
 		Integer classId = CommonTools.getFinalInteger("classId", request);
-		Integer hwType = CommonTools.getFinalInteger("hwType", request);
+		Integer hwType = CommonTools.getFinalInteger("hwType", request);//作业类型(1-家庭作业,2-课后复习,3-课前预习)
 		Integer currUserId = CommonTools.getLoginUserId(request);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "error";
@@ -2206,8 +2208,9 @@ public class HomeWorkAction extends DispatchAction {
 						map_d.put("userName", user.getRealName());
 						map_d.put("userPortrait", user.getPortrait());
 						map_d.put("sendHwId", 0);
-						map_d.put("stuComType", "");
+						map_d.put("hwType", hwType);
 						map_d.put("comStatus", -1);
+						map_d.put("stuComType", "");
 						map_d.put("classId", uc.getClassInfo().getId());
 						list_all_stu.add(map_d);
 					}
@@ -2216,7 +2219,7 @@ public class HomeWorkAction extends DispatchAction {
 			if(sendHwSize > 0){
 				for(Integer j = sendHwSize - 1 ; j >= 0 ; j--){
 					SendHwInfo shw = sendList.get(j);
-					Integer i = 0;
+					Integer i = -1;
 					Integer zsComNum = 0;
 					Integer bzComNum = 0;
 					Integer unComNum = 0;
@@ -2243,6 +2246,7 @@ public class HomeWorkAction extends DispatchAction {
 							map_d_1.put("sendHwId", shw.getId());
 							map_d_1.put("comStatus", comStatus);
 							map_d_1.put("classId", shw.getClassInfo().getId());
+							map_d_1.put("hwType", hwType);//
 							if(comStatus.equals(0)){
 								unComNum++;
 								map_d_1.put("stuComType", "unCom");
@@ -2257,7 +2261,7 @@ public class HomeWorkAction extends DispatchAction {
 								list_bz.add(map_d_1);
 							}
 						}
-						if(axisNameStr.contains(sendDate)){
+						if(i > 0){//匹配到
 							zsNumArr[i] = zsComNum;
 							bzNumArr[i] = bzComNum;
 							unNumArr[i] = unComNum;
@@ -3674,9 +3678,9 @@ public class HomeWorkAction extends DispatchAction {
 				List<HwTraceStudyDetailInfo> sdList_used = new ArrayList<HwTraceStudyDetailInfo>();
 				HwTraceStudyLogInfo sLog = slm.getEntityByTjId(tjId);
 				Integer studyLogId = 0;
+				List<Object> list_d = new ArrayList<Object>();
 				if(sLog != null){
 					studyLogId = sLog.getId();
-					List<Object> list_d = new ArrayList<Object>();
 					if(!nextLoreIdArray.equals("")){
 						 String[] nextLoreIdArray_1 = nextLoreIdArray.split(",");
 						 for(Integer i = 0 ; i < nextLoreIdArray_1.length ; i++){
@@ -3952,9 +3956,534 @@ public class HomeWorkAction extends DispatchAction {
 							 }
 						}
 					}
+				}else{//新的挑战
+					if(!nextLoreIdArray.equals("")){
+						 String[] nextLoreIdArray_1 = nextLoreIdArray.split(",");
+						 for(Integer i = 0 ; i < nextLoreIdArray_1.length ; i++){
+							 loreId = Integer.parseInt(nextLoreIdArray_1[i]);
+							 currentLoreId = loreId;
+							 //获取该知识典所有类型为loreType的题型[0为题状态为有效状态]
+							 lqList_old.addAll(lqm.listInfoByLoreId(CommonTools.getQuoteLoreId(loreId), loreType, 0));
+							 if(loreType.equals("再次诊断")){//获取上次的学习情况(根据logId+nextLoreIdArray+loreType)获取答题正确的题
+								 sdList_used.addAll(sdm.listCurrentRightInfoByLogId(studyLogId, loreId, loreType));
+							 }else{//获取上次的学习情况(根据logId+nextLoreIdArray+loreType)
+								 sdList_used.addAll(sdm.listExistInfoByOption(studyLogId, currentLoreId, loreType));
+							 }
+						 }
+					}
+					for(Integer i = 0 ; i < lqList_old.size() ; i++){
+						LoreQuestion lq = lqList_old.get(i);
+						Integer lqId_old = lq.getId();
+						Map<String,Object> map_d = new HashMap<String,Object>();
+						map_d.put("lqId", lqId_old);
+						Integer quoteLoreId = lq.getLoreInfo().getId();
+						String[] loreInfo = CommonTools.getRealLoreInfo(quoteLoreId, loreId);//当前题库的指定版本下的知识点
+						map_d.put("currLoreId", Integer.parseInt(loreInfo[0]));
+						map_d.put("currLoreName", loreInfo[1]);
+						String lqType = lq.getQueType();
+						map_d.put("lqType", lqType);
+						map_d.put("loreType", lq.getLoreTypeName());
+						map_d.put("lqSub", lq.getQueSub());
+						map_d.put("answerA", lq.getA());
+						map_d.put("answerB", lq.getB());
+						map_d.put("answerC", lq.getC());
+						map_d.put("answerD", lq.getD());
+						map_d.put("answerE", lq.getE());
+						map_d.put("answerF", lq.getF());
+						map_d.put("realAnswer", "");
+						map_d.put("myAnswer", "");
+						map_d.put("result", 0);//答案对错0:错，1:对
+						map_d.put("questionStep", 0);
+						Integer completeStatus = 0;//做题状态(0:已做,1:未做)
+						 for(Integer j = 0 ; j < sdList_used.size() ; j++){
+							 HwTraceStudyDetailInfo sd = sdList_used.get(j);
+							 LoreQuestion lq_use = sd.getLoreQuestion();
+							 if(lqId_old.equals(lq_use.getId())){
+								completeStatus = 1;
+								 //表示已做过
+								map_d.put("answerA", lq_use.getA());
+								map_d.put("answerB", lq_use.getB());
+								map_d.put("answerC", lq_use.getC());
+								map_d.put("answerD", lq_use.getD());
+								map_d.put("answerE", lq_use.getE());
+								map_d.put("answerF", lq_use.getF());
+								map_d.put("realAnswer", sd.getRealAnswer());
+								map_d.put("myAnswer", sd.getMyAnswer());
+								map_d.put("result", sd.getResult());//答案对错0:错，1:对
+								map_d.put("questionStep", sd.getQueStep());
+								break;
+							 }
+						 }
+						 map_d.put("completeStatus", completeStatus);//做题状态(0:未做,1:已做)
+						if(completeStatus.equals(0)){
+							if(lqType.equals("单选题") || lqType.equals("多选题") || lqType.equals("判断题") || lqType.equals("填空题") || lqType.equals("问答题")){
+								map_d.put("answerNum", 1);
+							}else{//填空选择题
+								map_d.put("answerNum", lq.getQueAnswer().split(",").length);
+							}
+						}
+						if(lqType.equals("填空题") || lqType.equals("问答题")){
+							map_d.put("realAnswer", lq.getQueAnswer());
+						}
+						list_d.add(map_d);
+					 }
+				}
+				map.put("lqList", list_d);
+				map.put("tjId", tjId);
+				map.put("loreName", loreName);
+				map.put("subDetail", "针对该知识点而设定的题目共计"+list_d.size()+"题");
+			}
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 将溯源学习时的答题记录插入数据库
+	 * @author wm
+	 * @date 2019-8-20 上午10:22:21
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward insertStudyInfo(ActionMapping mapping ,ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		HwTraceStudyLogManager slm = (HwTraceStudyLogManager) AppFactory.instance(null).getApp(Constants.WEB_HW_TRACE_STUDY_LOG_INFO);
+		HwTraceStudyDetailManager sdm = (HwTraceStudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_HW_TRACE_STUDY_DETAIL_INFO);
+		HwStudyTjManager tjm = (HwStudyTjManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_TJ_INFO);
+		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
+		UserManager um = (UserManager)AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
+		Integer tjId = CommonTools.getFinalInteger("tjId", request);//家庭作业做题统计
+		Integer questionStep = Integer.parseInt(request.getParameter("questionStep"));//题的顺序
+		String myAnswer = Transcode.unescape_new1("myAnswer",request);//选择的答案
+		String answerOptionArrayStr = Transcode.unescape_new1("answerOptionArray",request);//做题时的选项
+		Integer lqId = CommonTools.getFinalInteger("lqId", request);//做题的编号
+		String loreType = "";//针对性诊断，巩固训练，再次诊断
+		Integer stuId = CommonTools.getLoginUserId(request);
+		Integer result = 0;//0为错,1为对
+		boolean flag = false;
+		String[] answerOptionStr = {"","","","","",""};
+		String currTime = CurrentTime.getCurrentTime();
+		Integer currentLoreId = 0;
+		Integer step = 1;
+		Integer stepComplete = 0;//0:未做完题，1:做完题
+		Integer isFinish = 1;//0:未做过,1:未通过，2:通过
+		Integer oldStepMoney = 0;//该阶段得分
+		String questionType = "";
+		String dataBaseAnswer = "";
+		String dataBaseAnswerChar = "";
+		Integer studyLogId = 0;
+		boolean updateFlag = false;
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "error";
+		if(tjId > 0 && lqId > 0 && !myAnswer.equals("")){
+			HwStudyTjInfo tj = tjm.getEntityById(tjId);
+			if(tj != null){
+				LoreQuestion lq = lqm.getEntityByLqId(lqId);
+				if(lq != null){
+					loreType = lq.getLoreTypeName();
+					dataBaseAnswer = lq.getQueAnswer();
+					questionType = lq.getQueType();
+					Integer quoteLoreId = lq.getLoreInfo().getId();
+					Integer loreId = tj.getSendHwInfo().getLoreInfo().getId();
+					String[] loreInfo = CommonTools.getRealLoreInfo(quoteLoreId, loreId);//当前题库的指定版本下的知识点
+					currentLoreId = Integer.parseInt(loreInfo[0]);
+					if(questionType.equals("问答题") || questionType.equals("填空题")){
+						if(myAnswer.indexOf("正确") >= 0){
+							result = 1;
+						}else{
+							result = 0;
+						}
+						dataBaseAnswerChar = dataBaseAnswer;
+					}else{
+						JSONArray answerOptionArray = JSON.parseArray(answerOptionArrayStr);
+						String[] dataBaseAnswerArray = dataBaseAnswer.split(",");
+						for(int j = 0; j < dataBaseAnswerArray.length; j++){
+							for(int i = 0; i < answerOptionArray.size(); i++){
+								String answerOption = answerOptionArray.get(i).toString();
+								if(answerOption.indexOf("Module/commonJs/ueditor/jsp/lore") >= 0){
+									//表示答案选项是图片--截取前面的路径
+									answerOption = answerOption.replace("Module/commonJs/ueditor/jsp/lore/", "");
+								}
+								if(dataBaseAnswerArray[j].equals(answerOption)){
+									dataBaseAnswerChar += Convert.NumberConvertBigChar(i)+",";
+									break;
+								}
+							}
+						}
+						dataBaseAnswerChar = dataBaseAnswerChar.substring(0, dataBaseAnswerChar.length() - 1);
+						if(questionType.equals("多选题")){
+							//顺序可以不同
+							flag = false;
+						}else{//不是多选题答案需要完全匹配(填空选择题、单选题，判断题)
+							flag = true;
+						}
+						if(flag){//完全匹配
+							if(dataBaseAnswerChar.equals(myAnswer)){
+								result = 1;
+							}else{
+								result = 0;
+							}
+						}else{//答案顺序可以不同
+							String[] myAnserArray = myAnswer.split(",");
+							String[] realAnswerArray = dataBaseAnswerChar.split(",");
+							String newMyAnswer = CommonTools.arraySort(myAnserArray);//排序后我的答案
+							String newRealAnswer = CommonTools.arraySort(realAnswerArray);//排序后后台正确答案
+							if(newMyAnswer.equals(newRealAnswer)){
+								result = 1;
+							}else{
+								result = 0;
+							}
+						}
+						for(int i = 0 ; i < answerOptionArray.size() ; i++){
+							answerOptionStr[i] = answerOptionArray.get(i).toString();
+						}
+						HwTraceStudyLogInfo htsl = slm.getEntityByTjId(tjId);
+						if(htsl != null){
+							isFinish = htsl.getIsFinish();
+							if(isFinish.equals(2)){//如果状态为2，说明是新开的题，studyLogId清0.
+								studyLogId = 0;
+							}else{
+								studyLogId = htsl.getId();
+							}
+						}
+						if(studyLogId > 0){//表示是继续之前的未做完的题（修改log里面的记录）
+							if(sdm.listLastInfoByLogId(studyLogId).get(0).getLoreQuestion().getId().equals(lqId)){
+								updateFlag = false;
+								msg = "reSubmit";//不能重复提交
+							}else{
+								updateFlag = true;
+								step = htsl.getStep();
+								if(isFinish.equals(1)){//表示本知识点还未完成
+									if(stepComplete.equals(1)){//表示该阶段已经完成
+										//将step增加1，stepComplete重新清0
+										step++;
+										stepComplete = 0;
+										oldStepMoney = 0;
+									}
+								}
+								if(loreType.equals("巩固训练")){
+									//巩固训练只修改access状态为31，只要不是最后的提交，下次还会继续停留在学习当前知识点的状态
+									//-1表示不修改对应值
+									updateFlag = slm.updateStudyLog(studyLogId, 3, 0, -1, -1, 31, -1,"");
+								}else{//
+									updateFlag = slm.updateStudyLog(studyLogId, step, stepComplete, isFinish, oldStepMoney, 0, -1,currTime);
+								}
+							}
+						}else{//表示新开的题
+							//step值为1，stepComplete为0，isFinish为1;
+							if(result == 1){
+								oldStepMoney++;
+							}
+							//此处由于是巴菲特关联知识点，巴菲特作为第一节，知识点作为第2节，所有首次插入巴菲特知识点学习记录时step默认数值为2
+							step = 2;
+							studyLogId = slm.addHwStudyLog(tjId, stuId, step, stepComplete, oldStepMoney, 0, 1);
+							if(studyLogId > 0){
+								updateFlag = true;
+							}
+						}
+						if(studyLogId > 0 &&  updateFlag == true){
+							Integer questionNumber_curr = sdm.getQuestionNumberByOption(studyLogId, lqId) + 1;
+							sdm.addHTSDetail(stuId, studyLogId, lqId, currentLoreId, questionStep, dataBaseAnswerChar, result, myAnswer, answerOptionStr[0],
+									answerOptionStr[1],answerOptionStr[2],answerOptionStr[3],
+									answerOptionStr[4], answerOptionStr[5], questionNumber_curr);
+							//修改用户中的经验和金币数（答一题增加1经验，答对一题再增加1经验）
+							Integer coin = 0;
+							Integer experience = Constants.EXPERIENCE;
+							if(result == 1){//答题正确
+								if(loreType.equals("巩固训练")){//巩固训练不计分
+									coin = 0;
+									experience = 0;
+								}else{
+									coin =  10;
+									experience += Constants.EXPERIENCE;
+								}
+							}
+							//修改用户的经验、金币数（增加）
+							um.updateUser(stuId, coin, experience, 0, 0);
+							msg = "success";
+						}
+					}
 				}
 			}
 		}
+		map.put("result", msg);
+		map.put("studyResult", result);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 当前阶段完成(最后提交动作)，修改指定logId的stepComplete,isFinish状态
+	 * @author wm
+	 * @date 2019-8-20 下午05:47:18
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward updateLogStatus(ActionMapping mapping ,ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		HwTraceStudyLogManager slm = (HwTraceStudyLogManager) AppFactory.instance(null).getApp(Constants.WEB_HW_TRACE_STUDY_LOG_INFO);
+		HwTraceStudyDetailManager sdm = (HwTraceStudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_HW_TRACE_STUDY_DETAIL_INFO);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "error";
+		Integer tjId = CommonTools.getFinalInteger("tjId", request);//家庭作业做题统计编号
+		Integer stepComplete = Integer.parseInt(request.getParameter("stepComplete"));
+		Integer isFinish = CommonTools.getFinalInteger("isFinish", request);
+		Integer access = CommonTools.getFinalInteger("access", request);
+		Integer step = CommonTools.getFinalInteger("step", request);
+		String submitType = CommonTools.getFinalStr("type", request);;//study(巩固训练),diagnosis(针对性诊断和再次诊断)
+		Integer currentLoreId = CommonTools.getFinalInteger("currentLoreId", request);//当前做题的知识点编号
+		Integer loreId = 0;//发送的家庭作业题库属于那个知识点名下（指定出版社下）
+		Integer studyLogId = 0;
+		Integer taskNumber = 0;
+		if(tjId > 0){
+			HwTraceStudyLogInfo htsl = slm.getEntityByTjId(tjId);
+			if(htsl != null){
+				studyLogId = htsl.getId();
+				loreId = htsl.getHwStudyTjInfo().getSendHwInfo().getLoreInfo().getId();
+				taskNumber = htsl.getTaskNumber() + 1;
+				if(step.equals(3)){//再次诊断时用
+					if(access.equals(1)){//再次诊断全部正确
+						String[] studyPath = CommonTools.getLorePath(loreId, "sutdy");
+						String studyPath_new = CommonTools.getCurrentStudyPath_new(studyPath[0], currentLoreId);
+						if(studyPath_new.split(":").length == 1){//表示当前知识点是本知识点之前的最后一个知识点
+							//表示当前层完成，stepComplete = 1;
+							stepComplete = 0;
+							access = 2;
+							step = 4;
+							isFinish = 1;
+						}
+					}
+				}else{
+					//根据学习记录编号获取有无当前知识点指定类型的答题记录
+					List<HwTraceStudyDetailInfo>  sdList = sdm.listExistInfoByOption(studyLogId, currentLoreId, "再次诊断");
+					if(submitType.equals("study")){//5步学习法学完后的提交动作
+						if(sdList.size() > 0){//表示之前有做过的答题记录
+							access = 3;
+						}else{//表示还没做过再次诊断
+							access = 4;
+						}
+					}else{//再次诊断时(针对性诊断的step不可能是3)再次诊断后的提交动作
+						if(sdList.size() > 0){//表示之前有做过的答题记录
+							access = 31;
+						}else{//表示还没做过再次诊断
+							access = 41;
+						}
+					}
+				}
+			}else if(step.equals(4)){
+				if(access == 1){//再次诊断全部正确
+					stepComplete = 0;
+					access = 2;
+					step = 4;
+					isFinish = 1;
+				}else{
+					//根据学习记录编号获取有无当前知识点指定类型的答题记录
+					List<HwTraceStudyDetailInfo>  blsdList = sdm.listExistInfoByOption(studyLogId, currentLoreId, "再次诊断");
+					if(submitType.equals("study")){//5步学习法学完后的提交动作
+						if(blsdList.size() > 0){//表示之前有做过的答题记录
+							access = 3;
+						}else{//表示还没做过再次诊断
+							access = 4;
+						}
+					}else{//再次诊断时(针对性诊断的step不可能是3)再次诊断后的提交动作
+						if(blsdList.size() > 0){//表示之前有做过的答题记录
+							access = 31;
+						}else{//表示还没做过再次诊断
+							access = 41;
+						}
+					}
+				}
+			}
+			//step=0表示不对step进行修改
+			boolean flag = slm.updateStudyLog(studyLogId, step, stepComplete, isFinish, -1, access, taskNumber,"");
+			if(flag){
+				msg = "success";
+			}
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 获取五步学习法内容
+	 * @author wm
+	 * @date 2019-8-20 下午06:07:20
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getStepStudyData(ActionMapping mapping ,ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
+		LoreInfoManager lm = (LoreInfoManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
+		HwStudyTjManager tjm = (HwStudyTjManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_TJ_INFO);
+		String loreTypeName = CommonTools.getFinalStr("loreTypeName", request);//五步类型video,guide,loreList,example,practice
+		Integer currLoreId = CommonTools.getFinalInteger("currentLoreId", request);//即将要学习的知识点（就是map接口中的nextLoreIdArray--学习时为单个id）
+		Integer tjId = CommonTools.getFinalInteger("tjId", request);
+		String msg = "noInfo";
+		Map<String,Object> map = new HashMap<String,Object>();
+		Integer quoteLoreId = CommonTools.getQuoteLoreId(currLoreId);
+		HwStudyTjInfo tj = tjm.getEntityById(tjId);
+		if(tj != null){
+			map.put("loreName", tj.getSendHwInfo().getHwTitle());
+			map.put("subDetail", "检测你对该知识点的掌握情况");
+			if(loreTypeName.equals("video")){//视频讲解
+				List<LoreQuestion> lqList = lqm.listInfoByLoreId(quoteLoreId, "知识讲解", 0);
+				if(lqList.size() > 0){
+					msg = "success";
+					map.put("sourceDetail", lqList.get(0).getQueAnswer());
+					map.put("loreTypeName", loreTypeName);
+				}else{
+					msg = "noInfo";
+				}
+			}else if(loreTypeName.equals("guide") || loreTypeName.equals("loreList")){//点拨指导//知识清单
+				if(loreTypeName.equals("guide")){
+					loreTypeName = "点拨指导";
+				}else{
+					loreTypeName = "知识清单";
+				}
+				msg = "success";
+				List<LoreQuestion> lqList = lqm.listInfoByLoreId(quoteLoreId, loreTypeName, 0);
+				if(lqList.size() > 0){
+					Integer lqId = lqList.get(0).getId();
+					List<LoreQuestionSubInfo> lqsList = lqm.listLQSInfoByLqId(lqId, "");
+					if(lqsList.size() > 0){
+						List<Object> list_d = new ArrayList<Object>();
+						for(LoreQuestionSubInfo lqs : lqsList){
+							String loreType = lqs.getLoreTypeName();
+							Map<String,Object> map_d = new HashMap<String,Object>();
+							map_d.put("loreType", loreType);
+							map_d.put("lqsTitle", lqs.getLqsTitle());
+							map_d.put("lqsContent", lqs.getLqsContent());
+							list_d.add(map_d);
+						}
+						map.put("sourceDetail", list_d);
+						map.put("loreTypeName", loreTypeName);
+					}else{
+						msg = "noInfo";
+					}
+				}
+			}else if(loreTypeName.equals("example")){//解题示范
+				loreTypeName = "解题示范";
+				msg = "success";
+				List<LoreQuestion> lqList = lqm.listInfoByLoreId(quoteLoreId, loreTypeName, 0);
+				if(lqList.size() > 0){
+					List<Object> list_d = new ArrayList<Object>();
+					for(LoreQuestion lq : lqList){
+						Map<String,Object> map_d = new HashMap<String,Object>();
+						map_d.put("queSub", lq.getQueSub());
+						map_d.put("queAnswer", lq.getQueAnswer());
+						map_d.put("queResolution", lq.getQueResolution());
+						list_d.add(map_d);
+					}
+					map.put("sourceDetail", list_d);
+					map.put("loreTypeName", loreTypeName);
+				}else{
+					msg = "noInfo";
+				}
+			}else if(loreTypeName.equals("practice")){//巩固训练
+				loreTypeName = "巩固训练";
+				msg = "success";
+				if(currLoreId > 0){
+					List<LoreQuestion> lqList = lqm.listInfoByLoreId(quoteLoreId, loreTypeName, 0);
+					if(lqList.size() > 0){
+						List<Object> list_d = new ArrayList<Object>();
+						for(LoreQuestion lq : lqList){
+							Map<String,Object> map_d = new HashMap<String,Object>();
+							map_d.put("lqId", lq.getId());
+							LoreInfo lore = lm.getEntityById(currLoreId);
+							map_d.put("currLoreId", currLoreId);
+							map_d.put("currLoreName", lore.getLoreName());
+							String lqType = lq.getQueType();
+							map_d.put("loreType", lq.getLoreTypeName());
+							map_d.put("lqType", lqType);
+							map_d.put("lqType", lq.getQueType());
+							map_d.put("lqSub", lq.getQueSub());
+							map_d.put("answerA", lq.getA());
+							map_d.put("answerB", lq.getB());
+							map_d.put("answerC", lq.getC());
+							map_d.put("answerD", lq.getD());
+							map_d.put("answerE", lq.getE());
+							map_d.put("answerF", lq.getF());
+							if(lqType.equals("单选题") || lqType.equals("多选题") || lqType.equals("判断题") || lqType.equals("填空题") || lqType.equals("问答题")){
+								map_d.put("answerNum", 1);
+							}else{//填空选择题
+								map_d.put("answerNum", lq.getQueAnswer().split(",").length);
+							}
+							if(lqType.equals("填空题") || lqType.equals("问答题")){
+								map_d.put("realAnswer", lq.getQueAnswer());
+							}
+							//巩固训练全部都需要重新做
+							list_d.add(map_d);
+						}
+						map.put("sourceDetail", list_d);
+						map.put("loreTypeName", loreTypeName);
+						map.put("tjId", tjId);
+					}else{
+						msg = "noInfo";
+					}
+				}
+			}
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	
+	/**
+	 * 家庭作业最后提交动作
+	 * @author wm
+	 * @date 2019-8-20 下午06:17:47
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward updateHwCompleteFlag(ActionMapping mapping ,ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		HwStudyTjManager tjm = (HwStudyTjManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_TJ_INFO);
+		HwTraceStudyLogManager slm = (HwTraceStudyLogManager) AppFactory.instance(null).getApp(Constants.WEB_HW_TRACE_STUDY_LOG_INFO);
+		Integer tjId = CommonTools.getFinalInteger("tjId", request);
+		Map<String,Boolean> map = new HashMap<String,Boolean>();
+		boolean submitFlag = false;
+		if(tjId > 0){
+			HwStudyTjInfo tj = tjm.getEntityById(tjId);
+			if(tj.getComStatus().equals(0)){//未完成状态下才能提交
+				if(tj.getAllNum().equals(tj.getSuccNum() + tj.getErrorNum())){//所有题都做过才能提交
+					if(tj.getSendHwInfo().getTraceStatus().equals(0)){//没开启溯源可直接提交
+						submitFlag = true;
+					}else{//开启溯源，查看溯源学习记录是否完成
+						HwTraceStudyLogInfo hsl = slm.getEntityById(tjId);
+						if(hsl != null){
+							if(hsl.getIsFinish().equals(2)){//作业溯源学习记录任务完成才能提交
+								submitFlag = true;
+							}
+						}
+					}
+				}
+			}
+		}
+		map.put("result", submitFlag);
+		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
 }
+

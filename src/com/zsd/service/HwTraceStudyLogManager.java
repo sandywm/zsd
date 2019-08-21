@@ -20,7 +20,7 @@ public interface HwTraceStudyLogManager {
 	 * @return
 	 * @throws WEBException
 	 */
-	Integer addHwStudyLog(Integer tjId,Integer stuId,Integer loreId,Integer step,Integer stepComplete,
+	Integer addHwStudyLog(Integer tjId,Integer stuId,Integer step,Integer stepComplete,
 			Integer currentGold,Integer access,Integer taskNumber) throws WEBException;
 	
 	/**
@@ -34,10 +34,11 @@ public interface HwTraceStudyLogManager {
 	 * @param currentGold 当前阶段答题分数-1不修改
 	 * @param access 本级知识点完成情况-1不修改
 	 * @param taskNumber 任务个数(为-1时不修改)
+	 * @param addTime 添加时间 （""不修改）
 	 * @return
 	 * @throws WEBException
 	 */
-	boolean updateStudyLog(Integer id,Integer step,Integer stepComplete,Integer isFinish,Integer currentGold,Integer access,Integer taskNumber)throws WEBException;
+	boolean updateStudyLog(Integer id,Integer step,Integer stepComplete,Integer isFinish,Integer currentGold,Integer access,Integer taskNumber,String addTime)throws WEBException;
 	
 	/**
 	 * 根据主键获取溯源学习记录
