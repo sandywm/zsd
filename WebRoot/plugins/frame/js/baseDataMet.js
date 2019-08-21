@@ -333,7 +333,6 @@ layui.define(['form','table','relate'],function(exports){
         								fixStr += '<a class="layui-btn layui-btn-xs" opts="merge" lay-event="mergeLoreFun" loreName="'+ d.loreName +'" loreId="'+ d.loreId +'"><i class="iconfont layui-extend-hebing"></i>合并知识点</a>';
         							}
     							}
-    							
     						}else{
     							if(currPage == 'buffetPage'){//自助餐其他版本就一个浏览功能
     								fixStr += '<a class="layui-btn layui-btn-xs layui-btn-normal viewBtn" opts="view" lay-event="viewFun" loreName="'+ d.loreName +'" loreId="'+ d.loreId +'"><i class="layui-icon layui-icon-search"></i>浏览</a>';

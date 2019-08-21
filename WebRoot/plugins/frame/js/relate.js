@@ -304,7 +304,7 @@ layui.define(['table','form','scrollBar'],function(exports){
     	},
     	//查询知识点根据知识点标题和拼音码
     	searchZsdByTitOrPy : function(){
-    		var _this = this;
+    		var _this = this,loreSetWid=0;
     		var zsd_py = $('#zsd_py').val(),
 				zsd_txt = $('#zsd_txt').val();
     		if(searOpt == 'loreManager' || searOpt == 'lexRelate'){
@@ -326,6 +326,15 @@ layui.define(['table','form','scrollBar'],function(exports){
 			}else if(zsd_txt != '' && zsd_txt.length < 2){
 				layer.msg('为了提高查询速度，必须最少输入两个字符以上',{icon:5,anim:6,time:2200});
 				return;
+			}
+			if(currPage == 'lorePage'){
+				loreSetWid = '320';
+			}else if(currPage == 'teaHwPage'){
+				if(roleName == '老师'){
+					loreSetWid = '220';
+				}else if(roleName == '知识点管理员'){
+					loreSetWid = '160';
+				}
 			}
 			layer.load('1');
 			$.ajax({
@@ -350,26 +359,35 @@ layui.define(['table','form','scrollBar'],function(exports){
 		        				even : true,
 		        				limit : 20,
 		        				limits:[10,20,30,40],
+		        				cellMinWidth:220,
 		        				text: {none : '暂无相关数据'},
 		        				cols : [[
 		        					{field : '', title: '序号', type:'numbers', align:'center'},
-		        					{field : 'subName', title: '学科', width:'120', align:'center' },
-		        					{field : 'gradeName', title: '年级',width:'120',align:'center'},
-		        					{field : 'eduName', title: '教材',width:'120',align:'center'},
-		        					{field : 'cptName', title: '章节',width:'280',align:'center'},
-		        					{field : 'loreName', title: '知识点名称',width:'280',align:'center'},
+		        					{field : 'subName', title: '学科', width:'150', align:'center' },
+		        					{field : 'gradeName', title: '年级', width:'150',align:'center'},
+		        					{field : 'eduName', title: '教材', width:'150',align:'center'},
+		        					{field : 'cptName', title: '章节',width:'320',align:'center'},
+		        					{field : 'loreName', title: '知识点名称',width:'320',align:'center'},
 		        					{field : 'inUse',title: '是否有效',width:'120',align:'center',templet:function(d){
 		        						var str = '';
 		        						d.inUse == '启用'? str='<span class="sucColor">启用</span>' : str='<span class="warningCol">未启用</span>';
 		        						return str;
 		        					}},
-		        					{field : '', title: '操作',width:'375',fixed:'right', align:'center',templet : function(d){
+		        					{field : '', title: '操作',fixed:'right',  width:loreSetWid,align:'center',templet : function(d){
 		        						var fixStr = '';
-		        						fixStr += '<a class="layui-btn layui-btn-xs addTikuBtn" opts="add" lay-event="addFun" loreName="'+ d.loreName +'" loreId="'+ d.loreId +'"><i class="layui-icon layui-icon-add-circle"></i>添加</a>';
-	        							fixStr += '<a class="layui-btn layui-btn-xs layui-btn-primary editBtn" opts="edit" lay-event="editFun" loreName="'+ d.loreName +'" loreId="'+ d.loreId +'"><i class="layui-icon layui-icon-edit"></i>编辑</a>';
-	        							fixStr += '<a class="layui-btn layui-btn-xs layui-btn-normal viewBtn" opts="view" lay-event="viewFun" loreName="'+ d.loreName +'" loreId="'+ d.loreId +'"><i class="layui-icon layui-icon-search"></i>浏览</a>';
-	        							fixStr += '<a class="layui-btn layui-btn-xs layui-btn-primary viewBtn" lay-event="relateLore" loreName="'+ d.loreName +'" loreId="'+ d.loreId +'"><i class="iconfont layui-extend-guanlian"></i>关联知识点</a>';
-		        						fixStr += '<a class="layui-btn layui-btn-xs viewBtn" lay-event="viewLoreTree" loreName="'+ d.loreName +'" loreId="'+ d.loreId +'"><i class="iconfont layui-extend-tree"></i>知识树</a>';
+		        						if(currPage == 'lorePage'){
+		        							fixStr += '<a class="layui-btn layui-btn-xs addTikuBtn" opts="add" lay-event="addFun" loreName="'+ d.loreName +'" loreId="'+ d.loreId +'"><i class="layui-icon layui-icon-add-circle"></i>添加</a>';
+		        							fixStr += '<a class="layui-btn layui-btn-xs layui-btn-primary editBtn" opts="edit" lay-event="editFun" loreName="'+ d.loreName +'" loreId="'+ d.loreId +'"><i class="layui-icon layui-icon-edit"></i>编辑</a>';
+		        							fixStr += '<a class="layui-btn layui-btn-xs layui-btn-normal viewBtn" opts="view" lay-event="viewFun" loreName="'+ d.loreName +'" loreId="'+ d.loreId +'"><i class="layui-icon layui-icon-search"></i>浏览</a>';
+		        							fixStr += '<a class="layui-btn layui-btn-xs layui-btn-primary viewBtn" lay-event="relateLore" loreName="'+ d.loreName +'" loreId="'+ d.loreId +'"><i class="iconfont layui-extend-guanlian"></i>关联知识点</a>';
+			        						fixStr += '<a class="layui-btn layui-btn-xs viewBtn" lay-event="viewLoreTree" loreName="'+ d.loreName +'" loreId="'+ d.loreId +'"><i class="iconfont layui-extend-tree"></i>知识树</a>';
+		        						}else if(currPage == 'teaHwPage'){
+		        							if(roleName == '老师'){
+		        								fixStr += '<a class="layui-btn layui-btn-xs addTikuBtn" opts="add" lay-event="addFun" loreName="'+ d.loreName +'" loreId="'+ d.loreId +'"><i class="layui-icon layui-icon-add-circle"></i>添加</a>';
+		        							}
+		        							fixStr += '<a class="layui-btn layui-btn-xs layui-btn-primary editBtn" opts="edit" lay-event="editFun" loreName="'+ d.loreName +'" loreId="'+ d.loreId +'"><i class="layui-icon layui-icon-edit"></i>编辑</a>';
+		        							fixStr += '<a class="layui-btn layui-btn-xs layui-btn-normal viewBtn" opts="view" lay-event="viewFun" loreName="'+ d.loreName +'" loreId="'+ d.loreId +'"><i class="layui-icon layui-icon-search"></i>浏览</a>';
+		        						}
 		        						return fixStr;
 		        					}},
 		        				]],

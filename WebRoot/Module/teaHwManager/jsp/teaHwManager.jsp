@@ -57,6 +57,28 @@
 					</div>
 				</div>
 			</div>
+			<!-- 搜索知识点 -->
+			<div class="searchZsd">
+				<div class="itemDivs" style="width:90px;margin-right:10px;">
+					<div class="layui-input-inline layui-form">
+						<select id="zsdSel" lay-filter="zsdSel">
+							<option value="1">拼音码</option>
+					       	<option value="2">标题</option>
+					     </select>
+					</div>
+				</div>
+				<div class="itemDivs" style="margin-right:10px;">
+					<div class="layui-input-inline">
+						<input id="zsd_py" type="text" class="layui-input" placeholder="请输入知识点拼音码"/>
+						<input id="zsd_txt" type="text" class="layui-input" placeholder="请输入知识点标题"/>
+					</div>
+				</div>
+				<div class="itemDivs">
+					<div class="layui-input-inline">
+						<button id="queryBtn" class="layui-btn"><i class="layui-icon layui-icon-search"></i></button>
+					</div>
+				</div>
+			</div>
 		</div>
 		<div class="layui-fluid" style="margin-top:50px;padding:0;">
 			<div class="layui-row">
@@ -94,7 +116,7 @@
 	<script type="text/javascript">
 		var loreType = 'zdxzd';
 		var isAddClickFlag = false;
-		var infoBySubOpt = 'getGradeOpt',//根据学科获取年级的信息
+		var infoBySubOpt = 'getGradeOpt',nowSearType=1,searOpt='loreManager',//根据学科获取年级的信息
 			infoByGsEdOpt='geteduC',//根据年级出版社获取教材信息 need
 			addEditFlag  = false,editAll='',//出版社全拼id:name
 			switchFlag=false,//用于填空题问答题这块切换题型时是否打开问题选项 true->打开 
@@ -121,6 +143,24 @@
 					baseDataMet.getSubjectList('subjectSel');
 					//获取出版社
 					baseDataMet.getEditionList('editionSel');
+					
+					//搜索全局知识点根据拼音和标题
+	        	    $('#queryBtn').on('click',function(){
+	        	    	relate.searchZsdByTitOrPy();
+					});
+	        	    $('#zsd_py').on('keypress',function(){
+						_this.enterPress(event);
+					});
+					$('#zsd_txt').on('keypress',function(){
+						_this.enterPress(event);
+					});
+				},
+				//搜索的回车事件
+				enterPress : function(event){
+					var e = e || window.event;
+					if(e.keyCode == 13){
+						relate.searchZsdByTitOrPy();
+					}
 				},
 				convertEngToChi : function(value){
 		    		return value.replace(/,/g,"，").replace(/\s+/g,"").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
@@ -468,7 +508,7 @@
 					loreId = $(this).attr('loreId');
 					var viewLore = sysHw.createViewLoreDOM();
 					layer.open({
-						title:'浏览章节[<span style="color:#F47837;">'+ loreName +'</span>]下的家庭作业',
+						title:'浏览[<span style="color:#F47837;">'+ loreName +'</span>]下的家庭作业',
 						type: 1,
 					  	area: ['660px', '500px'],
 					  	fixed: true, //不固定
