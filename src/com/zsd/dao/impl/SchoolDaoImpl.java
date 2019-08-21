@@ -49,7 +49,7 @@ public class SchoolDaoImpl implements SchoolDao{
 		// TODO Auto-generated method stub
 		String hql = " from School as sch where 1=1";
 		if(!schoolName.equals("")){
-			hql += " and sch.schoolName like '"+schoolName+"'";
+			hql += " and sch.schoolName like '%"+schoolName+"%'";
 		}
 		if(!prov.equals("")){
 			hql += " and sch.prov = '"+prov+"'";
@@ -83,7 +83,7 @@ public class SchoolDaoImpl implements SchoolDao{
 		// TODO Auto-generated method stub
 		String hql = "select count(sch.id) from School as sch where 1=1";
 		if(!schoolName.equals("")){
-			hql += " and sch.schoolName like '"+schoolName+"'";
+			hql += " and sch.schoolName like '%"+schoolName+"%'";
 		}
 		if(!prov.equals("")){
 			hql += " and sch.prov = '"+prov+"'";
