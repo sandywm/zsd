@@ -380,7 +380,7 @@ layui.define(['form','element','upLoadFiles','buffetLoreDOM','buffetLoreMet'],fu
 								if(blMet.checkAnswerImg(list[i].answerA)){
 									listStr += '<p><img src="'+ list[i].answerA +'"/></p>';
 								}else{
-									listStr += '<p>'+ list[i].answerA.replace("<","&lt") +'</p>';
+									listStr += '<p>'+ list[i].answerA +'</p>';
 								}
 							listStr += '</div>';
 						}
@@ -389,7 +389,7 @@ layui.define(['form','element','upLoadFiles','buffetLoreDOM','buffetLoreMet'],fu
 								if(blMet.checkAnswerImg(list[i].answerB)){
 									listStr += '<p><img src="'+ list[i].answerB +'"/></p>';
 								}else{
-									listStr += '<p>'+ list[i].answerB.replace("<","&lt") +'</p>';
+									listStr += '<p>'+ list[i].answerB +'</p>';
 								}
 							listStr += '</div>';
 						}
@@ -398,7 +398,7 @@ layui.define(['form','element','upLoadFiles','buffetLoreDOM','buffetLoreMet'],fu
 								if(blMet.checkAnswerImg(list[i].answerC)){
 									listStr += '<p><img src="'+ list[i].answerC +'"/></p>';
 								}else{
-									listStr += '<p>'+ list[i].answerC.replace("<","&lt") +'</p>';
+									listStr += '<p>'+ list[i].answerC +'</p>';
 								}
 							listStr += '</div>';
 						}
@@ -407,7 +407,7 @@ layui.define(['form','element','upLoadFiles','buffetLoreDOM','buffetLoreMet'],fu
 								if(blMet.checkAnswerImg(list[i].answerD)){
 									listStr += '<p><img src="'+ list[i].answerD +'"/></p>';
 								}else{
-									listStr += '<p>'+ list[i].answerD.replace("<","&lt") +'</p>';
+									listStr += '<p>'+ list[i].answerD +'</p>';
 								}
 							listStr += '</div>';
 						}
@@ -416,7 +416,7 @@ layui.define(['form','element','upLoadFiles','buffetLoreDOM','buffetLoreMet'],fu
 								if(blMet.checkAnswerImg(list[i].answerE)){
 									listStr += '<p><img src="'+ list[i].answerE +'"/></p>';
 								}else{
-									listStr += '<p>'+ list[i].answerE.replace("<","&lt") +'</p>';
+									listStr += '<p>'+ list[i].answerE +'</p>';
 								}
 							listStr += '</div>';
 						}
@@ -425,7 +425,7 @@ layui.define(['form','element','upLoadFiles','buffetLoreDOM','buffetLoreMet'],fu
 								if(blMet.checkAnswerImg(list[i].answerF)){
 									listStr += '<p><img src= "'+ list[i].answerF +'"/></p>';
 								}else{
-									listStr += '<p>'+ list[i].answerF.replace("<","&lt") +'</p>';
+									listStr += '<p>'+ list[i].answerF +'</p>';
 								}
 							listStr += '</div>';
 						}

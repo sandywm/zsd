@@ -1060,12 +1060,13 @@ public class LoreAction extends DispatchAction {
 					map_d.put("queSub", lq.getQueSub());//题干
 					String queAnswer = lq.getQueAnswer();
 					if(queType.equals("单选题") || queType.equals("多选题") || queType.equals("填空选择题") || queType.equals("判断题")){
-						String answerA = lq.getA().replaceAll("&#wmd;", "'");
-						String answerB = lq.getB().replaceAll("&#wmd;", "'");
-						String answerC = lq.getC().replaceAll("&#wmd;", "'");
-						String answerD = lq.getD().replaceAll("&#wmd;", "'");
-						String answerE = lq.getE().replaceAll("&#wmd;", "'");
-						String answerF = lq.getF().replaceAll("&#wmd;", "'");
+						String answerA = lq.getA();
+						String answerB = lq.getB();
+						String answerC = lq.getC();
+						String answerD = lq.getD();
+						String answerE = lq.getE();
+						String answerF = lq.getF();
+						System.out.println((answerF == null) + "----" + (answerF == ""));
 						map_d.put("answerA", answerA);//选项A
 						map_d.put("answerB", answerB);//选项B
 						map_d.put("answerC", answerC);//选项C
@@ -1073,7 +1074,7 @@ public class LoreAction extends DispatchAction {
 						map_d.put("answerE", answerE);//选项E
 						map_d.put("answerF", answerF);//选项F
 						//需要匹配出选项
-						String[] answerQueArr = queAnswer.replaceAll("&#wmd;", "'").split(",");
+						String[] answerQueArr = queAnswer.split(",");
 						String queAnswer_text = "";
 						String replaceStr = "Module/commonJs/ueditor/jsp/lore/";
 						for(Integer i = 0 ; i < answerQueArr.length ; i++){

@@ -704,8 +704,12 @@ layui.define(['form','buffetLoreDOM'],function(exports){
 		},
 		//浏览知识点和自助餐时判断当前选项是否为图片
 		checkAnswerImg : function(answer){
-			if(answer.indexOf("jpg") > 0 || answer.indexOf("gif") > 0 || answer.indexOf("bmp") > 0 || answer.indexOf("png") > 0){
-				return true;
+			if(answer == "" || answer == null){
+				
+			}else{
+				if(answer.indexOf("jpg") > 0 || answer.indexOf("gif") > 0 || answer.indexOf("bmp") > 0 || answer.indexOf("png") > 0){
+					return true;
+				}
 			}
 			return false;
 		},
