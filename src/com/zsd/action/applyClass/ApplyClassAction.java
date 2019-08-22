@@ -72,7 +72,7 @@ public class ApplyClassAction extends DispatchAction {
 		ApplyClassManager acm = (ApplyClassManager) AppFactory.instance(null).getApp(Constants.WEB_APPLY_CLASS_INFO);
 		Integer currUserId = CommonTools.getLoginUserId(request);
 		String sDate = CommonTools.getFinalStr("sDate", request);
-		String eDate = CommonTools.getFinalStr("sDate", request);
+		String eDate = CommonTools.getFinalStr("eDate", request);
 		Integer opt = CommonTools.getFinalInteger("opt", request);//我的申请(1),我的处理(2)
 		Integer checkStatus = CommonTools.getFinalInteger("checkStatus", request);//审核状态[0:未处理，1：同意，2：拒绝]
 		Integer pageNo = CommonTools.getFinalInteger("pageNo", request);//当前页
@@ -80,7 +80,7 @@ public class ApplyClassAction extends DispatchAction {
 		Map<String,Object> map = new HashMap<String,Object>();
 		if(sDate.equals("") && eDate.equals("")){//默认最近三天
 			sDate = CurrentTime.getStringDate();
-			eDate = CurrentTime.getFinalDate(sDate, 2);
+			eDate = CurrentTime.getFinalDate(sDate, -2);
 		}
 		Integer sendUserId = 0;
 		Integer toUserId = 0;
@@ -99,7 +99,7 @@ public class ApplyClassAction extends DispatchAction {
 			List<Object> list_d = new ArrayList<Object>();
 			for(ApplyClassInfo ac : acList){
 				Map<String,Object> map_d = new HashMap<String,Object>();
-				map_d.put("id", ac.getId());
+				map_d.put("acId", ac.getId());
 				Integer checkStatus_db = ac.getCheckStatus();
 				String appDetail = "";
 				String checkStatusChi = "";
@@ -121,7 +121,6 @@ public class ApplyClassAction extends DispatchAction {
 				map_d.put("applyDetail", appDetail);
 				map_d.put("applyTime", ac.getApplyTime());
 				map_d.put("checkStatusChi",checkStatusChi);
-				map_d.put("acId", ac.getId());
 				map_d.put("sDate", sDate);
 				map_d.put("eDate", eDate);
 				list_d.add(map_d);
@@ -151,7 +150,7 @@ public class ApplyClassAction extends DispatchAction {
 		Integer acId = CommonTools.getFinalInteger("acId", request);
 		Integer currUserId = CommonTools.getLoginUserId(request);
 		ApplyClassInfo ac = acm.getEntityById(acId);
-		String msg = "error";
+		String msg = "noInfo";
 		Map<String,Object> map = new HashMap<String,Object>();
 		if(ac != null){
 			Integer applyUserId = ac.getUser().getId();
@@ -344,6 +343,7 @@ public class ApplyClassAction extends DispatchAction {
 			Integer schoolId = uc.getUser().getSchoolId();
 			List<School> sList = sm.listInfoById(schoolId);
 			if(sList.size() > 0){
+				msg = "success";
 				Map<String,Object> map_d = new HashMap<String,Object>();
 				School sch = sList.get(0);
 				Integer schoolType = sch.getSchoolType();//小学(1),初中(2),高中(3)
