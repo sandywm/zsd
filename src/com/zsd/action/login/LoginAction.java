@@ -148,7 +148,7 @@ public class LoginAction extends DispatchAction {
 			}
 		}
 		if(uFlag){
-			if(clientInfo.equals("pc") || clientInfo.equals("mobileBrowser")){
+			if(clientInfo.equals("pc")){
 				if(!vercode.equals(vercode2)){
 					msg = "vercodeFail";//验证码不匹配 
 					uFlag = false;

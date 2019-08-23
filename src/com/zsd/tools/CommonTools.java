@@ -45,7 +45,7 @@ public class CommonTools {
 	public static Integer getLoginUserId(HttpServletRequest request){
 		String cilentInfo = CommonTools.getCilentInfo_new(request);
 		Integer userId = 0;
-		if(cilentInfo.equals("pc") || cilentInfo.equals("mobileBrowser")){
+		if(cilentInfo.equals("pc")){
 			userId = (Integer)request.getSession(false).getAttribute(Constants.LOGIN_USER_ID);
 	        if(userId == null){
 	        	return 0;
@@ -66,7 +66,7 @@ public class CommonTools {
 	public static Integer getLoginStatus(HttpServletRequest request){
 		String cilentInfo = CommonTools.getCilentInfo_new(request);
 		Integer loginStatus = 0;
-		if(cilentInfo.equals("pc") || cilentInfo.equals("mobileBrowser")){
+		if(cilentInfo.equals("pc")){
 			loginStatus = (Integer)request.getSession(false).getAttribute(Constants.LOGIN_STATUS);
 	        if(loginStatus == null){
 	        	return 0;
@@ -87,7 +87,7 @@ public class CommonTools {
 	public static String getLoginAccount(HttpServletRequest request){
 		String cilentInfo = CommonTools.getCilentInfo_new(request);
 		String account = "";
-		if(cilentInfo.equals("pc") || cilentInfo.equals("mobileBrowser")){
+		if(cilentInfo.equals("pc")){
 			account = String.valueOf(request.getSession(false).getAttribute(Constants.LOGIN_ACCOUNT));
 	        if(account.equals("null")){
 	        	return "";
@@ -106,7 +106,7 @@ public class CommonTools {
 	public static Integer getLoginRoleId(HttpServletRequest request){
 		String cilentInfo = CommonTools.getCilentInfo_new(request);
 		Integer roleId = 0;
-		if(cilentInfo.equals("pc") || cilentInfo.equals("mobileBrowser")){
+		if(cilentInfo.equals("pc") ){
 			roleId = (Integer)request.getSession(false).getAttribute(Constants.LOGIN_USER_ROLE_ID);
 	        if(roleId == null){
 	        	return 0;
