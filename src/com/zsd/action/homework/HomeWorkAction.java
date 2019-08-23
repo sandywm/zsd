@@ -2776,13 +2776,13 @@ public class HomeWorkAction extends DispatchAction {
 				for(HwStudyDetailInfo hsd : hsdList){
 					Map<String,Object> map_d = new HashMap<String,Object>();
 					String queArea = hsd.getQueArea();//hw,sys,tea
-					Integer queId = hsd.getQueId();
-					map_d.put("lqId", queId);
+					Integer hsdId = hsd.getQueId();
+					map_d.put("hsdId", hsdId);
 					map_d.put("queArea", queArea);
 					String myAnswer = hsd.getMyAnswer();
 					Integer result = hsd.getResult();
 					if(queArea.equals("hw")){//没有填空题和问答题
-						HwQueInfo hq = hqm.getEntityById(queId);
+						HwQueInfo hq = hqm.getEntityById(hsdId);
 						map_d.put("queSub", hq.getSubject());
 						String lqType = hq.getQueType();
 						map_d.put("lqType", lqType);
@@ -2790,10 +2790,16 @@ public class HomeWorkAction extends DispatchAction {
 							map_d.put("myAnswer", myAnswer);
 							map_d.put("realAnswer", hq.getAnswer());
 							map_d.put("lqResolution", hq.getResolution());
+						}else{
+							if(lqType.equals("单选题") || lqType.equals("多选题") || lqType.equals("判断题")){
+								map_d.put("answerNum", 1);
+							}else{//填空选择题
+								map_d.put("answerNum", hq.getAnswer().split(",").length);
+							}
 						}
-						map_d.put("result", result);//-1：未做,0:错,1:对
+						map_d.put("studyResult", result);//-1：未做,0:错,1:对
 					}else if(queArea.equals("sys")){
-						LoreQuestion lq = lqm.getEntityByLqId(queId);
+						LoreQuestion lq = lqm.getEntityByLqId(hsdId);
 						map_d.put("queSub", lq.getQueSub());
 						String lqType = lq.getQueType();
 						map_d.put("lqType", lqType);
@@ -2814,9 +2820,9 @@ public class HomeWorkAction extends DispatchAction {
 								map_d.put("answerNum", lq.getQueAnswer().split(",").length);
 							}
 						}
-						map_d.put("result", result);//-1：未做,0:错,1:对
+						map_d.put("studyResult", result);//-1：未做,0:错,1:对
 					}else if(queArea.equals("tea")){
-						TeaQueInfo tq = tqm.getEntityById(queId);
+						TeaQueInfo tq = tqm.getEntityById(hsdId);
 						map_d.put("queSub", tq.getQueSub());
 						String lqType = tq.getQueType();
 						map_d.put("lqType", lqType);
@@ -2824,8 +2830,14 @@ public class HomeWorkAction extends DispatchAction {
 							map_d.put("myAnswer", myAnswer);
 							map_d.put("realAnswer", tq.getQueAnswer());
 							map_d.put("lqResolution", tq.getQueResolution());
+						}else{
+							if(lqType.equals("单选题") || lqType.equals("多选题") || lqType.equals("判断题")){
+								map_d.put("answerNum", 1);
+							}else{//填空选择题
+								map_d.put("answerNum", tq.getQueAnswer().split(",").length);
+							}
 						}
-						map_d.put("result", result);//-1：未做,0:错,1:对
+						map_d.put("studyResult", result);//-1：未做,0:错,1:对
 					}
 					list_d.add(map_d);
 				}
@@ -2843,7 +2855,7 @@ public class HomeWorkAction extends DispatchAction {
 	}
 	
 	/**
-	 * 修改做题信息
+	 * 修改做题错误/正确信息
 	 * @author wm
 	 * @date 2019-8-16 下午06:34:16
 	 * @param mapping
@@ -2860,6 +2872,7 @@ public class HomeWorkAction extends DispatchAction {
 		TeaQueManager tqm = (TeaQueManager) AppFactory.instance(null).getApp(Constants.WEB_TEA_QUE_INFO);
 		LoreQuestionManager lqm = (LoreQuestionManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
 		HwStudyDetailManager hsdm = (HwStudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_DETAIL_INFO);
+		HwStudyTjManager tjm = (HwStudyTjManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_TJ_INFO);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "error";
 		Integer currUserId = CommonTools.getLoginUserId(request);
@@ -2873,89 +2886,114 @@ public class HomeWorkAction extends DispatchAction {
 				HwStudyTjInfo tj = hsd.getHwStudyTjInfo();
 				if(tj.getUser().getId().equals(currUserId)){
 					if(tj.getComStatus().equals(0)){
-						if(queArea.equals("hw")){
-							HwQueInfo hq = hqm.getEntityById(lqId);
-							if(hq != null){
-								String realAnswer = hq.getAnswer();
-								String lqType = hq.getQueType();
-								Integer result = -1;
-								if(lqType.equals("多选题")){//无序
-									String[] myAnserArray = myAnswer.split(",");
-									String[] realAnswerArray = realAnswer.split(",");
-									String newMyAnswer = CommonTools.arraySort(myAnserArray);//排序后我的答案
-									String newRealAnswer = CommonTools.arraySort(realAnswerArray);//排序后后台正确答案
-									if(newMyAnswer.equals(newRealAnswer)){
-										result = 1;//正确
-									}else{
-										result = 0;//错误
+						if(hsd.getResult().equals(-1)){//该题没做才能继续做题
+							if(queArea.equals("hw")){
+								HwQueInfo hq = hqm.getEntityById(lqId);
+								if(hq != null){
+									String realAnswer = hq.getAnswer();
+									String lqType = hq.getQueType();
+									Integer result = -1;
+									Integer succNum = 0;
+									Integer errorNum = 0;
+									if(lqType.equals("多选题")){//无序
+										String[] myAnserArray = myAnswer.split(",");
+										String[] realAnswerArray = realAnswer.split(",");
+										String newMyAnswer = CommonTools.arraySort(myAnserArray);//排序后我的答案
+										String newRealAnswer = CommonTools.arraySort(realAnswerArray);//排序后后台正确答案
+										if(newMyAnswer.equals(newRealAnswer)){
+											result = 1;//正确
+											succNum = 1;
+										}else{
+											result = 0;//错误
+											errorNum = 1;
+										}
+									}else{//顺序必须要求一样
+										if(myAnswer.equals(realAnswer)){
+											result = 1;//正确
+											succNum = 1;
+										}else{
+											result = 0;//错误
+											errorNum = 1;
+										}
 									}
-								}else{//顺序必须要求一样
-									if(myAnswer.equals(realAnswer)){
-										result = 1;//正确
-									}else{
-										result = 0;//错误
-									}
+									hsdm.updateInfoById(hsdId, myAnswer, result);
+									tjm.updateInfoById(tj.getId(), 0, succNum, errorNum);
+									msg = "success";
 								}
-								hsdm.updateInfoById(hsdId, myAnswer, result);
-								msg = "success";
-							}
-						}else if(queArea.equals("sys")){
-							LoreQuestion lq = lqm.getEntityByLqId(lqId);
-							if(lq != null){
-								String realAnswer = lq.getQueAnswer();
-								String lqType = lq.getQueType();
-								Integer result = -1;
-								if(lqType.equals("多选题")){//无序
-									String[] myAnserArray = myAnswer.split(",");
-									String[] realAnswerArray = realAnswer.split(",");
-									String newMyAnswer = CommonTools.arraySort(myAnserArray);//排序后我的答案
-									String newRealAnswer = CommonTools.arraySort(realAnswerArray);//排序后后台正确答案
-									if(newMyAnswer.equals(newRealAnswer)){
-										result = 1;//正确
-									}else{
-										result = 0;//错误
+							}else if(queArea.equals("sys")){
+								LoreQuestion lq = lqm.getEntityByLqId(lqId);
+								if(lq != null){
+									String realAnswer = lq.getQueAnswer();
+									String lqType = lq.getQueType();
+									Integer result = -1;
+									Integer succNum = 0;
+									Integer errorNum = 0;
+									if(lqType.equals("多选题")){//无序
+										String[] myAnserArray = myAnswer.split(",");
+										String[] realAnswerArray = realAnswer.split(",");
+										String newMyAnswer = CommonTools.arraySort(myAnserArray);//排序后我的答案
+										String newRealAnswer = CommonTools.arraySort(realAnswerArray);//排序后后台正确答案
+										if(newMyAnswer.equals(newRealAnswer)){
+											result = 1;//正确
+											succNum = 1;
+										}else{
+											result = 0;//错误
+											errorNum = 1;
+										}
+									}else if(lqType.equals("问答题") || lqType.equals("填空题")){
+										if(myAnswer.indexOf("正确") >= 0){
+											result = 1;
+											succNum = 1;
+										}else{
+											result = 0;
+											errorNum = 1;
+										}
+									}else{//顺序必须要求一样
+										if(myAnswer.equals(realAnswer)){
+											result = 1;//正确
+											succNum = 1;
+										}else{
+											result = 0;//错误
+											errorNum = 1;
+										}
 									}
-								}else if(lqType.equals("问答题") || lqType.equals("填空题")){
-									if(myAnswer.indexOf("正确") >= 0){
-										result = 1;
-									}else{
-										result = 0;
-									}
-								}else{//顺序必须要求一样
-									if(myAnswer.equals(realAnswer)){
-										result = 1;//正确
-									}else{
-										result = 0;//错误
-									}
+									hsdm.updateInfoById(hsdId, myAnswer, result);
+									tjm.updateInfoById(tj.getId(), 0, succNum, errorNum);
+									msg = "success";
 								}
-								hsdm.updateInfoById(hsdId, myAnswer, result);
-								msg = "success";
-							}
-						}else if(queArea.equals("tea")){
-							TeaQueInfo tq = tqm.getEntityById(lqId);
-							if(tq != null){
-								String realAnswer = tq.getQueAnswer();
-								String lqType = tq.getQueType();
-								Integer result = -1;
-								if(lqType.equals("多选题")){//无序
-									String[] myAnserArray = myAnswer.split(",");
-									String[] realAnswerArray = realAnswer.split(",");
-									String newMyAnswer = CommonTools.arraySort(myAnserArray);//排序后我的答案
-									String newRealAnswer = CommonTools.arraySort(realAnswerArray);//排序后后台正确答案
-									if(newMyAnswer.equals(newRealAnswer)){
-										result = 1;//正确
-									}else{
-										result = 0;//错误
+							}else if(queArea.equals("tea")){
+								TeaQueInfo tq = tqm.getEntityById(lqId);
+								if(tq != null){
+									String realAnswer = tq.getQueAnswer();
+									String lqType = tq.getQueType();
+									Integer result = -1;
+									Integer succNum = 0;
+									Integer errorNum = 0;
+									if(lqType.equals("多选题")){//无序
+										String[] myAnserArray = myAnswer.split(",");
+										String[] realAnswerArray = realAnswer.split(",");
+										String newMyAnswer = CommonTools.arraySort(myAnserArray);//排序后我的答案
+										String newRealAnswer = CommonTools.arraySort(realAnswerArray);//排序后后台正确答案
+										if(newMyAnswer.equals(newRealAnswer)){
+											result = 1;//正确
+											succNum = 1;
+										}else{
+											result = 0;//错误
+											errorNum = 1;
+										}
+									}else{//顺序必须要求一样
+										if(myAnswer.equals(realAnswer)){
+											result = 1;//正确
+											succNum = 1;
+										}else{
+											result = 0;//错误
+											errorNum = 1;
+										}
 									}
-								}else{//顺序必须要求一样
-									if(myAnswer.equals(realAnswer)){
-										result = 1;//正确
-									}else{
-										result = 0;//错误
-									}
+									hsdm.updateInfoById(hsdId, myAnswer, result);
+									tjm.updateInfoById(tj.getId(), 0, succNum, errorNum);
+									msg = "success";
 								}
-								hsdm.updateInfoById(hsdId, myAnswer, result);
-								msg = "success";
 							}
 						}
 					}
@@ -3000,6 +3038,8 @@ public class HomeWorkAction extends DispatchAction {
 							tjm.updateInfoById(tj.getId(), comStatus, 0, 0);
 							msg = "success";
 						}
+					}else{
+						msg = "success";
 					}
 				}
 			}
@@ -3009,6 +3049,17 @@ public class HomeWorkAction extends DispatchAction {
 		return null;
 	}
 	
+	/**
+	 * 获取家庭作业溯源时学习地图数据
+	 * @author wm
+	 * @date 2019-8-23 下午04:01:38
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
 	public ActionForward getHwStudyMapData(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
@@ -3042,6 +3093,7 @@ public class HomeWorkAction extends DispatchAction {
 		if(userId > 0 && tjId > 0){
 			HwStudyTjInfo tj = tjm.getEntityById(tjId);
 			if(tj != null){
+				msg = "success";
 				SendHwInfo sendHw = tj.getSendHwInfo();
 				hwTitle = sendHw.getHwTitle();
 				Integer sendLoreId = sendHw.getLoreInfo().getId();//发送作业时的知识点编号
@@ -3295,6 +3347,7 @@ public class HomeWorkAction extends DispatchAction {
 			map.put("studyLogId", studyLogId);
 			map.put("subDetail", subDetail);
 			map.put("basicLoreId", basicLoreId);
+			map.put("loreName", hwTitle);
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
@@ -3626,7 +3679,7 @@ public class HomeWorkAction extends DispatchAction {
 	}
 	
 	/**
-	 * 获取
+	 * 获取家庭作业溯源时知识点题库列表（针对性和再次诊断有用）
 	 * @param mapping
 	 * @param form
 	 * @param request
@@ -4457,24 +4510,33 @@ public class HomeWorkAction extends DispatchAction {
 	 * @return
 	 * @throws Exception
 	 */
-	public ActionForward updateHwCompleteFlag(ActionMapping mapping ,ActionForm form,
+	public ActionForward updateHwCompleteStatus(ActionMapping mapping ,ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		HwStudyTjManager tjm = (HwStudyTjManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_TJ_INFO);
 		HwTraceStudyLogManager slm = (HwTraceStudyLogManager) AppFactory.instance(null).getApp(Constants.WEB_HW_TRACE_STUDY_LOG_INFO);
 		Integer tjId = CommonTools.getFinalInteger("tjId", request);
+		Integer stuId = CommonTools.getLoginUserId(request);
 		Map<String,Boolean> map = new HashMap<String,Boolean>();
+		String msg = "error";
 		boolean submitFlag = false;
 		if(tjId > 0){
 			HwStudyTjInfo tj = tjm.getEntityById(tjId);
-			if(tj.getComStatus().equals(0)){//未完成状态下才能提交
-				if(tj.getAllNum().equals(tj.getSuccNum() + tj.getErrorNum())){//所有题都做过才能提交
-					if(tj.getSendHwInfo().getTraceStatus().equals(0)){//没开启溯源可直接提交
-						submitFlag = true;
-					}else{//开启溯源，查看溯源学习记录是否完成
-						HwTraceStudyLogInfo hsl = slm.getEntityById(tjId);
-						if(hsl != null){
-							if(hsl.getIsFinish().equals(2)){//作业溯源学习记录任务完成才能提交
+			if(tj != null){
+				if(tj.getUser().getId().equals(stuId)){
+					if(tj.getComStatus().equals(0)){//未完成状态下才能提交
+						if(tj.getAllNum().equals(tj.getSuccNum() + tj.getErrorNum())){//所有题都做过才能提交
+							if(tj.getSendHwInfo().getTraceStatus().equals(0)){//没开启溯源可直接提交
 								submitFlag = true;
+							}else{//开启溯源，查看溯源学习记录是否完成
+								HwTraceStudyLogInfo hsl = slm.getEntityById(tjId);
+								if(hsl != null){
+									if(hsl.getIsFinish().equals(2)){//作业溯源学习记录任务完成才能提交
+										submitFlag = true;
+									}
+								}
+							}
+							if(submitFlag){
+//								tjm.updateInfoById(tjId, conStatus, succNum, errorNum)
 							}
 						}
 					}

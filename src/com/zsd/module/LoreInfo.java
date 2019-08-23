@@ -21,6 +21,7 @@ public class LoreInfo implements java.io.Serializable {
 	private Integer loreOrder;
 	private Integer mainLoreId;
 	private String loreCode;
+	private Integer traceStatus;
 
 	// Constructors
 
@@ -31,7 +32,7 @@ public class LoreInfo implements java.io.Serializable {
 	/** full constructor */
 	public LoreInfo(Chapter chapter, String loreName, String lorePyCode,
 			Integer inUse, Integer freeStatus, Integer loreOrder,
-			Integer mainLoreId, String loreCode) {
+			Integer mainLoreId, String loreCode,Integer traceStatus) {
 		this.chapter = chapter;
 		this.loreName = loreName;
 		this.lorePyCode = lorePyCode;
@@ -40,6 +41,7 @@ public class LoreInfo implements java.io.Serializable {
 		this.loreOrder = loreOrder;
 		this.mainLoreId = mainLoreId;
 		this.loreCode = loreCode;
+		this.traceStatus = traceStatus;
 	}
 
 	// Property accessors
@@ -114,6 +116,14 @@ public class LoreInfo implements java.io.Serializable {
 
 	public void setLoreCode(String loreCode) {
 		this.loreCode = loreCode;
+	}
+
+	public Integer getTraceStatus() {
+		return traceStatus;
+	}
+
+	public void setTraceStatus(Integer traceStatus) {
+		this.traceStatus = traceStatus;
 	}
 
 }

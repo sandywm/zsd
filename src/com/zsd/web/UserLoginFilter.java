@@ -1,6 +1,7 @@
 package com.zsd.web;
 
 import com.zsd.factory.AppFactory;
+import com.zsd.module.User;
 import com.zsd.service.UserManager;
 import com.zsd.tools.CommonTools;
 import com.zsd.tools.DataBaseSqlVerify;
@@ -66,7 +67,7 @@ public class UserLoginFilter implements Filter{
 		//攻击检测增加代码---end
 		//客户端信息
 		String clientInfo = CommonTools.getCilentInfo_new(httpServletRequest);
-		if(!clientInfo.equals("pc")){//手机端不检验
+		if(clientInfo.indexOf("App") > 0){//手机端不检验
 			chain.doFilter(request, response);
 		}else{
 			String requesturi = requestUrl[0]; 
@@ -85,6 +86,7 @@ public class UserLoginFilter implements Filter{
 				}
 			}
 			Integer loginFlag_dataBase = -1;
+			Integer accountStatus = 1;
 			if(userId.equals(0)){
 				if(!requesturi.endsWith("/login.do") 
 						&& !requesturi.endsWith("/baseInfo.do")
@@ -111,7 +113,9 @@ public class UserLoginFilter implements Filter{
 				try {
 					UserManager um = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
 					//获取数据库中指定currentUser的loginFlag
-					loginFlag_dataBase = um.listEntityById(userId).get(0).getLoginStatus();
+					User user = um.listEntityById(userId).get(0);
+					loginFlag_dataBase = user.getLoginStatus();
+					accountStatus = user.getAccountStatus();
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -120,6 +124,11 @@ public class UserLoginFilter implements Filter{
 					session.invalidate();
 					String url = "window.location.href='login.do?action=loginOut'";
 					String authorizeScript = "该账号已经在别处登录，系统已强制您下线，请重新登录！";
+					Ability.PrintAuthorizeScript(url,authorizeScript, httpServletResponse);
+				}else if(accountStatus.equals(0)){
+					session.invalidate();
+					String url = "window.location.href='login.do?action=loginOut'";
+					String authorizeScript = "该账号状态为无效，系统已强制您下线，请重新登录！";
 					Ability.PrintAuthorizeScript(url,authorizeScript, httpServletResponse);
 				}else{
 					chain.doFilter(request, response);

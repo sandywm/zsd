@@ -2,13 +2,11 @@ package com.zsd.tools;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.URL;
 import java.net.URLConnection;
@@ -24,14 +22,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.zsd.factory.AppFactory;
 import com.zsd.module.LoreInfo;
+import com.zsd.module.User;
 import com.zsd.module.json.LoreBuffetTreeMenuJson;
 import com.zsd.module.json.LoreTreeMenuJson;
 import com.zsd.module.json.MyTreeNode;
 import com.zsd.service.LoreInfoManager;
+import com.zsd.service.UserManager;
 import com.zsd.util.Constants;
 
 public class CommonTools {
@@ -47,7 +45,7 @@ public class CommonTools {
 	public static Integer getLoginUserId(HttpServletRequest request){
 		String cilentInfo = CommonTools.getCilentInfo_new(request);
 		Integer userId = 0;
-		if(cilentInfo.equals("pc")){
+		if(cilentInfo.equals("pc") || cilentInfo.equals("mobileBrowser")){
 			userId = (Integer)request.getSession(false).getAttribute(Constants.LOGIN_USER_ID);
 	        if(userId == null){
 	        	return 0;
@@ -68,7 +66,7 @@ public class CommonTools {
 	public static Integer getLoginStatus(HttpServletRequest request){
 		String cilentInfo = CommonTools.getCilentInfo_new(request);
 		Integer loginStatus = 0;
-		if(cilentInfo.equals("pc")){
+		if(cilentInfo.equals("pc") || cilentInfo.equals("mobileBrowser")){
 			loginStatus = (Integer)request.getSession(false).getAttribute(Constants.LOGIN_STATUS);
 	        if(loginStatus == null){
 	        	return 0;
@@ -89,7 +87,7 @@ public class CommonTools {
 	public static String getLoginAccount(HttpServletRequest request){
 		String cilentInfo = CommonTools.getCilentInfo_new(request);
 		String account = "";
-		if(cilentInfo.equals("pc")){
+		if(cilentInfo.equals("pc") || cilentInfo.equals("mobileBrowser")){
 			account = String.valueOf(request.getSession(false).getAttribute(Constants.LOGIN_ACCOUNT));
 	        if(account.equals("null")){
 	        	return "";
@@ -108,7 +106,7 @@ public class CommonTools {
 	public static Integer getLoginRoleId(HttpServletRequest request){
 		String cilentInfo = CommonTools.getCilentInfo_new(request);
 		Integer roleId = 0;
-		if(cilentInfo.equals("pc")){
+		if(cilentInfo.equals("pc") || cilentInfo.equals("mobileBrowser")){
 			roleId = (Integer)request.getSession(false).getAttribute(Constants.LOGIN_USER_ROLE_ID);
 	        if(roleId == null){
 	        	return 0;
@@ -762,6 +760,32 @@ public class CommonTools {
 			}
 		}
 		return newSortStr;
+	}
+	
+	/**
+	 * 计算自己到期日期和当前日期相差天数(免费学生不计算)
+	 * @author wm
+	 * @date 2019-8-23 上午10:15:10
+	 * @param userId
+	 * @return
+	 * @throws Exception
+	 */
+	public static Integer getDiffDays(Integer userId) throws Exception{
+		Integer diffDays = 0;
+		UserManager um = (UserManager)AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
+		//先判断有没有到期，通过用户编号获取endDate
+		List<User> uList = um.listEntityById(userId);
+		if(uList.size() > 0){
+			User user = uList.get(0);
+			Integer freeStatus= user.getFreeStatus();//0：收费，1：免费
+			if(freeStatus.equals(0)){
+				String myendDate = user.getEndDate();
+				diffDays = CurrentTime.compareDate(CurrentTime.getStringDate(),myendDate);
+			}else{//免费
+				diffDays = 10000;
+			}
+		}
+		return diffDays;
 	}
 	
 	public static void main(String[] args) throws Exception, FileNotFoundException{

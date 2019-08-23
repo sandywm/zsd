@@ -69,18 +69,12 @@ public class HwStudyTjManagerImpl implements HwStudyTjManager{
 			tran = sess.beginTransaction();
 			HwStudyTjInfo hwTj = hstjDao.getEntityById(sess, id);
 			if(hwTj != null){
-				if(conStatus >= 0){
+				if(conStatus >= 0){//完成时
 					hwTj.setComStatus(conStatus);
 					if(conStatus.equals(1) || conStatus.equals(2)){//全部完成的时候才能修改得分和完成日期
 						hwTj.setComDate(CurrentTime.getCurrentTime());
 						Integer succNum_db = hwTj.getSuccNum();
-						Integer errorNum_db = hwTj.getErrorNum();
 						Integer comNum_db = hwTj.getAllNum();
-						if(succNum.equals(1)){//最后一题做对
-							succNum_db += 1;
-						}else{//最后一题做错
-							errorNum_db += 1;
-						}
 						//计算得分
 						if(comNum_db > 0){
 							hwTj.setHwScore(succNum_db / comNum_db);

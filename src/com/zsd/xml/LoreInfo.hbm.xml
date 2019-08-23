@@ -50,6 +50,11 @@
                 <comment>知识点编码</comment>
             </column>
         </property>
+        <property name="traceStatus" type="java.lang.Integer">
+            <column name="trace_status" not-null="true">
+                <comment>溯源标识</comment>
+            </column>
+        </property>
         <!--set name="studyMapInfos" inverse="true">
             <key>
                 <column name="lore_id" not-null="true">

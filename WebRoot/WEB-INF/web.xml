@@ -15,6 +15,16 @@
   </filter-mapping>
   
   <listener>
+		<listener-class>
+			org.springframework.web.context.ContextLoaderListener
+		</listener-class>
+  </listener>
+  <context-param>
+  	<param-name>contextConfigLocation</param-name>
+  	<param-value>/WEB-INF/classes/com/zsd/spring/config/timer/timerConfig.xml</param-value>
+  </context-param>
+  
+  <listener>
     <listener-class>com.zsd.web.FactoryLoaderListener</listener-class>
   </listener>
   <servlet>

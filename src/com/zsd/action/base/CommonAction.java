@@ -4,6 +4,7 @@
  */
 package com.zsd.action.base;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -18,6 +19,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
 
+import com.alibaba.fastjson.JSON;
 import com.zsd.factory.AppFactory;
 import com.zsd.module.ClassInfo;
 import com.zsd.module.Edition;
@@ -943,6 +945,27 @@ public class CommonAction extends DispatchAction {
 			map.put("gradeName", gradeName);
 		}
 		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 判断学生到期日期与当前日期相差天数（免费学生不计算）
+	 * @author wm
+	 * @date 2019-8-23 上午08:50:17
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getUserDiffDays(ActionMapping mapping,ActionForm form,
+			HttpServletRequest request,HttpServletResponse response) throws Exception{
+		Integer userId = CommonTools.getLoginUserId(request);
+		Integer diffDays = CommonTools.getDiffDays(userId);
+		Map<String,Integer> map = new HashMap<String,Integer>();
+		map.put("result", diffDays);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}

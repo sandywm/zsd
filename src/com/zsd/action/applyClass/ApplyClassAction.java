@@ -90,7 +90,7 @@ public class ApplyClassAction extends DispatchAction {
 			toUserId = currUserId;
 		}
 		String cilentInfo = CommonTools.getCilentInfo_new(request);
-		if(!cilentInfo.equals("pc")){
+		if(cilentInfo.equals("pc") || cilentInfo.equals("mobileBrowser")){
 			checkStatus = -1;//移动端为全部
 		}
 		List<ApplyClassInfo> acList = acm.listPageInfoByOpt(sendUserId, toUserId, checkStatus, sDate, eDate, pageNo, 10);
@@ -286,36 +286,7 @@ public class ApplyClassAction extends DispatchAction {
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
-	
-	/**
-	 * 自动处理每天没被处理的申请（每晚12:00:01）
-	 * @author wm
-	 * @date 2019-7-31 上午09:53:53
-	 * @param mapping
-	 * @param form
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws Exception
-	 */
-	public ActionForward autoDealApplyClass(ActionMapping mapping, ActionForm form,
-			HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// TODO Auto-generated method stub
-		ApplyClassManager acm = (ApplyClassManager) AppFactory.instance(null).getApp(Constants.WEB_APPLY_CLASS_INFO);
-		List<ApplyClassInfo> acList = acm.listAllUnCheckApplyInfo();
-		String msg = "error";
-		Map<String,String> map = new HashMap<String,String>();
-		if(acList.size() > 0){
-			for(ApplyClassInfo ac : acList){
-				Integer acId = ac.getId();
-				acm.setCancleInfo(acId, 2, "系统自动拒绝");
-			}
-		}
-		map.put("result", msg);
-		CommonTools.getJsonPkg(map, response);
-		return null;
-	}
-	
+
 	/**
 	 * 获取指定学校年级下的有效班级列表（已被创建的班级）
 	 * @author wm

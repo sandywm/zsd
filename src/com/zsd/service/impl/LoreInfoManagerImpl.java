@@ -25,7 +25,7 @@ public class LoreInfoManagerImpl implements LoreInfoManager{
 	Transaction tran = null;
 	@Override
 	public Integer addLore(Integer cptId, String loreName, String lorePyCode,
-			Integer loreOrder, Integer mainLoreId, String loreCode)
+			Integer loreOrder, Integer mainLoreId, String loreCode,Integer traceStatus)
 			throws WEBException {
 		// TODO Auto-generated method stub
 		try {
@@ -34,7 +34,7 @@ public class LoreInfoManagerImpl implements LoreInfoManager{
 			Session sess = HibernateUtil.currentSession();
 			tran = sess.beginTransaction();
 			LoreInfo lore = new LoreInfo(cDao.get(sess, cptId), loreName, lorePyCode,
-					0, 0, loreOrder,mainLoreId, loreCode);
+					0, 0, loreOrder,mainLoreId, loreCode,traceStatus);
 			lDao.save(sess, lore);
 			tran.commit();
 			return lore.getId();

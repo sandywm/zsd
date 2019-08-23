@@ -227,6 +227,7 @@ public class LoreAction extends DispatchAction {
 		String eduVolume = "";
 		String loreName = Transcode.unescape_new("loreName", request);
 		String subIdCode = "";
+		Integer traceStatus = CommonTools.getFinalInteger("traceStatus", request);
 		String msg = "error";
 		if(lm.checkExistByCptId(cptId, loreName)){
 			msg = "exist";
@@ -279,7 +280,7 @@ public class LoreAction extends DispatchAction {
 				}
 				
 				String loreCode = subIdCode + "-" + ediIdCode + "-" + paraCode + "-" + gradeCode + "-" + eduVolumeCode + "-"  + cptOrderCode + "-" + loreOrderCode;
-				lm.addLore(cptId, loreName, Convert.getFirstSpell(loreName), loreOrder, 0, loreCode);
+				lm.addLore(cptId, loreName, Convert.getFirstSpell(loreName), loreOrder, 0, loreCode,traceStatus);
 				
 			}
 		}
@@ -1658,8 +1659,9 @@ public class LoreAction extends DispatchAction {
 					String[] newLoreCatalogNameArray = loreCatalogArray.get(i).toString().split(",");//格式loreName,loreId
 					String newLoreCatalogName = newLoreCatalogNameArray[0];
 					Integer quoteLoreId = Integer.parseInt(newLoreCatalogNameArray[1]);//通用版知识点
+					Integer traceStatus = lm.getEntityById(quoteLoreId).getTraceStatus();
 					//增加其他版本知识点目录
-					Integer newLoreId = lm.addLore(cptId, newLoreCatalogName, Convert.getFirstSpell(newLoreCatalogName), loreOrder, quoteLoreId, loreCode);
+					Integer newLoreId = lm.addLore(cptId, newLoreCatalogName, Convert.getFirstSpell(newLoreCatalogName), loreOrder, quoteLoreId, loreCode, traceStatus);
 					newLoreIdArr[i] = newLoreId;
 					tyLoreIdArr[i] = quoteLoreId;
 					newLoreCodeArr[i] = loreCode;

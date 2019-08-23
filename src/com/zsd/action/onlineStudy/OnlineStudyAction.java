@@ -1808,24 +1808,35 @@ public class OnlineStudyAction extends DispatchAction {
 							map_d.put("answerE", lq.getE());
 							map_d.put("answerF", lq.getF());
 							Integer completeStatus = 0;//做题状态(0:未做,1:已做)
-							for(Integer j = 0 ; j < sdList_used.size() ; j++){
-								StudyDetailInfo sd = sdList_used.get(j);
-								LoreQuestion lq_use = sd.getLoreQuestion();
-								if(lqId_old.equals(lq_use.getId())){//做过
-									completeStatus = 1;
-									map_d.put("realAnswer", sd.getRealAnswer());
-									map_d.put("myAnswer", sd.getMyAnswer());
-									map_d.put("result", sd.getResult());//答案对错0:错，1:对
-									map_d.put("questionStep", sd.getQueStep());
-									Integer lqsId = lq.getQueTips();
-									if(lqsId > 0){
-										LoreQuestionSubInfo lqs = lqm.getEntityByLqsId(lqsId);
-										if(lqs != null){
-											map_d.put("tipsTitle", lqs.getLqsTitle());
-											map_d.put("tipsContent", lqs.getLqsContent());
+							if(sdList_used.size() > 0){
+								for(Integer j = 0 ; j < sdList_used.size() ; j++){
+									StudyDetailInfo sd = sdList_used.get(j);
+									LoreQuestion lq_use = sd.getLoreQuestion();
+									if(lqId_old.equals(lq_use.getId())){//做过
+										completeStatus = 1;
+										map_d.put("realAnswer", sd.getRealAnswer());
+										map_d.put("myAnswer", sd.getMyAnswer());
+										map_d.put("result", sd.getResult());//答案对错0:错，1:对
+										map_d.put("questionStep", sd.getQueStep());
+										Integer lqsId = lq.getQueTips();
+										if(lqsId > 0){
+											LoreQuestionSubInfo lqs = lqm.getEntityByLqsId(lqsId);
+											if(lqs != null){
+												map_d.put("tipsTitle", lqs.getLqsTitle());
+												map_d.put("tipsContent", lqs.getLqsContent());
+											}
 										}
+										break;
 									}
-									break;
+								}
+							}else{//在做错题是在旁边显示出提示信息
+								Integer lqsId = lq.getQueTips();
+								if(lqsId > 0){
+									LoreQuestionSubInfo lqs = lqm.getEntityByLqsId(lqsId);
+									if(lqs != null){
+										map_d.put("tipsTitle", lqs.getLqsTitle());
+										map_d.put("tipsContent", lqs.getLqsContent());
+									}
 								}
 							}
 							map_d.put("completeStatus", completeStatus);//做题状态(0:未做,1:已做)
@@ -1984,23 +1995,34 @@ public class OnlineStudyAction extends DispatchAction {
 										map_d.put("answerE", lq.getE());
 										map_d.put("answerF", lq.getF());
 										Integer completeStatus = 0;//做题状态(0:已做,1:未做)
-										for(Integer k = 0 ; k < sdList_new.size() ; k++){
-											StudyDetailInfo sd_new = sdList_new.get(k);
-											if(lqId_old.equals(sd_new.getLoreQuestion().getId())){
-												completeStatus = 1;
-												map_d.put("realAnswer", sd_new.getRealAnswer());
-												map_d.put("myAnswer", sd_new.getMyAnswer());
-												map_d.put("result", sd_new.getResult());//答案对错0:错，1:对
-												map_d.put("questionStep", sd_new.getQueStep());
-												Integer lqsId = lq.getQueTips();
-												if(lqsId > 0){
-													LoreQuestionSubInfo lqs = lqm.getEntityByLqsId(lqsId);
-													if(lqs != null){
-														map_d.put("tipsTitle", lqs.getLqsTitle());
-														map_d.put("tipsContent", lqs.getLqsContent());
+										if(sdList_new.size() > 0){
+											for(Integer k = 0 ; k < sdList_new.size() ; k++){
+												StudyDetailInfo sd_new = sdList_new.get(k);
+												if(lqId_old.equals(sd_new.getLoreQuestion().getId())){
+													completeStatus = 1;
+													map_d.put("realAnswer", sd_new.getRealAnswer());
+													map_d.put("myAnswer", sd_new.getMyAnswer());
+													map_d.put("result", sd_new.getResult());//答案对错0:错，1:对
+													map_d.put("questionStep", sd_new.getQueStep());
+													Integer lqsId = lq.getQueTips();
+													if(lqsId > 0){
+														LoreQuestionSubInfo lqs = lqm.getEntityByLqsId(lqsId);
+														if(lqs != null){
+															map_d.put("tipsTitle", lqs.getLqsTitle());
+															map_d.put("tipsContent", lqs.getLqsContent());
+														}
 													}
+													break;
 												}
-												break;
+											}
+										}else{//在做错题是在旁边显示出提示信息
+											Integer lqsId = lq.getQueTips();
+											if(lqsId > 0){
+												LoreQuestionSubInfo lqs = lqm.getEntityByLqsId(lqsId);
+												if(lqs != null){
+													map_d.put("tipsTitle", lqs.getLqsTitle());
+													map_d.put("tipsContent", lqs.getLqsContent());
+												}
 											}
 										}
 										map_d.put("completeStatus", completeStatus);//做题状态(0:未做,1:已做)
@@ -2296,247 +2318,251 @@ public class OnlineStudyAction extends DispatchAction {
 		Integer oldStepMoney = 0;//该阶段得分
 		Integer access = 0;//本阶段完成情况
 		String msg = "error";
-		if(lqId > 0){
-			LoreQuestion lq = lqm.getEntityByLqId(lqId);
-			if(lq != null){
-				msg = "success";
-				String realAnser = lq.getQueAnswer();
-				String queType = lq.getQueType();
-				String queType2 = lq.getQueType2();
-				String loreType = lq.getLoreTypeName();
-				Integer quoteLoreId = lq.getLoreInfo().getId();
-				String[] loreInfo = CommonTools.getRealLoreInfo(quoteLoreId, loreId);//当前题库的指定版本下的知识点
-				currentLoreId = Integer.parseInt(loreInfo[0]);
-				if(loreType.equals("巩固训练")){//巩固训练不检查
-					if(studyLogId > 0){//存在学习记录
-						StudyLogInfo sl = slm.getEntityById(studyLogId);
-						logType = sl.getLogType();
-						subjectId = sl.getSubject().getId();
-					}else{
-						subjectId = lq.getLoreInfo().getChapter().getEducation().getGradeSubject().getSubject().getId();
-					}
-				}else{
-					if(studyLogId > 0){//存在学习记录
-						StudyLogInfo sl = slm.getEntityById(studyLogId);
-						logType = sl.getLogType();
-						subjectId = sl.getSubject().getId();
-//						flag = sdm.checkSuccCompleteFlag(studyLogId, lqId, currDate);
-//						if(!flag){//当当前题错误或者没做时
-//							//判断上次答题时间（正常答题不会出现，防止URL提交）
-//							List<StudyDetailInfo> sdList = sdm.listLastInfoByLogId(studyLogId, 0, "");
-//							String lastAddTime = sdList.get(0).getAddTime();
-//							long diffS = CurrentTime.compareDateTime(currTime, lastAddTime);//相差毫秒数
-//							if(diffS > 5000){//间隔5秒以上
-//								//允许做题
-//								flag = false;
-//							}else{
-//								flag = false;
-//							}
-//						}
-					}else{
-						subjectId = lq.getLoreInfo().getChapter().getEducation().getGradeSubject().getSubject().getId();
-					}
-				}
-				if(!flag){
-					if(queType.equals("问答题") || queType.equals("填空题")){
-						if(myAnswer.indexOf("正确") >= 0){
-							result = 1;
+		if(lqId > 0 && stuId > 0){
+			if(CommonTools.getDiffDays(stuId) <= 0){//会员到期，不能继续使用
+				msg = "accountDue";
+			}else{
+				LoreQuestion lq = lqm.getEntityByLqId(lqId);
+				if(lq != null){
+					msg = "success";
+					String realAnser = lq.getQueAnswer();
+					String queType = lq.getQueType();
+					String queType2 = lq.getQueType2();
+					String loreType = lq.getLoreTypeName();
+					Integer quoteLoreId = lq.getLoreInfo().getId();
+					String[] loreInfo = CommonTools.getRealLoreInfo(quoteLoreId, loreId);//当前题库的指定版本下的知识点
+					currentLoreId = Integer.parseInt(loreInfo[0]);
+					if(loreType.equals("巩固训练")){//巩固训练不检查
+						if(studyLogId > 0){//存在学习记录
+							StudyLogInfo sl = slm.getEntityById(studyLogId);
+							logType = sl.getLogType();
+							subjectId = sl.getSubject().getId();
 						}else{
-							result = 0;
+							subjectId = lq.getLoreInfo().getChapter().getEducation().getGradeSubject().getSubject().getId();
 						}
-						dataBaseAnswerChar = answerOptionArrayStr;
 					}else{
-						JSONArray answerOptionArray = JSON.parseArray(answerOptionArrayStr);
-						String[] dataBaseAnswerArray = realAnser.split(",");
-						for(int j = 0; j < dataBaseAnswerArray.length; j++){
-							for(int i = 0; i < answerOptionArray.size(); i++){
-								String answerOption = answerOptionArray.get(i).toString();
-								if(answerOption.indexOf("Module/commonJs/ueditor/jsp/lore") >= 0){
-									//表示答案选项是图片--截取前面的路径
-									answerOption = answerOption.replace("Module/commonJs/ueditor/jsp/lore/", "");
-								}
-								if(dataBaseAnswerArray[j].equals(answerOption)){
-									dataBaseAnswerChar += Convert.NumberConvertBigChar(i)+",";
-									break;
-								}
-							}
+						if(studyLogId > 0){//存在学习记录
+							StudyLogInfo sl = slm.getEntityById(studyLogId);
+							logType = sl.getLogType();
+							subjectId = sl.getSubject().getId();
+//							flag = sdm.checkSuccCompleteFlag(studyLogId, lqId, currDate);
+//							if(!flag){//当当前题错误或者没做时
+//								//判断上次答题时间（正常答题不会出现，防止URL提交）
+//								List<StudyDetailInfo> sdList = sdm.listLastInfoByLogId(studyLogId, 0, "");
+//								String lastAddTime = sdList.get(0).getAddTime();
+//								long diffS = CurrentTime.compareDateTime(currTime, lastAddTime);//相差毫秒数
+//								if(diffS > 5000){//间隔5秒以上
+//									//允许做题
+//									flag = false;
+//								}else{
+//									flag = false;
+//								}
+//							}
+						}else{
+							subjectId = lq.getLoreInfo().getChapter().getEducation().getGradeSubject().getSubject().getId();
 						}
-						dataBaseAnswerChar = dataBaseAnswerChar.substring(0, dataBaseAnswerChar.length() - 1);
-						if(queType.equals("多选题")){
-							flag = false;//顺序可以不同
-						}else{//不是多选题答案需要完全匹配(填空选择题、单选题，判断题)
-							flag = true;
-						}
-						if(flag){//完全匹配
-							if(dataBaseAnswerChar.equals(myAnswer)){
+					}
+					if(!flag){
+						if(queType.equals("问答题") || queType.equals("填空题")){
+							if(myAnswer.indexOf("正确") >= 0){
 								result = 1;
 							}else{
 								result = 0;
 							}
-						}else{//答案顺序可以不同
-							String[] myAnserArray = myAnswer.split(",");
-							String[] realAnswerArray = dataBaseAnswerChar.split(",");
-							String newMyAnswer = CommonTools.arraySort(myAnserArray);//排序后我的答案
-							String newRealAnswer = CommonTools.arraySort(realAnswerArray);//排序后后台正确答案
-							if(newMyAnswer.equals(newRealAnswer)){
-								result = 1;
-							}else{
-								result = 0;
-							}
-						}
-						for(int i = 0 ; i < answerOptionArray.size() ; i++){
-							answerOptionStr[i] = answerOptionArray.get(i).toString();
-						}
-						boolean updateFlag = false;
-						/**
-						 * step1:向log表中插入一条数据
-						 * 插入数据前需要先查询有无该记录。
-						 * 如果没有，执行插入
-						 * 如果有：分为两步
-						 * 1:如果stepComplete为1（做完该阶段所有题，者修改step、stepComplete、isFinish的值）
-						 * 2:如果stepComplete为0（未做完该阶段所有题）
-						 * 2.1：如果这是access为1，表示需要进入下一级关联知识点（修改access的值为1）
-						 */
-						if(studyLogId.equals(0)){//新开的题
-							List<StudyLogInfo> slList = slm.listLastStudyInfoByOpt(stuId, loreId, logType);
-							if(slList.size() > 0){
-								studyLogId = slList.get(0).getId();
-							}
-						}
-						if(studyLogId.equals(0)){//新开的题
-							if(result.equals(1)){//题做对了
-								oldStepMoney++;
-							}
-							studyLogId = slm.addStudyLog(stuId, loreId, subjectId, step, stepComplete, isFinish, "", oldStepMoney, access, currTime, 1, logType);
-							if(studyLogId > 0){
-								updateFlag = true;
-							}
-						}else{//表示是继续之前的未做完的题（修改log里面的记录）
-							StudyLogInfo  sl = slm.getEntityById(studyLogId);
-							if(sl != null){
-								//获取该记录里面最后一道题
-								if(sdm.listLastInfoByLogId(studyLogId, 0, "").get(0).getLoreQuestion().getId().equals(lqId)){
-									updateFlag = false;
-//									System.out.println("不能重复提交");
-									msg = "reSubmit";//不能重复提交
-								}else{
-									updateFlag = true;
-									step = sl.getStep();
-									oldStepMoney = sl.getCurrentGold();
-									isFinish = sl.getIsFinish();
-									access = sl.getAccess();
-									if(result == 1){
-										oldStepMoney++;
+							dataBaseAnswerChar = answerOptionArrayStr;
+						}else{
+							JSONArray answerOptionArray = JSON.parseArray(answerOptionArrayStr);
+							String[] dataBaseAnswerArray = realAnser.split(",");
+							for(int j = 0; j < dataBaseAnswerArray.length; j++){
+								for(int i = 0; i < answerOptionArray.size(); i++){
+									String answerOption = answerOptionArray.get(i).toString();
+									if(answerOption.indexOf("Module/commonJs/ueditor/jsp/lore") >= 0){
+										//表示答案选项是图片--截取前面的路径
+										answerOption = answerOption.replace("Module/commonJs/ueditor/jsp/lore/", "");
 									}
-									stepComplete = sl.getStepComplete();
-									if(isFinish == 1){//表示本知识点还未完成
-										if(stepComplete == 1){//表示该阶段已经完成
-											//将step增加1，stepComplete重新清0
-											step++;
-											stepComplete = 0;
-											oldStepMoney = 0;
-										}else{//当前级关联知识点已经完成access的值为1
-											if(access == 1){//表示该阶段知识点已经完成，需要进入下一级关联知识点学习
-												
+									if(dataBaseAnswerArray[j].equals(answerOption)){
+										dataBaseAnswerChar += Convert.NumberConvertBigChar(i)+",";
+										break;
+									}
+								}
+							}
+							dataBaseAnswerChar = dataBaseAnswerChar.substring(0, dataBaseAnswerChar.length() - 1);
+							if(queType.equals("多选题")){
+								flag = false;//顺序可以不同
+							}else{//不是多选题答案需要完全匹配(填空选择题、单选题，判断题)
+								flag = true;
+							}
+							if(flag){//完全匹配
+								if(dataBaseAnswerChar.equals(myAnswer)){
+									result = 1;
+								}else{
+									result = 0;
+								}
+							}else{//答案顺序可以不同
+								String[] myAnserArray = myAnswer.split(",");
+								String[] realAnswerArray = dataBaseAnswerChar.split(",");
+								String newMyAnswer = CommonTools.arraySort(myAnserArray);//排序后我的答案
+								String newRealAnswer = CommonTools.arraySort(realAnswerArray);//排序后后台正确答案
+								if(newMyAnswer.equals(newRealAnswer)){
+									result = 1;
+								}else{
+									result = 0;
+								}
+							}
+							for(int i = 0 ; i < answerOptionArray.size() ; i++){
+								answerOptionStr[i] = answerOptionArray.get(i).toString();
+							}
+							boolean updateFlag = false;
+							/**
+							 * step1:向log表中插入一条数据
+							 * 插入数据前需要先查询有无该记录。
+							 * 如果没有，执行插入
+							 * 如果有：分为两步
+							 * 1:如果stepComplete为1（做完该阶段所有题，者修改step、stepComplete、isFinish的值）
+							 * 2:如果stepComplete为0（未做完该阶段所有题）
+							 * 2.1：如果这是access为1，表示需要进入下一级关联知识点（修改access的值为1）
+							 */
+							if(studyLogId.equals(0)){//新开的题
+								List<StudyLogInfo> slList = slm.listLastStudyInfoByOpt(stuId, loreId, logType);
+								if(slList.size() > 0){
+									studyLogId = slList.get(0).getId();
+								}
+							}
+							if(studyLogId.equals(0)){//新开的题
+								if(result.equals(1)){//题做对了
+									oldStepMoney++;
+								}
+								studyLogId = slm.addStudyLog(stuId, loreId, subjectId, step, stepComplete, isFinish, "", oldStepMoney, access, currTime, 1, logType);
+								if(studyLogId > 0){
+									updateFlag = true;
+								}
+							}else{//表示是继续之前的未做完的题（修改log里面的记录）
+								StudyLogInfo  sl = slm.getEntityById(studyLogId);
+								if(sl != null){
+									//获取该记录里面最后一道题
+									if(sdm.listLastInfoByLogId(studyLogId, 0, "").get(0).getLoreQuestion().getId().equals(lqId)){
+										updateFlag = false;
+//										System.out.println("不能重复提交");
+										msg = "reSubmit";//不能重复提交
+									}else{
+										updateFlag = true;
+										step = sl.getStep();
+										oldStepMoney = sl.getCurrentGold();
+										isFinish = sl.getIsFinish();
+										access = sl.getAccess();
+										if(result == 1){
+											oldStepMoney++;
+										}
+										stepComplete = sl.getStepComplete();
+										if(isFinish == 1){//表示本知识点还未完成
+											if(stepComplete == 1){//表示该阶段已经完成
+												//将step增加1，stepComplete重新清0
+												step++;
+												stepComplete = 0;
+												oldStepMoney = 0;
+											}else{//当前级关联知识点已经完成access的值为1
+												if(access == 1){//表示该阶段知识点已经完成，需要进入下一级关联知识点学习
+													
+												}
 											}
 										}
-									}
-									if(loreType.equals("巩固训练")){//巩固训练不检查
-										//巩固训练只修改access状态为31，只要不是最后的提交，下次还会继续停留在学习当前知识点的状态
-										//当currentLoreId和知识点的loreId(本知识点)
-										if(currentLoreId.equals(loreId)){
-											//表示是本知识点的学习（巩固训练）
-											updateFlag = slm.updateStudyLog(studyLogId, 4, 0, -1, -1, 31, "");
+										if(loreType.equals("巩固训练")){//巩固训练不检查
+											//巩固训练只修改access状态为31，只要不是最后的提交，下次还会继续停留在学习当前知识点的状态
+											//当currentLoreId和知识点的loreId(本知识点)
+											if(currentLoreId.equals(loreId)){
+												//表示是本知识点的学习（巩固训练）
+												updateFlag = slm.updateStudyLog(studyLogId, 4, 0, -1, -1, 31, "");
+											}else{
+												updateFlag = slm.updateStudyLog(studyLogId, 3, 0, -1, -1, 31, "");
+											}
 										}else{
-											updateFlag = slm.updateStudyLog(studyLogId, 3, 0, -1, -1, 31, "");
+											updateFlag = slm.updateStudyLog(studyLogId, step, stepComplete, isFinish, oldStepMoney, 0, currTime);
 										}
-									}else{
-										updateFlag = slm.updateStudyLog(studyLogId, step, stepComplete, isFinish, oldStepMoney, 0, currTime);
 									}
 								}
 							}
-						}
-						if(studyLogId > 0 && updateFlag == true){
-							//step2:向detail表中插入一条记录并查看该studyLogId+loreQuestionId有没有记录
-							List<StudyDetailInfo> sdList = sdm.listInfoByOpt(studyLogId, lqId);
-							Integer questionNumber_curr = sdList.size() + 1;
-							sdm.addStudyDetail(stuId, studyLogId, currentLoreId, lqId, questionStep, dataBaseAnswerChar, 
-									result, currTime, myAnswer, answerOptionStr[0], answerOptionStr[1], answerOptionStr[2]
-									,answerOptionStr[3], answerOptionStr[4], answerOptionStr[5], questionNumber_curr);
-							//此处增加学生学习、全平台统计---------------------start
-							//A：统计学生学习情况---------------------
-							//根据学习时间、学生编号、学科编号获取学生学习统计信息
-							boolean liaojieSuccFlag = false;
-							boolean lijieSuccFlag = false;
-							boolean yySuccFlag = false;
-							boolean liaojieSuccFlag_all = false;
-							boolean lijieSuccFlag_all = false;
-							boolean yySuccFlag_all = false;
-							List<StudyStuTjInfo> sstList = ssm.listInfoByOption(stuId, subjectId, currDate);
-							if(sstList.size() > 0){//已存在
-								ssm.updateSSTById(sstList.get(0).getId(), queType2, liaojieSuccFlag, lijieSuccFlag, yySuccFlag);
-							}else{//不存在
-								ssm.addSST(currDate, stuId ,subjectId, queType2, result);
-							}
-							
-							//B:统计全平台学习情况---------------------
-							List<StudyAllTjInfo> satList = sam.listInfoByOption(currDate, subjectId);
-							if(satList.size() > 0){//已存在
-								sam.updateSATById(satList.get(0).getId(), queType2, liaojieSuccFlag_all, lijieSuccFlag_all, yySuccFlag_all);
-							}else{//不存在
-								sam.addSAT(currDate, subjectId, queType2, result);
-							}
-							//---------------------end
-							
-							//修改用户中的经验和金币数（答一题增加1经验，答对一题再增加1经验）
-							Integer coin = 0;
-							Integer experience = Constants.EXPERIENCE;
-							if(result.equals(1)){
-								if(queType2.equals("了解")){
-									liaojieSuccFlag = true;
-									liaojieSuccFlag_all = true;
-								}else if(queType2.equals("理解")){
-									lijieSuccFlag = true;
-									lijieSuccFlag_all = true;
-								}else if(queType2.equals("应用")){
-									yySuccFlag = true;
-									yySuccFlag_all = true;
+							if(studyLogId > 0 && updateFlag == true){
+								//step2:向detail表中插入一条记录并查看该studyLogId+loreQuestionId有没有记录
+								List<StudyDetailInfo> sdList = sdm.listInfoByOpt(studyLogId, lqId);
+								Integer questionNumber_curr = sdList.size() + 1;
+								sdm.addStudyDetail(stuId, studyLogId, currentLoreId, lqId, questionStep, dataBaseAnswerChar, 
+										result, currTime, myAnswer, answerOptionStr[0], answerOptionStr[1], answerOptionStr[2]
+										,answerOptionStr[3], answerOptionStr[4], answerOptionStr[5], questionNumber_curr);
+								//此处增加学生学习、全平台统计---------------------start
+								//A：统计学生学习情况---------------------
+								//根据学习时间、学生编号、学科编号获取学生学习统计信息
+								boolean liaojieSuccFlag = false;
+								boolean lijieSuccFlag = false;
+								boolean yySuccFlag = false;
+								boolean liaojieSuccFlag_all = false;
+								boolean lijieSuccFlag_all = false;
+								boolean yySuccFlag_all = false;
+								List<StudyStuTjInfo> sstList = ssm.listInfoByOption(stuId, subjectId, currDate);
+								if(sstList.size() > 0){//已存在
+									ssm.updateSSTById(sstList.get(0).getId(), queType2, liaojieSuccFlag, lijieSuccFlag, yySuccFlag);
+								}else{//不存在
+									ssm.addSST(currDate, stuId ,subjectId, queType2, result);
 								}
 								
-								if(loreType.equals("巩固训练")){//巩固训练不计分
-									coin = 0;
-									experience = 0;
-								}else{
-									coin = Constants.COIN;
-									experience += Constants.EXPERIENCE;
+								//B:统计全平台学习情况---------------------
+								List<StudyAllTjInfo> satList = sam.listInfoByOption(currDate, subjectId);
+								if(satList.size() > 0){//已存在
+									sam.updateSATById(satList.get(0).getId(), queType2, liaojieSuccFlag_all, lijieSuccFlag_all, yySuccFlag_all);
+								}else{//不存在
+									sam.addSAT(currDate, subjectId, queType2, result);
 								}
-							}
-							
-							//插入数据到studyTask表中
-							//获取指定学习记录的学习任务描述
-							if(!loreType.equals("巩固训练")){//巩固训练不增加至studyTask
-								List<StudyTaskInfo>  stList = stm.listTaskInfoByOpt(studyLogId, "");
-								Integer number = 0;
-								if(stList.size() == 0){//第一次做题
-									number = 1;
-									stm.addSTask(number, studyLogId, loreTaskName, coin);
-								}else{//表示已经有该题的答题记录了
-									List<StudyTaskInfo>  stList_1 = stm.listTaskInfoByOpt(studyLogId, loreTaskName);
-									if(stList_1.size() > 0){
-										//修改指定studyLogId的记录的金币和时间
-										Integer stId = stList_1.get(0).getId();
-										stm.updateCoinInfoById(stId, coin);
-									}else{//新一级知识点的题（需要新增答题学习任务）
-										number = stList.get(0).getTaskNum() + 1;
-										stm.addSTask(number, studyLogId, loreTaskName, coin);
+								//---------------------end
+								
+								//修改用户中的经验和金币数（答一题增加1经验，答对一题再增加1经验）
+								Integer coin = 0;
+								Integer experience = Constants.EXPERIENCE;
+								if(result.equals(1)){
+									if(queType2.equals("了解")){
+										liaojieSuccFlag = true;
+										liaojieSuccFlag_all = true;
+									}else if(queType2.equals("理解")){
+										lijieSuccFlag = true;
+										lijieSuccFlag_all = true;
+									}else if(queType2.equals("应用")){
+										yySuccFlag = true;
+										yySuccFlag_all = true;
+									}
+									
+									if(loreType.equals("巩固训练")){//巩固训练不计分
+										coin = 0;
+										experience = 0;
+									}else{
+										coin = Constants.COIN;
+										experience += Constants.EXPERIENCE;
 									}
 								}
-								um.updateUser(stuId, coin, experience, 0, 0);
+								
+								//插入数据到studyTask表中
+								//获取指定学习记录的学习任务描述
+								if(!loreType.equals("巩固训练")){//巩固训练不增加至studyTask
+									List<StudyTaskInfo>  stList = stm.listTaskInfoByOpt(studyLogId, "");
+									Integer number = 0;
+									if(stList.size() == 0){//第一次做题
+										number = 1;
+										stm.addSTask(number, studyLogId, loreTaskName, coin);
+									}else{//表示已经有该题的答题记录了
+										List<StudyTaskInfo>  stList_1 = stm.listTaskInfoByOpt(studyLogId, loreTaskName);
+										if(stList_1.size() > 0){
+											//修改指定studyLogId的记录的金币和时间
+											Integer stId = stList_1.get(0).getId();
+											stm.updateCoinInfoById(stId, coin);
+										}else{//新一级知识点的题（需要新增答题学习任务）
+											number = stList.get(0).getTaskNum() + 1;
+											stm.addSTask(number, studyLogId, loreTaskName, coin);
+										}
+									}
+									um.updateUser(stuId, coin, experience, 0, 0);
+								}
 							}
 						}
+					}else{
+						msg = "timeErr";//间隔5秒以上
 					}
-				}else{
-					msg = "timeErr";//间隔5秒以上
 				}
 			}
 		}
@@ -2596,263 +2622,268 @@ public class OnlineStudyAction extends DispatchAction {
 		if(!currentStepLoreIdStr.equals("")){
 			currentStepLoreArray = currentStepLoreIdStr.split(",");
 		}
-		StudyLogInfo sl = null;
-		if(studyLogId.equals(0)){//初次做题
-			//通过userId+loreId获取最后一条答题详情
-			List<StudyLogInfo> slLastList = slm.listLastStudyInfoByOpt(stuId, loreId, logType);
-			if(slLastList.size() > 0){//之前做过，但没提交
-				studyLogId = slLastList.get(0).getId();
-				subId = slLastList.get(0).getSubject().getId();
-				schoolId = slLastList.get(0).getUser().getSchoolId();
-				if(schoolId > 0){
-					List<School> sList = sm.listInfoById(schoolId);
-					if(sList.size() > 0){
-						prov = sList.get(0).getProv();
-						city = sList.get(0).getCity();
-						county = sList.get(0).getCounty();
-						schoolType = sList.get(0).getSchoolType();
-						UserClassInfo uc = ucm.getEntityByOpt(stuId, 2);
-						if(uc != null){
-							ClassInfo c = uc.getClassInfo();
-							gradeName = Convert.dateConvertGradeName(c.getBuildeClassDate());//当前学生的真实年级
-							classId = c.getId();
-							msg = "success";
-						}
-					}
-				}
-			}else{
-				//不存在这样的情况(没做题点最后提交)
-			}
-		}else{//不是第一次做题
-			sl = slm.getEntityById(studyLogId);
-			if(sl != null){
-				subId = sl.getSubject().getId();
-				schoolId = sl.getUser().getSchoolId();
-				if(schoolId > 0){
-					List<School> sList = sm.listInfoById(schoolId);
-					if(sList.size() > 0){
-						prov = sList.get(0).getProv();
-						city = sList.get(0).getCity();
-						county = sList.get(0).getCounty();
-						schoolType = sList.get(0).getSchoolType();
-						UserClassInfo uc = ucm.getEntityByOpt(stuId, 2);
-						if(uc != null){
-							ClassInfo c = uc.getClassInfo();
-							gradeName = Convert.dateConvertGradeName(c.getBuildeClassDate());//当前学生的真实年级
-							classId = c.getId();
-							msg = "success";
-						}
-					}
-				}
-			}
-		}
-		if(msg.equals("success")){
-			//最后提交的任务数都+1
-			if(studyLogId > 0){
-				sl = slm.getEntityById(studyLogId);
-			}
-			
-			if(step == 3){//再次诊断时用
-				if(access == 1){//再次诊断全部正确
-					String studyPath = CommonTools.getLorePath(loreId, "study")[0];
-					String studyPath_new = CommonTools.getCurrentStudyPath_new(studyPath, currentLoreId);
-					if(studyPath_new.split(":").length == 1){//表示当前知识点是本知识点之前的最后一个知识点
-						//表示当前层完成，stepComplete = 1;
-						stepComplete = 0;
-						access = 2;
-						step = 4;
-						isFinish = 1;
-					}
-				}else{
-					//根据学习记录编号获取有无当前知识点指定类型的答题记录
-					List<StudyDetailInfo>  sdList = sdm.listInfoByOpt(studyLogId, currentLoreId, "再次诊断");
-					if(submitType.equals("study")){//5步学习法学完后的提交动作
-						if(sdList.size() > 0){//表示之前有做过的答题记录
-							access = 3;
-						}else{//表示还没做过再次诊断
-							access = 4;
-						}
-					}else{//再次诊断时(针对性诊断的step不可能是3)再次诊断后的提交动作
-						if(sdList.size() > 0){//表示之前有做过的答题记录
-							access = 31;
-						}else{//表示还没做过再次诊断
-							access = 41;
-						}
-					}
-				}
-			}else if(step == 4){
-				if(access == 1){//再次诊断全部正确
-					stepComplete = 1;
-					access = 1;
-					step = 5;
-					isFinish = 2;//全部结束
-				}else{
-					//根据学习记录编号获取有无当前知识点指定类型的答题记录
-					List<StudyDetailInfo>  sdList = sdm.listInfoByOpt(studyLogId, currentLoreId, "再次诊断");
-					if(submitType.equals("study")){//5步学习法学完后的提交动作
-						if(sdList.size() > 0){//表示之前有做过的答题记录
-							access = 3;
-						}else{//表示还没做过再次诊断
-							access = 4;
-						}
-					}else{//再次诊断时(针对性诊断的step不可能是3)再次诊断后的提交动作
-						if(sdList.size() > 0){//表示之前有做过的答题记录
-							access = 31;
-						}else{//表示还没做过再次诊断
-							access = 41;
-						}
-					}
-				}
-			}
-			Integer oneZdSuccNum = 0;//一次性通过总数
-			Integer oneZdFailNum = 0;//一次性未通过总数
-			Integer againXxSuccNum = 0;//再次诊断(学习)通过
-			Integer againXxFailNum = 0;//再次诊断(学习)未通过
-			Integer noRelateNum = 0;//未溯源个数
-			Integer relateZdFailNum = 0;//关联诊断未通过
-			Integer relateXxSuccNum = 0;//关联学习通过
-			Integer relateXxFailNum = 0;//关联未学习通过
-			String rate = "";//转化率
-			
-			//step=0表示不对step进行修改
-			Integer step_curr = 0;
-			Integer zdxzd_flag = 0;//默认为未通过
-			Integer zczd_flag = 0;//默认为未通过
-			Integer taskNumber = 1;
-			if(sl != null){
-				step_curr = sl.getStep();
-				taskNumber = sl.getTaskNumber() + 1;
-			}
-			boolean flag = slm.updateLogStatus(studyLogId, step, stepComplete, isFinish, access, taskNumber);
-			//插入或者修改记录（relationZdResult表）
-			if(submitType.equals("study")){
-				//关联知识点的五步学习
-				if(step_curr.equals(3)){//关联知识点的五步学习和再次诊断
-					RelationZdResult rzr = rzrm.getEntityByOpt(studyLogId, currentLoreId);
-					if(rzr != null){//表示不是第一次五步学习（五步学习完成并studyTimes+1）
-						//-1为不更新
-						rzrm.updateEntity(rzr.getId(), -1, -1, -1, rzr.getStudyTimes() + 1, -1);
-					}else{//表示第一次五步学习
-						rzrm.addRZR(studyLogId, currentLoreId, -1, 1, -1, 1, 0);
-					}
-				}
-			}else{//关联知识点的针对性诊断和再次诊断
-				if(step_curr.equals(2)){//表示在针对性诊断
-					for(int i = 0 ; i < currentStepLoreArray.length ; i++){
-						Integer loreId_curr = Integer.parseInt(currentStepLoreArray[i]);//当前层的知识点编号
-							//针对性诊断只有一次，不需要修改，直接插入记录
-							if(access.equals(1)){//当前层全部正确
-								zdxzd_flag = access;
-							}else{//未完全正确或全部错误
-								zdxzd_flag = 0;
+		if(CommonTools.getDiffDays(stuId) <= 0){
+			msg = "accountDue";
+		}else{
+			StudyLogInfo sl = null;
+			if(studyLogId.equals(0)){//初次做题
+				//通过userId+loreId获取最后一条答题详情
+				List<StudyLogInfo> slLastList = slm.listLastStudyInfoByOpt(stuId, loreId, logType);
+				if(slLastList.size() > 0){//之前做过，但没提交
+					studyLogId = slLastList.get(0).getId();
+					subId = slLastList.get(0).getSubject().getId();
+					schoolId = slLastList.get(0).getUser().getSchoolId();
+					if(schoolId > 0){
+						List<School> sList = sm.listInfoById(schoolId);
+						if(sList.size() > 0){
+							prov = sList.get(0).getProv();
+							city = sList.get(0).getCity();
+							county = sList.get(0).getCounty();
+							schoolType = sList.get(0).getSchoolType();
+							UserClassInfo uc = ucm.getEntityByOpt(stuId, 2);
+							if(uc != null){
+								ClassInfo c = uc.getClassInfo();
+								gradeName = Convert.dateConvertGradeName(c.getBuildeClassDate());//当前学生的真实年级
+								classId = c.getId();
+								msg = "success";
 							}
-							//-1为未做
-						rzrm.addRZR(studyLogId, loreId_curr, zdxzd_flag, -1, -1, 0, 0);
-					}
-					if(currentStepLoreArray.length > 0){//其他学校不参与
-						if(access.equals(1)){//当前关联知识点的针对性诊断全部正确
-							noRelateNum = -1;//关联诊断完成，未溯源个数-1
-						}else{//未完全正确或全部错误
-							relateZdFailNum = currentStepLoreArray.length;//当前层有多少个知识点就有多少个关联知识点针对性诊断未通过次数
-							relateXxFailNum = currentStepLoreArray.length;
 						}
 					}
-				}else if(step_curr.equals(3)){//关联知识点再次诊断
-					if(access.equals(1)){//当前层全部正确
-						zczd_flag = access;
+				}else{
+					//不存在这样的情况(没做题点最后提交)
+				}
+			}else{//不是第一次做题
+				sl = slm.getEntityById(studyLogId);
+				if(sl != null){
+					subId = sl.getSubject().getId();
+					schoolId = sl.getUser().getSchoolId();
+					if(schoolId > 0){
+						List<School> sList = sm.listInfoById(schoolId);
+						if(sList.size() > 0){
+							prov = sList.get(0).getProv();
+							city = sList.get(0).getCity();
+							county = sList.get(0).getCounty();
+							schoolType = sList.get(0).getSchoolType();
+							UserClassInfo uc = ucm.getEntityByOpt(stuId, 2);
+							if(uc != null){
+								ClassInfo c = uc.getClassInfo();
+								gradeName = Convert.dateConvertGradeName(c.getBuildeClassDate());//当前学生的真实年级
+								classId = c.getId();
+								msg = "success";
+							}
+						}
+					}
+				}
+			}
+			if(msg.equals("success")){
+				//最后提交的任务数都+1
+				if(studyLogId > 0){
+					sl = slm.getEntityById(studyLogId);
+				}
+				
+				if(step == 3){//再次诊断时用
+					if(access == 1){//再次诊断全部正确
+						String studyPath = CommonTools.getLorePath(loreId, "study")[0];
+						String studyPath_new = CommonTools.getCurrentStudyPath_new(studyPath, currentLoreId);
+						if(studyPath_new.split(":").length == 1){//表示当前知识点是本知识点之前的最后一个知识点
+							//表示当前层完成，stepComplete = 1;
+							stepComplete = 0;
+							access = 2;
+							step = 4;
+							isFinish = 1;
+						}
+					}else{
+						//根据学习记录编号获取有无当前知识点指定类型的答题记录
+						List<StudyDetailInfo>  sdList = sdm.listInfoByOpt(studyLogId, currentLoreId, "再次诊断");
+						if(submitType.equals("study")){//5步学习法学完后的提交动作
+							if(sdList.size() > 0){//表示之前有做过的答题记录
+								access = 3;
+							}else{//表示还没做过再次诊断
+								access = 4;
+							}
+						}else{//再次诊断时(针对性诊断的step不可能是3)再次诊断后的提交动作
+							if(sdList.size() > 0){//表示之前有做过的答题记录
+								access = 31;
+							}else{//表示还没做过再次诊断
+								access = 41;
+							}
+						}
+					}
+				}else if(step == 4){
+					if(access == 1){//再次诊断全部正确
+						stepComplete = 1;
+						access = 1;
+						step = 5;
+						isFinish = 2;//全部结束
+					}else{
+						//根据学习记录编号获取有无当前知识点指定类型的答题记录
+						List<StudyDetailInfo>  sdList = sdm.listInfoByOpt(studyLogId, currentLoreId, "再次诊断");
+						if(submitType.equals("study")){//5步学习法学完后的提交动作
+							if(sdList.size() > 0){//表示之前有做过的答题记录
+								access = 3;
+							}else{//表示还没做过再次诊断
+								access = 4;
+							}
+						}else{//再次诊断时(针对性诊断的step不可能是3)再次诊断后的提交动作
+							if(sdList.size() > 0){//表示之前有做过的答题记录
+								access = 31;
+							}else{//表示还没做过再次诊断
+								access = 41;
+							}
+						}
+					}
+				}
+				Integer oneZdSuccNum = 0;//一次性通过总数
+				Integer oneZdFailNum = 0;//一次性未通过总数
+				Integer againXxSuccNum = 0;//再次诊断(学习)通过
+				Integer againXxFailNum = 0;//再次诊断(学习)未通过
+				Integer noRelateNum = 0;//未溯源个数
+				Integer relateZdFailNum = 0;//关联诊断未通过
+				Integer relateXxSuccNum = 0;//关联学习通过
+				Integer relateXxFailNum = 0;//关联未学习通过
+				String rate = "";//转化率
+				
+				//step=0表示不对step进行修改
+				Integer step_curr = 0;
+				Integer zdxzd_flag = 0;//默认为未通过
+				Integer zczd_flag = 0;//默认为未通过
+				Integer taskNumber = 1;
+				if(sl != null){
+					step_curr = sl.getStep();
+					taskNumber = sl.getTaskNumber() + 1;
+				}
+				boolean flag = slm.updateLogStatus(studyLogId, step, stepComplete, isFinish, access, taskNumber);
+				//插入或者修改记录（relationZdResult表）
+				if(submitType.equals("study")){
+					//关联知识点的五步学习
+					if(step_curr.equals(3)){//关联知识点的五步学习和再次诊断
+						RelationZdResult rzr = rzrm.getEntityByOpt(studyLogId, currentLoreId);
+						if(rzr != null){//表示不是第一次五步学习（五步学习完成并studyTimes+1）
+							//-1为不更新
+							rzrm.updateEntity(rzr.getId(), -1, -1, -1, rzr.getStudyTimes() + 1, -1);
+						}else{//表示第一次五步学习
+							rzrm.addRZR(studyLogId, currentLoreId, -1, 1, -1, 1, 0);
+						}
+					}
+				}else{//关联知识点的针对性诊断和再次诊断
+					if(step_curr.equals(2)){//表示在针对性诊断
+						for(int i = 0 ; i < currentStepLoreArray.length ; i++){
+							Integer loreId_curr = Integer.parseInt(currentStepLoreArray[i]);//当前层的知识点编号
+								//针对性诊断只有一次，不需要修改，直接插入记录
+								if(access.equals(1)){//当前层全部正确
+									zdxzd_flag = access;
+								}else{//未完全正确或全部错误
+									zdxzd_flag = 0;
+								}
+								//-1为未做
+							rzrm.addRZR(studyLogId, loreId_curr, zdxzd_flag, -1, -1, 0, 0);
+						}
+						if(currentStepLoreArray.length > 0){//其他学校不参与
+							if(access.equals(1)){//当前关联知识点的针对性诊断全部正确
+								noRelateNum = -1;//关联诊断完成，未溯源个数-1
+							}else{//未完全正确或全部错误
+								relateZdFailNum = currentStepLoreArray.length;//当前层有多少个知识点就有多少个关联知识点针对性诊断未通过次数
+								relateXxFailNum = currentStepLoreArray.length;
+							}
+						}
+					}else if(step_curr.equals(3)){//关联知识点再次诊断
+						if(access.equals(1)){//当前层全部正确
+							zczd_flag = access;
+							relateXxSuccNum = 1;//关联学习通过+1
+							relateXxFailNum = -1;//关联学习未通过-1
+						}else{//未完全正确或全部错误
+							zczd_flag = 0;
+						}
+						RelationZdResult rzr = rzrm.getEntityByOpt(studyLogId, Integer.parseInt(currentStepLoreArray[0]));
+						if(rzr != null){//表示不是第一次再次诊断（再次诊断完成并zczdTimes+1）
+							rzrm.updateEntity(rzr.getId(), -1, -1, zczd_flag, -1, rzr.getZczdTimes()+1);
+						}else{//表示第一次再次诊断
+							rzrm.addRZR(studyLogId, currentLoreId, -1, -1, zczd_flag, -1, 1);
+						}
+					}else if(step_curr.equals(4)){//最后一个关联知识点再次诊断完全正确后step会变成4
+						Integer current_lore_id = Integer.parseInt(currentStepLoreArray[0]);
 						relateXxSuccNum = 1;//关联学习通过+1
 						relateXxFailNum = -1;//关联学习未通过-1
-					}else{//未完全正确或全部错误
-						zczd_flag = 0;
-					}
-					RelationZdResult rzr = rzrm.getEntityByOpt(studyLogId, Integer.parseInt(currentStepLoreArray[0]));
-					if(rzr != null){//表示不是第一次再次诊断（再次诊断完成并zczdTimes+1）
-						rzrm.updateEntity(rzr.getId(), -1, -1, zczd_flag, -1, rzr.getZczdTimes()+1);
-					}else{//表示第一次再次诊断
-						rzrm.addRZR(studyLogId, currentLoreId, -1, -1, zczd_flag, -1, 1);
-					}
-				}else if(step_curr.equals(4)){//最后一个关联知识点再次诊断完全正确后step会变成4
-					Integer current_lore_id = Integer.parseInt(currentStepLoreArray[0]);
-					relateXxSuccNum = 1;//关联学习通过+1
-					relateXxFailNum = -1;//关联学习未通过-1
-					if(!current_lore_id.equals(loreId)){
-						//最后一个关联知识点全部正确后，access肯定为1
-						RelationZdResult rzr = rzrm.getEntityByOpt(studyLogId, current_lore_id);
-						if(rzr != null){//表示不是第一次再次诊断（再次诊断完成并zczdTimes+1）
-							zczd_flag = 1;
-							rzrm.updateEntity(rzr.getId(), -1, -1, zczd_flag, -1, rzr.getZczdTimes()+1);
+						if(!current_lore_id.equals(loreId)){
+							//最后一个关联知识点全部正确后，access肯定为1
+							RelationZdResult rzr = rzrm.getEntityByOpt(studyLogId, current_lore_id);
+							if(rzr != null){//表示不是第一次再次诊断（再次诊断完成并zczdTimes+1）
+								zczd_flag = 1;
+								rzrm.updateEntity(rzr.getId(), -1, -1, zczd_flag, -1, rzr.getZczdTimes()+1);
+							}
 						}
+						
 					}
-					
 				}
-			}
-			
-			if(isFinish.equals(2)){
-				//表示该知识点完成，更新result(系统评价)
-				//统计该知识点做了多少题
-				List<StudyDetailInfo> sdList = sdm.listInfoByLogId(studyLogId);
-				//查询该学习记录一共做了多少题
-				Integer allQuestionNumber = sdList.size();
-				//获取真实的知识点（通用版本）编号
-				Integer loreId_old = sl.getLoreInfo().getMainLoreId();
-				//获取真实知识点有多少针对性诊断的题（如过allQuestionNumber等于）
-				Integer zdxQuestionNumber = lqm.listInfoByLoreId(loreId_old, "针对性诊断", 0).size();
-				//获取其中所有做对的题的数量
-				Integer allQuestionRightNumber = sdm.listCurrentRightInfoByLogId(studyLogId, 0, "").size();//1:正确
-				String systemProposal = "";
-				Integer rightRate = 0;
-				String gdProposal = "";
-				if(zdxQuestionNumber.equals(allQuestionRightNumber)){//表示一次性通过
-					systemProposal = "共"+zdxQuestionNumber+"道题，您全做对了，正确率100%";
-					rightRate = 100;
-					//增加一次性通过次数，其他全部不修改
-					oneZdSuccNum = 1;
-				}else{//表示是经过五部学习法学习后通过
-					//肯定之前再次诊断学习未通过时+1，现在通过了需要减1
-					againXxSuccNum = 1;//再次诊断学习通过+1
-					againXxFailNum = -1;//再次诊断学习未通过-1
-					rightRate = allQuestionRightNumber * 100 / allQuestionNumber ;
-					if(rightRate >= 80){
-						gdProposal = "您已经完成了该知识点，证明您对本知识掌握的很好，做的非常棒。(";
+				
+				if(isFinish.equals(2)){
+					//表示该知识点完成，更新result(系统评价)
+					//统计该知识点做了多少题
+					List<StudyDetailInfo> sdList = sdm.listInfoByLogId(studyLogId);
+					//查询该学习记录一共做了多少题
+					Integer allQuestionNumber = sdList.size();
+					//获取真实的知识点（通用版本）编号
+					Integer loreId_old = sl.getLoreInfo().getMainLoreId();
+					//获取真实知识点有多少针对性诊断的题（如过allQuestionNumber等于）
+					Integer zdxQuestionNumber = lqm.listInfoByLoreId(loreId_old, "针对性诊断", 0).size();
+					//获取其中所有做对的题的数量
+					Integer allQuestionRightNumber = sdm.listCurrentRightInfoByLogId(studyLogId, 0, "").size();//1:正确
+					String systemProposal = "";
+					Integer rightRate = 0;
+					String gdProposal = "";
+					if(zdxQuestionNumber.equals(allQuestionRightNumber)){//表示一次性通过
+						systemProposal = "共"+zdxQuestionNumber+"道题，您全做对了，正确率100%";
+						rightRate = 100;
+						//增加一次性通过次数，其他全部不修改
+						oneZdSuccNum = 1;
+					}else{//表示是经过五部学习法学习后通过
+						//肯定之前再次诊断学习未通过时+1，现在通过了需要减1
+						againXxSuccNum = 1;//再次诊断学习通过+1
+						againXxFailNum = -1;//再次诊断学习未通过-1
+						rightRate = allQuestionRightNumber * 100 / allQuestionNumber ;
+						if(rightRate >= 80){
+							gdProposal = "您已经完成了该知识点，证明您对本知识掌握的很好，做的非常棒。(";
+						}else{
+							gdProposal = "通过诊断，发现您对该知识点的了解、理解、应用有问题。通过助学网的学习，您已经成功解决了这些问题并掌握了，以后再做本知识点时请注意，避免出错。(";
+						}
+						systemProposal = gdProposal + "共"+allQuestionNumber+"道题，您做对了"+allQuestionRightNumber+"道，正确率"+rightRate+"%)";
+					}
+					flag = slm.addSysAssess(studyLogId, systemProposal, rightRate);
+				}else{//未通过
+					if(currentLoreId.equals(loreId)){//当前知识点是主知识点时
+						//主知识点的针对性诊断未通过
+						oneZdFailNum = 1;
+						againXxFailNum = 1;
+						noRelateNum = 1;
+					}
+				}
+				if(schoolId > 0){//其他学校不参与统计
+					//获取指定学生，指定科目，指定日期的勤奋报告统计信息
+					StudyStuQfTjInfo qftj = tjm.getEntityByOpt(stuId, subId, CurrentTime.getStringDate());
+					if(qftj != null){
+						//修改
+						Integer fmNum = qftj.getOneZdFailNum() + oneZdFailNum + qftj.getRelateZdFailNum() + relateZdFailNum;//一次性通过总数+关联诊断未通过
+						Integer againXxSuccNum_real = qftj.getAgainXxSuccNum() + againXxSuccNum;//再次诊断学习通过次数
+						if(fmNum > 0 && againXxSuccNum_real > 0){
+							rate = Convert.convertInputNumber_1(againXxSuccNum_real * 100.0  / fmNum) + "%";//转换率
+						}
+						tjm.updateTjInfoById(qftj.getId(), oneZdSuccNum, oneZdFailNum, againXxSuccNum, againXxFailNum, noRelateNum, relateZdFailNum, relateXxSuccNum, relateXxFailNum, rate);
 					}else{
-						gdProposal = "通过诊断，发现您对该知识点的了解、理解、应用有问题。通过助学网的学习，您已经成功解决了这些问题并掌握了，以后再做本知识点时请注意，避免出错。(";
+						//增加
+						Integer fmNum = oneZdFailNum + relateZdFailNum;//一次性通过总数+关联诊断未通过
+						Integer againXxSuccNum_real = againXxSuccNum;//再次诊断学习通过次数
+						if(fmNum > 0 && againXxSuccNum_real > 0){
+							rate = Convert.convertInputNumber_1(againXxSuccNum_real * 100.0  / fmNum) + "%";//转换率
+						}
+						tjm.addQFTJ(stuId, subId, oneZdSuccNum, oneZdFailNum, againXxSuccNum, againXxFailNum, noRelateNum, relateZdFailNum, relateXxSuccNum, relateXxFailNum, rate, prov, city, county, schoolType, schoolId, gradeName, classId);
 					}
-					systemProposal = gdProposal + "共"+allQuestionNumber+"道题，您做对了"+allQuestionRightNumber+"道，正确率"+rightRate+"%)";
 				}
-				flag = slm.addSysAssess(studyLogId, systemProposal, rightRate);
-			}else{//未通过
-				if(currentLoreId.equals(loreId)){//当前知识点是主知识点时
-					//主知识点的针对性诊断未通过
-					oneZdFailNum = 1;
-					againXxFailNum = 1;
-					noRelateNum = 1;
+				if(flag){
+					msg = "success";
 				}
-			}
-			if(schoolId > 0){//其他学校不参与统计
-				//获取指定学生，指定科目，指定日期的勤奋报告统计信息
-				StudyStuQfTjInfo qftj = tjm.getEntityByOpt(stuId, subId, CurrentTime.getStringDate());
-				if(qftj != null){
-					//修改
-					Integer fmNum = qftj.getOneZdFailNum() + oneZdFailNum + qftj.getRelateZdFailNum() + relateZdFailNum;//一次性通过总数+关联诊断未通过
-					Integer againXxSuccNum_real = qftj.getAgainXxSuccNum() + againXxSuccNum;//再次诊断学习通过次数
-					if(fmNum > 0 && againXxSuccNum_real > 0){
-						rate = Convert.convertInputNumber_1(againXxSuccNum_real * 100.0  / fmNum) + "%";//转换率
-					}
-					tjm.updateTjInfoById(qftj.getId(), oneZdSuccNum, oneZdFailNum, againXxSuccNum, againXxFailNum, noRelateNum, relateZdFailNum, relateXxSuccNum, relateXxFailNum, rate);
-				}else{
-					//增加
-					Integer fmNum = oneZdFailNum + relateZdFailNum;//一次性通过总数+关联诊断未通过
-					Integer againXxSuccNum_real = againXxSuccNum;//再次诊断学习通过次数
-					if(fmNum > 0 && againXxSuccNum_real > 0){
-						rate = Convert.convertInputNumber_1(againXxSuccNum_real * 100.0  / fmNum) + "%";//转换率
-					}
-					tjm.addQFTJ(stuId, subId, oneZdSuccNum, oneZdFailNum, againXxSuccNum, againXxFailNum, noRelateNum, relateZdFailNum, relateXxSuccNum, relateXxFailNum, rate, prov, city, county, schoolType, schoolId, gradeName, classId);
-				}
-			}
-			if(flag){
-				msg = "success";
 			}
 		}
+		
 		map.put("result", msg);
 		map.put("studyLogId", studyLogId);
 		map.put("loreId", loreId);

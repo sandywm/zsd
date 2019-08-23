@@ -17,10 +17,11 @@ public interface LoreInfoManager {
 	 * @param loreOrder 知识点排序
 	 * @param mainLoreId 引用知识点编号
 	 * @param loreCode 知识点编码
+	 * @param traceStatus 溯源标识(正常知识点默认开启溯源0，单元测试，上/半期测试等都不需要溯源1)
 	 * @return
 	 * @throws WEBException
 	 */
-	Integer addLore(Integer cptId,String loreName,String lorePyCode,Integer loreOrder,Integer mainLoreId,String loreCode)throws WEBException;
+	Integer addLore(Integer cptId,String loreName,String lorePyCode,Integer loreOrder,Integer mainLoreId,String loreCode,Integer traceStatus)throws WEBException;
 	
 	/**
 	 * 修改指定编号的知识点实体信息（-1:不修改）
