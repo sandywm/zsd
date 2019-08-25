@@ -2175,7 +2175,6 @@ public class HomeWorkAction extends DispatchAction {
 		Integer currUserId = CommonTools.getLoginUserId(request);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "error";
-		String initDate = "";
 		Integer stuNum = 0;
 		//获取当前老师所在的班级任课信息
 		Integer subId = ucm.getEntityByOpt(currUserId, Constants.TEA_ROLE_ID).getSubjectId();
@@ -2270,10 +2269,8 @@ public class HomeWorkAction extends DispatchAction {
 				//统计最后一天或者指定横坐标的一天
 				List<SendHwInfo> sendList_spec = new ArrayList<SendHwInfo>();
 				if(specDate.equals("")){
-					initDate = eDate;
 					sendList_spec = swm.listPageInfoByOpt(0, subId, classId, hwType, -1, 0, eDate, eDate, false, 0, 0);
 				}else{
-					initDate = specDate;
 					sendList_spec = swm.listPageInfoByOpt(0, subId, classId, hwType, -1, 0, specDate, specDate, false, 0, 0);
 				}
 				if(sendList_spec.size() > 0){
@@ -2392,7 +2389,8 @@ public class HomeWorkAction extends DispatchAction {
 			map.put("yAxisZsData", zsNumArr);
 			map.put("yAxisBzData", bzNumArr);
 			map.put("yAxisUnData", unNumArr);
-			map.put("initDate", initDate);
+			map.put("specDate", specDate);
+			map.put("endDate", eDate);
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
