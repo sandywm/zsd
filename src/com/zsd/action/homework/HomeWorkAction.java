@@ -2470,15 +2470,17 @@ public class HomeWorkAction extends DispatchAction {
 					map_d.put("hwTitle", hw.getHwTitle());
 					map_d.put("endDate", hw.getEndDate());
 					map_d.put("sendDate", hw.getSendDate().substring(0, 10));
-					map_d.put("comDate", tj.getComDate().substring(0, 10));
 					Integer comStatus_db = tj.getComStatus();
 					String comStatusChi = "";
 					if(comStatus_db.equals(0)){
 						comStatusChi = "未完成";
+						map_d.put("comDate", tj.getComDate());
 					}else if(comStatus_db.equals(1)){
 						comStatusChi = "按时完成";
+						map_d.put("comDate", tj.getComDate().substring(0, 10));
 					}else if(comStatus_db.equals(2)){
 						comStatusChi = "补做完成";
+						map_d.put("comDate", tj.getComDate().substring(0, 10));
 					}
 					map_d.put("comStatusChi", comStatusChi);
 					list_d_hw.add(map_d);
