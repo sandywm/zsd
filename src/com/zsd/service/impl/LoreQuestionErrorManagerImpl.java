@@ -49,7 +49,7 @@ public class LoreQuestionErrorManagerImpl implements LoreQuestionErrorManager{
 			Session sess = HibernateUtil.currentSession();
 			tran = sess.beginTransaction();
 			LoreQuestionErrorInfo lqe = new LoreQuestionErrorInfo(lqDao.getEntityById(sess, loreQuestionId), uDao.get(sess, userId),
-					errorType, content, addDate, 1, 0,"", "","");
+					errorType, content, addDate, 0, 0,"", "","");
 			lqeDao.save(sess, lqe);
 			tran.commit();
 			return lqe.getId();

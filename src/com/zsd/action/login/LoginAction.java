@@ -140,75 +140,80 @@ public class LoginAction extends DispatchAction {
 		String msg = "error";
 		//客户端信息
 		String clientInfo = CommonTools.getCilentInfo_new(request);
+		System.out.println("客户端信息---"+request.getHeader("User-agent"));
 		boolean uFlag= false;
 		if(account!=""&& password!=""){
-			uFlag = DataBaseSqlVerify.checkSql(account);
-			if(!uFlag){
-				uFlag = uManager.userLogin(account, password);
-			}
-		}
-		if(uFlag){
-			if(clientInfo.equals("pc")){
+			if(clientInfo.equals("pc")){//电脑端需要匹配验证码
 				if(!vercode.equals(vercode2)){
 					msg = "vercodeFail";//验证码不匹配 
 					uFlag = false;
+				}else{
+					uFlag = true;
 				}
+			}else{//app端不需要
+				uFlag = true;
 			}
 			if(uFlag){
-				//登录成功
-				String currdate = CurrentTime.getCurrentTime();
-				List<User> uList = uManager.listInfoByAccount(account);
-				Integer uid = uList.get(0).getId();
-				String  userAcc = uList.get(0).getUserAccount();
-				String portrait = uList.get(0).getPortrait();
-				//判断用户账号有效状态
-				Integer status = uList.get(0).getAccountStatus();
-				List<RoleUserInfo> ruList = ruManager.listUserRoleInfoByuserId(uid);
-				Integer roleId =0;
-				if(!ruList.isEmpty()){
-					if(clientInfo.equals("pc")){
-						List<Object> list_d = new ArrayList<Object>();
-						for(RoleUserInfo ru : ruList){
-							Map<String,Object> map_d = new HashMap<String,Object>();
-							map_d.put("roleId", ru.getRoleInfo().getId());
-							map_d.put("roleName", ru.getRoleInfo().getRoleName());
-							list_d.add(map_d);
-						}
-						map.put("roleList", list_d);
-					}else{
-						roleId = ruList.get(0).getRoleInfo().getId();
-					}
-					if(status.equals(1)){//状态 0:无效,1:有效
-						Integer loginStatus = uList.get(0).getLoginStatus();//每次登陆，loginStatus自动加1，满50时恢复0状态
-						if(loginStatus < 50){
-							loginStatus++;
-						}else{
-							loginStatus = 0;
-						}
-						//修改用户的登录IP、登录时间、登录次数
-						uManager.updateUserLogin(uid, currdate, CommonTools.getIpAddress(request), uList.get(0).getLoginTimes() + 1, loginStatus);
-						if(portrait.equals("")){
-							portrait="Module/commonJs/ueditor/jsp/head/defaultHead.jpg";
-						}
-						msg = "success";
-						if(clientInfo.equals("pc")){
-							session.setAttribute(Constants.LOGIN_USER_ID, uid);
-							session.setAttribute(Constants.LOGIN_ACCOUNT, userAcc);
-							session.setAttribute(Constants.LOGIN_STATUS, loginStatus);
-						}else{
-							map.put("loginStatus", loginStatus);
-							map.put("roleId", roleId);
-							map.put("userAcc", userAcc);
-							map.put("password", pwd);
-							map.put("portrait", portrait);
-							map.put("userId", uid);
-						}
-					}else{//账号无效
-						msg = "lock";
-					}
-				}else{
-					msg = "roleErr";//无身份
+				uFlag = DataBaseSqlVerify.checkSql(account);
+				if(!uFlag){
+					uFlag = uManager.userLogin(account, password);
 				}
+			}
+		}
+		if(uFlag){
+			//登录成功
+			String currdate = CurrentTime.getCurrentTime();
+			List<User> uList = uManager.listInfoByAccount(account);
+			Integer uid = uList.get(0).getId();
+			String  userAcc = uList.get(0).getUserAccount();
+			String portrait = uList.get(0).getPortrait();
+			//判断用户账号有效状态
+			Integer status = uList.get(0).getAccountStatus();
+			List<RoleUserInfo> ruList = ruManager.listUserRoleInfoByuserId(uid);
+			Integer roleId =0;
+			if(!ruList.isEmpty()){
+				if(clientInfo.equals("pc")){
+					List<Object> list_d = new ArrayList<Object>();
+					for(RoleUserInfo ru : ruList){
+						Map<String,Object> map_d = new HashMap<String,Object>();
+						map_d.put("roleId", ru.getRoleInfo().getId());
+						map_d.put("roleName", ru.getRoleInfo().getRoleName());
+						list_d.add(map_d);
+					}
+					map.put("roleList", list_d);
+				}else{
+					roleId = ruList.get(0).getRoleInfo().getId();
+				}
+				if(status.equals(1)){//状态 0:无效,1:有效
+					Integer loginStatus = uList.get(0).getLoginStatus();//每次登陆，loginStatus自动加1，满50时恢复0状态
+					if(loginStatus < 50){
+						loginStatus++;
+					}else{
+						loginStatus = 0;
+					}
+					//修改用户的登录IP、登录时间、登录次数
+					uManager.updateUserLogin(uid, currdate, CommonTools.getIpAddress(request), uList.get(0).getLoginTimes() + 1, loginStatus);
+					if(portrait.equals("")){
+						portrait="Module/commonJs/ueditor/jsp/head/defaultHead.jpg";
+					}
+					msg = "success";
+					if(clientInfo.equals("pc")){
+						session.setAttribute(Constants.LOGIN_USER_ID, uid);
+						session.setAttribute(Constants.LOGIN_ACCOUNT, userAcc);
+						session.setAttribute(Constants.LOGIN_STATUS, loginStatus);
+					}else{
+						map.put("loginStatus", loginStatus);
+						map.put("roleId", roleId);
+						map.put("userAcc", userAcc);
+						map.put("password", pwd);
+						map.put("portrait", portrait);
+						map.put("userId", uid);
+					}
+				}else{//账号无效
+					msg = "lock";
+				}
+			}else{
+				msg = "roleErr";//无身份
 			}
 		}else{
 			msg = "fail";//用户名密码不匹配

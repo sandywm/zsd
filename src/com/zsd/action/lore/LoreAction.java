@@ -227,7 +227,8 @@ public class LoreAction extends DispatchAction {
 		String eduVolume = "";
 		String loreName = Transcode.unescape_new("loreName", request);
 		String subIdCode = "";
-		Integer traceStatus = CommonTools.getFinalInteger("traceStatus", request);
+		//不溯源的时候表示为单元测试题
+		Integer traceStatus = CommonTools.getFinalInteger("traceStatus", request);//溯源标记(0:溯源，1:不溯源)
 		String msg = "error";
 		if(lm.checkExistByCptId(cptId, loreName)){
 			msg = "exist";
@@ -1067,7 +1068,6 @@ public class LoreAction extends DispatchAction {
 						String answerD = lq.getD();
 						String answerE = lq.getE();
 						String answerF = lq.getF();
-						System.out.println((answerF == null) + "----" + (answerF == ""));
 						map_d.put("answerA", answerA);//选项A
 						map_d.put("answerB", answerB);//选项B
 						map_d.put("answerC", answerC);//选项C

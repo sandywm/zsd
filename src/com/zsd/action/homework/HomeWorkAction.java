@@ -2360,8 +2360,8 @@ public class HomeWorkAction extends DispatchAction {
 					map_d.put("loreInfo", hw.getLoreInfo().getLoreName());
 					map_d.put("hwTitle", hw.getHwTitle());
 					map_d.put("endDate", hw.getEndDate());
-					map_d.put("sendDate", hw.getSendDate());
-					map_d.put("comDate", tj.getComDate());
+					map_d.put("sendDate", hw.getSendDate().substring(0, 10));
+					map_d.put("comDate", tj.getComDate().substring(0, 10));
 					Integer comStatus_db = tj.getComStatus();
 					String comStatusChi = "";
 					if(comStatus_db.equals(0)){

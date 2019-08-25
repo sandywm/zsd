@@ -437,8 +437,12 @@ public class CommonTools {
 		String cilentQuip = "";
 		if(clientInfo != null){
 			if(clientInfo.indexOf("Android") >= 0 || clientInfo.indexOf("iPad") >= 0 || clientInfo.indexOf("iPhone") >= 0){
-				if(clientInfo.indexOf("AppleWebKit") > 0){
-					cilentQuip = "mobileBrowser";//移动端浏览器
+				if(clientInfo.indexOf("AppleWebKit") > 0){//手机浏览器，手机app封装的html页面
+					if(clientInfo.indexOf("Html5") > 0){
+						cilentQuip = "commonApp";////手机app封装html页面
+					}else{
+						cilentQuip = "pc";//移动端浏览器效果同于PC
+					}
 				}else{
 					if(clientInfo.indexOf("Android") >= 0){//移动端APP
 						cilentQuip = "andriodApp";
