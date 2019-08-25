@@ -2449,6 +2449,7 @@ public class HomeWorkAction extends DispatchAction {
 					}
 				}else{//切换班级时
 					if(i.equals(0)){
+						stuId = user.getId();
 						map_d.put("checkStatus", true);//默认选中第一个学生
 					}else{
 						map_d.put("checkStatus", false);
