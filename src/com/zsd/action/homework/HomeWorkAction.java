@@ -2397,6 +2397,7 @@ public class HomeWorkAction extends DispatchAction {
 		return null;
 	}
 	
+	
 	/**
 	 * 获取指定学生的家庭作业完成情况列表(老师用)
 	 * 在图表页面点击一个学生过来时都传递，当在指定学生记录中切换班级时，默认为第一个学生的记录
@@ -2414,15 +2415,16 @@ public class HomeWorkAction extends DispatchAction {
 		// TODO Auto-generated method stub
 		UserClassInfoManager ucm = (UserClassInfoManager)AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
 		HwStudyTjManager tjm = (HwStudyTjManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_TJ_INFO);
+		UserManager um = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
 		Integer stuId = CommonTools.getFinalInteger("stuId", request);//指定学生编号
 		Integer comStatus = CommonTools.getFinalInteger("comStatus", request);//完成状态--学生记录页面传递
 		Integer hwType = CommonTools.getFinalInteger("hwType", request);//作业类型(1-家庭作业,2-课后复习,3-课前预习)
-		Integer classId = CommonTools.getFinalInteger("classId", request);//指定班级编号
 		String sDate = CommonTools.getFinalStr("sDate", request);//开始时间
 		String eDate = CommonTools.getFinalStr("eDate", request);//结束时间
 		Integer currUserId = CommonTools.getLoginUserId(request);
 		Integer pageNo = CommonTools.getFinalInteger("pageNo", request);
 		Integer pageSize = CommonTools.getFinalInteger("pageSize", request);
+		String stuName = "";
 		if(pageSize.equals(0)){
 			pageSize = 10;
 		}
@@ -2430,35 +2432,11 @@ public class HomeWorkAction extends DispatchAction {
 		String msg = "error";
 		//获取当前老师所在的班级任课信息
 		Integer subId = ucm.getEntityByOpt(currUserId, Constants.TEA_ROLE_ID).getSubjectId();
-		if(subId > 0){
-			//获取指定班级下的学生列表
-			List<UserClassInfo> ucList = ucm.listInfoByOpt(classId, Constants.STU_ROLE_ID);
-			List<Object> list_d = new ArrayList<Object>();
-			Integer i = 0;
-			for(UserClassInfo uc : ucList){
-				User user = uc.getUser();
-				Map<String,Object> map_d = new HashMap<String,Object>();
-				map_d.put("userId", user.getId());
-				map_d.put("userName", user.getRealName());
-				map_d.put("userPortrait", user.getPortrait());
-				if(stuId > 0){
-					if(stuId.equals(user.getId())){
-						map_d.put("checkStatus", true);
-					}else{
-						map_d.put("checkStatus", false);
-					}
-				}else{//切换班级时
-					if(i.equals(0)){
-						stuId = user.getId();
-						map_d.put("checkStatus", true);//默认选中第一个学生
-					}else{
-						map_d.put("checkStatus", false);
-					}
-				}
-				list_d.add(map_d);
-				i++;
+		if(subId > 0 && stuId > 0){
+			List<User> stuList = um.listEntityById(stuId);
+			if(stuList.size() > 0){
+				stuName = stuList.get(0).getRealName();
 			}
-			map.put("userList", list_d);
 			List<HwStudyTjInfo> tjList = tjm.listInfoByOpt_1(hwType,subId, stuId, comStatus, sDate, eDate, true, pageNo, pageSize);
 			if(tjList.size() > 0){
 				msg = "success";
@@ -2492,6 +2470,8 @@ public class HomeWorkAction extends DispatchAction {
 			}
 		}
 		map.put("result", msg);
+		map.put("stuId", stuId);
+		map.put("stuName", stuName);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}

@@ -27,6 +27,7 @@ import com.zsd.module.Education;
 import com.zsd.module.GradeSubject;
 import com.zsd.module.RoleInfo;
 import com.zsd.module.Subject;
+import com.zsd.module.User;
 import com.zsd.module.UserClassInfo;
 import com.zsd.page.PageConst;
 import com.zsd.service.EditionManager;
@@ -966,6 +967,46 @@ public class CommonAction extends DispatchAction {
 		Integer diffDays = CommonTools.getDiffDays(userId);
 		Map<String,Integer> map = new HashMap<String,Integer>();
 		map.put("result", diffDays);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 根据班级编号获取班级学生列表
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getSpecClassStuData(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		UserClassInfoManager ucm = (UserClassInfoManager)AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
+		Integer classId = CommonTools.getFinalInteger("classId", request);//指定班级编号
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "error";
+		if(classId > 0){
+			//获取指定班级下的学生列表
+			List<UserClassInfo> ucList = ucm.listInfoByOpt(classId, Constants.STU_ROLE_ID);
+			List<Object> list_d = new ArrayList<Object>();
+			if(ucList.size() > 0){
+				msg = "success";
+				for(UserClassInfo uc : ucList){
+					User user = uc.getUser();
+					Map<String,Object> map_d = new HashMap<String,Object>();
+					map_d.put("userId", user.getId());
+					map_d.put("userName", user.getRealName());
+					map_d.put("userPortrait", user.getPortrait());
+					list_d.add(map_d);
+				}
+				map.put("userList", list_d);
+			}else{
+				msg = "noInfo";
+			}
+		}
+		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
