@@ -2171,9 +2171,11 @@ public class HomeWorkAction extends DispatchAction {
 		String sDate = "";
 		Integer classId = CommonTools.getFinalInteger("classId", request);
 		Integer hwType = CommonTools.getFinalInteger("hwType", request);//作业类型(1-家庭作业,2-课后复习,3-课前预习)
+		String specDate = CommonTools.getFinalStr("specDate", request);//点击横坐标的日期
 		Integer currUserId = CommonTools.getLoginUserId(request);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "error";
+		String initDate = "";
 		Integer stuNum = 0;
 		//获取当前老师所在的班级任课信息
 		Integer subId = ucm.getEntityByOpt(currUserId, Constants.TEA_ROLE_ID).getSubjectId();
@@ -2187,6 +2189,7 @@ public class HomeWorkAction extends DispatchAction {
 			if(hwType.equals(0)){
 				hwType = 1;
 			}
+			//统计3天的信息
 			List<SendHwInfo> sendList = swm.listPageInfoByOpt(0, subId, classId, hwType, -1, 0, sDate, eDate, false, 0, 0);
 			String axisNameStr = sDate + ",";//xAxis-data
 			axisNameStr += CurrentTime.getFinalDate(eDate, -1) + ",";
@@ -2196,26 +2199,9 @@ public class HomeWorkAction extends DispatchAction {
 			Integer[] bzNumArr = {0,0,0};
 			Integer[] unNumArr = {0,0,0};
 			Integer sendHwSize = sendList.size();
-			List<Object> list_all_stu = new ArrayList<Object>();//所有学生列表
-			if(sendHwSize < 3){
-				List<UserClassInfo> ucList = ucm.listInfoByOpt(classId, Constants.STU_ROLE_ID);
-				stuNum = ucList.size();
-				if(stuNum > 0){
-					for(UserClassInfo uc : ucList){
-						User user = uc.getUser();
-						Map<String,Object> map_d = new HashMap<String,Object>();
-						map_d.put("userId", user.getId());
-						map_d.put("userName", user.getRealName());
-						map_d.put("userPortrait", user.getPortrait());
-						map_d.put("sendHwId", 0);
-						map_d.put("hwType", hwType);
-						map_d.put("comStatus", -1);
-						map_d.put("stuComType", "");
-						map_d.put("classId", uc.getClassInfo().getId());
-						list_all_stu.add(map_d);
-					}
-				}
-			}
+			List<Object> list_zs = new ArrayList<Object>();
+			List<Object> list_bz = new ArrayList<Object>();
+			List<Object> list_un = new ArrayList<Object>();
 			if(sendHwSize > 0){
 				for(Integer j = sendHwSize - 1 ; j >= 0 ; j--){
 					SendHwInfo shw = sendList.get(j);
@@ -2232,10 +2218,10 @@ public class HomeWorkAction extends DispatchAction {
 					}
 					List<HwStudyTjInfo> tjList = tjm.listInfoByOpt(shw.getId(), 0, -1, false, 0, 0);
 					stuNum = tjList.size();
+					list_zs = new ArrayList<Object>();
+					list_bz = new ArrayList<Object>();
+					list_un = new ArrayList<Object>();
 					if(stuNum > 0){
-						List<Object> list_zs = new ArrayList<Object>();
-						List<Object> list_bz = new ArrayList<Object>();
-						List<Object> list_un = new ArrayList<Object>();
 						for(HwStudyTjInfo tj : tjList){
 							User user = tj.getUser();
 							Map<String,Object> map_d_1 = new HashMap<String,Object>();
@@ -2261,27 +2247,152 @@ public class HomeWorkAction extends DispatchAction {
 								list_bz.add(map_d_1);
 							}
 						}
-						if(i > 0){//匹配到
+						if(i >= 0){//匹配到（写入纵坐标数据）
 							zsNumArr[i] = zsComNum;
 							bzNumArr[i] = bzComNum;
 							unNumArr[i] = unComNum;
-							map.put("unComUserList_"+sendDate, list_un);
-							map.put("zsComUserList_"+sendDate, list_zs);
-							map.put("bzComUserList_"+sendDate, list_bz);
-						}else{
-							map.put("userList", list_all_stu);
+							if(specDate.equals("")){
+								if(eDate.equals(sendDate)){
+									map.put("unComUserList", list_un);
+									map.put("zsComUserList", list_zs);
+									map.put("bzComUserList", list_bz);
+								}
+							}else{//点击横坐标日期
+								if(specDate.equals(sendDate)){
+									map.put("unComUserList", list_un);
+									map.put("zsComUserList", list_zs);
+									map.put("bzComUserList", list_bz);
+								}
+							}
 						}
 					}
 				}
+				//统计最后一天或者指定横坐标的一天
+				List<SendHwInfo> sendList_spec = new ArrayList<SendHwInfo>();
+				if(specDate.equals("")){
+					initDate = eDate;
+					sendList_spec = swm.listPageInfoByOpt(0, subId, classId, hwType, -1, 0, eDate, eDate, false, 0, 0);
+				}else{
+					initDate = specDate;
+					sendList_spec = swm.listPageInfoByOpt(0, subId, classId, hwType, -1, 0, specDate, specDate, false, 0, 0);
+				}
+				if(sendList_spec.size() > 0){
+					msg = "success";
+				}else{
+					msg = "noInfo";
+				}
 			}else{
 				msg = "noInfo";
+			}
+			if(msg.equals("noInfo")){
+				List<Object> list_all_stu = new ArrayList<Object>();//所有学生列表
+				List<UserClassInfo> ucList = ucm.listInfoByOpt(classId, Constants.STU_ROLE_ID);
+				stuNum = ucList.size();
+				if(stuNum > 0){
+					for(UserClassInfo uc : ucList){
+						User user = uc.getUser();
+						Map<String,Object> map_d = new HashMap<String,Object>();
+						map_d.put("userId", user.getId());
+						map_d.put("userName", user.getRealName());
+						map_d.put("userPortrait", user.getPortrait());
+						map_d.put("sendHwId", 0);
+						map_d.put("hwType", hwType);
+						map_d.put("comStatus", -1);
+						map_d.put("stuComType", "");
+						map_d.put("classId", uc.getClassInfo().getId());
+						list_all_stu.add(map_d);
+					}
+				}
 				map.put("userList", list_all_stu);
 			}
+			
+//			List<Object> list_all_stu = new ArrayList<Object>();//所有学生列表
+//			if(sendHwSize < 3){
+//				List<UserClassInfo> ucList = ucm.listInfoByOpt(classId, Constants.STU_ROLE_ID);
+//				stuNum = ucList.size();
+//				if(stuNum > 0){
+//					for(UserClassInfo uc : ucList){
+//						User user = uc.getUser();
+//						Map<String,Object> map_d = new HashMap<String,Object>();
+//						map_d.put("userId", user.getId());
+//						map_d.put("userName", user.getRealName());
+//						map_d.put("userPortrait", user.getPortrait());
+//						map_d.put("sendHwId", 0);
+//						map_d.put("hwType", hwType);
+//						map_d.put("comStatus", -1);
+//						map_d.put("stuComType", "");
+//						map_d.put("classId", uc.getClassInfo().getId());
+//						list_all_stu.add(map_d);
+//					}
+//				}
+//			}
+//			if(sendHwSize > 0){
+//				for(Integer j = sendHwSize - 1 ; j >= 0 ; j--){
+//					SendHwInfo shw = sendList.get(j);
+//					Integer i = -1;
+//					Integer zsComNum = 0;
+//					Integer bzComNum = 0;
+//					Integer unComNum = 0;
+//					String sendDate = shw.getSendDate().substring(0, 10);
+//					for(int k = 0 ; k < axisNameArr.length ; k++){
+//						if(axisNameArr[k].equals(sendDate)){
+//							i = k;
+//							break;
+//						}
+//					}
+//					List<HwStudyTjInfo> tjList = tjm.listInfoByOpt(shw.getId(), 0, -1, false, 0, 0);
+//					stuNum = tjList.size();
+//					if(stuNum > 0){
+//						List<Object> list_zs = new ArrayList<Object>();
+//						List<Object> list_bz = new ArrayList<Object>();
+//						List<Object> list_un = new ArrayList<Object>();
+//						for(HwStudyTjInfo tj : tjList){
+//							User user = tj.getUser();
+//							Map<String,Object> map_d_1 = new HashMap<String,Object>();
+//							Integer comStatus = tj.getComStatus();
+//							map_d_1.put("userId", user.getId());
+//							map_d_1.put("userName", user.getRealName());
+//							map_d_1.put("userPortrait", user.getPortrait());
+//							map_d_1.put("sendHwId", shw.getId());
+//							map_d_1.put("comStatus", comStatus);
+//							map_d_1.put("classId", shw.getClassInfo().getId());
+//							map_d_1.put("hwType", hwType);//
+//							if(comStatus.equals(0)){
+//								unComNum++;
+//								map_d_1.put("stuComType", "unCom");
+//								list_un.add(map_d_1);
+//							}else if(comStatus.equals(1)){
+//								zsComNum++;
+//								map_d_1.put("stuComType", "zsCom");
+//								list_zs.add(map_d_1);
+//							}else if(comStatus.equals(2)){
+//								bzComNum++;
+//								map_d_1.put("stuComType", "bzCom");
+//								list_bz.add(map_d_1);
+//							}
+//						}
+//						if(i >= 0){//匹配到
+//							zsNumArr[i] = zsComNum;
+//							bzNumArr[i] = bzComNum;
+//							unNumArr[i] = unComNum;
+//							map.put("unComUserList_"+sendDate, list_un);
+//							map.put("zsComUserList_"+sendDate, list_zs);
+//							map.put("bzComUserList_"+sendDate, list_bz);
+//						}
+//					}
+//				}
+//				if(!sendHwSize.equals(3)){
+//					map.put("userList", list_all_stu);
+//				}
+//			}else{
+//				msg = "noInfo";
+//				map.put("userList", list_all_stu);
+//			}
 			map.put("xAxisData", axisNameArr);
 			map.put("yAxisZsData", zsNumArr);
 			map.put("yAxisBzData", bzNumArr);
 			map.put("yAxisUnData", unNumArr);
-			map.put("initDate", eDate);
+			map.put("initDate", initDate);
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
