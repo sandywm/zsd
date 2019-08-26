@@ -74,7 +74,7 @@ public interface UserClassInfoDao {
 	List<UserClassInfo> findUcInfoByUserId(Session sess,Integer userId);
 	
 	/**
-	 * 根据用户编号，角色编号获取用户班级信息实体
+	 * 根据用户编号，角色编号获取用户班级信息列表
 	 * @author wm
 	 * @date 2019-5-24 上午11:20:21
 	 * @param sess
@@ -82,7 +82,7 @@ public interface UserClassInfoDao {
 	 * @param roleId 角色编号
 	 * @return
 	 */
-	UserClassInfo getEntityByOpt(Session sess,Integer userId,Integer roleId);
+	List<UserClassInfo> findInfoByOpt_1(Session sess,Integer userId,Integer roleId);
 
 	/**
 	 * 根据班级编号,角色编号获取用户班级信息

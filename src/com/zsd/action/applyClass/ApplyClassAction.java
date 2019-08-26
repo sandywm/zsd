@@ -5,6 +5,7 @@
 package com.zsd.action.applyClass;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -312,10 +313,25 @@ public class ApplyClassAction extends DispatchAction {
 		ClassInfoManager cm = (ClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_CLASS_INFO);
 		SchoolManager sm = (SchoolManager) AppFactory.instance(null).getApp(Constants.WEB_SCHOOL_INFO);
 		Integer currUserId = CommonTools.getLoginUserId(request);
-		UserClassInfo uc = ucm.getEntityByOpt(currUserId, 4);
+		List<UserClassInfo> ucList = ucm.listInfoByOpt_1(currUserId, Constants.TEA_ROLE_ID);
+		UserClassInfo uc = null;
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "noInfo";
-		if(uc != null){
+		if(ucList.size() > 0){
+			String smallBuildeClassDate = "";
+			for(UserClassInfo uc_1 : ucList){
+				ClassInfo c = uc_1.getClassInfo();
+				String buildeClassDate = c.getBuildeClassDate();
+				if(smallBuildeClassDate.equals("")){
+					smallBuildeClassDate = buildeClassDate;
+					uc = uc_1;
+				}else{
+					if(CurrentTime.compareDate(buildeClassDate, smallBuildeClassDate) > 0){//获取最小的
+						smallBuildeClassDate = buildeClassDate;
+						uc = uc_1;
+					}
+				}
+			}
 			Integer owerClassId = uc.getClassInfo().getId();
 			String buildeClassDate = uc.getClassInfo().getBuildeClassDate();
 			String gradeName = Convert.dateConvertGradeName(buildeClassDate);//当前所在的年级
@@ -357,9 +373,9 @@ public class ApplyClassAction extends DispatchAction {
 							map_d1.put("classId", c.getId());
 							map_d1.put("className", c.getClassName());
 							map_d1.put("selFlag", c.getId().equals(owerClassId) ? true : false);
-							List<UserClassInfo> ucList = ucm.listInfoByOpt(c.getId(), Constants.TEA_ROLE_ID);
+							List<UserClassInfo> ucList_1 = ucm.listInfoByOpt(c.getId(), Constants.TEA_ROLE_ID);
 							if(ucList.size() >  0){
-								map_d1.put("teaName", ucList.get(0).getUser().getRealName());
+								map_d1.put("teaName", ucList_1.get(0).getUser().getRealName());
 							}else{
 								map_d1.put("teaName", "暂无老师");
 							}

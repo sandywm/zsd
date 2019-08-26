@@ -289,9 +289,9 @@ public class BaseInfoAction extends DispatchAction {
 			if(subId.equals(0)){
 				subId = 2;
 			}
-			UserClassInfo  uc = ucm.getEntityByOpt(userId, 2);//获取学生所在班级信息
-			if(uc != null){
-				Integer gradeNumber = Convert.dateConvertGradeNumber(uc.getClassInfo().getBuildeClassDate());
+			List<UserClassInfo> ucList = ucm.listInfoByOpt_1(userId, Constants.STU_ROLE_ID);//获取学生所在班级信息
+			if(ucList.size() > 0){
+				Integer gradeNumber = Convert.dateConvertGradeNumber(ucList.get(0).getClassInfo().getBuildeClassDate());
 				if(gradeNumber > 12){
 					gradeNumber = 12;
 				}

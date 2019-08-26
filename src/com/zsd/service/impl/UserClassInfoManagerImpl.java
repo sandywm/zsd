@@ -65,16 +65,16 @@ public class UserClassInfoManagerImpl implements UserClassInfoManager {
 	}
 
 	@Override
-	public UserClassInfo getEntityByOpt(Integer userId, Integer roleId)
+	public List<UserClassInfo> listInfoByOpt_1(Integer userId, Integer roleId)
 			throws WEBException {
 		// TODO Auto-generated method stub
 		try {
 			ucDao = (UserClassInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_USER_CLASS_INFO);
 			Session sess = HibernateUtil.currentSession();
-			return ucDao.getEntityByOpt(sess, userId, roleId);
+			return ucDao.findInfoByOpt_1(sess, userId, roleId);
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new WEBException("根据用户编号，角色编号获取用户班级信息实体时出现异常!");
+			throw new WEBException("根据用户编号，角色编号获取用户班级信息列表时出现异常!");
 		} finally{
 			HibernateUtil.closeSession();
 		}

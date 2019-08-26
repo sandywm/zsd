@@ -52,19 +52,14 @@ public class UserClassInfoDaoImpl implements UserClassInfoDao {
 	}
 
 	@Override
-	public UserClassInfo getEntityByOpt(Session sess, Integer userId,
+	public List<UserClassInfo> findInfoByOpt_1(Session sess, Integer userId,
 			Integer roleId) {
 		// TODO Auto-generated method stub
 		String hql = " from UserClassInfo as uci where uci.user.id="+userId;
 		hql += " and uci.roleInfo.id = "+roleId;
-		List<UserClassInfo> ucList = sess.createQuery(hql).list();
-		if(ucList.size() > 0){
-			return ucList.get(0);
-		}
-		return null;
+		return sess.createQuery(hql).list();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<UserClassInfo> findUcInfoByOpt(Session sess, Integer classId,
 								Integer roleId,Integer pageNo,Integer pageSize) {

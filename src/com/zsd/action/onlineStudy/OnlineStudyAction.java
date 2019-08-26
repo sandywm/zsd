@@ -111,9 +111,10 @@ public class OnlineStudyAction extends DispatchAction {
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "error";
 		if(roleId.equals(2)){//学生
-			UserClassInfo uc = ucm.getEntityByOpt(userId, roleId);
+			List<UserClassInfo> ucList = ucm.listInfoByOpt_1(userId, roleId);
 			ClassInfo c = null;
-			if(uc != null){
+			if(ucList.size() > 0){
+				UserClassInfo uc = ucList.get(0);
 				c = uc.getClassInfo();
 				Integer realGradeNumber = Convert.dateConvertGradeNumber(c.getBuildeClassDate());//当前学生的真实年级
 				if(realGradeNumber > 12){
@@ -168,9 +169,10 @@ public class OnlineStudyAction extends DispatchAction {
 			msg = "success";
 			String gradeName = "";
 			//获取该学生的班级,然后获取该班级所在年级
-			UserClassInfo uc = ucm.getEntityByOpt(userId, roleId);
+			List<UserClassInfo> ucList = ucm.listInfoByOpt_1(userId, roleId);
 			ClassInfo c = null;
-			if(uc != null){
+			if(ucList.size() > 0){
+				UserClassInfo uc = ucList.get(0);
 				c = uc.getClassInfo();
 				User user = uc.getUser();
 				Integer remainDays = CurrentTime.compareDate(CurrentTime.getStringDate(), user.getEndDate());
@@ -2640,9 +2642,9 @@ public class OnlineStudyAction extends DispatchAction {
 							city = sList.get(0).getCity();
 							county = sList.get(0).getCounty();
 							schoolType = sList.get(0).getSchoolType();
-							UserClassInfo uc = ucm.getEntityByOpt(stuId, 2);
-							if(uc != null){
-								ClassInfo c = uc.getClassInfo();
+							List<UserClassInfo> ucList = ucm.listInfoByOpt_1(stuId, Constants.STU_ROLE_ID);
+							if(ucList.size() > 0){
+								ClassInfo c = ucList.get(0).getClassInfo();
 								gradeName = Convert.dateConvertGradeName(c.getBuildeClassDate());//当前学生的真实年级
 								classId = c.getId();
 								msg = "success";
@@ -2664,9 +2666,9 @@ public class OnlineStudyAction extends DispatchAction {
 							city = sList.get(0).getCity();
 							county = sList.get(0).getCounty();
 							schoolType = sList.get(0).getSchoolType();
-							UserClassInfo uc = ucm.getEntityByOpt(stuId, 2);
-							if(uc != null){
-								ClassInfo c = uc.getClassInfo();
+							List<UserClassInfo> ucList = ucm.listInfoByOpt_1(stuId, Constants.STU_ROLE_ID);
+							if(ucList.size() > 0){
+								ClassInfo c = ucList.get(0).getClassInfo();
 								gradeName = Convert.dateConvertGradeName(c.getBuildeClassDate());//当前学生的真实年级
 								classId = c.getId();
 								msg = "success";

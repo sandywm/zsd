@@ -932,9 +932,10 @@ public class CommonAction extends DispatchAction {
 			Integer gradeNumber = 0;
 			String gradeName = "";
 			//获取该学生的班级,然后获取该班级所在年级
-			UserClassInfo uc = ucm.getEntityByOpt(userId, roleId);
+			List<UserClassInfo> ucList = ucm.listInfoByOpt_1(userId, roleId);
 			ClassInfo c = null;
-			if(uc != null){
+			if(ucList.size() > 0){
+				UserClassInfo uc = ucList.get(0);
 				c = uc.getClassInfo();
 				gradeNumber = Convert.dateConvertGradeNumber(c.getBuildeClassDate());
 				if(gradeNumber > 12){
@@ -1008,6 +1009,29 @@ public class CommonAction extends DispatchAction {
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 获取我的被临时接管的班级列表
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getMyLsClassData(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		UserClassInfoManager ucm = (UserClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
+		Integer currUserId = CommonTools.getLoginUserId(request);
+		Integer opt = CommonTools.getFinalInteger("opt", request);//0：我的被临时接管的班级，1：我临时接管的班级
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "noInfo";
+		if(currUserId > 0){//Constants.TEA_ROLE_ID
+//			List<UserClassInfo> ucList = ucm.listUcInfoByUserId(userId)
+		}
 		return null;
 	}
 }

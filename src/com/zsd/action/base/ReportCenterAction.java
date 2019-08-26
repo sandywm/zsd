@@ -228,8 +228,9 @@ public class ReportCenterAction  extends DispatchAction{
 						}
 					}
 					//获取学生所在的班级
-					UserClassInfo uc = ucm.getEntityByOpt(userId, 2);
-					if(uc != null){
+					List<UserClassInfo> ucList = ucm.listInfoByOpt_1(userId, Constants.STU_ROLE_ID);
+					if(ucList.size() > 0){
+						UserClassInfo uc = ucList.get(0);
 						schoolId_tmp = uc.getUser().getSchoolId();
 						classId = uc.getClassInfo().getId();
 						String className_temp = uc.getClassInfo().getClassName();

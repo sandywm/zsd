@@ -50,7 +50,7 @@ public interface UserClassInfoManager {
 	 * @return
 	 * @throws WEBException
 	 */
-	UserClassInfo getEntityByOpt(Integer userId,Integer roleId)throws WEBException;
+	List<UserClassInfo> listInfoByOpt_1(Integer userId,Integer roleId)throws WEBException;
 	
 	/**
 	 * 根据班级编号,角色编号获取用户班级信息
