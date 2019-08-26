@@ -104,13 +104,7 @@ public class ApplyClassAction extends DispatchAction {
 				String appDetail = "";
 				String checkStatusChi = "";
 				String appltOptChi = ac.getApplyOpt().equals(1) ? "临时" : "永久";
-				
-				if(opt.equals(1)){//我的主动申请
-					appDetail = "你申请"+appltOptChi+"接管"+ac.getClassDetail();
-				}else{
-					String realName = ac.getUser().getRealName();
-					appDetail = realName+"老师申请"+appltOptChi+"接管你的"+ac.getClassDetail();
-				}
+				String realName = ac.getUser().getRealName();
 				if(checkStatus_db.equals(0)){
 					checkStatusChi = "未处理";
 				}else if(checkStatus_db.equals(1)){
@@ -118,9 +112,23 @@ public class ApplyClassAction extends DispatchAction {
 				}else if(checkStatus_db.equals(2)){
 					checkStatusChi = "拒绝";
 				}
+				if(checkStatus_db.equals(0)){
+					if(opt.equals(1)){//我的主动申请
+						appDetail = "你申请"+appltOptChi+"接管"+ac.getClassDetail();
+					}else{
+						appDetail = realName+"老师申请"+appltOptChi+"接管你的"+ac.getClassDetail();
+					}
+				}else{
+					if(opt.equals(1)){//我的主动申请
+						appDetail = "你申请"+appltOptChi+"接管"+ac.getClassDetail()+"已"+checkStatusChi;
+					}else{
+						appDetail = "你已"+checkStatusChi+realName+"老师对"+ac.getClassDetail()+appltOptChi+"接管";
+					}
+				}
 				map_d.put("applyDetail", appDetail);
 				map_d.put("applyTime", ac.getApplyTime());
 				map_d.put("checkStatusChi",checkStatusChi);
+				map_d.put("appltOptChi",appltOptChi);
 				map_d.put("sDate", sDate);
 				map_d.put("eDate", eDate);
 				list_d.add(map_d);
