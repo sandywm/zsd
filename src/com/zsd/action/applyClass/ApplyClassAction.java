@@ -357,6 +357,12 @@ public class ApplyClassAction extends DispatchAction {
 							map_d1.put("classId", c.getId());
 							map_d1.put("className", c.getClassName());
 							map_d1.put("selFlag", c.getId().equals(owerClassId) ? true : false);
+							List<UserClassInfo> ucList = ucm.listInfoByOpt(c.getId(), Constants.TEA_ROLE_ID);
+							if(ucList.size() >  0){
+								map_d1.put("teaName", ucList.get(0).getUser().getRealName());
+							}else{
+								map_d1.put("teaName", "暂无老师");
+							}
 							list_d1.add(map_d1);
 						}
 					}
