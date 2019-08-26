@@ -215,18 +215,18 @@ public class ApplyClassAction extends DispatchAction {
 		Integer currUserId = CommonTools.getLoginUserId(request);
 		List<ApplyClassInfo> acList = acm.listMyUnCheckApplyInfo(currUserId,0);
 		if(acList.size() > 0){
-			List<Object> list_d = new ArrayList<Object>();
+//			List<Object> list_d = new ArrayList<Object>();
 			msg = "success";
-			for(ApplyClassInfo ac : acList){
-				Map<String,Object> map_d = new HashMap<String,Object>();
-				String applyOptChi = ac.getApplyOpt().equals(1) ? "临时" : "永久";
-				String realName = ac.getUser().getRealName();
-				String appDetail = realName+"老师申请"+applyOptChi+"接管你的"+ac.getClassDetail();
-				map_d.put("acId", ac.getId());
-				map_d.put("applyDetail", appDetail);
-				list_d.add(map_d);
-			}
-			map.put("acList", list_d);
+//			for(ApplyClassInfo ac : acList){
+//				Map<String,Object> map_d = new HashMap<String,Object>();
+//				String applyOptChi = ac.getApplyOpt().equals(1) ? "临时" : "永久";
+//				String realName = ac.getUser().getRealName();
+//				String appDetail = realName+"老师申请"+applyOptChi+"接管你的"+ac.getClassDetail();
+//				map_d.put("acId", ac.getId());
+//				map_d.put("applyDetail", appDetail);
+//				list_d.add(map_d);
+//			}
+//			map.put("acList", list_d);
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
