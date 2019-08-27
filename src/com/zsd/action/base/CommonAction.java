@@ -4,8 +4,9 @@
  */
 package com.zsd.action.base;
 
-import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -19,7 +20,6 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
 
-import com.alibaba.fastjson.JSON;
 import com.zsd.factory.AppFactory;
 import com.zsd.module.ClassInfo;
 import com.zsd.module.Edition;
@@ -48,6 +48,22 @@ import com.zsd.util.Constants;
  * @struts.action validate="true"
  */
 public class CommonAction extends DispatchAction {
+	
+	/**
+	 * 班级列表按照降序排列（九年级1班）
+	 * @author Administrator
+	 * @createDate 2019-8-3
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private class SortCName implements Comparator {
+		@Override
+	    public int compare(Object obj0, Object obj1) {
+	      Map<String, String> map0 = (Map) obj0;
+	      Map<String, String> map1 = (Map) obj1;
+	      int flag = map0.get("cName").toString().compareTo(map1.get("cName").toString());
+	      return flag; // 不取反，则按正序排列
+	    }
+	 }
 	
 	/**
 	 * 导向出版社页面
@@ -1021,17 +1037,44 @@ public class CommonAction extends DispatchAction {
 	 * @return
 	 * @throws Exception
 	 */
+	@SuppressWarnings("unchecked")
 	public ActionForward getMyLsClassData(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
 		UserClassInfoManager ucm = (UserClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
 		Integer currUserId = CommonTools.getLoginUserId(request);
-		Integer opt = CommonTools.getFinalInteger("opt", request);//0：我的被临时接管的班级，1：我临时接管的班级
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "noInfo";
-		if(currUserId > 0){//Constants.TEA_ROLE_ID
-//			List<UserClassInfo> ucList = ucm.listUcInfoByUserId(userId)
+		List<Object> list_d = new ArrayList<Object>();
+		if(currUserId > 0){
+			//获取我的所有永久班级
+			List<UserClassInfo> ucList = ucm.listInfoByOpt_1(currUserId, Constants.TEA_ROLE_ID);
+			if(ucList.size() > 0){
+				for(UserClassInfo uc : ucList){
+					if(uc.getAppUserId() > 0 && uc.getStatus().equals(1)){//表示该班有临时老师
+						Map<String,Object> map_d = new HashMap<String,Object>();
+						ClassInfo c = uc.getClassInfo();
+						Integer gradeNumber = Convert.dateConvertGradeNumber(c.getBuildeClassDate());
+						if(gradeNumber > 12){
+							gradeNumber = 12;
+						}
+						String gradeName = Convert.NunberConvertChinese(gradeNumber);
+						map_d.put("cId", c.getId());
+						map_d.put("cName", gradeName+c.getClassName());
+						map_d.put("lsTeaName", uc.getAppUserInfo());
+						list_d.add(map_d);
+					}
+				}
+				SortCName sort = new SortCName();
+				Collections.sort(list_d, sort);
+				map.put("cList", list_d);
+			}
 		}
+		if(list_d.size() > 0){
+			msg = "success";
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
 }
