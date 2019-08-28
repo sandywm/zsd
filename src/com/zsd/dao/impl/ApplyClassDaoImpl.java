@@ -93,4 +93,16 @@ public class ApplyClassDaoImpl implements ApplyClassDao{
 		return sess.createQuery(hql).list();
 	}
 
+	@Override
+	public ApplyClassInfo findInfoByOpt(Session sess, Integer applyUserId,
+			Integer classId) {
+		// TODO Auto-generated method stub
+		String hql = " from ApplyClassInfo as ac where ac.checkStatus = 1 and ac.user.id = "+applyUserId + " and ac.classInfo.id = "+classId;
+		List<ApplyClassInfo> acList = sess.createQuery(hql).list();
+		if(acList.size() > 0){
+			return acList.get(0);
+		}
+		return null;
+	}
+
 }

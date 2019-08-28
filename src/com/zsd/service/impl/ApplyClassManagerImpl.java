@@ -157,4 +157,21 @@ public class ApplyClassManagerImpl implements ApplyClassManager{
 		}
 	}
 
+	@Override
+	public ApplyClassInfo getEntityByOpt(Integer applyUserId, Integer classId)
+			throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			acDao = (ApplyClassDao) DaoFactory.instance(null).getDao(Constants.DAO_APPLY_CLASS_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return acDao.findInfoByOpt(sess, applyUserId, classId);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new WEBException("获取指定班级指定申请老师成功被申请的记录时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
 }

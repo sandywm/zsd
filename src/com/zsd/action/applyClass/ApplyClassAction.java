@@ -410,6 +410,7 @@ public class ApplyClassAction extends DispatchAction {
 	 * @return
 	 * @throws Exception
 	 */
+	@SuppressWarnings("unchecked")
 	public ActionForward getValidClassData(ActionMapping mapping,ActionForm form,
 			HttpServletRequest request,HttpServletResponse response) throws Exception{
 		UserClassInfoManager ucm = (UserClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
@@ -482,6 +483,48 @@ public class ApplyClassAction extends DispatchAction {
 				Integer acId = acm.addApplyClassInfo(currUserId, classId, classDetail, 0, applyOpt);
 				if(acId > 0){
 					msg = "success";
+				}
+			}
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 取消我的临时被接管班级
+	 * @author wm
+	 * @date 2019-8-28 下午05:34:17
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward cancelMyLsInfo(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		ApplyClassManager acm = (ApplyClassManager) AppFactory.instance(null).getApp(Constants.WEB_APPLY_CLASS_INFO);
+		UserClassInfoManager ucm = (UserClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
+		Integer currUserId = CommonTools.getLoginUserId(request);
+		Integer classId = CommonTools.getFinalInteger("classId", request);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "error";
+		if(currUserId > 0 && classId > 0){
+			List<UserClassInfo> ucList = ucm.listInfoByOpt(classId, Constants.TEA_ROLE_ID);
+			if(ucList.size() > 0){
+				UserClassInfo uc = ucList.get(0);
+				if(currUserId.equals(uc.getUser().getId())){
+					//只有班级永久老师才能取消
+					Integer applyTeaId = uc.getAppUserId();
+					if(applyTeaId > 0){
+						ApplyClassInfo ac = acm.getEntityByOpt(applyTeaId, classId);
+						if(ac != null){
+							acm.setCancleInfo(ac.getId(), 2, "原班级任课老师强制取消");
+							msg = "success";
+						}
+					}
 				}
 			}
 		}

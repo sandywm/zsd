@@ -90,4 +90,15 @@ public interface ApplyClassManager {
 	 * @throws WEBException
 	 */
 	List<ApplyClassInfo> listAllUnCheckApplyInfo() throws WEBException;
+	
+	/**
+	 * 获取指定班级指定申请老师成功被申请的记录
+	 * @author wm
+	 * @date 2019-8-28 下午05:44:56
+	 * @param applyUserId 申请老师
+	 * @param classId 接管班级
+	 * @return
+	 * @throws WEBException
+	 */
+	ApplyClassInfo getEntityByOpt(Integer applyUserId,Integer classId) throws WEBException;
 }
