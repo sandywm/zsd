@@ -118,6 +118,8 @@ public class ApplyClassAction extends DispatchAction {
 						appDetail = "你申请"+appltOptChi+"接管"+ac.getClassDetail();
 					}else{
 						appDetail = realName+"老师申请"+appltOptChi+"接管你的"+ac.getClassDetail();
+						map_d.put("classInfo", ac.getClassDetail());
+						map_d.put("applyTeaName", realName);
 					}
 				}else{
 					if(opt.equals(1)){//我的主动申请
@@ -129,14 +131,14 @@ public class ApplyClassAction extends DispatchAction {
 				map_d.put("applyDetail", appDetail);
 				map_d.put("applyTime", ac.getApplyTime());
 				map_d.put("checkStatusChi",checkStatusChi);
-				map_d.put("appltOptChi",appltOptChi);
-				map_d.put("sDate", sDate);
-				map_d.put("eDate", eDate);
+				map_d.put("applyOptChi",appltOptChi);
 				list_d.add(map_d);
 			}
 			map.put("acList", list_d);
 		}
 		map.put("result", msg);
+		map.put("sDate", sDate);
+		map.put("eDate", eDate);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}

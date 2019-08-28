@@ -195,8 +195,8 @@ public class ReportCenterAction  extends DispatchAction{
 		Integer relateXxSuccNumAll = 0;//关联学习通过
 		Integer relateXxFailNumAll = 0;//关联未学习通过
 		
-		String rate = "";//转化率
-		String rateAll = "";
+		String rate = "0";//转化率
+		String rateAll = "0";
 		String msg = "error";
 		Integer allNum = 1;
 		Map<String,Object> map = new HashMap<String,Object>();
