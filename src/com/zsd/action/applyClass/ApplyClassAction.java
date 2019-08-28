@@ -6,6 +6,7 @@ package com.zsd.action.applyClass;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +40,22 @@ import com.zsd.util.Constants;
  * @struts.action validate="true"
  */
 public class ApplyClassAction extends DispatchAction {
+	
+	/**
+	 * 班级列表按照降序排列（九年级1班）
+	 * @author Administrator
+	 * @createDate 2019-8-3
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private class SortCName implements Comparator {
+		@Override
+	    public int compare(Object obj0, Object obj1) {
+	      Map<String, String> map0 = (Map) obj0;
+	      Map<String, String> map1 = (Map) obj1;
+	      int flag = map1.get("cName").toString().compareTo(map0.get("cName").toString());
+	      return flag; // 不取反，则按正序排列
+	    }
+	 }
 	
 	/**
 	 * 导向班级接管、转让班级页面
@@ -341,7 +358,6 @@ public class ApplyClassAction extends DispatchAction {
 			List<School> sList = sm.listInfoById(schoolId);
 			if(sList.size() > 0){
 				msg = "success";
-				Map<String,Object> map_d = new HashMap<String,Object>();
 				School sch = sList.get(0);
 				Integer schoolType = sch.getSchoolType();//小学(1),初中(2),高中(3)
 				Integer yearSystem = sch.getYearSystem();//3,4,5,6
@@ -363,17 +379,18 @@ public class ApplyClassAction extends DispatchAction {
 					endNum = 12;
 				}
 				for(int gradeNo = startNum ; gradeNo <= endNum ; gradeNo++){
-					String gradeName_tmp = Convert.NunberConvertChinese(gradeNo);
-					map_d.put("gradeName", gradeName_tmp);
-					map_d.put("selFlag", gradeName_tmp.equals(gradeName) ? true : false);
 					//获取指定年级下的真实班级列表
 					List<ClassInfo> cList = cm.listClassInfoByOption(gradeNo, currentTime, schoolId, "");
 					List<Object> list_d1 = new ArrayList<Object>();
 					if(cList.size() > 0){
+						Map<String,Object> map_d = new HashMap<String,Object>();
+						String gradeName_tmp = Convert.NunberConvertChinese(gradeNo);
+						map_d.put("gradeName", gradeName_tmp);
+						map_d.put("selFlag", gradeName_tmp.equals(gradeName) ? true : false);
 						for(ClassInfo c : cList){
 							Map<String,Object> map_d1 = new HashMap<String,Object>();
-							map_d1.put("classId", c.getId());
-							map_d1.put("className", c.getClassName());
+							map_d1.put("cId", c.getId());
+							map_d1.put("cName", c.getClassName());
 							map_d1.put("selFlag", c.getId().equals(owerClassId) ? true : false);
 							List<UserClassInfo> ucList_1 = ucm.listInfoByOpt(c.getId(), Constants.TEA_ROLE_ID);
 							if(ucList.size() >  0){
@@ -382,10 +399,12 @@ public class ApplyClassAction extends DispatchAction {
 								map_d1.put("teaName", "暂无老师");
 							}
 							list_d1.add(map_d1);
+							SortCName sort = new SortCName();
+							Collections.sort(list_d1, sort);
 						}
+						map_d.put("classList", list_d1);
+						list_d.add(map_d);
 					}
-					map_d.put("classList", list_d1);
-					list_d.add(map_d);
 				}
 				map.put("gradeClassList", list_d);
 			}
