@@ -22,11 +22,13 @@ import com.zsd.factory.AppFactory;
 import com.zsd.module.ApplyClassInfo;
 import com.zsd.module.ClassInfo;
 import com.zsd.module.School;
+import com.zsd.module.User;
 import com.zsd.module.UserClassInfo;
 import com.zsd.service.ApplyClassManager;
 import com.zsd.service.ClassInfoManager;
 import com.zsd.service.SchoolManager;
 import com.zsd.service.UserClassInfoManager;
+import com.zsd.service.UserManager;
 import com.zsd.tools.CommonTools;
 import com.zsd.tools.Convert;
 import com.zsd.tools.CurrentTime;
@@ -97,8 +99,8 @@ public class ApplyClassAction extends DispatchAction {
 		String msg = "noInfo";
 		Map<String,Object> map = new HashMap<String,Object>();
 		if(sDate.equals("") && eDate.equals("")){//默认最近三天
-			sDate = CurrentTime.getStringDate();
-			eDate = CurrentTime.getFinalDate(sDate, -2);
+			eDate = CurrentTime.getStringDate();
+			sDate = CurrentTime.getFinalDate(sDate, -2);
 		}
 		Integer sendUserId = 0;
 		Integer toUserId = 0;
@@ -316,7 +318,7 @@ public class ApplyClassAction extends DispatchAction {
 	}
 
 	/**
-	 * 获取指定学校年级下的有效班级列表（已被创建的班级）
+	 * 获取指定学校有效年级列表（已被创建的班级）
 	 * @author wm
 	 * @date 2019-7-29 上午11:19:57
 	 * @param mapping
@@ -326,7 +328,7 @@ public class ApplyClassAction extends DispatchAction {
 	 * @return
 	 * @throws Exception
 	 */
-	public ActionForward getValidClassData(ActionMapping mapping,ActionForm form,
+	public ActionForward getValidGradeData(ActionMapping mapping,ActionForm form,
 			HttpServletRequest request,HttpServletResponse response) throws Exception{
 		UserClassInfoManager ucm = (UserClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
 		ClassInfoManager cm = (ClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_CLASS_INFO);
@@ -351,7 +353,6 @@ public class ApplyClassAction extends DispatchAction {
 					}
 				}
 			}
-			Integer owerClassId = uc.getClassInfo().getId();
 			String buildeClassDate = uc.getClassInfo().getBuildeClassDate();
 			String gradeName = Convert.dateConvertGradeName(buildeClassDate);//当前所在的年级
 			Integer schoolId = uc.getUser().getSchoolId();
@@ -381,32 +382,70 @@ public class ApplyClassAction extends DispatchAction {
 				for(int gradeNo = startNum ; gradeNo <= endNum ; gradeNo++){
 					//获取指定年级下的真实班级列表
 					List<ClassInfo> cList = cm.listClassInfoByOption(gradeNo, currentTime, schoolId, "");
-					List<Object> list_d1 = new ArrayList<Object>();
 					if(cList.size() > 0){
 						Map<String,Object> map_d = new HashMap<String,Object>();
 						String gradeName_tmp = Convert.NunberConvertChinese(gradeNo);
+						map_d.put("gradeNo", gradeNo);
 						map_d.put("gradeName", gradeName_tmp);
 						map_d.put("selFlag", gradeName_tmp.equals(gradeName) ? true : false);
-						for(ClassInfo c : cList){
-							Map<String,Object> map_d1 = new HashMap<String,Object>();
-							map_d1.put("cId", c.getId());
-							map_d1.put("cName", c.getClassName());
-							map_d1.put("selFlag", c.getId().equals(owerClassId) ? true : false);
-							List<UserClassInfo> ucList_1 = ucm.listInfoByOpt(c.getId(), Constants.TEA_ROLE_ID);
-							if(ucList.size() >  0){
-								map_d1.put("teaName", ucList_1.get(0).getUser().getRealName());
-							}else{
-								map_d1.put("teaName", "暂无老师");
-							}
-							list_d1.add(map_d1);
-							SortCName sort = new SortCName();
-							Collections.sort(list_d1, sort);
-						}
-						map_d.put("classList", list_d1);
 						list_d.add(map_d);
 					}
 				}
-				map.put("gradeClassList", list_d);
+				map.put("gradeList", list_d);
+			}
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 获取指定学校指定年级下的有效班级列表（已被创建的班级）
+	 * @author wm
+	 * @date 2019-8-28 下午05:21:53
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getValidClassData(ActionMapping mapping,ActionForm form,
+			HttpServletRequest request,HttpServletResponse response) throws Exception{
+		UserClassInfoManager ucm = (UserClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
+		UserManager um = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
+		ClassInfoManager cm = (ClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_CLASS_INFO);
+		Integer currUserId = CommonTools.getLoginUserId(request);
+//		List<UserClassInfo> ucList = ucm.listTeaInfoByOpt(currUserId, Constants.TEA_ROLE_ID);
+		Integer gradeNo = CommonTools.getFinalInteger("gradeNo", request);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "noInfo";
+		String currentTime = CurrentTime.getStringDate();
+		if(gradeNo > 0){
+			List<User> uList = um.listEntityById(currUserId);
+			if(uList.size() > 0){
+				Integer schoolId = uList.get(0).getSchoolId();
+				//获取指定年级下的真实班级列表
+				List<ClassInfo> cList = cm.listClassInfoByOption(gradeNo, currentTime, schoolId, "");
+				List<Object> list_d1 = new ArrayList<Object>();
+				if(cList.size() > 0){
+					msg = "success";
+					for(ClassInfo c : cList){
+						Map<String,Object> map_d1 = new HashMap<String,Object>();
+						map_d1.put("cId", c.getId());
+						map_d1.put("cName", c.getClassName());
+						List<UserClassInfo> ucList = ucm.listInfoByOpt(c.getId(), Constants.TEA_ROLE_ID);
+						if(ucList.size() >  0){
+							map_d1.put("teaName", ucList.get(0).getUser().getRealName());
+						}else{
+							map_d1.put("teaName", "暂无老师");
+						}
+						list_d1.add(map_d1);
+						SortCName sort = new SortCName();
+						Collections.sort(list_d1, sort);
+					}
+					map.put("cList", list_d1);
+				}
 			}
 		}
 		map.put("result", msg);
