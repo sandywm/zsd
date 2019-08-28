@@ -333,8 +333,9 @@ public class ApplyClassAction extends DispatchAction {
 		UserClassInfoManager ucm = (UserClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
 		ClassInfoManager cm = (ClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_CLASS_INFO);
 		SchoolManager sm = (SchoolManager) AppFactory.instance(null).getApp(Constants.WEB_SCHOOL_INFO);
+		UserManager um = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
 		Integer currUserId = CommonTools.getLoginUserId(request);
-		List<UserClassInfo> ucList = ucm.listInfoByOpt_1(currUserId, Constants.TEA_ROLE_ID);
+		List<UserClassInfo> ucList = ucm.listTeaInfoByOpt(currUserId, Constants.TEA_ROLE_ID);
 		UserClassInfo uc = null;
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "noInfo";
@@ -393,6 +394,49 @@ public class ApplyClassAction extends DispatchAction {
 				}
 				map.put("gradeList", list_d);
 			}
+		}else{//要是该老师没有任何任教班级（被转让完了）
+			List<User> uList = um.listEntityById(currUserId);
+			if(uList.size() > 0){
+				User user = uList.get(0);
+				Integer schoolId = user.getSchoolId();
+				List<School> sList = sm.listInfoById(schoolId);
+				if(sList.size() > 0){
+					msg = "success";
+					School sch = sList.get(0);
+					Integer schoolType = sch.getSchoolType();//小学(1),初中(2),高中(3)
+					Integer yearSystem = sch.getYearSystem();//3,4,5,6
+					List<Object> list_d = new ArrayList<Object>();
+					String currentTime = CurrentTime.getStringDate();
+					Integer startNum = 1;
+					Integer endNum = 1;
+					if(schoolType.equals(1)){//5,6
+						endNum = yearSystem;
+					}else if(schoolType.equals(2)){//3,4
+						if(yearSystem.equals(3)){
+							startNum = 7;
+						}else{
+							startNum = 6;
+						}
+						endNum = 10;
+					}else if(schoolType.equals(3)){
+						startNum = 10;
+						endNum = 12;
+					}
+					for(int gradeNo = startNum ; gradeNo <= endNum ; gradeNo++){
+						//获取指定年级下的真实班级列表
+						List<ClassInfo> cList = cm.listClassInfoByOption(gradeNo, currentTime, schoolId, "");
+						if(cList.size() > 0){
+							Map<String,Object> map_d = new HashMap<String,Object>();
+							String gradeName_tmp = Convert.NunberConvertChinese(gradeNo);
+							map_d.put("gradeNo", gradeNo);
+							map_d.put("gradeName", gradeName_tmp);
+							list_d.add(map_d);
+						}
+					}
+					map.put("gradeList", list_d);
+				}
+			}
+			
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
