@@ -10,8 +10,9 @@ public class Constants {
 	public static final String LOGIN_USER_ROLE_ID = "login_user_role_id";
 	public static final String LOGIN_USER_ROLE_NAME = "login_user_role_name";
 	
-	public static final Integer TEA_ROLE_ID = 4;
 	public static final Integer STU_ROLE_ID = 2;
+	public static final Integer NET_TEA_ROLE_ID = 3;
+	public static final Integer TEA_ROLE_ID = 4;
 	
 	public static final Integer COIN = 10;
 	public static final Integer EXPERIENCE = 1;

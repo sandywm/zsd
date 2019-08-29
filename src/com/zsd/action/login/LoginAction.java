@@ -25,10 +25,12 @@ import com.zsd.factory.AppFactory;
 import com.zsd.module.ClassInfo;
 import com.zsd.module.GradeSubject;
 import com.zsd.module.InviteCodeInfo;
+import com.zsd.module.NetTeacherInfo;
 import com.zsd.module.RoleInfo;
 import com.zsd.module.RoleUserInfo;
 import com.zsd.module.School;
 import com.zsd.module.User;
+import com.zsd.module.UserClassInfo;
 import com.zsd.service.ClassInfoManager;
 import com.zsd.service.GradeSubjectManager;
 import com.zsd.service.InviteCodeInfoManager;
@@ -124,6 +126,8 @@ public class LoginAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		UserManager uManager = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
 		RoleUserInfoManager ruManager = (RoleUserInfoManager) AppFactory.instance(null).getApp(Constants.WEB_ROLE_USER_INFO);
+		UserClassInfoManager ucm = (UserClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
+		NetTeacherInfoManager ntm = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
 		/**
 		 * true:若存在会话则返回该会话，否则新建一个会话。
 		 * false:若存在会话则返回该会话，否则返回NULL
@@ -208,6 +212,21 @@ public class LoginAction extends DispatchAction {
 						map.put("password", pwd);
 						map.put("portrait", portrait);
 						map.put("userId", uid);
+						if(roleId.equals(Constants.TEA_ROLE_ID)){//班内老师
+							List<UserClassInfo> ucList = ucm.listTeaInfoByOpt(uid, roleId);
+							if(ucList.size() > 0){
+								map.put("subName",ucList.get(0).getSubjectName());
+							}else{
+								map.put("subName","暂无");
+							}
+						}else if(roleId.equals(Constants.NET_TEA_ROLE_ID)){//网络导师
+							List<NetTeacherInfo> ntList = ntm.listntInfoByuserId(uid);
+							if(ntList.size() > 0){
+								map.put("subName",ntList.get(0).getSubject().getSubName());
+							}else{
+								map.put("subName","暂无");
+							}
+						}
 					}
 				}else{//账号无效
 					msg = "lock";
