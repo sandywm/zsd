@@ -1047,10 +1047,13 @@ public class HomeWorkAction extends DispatchAction {
 						map_d1.put("cName", classArr[j]);
 						map_d1.put("classId", classIdArr[j]);
 						//发送老师取0的话，有可能是临时老师发布的作业
-						if(swm.listPageInfoByOpt(0, subId, Integer.parseInt(classIdArr[j]), hwType, 0, 0, "", "", false, 0, 0).size() > 0){
+						List<SendHwInfo> sendList = swm.listPageInfoByOpt(0, subId, Integer.parseInt(classIdArr[j]), hwType, 0, 0, "", "", false, 0, 0);
+						if(sendList.size() > 0){
+							map_d1.put("hwSendId", sendList.get(0).getId());
 							map_d1.put("checkStatus", 0);//该班级存在未检查的指定作业类型下的作业
 						}else{
 							map_d1.put("checkStatus", 1);//不存在或者未发布
+							map_d1.put("hwSendId", 0);
 						}
 						list_a1.add(map_d1);
 					}
@@ -1085,37 +1088,55 @@ public class HomeWorkAction extends DispatchAction {
 		SendHwManager swm = (SendHwManager) AppFactory.instance(null).getApp(Constants.WEB_SEND_HW_INFO);
 		HwStudyTjManager tjm = (HwStudyTjManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_TJ_INFO);
 		Integer currUserId = CommonTools.getLoginUserId(request);
-		Integer classId = CommonTools.getFinalInteger("classId", request);
-		Integer opt = CommonTools.getFinalInteger("opt", request);//0:首页，1：作业记录页面
-		Integer hwType = CommonTools.getFinalInteger("hwType", request);//作业类型1-家庭作业,2-课后复习,3-课前预习--默认不传
-		Integer checkStatus = CommonTools.getFinalInteger("checkStatus", request);//检查状态（0:未检查，1:已检查）--默认传-1
-		String status = CommonTools.getFinalStr("status", request);//默认""为正常滑动，其他的时候为返回
+		Integer hwSendId = CommonTools.getFinalInteger("hwSendId", request);//0时表示正常进入，大于0时表示从发送作业时进入
+		Integer classId = 0;
+		Integer hwType = 0;
+		Integer checkStatus = -1;
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "noInfo";
-		String sDate = CommonTools.getFinalStr("sDate", request);
-		String eDate = CommonTools.getFinalStr("eDate", request);
-		boolean pageFlag = false;
-		Integer pageNo = 1;
-		Integer pageSize = 10;
-		if(opt.equals(1)){
-			pageFlag = true;
-			pageNo = CommonTools.getFinalInteger("pageNo", request);
-			pageSize = CommonTools.getFinalInteger("pageSize", request);
-			if(pageSize <= 0){
-				pageSize = 10;
-			}
-			if(sDate.equals("") && eDate.equals("")){
-				eDate = CurrentTime.getStringDate();
-				sDate = CurrentTime.getFinalDate(-2);
+		String sDate = "";
+		String eDate = "";
+		List<SendHwInfo> shList = new ArrayList<SendHwInfo>();
+		if(hwSendId > 0){
+			SendHwInfo shw = swm.getEntityById(hwSendId);
+			if(shw != null){
+				classId = shw.getClassInfo().getId();
+				hwType = shw.getHwType();
+				checkStatus = shw.getCheckStatus();
+				sDate = eDate = shw.getSendDate().substring(0, 10);
+				shList.add(shw);
 			}
 		}else{
-			sDate = eDate = CurrentTime.getStringDate();
+			classId = CommonTools.getFinalInteger("classId", request);
+			Integer opt = CommonTools.getFinalInteger("opt", request);//0:首页，1：作业记录页面
+			hwType = CommonTools.getFinalInteger("hwType", request);//作业类型1-家庭作业,2-课后复习,3-课前预习--默认不传
+			checkStatus = CommonTools.getFinalInteger("checkStatus", request);//检查状态（0:未检查，1:已检查）--默认传-1
+			String status = CommonTools.getFinalStr("status", request);//默认""为正常滑动，其他的时候为返回
+			sDate = CommonTools.getFinalStr("sDate", request);
+			eDate = CommonTools.getFinalStr("eDate", request);
+			boolean pageFlag = false;
+			Integer pageNo = 1;
+			Integer pageSize = 10;
+			if(opt.equals(1)){
+				pageFlag = true;
+				pageNo = CommonTools.getFinalInteger("pageNo", request);
+				pageSize = CommonTools.getFinalInteger("pageSize", request);
+				if(pageSize <= 0){
+					pageSize = 10;
+				}
+				if(sDate.equals("") && eDate.equals("")){
+					eDate = CurrentTime.getStringDate();
+					sDate = CurrentTime.getFinalDate(-2);
+				}
+			}else{
+				sDate = eDate = CurrentTime.getStringDate();
+			}
+			if(!status.equals("")){//返回时
+				pageSize = pageNo * pageSize;
+				pageNo = 1;
+			}
+			shList = swm.listPageInfoByOpt(currUserId, 0, classId, hwType, checkStatus, -1,sDate, eDate, pageFlag, pageNo, pageSize);
 		}
-		if(!status.equals("")){//返回时
-			pageSize = pageNo * pageSize;
-			pageNo = 1;
-		}
-		List<SendHwInfo> shList = swm.listPageInfoByOpt(currUserId, 0, classId, hwType, checkStatus, -1,sDate, eDate, pageFlag, pageNo, pageSize);
 		if(shList.size() > 0){
 			msg = "success";
 			List<Object> list_d = new ArrayList<Object>();
@@ -1155,6 +1176,9 @@ public class HomeWorkAction extends DispatchAction {
 		}
 		map.put("sDate", sDate);
 		map.put("eDate", eDate);
+		map.put("classId", classId);
+		map.put("hwType", hwType);
+		map.put("checkStatus", checkStatus);
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
 		return null;
