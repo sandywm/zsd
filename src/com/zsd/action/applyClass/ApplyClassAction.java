@@ -551,7 +551,6 @@ public class ApplyClassAction extends DispatchAction {
 					}
 				}
 			}
-			
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
