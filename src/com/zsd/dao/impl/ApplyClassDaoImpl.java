@@ -105,4 +105,25 @@ public class ApplyClassDaoImpl implements ApplyClassDao{
 		return null;
 	}
 
+	@Override
+	public List<ApplyClassInfo> findApplyInfo(Session sess,
+			Integer applyUserId, Integer toUserId, Integer classId,
+			Integer checkStatus) {
+		// TODO Auto-generated method stub
+		String hql = " from ApplyClassInfo as ac where 1 = 1";
+		if(applyUserId > 0){
+			hql  += " and ac.user.id = "+applyUserId;
+		}
+		if(toUserId > 0){
+			hql += " and ac.toUserId = "+toUserId;
+		}
+		if(checkStatus >= 0){
+			hql += " and ac.checkStatus = "+checkStatus;
+		}
+		if(classId > 0){
+			hql  += " and ac.classInfo.id = "+classId;
+		}
+		return sess.createQuery(hql).list();
+	}
+
 }

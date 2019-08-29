@@ -94,4 +94,17 @@ public interface ApplyClassDao {
 	 * @return
 	 */
 	ApplyClassInfo findInfoByOpt(Session sess,Integer applyUserId,Integer classId);
+	
+	/**
+	 * 获取指定条件的接班申请列表
+	 * @author wm
+	 * @date 2019-8-29 下午05:37:30
+	 * @param sess
+	 * @param applyUserId 申请老师(0表示不查询)
+	 * @param toUserId 被申请接班老师(0表示不查询)
+	 * @param classId 接管班级(0表示不查询)
+	 * @param checkStatus 审核状态(-1：全部,0:未处理，1：同意，2：拒绝)
+	 * @return
+	 */
+	List<ApplyClassInfo> findApplyInfo(Session sess,Integer applyUserId,Integer toUserId,Integer classId,Integer checkStatus);
 }

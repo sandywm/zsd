@@ -101,4 +101,17 @@ public interface ApplyClassManager {
 	 * @throws WEBException
 	 */
 	ApplyClassInfo getEntityByOpt(Integer applyUserId,Integer classId) throws WEBException;
+	
+	/**
+	 * 获取指定条件的接班申请列表
+	 * @author wm
+	 * @date 2019-8-29 下午05:40:21
+	 * @param applyUserId 申请老师(0表示不查询)
+	 * @param toUserId 被申请接班老师(0表示不查询)
+	 * @param classId 接管班级(0表示不查询)
+	 * @param checkStatus 审核状态(-1：全部,0:未处理，1：同意，2：拒绝)
+	 * @return
+	 * @throws WEBException
+	 */
+	List<ApplyClassInfo> listInfoByOpt(Integer applyUserId,Integer toUserId,Integer classId,Integer checkStatus) throws WEBException;
 }

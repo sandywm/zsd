@@ -100,7 +100,7 @@ public class ApplyClassAction extends DispatchAction {
 		Map<String,Object> map = new HashMap<String,Object>();
 		if(sDate.equals("") && eDate.equals("")){//默认最近三天
 			eDate = CurrentTime.getStringDate();
-			sDate = CurrentTime.getFinalDate(sDate, -2);
+			sDate = CurrentTime.getFinalDate(eDate, -2);
 		}
 		Integer sendUserId = 0;
 		Integer toUserId = 0;
@@ -318,7 +318,7 @@ public class ApplyClassAction extends DispatchAction {
 	}
 
 	/**
-	 * 获取指定学校有效年级列表（已被创建的班级）
+	 * 获取指定学校有效年级列表（已被创建的班级）--申请接管时用
 	 * @author wm
 	 * @date 2019-7-29 上午11:19:57
 	 * @param mapping
@@ -444,7 +444,7 @@ public class ApplyClassAction extends DispatchAction {
 	}
 	
 	/**
-	 * 获取指定学校指定年级下的有效班级列表（已被创建的班级）
+	 * 获取指定学校指定年级下的有效班级列表（已被创建的班级）--申请接管时用
 	 * @author wm
 	 * @date 2019-8-28 下午05:21:53
 	 * @param mapping
@@ -461,7 +461,6 @@ public class ApplyClassAction extends DispatchAction {
 		UserManager um = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
 		ClassInfoManager cm = (ClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_CLASS_INFO);
 		Integer currUserId = CommonTools.getLoginUserId(request);
-//		List<UserClassInfo> ucList = ucm.listTeaInfoByOpt(currUserId, Constants.TEA_ROLE_ID);
 		Integer gradeNo = CommonTools.getFinalInteger("gradeNo", request);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "noInfo";
@@ -474,20 +473,32 @@ public class ApplyClassAction extends DispatchAction {
 				List<ClassInfo> cList = cm.listClassInfoByOption(gradeNo, currentTime, schoolId, "");
 				List<Object> list_d1 = new ArrayList<Object>();
 				if(cList.size() > 0){
+					List<UserClassInfo> ucList_db = ucm.listTeaInfoByOpt(currUserId, Constants.TEA_ROLE_ID);//查看该老师目前有哪些永久和临时接管的班级
 					msg = "success";
 					for(ClassInfo c : cList){
-						Map<String,Object> map_d1 = new HashMap<String,Object>();
-						map_d1.put("cId", c.getId());
-						map_d1.put("cName", c.getClassName());
-						List<UserClassInfo> ucList = ucm.listInfoByOpt(c.getId(), Constants.TEA_ROLE_ID);
-						if(ucList.size() >  0){
-							map_d1.put("teaName", ucList.get(0).getUser().getRealName());
-						}else{
-							map_d1.put("teaName", "暂无老师");
+						boolean existFlag = false;
+						if(ucList_db.size() > 0){
+							for(UserClassInfo uc : ucList_db){
+								if(uc.getClassInfo().getId().equals(c.getId())){
+									existFlag = true;
+									break;
+								}
+							}
 						}
-						list_d1.add(map_d1);
-						SortCName sort = new SortCName();
-						Collections.sort(list_d1, sort);
+						if(!existFlag){
+							Map<String,Object> map_d1 = new HashMap<String,Object>();
+							map_d1.put("cId", c.getId());
+							map_d1.put("cName", c.getClassName());
+							List<UserClassInfo> ucList = ucm.listInfoByOpt(c.getId(), Constants.TEA_ROLE_ID);
+							if(ucList.size() >  0){
+								map_d1.put("teaName", ucList.get(0).getUser().getRealName());
+							}else{
+								map_d1.put("teaName", "暂无老师");
+							}
+							list_d1.add(map_d1);
+							SortCName sort = new SortCName();
+							Collections.sort(list_d1, sort);
+						}
 					}
 					map.put("cList", list_d1);
 				}
@@ -520,15 +531,22 @@ public class ApplyClassAction extends DispatchAction {
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "error";
 		if(classId > 0){
-			List<ClassInfo> cList = cm.listClassInfoById(classId);
-			if(cList.size() > 0){
-				String buildeClassDate = cList.get(0).getBuildeClassDate();
-				String classDetail = Convert.dateConvertGradeName(buildeClassDate) + cList.get(0).getClassName();//当前所在的年级班级
-				Integer acId = acm.addApplyClassInfo(currUserId, classId, classDetail, 0, applyOpt);
-				if(acId > 0){
-					msg = "success";
+			//获取该老师存在该班级为审核的接管申请记录
+			List<ApplyClassInfo> apList = acm.listInfoByOpt(currUserId, 0, classId, 0);
+			if(apList.size() > 0){
+				msg = "existInfo";
+			}else{
+				List<ClassInfo> cList = cm.listClassInfoById(classId);
+				if(cList.size() > 0){
+					String buildeClassDate = cList.get(0).getBuildeClassDate();
+					String classDetail = Convert.dateConvertGradeName(buildeClassDate) + cList.get(0).getClassName();//当前所在的年级班级
+					Integer acId = acm.addApplyClassInfo(currUserId, classId, classDetail, 0, applyOpt);
+					if(acId > 0){
+						msg = "success";
+					}
 				}
 			}
+			
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);

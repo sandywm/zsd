@@ -524,4 +524,20 @@ public class UserAction extends DispatchAction {
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
+	
+	public ActionForward getCurrStuInfo(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		UserManager um = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
+		Integer userId = CommonTools.getLoginUserId(request);
+		Integer roleId = CommonTools.getLoginRoleId(request);
+		if(userId > 0 && roleId.equals(Constants.STU_ROLE_ID)){
+			List<User> uList = um.listEntityById(userId);
+			if(uList.size() > 0){
+				User user = uList.get(0);
+				
+			}
+		}
+		
+		return null;
+	}
 }

@@ -3130,7 +3130,7 @@ public class HomeWorkAction extends DispatchAction {
 	}
 	
 	/**
-	 * 修改家庭作业做题统计表完成状态(设置为补做完成或者按时完成)
+	 * 修改家庭作业做题统计表完成状态(设置为补做完成或者按时完成--最后提交)
 	 * @author wm
 	 * @date 2019-8-16 下午05:18:25
 	 * @param mapping
@@ -3144,23 +3144,37 @@ public class HomeWorkAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
 		HwStudyTjManager tjm = (HwStudyTjManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_TJ_INFO);
+		HwTraceStudyLogManager slm = (HwTraceStudyLogManager) AppFactory.instance(null).getApp(Constants.WEB_HW_TRACE_STUDY_LOG_INFO);
 		Integer tjId = CommonTools.getFinalInteger("tjId", request);
 		Integer currUserId = CommonTools.getLoginUserId(request);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "error";
+		boolean submitFlag = false;
 		if(tjId > 0 && currUserId > 0){
 			HwStudyTjInfo tj = tjm.getEntityById(tjId);
 			if(tj != null){
 				if(tj.getUser().getId().equals(currUserId)){
 					if(tj.getComStatus().equals(0)){
 						if(tj.getAllNum().equals(tj.getSuccNum() + tj.getErrorNum())){//全部做完
-							Integer diffDays = CurrentTime.compareDate(CurrentTime.getStringDate(),tj.getSendHwInfo().getEndDate());
-							Integer comStatus = 2;//补做完成
-							if(diffDays >= 0){//按时完成
-								comStatus = 1;
+							if(tj.getSendHwInfo().getTraceStatus().equals(0)){//没开启溯源可直接提交
+								submitFlag = true;
+							}else{//开启溯源，查看溯源学习记录是否完成
+								HwTraceStudyLogInfo hsl = slm.getEntityById(tjId);
+								if(hsl != null){
+									if(hsl.getIsFinish().equals(2)){//作业溯源学习记录任务完成才能提交
+										submitFlag = true;
+									}
+								}
 							}
-							tjm.updateInfoById(tj.getId(), comStatus, 0, 0);
-							msg = "success";
+							if(submitFlag){
+								Integer diffDays = CurrentTime.compareDate(CurrentTime.getStringDate(),tj.getSendHwInfo().getEndDate());
+								Integer comStatus = 2;//补做完成
+								if(diffDays >= 0){//按时完成
+									comStatus = 1;
+								}
+								tjm.updateInfoById(tj.getId(), comStatus, 0, 0);
+								msg = "success";
+							}
 						}
 					}else{
 						msg = "success";
@@ -4618,56 +4632,6 @@ public class HomeWorkAction extends DispatchAction {
 			}
 		}
 		map.put("result", msg);
-		CommonTools.getJsonPkg(map, response);
-		return null;
-	}
-	
-	
-	/**
-	 * 家庭作业最后提交动作
-	 * @author wm
-	 * @date 2019-8-20 下午06:17:47
-	 * @param mapping
-	 * @param form
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws Exception
-	 */
-	public ActionForward updateHwCompleteStatus(ActionMapping mapping ,ActionForm form,
-			HttpServletRequest request, HttpServletResponse response) throws Exception {
-		HwStudyTjManager tjm = (HwStudyTjManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_TJ_INFO);
-		HwTraceStudyLogManager slm = (HwTraceStudyLogManager) AppFactory.instance(null).getApp(Constants.WEB_HW_TRACE_STUDY_LOG_INFO);
-		Integer tjId = CommonTools.getFinalInteger("tjId", request);
-		Integer stuId = CommonTools.getLoginUserId(request);
-		Map<String,Boolean> map = new HashMap<String,Boolean>();
-		String msg = "error";
-		boolean submitFlag = false;
-		if(tjId > 0){
-			HwStudyTjInfo tj = tjm.getEntityById(tjId);
-			if(tj != null){
-				if(tj.getUser().getId().equals(stuId)){
-					if(tj.getComStatus().equals(0)){//未完成状态下才能提交
-						if(tj.getAllNum().equals(tj.getSuccNum() + tj.getErrorNum())){//所有题都做过才能提交
-							if(tj.getSendHwInfo().getTraceStatus().equals(0)){//没开启溯源可直接提交
-								submitFlag = true;
-							}else{//开启溯源，查看溯源学习记录是否完成
-								HwTraceStudyLogInfo hsl = slm.getEntityById(tjId);
-								if(hsl != null){
-									if(hsl.getIsFinish().equals(2)){//作业溯源学习记录任务完成才能提交
-										submitFlag = true;
-									}
-								}
-							}
-							if(submitFlag){
-//								tjm.updateInfoById(tjId, conStatus, succNum, errorNum)
-							}
-						}
-					}
-				}
-			}
-		}
-		map.put("result", submitFlag);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
