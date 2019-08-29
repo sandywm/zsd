@@ -1088,7 +1088,6 @@ public class HomeWorkAction extends DispatchAction {
 		SendHwManager swm = (SendHwManager) AppFactory.instance(null).getApp(Constants.WEB_SEND_HW_INFO);
 		HwStudyTjManager tjm = (HwStudyTjManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_TJ_INFO);
 		Integer currUserId = CommonTools.getLoginUserId(request);
-		Integer hwSendId = CommonTools.getFinalInteger("hwSendId", request);//0时表示正常进入，大于0时表示从发送作业时进入
 		Integer classId = 0;
 		Integer hwType = 0;
 		Integer checkStatus = -1;
@@ -1097,46 +1096,31 @@ public class HomeWorkAction extends DispatchAction {
 		String sDate = "";
 		String eDate = "";
 		List<SendHwInfo> shList = new ArrayList<SendHwInfo>();
-		if(hwSendId > 0){
-			SendHwInfo shw = swm.getEntityById(hwSendId);
-			if(shw != null){
-				classId = shw.getClassInfo().getId();
-				hwType = shw.getHwType();
-				checkStatus = shw.getCheckStatus();
-				sDate = eDate = shw.getSendDate().substring(0, 10);
-				shList.add(shw);
+		classId = CommonTools.getFinalInteger("classId", request);
+		Integer opt = CommonTools.getFinalInteger("opt", request);//0:首页，1：作业记录页面
+		hwType = CommonTools.getFinalInteger("hwType", request);//作业类型1-家庭作业,2-课后复习,3-课前预习--默认不传
+		checkStatus = CommonTools.getFinalInteger("checkStatus", request);//检查状态（0:未检查，1:已检查）--默认传-1
+		String status = CommonTools.getFinalStr("status", request);//默认""为正常滑动，其他的时候为返回
+		sDate = CommonTools.getFinalStr("sDate", request);
+		eDate = CommonTools.getFinalStr("eDate", request);
+		boolean pageFlag = false;
+		Integer pageNo = 1;
+		Integer pageSize = 10;
+		if(opt.equals(1)){
+			pageFlag = true;
+			pageNo = CommonTools.getFinalInteger("pageNo", request);
+			pageSize = CommonTools.getFinalInteger("pageSize", request);
+			if(pageSize <= 0){
+				pageSize = 10;
 			}
 		}else{
-			classId = CommonTools.getFinalInteger("classId", request);
-			Integer opt = CommonTools.getFinalInteger("opt", request);//0:首页，1：作业记录页面
-			hwType = CommonTools.getFinalInteger("hwType", request);//作业类型1-家庭作业,2-课后复习,3-课前预习--默认不传
-			checkStatus = CommonTools.getFinalInteger("checkStatus", request);//检查状态（0:未检查，1:已检查）--默认传-1
-			String status = CommonTools.getFinalStr("status", request);//默认""为正常滑动，其他的时候为返回
-			sDate = CommonTools.getFinalStr("sDate", request);
-			eDate = CommonTools.getFinalStr("eDate", request);
-			boolean pageFlag = false;
-			Integer pageNo = 1;
-			Integer pageSize = 10;
-			if(opt.equals(1)){
-				pageFlag = true;
-				pageNo = CommonTools.getFinalInteger("pageNo", request);
-				pageSize = CommonTools.getFinalInteger("pageSize", request);
-				if(pageSize <= 0){
-					pageSize = 10;
-				}
-				if(sDate.equals("") && eDate.equals("")){
-					eDate = CurrentTime.getStringDate();
-					sDate = CurrentTime.getFinalDate(-2);
-				}
-			}else{
-				sDate = eDate = CurrentTime.getStringDate();
-			}
-			if(!status.equals("")){//返回时
-				pageSize = pageNo * pageSize;
-				pageNo = 1;
-			}
-			shList = swm.listPageInfoByOpt(currUserId, 0, classId, hwType, checkStatus, -1,sDate, eDate, pageFlag, pageNo, pageSize);
+			sDate = eDate = CurrentTime.getStringDate();
 		}
+		if(!status.equals("")){//返回时
+			pageSize = pageNo * pageSize;
+			pageNo = 1;
+		}
+		shList = swm.listPageInfoByOpt(currUserId, 0, classId, hwType, checkStatus, -1,sDate, eDate, pageFlag, pageNo, pageSize);
 		if(shList.size() > 0){
 			msg = "success";
 			List<Object> list_d = new ArrayList<Object>();

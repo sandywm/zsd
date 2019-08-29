@@ -525,6 +525,7 @@ public class ApplyClassAction extends DispatchAction {
 		// TODO Auto-generated method stub
 		ApplyClassManager acm = (ApplyClassManager) AppFactory.instance(null).getApp(Constants.WEB_APPLY_CLASS_INFO);
 		ClassInfoManager cm = (ClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_CLASS_INFO);
+		UserClassInfoManager ucm = (UserClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
 		Integer applyOpt = CommonTools.getFinalInteger("applyOpt", request);//1：临时，2：永久
 		Integer currUserId = CommonTools.getLoginUserId(request);
 		Integer classId = CommonTools.getFinalInteger("classId", request);
@@ -539,10 +540,14 @@ public class ApplyClassAction extends DispatchAction {
 				List<ClassInfo> cList = cm.listClassInfoById(classId);
 				if(cList.size() > 0){
 					String buildeClassDate = cList.get(0).getBuildeClassDate();
-					String classDetail = Convert.dateConvertGradeName(buildeClassDate) + cList.get(0).getClassName();//当前所在的年级班级
-					Integer acId = acm.addApplyClassInfo(currUserId, classId, classDetail, 0, applyOpt);
-					if(acId > 0){
-						msg = "success";
+					List<UserClassInfo> ucList = ucm.listInfoByOpt(classId, Constants.TEA_ROLE_ID);//获取班级永久老师
+					if(ucList.size() > 0){
+						Integer classTeaId = ucList.get(0).getUser().getId();String classDetail = Convert.dateConvertGradeName(buildeClassDate) + cList.get(0).getClassName();//当前所在的年级班级
+						Integer acId = acm.addApplyClassInfo(currUserId, classId, classDetail, classTeaId, applyOpt);
+						if(acId > 0){
+							msg = "success";
+						}
+						
 					}
 				}
 			}
