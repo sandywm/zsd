@@ -142,10 +142,14 @@ public class UserClassInfoManagerImpl implements UserClassInfoManager {
 					ucInfo.setAppUserId(0);
 					ucInfo.setAppUserInfo("");
 					ucInfo.setStatus(status);
-				}else if(userId.equals(0) && status.equals(1) && applyUserId > 0){
+				}else if(userId.equals(0) && status.equals(1) && applyUserId > 0){//临时接班
 					ucInfo.setAppUserId(applyUserId);
 					ucInfo.setAppUserInfo(applyUsreName);
 					ucInfo.setStatus(status);
+				}else if(userId.equals(0) && status.equals(0) && applyUserId.equals(0)){//原班老师强制取消临时接管班级老师
+					ucInfo.setAppUserId(0);
+					ucInfo.setAppUserInfo("");
+					ucInfo.setStatus(0);
 				}
 				ucDao.update(sess, ucInfo);
 				tran.commit();

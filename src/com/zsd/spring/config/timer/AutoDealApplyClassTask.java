@@ -23,7 +23,7 @@ public class AutoDealApplyClassTask {
 		if(acList.size() > 0){
 			for(ApplyClassInfo ac : acList){
 				Integer acId = ac.getId();
-				acm.setCancleInfo(acId, 2, "系统自动拒绝");
+				acm.setCancleInfo(acId, 2, "超过一天未处理,系统自动取消该申请");
 			}
 		}
 		System.out.println("自动处理每天没被处理的申请结束："+CurrentTime.getCurrentTime());

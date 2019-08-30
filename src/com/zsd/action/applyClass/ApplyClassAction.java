@@ -90,6 +90,7 @@ public class ApplyClassAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
 		ApplyClassManager acm = (ApplyClassManager) AppFactory.instance(null).getApp(Constants.WEB_APPLY_CLASS_INFO);
+		UserManager um = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
 		Integer currUserId = CommonTools.getLoginUserId(request);
 		String sDate = CommonTools.getFinalStr("sDate", request);
 		String eDate = CommonTools.getFinalStr("eDate", request);
@@ -123,7 +124,7 @@ public class ApplyClassAction extends DispatchAction {
 				Integer checkStatus_db = ac.getCheckStatus();
 				String appDetail = "";
 				String checkStatusChi = "";
-				String appltOptChi = ac.getApplyOpt().equals(1) ? "临时" : "永久";
+				String applyOptChi = ac.getApplyOpt().equals(1) ? "临时接管" : "永久接管";
 				String realName = ac.getUser().getRealName();
 				if(checkStatus_db.equals(0)){
 					checkStatusChi = "未处理";
@@ -132,25 +133,33 @@ public class ApplyClassAction extends DispatchAction {
 				}else if(checkStatus_db.equals(2)){
 					checkStatusChi = "拒绝";
 				}
-				if(checkStatus_db.equals(0)){
+				String checkRemark = "";
+				if(checkStatus_db.equals(0)){//未处理
 					if(opt.equals(1)){//我的主动申请
-						appDetail = "你申请"+appltOptChi+"接管"+ac.getClassDetail();
+						if(toUserId > 0){
+							List<User> uList = um.listEntityById(toUserId);
+							if(uList.size() > 0){
+								appDetail = "您申请"+applyOptChi+ac.getClassDetail()+",等待"+uList.get(0).getRealName()+"老师处理中...";
+							}
+						}
 					}else{
-						appDetail = realName+"老师申请"+appltOptChi+"接管你的"+ac.getClassDetail();
+						appDetail = realName+"老师申请"+applyOptChi+"接管你的"+ac.getClassDetail()+",等待您的处理中...";;
 						map_d.put("classInfo", ac.getClassDetail());
 						map_d.put("applyTeaName", realName);
 					}
 				}else{
+					checkRemark = ac.getCheckRemark().equals("") ? "" : "自动取消";
 					if(opt.equals(1)){//我的主动申请
-						appDetail = "你申请"+appltOptChi+"接管"+ac.getClassDetail()+"已"+checkStatusChi;
+						appDetail = "你申请"+applyOptChi+"接管"+ac.getClassDetail()+"已"+checkStatusChi;
 					}else{
-						appDetail = "你已"+checkStatusChi+realName+"老师对"+ac.getClassDetail()+appltOptChi+"接管";
+						appDetail = "你已"+checkStatusChi+realName+"老师对"+ac.getClassDetail()+applyOptChi+"接管";
 					}
 				}
 				map_d.put("applyDetail", appDetail);
 				map_d.put("applyTime", ac.getApplyTime());
 				map_d.put("checkStatusChi",checkStatusChi);
-				map_d.put("applyOptChi",appltOptChi);
+				map_d.put("applyOptChi",applyOptChi);
+				map_d.put("checkRemark",checkRemark);
 				list_d.add(map_d);
 			}
 			map.put("acList", list_d);
@@ -163,7 +172,7 @@ public class ApplyClassAction extends DispatchAction {
 	}
 	
 	/**
-	 * 获取申请详情
+	 * 获取申请详情(暂未启用)
 	 * @author wm
 	 * @date 2019-7-29 上午09:39:16
 	 * @param mapping
@@ -177,6 +186,7 @@ public class ApplyClassAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
 		ApplyClassManager acm = (ApplyClassManager) AppFactory.instance(null).getApp(Constants.WEB_APPLY_CLASS_INFO);
+		UserManager um = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
 		Integer acId = CommonTools.getFinalInteger("acId", request);
 		Integer currUserId = CommonTools.getLoginUserId(request);
 		ApplyClassInfo ac = acm.getEntityById(acId);
@@ -189,7 +199,7 @@ public class ApplyClassAction extends DispatchAction {
 			if(currUserId.equals(applyUserId) || currUserId.equals(toUserId)){
 				msg = "success";
 				map.put("applyUserName", ac.getUser().getRealName());
-				String applyOptChi = ac.getApplyOpt().equals(1) ? "临时" : "永久";
+				String applyOptChi = ac.getApplyOpt().equals(1) ? "临时接管" : "永久接管";
 				Integer checkStatus_db = ac.getCheckStatus();
 				String checkStatusChi = "";
 				if(checkStatus_db.equals(0)){
@@ -201,9 +211,14 @@ public class ApplyClassAction extends DispatchAction {
 				}
 				String applyDetail = "";
 				if(currUserId.equals(applyUserId)){//自己作为申请人
-					applyDetail = "您申请"+applyOptChi+"接管"+ac.getClassDetail();
+					if(toUserId > 0){
+						List<User> uList = um.listEntityById(toUserId);
+						if(uList.size() > 0){
+							applyDetail = "您申请"+applyOptChi+ac.getClassDetail()+",等待"+uList.get(0).getRealName()+"老师处理中...";
+						}
+					}
 				}else{
-					applyDetail = realName+"老师申请"+applyOptChi+"接管你的"+ac.getClassDetail();
+					applyDetail = realName+"老师申请"+applyOptChi+"你的"+ac.getClassDetail()+",等待您的处理中...";
 				}
 				map.put("acId", ac.getId());
 				map.put("applyDetail", applyDetail);
@@ -588,6 +603,7 @@ public class ApplyClassAction extends DispatchAction {
 						ApplyClassInfo ac = acm.getEntityByOpt(applyTeaId, classId);
 						if(ac != null){
 							acm.setCancleInfo(ac.getId(), 2, "原班级任课老师强制取消");
+							ucm.updateInfoByOpt(classId, 0, 0, "", 0);
 							msg = "success";
 						}
 					}
