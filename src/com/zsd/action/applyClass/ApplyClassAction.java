@@ -149,7 +149,7 @@ public class ApplyClassAction extends DispatchAction {
 						map_d.put("applyTeaName", realName);
 					}
 				}else{
-					checkRemark = ac.getCheckRemark().contains("超过一天") ? "" : "自动取消";
+					checkRemark = ac.getCheckRemark().contains("超过一天") ? "自动取消" : "";
 					if(opt.equals(1)){//我的主动申请
 						appDetail = "你申请"+applyOptChi+"接管"+ac.getClassDetail()+"已"+checkStatusChi;
 					}else{
