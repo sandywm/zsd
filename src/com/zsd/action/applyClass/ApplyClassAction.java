@@ -136,6 +136,7 @@ public class ApplyClassAction extends DispatchAction {
 				String checkRemark = "";
 				if(checkStatus_db.equals(0)){//未处理
 					if(opt.equals(1)){//我的主动申请
+						toUserId = ac.getUser().getId();
 						if(toUserId > 0){
 							List<User> uList = um.listEntityById(toUserId);
 							if(uList.size() > 0){
@@ -143,12 +144,12 @@ public class ApplyClassAction extends DispatchAction {
 							}
 						}
 					}else{
-						appDetail = realName+"老师申请"+applyOptChi+"接管你的"+ac.getClassDetail()+",等待您的处理中...";;
+						appDetail = realName+"老师申请"+applyOptChi+"接管你的"+ac.getClassDetail()+",等待您的处理中...";
 						map_d.put("classInfo", ac.getClassDetail());
 						map_d.put("applyTeaName", realName);
 					}
 				}else{
-					checkRemark = ac.getCheckRemark().equals("") ? "" : "自动取消";
+					checkRemark = ac.getCheckRemark().contains("超过一天") ? "" : "自动取消";
 					if(opt.equals(1)){//我的主动申请
 						appDetail = "你申请"+applyOptChi+"接管"+ac.getClassDetail()+"已"+checkStatusChi;
 					}else{
