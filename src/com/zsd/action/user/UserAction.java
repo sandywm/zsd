@@ -27,12 +27,14 @@ import com.zsd.module.RoleInfo;
 import com.zsd.module.RoleUserInfo;
 import com.zsd.module.School;
 import com.zsd.module.User;
+import com.zsd.module.UserClassInfo;
 import com.zsd.page.PageConst;
 import com.zsd.service.ClassInfoManager;
 import com.zsd.service.NetTeacherStudentManager;
 import com.zsd.service.RoleInfoManager;
 import com.zsd.service.RoleUserInfoManager;
 import com.zsd.service.SchoolManager;
+import com.zsd.service.UserClassInfoManager;
 import com.zsd.service.UserManager;
 import com.zsd.tools.CommonTools;
 import com.zsd.tools.Convert;
@@ -525,16 +527,65 @@ public class UserAction extends DispatchAction {
 		return null;
 	}
 	
-	public ActionForward getCurrStuInfo(ActionMapping mapping, ActionForm form,
+	/**
+	 * 获取学生当前学籍信息
+	 * @author wm
+	 * @date 2019-8-30 上午09:57:33
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getCurrStuByInfo(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
-		UserManager um = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
+		UserClassInfoManager ucm = (UserClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
+		SchoolManager sm = (SchoolManager) AppFactory.instance(null).getApp(Constants.WEB_SCHOOL_INFO);
 		Integer userId = CommonTools.getLoginUserId(request);
 		Integer roleId = CommonTools.getLoginRoleId(request);
+		String graduationStatus = "";//表示是否升学【0未升学，1升学】
+		String currYearSystem = "";//表示学生的学年制
+		String currPara = "";//当前所在学段
+		Integer currUserGradeNumber = 0;//当前学生年级号
+		String className = "";//当前学生所在的班级名次
 		if(userId > 0 && roleId.equals(Constants.STU_ROLE_ID)){
-			List<User> uList = um.listEntityById(userId);
+			List<UserClassInfo> uList = ucm.listInfoByOpt_1(userId, roleId);
 			if(uList.size() > 0){
-				User user = uList.get(0);
-				
+				UserClassInfo uc = uList.get(0);
+				User user = uc.getUser();
+				ClassInfo c = uc.getClassInfo();
+				String buildClassDate = c.getBuildeClassDate();
+				//计算出当前学生今天所在的年级
+				currUserGradeNumber = Convert.dateConvertGradeNumber(buildClassDate);
+				Integer yearSystem = user.getYearSystem();//学年制6,5,4,3
+				className = c.getClassName();
+				//获取用户的升学时间标记
+				String dateFlag = user.getDateFlag();
+				//计算出升学时间标记的时间的所处年级（升学时已经变化，没变化说明升学后还没修改）
+				Integer dateFlagGradeNumber = Convert.dateConvertGradeNumber(dateFlag, buildClassDate);
+				Integer schoolId = user.getSchoolId();
+				if(schoolId > 0){
+					List<School> sList = sm.listInfoById(schoolId);
+					if(sList.size() > 0){
+						Integer schoolType = sList.get(0).getSchoolType();
+						if(schoolType.equals(1)){//小学
+							if(yearSystem.equals(6)){
+								if(currUserGradeNumber <= 6){//未升学
+									
+								}else if(currUserGradeNumber > 6){
+									
+								}
+							}else if(yearSystem.equals(5)){
+								
+							}
+						}else if(schoolType.equals(2)){//初中
+							
+						}else{//高中
+							
+						}
+					}
+				}
 			}
 		}
 		

@@ -558,12 +558,12 @@ public class ApplyClassAction extends DispatchAction {
 					String buildeClassDate = cList.get(0).getBuildeClassDate();
 					List<UserClassInfo> ucList = ucm.listInfoByOpt(classId, Constants.TEA_ROLE_ID);//获取班级永久老师
 					if(ucList.size() > 0){
-						Integer classTeaId = ucList.get(0).getUser().getId();String classDetail = Convert.dateConvertGradeName(buildeClassDate) + cList.get(0).getClassName();//当前所在的年级班级
+						Integer classTeaId = ucList.get(0).getUser().getId();
+						String classDetail = Convert.dateConvertGradeName(buildeClassDate) + cList.get(0).getClassName();//当前所在的年级班级
 						Integer acId = acm.addApplyClassInfo(currUserId, classId, classDetail, classTeaId, applyOpt);
 						if(acId > 0){
 							msg = "success";
 						}
-						
 					}
 				}
 			}
@@ -604,7 +604,7 @@ public class ApplyClassAction extends DispatchAction {
 						ApplyClassInfo ac = acm.getEntityByOpt(applyTeaId, classId);
 						if(ac != null){
 							acm.setCancleInfo(ac.getId(), 2, "原班级任课老师强制取消");
-							ucm.updateInfoByOpt(classId, 0, 0, "", 0);
+							ucm.updateInfoByOpt(uc.getId(), 0, 0, "", 0);
 							msg = "success";
 						}
 					}
