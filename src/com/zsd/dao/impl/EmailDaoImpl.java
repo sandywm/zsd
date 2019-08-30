@@ -91,11 +91,4 @@ public class EmailDaoImpl implements EmailDao{
 		Object countObj = sess.createQuery(hql).uniqueResult();
 		return CommonTools.longToInt(countObj);
 	}
-
-	@Override
-	public void delEmail(Session sess, Integer userID, String emID) {
-		// TODO Auto-generated method stub
-		
-	}
-
 }

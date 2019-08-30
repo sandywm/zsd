@@ -53,11 +53,4 @@ public interface EmailDao {
 	 * @return
 	 */
 	Integer getCountByOpt(Session sess,Integer userId,String title,String sDate,String eDate,String emailType);
-	/**
-	 * 根据用户编号删除指定ID的记录
-	 * @param sess
-	 * @param userID 用户编号
-	 * @param emID
-	 */
-	void  delEmail(Session sess,Integer userID,String emID);
 }
