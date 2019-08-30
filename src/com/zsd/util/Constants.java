@@ -13,6 +13,7 @@ public class Constants {
 	public static final Integer STU_ROLE_ID = 2;
 	public static final Integer NET_TEA_ROLE_ID = 3;
 	public static final Integer TEA_ROLE_ID = 4;
+	public static final Integer PATENT_ROLE_ID = 6;
 	
 	public static final Integer COIN = 10;
 	public static final Integer EXPERIENCE = 1;

@@ -14,6 +14,7 @@ import com.zsd.module.NetTeacherInfo;
 import com.zsd.module.NetTeacherStudent;
 import com.zsd.module.User;
 import com.zsd.service.NetTeacherStudentManager;
+import com.zsd.tools.CurrentTime;
 import com.zsd.tools.HibernateUtil;
 import com.zsd.util.Constants;
 
@@ -168,6 +169,30 @@ public class NetTeacherStudentManagerImpl implements NetTeacherStudentManager {
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new WEBException("根据网络导师编号获取班内免费试用,付费学生人数时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public boolean clearUserNetTeacher(Integer id) throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			ntsDao = (NetTeacherStudentDao) DaoFactory.instance(null).getDao(Constants.DAO_NET_TEACHER_STUDENT);
+			Session sess  = HibernateUtil.currentSession();
+			tran = sess.beginTransaction();
+			NetTeacherStudent nts = ntsDao.get(sess, id);
+			if(nts != null){
+				nts.setClearStatus(1);
+				nts.setClearDate(CurrentTime.getCurrentTime());
+				nts.setBindStatus(0);
+				tran.commit();
+				return true;
+			}
+			return false;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("当学生升学时，之前与之绑定的网络导师将被取消，修改clearStatus的值为1时出现异常!");
 		} finally{
 			HibernateUtil.closeSession();
 		}

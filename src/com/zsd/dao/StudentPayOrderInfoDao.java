@@ -61,8 +61,8 @@ public interface StudentPayOrderInfoDao {
 	 * @author zong
 	 * 2019-5-24下午05:07:47
 	 * @param sess
-	 * @param ntsId 老师学生绑定主键
-	 * @param comSta 完成状态
+	 * @param ntsId 老师学生绑定主键(0时不查询)
+	 * @param comSta 完成状态(-1时不查询)
 	 * @return
 	 */
 	List<StudentPayOrderInfo> findSpayOrderInfoByOpt(Session sess,Integer ntsId,Integer comSta);

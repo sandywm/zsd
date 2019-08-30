@@ -62,5 +62,55 @@ public class StudentPayOrderInfoManagerImpl implements
 			HibernateUtil.closeSession();
 		}
 	}
+	@Override
+	public void delBatchUnComPayOrder() throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			sOrderInfoDao = (StudentPayOrderInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_STUDENT_PAY_ORDER_INFO);
+			Session sess  = HibernateUtil.currentSession();
+			tran = sess.beginTransaction();
+			List<StudentPayOrderInfo> spoList = sOrderInfoDao.findSpayOrderInfoByOpt(sess, 0, 0);
+			if(spoList.size() > 0){
+				for(Integer i = 0 ; i < spoList.size() ; i++){
+					sOrderInfoDao.delete(sess, spoList.get(i));
+					if(i % 10 == 0){//批插入的对象立即写入数据库并释放内存
+						sess.flush();
+						sess.clear();
+						tran.commit();
+						tran = sess.beginTransaction();
+					}
+				}
+				tran.commit();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("批量删除所有未完成订单时出现异常!");
+		}finally{
+			HibernateUtil.closeSession();
+		}
+	}
+	@Override
+	public boolean delSpecUnComPayOrder(Integer id) throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			sOrderInfoDao = (StudentPayOrderInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_STUDENT_PAY_ORDER_INFO);
+			Session sess  = HibernateUtil.currentSession();
+			tran = sess.beginTransaction();
+			StudentPayOrderInfo spo = sOrderInfoDao.get(sess, id);
+			if(spo != null){
+				if(spo.getComStatus().equals(0)){//只有未完成的才能删除
+					sOrderInfoDao.delete(sess, spo);
+					tran.commit();
+					return true;
+				}
+			}
+			return false;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("删除指定未完成订单时出现异常!");
+		}finally{
+			HibernateUtil.closeSession();
+		}
+	}
 
 }

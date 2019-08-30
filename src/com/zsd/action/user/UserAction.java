@@ -528,7 +528,7 @@ public class UserAction extends DispatchAction {
 	}
 	
 	/**
-	 * 获取学生当前学籍信息
+	 * 获取学生当前学籍信息,是否升学
 	 * @author wm
 	 * @date 2019-8-30 上午09:57:33
 	 * @param mapping
@@ -542,13 +542,15 @@ public class UserAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		UserClassInfoManager ucm = (UserClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
 		SchoolManager sm = (SchoolManager) AppFactory.instance(null).getApp(Constants.WEB_SCHOOL_INFO);
+		NetTeacherStudentManager ntsm = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT);
 		Integer userId = CommonTools.getLoginUserId(request);
 		Integer roleId = CommonTools.getLoginRoleId(request);
-		String graduationStatus = "";//表示是否升学【0未升学，1升学】
+		Integer graduationStatus = 0;//表示是否升学【0未升学，1升学】
 		String currYearSystem = "";//表示学生的学年制
 		String currPara = "";//当前所在学段
 		Integer currUserGradeNumber = 0;//当前学生年级号
-		String className = "";//当前学生所在的班级名次
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "error";
 		if(userId > 0 && roleId.equals(Constants.STU_ROLE_ID)){
 			List<UserClassInfo> uList = ucm.listInfoByOpt_1(userId, roleId);
 			if(uList.size() > 0){
@@ -559,36 +561,104 @@ public class UserAction extends DispatchAction {
 				//计算出当前学生今天所在的年级
 				currUserGradeNumber = Convert.dateConvertGradeNumber(buildClassDate);
 				Integer yearSystem = user.getYearSystem();//学年制6,5,4,3
-				className = c.getClassName();
-				//获取用户的升学时间标记
-				String dateFlag = user.getDateFlag();
-				//计算出升学时间标记的时间的所处年级（升学时已经变化，没变化说明升学后还没修改）
-				Integer dateFlagGradeNumber = Convert.dateConvertGradeNumber(dateFlag, buildClassDate);
 				Integer schoolId = user.getSchoolId();
 				if(schoolId > 0){
 					List<School> sList = sm.listInfoById(schoolId);
 					if(sList.size() > 0){
+						msg = "success";
 						Integer schoolType = sList.get(0).getSchoolType();
 						if(schoolType.equals(1)){//小学
 							if(yearSystem.equals(6)){
 								if(currUserGradeNumber <= 6){//未升学
 									
-								}else if(currUserGradeNumber > 6){
-									
+								}else if(currUserGradeNumber > 6 && currUserGradeNumber <= 9){//初中
+									graduationStatus = 1;
+									currPara = "初中";
+									currYearSystem = "3";
+								}else{//高中
+									graduationStatus = 1;
+									currPara = "高中";
+									currYearSystem = "3";
 								}
 							}else if(yearSystem.equals(5)){
-								
+								if(currUserGradeNumber <= 5){//未升学
+									
+								}else if(currUserGradeNumber > 5 && currUserGradeNumber <= 9){//初中
+									graduationStatus = 1;
+									currPara = "初中";
+									currYearSystem = "4";
+								}else{//高中
+									graduationStatus = 1;
+									currPara = "高中";
+									currYearSystem = "3";
+								}
 							}
 						}else if(schoolType.equals(2)){//初中
-							
-						}else{//高中
+							if(yearSystem.equals(4)){
+								if(currUserGradeNumber > 5 && currUserGradeNumber <= 9){//未升学
+									
+								}else{//高中
+									graduationStatus = 1;
+									currPara = "高中";
+									currYearSystem = "3";
+								}
+							}else if(yearSystem.equals(3)){
+								if(currUserGradeNumber > 6 && currUserGradeNumber <= 9){//未升学
+									
+								}else{//高中
+									graduationStatus = 1;
+									currPara = "高中";
+									currYearSystem = "3";
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		if(msg.equals("success")){
+			map.put("graduationStatus", graduationStatus);//升学状态【0未升学，1升学】
+			map.put("currPara", currPara);//当前学段
+			map.put("currYearSystem", currYearSystem);//当前学年制
+			map.put("currUserGradeNumber", currUserGradeNumber);//当前年级
+			if(graduationStatus.equals(1)){//升学，需要取消绑定的网络导师
+				List<NetTeacherStudent> ntsList = ntsm.listByStuId(userId);
+				if(ntsList.size() > 0){
+					for(NetTeacherStudent nts : ntsList){
+						Integer ntsId = nts.getId();
+						Integer payStatus = nts.getPayStatus();
+						Integer bindStatus = nts.getBindStatus();
+						ntsm.clearUserNetTeacher(ntsId);
+						if(!bindStatus.equals(1)){//不是付费绑定
 							
 						}
 					}
 				}
 			}
 		}
-		
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 因为升学，需要重置学生的学校，年级，班级信息
+	 * @author wm
+	 * @date 2019-8-30 上午11:04:38
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward updateStuClassInfo(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		UserClassInfoManager ucm = (UserClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
+		SchoolManager sm = (SchoolManager) AppFactory.instance(null).getApp(Constants.WEB_SCHOOL_INFO);
+		Integer userId = CommonTools.getLoginUserId(request);
+		Integer roleId = CommonTools.getLoginRoleId(request);
+	
 		return null;
 	}
 }

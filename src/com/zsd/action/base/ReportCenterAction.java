@@ -152,7 +152,7 @@ public class ReportCenterAction  extends DispatchAction{
 		//家长学生传递参数学科，时间段
 		//班内老师传递参数所教学科，班级，时间段
 		//各级关联员，上级能看下级，下级能看上级学科，省，市，县，学段，学校，年级，班级，学生，时间段
-		Integer subId = CommonTools.getFinalInteger("subId", request);//必须传
+		Integer subId = CommonTools.getFinalInteger("subId", request);//必须传(班内老师不用传)
 		String prov = Transcode.unescape_new1("prov", request);
 		String city = Transcode.unescape_new1("city", request);
 		String county = Transcode.unescape_new1("county", request);
@@ -207,20 +207,28 @@ public class ReportCenterAction  extends DispatchAction{
 			}else{
 				diffDays = CurrentTime.compareDate(sDate, eDate) + 1;
 			}
-			if(subId > 0){
-				List<Subject> subList = sm.listEntityById(subId);
-				if(subList.size() > 0){
-					subName = subList.get(0).getSubName();
+			if(roleId.equals(Constants.TEA_ROLE_ID)){
+				List<UserClassInfo> ucList = ucm.listTeaInfoByOpt(userId, roleId);
+				if(ucList.size() > 0){
+					subId = ucList.get(0).getSubjectId();
+					subName = ucList.get(0).getSubjectName();
+				}
+			}else{
+				if(subId > 0){
+					List<Subject> subList = sm.listEntityById(subId);
+					if(subList.size() > 0){
+						subName = subList.get(0).getSubName();
+					}
 				}
 			}
 			contentInfo = "最近"+diffDays+"天"+subName+"的统计";
 			List<StudyStuQfTjInfo> tjList = new ArrayList<StudyStuQfTjInfo>();
 			//学生和学生所在班级的平均统计信息进行对比
-			if(roleId.equals(2) || roleId.equals(6)){//学生\家长
+			if(roleId.equals(Constants.STU_ROLE_ID) || roleId.equals(Constants.PATENT_ROLE_ID)){//学生\家长
 				Integer schoolId_tmp = 0;
 				if(userId > 0){
 					axisName1 = "我的统计";
-					if(roleId.equals(6)){//家长
+					if(roleId.equals(Constants.PATENT_ROLE_ID)){//家长
 						StudentParentInfo sp = spm.getEntityByParId(userId);
 						if(sp != null){//获取自己孩子的id
 							userId = sp.getStu().getId();
@@ -243,7 +251,7 @@ public class ReportCenterAction  extends DispatchAction{
 				if(schoolId_tmp > 0){//其他学校不参与统计
 					tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, "", "", "", "", 0, 0, "", classId);//获取指定班级的统计信息
 				}
-			}else if(roleId.equals(4)){//老师(班内)
+			}else if(roleId.equals(Constants.TEA_ROLE_ID)){//老师(班内)
 				//需要条件起始时间(必须)，学科(必须)，年级名称(不必须)，班级编号(必须)，学生编号(不必须)
 				//当选择的是班级时--一年级一班和一年级所有班级的平均值对比
 				//当选择的是班级列表下的学生时--学生和当前班级的平均统计信息进行对比
@@ -399,7 +407,7 @@ public class ReportCenterAction  extends DispatchAction{
 					relateZdFailNumAll += qftj.getRelateZdFailNum();
 					relateXxSuccNumAll += qftj.getRelateXxSuccNum();
 					relateXxFailNumAll += qftj.getRelateXxFailNum();
-					if(roleId.equals(2) || roleId.equals(6)){//学生\家长
+					if(roleId.equals(Constants.STU_ROLE_ID) || roleId.equals(Constants.PATENT_ROLE_ID)){//学生\家长
 						specNum = 1;//学生求总数，班级求平均值
 						if(qftj.getUser().getId().equals(userId)){
 							oneZdSuccNum += qftj.getOneZdSuccNum();
@@ -411,7 +419,7 @@ public class ReportCenterAction  extends DispatchAction{
 							relateXxSuccNum += qftj.getRelateXxSuccNum();
 							relateXxFailNum += qftj.getRelateXxFailNum();
 						}
-					}else if(roleId.equals(4)){//老师(班内)
+					}else if(roleId.equals(Constants.TEA_ROLE_ID)){//老师(班内)
 						boolean flag = false;
 						if(stuId.equals(0)){//当选择的是班级时--一年级一班和一年级所有班级的平均值对比
 							if(qftj.getClassInfo().getId().equals(classId)){

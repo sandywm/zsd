@@ -3,7 +3,7 @@
 	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 	   
-	   <!-- begin 定时打印任务配置（定时计算教师上个月的返现金额） -->
+	   <!-- begin 定时打印任务配置 -->
 		<bean id="autoDealApplyClassTask" class="com.zsd.spring.config.timer.AutoDealApplyClassTask" />
 		<bean id="autoDealApply" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 			<property name="targetObject">
@@ -35,11 +35,32 @@
 	   		</property>
 	 	</bean>
 	 	
+	 	<!-- begin 定时打印任务配置 -->
+		<bean id="autoDelUnComOrderTask" class="com.zsd.spring.config.timer.AutoDelUnComOrderTask" />
+		<bean id="autoDelOrder" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+			<property name="targetObject">
+		    	<ref bean="autoDelUnComOrderTask"/><!-- 关联自定义动作类 -->
+		    </property>
+		    <property name="targetMethod">
+		   		<value>autoDel</value><!-- 关联自定义动作 -->
+		    </property> 
+		</bean>
+	 
+	 	<bean id="autoDelUnComOrderTaskTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+	   		<property name="jobDetail">
+	     		<ref bean="autoDelOrder"/><!-- 关联之前定义Bean -->
+	   		</property>
+	   		<property name="cronExpression">
+	    		<value>0 10 3 * * ?</value><!-- 每天晚上03:10:00执行 -->
+	   		</property>
+	 	</bean>
+	 	
 	 	<!-- 配置启动定时器 -->
 	 	<bean id="doScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		   	<property name="triggers">
 		     	<list>
 		      		<ref local="autoDealApplyClassTaskTrigger"/>  
+		      		<ref local="autoDelUnComOrderTaskTrigger"/>
 		     	</list>
 		   	</property>
 		</bean>

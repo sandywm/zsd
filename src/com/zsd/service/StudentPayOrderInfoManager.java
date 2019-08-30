@@ -14,8 +14,8 @@ public interface StudentPayOrderInfoManager {
 	 * 根据绑定关系,完成状态获取学生购买订单信息
 	 * @author zong
 	 * 2019-5-25上午10:21:36
-	 * @param ntsId 网络导师学生绑定主键
-	 * @param comSta 完成状态
+	 * @param ntsId 老师学生绑定主键(0时不查询)
+	 * @param comSta 完成状态(-1时不查询)
 	 * @return
 	 * @throws WEBException
 	 */
@@ -40,4 +40,22 @@ public interface StudentPayOrderInfoManager {
 	 * @throws WEBException
 	 */
 	Integer getspOrderInfoCount(Integer ntsId)throws WEBException;
+	
+	/**
+	 * 删除所有未完成的订单(定时操作用)
+	 * @author wm
+	 * @date 2019-8-30 上午11:24:35
+	 * @throws WEBException
+	 */
+	void delBatchUnComPayOrder()throws WEBException;
+	
+	/**
+	 * 删除指定未完成的订单
+	 * @author wm
+	 * @date 2019-8-30 上午11:25:38
+	 * @param id
+	 * @return
+	 * @throws WEBException
+	 */
+	boolean delSpecUnComPayOrder(Integer id)throws WEBException;
 }

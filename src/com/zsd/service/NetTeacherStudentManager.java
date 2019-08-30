@@ -109,4 +109,14 @@ public interface NetTeacherStudentManager {
 	 * @throws WEBException
 	 */
 	Integer getByStuNum(Integer ntId, Integer bindFlag)throws WEBException; 
+	
+	/**
+	 * 当学生升学时，之前与之绑定的网络导师将被取消，修改clearStatus的值为1,bindStatus为0
+	 * @author wm
+	 * @date 2019-8-30 上午11:14:54
+	 * @param id
+	 * @return
+	 * @throws WEBException
+	 */
+	boolean clearUserNetTeacher(Integer id)throws WEBException;
 }

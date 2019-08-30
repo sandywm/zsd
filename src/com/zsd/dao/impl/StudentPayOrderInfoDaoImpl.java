@@ -12,11 +12,17 @@ import com.zsd.tools.CommonTools;
  * @author zong
  * @version 2019-5-25 上午09:40:25
  */
+@SuppressWarnings("unchecked")
 public class StudentPayOrderInfoDaoImpl implements StudentPayOrderInfoDao {
 
 	@Override
 	public StudentPayOrderInfo get(Session sess, int id) {
-		return (StudentPayOrderInfo) sess.load(StudentPayOrderInfo.class, id);
+		String hql = " from StudentPayOrderInfo as spo where spo.id = "+id;
+		List<StudentPayOrderInfo> l = sess.createQuery(hql).list();
+		if(l.size() > 0){
+			return l.get(0);
+		}
+		return null;
 	}
 
 	@Override
@@ -40,15 +46,19 @@ public class StudentPayOrderInfoDaoImpl implements StudentPayOrderInfoDao {
 
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<StudentPayOrderInfo> findSpayOrderInfoByOpt(Session sess,
 			Integer ntsId, Integer comSta) {
-		String hql="from StudentPayOrderInfo as spo where spo.ntsId="+ntsId+" and spo.comStatus="+comSta;
+		String hql="from StudentPayOrderInfo as spo where 1=1";
+		if(ntsId > 0){
+			hql += "and spo.ntsId = " +ntsId;
+		}
+		if(comSta > -1){
+			hql += "and spo.comStatus = " +comSta;
+		}
 		return sess.createQuery(hql).list();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<StudentPayOrderInfo> findSpayOrderInfoByOpt(Session sess,
 			Integer ntsId, Integer pageNo, Integer pageSize) {
