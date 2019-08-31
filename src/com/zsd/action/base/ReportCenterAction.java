@@ -545,19 +545,20 @@ public class ReportCenterAction  extends DispatchAction{
 				Double noRelateNum_1 = 0.0;
 				Double relateXxSuccNum_1 = 0.0;
 				Double relateXxFailNum_1 = 0.0;
-				if(fmNum > 0  && specNum > 0){
+				if(specNum > 0){
 					oneZdFailNum_new = Convert.convertInputNumber_2(oneZdFailNum * 1.0 / specNum);
 					relateZdFailNum_new = Convert.convertInputNumber_2(relateZdFailNum * 1.0 / specNum);
-					fmNum = Convert.convertInputNumber_2(oneZdFailNum_new + relateZdFailNum_new);//一次性通过总数+关联诊断未通过
 					againXxSuccNum_real = Convert.convertInputNumber_2(againXxSuccNum * 1.0 / specNum);//再次诊断学习通过次数
-					rate = Convert.convertInputNumber_1(againXxSuccNum_real * 100.0  / fmNum) + "%";//转换率
 					oneZdSuccNum_1 = Convert.convertInputNumber_2(oneZdSuccNum * 1.0 / specNum);
 					againXxFailNum_1 = Convert.convertInputNumber_2(againXxFailNum * 1.0 / specNum);
 					noRelateNum_1 = Convert.convertInputNumber_2(noRelateNum * 1.0 / specNum);
 					relateXxSuccNum_1 = Convert.convertInputNumber_2(relateXxSuccNum * 1.0 / specNum);
 					relateXxFailNum_1 = Convert.convertInputNumber_2(relateXxFailNum * 1.0 / specNum);
 				}
-				
+				if(fmNum > 0){
+					fmNum = Convert.convertInputNumber_2(oneZdFailNum_new + relateZdFailNum_new);//一次性通过总数+关联诊断未通过
+					rate = Convert.convertInputNumber_1(againXxSuccNum_real * 100.0  / fmNum) + "%";//转换率
+				}
 				Double oneZdFailNumAll_new = 0.0;
 				Double relateZdFailNumAll_new = 0.0;
 				Double fmNumAll = 0.0;//一次性通过总数+关联诊断未通过
@@ -567,19 +568,20 @@ public class ReportCenterAction  extends DispatchAction{
 				Double noRelateNum_all_1 = 0.0;
 				Double relateXxSuccNum_all_1 = 0.0;
 				Double relateXxFailNum_all_1 = 0.0;
-				if(fmNumAll > 0 && allNum > 0){
+				if(allNum > 0){
 					oneZdFailNumAll_new = Convert.convertInputNumber_2(oneZdFailNumAll * 1.0 / allNum);
 					relateZdFailNumAll_new = Convert.convertInputNumber_2(relateZdFailNumAll * 1.0 / allNum);
-					fmNumAll = Convert.convertInputNumber_2(oneZdFailNumAll_new + relateZdFailNumAll_new);//一次性通过总数+关联诊断未通过
 					againXxSuccNum_real_all = Convert.convertInputNumber_2(againXxSuccNumAll * 1.0 / allNum);//再次诊断学习通过次数
-					rateAll = Convert.convertInputNumber_1(againXxSuccNum_real_all * 100.0  / fmNumAll) + "%";//转换率
 					oneZdSuccNum_all_1 = Convert.convertInputNumber_2(oneZdSuccNumAll * 1.0 / allNum);
 					againXxFailNum_all_1 = Convert.convertInputNumber_2(againXxFailNumAll * 1.0 / allNum);
 					noRelateNum_all_1 = Convert.convertInputNumber_2(noRelateNumAll * 1.0 / allNum);
 					relateXxSuccNum_all_1 = Convert.convertInputNumber_2(relateXxSuccNumAll * 1.0 / allNum);
 					relateXxFailNum_all_1 = Convert.convertInputNumber_2(relateXxFailNumAll * 1.0 / allNum);
 				}
-				
+				if(fmNumAll > 0){
+					fmNumAll = Convert.convertInputNumber_2(oneZdFailNumAll_new + relateZdFailNumAll_new);//一次性通过总数+关联诊断未通过
+					rateAll = Convert.convertInputNumber_1(againXxSuccNum_real_all * 100.0  / fmNumAll) + "%";//转换率
+				}
 				map.put("oneZdSuccNum", oneZdSuccNum_1);
 				map.put("oneZdFailNum", oneZdFailNum_new);
 				map.put("againXxSuccNum", againXxSuccNum_real);
