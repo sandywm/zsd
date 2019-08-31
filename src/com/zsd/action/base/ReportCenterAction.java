@@ -540,45 +540,65 @@ public class ReportCenterAction  extends DispatchAction{
 				Double relateZdFailNum_new = 0.0;
 				Double fmNum = 0.0;//一次性通过总数+关联诊断未通过
 				Double againXxSuccNum_real = 0.0;//再次诊断学习通过次数
+				Double oneZdSuccNum_1 = 0.0;
+				Double againXxFailNum_1 = 0.0;
+				Double noRelateNum_1 = 0.0;
+				Double relateXxSuccNum_1 = 0.0;
+				Double relateXxFailNum_1 = 0.0;
 				if(fmNum > 0 && againXxSuccNum_real > 0 && specNum > 0){
 					oneZdFailNum_new = Convert.convertInputNumber_2(oneZdFailNum * 1.0 / specNum);
 					relateZdFailNum_new = Convert.convertInputNumber_2(relateZdFailNum * 1.0 / specNum);
 					fmNum = Convert.convertInputNumber_2(oneZdFailNum_new + relateZdFailNum_new);//一次性通过总数+关联诊断未通过
 					againXxSuccNum_real = Convert.convertInputNumber_2(againXxSuccNum * 1.0 / specNum);//再次诊断学习通过次数
 					rate = Convert.convertInputNumber_1(againXxSuccNum_real * 100.0  / fmNum) + "%";//转换率
+					oneZdSuccNum_1 = Convert.convertInputNumber_2(oneZdSuccNum * 1.0 / specNum);
+					againXxFailNum_1 = Convert.convertInputNumber_2(againXxFailNum * 1.0 / specNum);
+					noRelateNum_1 = Convert.convertInputNumber_2(noRelateNum * 1.0 / specNum);
+					relateXxSuccNum_1 = Convert.convertInputNumber_2(relateXxSuccNum * 1.0 / specNum);
+					relateXxFailNum_1 = Convert.convertInputNumber_2(relateXxFailNum * 1.0 / specNum);
 				}
 				
 				Double oneZdFailNumAll_new = 0.0;
 				Double relateZdFailNumAll_new = 0.0;
 				Double fmNumAll = 0.0;//一次性通过总数+关联诊断未通过
 				Double againXxSuccNum_real_all = 0.0;//再次诊断学习通过次数
+				Double oneZdSuccNum_all_1 = 0.0;
+				Double againXxFailNum_all_1 = 0.0;
+				Double noRelateNum_all_1 = 0.0;
+				Double relateXxSuccNum_all_1 = 0.0;
+				Double relateXxFailNum_all_1 = 0.0;
 				if(fmNumAll > 0 && againXxSuccNum_real_all > 0 && allNum > 0){
 					oneZdFailNumAll_new = Convert.convertInputNumber_2(oneZdFailNumAll * 1.0 / allNum);
 					relateZdFailNumAll_new = Convert.convertInputNumber_2(relateZdFailNumAll * 1.0 / allNum);
 					fmNumAll = Convert.convertInputNumber_2(oneZdFailNumAll_new + relateZdFailNumAll_new);//一次性通过总数+关联诊断未通过
 					againXxSuccNum_real_all = Convert.convertInputNumber_2(againXxSuccNumAll * 1.0 / allNum);//再次诊断学习通过次数
 					rateAll = Convert.convertInputNumber_1(againXxSuccNum_real_all * 100.0  / fmNumAll) + "%";//转换率
+					oneZdSuccNum_all_1 = Convert.convertInputNumber_2(oneZdSuccNumAll * 1.0 / allNum);
+					againXxFailNum_all_1 = Convert.convertInputNumber_2(againXxFailNumAll * 1.0 / allNum);
+					noRelateNum_all_1 = Convert.convertInputNumber_2(noRelateNumAll * 1.0 / allNum);
+					relateXxSuccNum_all_1 = Convert.convertInputNumber_2(relateXxSuccNumAll * 1.0 / allNum);
+					relateXxFailNum_all_1 = Convert.convertInputNumber_2(relateXxFailNumAll * 1.0 / allNum);
 				}
 				
-				map.put("oneZdSuccNum", Convert.convertInputNumber_2(oneZdSuccNum * 1.0 / specNum));
+				map.put("oneZdSuccNum", oneZdSuccNum_1);
 				map.put("oneZdFailNum", oneZdFailNum_new);
 				map.put("againXxSuccNum", againXxSuccNum_real);
-				map.put("againXxFailNum", Convert.convertInputNumber_2(againXxFailNum * 1.0 / specNum));
-				map.put("noRelateNum", Convert.convertInputNumber_2(noRelateNum * 1.0 / specNum));
+				map.put("againXxFailNum", againXxFailNum_1);
+				map.put("noRelateNum", noRelateNum_1);
 				map.put("relateZdFailNum", relateZdFailNum_new);
-				map.put("relateXxSuccNum", Convert.convertInputNumber_2(relateXxSuccNum * 1.0 / specNum));
-				map.put("relateXxFailNum", Convert.convertInputNumber_2(relateXxFailNum * 1.0 / specNum));
+				map.put("relateXxSuccNum", relateXxSuccNum_1);
+				map.put("relateXxFailNum", relateXxFailNum_1);
 				map.put("rate", rate);
 				map.put("axisName1", axisName1);
 				
-				map.put("oneZdSuccNumAll", Convert.convertInputNumber_2(oneZdSuccNumAll * 1.0 / allNum));
+				map.put("oneZdSuccNumAll", oneZdSuccNum_all_1);
 				map.put("oneZdFailNumAll", oneZdFailNumAll_new);
 				map.put("againXxSuccNumAll", againXxSuccNum_real_all);
-				map.put("againXxFailNumAll", Convert.convertInputNumber_2(againXxFailNumAll * 1.0 / allNum));
-				map.put("noRelateNumAll", Convert.convertInputNumber_2(noRelateNumAll * 1.0 / allNum));
+				map.put("againXxFailNumAll", againXxFailNum_all_1);
+				map.put("noRelateNumAll", noRelateNum_all_1);
 				map.put("relateZdFailNumAll", relateZdFailNumAll_new);
-				map.put("relateXxSuccNumAll", Convert.convertInputNumber_2(relateXxSuccNumAll * 1.0 / allNum));
-				map.put("relateXxFailNumAll", Convert.convertInputNumber_2(relateXxFailNumAll * 1.0 / allNum));
+				map.put("relateXxSuccNumAll", relateXxSuccNum_all_1);
+				map.put("relateXxFailNumAll", relateXxFailNum_all_1);
 				map.put("rateAll", rateAll);
 				map.put("axisName2", axisName2);
 				map.put("contentInfo", contentInfo);
