@@ -25,6 +25,8 @@ import com.zsd.module.ClassInfo;
 import com.zsd.module.Edition;
 import com.zsd.module.Education;
 import com.zsd.module.GradeSubject;
+import com.zsd.module.InviteCodeInfo;
+import com.zsd.module.NetTeacherInfo;
 import com.zsd.module.RoleInfo;
 import com.zsd.module.Subject;
 import com.zsd.module.User;
@@ -33,6 +35,8 @@ import com.zsd.page.PageConst;
 import com.zsd.service.EditionManager;
 import com.zsd.service.EducationManager;
 import com.zsd.service.GradeSubjectManager;
+import com.zsd.service.InviteCodeInfoManager;
+import com.zsd.service.NetTeacherInfoManager;
 import com.zsd.service.RoleInfoManager;
 import com.zsd.service.SubjectManager;
 import com.zsd.service.UserClassInfoManager;
@@ -1074,6 +1078,44 @@ public class CommonAction extends DispatchAction {
 			msg = "success";
 		}
 		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	/**
+	 * 通过导师邀请码获取导师信息
+	 * @author zdf
+	 * 2019-8-30 下午04:19:44
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getTeaInfoByCode(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		InviteCodeInfoManager icManager = (InviteCodeInfoManager) AppFactory.instance(null).getApp(Constants.WEB_INVITE_CODE_INFO);
+		NetTeacherInfoManager ntManager  = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
+		String inviteCode=CommonTools.getFinalStr("inviteCode",request);
+		List<InviteCodeInfo> icList = icManager.listIcInfoByicCode(inviteCode);//导师邀请码
+		Map<String,Object> map = new HashMap<String,Object>();
+		if(icList.isEmpty()){
+			map.put("msg","noInfo");
+		}else{
+			map.put("msg","success");
+			Integer teaId=icList.get(0).getInviteId();	
+		    List<NetTeacherInfo> ntlist=ntManager.listntInfoByTeaId(teaId);
+		    map.put("realName", ntlist.get(0).getUser().getRealName());//导师姓名
+		    Integer schType = ntlist.get(0).getSchoolType();
+		    if(schType.equals(1)){
+		    	 map.put("schoolType","小学");
+		    }else if (schType.equals(2)){
+		    	 map.put("schoolType", "初中");
+		    }else if(schType.equals(3)){
+		    	 map.put("schoolType", "高中");
+		    }
+		    map.put("subName", ntlist.get(0).getSubject().getSubName());
+		}
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}

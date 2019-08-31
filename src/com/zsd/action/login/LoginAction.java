@@ -19,7 +19,6 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
 
-import com.zsd.tools.DataBaseSqlVerify;
 import com.zsd.action.base.Transcode;
 import com.zsd.factory.AppFactory;
 import com.zsd.module.ClassInfo;
@@ -46,6 +45,7 @@ import com.zsd.service.UserManager;
 import com.zsd.tools.CommonTools;
 import com.zsd.tools.Convert;
 import com.zsd.tools.CurrentTime;
+import com.zsd.tools.DataBaseSqlVerify;
 import com.zsd.tools.InviteCode;
 import com.zsd.tools.MD5;
 import com.zsd.util.Constants;
@@ -623,6 +623,75 @@ public class LoginAction extends DispatchAction {
 			flag = true;
 		}
 		map.put("msg", flag);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 通过导师邀请码绑定导师
+	 * @author zdf
+	 * 2019-8-30 下午05:15:40
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward bindTeacherByCode(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		InviteCodeInfoManager icManager = (InviteCodeInfoManager) AppFactory.instance(null).getApp(Constants.WEB_INVITE_CODE_INFO);
+		NetTeacherStudentManager ntsManager = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT);
+		NetTeacherInfoManager ntManager  = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
+		String inviteCode=CommonTools.getFinalStr("inviteCode",request);
+		Integer userId = CommonTools.getLoginUserId(request);
+		List<InviteCodeInfo> icList = icManager.listIcInfoByicCode(inviteCode);//导师邀请码
+		Map<String,Object> map = new HashMap<String,Object>();
+		if(icList.isEmpty()){
+			map.put("msg","noInfo");
+		}else{
+			Integer teaId=icList.get(0).getInviteId();	
+		    List<NetTeacherInfo> ntlist=ntManager.listntInfoByTeaId(teaId);
+		    Integer schType = ntlist.get(0).getSchoolType();
+		    Integer  subId=ntlist.get(0).getSubject().getId();
+		    boolean flag = ntsManager.isBindTeaBySubIdAndSchType(userId, subId, schType);
+		    if(flag){
+		    	map.put("msg","binded");
+		    }else{
+		    	Integer ntsId =  ntsManager.addNTS(userId, teaId, CurrentTime.getCurrentTime(), -1, CurrentTime.getFinalDateTime(7), 0, "", "", 0);//4 缃戠粶瀵煎笀瀛︾敓缁戝畾
+				if(ntsId>0){
+					map.put("msg","success");
+				}
+		    }
+		}
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	/**
+	 * 取消导师绑定
+	 * @author zdf
+	 * 2019-8-30 下午05:25:07
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward unBindTeacher(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		NetTeacherStudentManager ntsManager = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT);
+		Map<String,Object> map = new HashMap<String,Object>();
+		Integer ntsId=CommonTools.getFinalInteger("ntsId", request); //绑定导师主键
+		String cancelDate= CurrentTime.getStringDate();		
+		boolean flag =	ntsManager.updateNTS(ntsId, 0, cancelDate);
+		String msg ="";
+		if(flag){
+			msg="success";
+		}else{
+			msg="fail";
+		}
+		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}

@@ -62,4 +62,5 @@
 	<app id="net_teacher_studio_Web" class="com.zsd.service.impl.NetTeacherStudioManagerImpl"/>
 	<app id="net_teacher_studio_news_Web" class="com.zsd.service.impl.NetTeacherStudioNewsManagerImpl"/>
 	<app id="net_teacher_studio_relation_Web" class="com.zsd.service.impl.NetTeacherStudioRelationManagerImpl"/>
+	<app id="email_Web" class="com.zsd.service.impl.EmailManagerImpl"/>
 </appContext>

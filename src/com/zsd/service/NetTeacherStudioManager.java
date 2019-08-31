@@ -30,7 +30,7 @@ public interface NetTeacherStudioManager {
 	 * @param studioProfile 工作室简介
 	 * @return
 	 */
-	boolean  updateNTStudio(Integer id , String studioName, Integer maxNum,String studioProfile)throws WEBException;
+	boolean  updateNTStudio(Integer id , String studioName, /*Integer maxNum,*/String studioProfile)throws WEBException;
 	/**
 	 * 根据用户编号获取网络导师工作室信息
 	 * @author zdf
@@ -49,5 +49,6 @@ public interface NetTeacherStudioManager {
 	  * @throws WEBException
 	  */
 	 List<NetTeacherStudioInfo> listNTStudioBystudioCode(String studioCode)throws WEBException;
+
 
 }

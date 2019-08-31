@@ -165,4 +165,19 @@ public class NetTeacherStudentDaoImpl implements NetTeacherStudentDao {
 	    return CommonTools.longToInt(countObj);
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public boolean isBindTeaBySubIdAndSchType(Session sess, Integer stuID,
+			Integer subID, Integer schoolType) {
+	
+			String hql="from NetTeacherStudent as nts where nts.user.id="+stuID+"and nts.netTeacherInfo.subject.id="+subID+"  and nts.netTeacherInfo.schoolType="+schoolType;
+			List<NetTeacherStudent> list = sess.createQuery(hql).list();
+			if (list.size() > 0) {
+				return true;
+			} else {
+				return false;
+			}
+		
+	}
+
 }

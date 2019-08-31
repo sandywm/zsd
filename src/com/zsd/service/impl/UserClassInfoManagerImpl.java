@@ -218,5 +218,29 @@ public class UserClassInfoManagerImpl implements UserClassInfoManager {
 			HibernateUtil.closeSession();
 		}
 	}
+	@Override
+	public boolean updateStuClassInfoById(Integer id, Integer classId)
+			throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			ucDao = (UserClassInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_USER_CLASS_INFO);
+			cDao = (ClassInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_CLASS_INFO);
+			Session sess  = HibernateUtil.currentSession();
+			tran = sess.beginTransaction();
+			UserClassInfo  uc = ucDao.get(sess, id);
+			if(uc != null){
+				uc.setClassInfo(cDao.get(sess, classId));
+				ucDao.update(sess, uc);
+				tran.commit();
+				return true;
+			}
+			return false;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("根据主键修改学生班级时(升学)信息时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
 
 }

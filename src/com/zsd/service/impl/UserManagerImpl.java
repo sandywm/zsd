@@ -397,5 +397,30 @@ public class UserManagerImpl implements UserManager {
 		}
 	}
 
+	@Override
+	public boolean updateSchoolInfo(Integer userId, Integer schoolId,
+			Integer yearSystem) throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			userDao = (UserDao) DaoFactory.instance(null).getDao(Constants.DAO_USER_INFO);
+			Session sess  = HibernateUtil.currentSession();
+			tran = sess.beginTransaction();
+			List<User> uList = userDao.getEntityById(sess, userId);
+			if(uList.size() > 0){
+				User user = uList.get(0);
+				user.setSchoolId(schoolId);
+				user.setYearSystem(yearSystem);
+				tran.commit();
+				return true;
+			}
+			return false;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("修改学生的学校信息时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
 
 }

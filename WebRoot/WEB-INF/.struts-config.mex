@@ -44,6 +44,7 @@
   <StrutsActivity path="/Module/sysHwManager/jsp/sysHwManager.jsp" location="50,2550" dimension="312,53" />
   <StrutsActivity path="/register.jsp" location="650,250" dimension="102,53" />
   <StrutsActivity path="/Module/buffetManager/jsp/lexManager.jsp" location="50,1650" dimension="290,53" />
+  <StrutsActivity path="/email.do" />
   <StrutsTransition id="/login.do,loginOut,/login.jsp,1" routingType="0">
     <AutomaticBendpoints>
       <AbsolutePoint location="50,102" />

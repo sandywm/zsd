@@ -51,11 +51,11 @@ public class NtStudioAction extends DispatchAction {
 		NetTeacherStudioManager ntStudioManager = (NetTeacherStudioManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDIO);
 		Integer id=CommonTools.getFinalInteger("ntStudioId", request);
 		String studioName =Transcode.unescape_new("studioName",request);
-		Integer maxNum=CommonTools.getFinalInteger("maxNum", request);
+		/*Integer maxNum=CommonTools.getFinalInteger("maxNum", request);*/
 		String studioProfile =Transcode.unescape_new("studioProfile",request);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "fail";
-		boolean flag = ntStudioManager.updateNTStudio(id, studioName, maxNum, studioProfile);
+		boolean flag = ntStudioManager.updateNTStudio(id, studioName,/* maxNum,*/ studioProfile);
 		if(flag){
 			msg ="success";
 		}

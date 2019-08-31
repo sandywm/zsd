@@ -139,7 +139,20 @@ public class NetTeacherInfoManagerImpl implements NetTeacherInfoManager {
 			HibernateUtil.closeSession();
 		}
 	}
-
+	@Override
+	public List<NetTeacherInfo> listntInfoByTeaId(Integer Id)
+			throws WEBException {
+		try {
+			ntDao = (NetTeacherInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_NET_TEACHER_INFO);
+			Session sess  = HibernateUtil.currentSession();
+			return ntDao.findntInfoByTeaId(sess, Id);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("根据主键编号获取网络导师信息列表时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
 	@Override
 	public boolean updateNtInfoByCheckSta(Integer id, Integer checkStatus)
 			throws WEBException {
@@ -215,4 +228,6 @@ public class NetTeacherInfoManagerImpl implements NetTeacherInfoManager {
 			HibernateUtil.closeSession();
 		}
 	}
+
+
 }

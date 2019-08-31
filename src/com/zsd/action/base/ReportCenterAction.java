@@ -242,8 +242,7 @@ public class ReportCenterAction  extends DispatchAction{
 						schoolId_tmp = uc.getUser().getSchoolId();
 						classId = uc.getClassInfo().getId();
 						String className_temp = uc.getClassInfo().getClassName();
-						Integer gradeNumber = Convert.dateConvertGradeNumber(uc.getClassInfo().getBuildeClassDate());
-						axisName2 = Convert.NunberConvertChinese(gradeNumber)+className_temp+"的统计";
+						axisName2 = Convert.dateConvertGradeName(uc.getClassInfo().getBuildeClassDate())+className_temp+"的统计";
 //						allNum = tjm.getDistinctCountByOpt(0, subId, sDate, eDate, "", "", "", "", 0, 0, "", classId);
 					}
 					//学生和家长身份时，只需要用到起始时间，学科，班级编号
@@ -256,21 +255,23 @@ public class ReportCenterAction  extends DispatchAction{
 				//当选择的是班级时--一年级一班和一年级所有班级的平均值对比
 				//当选择的是班级列表下的学生时--学生和当前班级的平均统计信息进行对比
 				if(stuId.equals(0)){//当选择的是班级时--一年级一班和一年级所有班级的平均值对比
-					schoolId = um.listEntityById(userId).get(0).getSchoolId();
-					tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, "", "", "", "", 0, schoolId, gradeName, 0);//获取指定学校指定年级的统计信息
 					if(classId > 0){
+						schoolId = um.listEntityById(userId).get(0).getSchoolId();
+						tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, "", "", "", "", 0, schoolId, gradeName, 0);//获取指定学校指定年级的统计信息
 						List<ClassInfo> cList = cm.listClassInfoById(classId);
 						if(cList.size() > 0){
+							gradeName = Convert.dateConvertGradeName(cList.get(0).getBuildeClassDate());
 							axisName1 = gradeName+cList.get(0).getClassName()+"的统计";
 							axisName2 = gradeName+"的统计";
 //							allNum = tjm.getDistinctCountByOpt(0, subId, sDate, eDate, "", "", "", "", 0, schoolId, gradeName, 0);
 						}
 					}
 				}else{//当选择的是班级列表下的学生时--学生和当前班级的平均统计信息进行对比
-					tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, "", "", "", "", 0, 0, "", classId);//获取指定班级的统计信息
 					if(classId > 0){
+						tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, "", "", "", "", 0, 0, "", classId);//获取指定班级的统计信息
 						List<ClassInfo> cList = cm.listClassInfoById(classId);
 						if(cList.size() > 0){
+							gradeName = Convert.dateConvertGradeName(cList.get(0).getBuildeClassDate());
 							axisName1 = um.listEntityById(stuId).get(0).getRealName()+"的统计";
 							axisName2 = gradeName+cList.get(0).getClassName()+"的统计";
 //							allNum = tjm.getDistinctCountByOpt(0, subId, sDate, eDate, "", "", "", "", 0, 0, "", classId);

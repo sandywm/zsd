@@ -122,4 +122,15 @@ public interface UserClassInfoManager {
 	 * @throws WEBException
 	 */
 	List<UserClassInfo> listInfoByOpt(Integer classId,Integer roleId)throws WEBException;
+	
+	/**
+	 * 修改学生班级信息（升学）
+	 * @author wm
+	 * @date 2019-8-31 下午05:17:39
+	 * @param id
+	 * @param classId 班级编号
+	 * @return
+	 * @throws WEBException
+	 */
+	boolean updateStuClassInfoById(Integer id,Integer classId)throws WEBException;
 }

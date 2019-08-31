@@ -45,7 +45,7 @@ public class NetTeacherStudioManagerImpl implements NetTeacherStudioManager {
 
 	@Override
 	public boolean updateNTStudio(Integer id,String studioName,
-			Integer maxNum, String studioProfile)throws WEBException {
+			/*Integer maxNum,*/ String studioProfile)throws WEBException {
 		try {
 			ntStudioDao = (NetTeacherStudioDao) DaoFactory.instance(null).getDao(Constants.DAO_NET_TEACHER_STUDIO);
 			ntDao = (NetTeacherInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_NET_TEACHER_INFO);
@@ -54,7 +54,7 @@ public class NetTeacherStudioManagerImpl implements NetTeacherStudioManager {
 			NetTeacherStudioInfo ntStudio = ntStudioDao.get(sess, id);
 			if(ntStudioDao != null){
 				ntStudio.setStudioName(studioName);
-				ntStudio.setMaxNum(maxNum);
+				/*ntStudio.setMaxNum(maxNum);*/
 				ntStudio.setStudioProfile(studioProfile);
 				tran.commit();
 				return true;

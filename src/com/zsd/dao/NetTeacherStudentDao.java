@@ -124,5 +124,17 @@ public interface NetTeacherStudentDao {
 	 * @return
 	 */
 	Integer getByStuNum(Session sess,Integer ntId,Integer bindFlag);
+	/**
+	 * 根据学科编号,学段 查看学生是否绑定导师
+	 * @author zdf
+	 * 2019-8-31 上午09:09:14
+	 * @param sess
+	 * @param stuID 学生编号
+	 * @param subID 学科编号
+	 * @param schoolType 学段
+	 * @return
+	 */
+	boolean isBindTeaBySubIdAndSchType(Session sess, Integer stuID, Integer subID,Integer schoolType);
+		
 		
 }

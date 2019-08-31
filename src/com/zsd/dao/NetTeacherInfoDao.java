@@ -64,6 +64,15 @@ public interface NetTeacherInfoDao {
 	 */
 	List<NetTeacherInfo> findntInfoByuserId(Session sess,Integer uid);
 	/**
+	 * 根据网络导师编号获取导师信息
+	 * @author zdf
+	 * 2019-8-30 下午04:29:46
+	 * @param sess
+	 * @param Id 主键
+	 * @return
+	 */
+	List<NetTeacherInfo> findntInfoByTeaId(Session sess,Integer Id);
+	/**
 	 * 根据条件获取网络导师信息
 	 * @author zong
 	 * 2019-5-16上午09:52:44

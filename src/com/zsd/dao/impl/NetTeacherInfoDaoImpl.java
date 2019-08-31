@@ -45,6 +45,13 @@ public class NetTeacherInfoDaoImpl implements NetTeacherInfoDao {
 		String hql ="from  NetTeacherInfo as nt where nt.user.id="+uid;
 		return sess.createQuery(hql).list();
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<NetTeacherInfo> findntInfoByTeaId(Session sess, Integer Id) {
+		String hql ="from  NetTeacherInfo as nt where nt.id="+Id;
+		return sess.createQuery(hql).list();
+	}
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<NetTeacherInfo> getNtByOption(Session sess,
@@ -94,4 +101,5 @@ public class NetTeacherInfoDaoImpl implements NetTeacherInfoDao {
 		Object countObj = sess.createQuery(hql).uniqueResult();
 		return CommonTools.longToInt(countObj);
 	}
+
 }

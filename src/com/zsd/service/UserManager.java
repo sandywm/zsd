@@ -250,4 +250,16 @@ public interface UserManager {
 	 * @throws WEBException
 	 */
 	boolean  checkUserMobile(String mobile) throws WEBException;
+	
+	/**
+	 * 修改学生的学校信息
+	 * @author wm
+	 * @date 2019-8-31 下午05:06:26
+	 * @param userId 学生编号
+	 * @param schoolId 学校编号
+	 * @param yearSystem 学年制
+	 * @return
+	 * @throws WEBException
+	 */
+	boolean updateSchoolInfo(Integer userId,Integer schoolId,Integer yearSystem) throws WEBException;
 }

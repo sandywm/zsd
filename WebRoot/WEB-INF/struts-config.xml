@@ -108,6 +108,10 @@
     <action path="/applyClass" parameter="action" scope="request"  type="com.zsd.action.applyClass.ApplyClassAction">
       <set-property property="cancellable" value="true" />
     </action>
+    <!-- 邮件 -->
+    <action path="/email" parameter="action" scope="request"  type="com.zsd.action.email.EmailAction">
+      <set-property property="cancellable" value="true" />
+    </action>
   </action-mappings>
 
   <message-resources parameter="com.yourcompany.struts.ApplicationResources" />

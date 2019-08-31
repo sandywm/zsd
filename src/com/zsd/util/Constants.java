@@ -98,7 +98,7 @@ public class Constants {
 	public static final String WEB_NET_TEACHER_STUDIO = "net_teacher_studio_Web";
 	public static final String WEB_NET_TEACHER_STUDIO_NEWS = "net_teacher_studio_news_Web";
 	public static final String WEB_NET_TEACHER_STUDIO_RELATION = "net_teacher_studio_relation_Web";
-	
+	public static final String WEB_EMAIL_INFO = "email_Web";
 	
 	//-------------------DAO-------------------------//
 	public static final String DAO_EDITION_INFO = "edition_Dao";
@@ -164,5 +164,6 @@ public class Constants {
 	public static final String DAO_NET_TEACHER_STUDIO = "net_teacher_studio_Dao";
 	public static final String DAO_NET_TEACHER_STUDIO_NEWS = "net_teacher_studio_news_Dao";
 	public static final String DAO_NET_TEACHER_STUDIO_RELATION = "net_teacher_studio_relation_Dao";
+	public static final String DAO_EMAIL_INFO = "email_Dao";
 }
 

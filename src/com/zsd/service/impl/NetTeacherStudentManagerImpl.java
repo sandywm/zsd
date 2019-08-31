@@ -49,36 +49,22 @@ public class NetTeacherStudentManagerImpl implements NetTeacherStudentManager {
 	}
 
 	@Override
-	public boolean updateNTSByStuId(Integer id, Integer stuId, Integer teaId,
-			String bindDate, Integer bindStatus, String endDate,
-			Integer clearStatus, String clearDate, String cancelDate,
-			Integer payStatus) throws WEBException {
+	public boolean updateNTS(Integer id,Integer bindStatus, String cancelDate ) throws WEBException {
 		try {
 			ntsDao = (NetTeacherStudentDao) DaoFactory.instance(null).getDao(Constants.DAO_NET_TEACHER_STUDENT);
-			userDao = (UserDao) DaoFactory.instance(null).getDao(Constants.DAO_USER_INFO);
-			ntDao = (NetTeacherInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_NET_TEACHER_INFO);
 			Session sess  = HibernateUtil.currentSession();
 			tran = sess.beginTransaction();
 			NetTeacherStudent nts = ntsDao.get(sess, id);
 			if(nts != null){
-				User user = userDao.get(sess, stuId);
-				NetTeacherInfo netTeacherInfo = ntDao.get(sess, teaId);
-				nts.setUser(user );
-				nts.setNetTeacherInfo(netTeacherInfo);
-				nts.setBindDate(bindDate);
 				nts.setBindStatus(bindStatus);
-				nts.setEndDate(endDate);
-				nts.setClearStatus(clearStatus);
-				nts.setClearDate(clearDate);
 				nts.setCancelDate(cancelDate);
-				nts.setPayStatus(payStatus);
 				tran.commit();
 				return true;
 			}
 			return false;
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new WEBException("修改指定网络导师学生信息时出现异常!");
+			throw new WEBException("取消网络导师学生绑定信息时出现异常!");
 		} finally{
 			HibernateUtil.closeSession();
 		}
@@ -193,6 +179,21 @@ public class NetTeacherStudentManagerImpl implements NetTeacherStudentManager {
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new WEBException("当学生升学时，之前与之绑定的网络导师将被取消，修改clearStatus的值为1时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public boolean isBindTeaBySubIdAndSchType(Integer stuId, Integer subId,
+			Integer schoolType) throws WEBException {
+		try {
+			ntsDao = (NetTeacherStudentDao) DaoFactory.instance(null).getDao(Constants.DAO_NET_TEACHER_STUDENT);
+			Session sess  = HibernateUtil.currentSession();
+			return ntsDao.isBindTeaBySubIdAndSchType(sess, stuId, subId, schoolType);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("根据学科编号,学段 查看学生是否绑定导师时出现异常!");
 		} finally{
 			HibernateUtil.closeSession();
 		}

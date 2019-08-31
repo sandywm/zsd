@@ -90,6 +90,15 @@ public interface NetTeacherInfoManager {
 	 */
 	List<NetTeacherInfo> listntInfoByuserId(Integer uid)throws WEBException; 
 	/**
+	 * 根据主键编号获取网络导师信息
+	 * @author zdf
+	 * 2019-8-30 下午04:33:01
+	 * @param Id
+	 * @return
+	 * @throws WEBException
+	 */
+	List<NetTeacherInfo> listntInfoByTeaId(Integer Id)throws WEBException; 
+	/**
 	 * 根据主键修改网络导师的审核状态
 	 * @author zong
 	 * 2019-5-18下午04:47:56

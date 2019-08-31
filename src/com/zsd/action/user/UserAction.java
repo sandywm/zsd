@@ -30,6 +30,7 @@ import com.zsd.module.User;
 import com.zsd.module.UserClassInfo;
 import com.zsd.page.PageConst;
 import com.zsd.service.ClassInfoManager;
+import com.zsd.service.EmailManager;
 import com.zsd.service.NetTeacherStudentManager;
 import com.zsd.service.RoleInfoManager;
 import com.zsd.service.RoleUserInfoManager;
@@ -543,6 +544,7 @@ public class UserAction extends DispatchAction {
 		UserClassInfoManager ucm = (UserClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
 		SchoolManager sm = (SchoolManager) AppFactory.instance(null).getApp(Constants.WEB_SCHOOL_INFO);
 		NetTeacherStudentManager ntsm = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT);
+		EmailManager em = (EmailManager) AppFactory.instance(null).getApp(Constants.WEB_EMAIL_INFO);
 		Integer userId = CommonTools.getLoginUserId(request);
 		Integer roleId = CommonTools.getLoginRoleId(request);
 		Integer graduationStatus = 0;//表示是否升学【0未升学，1升学】
@@ -551,11 +553,12 @@ public class UserAction extends DispatchAction {
 		Integer currUserGradeNumber = 0;//当前学生年级号
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "error";
+		User user = null;
 		if(userId > 0 && roleId.equals(Constants.STU_ROLE_ID)){
 			List<UserClassInfo> uList = ucm.listInfoByOpt_1(userId, roleId);
 			if(uList.size() > 0){
 				UserClassInfo uc = uList.get(0);
-				User user = uc.getUser();
+				user = uc.getUser();
 				ClassInfo c = uc.getClassInfo();
 				String buildClassDate = c.getBuildeClassDate();
 				//计算出当前学生今天所在的年级
@@ -622,18 +625,32 @@ public class UserAction extends DispatchAction {
 			map.put("currYearSystem", currYearSystem);//当前学年制
 			map.put("currUserGradeNumber", currUserGradeNumber);//当前年级
 			if(graduationStatus.equals(1)){//升学，需要取消绑定的网络导师
+				//查看有无绑定的网络导师
 				List<NetTeacherStudent> ntsList = ntsm.listByStuId(userId);
 				if(ntsList.size() > 0){
 					for(NetTeacherStudent nts : ntsList){
 						Integer ntsId = nts.getId();
 						Integer payStatus = nts.getPayStatus();
 						Integer bindStatus = nts.getBindStatus();
-						ntsm.clearUserNetTeacher(ntsId);
-						if(!bindStatus.equals(1)){//不是付费绑定
-							
+						boolean flag = ntsm.clearUserNetTeacher(ntsId);
+						if(flag){
+							String title = "升学信息";
+							User ntUser = nts.getNetTeacherInfo().getUser();
+							Integer ntUserId = ntUser.getId();
+							String ntName = ntUser.getRealName();
+							String stuName = user.getRealName();
+							String content_nt=""+ntName+"导师，您好，"+stuName+"学生已升学，系统强制取消你们之间的绑定关系";
+							String content_stu=""+stuName+"同学，您好，由于升学，系统已取消您之前绑定的"+ntName+"网络导师，如存在付费绑定的网络导师，系统将根据剩余天数将剩余款项返还至你账户。";
+							em.addEmail(1, title, content_stu, "sys", userId);//专门生成一个id=1的账号来发送系统邮件
+							em.addEmail(1, title, content_nt, "sys", ntUserId);
+							if(bindStatus.equals(1)){//付费绑定
+								//将钱返还至学生账户（手动取消必须要绑定1个月后才能进行取消绑定）
+							}
 						}
 					}
 				}
+				//查看有无会员信息(购买的日期会根据高中费用折算)
+				
 			}
 		}
 		map.put("result", msg);
@@ -655,10 +672,28 @@ public class UserAction extends DispatchAction {
 	public ActionForward updateStuClassInfo(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		UserClassInfoManager ucm = (UserClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
-		SchoolManager sm = (SchoolManager) AppFactory.instance(null).getApp(Constants.WEB_SCHOOL_INFO);
+		UserManager um = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
 		Integer userId = CommonTools.getLoginUserId(request);
 		Integer roleId = CommonTools.getLoginRoleId(request);
-	
+		Integer classId = CommonTools.getFinalInteger("classId", request);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "error";
+		if(roleId.equals(Constants.STU_ROLE_ID) && userId > 0 && classId > 0){
+			List<UserClassInfo> ucList = ucm.listInfoByOpt_1(userId, roleId);
+			if(ucList.size() > 0){
+				UserClassInfo uc = ucList.get(0);
+				Integer ucId = uc.getId();
+				Integer schoolId = uc.getClassInfo().getSchool().getId();
+				Integer yearSystem = uc.getClassInfo().getSchool().getYearSystem();
+				//修改学校信息
+				um.updateSchoolInfo(userId, schoolId, yearSystem);
+				//修改学生班级信息
+				ucm.updateStuClassInfoById(ucId, classId);
+				msg = "success";
+			}
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
 }

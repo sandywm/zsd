@@ -26,25 +26,16 @@ public interface NetTeacherStudentManager {
 			Integer bindStatus,String endDate, Integer clearStatus
 			,String clearDate, String cancelDate ,Integer payStatus)throws WEBException;
 	/**
-	 * 更新网络导师学生绑定信息
-	 * @author zong 
-	 * @date  2019-5-4 上午11:32:36
-	 * @param id 网络导师学生绑定主键
-	 * @param stuId 学生编号
-	 * @param teaId 导师编号
-	 * @param bindDate 绑定时间
-	 * @param bindStatus 绑定状态
-	 * @param endDate 到期时间
-	 * @param clearStatus 清除状态
-	 * @param clearDate 清除时间
-	 * @param cancelDate 取消时间
-	 * @param payStatus 绑定状态
+	 * 根据主键更新导师学生绑定(取消导师绑定)
+	 * @author zdf
+	 * 2019-8-30 下午05:32:08
+	 * @param id
+	 * @param bindStatus
+	 * @param cancelDate
 	 * @return
 	 * @throws WEBException
 	 */
-	boolean updateNTSByStuId(Integer id,Integer stuId,Integer teaId,String bindDate,	
-			Integer bindStatus,String endDate, Integer clearStatus
-			,String clearDate, String cancelDate ,Integer payStatus)throws WEBException;
+	boolean updateNTS(Integer id,Integer bindStatus, String cancelDate )throws WEBException;
 	
 	/**
 	 * 根据学生编号获取网络导师学生绑定信息
@@ -119,4 +110,16 @@ public interface NetTeacherStudentManager {
 	 * @throws WEBException
 	 */
 	boolean clearUserNetTeacher(Integer id)throws WEBException;
+	
+	 /**
+	  *  根据学科编号,学段 查看学生是否绑定导师
+	  * @author zdf
+	  * 2019-8-31 上午09:15:28
+	  * @param stuId 学生编号
+	  * @param subId 学科编号
+	  * @param schoolType 学段
+	  * @return
+	  * @throws WEBException
+	  */
+	 boolean  isBindTeaBySubIdAndSchType(Integer stuId ,Integer subId,Integer schoolType)throws WEBException;
 }
