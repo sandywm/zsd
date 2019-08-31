@@ -536,19 +536,27 @@ public class ReportCenterAction  extends DispatchAction{
 						}
 					}
 				}
-				Double oneZdFailNum_new = Convert.convertInputNumber_2(oneZdFailNum * 1.0 / specNum);
-				Double relateZdFailNum_new = Convert.convertInputNumber_2(relateZdFailNum * 1.0 / specNum);
-				Double fmNum = Convert.convertInputNumber_2(oneZdFailNum_new + relateZdFailNum_new);//一次性通过总数+关联诊断未通过
-				Double againXxSuccNum_real = Convert.convertInputNumber_2(againXxSuccNum * 1.0 / specNum);//再次诊断学习通过次数
-				if(fmNum > 0 && againXxSuccNum_real > 0){
+				Double oneZdFailNum_new = 0.0;
+				Double relateZdFailNum_new = 0.0;
+				Double fmNum = 0.0;//一次性通过总数+关联诊断未通过
+				Double againXxSuccNum_real = 0.0;//再次诊断学习通过次数
+				if(fmNum > 0 && againXxSuccNum_real > 0 && specNum > 0){
+					oneZdFailNum_new = Convert.convertInputNumber_2(oneZdFailNum * 1.0 / specNum);
+					relateZdFailNum_new = Convert.convertInputNumber_2(relateZdFailNum * 1.0 / specNum);
+					fmNum = Convert.convertInputNumber_2(oneZdFailNum_new + relateZdFailNum_new);//一次性通过总数+关联诊断未通过
+					againXxSuccNum_real = Convert.convertInputNumber_2(againXxSuccNum * 1.0 / specNum);//再次诊断学习通过次数
 					rate = Convert.convertInputNumber_1(againXxSuccNum_real * 100.0  / fmNum) + "%";//转换率
 				}
 				
-				Double oneZdFailNumAll_new = Convert.convertInputNumber_2(oneZdFailNumAll * 1.0 / allNum);
-				Double relateZdFailNumAll_new = Convert.convertInputNumber_2(relateZdFailNumAll * 1.0 / allNum);
-				Double fmNumAll = Convert.convertInputNumber_2(oneZdFailNumAll_new + relateZdFailNumAll_new);//一次性通过总数+关联诊断未通过
-				Double againXxSuccNum_real_all = Convert.convertInputNumber_2(againXxSuccNumAll * 1.0 / allNum);//再次诊断学习通过次数
-				if(fmNumAll > 0 && againXxSuccNum_real_all > 0){
+				Double oneZdFailNumAll_new = 0.0;
+				Double relateZdFailNumAll_new = 0.0;
+				Double fmNumAll = 0.0;//一次性通过总数+关联诊断未通过
+				Double againXxSuccNum_real_all = 0.0;//再次诊断学习通过次数
+				if(fmNumAll > 0 && againXxSuccNum_real_all > 0 && allNum > 0){
+					oneZdFailNumAll_new = Convert.convertInputNumber_2(oneZdFailNumAll * 1.0 / allNum);
+					relateZdFailNumAll_new = Convert.convertInputNumber_2(relateZdFailNumAll * 1.0 / allNum);
+					fmNumAll = Convert.convertInputNumber_2(oneZdFailNumAll_new + relateZdFailNumAll_new);//一次性通过总数+关联诊断未通过
+					againXxSuccNum_real_all = Convert.convertInputNumber_2(againXxSuccNumAll * 1.0 / allNum);//再次诊断学习通过次数
 					rateAll = Convert.convertInputNumber_1(againXxSuccNum_real_all * 100.0  / fmNumAll) + "%";//转换率
 				}
 				
