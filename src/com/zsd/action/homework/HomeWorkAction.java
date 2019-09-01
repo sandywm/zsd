@@ -3183,6 +3183,7 @@ public class HomeWorkAction extends DispatchAction {
 		HwStudyTjManager tjm = (HwStudyTjManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_TJ_INFO);
 		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
 		LoreInfoManager lm = (LoreInfoManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
+		StudyMapManager smm = (StudyMapManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_MAP_INFO);
 		Integer tjId = CommonTools.getFinalInteger("tjId", request);
 		Integer userId = CommonTools.getLoginUserId(request);
 		Map<String,Object> map = new HashMap<String,Object>();
@@ -3205,6 +3206,7 @@ public class HomeWorkAction extends DispatchAction {
 		String hwTitle = "";
 		Integer studyLogId = 0;
 		String msg = "error";
+		Integer currStep = 0;
 		if(userId > 0 && tjId > 0){
 			HwStudyTjInfo tj = tjm.getEntityById(tjId);
 			if(tj != null){
@@ -3226,6 +3228,16 @@ public class HomeWorkAction extends DispatchAction {
 				}
 				HwTraceStudyLogInfo sl = slm.getEntityByTjId(tjId);
 				if(sl == null){//没有数据，表示是第一次
+					Integer hwType = sendHw.getHwType();
+					if(!hwType.equals(3)){//课后复习和家庭作业不用强制听说读写
+						currStep = 4;
+					}else{
+						List<StudyMapInfo> smList = smm.listInfoByOpt(userId, sendLoreId);
+						if(smList.size() > 0){//存在学习记录
+							StudyMapInfo sm = smList.get(0);
+							currStep = sm.getCurrStep();
+						}
+					}
 					task = 1;
 					loreTaskName = "针对性诊断";
 					loreTypeName = "针对性诊断";
@@ -3252,6 +3264,7 @@ public class HomeWorkAction extends DispatchAction {
 						nextLoreIdArray = nextLoreIdArray.substring(0, nextLoreIdArray.length() - 1);
 					}
 				}else{
+					currStep = 4;
 					studyLogId = sl.getId();
 					isFinish = sl.getIsFinish();
 					if(isFinish.equals(2)){//完成后不显示，无动作
@@ -3463,6 +3476,7 @@ public class HomeWorkAction extends DispatchAction {
 			map.put("subDetail", subDetail);
 			map.put("basicLoreId", basicLoreId);
 			map.put("loreName", hwTitle);
+			map.put("currStep", currStep);
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
