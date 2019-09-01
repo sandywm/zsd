@@ -48,7 +48,7 @@ public class ApplyClassDaoImpl implements ApplyClassDao{
 			hql += " and ac.checkStatus = "+checkStatus;
 		}
 		if(!sDate.equals("") && !eDate.equals("")){
-			hql += " and substring(ac.applyTime,1,10) >= '"+ sDate + "' and substring(ac.applyTime,1,10) >= '"+ eDate + "'";
+			hql += " and substring(ac.applyTime,1,10) >= '"+ sDate + "' and substring(ac.applyTime,1,10) <= '"+ eDate + "'";
 		}
 		int offset = (pageNo - 1) * pageSize;
 		if (offset < 0) {
@@ -69,7 +69,7 @@ public class ApplyClassDaoImpl implements ApplyClassDao{
 			hql += " and ac.toUserId = "+toUserId;
 		}
 		if(!sDate.equals("") && !eDate.equals("")){
-			hql += " and substring(ac.applyTime,1,10) >= '"+ sDate + "' and substring(ac.applyTime,1,10) >= '"+ eDate + "'";
+			hql += " and substring(ac.applyTime,1,10) >= '"+ sDate + "' and substring(ac.applyTime,1,10) <= '"+ eDate + "'";
 		}
 		Object countObj = sess.createQuery(hql).uniqueResult();
 		return CommonTools.longToInt(countObj);
