@@ -631,7 +631,6 @@ public class UserAction extends DispatchAction {
 				if(ntsList.size() > 0){
 					for(NetTeacherStudent nts : ntsList){
 						Integer ntsId = nts.getId();
-						Integer payStatus = nts.getPayStatus();
 						Integer bindStatus = nts.getBindStatus();
 						boolean flag = ntsm.clearUserNetTeacher(ntsId);
 						if(flag){
@@ -640,13 +639,10 @@ public class UserAction extends DispatchAction {
 							Integer ntUserId = ntUser.getId();
 							String ntName = ntUser.getRealName();
 							String stuName = user.getRealName();
-							String content_nt=""+ntName+"导师，您好，"+stuName+"学生已升学，系统强制取消你们之间的绑定关系";
-							String content_stu=""+stuName+"同学，您好，由于升学，系统已取消您之前绑定的"+ntName+"网络导师，如存在付费绑定的网络导师，系统将根据剩余天数将剩余款项返还至你账户。";
+							String content_nt=""+ntName+"导师，您好，"+stuName+"学生已升学，系统强制取消你们之间的绑定关系。";
+							String content_stu=""+stuName+"同学，您好，由于升学，系统已取消您之前绑定的"+ntName+"网络导师。";
 							em.addEmail(1, title, content_stu, "sys", userId);//专门生成一个id=1的账号来发送系统邮件
 							em.addEmail(1, title, content_nt, "sys", ntUserId);
-							if(bindStatus.equals(1)){//付费绑定
-								//将钱返还至学生账户（手动取消必须要绑定1个月后才能进行取消绑定）
-							}
 						}
 					}
 				}

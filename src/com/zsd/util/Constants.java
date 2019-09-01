@@ -19,9 +19,9 @@ public class Constants {
 	public static final Integer EXPERIENCE = 1;
 	
 	//--------------------费用---------------------------//
-	public static final double NET_TEACHER_SERVICE_FEE_XX = 4500.00;
-	public static final double NET_TEACHER_SERVICE_FEE_CZ = 5500.00;
-	public static final double NET_TEACHER_SERVICE_FEE_GZ = 6500.00;
+	public static final double NET_TEACHER_SERVICE_FEE_XX = 2000.00;
+	public static final double NET_TEACHER_SERVICE_FEE_CZ = 3000.00;
+	public static final double NET_TEACHER_SERVICE_FEE_GZ = 4000.00;
 	
 
 	public static final double BASE_GRADE_MONEY = 1200.00;//基础价格为1000
