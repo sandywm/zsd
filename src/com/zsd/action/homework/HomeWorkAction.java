@@ -2695,16 +2695,8 @@ public class HomeWorkAction extends DispatchAction {
 						map_d.put("teaName", hw.getUser().getRealName());
 						map_d.put("comStatus", tj.getComStatus());//作业完成状态0-未完成，1-按时完成，2-补做完成
 						Integer hwType = hw.getHwType();
-						String hwTypeChi = "";
-						if(hwType.equals(1)){
-							hwTypeChi = "家庭作业";
-						}else if(hwType.equals(2)){
-							hwTypeChi = "课后复习";
-						}else if(hwType.equals(3)){
-							hwTypeChi = "课前预习";
-						}
 						map_d.put("hwType", hwType);//课前预习会进入听说读写页面，完成后再进入题库页面
-						map_d.put("hwTypeChi", hwTypeChi);
+						map_d.put("hwTitle", hw.getHwTitle());
 						list_d_1.add(map_d);
 					}
 				}
@@ -2726,16 +2718,8 @@ public class HomeWorkAction extends DispatchAction {
 					map_d.put("subName", hw.getSubject().getSubName());
 					map_d.put("teaName", hw.getUser().getRealName());
 					Integer hwType = hw.getHwType();
-					String hwTypeChi = "";
-					if(hwType.equals(1)){
-						hwTypeChi = "家庭作业";
-					}else if(hwType.equals(2)){
-						hwTypeChi = "课后复习";
-					}else if(hwType.equals(3)){
-						hwTypeChi = "课前预习";
-					}
 					map_d.put("hwType", hwType);//课前预习会进入听说读写页面，完成后再进入题库页面
-					map_d.put("hwTypeChi", hwTypeChi);
+					map_d.put("hwTitle", hw.getHwTitle());
 					list_d_2.add(map_d);
 				}
 			}

@@ -620,10 +620,11 @@ public class UserAction extends DispatchAction {
 			}
 		}
 		if(msg.equals("success")){
-			map.put("graduationStatus", graduationStatus);//升学状态【0未升学，1升学】
+			map.put("gduStatus", graduationStatus);//升学状态【0未升学，1升学】
 			map.put("currPara", currPara);//当前学段
 			map.put("currYearSystem", currYearSystem);//当前学年制
-			map.put("currUserGradeNumber", currUserGradeNumber);//当前年级
+			map.put("currUserGradeNumber", currUserGradeNumber);//当前年级号
+			map.put("currUserGradeName", Convert.NunberConvertChinese(currUserGradeNumber));//当前年级名称
 			if(graduationStatus.equals(1)){//升学，需要取消绑定的网络导师
 				//查看有无绑定的网络导师
 				List<NetTeacherStudent> ntsList = ntsm.listByStuId(userId);
