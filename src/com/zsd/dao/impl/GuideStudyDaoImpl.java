@@ -50,7 +50,7 @@ public class GuideStudyDaoImpl implements GuideStudyDao{
 			hql += " and gs.guideUserId = "+guideUserId;
 		}
 		if(!sDate.equals("") && !eDate.equals("")){
-			hql += "  and substring(gs.addTaskDate,1,10) >= '"+sDate+"' and substring(gs.addTaskDate,1,10) >= '"+eDate+"'";
+			hql += "  and substring(gs.addTaskDate,1,10) >= '"+sDate+"' and substring(gs.addTaskDate,1,10) <= '"+eDate+"'";
 		}
 		if(pageFlag){
 			int offset = (pageNo - 1) * pageSize;
@@ -77,7 +77,7 @@ public class GuideStudyDaoImpl implements GuideStudyDao{
 			hql += " and gs.guideUserId = "+guideUserId;
 		}
 		if(!sDate.equals("") && !eDate.equals("")){
-			hql += "  and substring(gs.addTaskDate,1,10) >= '"+sDate+"' and substring(gs.addTaskDate,1,10) >= '"+eDate+"'";
+			hql += "  and substring(gs.addTaskDate,1,10) >= '"+sDate+"' and substring(gs.addTaskDate,1,10) <= '"+eDate+"'";
 		}
 		Object countObj = sess.createQuery(hql).uniqueResult();
 		return CommonTools.longToInt(countObj);

@@ -45,7 +45,7 @@ public class StudyLogDaoImpl implements StudyLogDao{
 		// TODO Auto-generated method stub
 		String hql = " from StudyLogInfo as sl where sl.user.id = "+userId;
 		hql += " and sl.subject.id = "+subId + " and sl.logType = "+logType;
-		hql += " and substring(sl.addTime,1,10) >= '"+sDate+"' and substring(sl.addTime,1,10) >= '"+eDate+"'";
+		hql += " and substring(sl.addTime,1,10) >= '"+sDate+"' and substring(sl.addTime,1,10) <= '"+eDate+"'";
 		return sess.createQuery(hql).list();
 	}
 

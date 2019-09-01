@@ -151,7 +151,7 @@ public class ApplyClassAction extends DispatchAction {
 				}else{
 					checkRemark = ac.getCheckRemark().contains("超过一天") ? "自动取消" : "";
 					if(opt.equals(1)){//我的主动申请
-						appDetail = "你申请"+applyOptChi+ac.getClassDetail()+"已"+checkStatusChi;
+						appDetail = "你申请"+applyOptChi+ac.getClassDetail()+"已被"+checkStatusChi;
 					}else{
 						appDetail = "你已"+checkStatusChi+realName+"老师对"+ac.getClassDetail()+applyOptChi;
 					}
