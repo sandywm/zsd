@@ -2670,6 +2670,7 @@ public class HomeWorkAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
 		HwStudyTjManager tjm = (HwStudyTjManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_TJ_INFO);
+		HwTraceStudyLogManager slm = (HwTraceStudyLogManager) AppFactory.instance(null).getApp(Constants.WEB_HW_TRACE_STUDY_LOG_INFO);
 		Integer opt = CommonTools.getFinalInteger("opt", request);//0:初始进来，1：上滑时
 		Integer currUserId = CommonTools.getLoginUserId(request);
 		Integer pageNo = CommonTools.getFinalInteger("pageNo", request);
@@ -2698,6 +2699,12 @@ public class HomeWorkAction extends DispatchAction {
 						Integer hwType = hw.getHwType();
 						map_d.put("hwType", hwType);//课前预习会进入听说读写页面，完成后再进入题库页面
 						map_d.put("hwTitle", hw.getHwTitle());
+						if(tj.getComStatus().equals(0)){
+							//没完成就要检测该作业是否已经开始溯源
+							if(slm.getEntityByTjId(tj.getId()) != null){//表示已有溯源记录
+								map_d.put("traceFlag", true);
+							}
+						}
 						list_d_1.add(map_d);
 					}
 				}
@@ -2721,6 +2728,12 @@ public class HomeWorkAction extends DispatchAction {
 					Integer hwType = hw.getHwType();
 					map_d.put("hwType", hwType);//课前预习会进入听说读写页面，完成后再进入题库页面
 					map_d.put("hwTitle", hw.getHwTitle());
+					if(tj.getComStatus().equals(0)){
+						//没完成就要检测该作业是否已经开始溯源
+						if(slm.getEntityByTjId(tj.getId()) != null){//表示已有溯源记录
+							map_d.put("traceFlag", true);
+						}
+					}
 					list_d_2.add(map_d);
 				}
 			}
@@ -3223,9 +3236,15 @@ public class HomeWorkAction extends DispatchAction {
 		Integer studyLogId = 0;
 		String msg = "error";
 		Integer currStep = 0;
+		boolean showTraceFlag = false;//只有在家庭作业题做完了才显示
 		if(userId > 0 && tjId > 0){
 			HwStudyTjInfo tj = tjm.getEntityById(tjId);
 			if(tj != null){
+				if(tj.getAllNum().equals(tj.getSuccNum() + tj.getErrorNum())){//家庭作业题库所有题都做过
+					showTraceFlag = true;
+				}else{
+					showTraceFlag = false;
+				}
 				msg = "success";
 				SendHwInfo sendHw = tj.getSendHwInfo();
 				hwTitle = sendHw.getHwTitle();
@@ -3235,8 +3254,8 @@ public class HomeWorkAction extends DispatchAction {
 				String[] pathArr = CommonTools.getLorePath(sendLoreId, pathType);
 				path =  pathArr[0];
 				pathChi = pathArr[1];
-				path.split(":")[0] = String.valueOf(tjId);//把第一级替换成家庭作业统计编号
-				pathChi.split(":")[0] = hwTitle;//把第一级替换成家庭作业统计编号
+				path = String.valueOf(tjId) + ":" + path;//把第一级替换成家庭作业统计编号
+				pathChi = hwTitle + ":" + pathChi;
 				LoreTreeMenuJson ltmj = new LoreTreeMenuJson();
 				if(!path.equals("")){
 					stepCount = path.split(":").length;//多少级
@@ -3493,6 +3512,7 @@ public class HomeWorkAction extends DispatchAction {
 			map.put("basicLoreId", basicLoreId);
 			map.put("loreName", hwTitle);
 			map.put("currStep", currStep);
+			map.put("showTraceFlag", showTraceFlag);
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
@@ -3561,20 +3581,20 @@ public class HomeWorkAction extends DispatchAction {
 					if(sl == null){//表示第一次，还未进行巴菲特知识点学习
 						option = 1;
 						currentLoreId = tjId;//目的为了获取当前级别(把第一级家庭作业编号赋值给currLoreId)
-						String[] pathArray = path.split(":");
-						Integer currentI = CommonTools.getCurrentStep(pathArray, currentLoreId);
-						nextLoreIdArray = "";
-						String[] nextPathArray = pathArray[currentI + 1].split(",");
-						Integer nextPathLength = nextPathArray.length;
-						for(Integer k = 0 ; k < nextPathLength ; k++){
-							String[] nextDetailPathArray = nextPathArray[k].split("\\|");
-							for(Integer l = 0 ; l < nextDetailPathArray.length ; l++){
-								nextLoreIdArray += nextDetailPathArray[l] + ",";
-							}
-						}
-						if(nextLoreIdArray.length() > 0){
-							nextLoreIdArray = nextLoreIdArray.substring(0, nextLoreIdArray.length() - 1);
-						}
+//						String[] pathArray = path.split(":");
+//						Integer currentI = CommonTools.getCurrentStep(pathArray, currentLoreId);
+						nextLoreIdArray = String.valueOf(tjId);;
+//						String[] nextPathArray = pathArray[currentI].split(",");
+//						Integer nextPathLength = nextPathArray.length;
+//						for(Integer k = 0 ; k < nextPathLength ; k++){
+//							String[] nextDetailPathArray = nextPathArray[k].split("\\|");
+//							for(Integer l = 0 ; l < nextDetailPathArray.length ; l++){
+//								nextLoreIdArray += nextDetailPathArray[l] + ",";
+//							}
+//						}
+//						if(nextLoreIdArray.length() > 0){
+//							nextLoreIdArray = nextLoreIdArray.substring(0, nextLoreIdArray.length() - 1);
+//						}
 						successStep = hwTitle;
 						success = 1;
 					}else{
@@ -3865,7 +3885,7 @@ public class HomeWorkAction extends DispatchAction {
 				//获取溯源路线
 				String[] pathArr = CommonTools.getLorePath(basicLoreId, "diagnosis");
 				String path =  pathArr[0];
-				path.split(":")[0] = String.valueOf(tjId);//把第一级替换成家庭作业统计编号
+				path = String.valueOf(tjId) + ":" + path;//把第一级替换成家庭作业统计编号
 				map.put("path", path);
 				List<LoreQuestion> lqList_old = new ArrayList<LoreQuestion>();
 				List<HwTraceStudyDetailInfo> sdList_used = new ArrayList<HwTraceStudyDetailInfo>();
@@ -4448,7 +4468,8 @@ public class HomeWorkAction extends DispatchAction {
 				if(step.equals(3)){//再次诊断时用
 					if(access.equals(1)){//再次诊断全部正确
 						String[] studyPath = CommonTools.getLorePath(loreId, "sutdy");
-						String studyPath_new = CommonTools.getCurrentStudyPath_new(studyPath[0], currentLoreId);
+						String path = String.valueOf(tjId) + ":" + studyPath[0];//把第一级替换成家庭作业统计编号
+						String studyPath_new = CommonTools.getCurrentStudyPath_new(path, currentLoreId);
 						if(studyPath_new.split(":").length == 1){//表示当前知识点是本知识点之前的最后一个知识点
 							//表示当前层完成，stepComplete = 1;
 							stepComplete = 0;
