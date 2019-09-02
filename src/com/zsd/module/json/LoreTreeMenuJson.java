@@ -244,6 +244,45 @@ public class LoreTreeMenuJson {
 		getPath(nodeList_1, buff,buffChi);
 	}
 	
+	public void getHwPath(Integer tjId,String hwTitle,List<MyTreeNode> nodeList,StringBuilder buff,StringBuilder buffChi){
+		if (nodeList == null || nodeList.size() == 0) {
+			return;
+		}
+		List<MyTreeNode> nodeList_1 = new ArrayList<MyTreeNode>();
+		List<MyTreeNode> nodeList_2 = new ArrayList<MyTreeNode>();
+		Integer i = 0;
+		for(MyTreeNode node : nodeList){
+			if(i.equals(0)){
+				buff.append(tjId).append("|");
+				buffChi.append(hwTitle).append("|");
+				if(node.getChildren() != null){
+					// 把每个元素的下一层放到一个list中
+					nodeList_1.addAll(node.getChildren());
+					nodeList_2.addAll(node.getChildren());
+				}
+			}else{
+				// 记录当前层所有元素
+				if(node != null){
+					buff.append(node.getId()).append("|");
+					buffChi.append(node.getText()).append("|");
+					if(node.getChildren() != null){
+						// 把每个元素的下一层放到一个list中
+						nodeList_1.addAll(node.getChildren());
+						nodeList_2.addAll(node.getChildren());
+					}
+				}
+			}
+		}
+		if(buff.length() > 0){
+			buff.delete(buff.length() - 1, buff.length());
+			buffChi.delete(buffChi.length() - 1, buffChi.length());
+		}
+		buff.append(":");
+		buffChi.append(":");
+		// 递归调用
+		getHwPath(tjId,hwTitle,nodeList_1, buff,buffChi);
+	}
+	
 	/**
 	 * 获取学习的路线(和针对性诊断相反)
 	 * @author wm

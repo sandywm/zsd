@@ -1692,9 +1692,9 @@ public class HomeWorkAction extends DispatchAction {
 					String gradeName = Convert.dateConvertGradeName(cList.get(0).getBuildeClassDate());//老师所在的年级
 					if(eduVolume.equals("")){
 						if(month >= 3 && month < 9){//下册
-							eduVolume = "上册";
-						}else{
 							eduVolume = "下册";
+						}else{
+							eduVolume = "上册";
 						}
 						//没选出版社时出版社获取最近一次发送的家庭作业出版社
 						List<SendHwInfo> shwList = swm.listPageInfoByOpt(currUserId, 0, 0, 0, -1, -1,"", "", false, 0, 0);
@@ -2869,10 +2869,24 @@ public class HomeWorkAction extends DispatchAction {
 		Integer currUserId = CommonTools.getLoginUserId(request);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "error";
+		String loreName = "";
+		String subDetail = "";
 		if(tjId > 0 && currUserId > 0){
 			List<HwStudyDetailInfo> hsdList = hsdm.listInfoByOpt(0, tjId, 0, "");
 			if (hsdList.size() > 0) {
 				msg = "success";
+				SendHwInfo sd = hsdList.get(0).getHwStudyTjInfo().getSendHwInfo();
+				loreName = sd.getHwTitle();
+				String hwTypeChi = "";
+				Integer hwType = sd.getHwType();
+				if(hwType.equals(1)){
+					hwTypeChi = "家庭作业";
+				}else if(hwType.equals(2)){
+					hwTypeChi = "课后复习";
+				}else if(hwType.equals(3)){
+					hwTypeChi = "课前预习";
+				}
+				subDetail = "针对该"+hwTypeChi+"而设定的题目共计"+hsdList.size()+"题";
 				List<Object> list_d = new ArrayList<Object>();
 				for(HwStudyDetailInfo hsd : hsdList){
 					Map<String,Object> map_d = new HashMap<String,Object>();
@@ -2951,6 +2965,8 @@ public class HomeWorkAction extends DispatchAction {
 		if(msg.equals("success")){
 			map.put("tjId", tjId);
 		}
+		map.put("loreName", loreName);
+		map.put("subDetail", subDetail);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
@@ -3538,8 +3554,8 @@ public class HomeWorkAction extends DispatchAction {
 					String[] pathArr = CommonTools.getLorePath(sendLoreId, "diagnosis");
 					path =  pathArr[0];
 					pathChi = pathArr[1];
-					path.split(":")[0] = String.valueOf(tjId);//把第一级替换成家庭作业统计编号
-					pathChi.split(":")[0] = hwTitle;//把第一级替换成家庭作业统计编号
+					path = String.valueOf(tjId) + ":" + path;//把第一级替换成家庭作业统计编号
+					pathChi = hwTitle + ":" + pathChi;//把第一级替换成家庭作业统计编号
 					LoreTreeMenuJson ltmj = new LoreTreeMenuJson();
 					HwTraceStudyLogInfo sl = slm.getEntityByTjId(tjId);
 					if(sl == null){//表示第一次，还未进行巴菲特知识点学习
@@ -3547,25 +3563,20 @@ public class HomeWorkAction extends DispatchAction {
 						currentLoreId = tjId;//目的为了获取当前级别(把第一级家庭作业编号赋值给currLoreId)
 						String[] pathArray = path.split(":");
 						Integer currentI = CommonTools.getCurrentStep(pathArray, currentLoreId);
-						if(currentI + 1 == pathArray.length){
-							//表示是最后一级（只有一级）
-							//溯源完成，开始学习
-						}else{
-							nextLoreIdArray = "";
-							String[] nextPathArray = pathArray[currentI + 1].split(",");
-							Integer nextPathLength = nextPathArray.length;
-							for(Integer k = 0 ; k < nextPathLength ; k++){
-								String[] nextDetailPathArray = nextPathArray[k].split("\\|");
-								for(Integer l = 0 ; l < nextDetailPathArray.length ; l++){
-									nextLoreIdArray += nextDetailPathArray[l] + ",";
-								}
+						nextLoreIdArray = "";
+						String[] nextPathArray = pathArray[currentI + 1].split(",");
+						Integer nextPathLength = nextPathArray.length;
+						for(Integer k = 0 ; k < nextPathLength ; k++){
+							String[] nextDetailPathArray = nextPathArray[k].split("\\|");
+							for(Integer l = 0 ; l < nextDetailPathArray.length ; l++){
+								nextLoreIdArray += nextDetailPathArray[l] + ",";
 							}
-							if(nextLoreIdArray.length() > 0){
-								nextLoreIdArray = nextLoreIdArray.substring(0, nextLoreIdArray.length() - 1);
-							}
-							successStep = hwTitle;
-							success = 1;
 						}
+						if(nextLoreIdArray.length() > 0){
+							nextLoreIdArray = nextLoreIdArray.substring(0, nextLoreIdArray.length() - 1);
+						}
+						successStep = hwTitle;
+						success = 1;
 					}else{
 						totalMoney = sl.getCurrentGold() * 10;
 						stepComplete = sl.getStepComplete();

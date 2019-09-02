@@ -431,14 +431,14 @@ public class LoginAction extends DispatchAction {
 				Integer icId=icManager.addInviteCodeInfo(userId, "导师邀请码", ivCode, CurrentTime.getCurrentTime1());
 				if(icId>0){
 					Integer baseMoney = 0;
-					if(schoolType.equals(1)){
-						baseMoney = (int) Constants.NET_TEACHER_SERVICE_FEE_XX;
-					}else if(schoolType.equals(2)){
-						baseMoney = (int) Constants.NET_TEACHER_SERVICE_FEE_CZ;
-					}else{
-						baseMoney = (int) Constants.NET_TEACHER_SERVICE_FEE_GZ;
-					}
-				
+//					if(schoolType.equals(1)){
+//						baseMoney = (int) Constants.NET_TEACHER_SERVICE_FEE_XX;
+//					}else if(schoolType.equals(2)){
+//						baseMoney = (int) Constants.NET_TEACHER_SERVICE_FEE_CZ;
+//					}else{
+//						baseMoney = (int) Constants.NET_TEACHER_SERVICE_FEE_GZ;
+//					}
+//				
 					List<RoleInfo> ntlist = rManager.listRoleInfo("网络导师");
 					if(ntlist.size() > 0){
 						Integer ntRoleId = ntlist.get(0).getId();
