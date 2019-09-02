@@ -3137,6 +3137,7 @@ public class HomeWorkAction extends DispatchAction {
 	
 	/**
 	 * 修改家庭作业做题统计表完成状态(设置为补做完成或者按时完成--最后提交)
+	 * 当所有题做完，如果没开启溯源
 	 * @author wm
 	 * @date 2019-8-16 下午05:18:25
 	 * @param mapping
@@ -3160,7 +3161,7 @@ public class HomeWorkAction extends DispatchAction {
 			HwStudyTjInfo tj = tjm.getEntityById(tjId);
 			if(tj != null){
 				if(tj.getUser().getId().equals(currUserId)){
-					if(tj.getComStatus().equals(0)){
+					if(tj.getComStatus().equals(0)){//未完成
 						if(tj.getAllNum().equals(tj.getSuccNum() + tj.getErrorNum())){//全部做完
 							if(tj.getSendHwInfo().getTraceStatus().equals(0)){//没开启溯源可直接提交
 								submitFlag = true;
@@ -3172,7 +3173,7 @@ public class HomeWorkAction extends DispatchAction {
 									}
 								}
 							}
-							if(submitFlag){
+							if(submitFlag){//未设置溯源标示或者溯源已完成，修改状态为补做完成或者准时完成
 								Integer diffDays = CurrentTime.compareDate(CurrentTime.getStringDate(),tj.getSendHwInfo().getEndDate());
 								Integer comStatus = 2;//补做完成
 								if(diffDays >= 0){//按时完成
@@ -3180,15 +3181,25 @@ public class HomeWorkAction extends DispatchAction {
 								}
 								tjm.updateInfoById(tj.getId(), comStatus, 0, 0);
 								msg = "success";
+							}else{
+								HwTraceStudyLogInfo hsl = slm.getEntityById(tjId);
+								if(hsl != null){//已存在溯源记录
+									msg = "mapPage";//直接进入map页面
+								}else{//还未进行溯源
+									msg = "tracePage";//直接进入溯源页面
+								}
 							}
 						}
-					}else{
+					}else{//完成以后进入，直接返回作业记录页面
 						msg = "success";
 					}
 				}
 			}
 		}
 		map.put("result", msg);
+		if(msg.contains("Page")){
+			map.put("tjId", tjId);
+		}
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
@@ -3792,6 +3803,7 @@ public class HomeWorkAction extends DispatchAction {
 								}
 							}
 						}else if(sl.getIsFinish().equals(2)){//表示全部完成
+							msg = "hwQuePage";//溯源全部完成时，点击确定进入题库列表
 							step = sl.getStep();
 							//从detail表中获取指定logId的最后一条详情
 							List<HwTraceStudyDetailInfo> sdList = sdm.listLastInfoByLogId(studyLogId);
@@ -3816,7 +3828,7 @@ public class HomeWorkAction extends DispatchAction {
 				}
 			}
 		}
-		if(msg.equals("success")){
+		if(!msg.equals("error")){
 			map.put("option", option);
 			map.put("totalMoney", totalMoney);
 			map.put("success", success);
