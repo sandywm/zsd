@@ -3323,6 +3323,7 @@ public class HomeWorkAction extends DispatchAction {
 		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
 		LoreInfoManager lm = (LoreInfoManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
 		StudyMapManager smm = (StudyMapManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_MAP_INFO);
+		HwStudyDetailManager hsdm = (HwStudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_DETAIL_INFO);
 		Integer tjId = CommonTools.getFinalInteger("tjId", request);
 		Integer userId = CommonTools.getLoginUserId(request);
 		Map<String,Object> map = new HashMap<String,Object>();
@@ -3387,26 +3388,21 @@ public class HomeWorkAction extends DispatchAction {
 					loreTaskName = "针对性诊断";
 					loreTypeName = "针对性诊断";
 					//和知识点做题不同，直接进行第2级答题，第一级为作业题（8-15家庭作业）
-					Integer answerNumber = 0;
 					String[] pathArray = path.split(":");
 					if(pathArray.length == 1){
 						//表示当前知识点没有做关联知识点
 					}else{
-						String[] nextPathArray = pathArray[1].split(",");
-						Integer nextPathLength = nextPathArray.length;
-						buttonValue = "启动溯源";
-						loreTaskName = "1级关联知识点诊断";
-						for(Integer k = 0 ; k < nextPathLength ; k++){
-							String[] nextDetailPathArray = nextPathArray[k].split("\\|");
-							for(Integer l = 0 ; l < nextDetailPathArray.length ; l++){
-								nextLoreIdArray += nextDetailPathArray[l] + ",";
-								Integer quoteLoreId = CommonTools.getQuoteLoreId(Integer.parseInt(nextDetailPathArray[l]));
-								List<LoreQuestion> lqList = lqm.listInfoByLoreId(quoteLoreId, loreTypeName, 0);
-								answerNumber += lqList.size();
+						buttonValue = "开始诊断";
+						loreTaskName = hwTitle;
+						Integer queLen = 0;
+						List<HwStudyDetailInfo> hsdList = hsdm.listInfoByOpt(0, tjId, 0, "");
+						for(HwStudyDetailInfo hsd : hsdList){
+							if(hsd.getResult().equals(-1)){//没做的题
+								queLen += 1;
 							}
 						}
-						money *= answerNumber;
-						nextLoreIdArray = nextLoreIdArray.substring(0, nextLoreIdArray.length() - 1);
+						money *= queLen;
+						nextLoreIdArray = String.valueOf(sendLoreId);//第一级关联知识点
 					}
 				}else{
 					currStep = 4;
