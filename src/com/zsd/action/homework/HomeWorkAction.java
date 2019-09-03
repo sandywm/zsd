@@ -3021,6 +3021,7 @@ public class HomeWorkAction extends DispatchAction {
 								HwQueInfo hq = hqm.getEntityById(lqId);
 								if(hq != null){
 									String realAnswer = hq.getAnswer();
+									String resolution = hq.getResolution();
 									String lqType = hq.getQueType();
 									Integer result = -1;
 									Integer succNum = 0;
@@ -3048,12 +3049,15 @@ public class HomeWorkAction extends DispatchAction {
 									}
 									hsdm.updateInfoById(hsdId, myAnswer, result);
 									tjm.updateInfoById(tj.getId(), 0, succNum, errorNum);
+									map.put("realAnswer", realAnswer);
+									map.put("resolution", resolution);
 									msg = "success";
 								}
 							}else if(queArea.equals("sys")){
 								LoreQuestion lq = lqm.getEntityByLqId(lqId);
 								if(lq != null){
 									String realAnswer = lq.getQueAnswer();
+									String resolution = lq.getQueResolution();
 									String lqType = lq.getQueType();
 									Integer result = -1;
 									Integer succNum = 0;
@@ -3141,6 +3145,7 @@ public class HomeWorkAction extends DispatchAction {
 										if(!dataBaseAnswerChar.equals("")){
 											dataBaseAnswerChar = dataBaseAnswerChar.substring(0, dataBaseAnswerChar.length() - 1);
 										}
+										realAnswer = dataBaseAnswerChar;
 										if(lqType.equals("多选题")){//无序
 											String[] myAnserArray = myAnswer.split(",");
 											String[] realAnswerArray = dataBaseAnswerChar.split(",");
@@ -3165,12 +3170,15 @@ public class HomeWorkAction extends DispatchAction {
 									}
 									hsdm.updateInfoById(hsdId, myAnswer, result);
 									tjm.updateInfoById(tj.getId(), 0, succNum, errorNum);
+									map.put("realAnswer", realAnswer);
+									map.put("resolution", resolution);
 									msg = "success";
 								}
 							}else if(queArea.equals("tea")){
 								TeaQueInfo tq = tqm.getEntityById(lqId);
 								if(tq != null){
 									String realAnswer = tq.getQueAnswer();
+									String resolution = tq.getQueResolution();
 									String lqType = tq.getQueType();
 									Integer result = -1;
 									Integer succNum = 0;
@@ -3198,6 +3206,8 @@ public class HomeWorkAction extends DispatchAction {
 									}
 									hsdm.updateInfoById(hsdId, myAnswer, result);
 									tjm.updateInfoById(tj.getId(), 0, succNum, errorNum);
+									map.put("realAnswer", realAnswer);
+									map.put("resolution", resolution);
 									msg = "success";
 								}
 							}
