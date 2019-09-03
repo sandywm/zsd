@@ -3058,19 +3058,7 @@ public class HomeWorkAction extends DispatchAction {
 									Integer result = -1;
 									Integer succNum = 0;
 									Integer errorNum = 0;
-									if(lqType.equals("多选题")){//无序
-										String[] myAnserArray = myAnswer.split(",");
-										String[] realAnswerArray = realAnswer.split(",");
-										String newMyAnswer = CommonTools.arraySort(myAnserArray);//排序后我的答案
-										String newRealAnswer = CommonTools.arraySort(realAnswerArray);//排序后后台正确答案
-										if(newMyAnswer.equals(newRealAnswer)){
-											result = 1;//正确
-											succNum = 1;
-										}else{
-											result = 0;//错误
-											errorNum = 1;
-										}
-									}else if(lqType.equals("问答题") || lqType.equals("填空题")){
+									if(lqType.equals("问答题") || lqType.equals("填空题")){
 										if(myAnswer.indexOf("正确") >= 0){
 											result = 1;
 											succNum = 1;
@@ -3078,13 +3066,101 @@ public class HomeWorkAction extends DispatchAction {
 											result = 0;
 											errorNum = 1;
 										}
-									}else{//顺序必须要求一样
-										if(myAnswer.equals(realAnswer)){
-											result = 1;//正确
+									}else if(lqType.equals("判断题")){
+										if(myAnswer.equals("对")){
+											result = 1;
 											succNum = 1;
 										}else{
-											result = 0;//错误
+											result = 0;
 											errorNum = 1;
+										}
+									}else{
+										//获取真实答案对应的A-F的选项
+										String answerA = lq.getA();
+										String answerB = lq.getB();
+										String answerC = lq.getC();
+										String answerD = lq.getD();
+										String answerE = lq.getE();
+										String answerF = lq.getF();
+										String dataBaseAnswerChar = "";//转化成A-F的答案
+										String[] dataBaseAnswerArray = realAnswer.split(",");//数据库真实答案数组
+										if(!answerA.equals("")){
+											answerA = answerA.replace("Module/commonJs/ueditor/jsp/lore/", "");
+											for(Integer i = 0 ; i < dataBaseAnswerArray.length ; i++){
+												if(dataBaseAnswerArray[i].equals(answerA)){
+													dataBaseAnswerChar += Convert.NumberConvertBigChar(i)+",";
+													break;
+												}
+											}
+										}
+										if(!answerB.equals("")){
+											answerB = answerB.replace("Module/commonJs/ueditor/jsp/lore/", "");
+											for(Integer i = 0 ; i < dataBaseAnswerArray.length ; i++){
+												if(dataBaseAnswerArray[i].equals(answerB)){
+													dataBaseAnswerChar += Convert.NumberConvertBigChar(i)+",";
+													break;
+												}
+											}									
+										}
+										if(!answerC.equals("")){
+											answerC = answerC.replace("Module/commonJs/ueditor/jsp/lore/", "");
+											for(Integer i = 0 ; i < dataBaseAnswerArray.length ; i++){
+												if(dataBaseAnswerArray[i].equals(answerC)){
+													dataBaseAnswerChar += Convert.NumberConvertBigChar(i)+",";
+													break;
+												}
+											}
+										}
+										if(!answerD.equals("")){
+											answerD = answerD.replace("Module/commonJs/ueditor/jsp/lore/", "");
+											for(Integer i = 0 ; i < dataBaseAnswerArray.length ; i++){
+												if(dataBaseAnswerArray[i].equals(answerD)){
+													dataBaseAnswerChar += Convert.NumberConvertBigChar(i)+",";
+													break;
+												}
+											}
+										}
+										if(!answerE.equals("")){
+											answerE = answerE.replace("Module/commonJs/ueditor/jsp/lore/", "");
+											for(Integer i = 0 ; i < dataBaseAnswerArray.length ; i++){
+												if(dataBaseAnswerArray[i].equals(answerE)){
+													dataBaseAnswerChar += Convert.NumberConvertBigChar(i)+",";
+													break;
+												}
+											}
+										}
+										if(!answerF.equals("")){
+											answerF = answerF.replace("Module/commonJs/ueditor/jsp/lore/", "");
+											for(Integer i = 0 ; i < dataBaseAnswerArray.length ; i++){
+												if(dataBaseAnswerArray[i].equals(answerF)){
+													dataBaseAnswerChar += Convert.NumberConvertBigChar(i)+",";
+													break;
+												}
+											}
+										}
+										if(!dataBaseAnswerChar.equals("")){
+											dataBaseAnswerChar = dataBaseAnswerChar.substring(0, dataBaseAnswerChar.length() - 1);
+										}
+										if(lqType.equals("多选题")){//无序
+											String[] myAnserArray = myAnswer.split(",");
+											String[] realAnswerArray = dataBaseAnswerChar.split(",");
+											String newMyAnswer = CommonTools.arraySort(myAnserArray);//排序后我的答案
+											String newRealAnswer = CommonTools.arraySort(realAnswerArray);//排序后后台正确答案
+											if(newMyAnswer.equals(newRealAnswer)){
+												result = 1;//正确
+												succNum = 1;
+											}else{
+												result = 0;//错误
+												errorNum = 1;
+											}
+										}else{//顺序必须要求一样（填空选择题，单选题）
+											if(myAnswer.equals(dataBaseAnswerChar)){
+												result = 1;//正确
+												succNum = 1;
+											}else{
+												result = 0;//错误
+												errorNum = 1;
+											}
 										}
 									}
 									hsdm.updateInfoById(hsdId, myAnswer, result);
