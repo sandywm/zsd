@@ -3052,6 +3052,7 @@ public class HomeWorkAction extends DispatchAction {
 									map.put("myAnswer", myAnswer);
 									map.put("realAnswer", realAnswer);
 									map.put("resolution", resolution);
+									map.put("studyResult", result);
 									msg = "success";
 								}
 							}else if(queArea.equals("sys")){
@@ -3174,6 +3175,7 @@ public class HomeWorkAction extends DispatchAction {
 									map.put("myAnswer", myAnswer);
 									map.put("realAnswer", realAnswer);
 									map.put("resolution", resolution);
+									map.put("studyResult", result);
 									msg = "success";
 								}
 							}else if(queArea.equals("tea")){
@@ -3211,6 +3213,7 @@ public class HomeWorkAction extends DispatchAction {
 									map.put("myAnswer", myAnswer);
 									map.put("realAnswer", realAnswer);
 									map.put("resolution", resolution);
+									map.put("studyResult", result);
 									msg = "success";
 								}
 							}
