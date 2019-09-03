@@ -3049,6 +3049,7 @@ public class HomeWorkAction extends DispatchAction {
 									}
 									hsdm.updateInfoById(hsdId, myAnswer, result);
 									tjm.updateInfoById(tj.getId(), 0, succNum, errorNum);
+									map.put("myAnswer", myAnswer);
 									map.put("realAnswer", realAnswer);
 									map.put("resolution", resolution);
 									msg = "success";
@@ -3170,6 +3171,7 @@ public class HomeWorkAction extends DispatchAction {
 									}
 									hsdm.updateInfoById(hsdId, myAnswer, result);
 									tjm.updateInfoById(tj.getId(), 0, succNum, errorNum);
+									map.put("myAnswer", myAnswer);
 									map.put("realAnswer", realAnswer);
 									map.put("resolution", resolution);
 									msg = "success";
@@ -3206,6 +3208,7 @@ public class HomeWorkAction extends DispatchAction {
 									}
 									hsdm.updateInfoById(hsdId, myAnswer, result);
 									tjm.updateInfoById(tj.getId(), 0, succNum, errorNum);
+									map.put("myAnswer", myAnswer);
 									map.put("realAnswer", realAnswer);
 									map.put("resolution", resolution);
 									msg = "success";
