@@ -2909,13 +2909,14 @@ public class HomeWorkAction extends DispatchAction {
 				for(HwStudyDetailInfo hsd : hsdList){
 					Map<String,Object> map_d = new HashMap<String,Object>();
 					String queArea = hsd.getQueArea();//hw,sys,tea
-					Integer hsdId = hsd.getQueId();
+					Integer hsdId = hsd.getId();
+					Integer queId = hsd.getQueId();
 					map_d.put("hsdId", hsdId);
 					map_d.put("queArea", queArea);
 					String myAnswer = hsd.getMyAnswer();
 					Integer result = hsd.getResult();
 					if(queArea.equals("hw")){//没有填空题和问答题
-						HwQueInfo hq = hqm.getEntityById(hsdId);
+						HwQueInfo hq = hqm.getEntityById(queId);
 						map_d.put("queSub", hq.getSubject());
 						String lqType = hq.getQueType();
 						map_d.put("lqType", lqType);
@@ -2932,7 +2933,7 @@ public class HomeWorkAction extends DispatchAction {
 						}
 						map_d.put("studyResult", result);//-1：未做,0:错,1:对
 					}else if(queArea.equals("sys")){
-						LoreQuestion lq = lqm.getEntityByLqId(hsdId);
+						LoreQuestion lq = lqm.getEntityByLqId(queId);
 						map_d.put("queSub", lq.getQueSub());
 						String lqType = lq.getQueType();
 						map_d.put("lqType", lqType);
@@ -2955,7 +2956,7 @@ public class HomeWorkAction extends DispatchAction {
 						}
 						map_d.put("studyResult", result);//-1：未做,0:错,1:对
 					}else if(queArea.equals("tea")){
-						TeaQueInfo tq = tqm.getEntityById(hsdId);
+						TeaQueInfo tq = tqm.getEntityById(queId);
 						map_d.put("queSub", tq.getQueSub());
 						String lqType = tq.getQueType();
 						map_d.put("lqType", lqType);
@@ -3373,7 +3374,7 @@ public class HomeWorkAction extends DispatchAction {
 					loreCount = ltmj.getLoreNum(path);//多少个知识点
 				}
 				HwTraceStudyLogInfo sl = slm.getEntityByTjId(tjId);
-				if(sl == null){//没有数据，表示是第一次
+				if(sl == null){//没有数据，表示在做作业题库
 					Integer hwType = sendHw.getHwType();
 					if(!hwType.equals(3)){//课后复习和家庭作业不用强制听说读写
 						currStep = 4;
@@ -3392,13 +3393,15 @@ public class HomeWorkAction extends DispatchAction {
 					if(pathArray.length == 1){
 						//表示当前知识点没有做关联知识点
 					}else{
-						buttonValue = "开始诊断";
+						buttonValue = "开始作业";
 						loreTaskName = hwTitle;
 						Integer queLen = 0;
 						List<HwStudyDetailInfo> hsdList = hsdm.listInfoByOpt(0, tjId, 0, "");
 						for(HwStudyDetailInfo hsd : hsdList){
 							if(hsd.getResult().equals(-1)){//没做的题
 								queLen += 1;
+							}else{//有做的题
+								buttonValue = "继续作业";
 							}
 						}
 						money *= queLen;
@@ -3684,7 +3687,7 @@ public class HomeWorkAction extends DispatchAction {
 					pathChi = hwTitle + ":" + pathChi;//把第一级替换成家庭作业统计编号
 					LoreTreeMenuJson ltmj = new LoreTreeMenuJson();
 					HwTraceStudyLogInfo sl = slm.getEntityByTjId(tjId);
-					if(sl == null){//表示第一次，还未进行巴菲特知识点学习
+					if(sl == null){//表示第一次，还未进行关联知识点学习
 						option = 1;
 						currentLoreId = tjId;//目的为了获取当前级别(把第一级家庭作业编号赋值给currLoreId)
 //						String[] pathArray = path.split(":");
@@ -3703,7 +3706,7 @@ public class HomeWorkAction extends DispatchAction {
 //						}
 						successStep = hwTitle;
 						success = 1;
-					}else{
+					}else{//进行溯源，存在学习记录
 						totalMoney = sl.getCurrentGold() * 10;
 						stepComplete = sl.getStepComplete();
 						step = sl.getStep();
@@ -3715,7 +3718,7 @@ public class HomeWorkAction extends DispatchAction {
 							//获取该题对应的知识点编号
 							currentLoreId = bsdList.get(0).getLoreInfo().getId();
 							if(stepComplete > 0){//本阶段答题已完成(还未进行下一级)
-								if(step.equals(1)){
+								if(step.equals(1)){//不会走到这----------------------------
 									//通过当前知识点获取下级子知识点
 									String[] pathArray = path.split(":");
 									Integer currentI = CommonTools.getCurrentStep(pathArray, currentLoreId);
@@ -3735,7 +3738,7 @@ public class HomeWorkAction extends DispatchAction {
 										if(nextLoreIdArray.length() > 0){
 											nextLoreIdArray = nextLoreIdArray.substring(0, nextLoreIdArray.length() - 1);
 										}
-										successStep = "本知识点";
+										successStep = hwTitle;
 										success = 1;
 									}
 								}else if(step.equals(2)){//表示关联知识点诊断完成/或者是某一级的关联知识点全部正确，需要进入学习阶段
@@ -4575,7 +4578,8 @@ public class HomeWorkAction extends DispatchAction {
 				if(step.equals(3)){//再次诊断时用
 					if(access.equals(1)){//再次诊断全部正确
 						String[] studyPath = CommonTools.getLorePath(loreId, "sutdy");
-						String path = String.valueOf(tjId) + ":" + studyPath[0];//把第一级替换成家庭作业统计编号
+//						String path =  studyPath[0] + ":" + tjId;//把最后一级替换成家庭作业统计编号
+						String path = studyPath[0];
 						String studyPath_new = CommonTools.getCurrentStudyPath_new(path, currentLoreId);
 						if(studyPath_new.split(":").length == 1){//表示当前知识点是本知识点之前的最后一个知识点
 							//表示当前层完成，stepComplete = 1;
