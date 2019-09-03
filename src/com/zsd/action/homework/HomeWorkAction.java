@@ -2672,6 +2672,7 @@ public class HomeWorkAction extends DispatchAction {
 		HwStudyTjManager tjm = (HwStudyTjManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_TJ_INFO);
 		HwTraceStudyLogManager slm = (HwTraceStudyLogManager) AppFactory.instance(null).getApp(Constants.WEB_HW_TRACE_STUDY_LOG_INFO);
 		Integer opt = CommonTools.getFinalInteger("opt", request);//0:初始进来，1：上滑时
+		Integer option = CommonTools.getFinalInteger("option", request);//0：初始进来，1：做题时点击做完了按钮返回时
 		Integer currUserId = CommonTools.getLoginUserId(request);
 		Integer pageNo = CommonTools.getFinalInteger("pageNo", request);
 		Integer pageSize = CommonTools.getFinalInteger("pageSize", request);
@@ -2683,7 +2684,7 @@ public class HomeWorkAction extends DispatchAction {
 		String currDate = CurrentTime.getStringDate();
 		if(currUserId > 0){
 			msg = "success";
-			if(opt.equals(0)){
+			if(opt.equals(0) || option.equals(1)){//初始进来或者做题时点击做完了按钮返回时都需要获取今日作业
 				List<Object> list_d_1 = new ArrayList<Object>();
 				//step1:获取今日作业
 				List<HwStudyTjInfo> tjList_1 = tjm.listInfoByOpt_1(0, 0, currUserId, -1, currDate, currDate, false, 0, 0);
@@ -2712,6 +2713,10 @@ public class HomeWorkAction extends DispatchAction {
 			}
 			//step2:获取历史作业
 			List<Object> list_d_2 = new ArrayList<Object>();
+			if(option.equals(1)){
+				pageSize = pageNo * pageSize;
+				pageNo = 1;
+			}
 			List<HwStudyTjInfo> tjList_2 = tjm.listInfoByOpt_2(0, 0, currUserId, -1, pageNo, pageSize);
 			if(tjList_2.size() > 0){
 				for(HwStudyTjInfo tj : tjList_2){
@@ -3281,6 +3286,8 @@ public class HomeWorkAction extends DispatchAction {
 									msg = "tracePage";//直接进入溯源页面
 								}
 							}
+						}else{
+							msg = "noCom";//作业题没全部做完就点击做完了按钮
 						}
 					}else{//完成以后进入，直接返回作业记录页面
 						msg = "success";
