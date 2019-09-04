@@ -4068,7 +4068,6 @@ public class HomeWorkAction extends DispatchAction {
 				if(loreId > 0 && loreType.equals("针对性诊断")){
 					LoreInfo lore = lm.getEntityById(loreId);
 					if(lore != null){
-						loreName = lore.getLoreName();
 						String[] pathArr = CommonTools.getLorePath(loreId, "diagnosis");
 						map.put("path", pathArr[0]);
 					}
@@ -4363,7 +4362,7 @@ public class HomeWorkAction extends DispatchAction {
 							 }
 						}
 					}
-				}else{//新的挑战
+				}else{//还没开始溯源（还没做 溯源题）
 					if(!nextLoreIdArray.equals("")){
 						 String[] nextLoreIdArray_1 = nextLoreIdArray.split(",");
 						 for(Integer i = 0 ; i < nextLoreIdArray_1.length ; i++){
@@ -4371,11 +4370,6 @@ public class HomeWorkAction extends DispatchAction {
 							 currentLoreId = loreId;
 							 //获取该知识典所有类型为loreType的题型[0为题状态为有效状态]
 							 lqList_old.addAll(lqm.listInfoByLoreId(CommonTools.getQuoteLoreId(loreId), loreType, 0));
-							 if(loreType.equals("再次诊断")){//获取上次的学习情况(根据logId+nextLoreIdArray+loreType)获取答题正确的题
-								 sdList_used.addAll(sdm.listCurrentRightInfoByLogId(studyLogId, loreId, loreType));
-							 }else{//获取上次的学习情况(根据logId+nextLoreIdArray+loreType)
-								 sdList_used.addAll(sdm.listExistInfoByOption(studyLogId, currentLoreId, loreType));
-							 }
 						 }
 					}
 					for(Integer i = 0 ; i < lqList_old.size() ; i++){
@@ -4401,33 +4395,11 @@ public class HomeWorkAction extends DispatchAction {
 						map_d.put("myAnswer", "");
 						map_d.put("result", 0);//答案对错0:错，1:对
 						map_d.put("questionStep", 0);
-						Integer completeStatus = 0;//做题状态(0:已做,1:未做)
-						 for(Integer j = 0 ; j < sdList_used.size() ; j++){
-							 HwTraceStudyDetailInfo sd = sdList_used.get(j);
-							 LoreQuestion lq_use = sd.getLoreQuestion();
-							 if(lqId_old.equals(lq_use.getId())){
-								completeStatus = 1;
-								 //表示已做过
-								map_d.put("answerA", lq_use.getA());
-								map_d.put("answerB", lq_use.getB());
-								map_d.put("answerC", lq_use.getC());
-								map_d.put("answerD", lq_use.getD());
-								map_d.put("answerE", lq_use.getE());
-								map_d.put("answerF", lq_use.getF());
-								map_d.put("realAnswer", sd.getRealAnswer());
-								map_d.put("myAnswer", sd.getMyAnswer());
-								map_d.put("result", sd.getResult());//答案对错0:错，1:对
-								map_d.put("questionStep", sd.getQueStep());
-								break;
-							 }
-						 }
-						 map_d.put("completeStatus", completeStatus);//做题状态(0:未做,1:已做)
-						if(completeStatus.equals(0)){
-							if(lqType.equals("单选题") || lqType.equals("多选题") || lqType.equals("判断题") || lqType.equals("填空题") || lqType.equals("问答题")){
-								map_d.put("answerNum", 1);
-							}else{//填空选择题
-								map_d.put("answerNum", lq.getQueAnswer().split(",").length);
-							}
+						map_d.put("completeStatus", 0);//做题状态(0:未做,1:已做)
+						if(lqType.equals("单选题") || lqType.equals("多选题") || lqType.equals("判断题") || lqType.equals("填空题") || lqType.equals("问答题")){
+							map_d.put("answerNum", 1);
+						}else{//填空选择题
+							map_d.put("answerNum", lq.getQueAnswer().split(",").length);
 						}
 						if(lqType.equals("填空题") || lqType.equals("问答题")){
 							map_d.put("realAnswer", lq.getQueAnswer());
