@@ -4644,63 +4644,62 @@ public class HomeWorkAction extends DispatchAction {
 				taskNumber = htsl.getTaskNumber() + 1;
 				if(step.equals(3)){//再次诊断时用
 					if(access.equals(1)){//再次诊断全部正确
-						String[] studyPath = CommonTools.getLorePath(loreId, "sutdy");
-//						String path =  studyPath[0] + ":" + tjId;//把最后一级替换成家庭作业统计编号
-						String path = studyPath[0];
-						String studyPath_new = CommonTools.getCurrentStudyPath_new(path, currentLoreId);
-						if(studyPath_new.split(":").length == 1){//表示当前知识点是本知识点之前的最后一个知识点
-							//表示当前层完成，stepComplete = 1;
-							stepComplete = 0;
-							access = 2;
-							step = 4;
-							isFinish = 1;
+						String studyPath = CommonTools.getLorePath(loreId, "sutdy")[0];
+						String[] studyPathArr = studyPath.split(":");
+						if(studyPathArr[studyPathArr.length - 1].equals(String.valueOf(currentLoreId))){//表示当前知识点是最后一个知识点（家庭作业tjId除外）
+							//表示溯源全部完成
+							stepComplete = 1;
+							access = 1;
+							step = 5;
+							isFinish = 2;
+						}
+					}else{
+						//根据学习记录编号获取有无当前知识点指定类型的答题记录
+						List<HwTraceStudyDetailInfo>  sdList = sdm.listExistInfoByOption(studyLogId, currentLoreId, "再次诊断");
+						if(submitType.equals("study")){//5步学习法学完后的提交动作
+							if(sdList.size() > 0){//表示之前有做过的答题记录
+								access = 3;
+							}else{//表示还没做过再次诊断
+								access = 4;
+							}
+						}else{//再次诊断时(针对性诊断的step不可能是3)再次诊断后的提交动作
+							if(sdList.size() > 0){//表示之前有做过的答题记录
+								access = 31;
+							}else{//表示还没做过再次诊断
+								access = 41;
+							}
 						}
 					}
-				}else{
-					//根据学习记录编号获取有无当前知识点指定类型的答题记录
-					List<HwTraceStudyDetailInfo>  sdList = sdm.listExistInfoByOption(studyLogId, currentLoreId, "再次诊断");
-					if(submitType.equals("study")){//5步学习法学完后的提交动作
-						if(sdList.size() > 0){//表示之前有做过的答题记录
-							access = 3;
-						}else{//表示还没做过再次诊断
-							access = 4;
-						}
-					}else{//再次诊断时(针对性诊断的step不可能是3)再次诊断后的提交动作
-						if(sdList.size() > 0){//表示之前有做过的答题记录
-							access = 31;
-						}else{//表示还没做过再次诊断
-							access = 41;
+				}else if(step.equals(4)){//第一级关联知识点一次完全通过时(家庭作业只要第一级完成就表示溯源任务完成)
+					if(access == 1){//再次诊断全部正确
+						//表示溯源全部完成
+						stepComplete = 1;
+						access = 1;
+						step = 5;
+						isFinish = 2;
+					}else{
+						//根据学习记录编号获取有无当前知识点指定类型的答题记录
+						List<HwTraceStudyDetailInfo>  blsdList = sdm.listExistInfoByOption(studyLogId, currentLoreId, "再次诊断");
+						if(submitType.equals("study")){//5步学习法学完后的提交动作
+							if(blsdList.size() > 0){//表示之前有做过的答题记录
+								access = 3;
+							}else{//表示还没做过再次诊断
+								access = 4;
+							}
+						}else{//再次诊断时(针对性诊断的step不可能是3)再次诊断后的提交动作
+							if(blsdList.size() > 0){//表示之前有做过的答题记录
+								access = 31;
+							}else{//表示还没做过再次诊断
+								access = 41;
+							}
 						}
 					}
 				}
-			}else if(step.equals(4)){
-				if(access == 1){//再次诊断全部正确
-					stepComplete = 0;
-					access = 2;
-					step = 4;
-					isFinish = 1;
-				}else{
-					//根据学习记录编号获取有无当前知识点指定类型的答题记录
-					List<HwTraceStudyDetailInfo>  blsdList = sdm.listExistInfoByOption(studyLogId, currentLoreId, "再次诊断");
-					if(submitType.equals("study")){//5步学习法学完后的提交动作
-						if(blsdList.size() > 0){//表示之前有做过的答题记录
-							access = 3;
-						}else{//表示还没做过再次诊断
-							access = 4;
-						}
-					}else{//再次诊断时(针对性诊断的step不可能是3)再次诊断后的提交动作
-						if(blsdList.size() > 0){//表示之前有做过的答题记录
-							access = 31;
-						}else{//表示还没做过再次诊断
-							access = 41;
-						}
-					}
+				//step=0表示不对step进行修改
+				boolean flag = slm.updateStudyLog(studyLogId, step, stepComplete, isFinish, -1, access, taskNumber,"");
+				if(flag){
+					msg = "success";
 				}
-			}
-			//step=0表示不对step进行修改
-			boolean flag = slm.updateStudyLog(studyLogId, step, stepComplete, isFinish, -1, access, taskNumber,"");
-			if(flag){
-				msg = "success";
 			}
 		}
 		map.put("result", msg);
