@@ -3476,7 +3476,7 @@ public class HomeWorkAction extends DispatchAction {
 								}
 							}
 							money *= queLen;
-							nextLoreIdArray = String.valueOf(sendLoreId);//第一级关联知识点
+							nextLoreIdArray = String.valueOf(tjId);
 						}else{//没做任何溯源
 							buttonValue = "开始诊断";
 							loreTaskName = "1级关联知识点诊断";
@@ -3484,7 +3484,7 @@ public class HomeWorkAction extends DispatchAction {
 							Integer quoteLoreId = CommonTools.getQuoteLoreId(sendLoreId);
 							List<LoreQuestion> lqList = lqm.listInfoByLoreId(quoteLoreId, loreTypeName, 0);
 							money *= lqList.size();
-							
+							nextLoreIdArray = String.valueOf(sendLoreId);//第一级关联知识点
 						}
 					}
 				}else{
