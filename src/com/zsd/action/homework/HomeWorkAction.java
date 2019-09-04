@@ -3418,6 +3418,7 @@ public class HomeWorkAction extends DispatchAction {
 		Integer studyLogId = 0;
 		String msg = "error";
 		Integer currStep = 0;
+		Integer showHwRecordStatus = 0;//0：隐藏家庭作业记录,1：显示
 		boolean showTraceFlag = false;//只有在家庭作业题做完了才显示
 		if(userId > 0 && tjId > 0){
 			HwStudyTjInfo tj = tjm.getEntityById(tjId);
@@ -3485,9 +3486,11 @@ public class HomeWorkAction extends DispatchAction {
 							List<LoreQuestion> lqList = lqm.listInfoByLoreId(quoteLoreId, loreTypeName, 0);
 							money *= lqList.size();
 							nextLoreIdArray = String.valueOf(sendLoreId);//第一级关联知识点
+							showHwRecordStatus = 1;
 						}
 					}
 				}else{
+					showHwRecordStatus = 1;
 					currStep = 4;
 					studyLogId = sl.getId();
 					isFinish = sl.getIsFinish();
@@ -3702,6 +3705,7 @@ public class HomeWorkAction extends DispatchAction {
 			map.put("loreName", hwTitle);
 			map.put("currStep", currStep);
 			map.put("showTraceFlag", showTraceFlag);
+			map.put("showHwRecordStatus", showHwRecordStatus);
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
