@@ -26,10 +26,12 @@ public interface HwStudyTjManager {
 	 * @param conStatus 完成状态（-1不修改，0-未完成，1-按时完成，2-补做完成）
 	 * @param succNum 正确题数(1增加，0不修改)
 	 * @param errorNum 错误题数(1增加，0不修改)
+	 * @param buttonClickStatus 作业做完了按钮点击状态(0:未点，1:已点)
+	 * 
 	 * @return
 	 * @throws WEBException
 	 */
-	boolean updateInfoById(Integer id, Integer conStatus,Integer succNum, Integer errorNum) throws WEBException;
+	boolean updateInfoById(Integer id, Integer conStatus,Integer succNum, Integer errorNum,Integer buttonClickStatus) throws WEBException;
 	
 	/**
 	 * 根据条件获取家庭作业统计记录列表

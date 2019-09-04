@@ -3121,7 +3121,7 @@ public class HomeWorkAction extends DispatchAction {
 										}
 									}
 									hsdm.updateInfoById(hsdId, myAnswer, result);
-									tjm.updateInfoById(tj.getId(), 0, succNum, errorNum);
+									tjm.updateInfoById(tj.getId(), 0, succNum, errorNum,0);
 									map.put("myAnswer", myAnswer);
 									map.put("realAnswer", realAnswer);
 									map.put("resolution", resolution);
@@ -3244,7 +3244,7 @@ public class HomeWorkAction extends DispatchAction {
 										}
 									}
 									hsdm.updateInfoById(hsdId, myAnswer, result);
-									tjm.updateInfoById(tj.getId(), 0, succNum, errorNum);
+									tjm.updateInfoById(tj.getId(), 0, succNum, errorNum,0);
 									map.put("myAnswer", myAnswer);
 									map.put("realAnswer", realAnswer);
 									map.put("resolution", resolution);
@@ -3282,7 +3282,7 @@ public class HomeWorkAction extends DispatchAction {
 										}
 									}
 									hsdm.updateInfoById(hsdId, myAnswer, result);
-									tjm.updateInfoById(tj.getId(), 0, succNum, errorNum);
+									tjm.updateInfoById(tj.getId(), 0, succNum, errorNum,0);
 									map.put("myAnswer", myAnswer);
 									map.put("realAnswer", realAnswer);
 									map.put("resolution", resolution);
@@ -3344,13 +3344,16 @@ public class HomeWorkAction extends DispatchAction {
 								if(diffDays >= 0){//按时完成
 									comStatus = 1;
 								}
-								tjm.updateInfoById(tj.getId(), comStatus, 0, 0);
+								tjm.updateInfoById(tj.getId(), comStatus, 0, 0,1);
 								msg = "success";
 							}else{
 								HwTraceStudyLogInfo hsl = slm.getEntityById(tjId);
 								if(hsl != null){//已存在溯源记录
 									msg = "mapPage";//直接进入map页面
 								}else{//还未进行溯源
+									if(tj.getHwsdAddStatus().equals(0)){
+										tjm.updateInfoById(tj.getId(), -1, 0, 0,1);
+									}
 									msg = "tracePage";//直接进入溯源页面
 								}
 							}
@@ -3443,6 +3446,7 @@ public class HomeWorkAction extends DispatchAction {
 				HwTraceStudyLogInfo sl = slm.getEntityByTjId(tjId);
 				if(sl == null){//没有数据，表示在做作业题库
 					Integer hwType = sendHw.getHwType();
+					Integer buttonClickStatus = tj.getHwsdAddStatus();//作业题库列表做完了按钮点击过的状态（1：点击过）
 					if(!hwType.equals(3)){//课后复习和家庭作业不用强制听说读写
 						currStep = 4;
 					}else{
@@ -3453,26 +3457,35 @@ public class HomeWorkAction extends DispatchAction {
 						}
 					}
 					task = 1;
-					loreTaskName = "针对性诊断";
-					loreTypeName = "针对性诊断";
 					//和知识点做题不同，直接进行第2级答题，第一级为作业题（8-15家庭作业）
 					String[] pathArray = path.split(":");
 					if(pathArray.length == 1){
 						//表示当前知识点没有做关联知识点
 					}else{
-						buttonValue = "开始作业";
-						loreTaskName = hwTitle;
-						Integer queLen = 0;
-						List<HwStudyDetailInfo> hsdList = hsdm.listInfoByOpt(0, tjId, 0, "");
-						for(HwStudyDetailInfo hsd : hsdList){
-							if(hsd.getResult().equals(-1)){//没做的题
-								queLen += 1;
-							}else{//有做的题
-								buttonValue = "继续作业";
+						if(buttonClickStatus.equals(0)){
+							loreTypeName = "针对性诊断";
+							buttonValue = "开始作业";
+							loreTaskName = hwTitle;
+							Integer queLen = 0;
+							List<HwStudyDetailInfo> hsdList = hsdm.listInfoByOpt(0, tjId, 0, "");
+							for(HwStudyDetailInfo hsd : hsdList){
+								if(hsd.getResult().equals(-1)){//没做的题
+									queLen += 1;
+								}else{//有做的题
+									buttonValue = "继续作业";
+								}
 							}
+							money *= queLen;
+							nextLoreIdArray = String.valueOf(sendLoreId);//第一级关联知识点
+						}else{//没做任何溯源
+							buttonValue = "开始诊断";
+							loreTaskName = "1级关联知识点诊断";
+							loreTypeName = "针对性诊断";
+							Integer quoteLoreId = CommonTools.getQuoteLoreId(sendLoreId);
+							List<LoreQuestion> lqList = lqm.listInfoByLoreId(quoteLoreId, loreTypeName, 0);
+							money *= lqList.size();
+							
 						}
-						money *= queLen;
-						nextLoreIdArray = String.valueOf(sendLoreId);//第一级关联知识点
 					}
 				}else{
 					currStep = 4;
