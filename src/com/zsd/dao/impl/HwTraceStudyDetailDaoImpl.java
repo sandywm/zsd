@@ -41,7 +41,7 @@ public class HwTraceStudyDetailDaoImpl implements HwTraceStudyDetailDao{
 		// TODO Auto-generated method stub
 		String hql = " from HwTraceStudyDetailInfo as sd where sd.hwTraceStudyLogInfo.id = "+logId + " and sd.result = 1";
 		if(loreId > 0){
-			hql += " and sd.hwTraceStudyLogInfo.loreInfo.id = "+loreId;
+			hql += " and sd.loreInfo.id = "+loreId;
 		}
 		if(!loreTypeName.equals("")){
 			hql += " and sd.loreQuestion.loreTypeName = '"+loreTypeName+"'";
@@ -63,7 +63,7 @@ public class HwTraceStudyDetailDaoImpl implements HwTraceStudyDetailDao{
 			Integer completeTimes) {
 		// TODO Auto-generated method stub
 		String hql = " from HwTraceStudyDetailInfo as sd where sd.hwTraceStudyLogInfo.id = "+logId;
-		hql += " and sd.hwTraceStudyLogInfo.loreInfo.id = "+loreId + " and sd.loreQuestion.loreTypeName = '"+loreTypeName+"'";
+		hql += " and sd.loreInfo.id = "+loreId + " and sd.loreQuestion.loreTypeName = '"+loreTypeName+"'";
 		hql += " and sd.completeTimes = "+completeTimes;
 		return sess.createQuery(hql).list();
 	}
@@ -74,7 +74,7 @@ public class HwTraceStudyDetailDaoImpl implements HwTraceStudyDetailDao{
 			Integer completeTimes) {
 		// TODO Auto-generated method stub
 		String hql = " from HwTraceStudyDetailInfo as sd where sd.hwTraceStudyLogInfo.id = "+logId;
-		hql += " and sd.hwTraceStudyLogInfo.loreInfo.id = "+loreId + " and sd.loreQuestion.loreTypeName = '"+loreTypeName+"'";
+		hql += " and sd.loreInfo.id = "+loreId + " and sd.loreQuestion.loreTypeName = '"+loreTypeName+"'";
 		hql += " and sd.completeTimes != "+completeTimes + " and sd.result = 1";
 		return sess.createQuery(hql).list();
 	}
@@ -84,7 +84,7 @@ public class HwTraceStudyDetailDaoImpl implements HwTraceStudyDetailDao{
 			Integer logId, Integer loreId, String loreTypeName) {
 		// TODO Auto-generated method stub
 		String hql = " from HwTraceStudyDetailInfo as sd where sd.hwTraceStudyLogInfo.id = "+logId;
-		hql += " and sd.hwTraceStudyLogInfo.loreInfo.id = "+loreId + " and sd.loreQuestion.loreTypeName = '"+loreTypeName+"'";
+		hql += " and sd.loreInfo.id = "+loreId + " and sd.loreQuestion.loreTypeName = '"+loreTypeName+"'";
 		return sess.createQuery(hql).list();
 	}
 
