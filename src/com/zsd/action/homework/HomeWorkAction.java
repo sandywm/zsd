@@ -3080,7 +3080,7 @@ public class HomeWorkAction extends DispatchAction {
 		String msg = "error";
 		Integer currUserId = CommonTools.getLoginUserId(request);
 		Integer hsdId = CommonTools.getFinalInteger("hsdId", request);
-		String myAnswer = CommonTools.getFinalStr("myAnswer", request);
+		String myAnswer = Transcode.unescape_new1("myAnswer", request);
 		if(hsdId > 0  &&  !myAnswer.equals("")){
 			HwStudyDetailInfo hsd = hsdm.getEntityById(hsdId);
 			if(hsd != null && hsd.getResult().equals(-1)){//未做的才能进入
