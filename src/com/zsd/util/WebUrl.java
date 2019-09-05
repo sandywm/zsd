@@ -41,4 +41,9 @@ public class WebUrl {
     public static String DATA_URL;
     public static String NEW_DATA_URL;
     
+    //学生提问，老师答疑上传图片绝对路径
+    public static String DATA_URL_QUE_FILE_UPLOAD;
+    //学生提问，老师答疑上传图片相对路径
+    public static String NEW_DATA_URL_QUE_FILE_UPLOAD;
+    
 }

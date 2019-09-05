@@ -55,7 +55,7 @@ public class HwTraceStudyLogManagerImpl implements HwTraceStudyLogManager{
 			tran = sess.beginTransaction();
 			HwTraceStudyLogInfo logInfo = hwLogDao.getEntityById(sess, id);
 			if(logInfo != null){
-				if(!step.equals(-1)){
+				if(!step.equals(0)){
 					logInfo.setStep(step);
 				}
 				if(!stepComplete.equals(-1)){
@@ -64,8 +64,8 @@ public class HwTraceStudyLogManagerImpl implements HwTraceStudyLogManager{
 				if(!isFinish.equals(-1)){
 					logInfo.setIsFinish(isFinish);
 				}
-				if(!currentGold.equals(-1)){
-					logInfo.setCurrentGold(currentGold);
+				if(currentGold.equals(1)){
+					logInfo.setCurrentGold(logInfo.getCurrentGold() + 1);
 				}
 				if(!access.equals(-1)){
 					logInfo.setAccess(access);

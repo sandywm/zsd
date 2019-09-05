@@ -24,7 +24,7 @@ public class TeaQueManagerImpl implements TeaQueManager{
 	Transaction tran = null;
 	@Override
 	public Integer addTQ(Integer loreId, Integer queNum, String queTitle,
-			String queSub, String queAnswer, String queResolution,
+			String queSub, Integer optNum,String queAnswer, String queResolution,
 			String queType, String queType2, Integer teaId) throws WEBException {
 		// TODO Auto-generated method stub
 		try {
@@ -34,7 +34,7 @@ public class TeaQueManagerImpl implements TeaQueManager{
 			Session sess = HibernateUtil.currentSession();
 			tran = sess.beginTransaction();
 			TeaQueInfo tq = new TeaQueInfo(uDao.getEntityById(sess, teaId).get(0), lDao.getEntityById(sess, loreId), queNum,
-					queTitle, queSub, queAnswer,queResolution, queType, queType2, 0,CurrentTime.getCurrentTime());
+					queTitle, queSub, optNum,queAnswer,queResolution, queType, queType2, 0,CurrentTime.getCurrentTime());
 			tqDao.save(sess, tq);
 			tran.commit();
 			return tq.getId();
@@ -75,7 +75,7 @@ public class TeaQueManagerImpl implements TeaQueManager{
 	}
 
 	@Override
-	public boolean updateInfoById(Integer tqId, String queSub,
+	public boolean updateInfoById(Integer tqId, String queSub,Integer optNum,
 			String queAnswer, String queResolution, String queType)
 			throws WEBException {
 		// TODO Auto-generated method stub
@@ -97,6 +97,7 @@ public class TeaQueManagerImpl implements TeaQueManager{
 				if(!queType.equals("")){
 					tq.setQueType(queType);
 				}
+				tq.setOptNum(optNum);
 				tq.setOperateUserDate(CurrentTime.getCurrentTime());
 				tqDao.update(sess, tq);
 				tran.commit();

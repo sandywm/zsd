@@ -358,6 +358,7 @@ public class HomeWorkAction extends DispatchAction {
 		Integer loreId = CommonTools.getFinalInteger("loreId", request);//通用版下的知识点编号
 		String mindIdStr = CommonTools.getFinalStr("mindIdStr", request);//思维类型编号逗号拼接
 		String abilityIdStr = CommonTools.getFinalStr("abilityIdStr", request);//能力类型编号逗号拼接
+		Integer optNum = CommonTools.getFinalInteger("optNum", request);//选项数量
 		String title = "";//标题
 		List<HwQueInfo> bqList = hqm.listInfoByOpt(loreId, btId, -1, true);
 		Integer orders = 0;//排序
@@ -387,7 +388,7 @@ public class HomeWorkAction extends DispatchAction {
 		String queResolution = Transcode.unescape_new1("queResolution", request);//解析
 		String queType = Transcode.unescape_new1("queType", request);//题干类型
 		if(!mindIdStr.equals("") && !abilityIdStr.equals("")){
-			Integer hwId = hqm.addHW(btId, loreId, num, title, queSub, queAnswer, queResolution, queType, orders, CommonTools.getLoginAccount(request));
+			Integer hwId = hqm.addHW(btId, loreId, num, title, queSub, optNum,queAnswer, queResolution, queType, orders, CommonTools.getLoginAccount(request));
 			if(hwId > 0){
 				hmrm.addHMR(mindIdStr, hwId);
 				harm.addHAR(abilityIdStr, hwId);
@@ -478,6 +479,7 @@ public class HomeWorkAction extends DispatchAction {
 				map.put("baList", list_ability);
 				map.put("hwTitle", hw.getTitle());
 				map.put("queSub", hw.getSubject());
+				map.put("optNum", hw.getOptNum());
 				map.put("queAnswer", hw.getAnswer());
 				map.put("queOptNum", hw.getAnswer().split(",").length);
 				map.put("queResolution", hw.getResolution());
@@ -514,11 +516,12 @@ public class HomeWorkAction extends DispatchAction {
 		String queSub = Transcode.unescape_new1("queSub", request);//题干
 		String queAnswer = Transcode.unescape_new1("queAnswer", request);//答案，多个用逗号隔开
 		String queResolution = Transcode.unescape_new1("queResolution", request);//解析
+		Integer optNum = CommonTools.getFinalInteger("optNum", request);//选项个数
 		if(hwId > 0){
 			HwQueInfo hw = hqm.getEntityById(hwId);
 			if(hw != null){
 				if(!mindIdStr.equals("") && !abilityIdStr.equals("")){
-					boolean flag = hqm.updateInfoById(hwId, queSub, queAnswer, queResolution, queType, CommonTools.getLoginAccount(request));
+					boolean flag = hqm.updateInfoById(hwId, queSub, optNum,queAnswer, queResolution, queType, CommonTools.getLoginAccount(request));
 					if(flag){
 						hmrm.delHMR(hwId);
 						harm.delHAR(hwId);
@@ -647,6 +650,7 @@ public class HomeWorkAction extends DispatchAction {
 				map.put("tqId", tq.getId());
 				map.put("queTitle", queTitle);
 				map.put("queSub", tq.getQueSub());
+				map.put("optNum", tq.getOptNum());
 				map.put("loreName", tq.getLoreInfo().getLoreName());
 				map.put("queType", tq.getQueType());
 				map.put("queType2", tq.getQueType2());
@@ -679,6 +683,7 @@ public class HomeWorkAction extends DispatchAction {
 		String queSub = Transcode.unescape_new1("queSub", request);
 		String queAnswer = Transcode.unescape_new1("queAnswer", request);
 		String queResolution = Transcode.unescape_new1("queResolution", request);
+		Integer optNum = CommonTools.getFinalInteger("optNum", request);//选项个数
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "error";
 		Boolean flag = false;
@@ -693,7 +698,7 @@ public class HomeWorkAction extends DispatchAction {
 				flag = true;
 			}
 			if(flag){
-				flag = tqm.updateInfoById(tqId, queSub, queAnswer, queResolution, "");
+				flag = tqm.updateInfoById(tqId, queSub, optNum, queAnswer, queResolution, "");
 				if(flag){
 					msg = "success";
 				}
@@ -766,6 +771,7 @@ public class HomeWorkAction extends DispatchAction {
 		String queSub = Transcode.unescape_new1("queSub", request);
 		String queAnswer = Transcode.unescape_new1("queAnswer", request);
 		String queResolution = Transcode.unescape_new1("queResolution", request);
+		Integer optNum = CommonTools.getFinalInteger("optNum", request);//选项个数
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "error";
 		String roleName = CommonTools.getLoginRoleName(request);
@@ -782,7 +788,7 @@ public class HomeWorkAction extends DispatchAction {
 			if(tqList.size() > 0){
 				currNum = tqList.get(tqList.size() - 1).getQueNum() + 1;
 			}
-			Integer tqId = tqm.addTQ(loreId, currNum, lm.getEntityById(loreId).getLoreName() + "第" + currNum + "题", queSub, queAnswer, queResolution, queType, "其他", userId);
+			Integer tqId = tqm.addTQ(loreId, currNum, lm.getEntityById(loreId).getLoreName() + "第" + currNum + "题", queSub, optNum,queAnswer, queResolution, queType, "其他", userId);
 			if(tqId > 0){
 				msg = "success";
 			}
@@ -3146,7 +3152,7 @@ public class HomeWorkAction extends DispatchAction {
 											errorNum = 1;
 										}
 									}else if(lqType.equals("判断题")){
-										if(myAnswer.equals("对")){
+										if(myAnswer.equals(realAnswer)){
 											result = 1;
 											succNum = 1;
 										}else{
@@ -3529,8 +3535,11 @@ public class HomeWorkAction extends DispatchAction {
 									nextLoreIdArray += currentPathArray[k] + ",";
 									//获取该知识典所有类型为针对性诊断的题型[0为题状态为有效状态]
 									Integer quoteLoreId = CommonTools.getQuoteLoreId(Integer.parseInt(currentPathArray[k]));
-									List<LoreQuestion> lqList = lqm.listInfoByLoreId(quoteLoreId, loreTypeName, 0);
-									answerNumber += lqList.size();
+									//全部题
+									List<LoreQuestion> lqList_all = lqm.listInfoByLoreId(quoteLoreId, loreTypeName, 0);
+									//做过的题
+									List<HwTraceStudyDetailInfo> lqList_zg = sdm.listExistInfoByOption(studyLogId, Integer.parseInt(currentPathArray[k]), loreTypeName);
+									answerNumber += (lqList_all.size() - lqList_zg.size());
 								}
 								money *= answerNumber;
 								nextLoreIdArray = nextLoreIdArray.substring(0, nextLoreIdArray.length() - 1);
@@ -3762,6 +3771,7 @@ public class HomeWorkAction extends DispatchAction {
 					msg = "success";
 					hwTitle = sendHw.getHwTitle();
 					Integer sendLoreId = sendHw.getLoreInfo().getId();//发送作业时的知识点编号
+					String sendLoreName = sendHw.getLoreInfo().getLoreName();
 					basicLoreId = sendHw.getLoreInfo().getMainLoreId();//通用版知识点编号
 					//获取溯源路线
 					String[] pathArr = CommonTools.getLorePath(sendLoreId, "diagnosis");
@@ -3772,24 +3782,21 @@ public class HomeWorkAction extends DispatchAction {
 					LoreTreeMenuJson ltmj = new LoreTreeMenuJson();
 					HwTraceStudyLogInfo sl = slm.getEntityByTjId(tjId);
 					if(sl == null){//表示第一次，还未进行关联知识点学习
-						option = 1;
-						currentLoreId = tjId;//目的为了获取当前级别(把第一级家庭作业编号赋值给currLoreId)
-//						String[] pathArray = path.split(":");
-//						Integer currentI = CommonTools.getCurrentStep(pathArray, currentLoreId);
-						nextLoreIdArray = String.valueOf(tjId);;
-//						String[] nextPathArray = pathArray[currentI].split(",");
-//						Integer nextPathLength = nextPathArray.length;
-//						for(Integer k = 0 ; k < nextPathLength ; k++){
-//							String[] nextDetailPathArray = nextPathArray[k].split("\\|");
-//							for(Integer l = 0 ; l < nextDetailPathArray.length ; l++){
-//								nextLoreIdArray += nextDetailPathArray[l] + ",";
-//							}
-//						}
-//						if(nextLoreIdArray.length() > 0){
-//							nextLoreIdArray = nextLoreIdArray.substring(0, nextLoreIdArray.length() - 1);
-//						}
-						successStep = hwTitle;
-						success = 1;
+						if(tj.getHwsdAddStatus().equals(1)){//应该进入第一级关联知识点诊断
+							success = 1;
+							option = 1;
+							currentLoreId = sendLoreId;
+							nextLoreIdArray = String.valueOf(sendLoreId);
+							successStep = hwTitle;
+							access = 1;
+							totalMoney = 10;
+						}else{
+							option = 1;
+							currentLoreId = tjId;//目的为了获取当前级别(把第一级家庭作业编号赋值给currLoreId)
+							successStep = hwTitle;
+							success = 1;
+							nextLoreIdArray = String.valueOf(tjId);
+						}
 					}else{//进行溯源，存在学习记录
 						totalMoney = sl.getCurrentGold() * 10;
 						stepComplete = sl.getStepComplete();
@@ -4551,6 +4558,9 @@ public class HomeWorkAction extends DispatchAction {
 									//-1表示不修改对应值
 									updateFlag = slm.updateStudyLog(studyLogId, 3, 0, -1, -1, 31, -1,"");
 								}else{//
+									if(result == 1){
+										oldStepMoney++;
+									}
 									updateFlag = slm.updateStudyLog(studyLogId, step, stepComplete, isFinish, oldStepMoney, 0, -1,currTime);
 								}
 							}

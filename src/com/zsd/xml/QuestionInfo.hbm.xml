@@ -35,6 +35,11 @@
                 <comment>问题内容</comment>
             </column>
         </property>
+        <property name="queImg" type="java.lang.String">
+            <column name="que_img" length="65535">
+                <comment>问题图片</comment>
+            </column>
+        </property>
         <property name="queTime" type="java.lang.String">
             <column name="que_time" length="30" not-null="true">
                 <comment>提问时间</comment>
@@ -43,6 +48,11 @@
         <property name="queReplyContent" type="java.lang.String">
             <column name="que_reply_content" length="65535">
                 <comment>老师回答内容</comment>
+            </column>
+        </property>
+         <property name="queReplyImg" type="java.lang.String">
+            <column name="que_reply_img" length="65535">
+                <comment>回答问题图片</comment>
             </column>
         </property>
         <property name="queReplyTime" type="java.lang.String">

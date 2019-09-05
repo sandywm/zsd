@@ -45,5 +45,9 @@ public class InitServlet extends HttpServlet
         WebUrl.DATA_URL = getServletContext().getRealPath("Module/commonJs/ueditor/jsp/head/");
         
         WebUrl.NEW_DATA_URL = "Module/commonJs/ueditor/jsp/head/";
+        
+        WebUrl.DATA_URL_QUE_FILE_UPLOAD = getServletContext().getRealPath("/Module/uploadFile/queFile");
+        
+        WebUrl.NEW_DATA_URL_QUE_FILE_UPLOAD = "/Module/uploadFile/queFile/";
     }
 }

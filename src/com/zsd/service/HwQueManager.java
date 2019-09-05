@@ -16,6 +16,7 @@ public interface HwQueManager {
 	 * @param num 题库顺序
 	 * @param title 标题
 	 * @param subject 题干(包括选项)
+	 * @param optNum 选项个数
 	 * @param answer 答案
 	 * @param resolution 解析
 	 * @param queType 题型一
@@ -24,7 +25,7 @@ public interface HwQueManager {
 	 * @return
 	 * @throws WEBException
 	 */
-	Integer addHW(Integer btId,Integer loreId,Integer num,String title,String subject,String answer,
+	Integer addHW(Integer btId,Integer loreId,Integer num,String title,String subject,Integer optNum,String answer,
 			String resolution,String queType,Integer orders,
 			String operateUserName) throws WEBException;
 	
@@ -90,15 +91,16 @@ public interface HwQueManager {
 	 * @author wm
 	 * @date 2019-7-22 上午11:58:46
 	 * @param id 主键
-	 * @param queSub 题干
-	 * @param queAnswer 答案
+	 * @param queSub 题干(""时不修改)
+	 * @param optNum 选项个数
+	 * @param queAnswer 答案(""时不修改)
 	 * @param queResolution 解析
-	 * @param queType 类型
+	 * @param queType 类型(""时不修改)
 	 * @param operateUserName 操作人员
 	 * @return
 	 * @throws WEBException
 	 */
-	boolean updateInfoById(Integer id,String queSub,String queAnswer,String queResolution,String queType,
+	boolean updateInfoById(Integer id,String queSub,Integer optNum,String queAnswer,String queResolution,String queType,
 			String operateUserName)throws WEBException;
 	
 	/**

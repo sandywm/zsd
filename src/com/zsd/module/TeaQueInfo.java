@@ -18,6 +18,7 @@ public class TeaQueInfo implements java.io.Serializable {
 	private Integer queNum;
 	private String queTitle;
 	private String queSub;
+	private Integer optNum;
 	private String queAnswer;
 	private String queResolution;
 	private String queType;
@@ -33,7 +34,7 @@ public class TeaQueInfo implements java.io.Serializable {
 
 	/** full constructor */
 	public TeaQueInfo(User user, LoreInfo loreInfo, Integer queNum,
-			String queTitle, String queSub, String queAnswer,
+			String queTitle, String queSub, Integer optNum,String queAnswer,
 			String queResolution, String queType, String queType2,
 			Integer inUse, String operateUserDate) {
 		this.user = user;
@@ -41,6 +42,7 @@ public class TeaQueInfo implements java.io.Serializable {
 		this.queNum = queNum;
 		this.queTitle = queTitle;
 		this.queSub = queSub;
+		this.optNum = optNum;
 		this.queAnswer = queAnswer;
 		this.queResolution = queResolution;
 		this.queType = queType;
@@ -145,6 +147,14 @@ public class TeaQueInfo implements java.io.Serializable {
 
 	public void setOperateUserDate(String operateUserDate) {
 		this.operateUserDate = operateUserDate;
+	}
+
+	public Integer getOptNum() {
+		return optNum;
+	}
+
+	public void setOptNum(Integer optNum) {
+		this.optNum = optNum;
 	}
 
 }

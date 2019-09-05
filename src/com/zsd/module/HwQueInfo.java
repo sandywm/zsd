@@ -18,6 +18,7 @@ public class HwQueInfo implements java.io.Serializable {
 	private Integer num;
 	private String title;
 	private String subject;
+	private Integer optNum;
 	private String answer;
 	private String resolution;
 	private String queType;
@@ -34,7 +35,7 @@ public class HwQueInfo implements java.io.Serializable {
 
 	/** full constructor */
 	public HwQueInfo(LoreInfo loreInfo, BuffetTypeInfo buffetTypeInfo,
-			Integer num, String title, String subject, String answer,
+			Integer num, String title, String subject, Integer optNum,String answer,
 			String resolution, String queType, Integer orders, Integer inUse,
 			String operateUserName, String operateUserDate) {
 		this.loreInfo = loreInfo;
@@ -42,6 +43,7 @@ public class HwQueInfo implements java.io.Serializable {
 		this.num = num;
 		this.title = title;
 		this.subject = subject;
+		this.optNum = optNum;
 		this.answer = answer;
 		this.resolution = resolution;
 		this.queType = queType;
@@ -155,5 +157,13 @@ public class HwQueInfo implements java.io.Serializable {
 
 	public void setOperateUserDate(String operateUserDate) {
 		this.operateUserDate = operateUserDate;
+	}
+
+	public Integer getOptNum() {
+		return optNum;
+	}
+
+	public void setOptNum(Integer optNum) {
+		this.optNum = optNum;
 	}
 }

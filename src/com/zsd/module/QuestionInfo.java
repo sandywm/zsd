@@ -18,8 +18,10 @@ public class QuestionInfo implements java.io.Serializable {
 	private NetTeacherInfo netTeacherInfo;
 	private String queTitle;
 	private String queContent;
+	private String queImg;
 	private String queTime;
 	private String queReplyContent;
+	private String queReplyImg;
 	private String queReplyTime;
 	private Integer readStatus;
 
@@ -44,16 +46,18 @@ public class QuestionInfo implements java.io.Serializable {
 
 	/** full constructor */
 	public QuestionInfo(Subject subject, User user,
-			NetTeacherInfo netTeacherInfo, String queTitle, String queContent,
-			String queTime, String queReplyContent, String queReplyTime,
+			NetTeacherInfo netTeacherInfo, String queTitle, String queContent,String queImg,
+			String queTime, String queReplyContent, String queReplyImg,String queReplyTime,
 			Integer readStatus) {
 		this.subject = subject;
 		this.user = user;
 		this.netTeacherInfo = netTeacherInfo;
 		this.queTitle = queTitle;
 		this.queContent = queContent;
+		this.queImg = queImg;
 		this.queTime = queTime;
 		this.queReplyContent = queReplyContent;
+		this.queReplyImg = queReplyImg;
 		this.queReplyTime = queReplyTime;
 		this.readStatus = readStatus;
 	}
@@ -138,6 +142,22 @@ public class QuestionInfo implements java.io.Serializable {
 
 	public void setReadStatus(Integer readStatus) {
 		this.readStatus = readStatus;
+	}
+
+	public String getQueImg() {
+		return queImg;
+	}
+
+	public void setQueImg(String queImg) {
+		this.queImg = queImg;
+	}
+
+	public String getQueReplyImg() {
+		return queReplyImg;
+	}
+
+	public void setQueReplyImg(String queReplyImg) {
+		this.queReplyImg = queReplyImg;
 	}
 
 }

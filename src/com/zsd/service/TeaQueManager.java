@@ -15,6 +15,7 @@ public interface TeaQueManager {
 	 * @param queNum 题库顺序
 	 * @param queTitle 题库标题
 	 * @param queSub 题库题干
+	 * @param optNum 选项个数
 	 * @param queAnswer 题库答案
 	 * @param queResolution 题库解析
 	 * @param queType 题型一
@@ -23,7 +24,7 @@ public interface TeaQueManager {
 	 * @return
 	 * @throws WEBException
 	 */
-	Integer addTQ(Integer loreId,Integer queNum,String queTitle,String queSub,String queAnswer,
+	Integer addTQ(Integer loreId,Integer queNum,String queTitle,String queSub,Integer optNum,String queAnswer,
 			String queResolution,String queType,String queType2,Integer teaId) throws WEBException;
 	
 	/**
@@ -42,14 +43,15 @@ public interface TeaQueManager {
 	 * @author wm
 	 * @date 2019-7-25 下午05:12:39
 	 * @param tqId 题库编号
-	 * @param queSub 题库题干
-	 * @param queAnswer 题库答案
-	 * @param queResolution 题库解析
+	 * @param queSub 题库题干(""时不修改)
+	 * @param optNum 选项个数
+	 * @param queAnswer 题库答案(""时不修改)
+	 * @param queResolution 题库解析(""时不修改)
 	 * @param queType 题型一
 	 * @return
 	 * @throws WEBException
 	 */
-	boolean updateInfoById(Integer tqId,String queSub,String queAnswer,
+	boolean updateInfoById(Integer tqId,String queSub,Integer optNum,String queAnswer,
 			String queResolution,String queType) throws WEBException;
 	
 	/**

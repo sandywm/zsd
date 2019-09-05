@@ -24,7 +24,7 @@ public class HwQueManagerImpl implements HwQueManager{
 	Transaction tran = null;
 	@Override
 	public Integer addHW(Integer btId, Integer loreId, Integer num,
-			String title, String subject, String answer, String resolution,
+			String title, String subject, Integer optNum,String answer, String resolution,
 			String queType, Integer orders, String operateUserName)
 			throws WEBException {
 		// TODO Auto-generated method stub
@@ -35,7 +35,7 @@ public class HwQueManagerImpl implements HwQueManager{
 			Session sess = HibernateUtil.currentSession();
 			tran = sess.beginTransaction();
 			HwQueInfo hq = new HwQueInfo(lDao.getEntityById(sess, loreId),baDao.getBTEntityById(sess, btId),
-					num, title, subject, answer,resolution, queType, orders, 0,
+					num, title, subject, optNum, answer,resolution, queType, orders, 0,
 					operateUserName, CurrentTime.getCurrentTime());
 			hqDao.save(sess, hq);
 			tran.commit();
@@ -145,7 +145,7 @@ public class HwQueManagerImpl implements HwQueManager{
 	}
 
 	@Override
-	public boolean updateInfoById(Integer id, String queSub, String queAnswer,
+	public boolean updateInfoById(Integer id, String queSub, Integer optNum,String queAnswer,
 			String queResolution, String queType, String operateUserName)
 			throws WEBException {
 		// TODO Auto-generated method stub
@@ -165,6 +165,7 @@ public class HwQueManagerImpl implements HwQueManager{
 				if(!queType.equals("")){
 					hq.setQueType(queType);
 				}
+				hq.setOptNum(optNum);
 				hq.setOperateUserName(operateUserName);
 				hq.setOperateUserDate(CurrentTime.getCurrentTime());
 				hqDao.update(sess, hq);

@@ -35,6 +35,11 @@
                 <comment>题干</comment>
             </column>
         </property>
+        <property name="optNum" type="java.lang.Integer">
+            <column name="opt_num" length="30" not-null="true">
+                <comment>选项个数(默认0，2-6)</comment>
+            </column>
+        </property>
         <property name="queAnswer" type="java.lang.String">
             <column name="que_answer" length="65535">
                 <comment>答案</comment>

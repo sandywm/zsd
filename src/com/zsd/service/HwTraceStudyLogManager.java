@@ -28,12 +28,12 @@ public interface HwTraceStudyLogManager {
 	 * @author wm
 	 * @date 2019-8-16 上午10:45:42
 	 * @param id 主键
-	 * @param step 答题阶段（共5段）-1不修改
+	 * @param step 答题阶段（共5段）0不修改
 	 * @param stepComplete 该阶段完成状态（题有无做完）-1不修改
 	 * @param isFinish 该知识典完成状态-1不修改
 	 * @param currentGold 当前阶段答题分数-1不修改
 	 * @param access 本级知识点完成情况-1不修改
-	 * @param taskNumber 任务个数(为-1时不修改)
+	 * @param taskNumber 任务个数(为0时不修改)
 	 * @param addTime 添加时间 （""不修改）
 	 * @return
 	 * @throws WEBException
