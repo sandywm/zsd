@@ -35,7 +35,17 @@ public class SysFeeManagerImpl implements SysFeeManager{
 	public List<SysFeeInfo> listInfoByopt(Integer feeType, Integer schoolType,
 			Integer showStatus) throws WEBException {
 		// TODO Auto-generated method stub
-		return null;
+		try {
+			sfDao = (SysFeeDao) DaoFactory.instance(null).getDao(Constants.DAO_SYS_FEE_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return sfDao.findInfoByOpt(sess, feeType, schoolType, showStatus);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new WEBException("根据费用类型、学段、有效状态获取系统费用列表时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
 	}
 
 }

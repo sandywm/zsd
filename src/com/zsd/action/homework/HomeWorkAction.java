@@ -3745,7 +3745,7 @@ public class HomeWorkAction extends DispatchAction {
 		String msg = "error";
 		String nextLoreIdArray = "";//下级知识典编号数组
 		Integer studyLogId = 0;
-		Integer totalMoney = -1;
+		Integer totalMoney = 10;
 		String path = "";//顺序路线图(诊断时)
 		String pathChi = "";
 		String studyPath = "";//学习的路线
@@ -3771,7 +3771,6 @@ public class HomeWorkAction extends DispatchAction {
 					msg = "success";
 					hwTitle = sendHw.getHwTitle();
 					Integer sendLoreId = sendHw.getLoreInfo().getId();//发送作业时的知识点编号
-					String sendLoreName = sendHw.getLoreInfo().getLoreName();
 					basicLoreId = sendHw.getLoreInfo().getMainLoreId();//通用版知识点编号
 					//获取溯源路线
 					String[] pathArr = CommonTools.getLorePath(sendLoreId, "diagnosis");
@@ -3789,7 +3788,6 @@ public class HomeWorkAction extends DispatchAction {
 							nextLoreIdArray = String.valueOf(sendLoreId);
 							successStep = hwTitle;
 							access = 1;
-							totalMoney = 10;
 						}else{
 							option = 1;
 							currentLoreId = tjId;//目的为了获取当前级别(把第一级家庭作业编号赋值给currLoreId)
@@ -3798,7 +3796,6 @@ public class HomeWorkAction extends DispatchAction {
 							nextLoreIdArray = String.valueOf(tjId);
 						}
 					}else{//进行溯源，存在学习记录
-						totalMoney = sl.getCurrentGold() * 10;
 						stepComplete = sl.getStepComplete();
 						step = sl.getStep();
 						access = sl.getAccess();
