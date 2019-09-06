@@ -1,4 +1,4 @@
-package com.ssh.model;
+package com.zsd.module;
 
 /**
  * SysFeeInfo entity. @author MyEclipse Persistence Tools
@@ -8,11 +8,16 @@ public class SysFeeInfo implements java.io.Serializable {
 
 	// Fields
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Integer id;
 	private Integer fee;
 	private Integer monthRange;
 	private Integer feeType;
 	private Integer schoolType;
+	private Integer showStatus;
 
 	// Constructors
 
@@ -22,11 +27,12 @@ public class SysFeeInfo implements java.io.Serializable {
 
 	/** full constructor */
 	public SysFeeInfo(Integer fee, Integer monthRange, Integer feeType,
-			Integer schoolType) {
+			Integer schoolType,Integer showStatus) {
 		this.fee = fee;
 		this.monthRange = monthRange;
 		this.feeType = feeType;
 		this.schoolType = schoolType;
+		this.showStatus = showStatus;
 	}
 
 	// Property accessors
@@ -69,6 +75,14 @@ public class SysFeeInfo implements java.io.Serializable {
 
 	public void setSchoolType(Integer schoolType) {
 		this.schoolType = schoolType;
+	}
+
+	public Integer getShowStatus() {
+		return showStatus;
+	}
+
+	public void setShowStatus(Integer showStatus) {
+		this.showStatus = showStatus;
 	}
 
 }

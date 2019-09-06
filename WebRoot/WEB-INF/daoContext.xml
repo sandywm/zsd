@@ -65,4 +65,5 @@
 	<dao id="net_teacher_studio_news_Dao" class="com.zsd.dao.impl.NetTeacherStudioNewsDaoImpl" />
 	<dao id="net_teacher_studio_relation_Dao" class="com.zsd.dao.impl.NetTeacherStudioRelationDaoImpl" />
 	<dao id="email_Dao" class="com.zsd.dao.impl.EmailDaoImpl" />
+	<dao id="sys_fee_Dao" class="com.zsd.dao.impl.SysFeeDaoImpl" />
 </daoContext>
