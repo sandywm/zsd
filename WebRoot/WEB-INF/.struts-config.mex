@@ -24,9 +24,14 @@
   <StrutsActivity path="/hw.do" location="1550,1850" dimension="299,104" />
   <StrutsActivity path="/ntStudio.do" location="1250,2050" dimension="257,104" />
   <StrutsActivity path="/applyClass.do" location="650,2050" dimension="295,104" />
+<<<<<<< Updated upstream
   <StrutsActivity path="/login.jsp" location="50,2250" dimension="86,53" />
   <StrutsActivity path="/index.jsp" location="350,2250" dimension="88,53" />
   <StrutsActivity path="/Module/welcome/jsp/welcome.jsp" location="650,2250" dimension="236,53" />
+=======
+  <StrutsActivity path="/index.jsp" location="1250,2250" dimension="88,53" />
+  <StrutsActivity path="/Module/welcome/jsp/welcome.jsp" location="1550,2250" dimension="236,53" />
+>>>>>>> Stashed changes
   <StrutsActivity path="/Module/schoolManager/jsp/schoolManager.jsp" location="1250,250" dimension="316,53" />
   <StrutsActivity path="/Module/gradeSubManager/jsp/gradeSubManager.jsp" location="1250,650" dimension="354,53" />
   <StrutsActivity path="/Module/subManager/jsp/subManager.jsp" location="1250,850" dimension="282,53" />
@@ -40,6 +45,7 @@
   <StrutsActivity path="/Module/buffetManager/jsp/buffetManager.jsp" location="1250,450" dimension="308,53" />
   <StrutsActivity path="/Module/errQuesManager/jsp/errQuesManager.jsp" location="650,1650" dimension="334,53" />
   <StrutsActivity path="/###.jsp" location="950,250" dimension="81,53" />
+<<<<<<< Updated upstream
   <StrutsActivity path="/Module/teaHwManager/jsp/teaHwManager.jsp" location="1250,2450" dimension="312,53" />
   <StrutsActivity path="/Module/sysHwManager/jsp/sysHwManager.jsp" location="50,2550" dimension="312,53" />
   <StrutsActivity path="/register.jsp" location="650,250" dimension="102,53" />
@@ -51,6 +57,19 @@
       <AbsolutePoint location="-25,102" />
       <AbsolutePoint location="-25,2276" />
       <AbsolutePoint location="50,2276" />
+=======
+  <StrutsActivity path="/Module/teaHwManager/jsp/teaHwManager.jsp" location="650,2250" dimension="312,53" />
+  <StrutsActivity path="/Module/sysHwManager/jsp/sysHwManager.jsp" location="50,2250" dimension="312,53" />
+  <StrutsActivity path="/register.jsp" location="650,250" dimension="102,53" />
+  <StrutsActivity path="/Module/buffetManager/jsp/lexManager.jsp" location="50,1650" dimension="290,53" />
+  <StrutsActivity path="/login.jsp" location="50,2450" dimension="86,53" />
+  <StrutsTransition id="/login.do,loginOut,/login.jsp,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="50,102" />
+      <AbsolutePoint location="-160,102" />
+      <AbsolutePoint location="-160,2476" />
+      <AbsolutePoint location="50,2476" />
+>>>>>>> Stashed changes
     </AutomaticBendpoints>
   </StrutsTransition>
   <StrutsTransition id="/chapter.do,chapterPage,/Module/chapter/jsp/chapter.jsp,1" routingType="0">
@@ -80,6 +99,12 @@
       <AbsolutePoint location="438,2276" />
     </AutomaticBendpoints>
   </StrutsTransition>
+  <StrutsTransition id="/user.do,managerPage,/index.jsp,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="461,102" />
+      <AbsolutePoint location="1294,2276" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
   <StrutsTransition id="/common.do,gsPage,/Module/gradeSubManager/jsp/gradeSubManager.jsp,1" routingType="0">
     <AutomaticBendpoints>
       <AbsolutePoint location="301,348" />
@@ -106,9 +131,14 @@
   </StrutsTransition>
   <StrutsTransition id="/hw.do,hwPage,/Module/sysHwManager/jsp/sysHwManager.jsp,1" routingType="0">
     <AutomaticBendpoints>
+<<<<<<< Updated upstream
       <AbsolutePoint location="1729,1954" />
       <AbsolutePoint location="1729,2576" />
       <AbsolutePoint location="362,2576" />
+=======
+      <AbsolutePoint location="1699,1902" />
+      <AbsolutePoint location="206,2276" />
+>>>>>>> Stashed changes
     </AutomaticBendpoints>
   </StrutsTransition>
   <StrutsTransition id="/netTeacherReview.do,reviewPage,/###.jsp,1" routingType="0">
@@ -137,11 +167,16 @@
   </StrutsTransition>
   <StrutsTransition id="/user.do,welcomePage,/Module/welcome/jsp/welcome.jsp,1" routingType="0">
     <AutomaticBendpoints>
+<<<<<<< Updated upstream
       <AbsolutePoint location="572,132" />
       <AbsolutePoint location="603,132" />
       <AbsolutePoint location="603,2199" />
       <AbsolutePoint location="768,2199" />
       <AbsolutePoint location="768,2250" />
+=======
+      <AbsolutePoint location="461,102" />
+      <AbsolutePoint location="0,0" />
+>>>>>>> Stashed changes
     </AutomaticBendpoints>
   </StrutsTransition>
   <StrutsTransition id="/studyRecord.do,stuRecPage,/###.jsp,1" routingType="0">
@@ -168,6 +203,12 @@
       <AbsolutePoint location="1699,1954" />
       <AbsolutePoint location="1699,2476" />
       <AbsolutePoint location="1562,2476" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/hw.do,tqPage,/Module/teaHwManager/jsp/teaHwManager.jsp,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="1699,1902" />
+      <AbsolutePoint location="806,2276" />
     </AutomaticBendpoints>
   </StrutsTransition>
   <StrutsTransition id="/loreRelate.do,lrPage,/Module/loreRelateManager/jsp/loreRelateManager.jsp,1" routingType="0">

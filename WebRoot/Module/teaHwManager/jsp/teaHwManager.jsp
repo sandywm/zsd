@@ -191,6 +191,7 @@
 							result='',resTit='',resCon='',resAnaly='',resAns='',resFlag=false,field=null;
 		    			var tiganTypeInpVal = $('#tiganTypeInp').val(),
 							ans_singleInpVal = $('#ans_singleInp').val(),//答案选项
+							maxSelInpNumVal = $('#maxSelInpNum').val(),//最大选项
 							spaceNum = $('#spaceNumInp').val(),
 							inpAnsSelVal='',ansSelRes = '',
 							queTiganFlag=true,queSubFlag=true,ansFlag=true;
@@ -257,7 +258,7 @@
 							}
 						}
 						if(resFlag){
-							var fieldCom = {loreId:loreBigId,queType:escape(tiganTypeInpVal),queSub:escape(currUeEditCon),queResolution:escape(currUeEditAnaly)};
+							var fieldCom = {loreId:loreBigId,queType:escape(tiganTypeInpVal),optNum:maxSelInpNumVal,queSub:escape(currUeEditCon),queResolution:escape(currUeEditAnaly)};
 							if(tiganTypeInpVal == '单选题'){
 								if(globalOpts == 'add'){
 									field = {queAnswer:escape(ans_singleInpVal)};
@@ -293,6 +294,7 @@
 							}else if(globalOpts == 'edit'){
 								var url = '/hw.do?action=updateTeaQue';
 							}
+							console.log(field)
 							layer.load('1');
 							$.ajax({
 								type:'post',
@@ -349,7 +351,9 @@
 					
 				},
 				renderHwInfo : function(json){
-					var spaceSelBox = blDOM.creaMaxSpace(),
+					console.log(json)
+					var maxSelBox = blDOM.creaMaxSel(),
+						spaceSelBox = blDOM.creaMaxSpace(),
 						ansType = blDOM.createAnsType(),//问题类型
 						ansSingle = blDOM.createAnsSingle(),
 						ansMulti = blDOM.createAnsMulti(),
@@ -357,6 +361,7 @@
 						judgeStr = blDOM.judgeQueType(),
 						tkSelStr = blDOM.createTkSelDOM(),
 						tkTypeStr = blDOM.createTkTypeDOM(loreType);
+					$('.maxChoice').hide().html(maxSelBox);
 					$('.spaceBox').hide().html(spaceSelBox);
 					$('#tiganTypeInp').val(json.queType);
 					$('#tiganTypeTxt').html(json.queType);
@@ -364,24 +369,30 @@
 					if(json.queType == '单选题' || json.queType == '多选题' || json.queType == '填空选择题' || json.queType == '判断题'){
 						$('#ansSelWrap_' + loreType).show();
 						realAnswer = json.queAnswer;
+						$('.maxChoice').show();
+						$('#maxSelInpNum').val(json.optNum);//初始化最大选项
+						$('#maxChoiceNumSel').val(json.optNum);//初始化最大选项
 						if(json.queType == '单选题'){
-							answerNum = json.queOptNum; //将当前选择的最大选项赋给answerNum
+							answerNum = json.optNum; //将当前选择的最大选项赋给answerNum
 							result_answer = json.queAnswer + ",";
 							
 							$('#answerSelectDiv_' + loreType).show().html(ansSingle);
 							$('#ans_singleInp').val(json.queAnswer);
+							blMet.initShowInpByMaxOptNum(json.optNum,'answerBox_singel');
 							form.render();
 						}else if(json.queType == '多选题'){
-							answerNum = json.queOptNum; //将当前选择的最大选项赋给answerNum
+							answerNum = json.optNum; //将当前选择的最大选项赋给answerNum
 							$('#answerSelectDiv_' + loreType).show().html(ansMulti);
+							blMet.initShowInpByMaxOptNum(json.optNum,'answerBox_multi');
 							form.render();
 						}else if(json.queType == '填空选择题'){
-							answerNum = json.queOptNum; //将当前选择的最大选项赋给answerNum
+							answerNum = json.optNum; //将当前选择的最大选项赋给answerNum
 							$('.spaceBox').show();
 							$('#spaceNumInp').val(json.queOptNum);//初始化填空数量value
 							//匹配填空数量
 							$('#spaceNumSel').val(json.queOptNum);
 							$('#answerSelectDiv_' + loreType).show().html(tkSelStr);
+							blMet.initShowInpByMaxOptNum(json.optNum,'ansBox_multiTk');
 							form.render();
 						}else if(json.queType == '判断题'){
 							$('.spaceBox').html('');

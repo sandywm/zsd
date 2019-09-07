@@ -35,7 +35,7 @@ layui.define(['form'],function(exports){
     			tiganStr += '<div class="tiganType1 typeCon"><input id="tiganType1Inp" type="hidden" value="了解"/><select id="tiganType1Sel" lay-filter="tiganType1Sel">';
         		tiganStr += '<option value="了解">了解</option><option value="理解">理解</option><option value="应用">应用</option><option value="综合">综合</option></select></div>';
     		}
-    		if(currPage == 'lorePage' || currPage == 'buffetPage'){
+    		if(currPage == 'lorePage' || currPage == 'buffetPage' || currPage == 'sysHwPage' || currPage == 'teaHwPage'){
     			tiganStr += '<div class="maxChoice typeCon"></div>';
     		}
     		tiganStr += '<div class="spaceBox typeCon"></div>';
@@ -152,18 +152,13 @@ layui.define(['form'],function(exports){
     		ansSingle += '<div class="singleAns layui-clear"><span>答案：</span>';
     		ansSingle += '<div class="singleAnsBox layui-form">';
     		ansSingle += '<input type="hidden" id="ans_singleInp"/>';
-    		if(currPage == 'lorePage' || currPage == 'buffetPage'){
-    			for(var i=1;i<=6;i++){
-        			if(i<=4){
-        				ansSingle += '<div id="answerBox_singel_'+ i +'" class="comPartAns"><input type="radio" name="answer_singel" value="" id="answer_singel_'+ i +'" lay-filter="answer_singel" title="'+ this.switchABCByNum(i) +'"/></div>';
-        			}else{
-        				ansSingle += '<div id="answerBox_singel_'+ i +'" class="comPartAns" style="display:none;"><input type="radio" name="answer_singel" value="" id="answer_singel_'+ i +'" lay-filter="answer_singel" title="'+ this.switchABCByNum(i) +'"/></div>';
-        			}
-        		}
-    		}else{
-    			for(var i=1;i<=6;i++){
-    				ansSingle += '<div id="answerBox_singel_'+ i +'" class="comPartAns"><input type="radio" name="answer_singel" value="'+ this.switchABCByNum(i) +'" id="answer_singel_'+ i +'" lay-filter="answer_singel" title="'+ this.switchABCByNum(i) +'"/></div>';
-        		}
+    		for(var i=1;i<=6;i++){
+    			var value = currPage == 'lorePage' || currPage == 'buffetPage' ? '' : this.switchABCByNum(i);
+    			if(i<=4){
+    				ansSingle += '<div id="answerBox_singel_'+ i +'" class="comPartAns"><input type="radio" name="answer_singel" value="'+ value +'" id="answer_singel_'+ i +'" lay-filter="answer_singel" title="'+ this.switchABCByNum(i) +'"/></div>';
+    			}else{
+    				ansSingle += '<div id="answerBox_singel_'+ i +'" class="comPartAns" style="display:none;"><input type="radio" name="answer_singel" value="'+ value +'" id="answer_singel_'+ i +'" lay-filter="answer_singel" title="'+ this.switchABCByNum(i) +'"/></div>';
+    			}
     		}
     		ansSingle += '</div>';
     		ansSingle += '</div>';
@@ -175,18 +170,13 @@ layui.define(['form'],function(exports){
     		//对应答案 多选
     		ansMulti += '<div class="multiAns layui-clear"><span>答案：</span>';
     		ansMulti += '<div class="multiAnsBox layui-form">';
-    		if(currPage == 'lorePage' || currPage == 'buffetPage'){
-    			for(var i=1;i<=6;i++){
-        			if(i<=4){
-        				ansMulti += '<div id="answerBox_multi_'+ i +'" class="comPartAns_multi"><input type="checkbox" lay-skin="primary" name="answer_multi" value="" id="'+ this.switchABCByNum(i) +'" lay-filter="answer_multi" title="'+ this.switchABCByNum(i) +'"/></div>';
-        			}else{
-        				ansMulti += '<div id="answerBox_multi_'+ i +'" class="comPartAns_multi" style="display:none;"><input type="checkbox" lay-skin="primary" name="answer_multi" value="" id="'+ this.switchABCByNum(i) +'" lay-filter="answer_multi" title="'+ this.switchABCByNum(i) +'"/></div>';
-        			}	
-        		}
-    		}else{
-    			for(var i=1;i<=6;i++){
-    				ansMulti += '<div id="answerBox_multi_'+ i +'" class="comPartAns_multi"><input type="checkbox" lay-skin="primary" name="answer_multi" value="'+ this.switchABCByNum(i) +'" id="'+ this.switchABCByNum(i) +'" lay-filter="answer_multi" title="'+ this.switchABCByNum(i) +'"/></div>';
-        		}
+    		for(var i=1;i<=6;i++){
+    			var value = currPage == 'lorePage' || currPage == 'buffetPage' ? '' : this.switchABCByNum(i);
+    			if(i<=4){
+    				ansMulti += '<div id="answerBox_multi_'+ i +'" class="comPartAns_multi"><input type="checkbox" lay-skin="primary" name="answer_multi" value="'+ value +'" id="'+ this.switchABCByNum(i) +'" lay-filter="answer_multi" title="'+ this.switchABCByNum(i) +'"/></div>';
+    			}else{
+    				ansMulti += '<div id="answerBox_multi_'+ i +'" class="comPartAns_multi" style="display:none;"><input type="checkbox" lay-skin="primary" name="answer_multi" value="'+ value +'" id="'+ this.switchABCByNum(i) +'" lay-filter="answer_multi" title="'+ this.switchABCByNum(i) +'"/></div>';
+    			}	
     		}
     		ansMulti += '<p class="hasChoiceAns">已选答案：<em id="result_answer_new" class="noSel">暂未选择答案</em></p>';
     		ansMulti += '</div>';
@@ -223,18 +213,13 @@ layui.define(['form'],function(exports){
     		//对应答案 多选
     		ansTkSel += '<div class="multiAns layui-clear"><span>答案：</span>';
     		ansTkSel += '<div class="multiAnsBox layui-form">';
-    		if(currPage == 'lorePage' || currPage == 'buffetPage'){
-    			for(var i=1;i<=6;i++){
-        			if(i<=4){
-        				ansTkSel += '<div id="ansBox_multiTk_'+ i +'" class="comPartAns_multi"><input type="button" class="multiTkBtn" alt="" name="answer_multiTk" value="'+ this.switchABCByNum(i) +'"/></div>';
-        			}else{
-        				ansTkSel += '<div id="ansBox_multiTk_'+ i +'" class="comPartAns_multi" style="display:none;"><input type="button" class="multiTkBtn" alt="" name="answer_multiTk" value="'+ this.switchABCByNum(i) +'"/></div>';
-        			}
-        		}
-    		}else{
-    			for(var i=1;i<=6;i++){
-    				ansTkSel += '<div id="ansBox_multiTk_'+ i +'" class="comPartAns_multi"><input type="button" class="multiTkBtn" alt="'+ this.switchABCByNum(i) +'" name="answer_multiTk" value="'+ this.switchABCByNum(i) +'"/></div>';
-        		}
+    		for(var i=1;i<=6;i++){
+    			var value = currPage == 'lorePage' || currPage == 'buffetPage' ? '' : this.switchABCByNum(i);
+    			if(i<=4){
+    				ansTkSel += '<div id="ansBox_multiTk_'+ i +'" class="comPartAns_multi"><input type="button" class="multiTkBtn" alt="'+ value +'" name="answer_multiTk" value="'+ this.switchABCByNum(i) +'"/></div>';
+    			}else{
+    				ansTkSel += '<div id="ansBox_multiTk_'+ i +'" class="comPartAns_multi" style="display:none;"><input type="button" class="multiTkBtn" alt="'+ value +'" name="answer_multiTk" value="'+ this.switchABCByNum(i) +'"/></div>';
+    			}
     		}
     		ansTkSel += '<p class="hasChoiceAns noSel">已选答案：<em id="result_answer_new_tk" class="noSel">暂未选择答案</em></p>';
     		ansTkSel += '<a class="clearSelAnsBtn" href="javascript:void(0)">清空已选答案</a>';
