@@ -844,7 +844,7 @@ public class CommonTools {
 //		System.out.println(Convert.convertInputNumber_6(aa));
 		String realAnswer = "9厘米,1厘米";
 		String myAnswer = "A,B";
-		String answerOpt = "1厘米,8厘米,4厘米,9厘米";
+		String answerOpt = "1厘米,,4厘米,9厘米";
 		String realAnswerChi = "";
 		String[] answerOptArr = answerOpt.split(",");
 		String[] realAnswerArr = realAnswer.split(",");

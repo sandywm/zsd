@@ -2957,60 +2957,14 @@ public class HomeWorkAction extends DispatchAction {
 						map_d.put("answerD", answerD);
 						map_d.put("answerE", answerE);
 						map_d.put("answerF", answerF);
+						String[] answerOptArr = {answerA , answerB , answerC , answerD , answerE , answerF};
 						String dataBaseAnswerChar = "";//转化成A-F的答案
 						String[] dataBaseAnswerArray = realAnswer.split(",");//数据库真实答案数组
-						if(!answerA.equals("")){
-							answerA = answerA.replace("Module/commonJs/ueditor/jsp/lore/", "");
-							for(Integer i = 0 ; i < dataBaseAnswerArray.length ; i++){
-								if(dataBaseAnswerArray[i].equals(answerA)){
-									dataBaseAnswerChar += Convert.NumberConvertBigChar(i)+",";
-									break;
-								}
-							}
-						}
-						if(!answerB.equals("")){
-							answerB = answerB.replace("Module/commonJs/ueditor/jsp/lore/", "");
-							for(Integer i = 0 ; i < dataBaseAnswerArray.length ; i++){
-								if(dataBaseAnswerArray[i].equals(answerB)){
-									dataBaseAnswerChar += Convert.NumberConvertBigChar(i)+",";
-									break;
-								}
-							}									
-						}
-						if(!answerC.equals("")){
-							answerC = answerC.replace("Module/commonJs/ueditor/jsp/lore/", "");
-							for(Integer i = 0 ; i < dataBaseAnswerArray.length ; i++){
-								if(dataBaseAnswerArray[i].equals(answerC)){
-									dataBaseAnswerChar += Convert.NumberConvertBigChar(i)+",";
-									break;
-								}
-							}
-						}
-						if(!answerD.equals("")){
-							answerD = answerD.replace("Module/commonJs/ueditor/jsp/lore/", "");
-							for(Integer i = 0 ; i < dataBaseAnswerArray.length ; i++){
-								if(dataBaseAnswerArray[i].equals(answerD)){
-									dataBaseAnswerChar += Convert.NumberConvertBigChar(i)+",";
-									break;
-								}
-							}
-						}
-						if(!answerE.equals("")){
-							answerE = answerE.replace("Module/commonJs/ueditor/jsp/lore/", "");
-							for(Integer i = 0 ; i < dataBaseAnswerArray.length ; i++){
-								if(dataBaseAnswerArray[i].equals(answerE)){
-									dataBaseAnswerChar += Convert.NumberConvertBigChar(i)+",";
-									break;
-								}
-							}
-						}
-						if(!answerF.equals("")){
-							answerF = answerF.replace("Module/commonJs/ueditor/jsp/lore/", "");
-							for(Integer i = 0 ; i < dataBaseAnswerArray.length ; i++){
-								if(dataBaseAnswerArray[i].equals(answerF)){
-									dataBaseAnswerChar += Convert.NumberConvertBigChar(i)+",";
-									break;
-								}
+						for(int i = 0 ; i < dataBaseAnswerArray.length ; i++){
+							for(int j = 0 ; j < answerOptArr.length ; j++)
+							if(dataBaseAnswerArray[i].equals(answerOptArr[j])){
+								dataBaseAnswerChar += Convert.NumberConvertBigChar(j)+",";
+								break;
 							}
 						}
 						if(!dataBaseAnswerChar.equals("")){
@@ -3170,97 +3124,15 @@ public class HomeWorkAction extends DispatchAction {
 										String answerD = lq.getD();
 										String answerE = lq.getE();
 										String answerF = lq.getF();
+										String[] answerOptArr = {answerA , answerB , answerC , answerD , answerE , answerF};
 										String dataBaseAnswerChar = "";//转化成A-F的答案
 										String[] dataBaseAnswerArray = realAnswer.split(",");//数据库真实答案数组
-										if(!answerA.equals("")){
-											answerA = answerA.replace("Module/commonJs/ueditor/jsp/lore/", "");
-											if(dataBaseAnswerArray.length == 1){
-												if(realAnswer.equals(answerA)){
-													dataBaseAnswerChar = "A,";
-												}
-											}else{
-												for(Integer i = 0 ; i < dataBaseAnswerArray.length ; i++){
-													if(dataBaseAnswerArray[i].equals(answerA)){
-														dataBaseAnswerChar += Convert.NumberConvertBigChar(i)+",";
-														break;
-													}
-												}
+										for(int i = 0 ; i < dataBaseAnswerArray.length ; i++){
+											for(int j = 0 ; j < answerOptArr.length ; j++)
+											if(dataBaseAnswerArray[i].equals(answerOptArr[j])){
+												dataBaseAnswerChar += Convert.NumberConvertBigChar(j)+",";
+												break;
 											}
-										}
-										if(!answerB.equals("")){
-											answerB = answerB.replace("Module/commonJs/ueditor/jsp/lore/", "");
-											if(dataBaseAnswerArray.length == 1){
-												if(realAnswer.equals(answerB)){
-													dataBaseAnswerChar = "B,";
-												}
-											}else{
-												for(Integer i = 0 ; i < dataBaseAnswerArray.length ; i++){
-													if(dataBaseAnswerArray[i].equals(answerB)){
-														dataBaseAnswerChar += Convert.NumberConvertBigChar(i)+",";
-														break;
-													}
-												}
-											}							
-										}
-										if(!answerC.equals("")){
-											answerC = answerC.replace("Module/commonJs/ueditor/jsp/lore/", "");
-											if(dataBaseAnswerArray.length == 1){
-												if(realAnswer.equals(answerC)){
-													dataBaseAnswerChar = "C,";
-												}
-											}else{
-												for(Integer i = 0 ; i < dataBaseAnswerArray.length ; i++){
-													if(dataBaseAnswerArray[i].equals(answerC)){
-														dataBaseAnswerChar += Convert.NumberConvertBigChar(i)+",";
-														break;
-													}
-												}
-											}	
-										}
-										if(!answerD.equals("")){
-											answerD = answerD.replace("Module/commonJs/ueditor/jsp/lore/", "");
-											if(dataBaseAnswerArray.length == 1){
-												if(realAnswer.equals(answerD)){
-													dataBaseAnswerChar = "D,";
-												}
-											}else{
-												for(Integer i = 0 ; i < dataBaseAnswerArray.length ; i++){
-													if(dataBaseAnswerArray[i].equals(answerD)){
-														dataBaseAnswerChar += Convert.NumberConvertBigChar(i)+",";
-														break;
-													}
-												}
-											}	
-										}
-										if(!answerE.equals("")){
-											answerE = answerE.replace("Module/commonJs/ueditor/jsp/lore/", "");
-											if(dataBaseAnswerArray.length == 1){
-												if(realAnswer.equals(answerE)){
-													dataBaseAnswerChar = "E,";
-												}
-											}else{
-												for(Integer i = 0 ; i < dataBaseAnswerArray.length ; i++){
-													if(dataBaseAnswerArray[i].equals(answerE)){
-														dataBaseAnswerChar += Convert.NumberConvertBigChar(i)+",";
-														break;
-													}
-												}
-											}	
-										}
-										if(!answerF.equals("")){
-											answerF = answerF.replace("Module/commonJs/ueditor/jsp/lore/", "");
-											if(dataBaseAnswerArray.length == 1){
-												if(realAnswer.equals(answerF)){
-													dataBaseAnswerChar = "F,";
-												}
-											}else{
-												for(Integer i = 0 ; i < dataBaseAnswerArray.length ; i++){
-													if(dataBaseAnswerArray[i].equals(answerF)){
-														dataBaseAnswerChar += Convert.NumberConvertBigChar(i)+",";
-														break;
-													}
-												}
-											}	
 										}
 										if(!dataBaseAnswerChar.equals("")){
 											dataBaseAnswerChar = dataBaseAnswerChar.substring(0, dataBaseAnswerChar.length() - 1);
@@ -3473,7 +3345,7 @@ public class HomeWorkAction extends DispatchAction {
 					CommonTools.getJsonPkg(map, response);
 					return null;
 				}
-				if(tj.getAllNum().equals(tj.getSuccNum() + tj.getErrorNum())){//家庭作业题库所有题都做过
+				if(tj.getAllNum().equals(tj.getSuccNum() + tj.getErrorNum()) && tj.getHwsdAddStatus().equals(1)){//家庭作业题库所有题都做过且点击了做完了按钮
 					showTraceFlag = true;
 				}else{
 					showTraceFlag = false;
@@ -3521,10 +3393,11 @@ public class HomeWorkAction extends DispatchAction {
 							List<HwStudyDetailInfo> hsdList = hsdm.listInfoByOpt(0, tjId, 0, "");
 							for(HwStudyDetailInfo hsd : hsdList){
 								if(hsd.getResult().equals(-1)){//没做的题
-									queLen += 1;
+//									queLen += 1;
 								}else{//有做的题
 									buttonValue = "继续作业";
 								}
+								queLen = hsdList.size();
 							}
 							money *= queLen;
 							nextLoreIdArray = String.valueOf(tjId);
@@ -4038,21 +3911,23 @@ public class HomeWorkAction extends DispatchAction {
 						}else if(sl.getIsFinish().equals(2)){//表示全部完成
 							msg = "hwQuePage";//溯源全部完成时，点击确定进入题库列表
 							step = sl.getStep();
+							access = sl.getAccess();
 							//从detail表中获取指定logId的最后一条详情
 							List<HwTraceStudyDetailInfo> sdList = sdm.listLastInfoByLogId(studyLogId);
 							//获取最后（最近）的一条答题详情
 							HwTraceStudyDetailInfo blsdLastInfo = sdList.get(0);
 							//获取该题对应的知识点编号
-							currentLoreId = blsdLastInfo.getLoreQuestion().getLoreInfo().getId();
-							studyPath = "";
-							if(step == 1){//表示是本知识典诊断时一次性全部正确通过
+							currentLoreId = blsdLastInfo.getLoreInfo().getId();
+							//获取最后这个知识点
+							if(access == 9){//表示是第一级知识点诊断时一次性全部正确通过
 								option = 1;
 								success = 2;
-								path = String.valueOf(currentLoreId);
-								nextLoreIdArray = String.valueOf(currentLoreId);
+//								path = String.valueOf(currentLoreId);
+								nextLoreIdArray = String.valueOf(tjId);
+								success = 6;
 							}else{//通过溯源完成的
 								option = 2;
-								nextLoreIdArray = "0";
+								nextLoreIdArray = String.valueOf(tjId);
 								successStep = "本知识点的诊断题";
 								success = 6;//全部完成
 							}
@@ -4714,10 +4589,10 @@ public class HomeWorkAction extends DispatchAction {
 						}
 					}
 				}else if(step.equals(4)){//第一级关联知识点一次完全通过时(家庭作业只要第一级完成就表示溯源任务完成)
-					if(access == 1){//再次诊断全部正确
+					if(access == 1){//第一级针对性全部正确
 						//表示溯源全部完成
 						stepComplete = 1;
-						access = 1;
+						access = 9;//第一级针对性全部正确
 						step = 5;
 						isFinish = 2;
 					}else{
