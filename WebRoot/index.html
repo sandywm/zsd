@@ -6,6 +6,11 @@
 		<link rel="stylesheet" type="text/css" href="/css/indexPC.css"/>
 		<link rel="stylesheet" type="text/css" href="/plugins/layui/css/modules/layui-icon-extend/iconfont.css" />
 		<title>知识典</title>
+		<script>
+			function goLogin(){
+				window.location.href = "login.do?action=login";
+			}
+		</script>
 	</head>
 	<body>
 		<!-- header -->
@@ -16,7 +21,7 @@
 				<div class="loginNav">
 					<ul>
 						<li>
-							<a class="loginBg" href="javascript:void(0)">
+							<a class="loginBg" href="javascript:void(0)" onclick="goLogin();">
 								<span>登录</span>
 							</a>
 						</li>

@@ -2936,6 +2936,7 @@ public class HomeWorkAction extends DispatchAction {
 							}else{//填空选择题
 								map_d.put("answerNum", hq.getAnswer().split(",").length);
 							}
+							map.put("optNum", hq.getOptNum());
 						}
 						map_d.put("studyResult", result);//-1：未做,0:错,1:对
 					}else if(queArea.equals("sys")){
@@ -3028,6 +3029,7 @@ public class HomeWorkAction extends DispatchAction {
 							}
 						}
 						map_d.put("studyResult", result);//-1：未做,0:错,1:对
+						
 					}else if(queArea.equals("tea")){
 						TeaQueInfo tq = tqm.getEntityById(queId);
 						map_d.put("queSub", tq.getQueSub());
@@ -3043,6 +3045,7 @@ public class HomeWorkAction extends DispatchAction {
 							}else{//填空选择题
 								map_d.put("answerNum", tq.getQueAnswer().split(",").length);
 							}
+							map.put("optNum", tq.getOptNum());
 						}
 						map_d.put("studyResult", result);//-1：未做,0:错,1:对
 					}
@@ -3171,57 +3174,93 @@ public class HomeWorkAction extends DispatchAction {
 										String[] dataBaseAnswerArray = realAnswer.split(",");//数据库真实答案数组
 										if(!answerA.equals("")){
 											answerA = answerA.replace("Module/commonJs/ueditor/jsp/lore/", "");
-											for(Integer i = 0 ; i < dataBaseAnswerArray.length ; i++){
-												if(dataBaseAnswerArray[i].equals(answerA)){
-													dataBaseAnswerChar += Convert.NumberConvertBigChar(i)+",";
-													break;
+											if(dataBaseAnswerArray.length == 1){
+												if(realAnswer.equals(answerA)){
+													dataBaseAnswerChar = "A,";
+												}
+											}else{
+												for(Integer i = 0 ; i < dataBaseAnswerArray.length ; i++){
+													if(dataBaseAnswerArray[i].equals(answerA)){
+														dataBaseAnswerChar += Convert.NumberConvertBigChar(i)+",";
+														break;
+													}
 												}
 											}
 										}
 										if(!answerB.equals("")){
 											answerB = answerB.replace("Module/commonJs/ueditor/jsp/lore/", "");
-											for(Integer i = 0 ; i < dataBaseAnswerArray.length ; i++){
-												if(dataBaseAnswerArray[i].equals(answerB)){
-													dataBaseAnswerChar += Convert.NumberConvertBigChar(i)+",";
-													break;
+											if(dataBaseAnswerArray.length == 1){
+												if(realAnswer.equals(answerB)){
+													dataBaseAnswerChar = "B,";
 												}
-											}									
+											}else{
+												for(Integer i = 0 ; i < dataBaseAnswerArray.length ; i++){
+													if(dataBaseAnswerArray[i].equals(answerB)){
+														dataBaseAnswerChar += Convert.NumberConvertBigChar(i)+",";
+														break;
+													}
+												}
+											}							
 										}
 										if(!answerC.equals("")){
 											answerC = answerC.replace("Module/commonJs/ueditor/jsp/lore/", "");
-											for(Integer i = 0 ; i < dataBaseAnswerArray.length ; i++){
-												if(dataBaseAnswerArray[i].equals(answerC)){
-													dataBaseAnswerChar += Convert.NumberConvertBigChar(i)+",";
-													break;
+											if(dataBaseAnswerArray.length == 1){
+												if(realAnswer.equals(answerC)){
+													dataBaseAnswerChar = "C,";
 												}
-											}
+											}else{
+												for(Integer i = 0 ; i < dataBaseAnswerArray.length ; i++){
+													if(dataBaseAnswerArray[i].equals(answerC)){
+														dataBaseAnswerChar += Convert.NumberConvertBigChar(i)+",";
+														break;
+													}
+												}
+											}	
 										}
 										if(!answerD.equals("")){
 											answerD = answerD.replace("Module/commonJs/ueditor/jsp/lore/", "");
-											for(Integer i = 0 ; i < dataBaseAnswerArray.length ; i++){
-												if(dataBaseAnswerArray[i].equals(answerD)){
-													dataBaseAnswerChar += Convert.NumberConvertBigChar(i)+",";
-													break;
+											if(dataBaseAnswerArray.length == 1){
+												if(realAnswer.equals(answerD)){
+													dataBaseAnswerChar = "D,";
 												}
-											}
+											}else{
+												for(Integer i = 0 ; i < dataBaseAnswerArray.length ; i++){
+													if(dataBaseAnswerArray[i].equals(answerD)){
+														dataBaseAnswerChar += Convert.NumberConvertBigChar(i)+",";
+														break;
+													}
+												}
+											}	
 										}
 										if(!answerE.equals("")){
 											answerE = answerE.replace("Module/commonJs/ueditor/jsp/lore/", "");
-											for(Integer i = 0 ; i < dataBaseAnswerArray.length ; i++){
-												if(dataBaseAnswerArray[i].equals(answerE)){
-													dataBaseAnswerChar += Convert.NumberConvertBigChar(i)+",";
-													break;
+											if(dataBaseAnswerArray.length == 1){
+												if(realAnswer.equals(answerE)){
+													dataBaseAnswerChar = "E,";
 												}
-											}
+											}else{
+												for(Integer i = 0 ; i < dataBaseAnswerArray.length ; i++){
+													if(dataBaseAnswerArray[i].equals(answerE)){
+														dataBaseAnswerChar += Convert.NumberConvertBigChar(i)+",";
+														break;
+													}
+												}
+											}	
 										}
 										if(!answerF.equals("")){
 											answerF = answerF.replace("Module/commonJs/ueditor/jsp/lore/", "");
-											for(Integer i = 0 ; i < dataBaseAnswerArray.length ; i++){
-												if(dataBaseAnswerArray[i].equals(answerF)){
-													dataBaseAnswerChar += Convert.NumberConvertBigChar(i)+",";
-													break;
+											if(dataBaseAnswerArray.length == 1){
+												if(realAnswer.equals(answerF)){
+													dataBaseAnswerChar = "F,";
 												}
-											}
+											}else{
+												for(Integer i = 0 ; i < dataBaseAnswerArray.length ; i++){
+													if(dataBaseAnswerArray[i].equals(answerF)){
+														dataBaseAnswerChar += Convert.NumberConvertBigChar(i)+",";
+														break;
+													}
+												}
+											}	
 										}
 										if(!dataBaseAnswerChar.equals("")){
 											dataBaseAnswerChar = dataBaseAnswerChar.substring(0, dataBaseAnswerChar.length() - 1);
