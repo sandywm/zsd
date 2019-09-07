@@ -73,7 +73,7 @@ public class LoginAction extends DispatchAction {
 	public ActionForward login(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
 		// TODO Auto-generated method stub
-		return null;
+		return mapping.findForward("loginOut");
 	}
 	
 	/**

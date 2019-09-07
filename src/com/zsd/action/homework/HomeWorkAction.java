@@ -3429,6 +3429,11 @@ public class HomeWorkAction extends DispatchAction {
 		if(userId > 0 && tjId > 0){
 			HwStudyTjInfo tj = tjm.getEntityById(tjId);
 			if(tj != null){
+				if(tj.getComStatus() > 0){//已完成，不能调用map页面
+					map.put("result", msg);
+					CommonTools.getJsonPkg(map, response);
+					return null;
+				}
 				if(tj.getAllNum().equals(tj.getSuccNum() + tj.getErrorNum())){//家庭作业题库所有题都做过
 					showTraceFlag = true;
 				}else{
@@ -3500,8 +3505,11 @@ public class HomeWorkAction extends DispatchAction {
 					currStep = 4;
 					studyLogId = sl.getId();
 					isFinish = sl.getIsFinish();
-					if(isFinish.equals(2)){//完成后不显示，无动作
-						
+					if(isFinish.equals(2)){//溯源完成后不能调用map页面
+						msg = "error";
+						map.put("result", msg);
+						CommonTools.getJsonPkg(map, response);
+						return null;
 					}else{//未通过，需要定位到现在需要学习的地方
 						Integer step = sl.getStep();
 						Integer stepComplelte = sl.getStepComplete();//本阶段整体完成情况
