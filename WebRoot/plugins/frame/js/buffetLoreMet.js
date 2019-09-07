@@ -36,7 +36,9 @@ layui.define(['form','buffetLoreDOM'],function(exports){
     	clearRadioValue : function(startNumber){
     		var options = document.getElementsByName("answer_singel");
     		for(var i = startNumber; i < options.length ; i++){
-    			options[i].value = "";
+    			if(currPage == 'lorePage' || currPage == 'buffetPage'){
+    				options[i].value = "";
+    			}
     			options[i].checked = false;
     			$('#ans_singleInp').val('');
     			form.render();
@@ -61,7 +63,9 @@ layui.define(['form','buffetLoreDOM'],function(exports){
     					break;
     				}
     			}
-				options[i].value = "";
+				if(currPage == 'lorePage' || currPage == 'buffetPage'){
+    				options[i].value = "";
+    			}
     			options[i].checked = false;
     		}
     		
@@ -74,7 +78,6 @@ layui.define(['form','buffetLoreDOM'],function(exports){
 				//重新拼接
 				result_answer = tmpResultAns + ",";
 			}
-			
 			if(globalOpts == 'edit'){//编辑时小于startNum的所有checkbox的状态重置
     			for(var i=0;i<startNumber;i++){
     				options[i].checked = false;
@@ -169,12 +172,14 @@ layui.define(['form','buffetLoreDOM'],function(exports){
     		for(var i = parseInt(newMaxNumber) + 1; i < 7;i++){
     			this.getId(name+"_"+i).style.display = "none";
     		}
-    		if(answerType == "pic"){
-				//清空图片答案的src
-    			this.clearAnsSelImgSrc(parseInt(newMaxNumber)+1);
-    		}else{
-    			//清空文字答案的value
-    			this.clearInputTextValue(parseInt(newMaxNumber)+1);
+    		if(currPage == 'lorePage' || currPage == 'buffetPage'){
+    			if(answerType == "pic"){
+    				//清空图片答案的src
+        			this.clearAnsSelImgSrc(parseInt(newMaxNumber)+1);
+        		}else{
+        			//清空文字答案的value
+        			this.clearInputTextValue(parseInt(newMaxNumber)+1);
+        		}
     		}
     		//清空少出去的那部分单选按框/多选框中的value值
     		if(questionType == "单选题"){
@@ -185,7 +190,9 @@ layui.define(['form','buffetLoreDOM'],function(exports){
     			//清空input的value值，清空当前已选的所有答案->暂未选择答案，清空result_answer_text的值
 				for(var i = parseInt(newMaxNumber)+ 1; i <= 6;i++){
         			this.getId(name+"_"+i).style.display = "none";
-        			$('input[name=answer_multiTk]').eq(i-1).attr('alt','');
+        			if(currPage == 'lorePage' || currPage == 'buffetPage'){
+        				$('input[name=answer_multiTk]').eq(i-1).attr('alt','');
+        			}
         			$('#result_answer_new_tk').removeClass('hasSel').addClass('noSel').html('暂未选择答案');
         			result_answer = '';
         			result_answer_text = '';
@@ -194,13 +201,15 @@ layui.define(['form','buffetLoreDOM'],function(exports){
     	},
     	//答案选项图片上传个数/答案选项文字输入框上传个数
     	setAnswerSelect : function(value){
-    		for(var j = 1 ; j <= parseInt(value); j++){
-    			this.getId("answerSelImg_"+j).style.display="block";
-    			this.getId("inpTxt_answ_"+j).style.display = "block";
-    		}
-    		for(var i = parseInt(value) + 1; i < 7;i++){
-    			this.getId("answerSelImg_"+i).style.display="none";
-    			this.getId("inpTxt_answ_"+i).style.display = "none";
+    		if(currPage == 'lorePage' || currPage == 'buffetPage'){
+    			for(var j = 1 ; j <= parseInt(value); j++){
+        			this.getId("answerSelImg_"+j).style.display="block";
+        			this.getId("inpTxt_answ_"+j).style.display = "block";
+        		}
+        		for(var i = parseInt(value) + 1; i < 7;i++){
+        			this.getId("answerSelImg_"+i).style.display="none";
+        			this.getId("inpTxt_answ_"+i).style.display = "none";
+        		}
     		}
     		if(globalOpts == 'add'){
     			this.clearAll();//增加时切换最多选项清空之前所填写的
@@ -208,13 +217,15 @@ layui.define(['form','buffetLoreDOM'],function(exports){
     	},
     	//编辑初始化时根据当前的最大选项显示对应数量的文本框 img和对应数量的答案选项
     	initShowInpByMaxOptNum : function(maxOptNum,name){
-    		for(var j = 1 ; j <= parseInt(maxOptNum); j++){
-    			this.getId("answerSelImg_"+j).style.display="block";
-    			this.getId("inpTxt_answ_"+j).style.display = "block";
-    		}
-    		for(var i = parseInt(maxOptNum) + 1; i < 7;i++){
-    			this.getId("answerSelImg_"+i).style.display="none";
-    			this.getId("inpTxt_answ_"+i).style.display = "none";
+    		if(currPage == 'lorePage' || currPage == 'buffetPage'){
+    			for(var j = 1 ; j <= parseInt(maxOptNum); j++){
+        			this.getId("answerSelImg_"+j).style.display="block";
+        			this.getId("inpTxt_answ_"+j).style.display = "block";
+        		}
+        		for(var i = parseInt(maxOptNum) + 1; i < 7;i++){
+        			this.getId("answerSelImg_"+i).style.display="none";
+        			this.getId("inpTxt_answ_"+i).style.display = "none";
+        		}
     		}
     		for(var j = 1 ; j <= parseInt(maxOptNum); j++){
     			this.getId(name+"_"+j).style.display = "block";
@@ -227,8 +238,10 @@ layui.define(['form','buffetLoreDOM'],function(exports){
     	clearAll : function(questionType){
     		var tiganTypeVal = $('#tiganTypeInp').val();
     		//清空答案选项
-    		this.clearInputTextValue(1); 
-    		this.clearAnsSelImgSrc(1);
+    		if(currPage == 'lorePage' || currPage == 'buffetPage'){
+    			this.clearInputTextValue(1); 
+        		this.clearAnsSelImgSrc(1);
+    		}
     		if(tiganTypeVal == '单选题'){
     			//清空答案
         		this.clearRadioValue(0);
@@ -243,7 +256,9 @@ layui.define(['form','buffetLoreDOM'],function(exports){
     		}else if(tiganTypeVal == '填空选择题'){
     			$('#result_answer_new_tk').removeClass('hasSel').addClass('noSel').html('暂未选择答案');
     			//清空每个input上的alt属性值
-    			$('input[name=answer_multiTk]').attr('alt','');
+    			if(currPage == 'lorePage' || currPage == 'buffetPage'){
+    				$('input[name=answer_multiTk]').attr('alt','');
+    			}
     			result_answer = '';
     			result_answer_text = '';
     		}
@@ -544,9 +559,7 @@ layui.define(['form','buffetLoreDOM'],function(exports){
 					result_answer = '';
 					$('.spaceBox').html('');
 					$('#nowTxt_'+loreType).html('');
-					if(currPage == 'lorePage' || currPage == 'buffetPage'){
-						$('.maxChoice').html(maxSelBox);
-					}
+					$('.maxChoice').html(maxSelBox);
 					$('#wendaTypeWrap_'+loreType).hide();
 					$('#tkTypeWrap_' + loreType).hide().html('');
 					if(value == '单选题'){
@@ -575,9 +588,7 @@ layui.define(['form','buffetLoreDOM'],function(exports){
 					$('#tkInp_' + loreType).val(this.data.tkOriginAnsTxt);
 					
 				}else if(value == '填空选择题'){
-					if(currPage == 'lorePage' || currPage == 'buffetPage'){
-						$('.maxChoice').html(maxSelBox);
-					}
+					$('.maxChoice').html(maxSelBox);
 					$('.spaceBox').html(spaceSelBox);
 					$('#wendaTypeWrap_'+loreType).hide();
 					$('#tkTypeWrap_' + loreType).hide().html('');

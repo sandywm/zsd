@@ -17,7 +17,7 @@
 		.layui-form-radio *{color:#333}
 		.layui-form-checkbox[lay-skin=primary] span{
 			color:#333 !important;
-		}
+		} 
 	</style>
     </head>
 	<body style="background:#f2f2f2;">
@@ -111,10 +111,10 @@
 			multiAnsArr=[],mindResArr=[],abilityResArr=[];//复选框text
 		layui.config({
 			base: '/plugins/frame/js/'
-		}).use(['form','table','baseDataMet','sysHwManager','relate','buffetDOM','buffetLoreDOM'],function(){
+		}).use(['form','table','baseDataMet','sysHwManager','relate','buffetDOM','buffetLoreDOM','buffetLoreMet'],function(){
 			var form = layui.form,
 				table = layui.table,
-				baseDataMet = layui.baseDataMet,sysHw = layui.sysHwManager,buffetDOM = layui.buffetDOM,
+				baseDataMet = layui.baseDataMet,sysHw = layui.sysHwManager,buffetDOM = layui.buffetDOM,blMet = layui.buffetLoreMet,
 				blDOM = layui.buffetLoreDOM,relate=layui.relate;
 			var page = {
 				init : function(){
@@ -140,6 +140,7 @@
 		    			var tiganTypeInpVal = $('#tiganTypeInp').val(),
 							baseTypeInpVal = $('#baseTypeInp').val(),
 							ans_singleInpVal = $('#ans_singleInp').val(),//答案选项
+							maxSelInpNumVal = $('#maxSelInpNum').val(),//最大选项
 							spaceNum = $('#spaceNumInp').val(),
 							inpAnsSelVal='',ansSelRes = '',queTiganFlag=true,baseTypeFlag=true,queSubFlag=true,ansFlag=true;
 		    			currUeEditCon = UE.getEditor('con_' + loreType + '_' + nowNum).getContent();
@@ -234,7 +235,7 @@
 						}
 						if(resFlag){
 							var mindResStr=mindResArr.join(','),abilityResStr=abilityResArr.join(',');
-							var fieldCom = {loreId:loreBigId,btId:baseTypeInpVal,mindIdStr:mindResStr,abilityIdStr:abilityResStr,queSub:escape(currUeEditCon),queResolution:escape(currUeEditAnaly),queType:escape(tiganTypeInpVal)};
+							var fieldCom = {loreId:loreBigId,btId:baseTypeInpVal,mindIdStr:mindResStr,abilityIdStr:abilityResStr,queSub:escape(currUeEditCon),queResolution:escape(currUeEditAnaly),queType:escape(tiganTypeInpVal),optNum:maxSelInpNumVal};
 							if(tiganTypeInpVal == '单选题'){
 								if(globalOpts == 'add'){
 									field = {queAnswer:escape(ans_singleInpVal)};
@@ -328,7 +329,9 @@
 					
 				},
 				renderHwInfo : function(json){
-					var spaceSelBox = blDOM.creaMaxSpace(),
+					console.log(json)
+					var maxSelBox = blDOM.creaMaxSel(),
+						spaceSelBox = blDOM.creaMaxSpace(),
 						ansType = blDOM.createAnsType(),//问题类型
 						ansSingle = blDOM.createAnsSingle(),
 						ansMulti = blDOM.createAnsMulti(),
@@ -336,6 +339,7 @@
 						judgeStr = blDOM.judgeQueType(),
 						tkSelStr = blDOM.createTkSelDOM(),
 						tkTypeStr = blDOM.createTkTypeDOM(loreType);
+					$('.maxChoice').hide().html(maxSelBox);
 					$('.spaceBox').hide().html(spaceSelBox);
 					for(var i=0;i<json.btList.length;i++){
 						if(json.btList[i].selFlag){
@@ -365,28 +369,33 @@
 					$('#tiganTypeTxt').html(json.hwType);
 					//匹配最大选项（单选题 多选题 填空选择题）
 					if(json.hwType == '单选题' || json.hwType == '多选题' || json.hwType == '填空选择题' || json.hwType == '判断题'){
-						//$('.maxChoice').show();
+						$('.maxChoice').show();
+						$('#maxSelInpNum').val(json.optNum);//初始化最大选项
+						$('#maxChoiceNumSel').val(json.optNum);//初始化最大选项
 						$('#ansSelWrap_' + loreType).show();
 						
 						realAnswer = json.queAnswer;
 						if(json.hwType == '单选题'){
-							answerNum = json.queOptNum; //将当前选择的最大选项赋给answerNum
+							answerNum = json.optNum; //将当前选择的最大选项赋给answerNum
 							result_answer = json.queAnswer + ",";
 							
 							$('#answerSelectDiv_' + loreType).show().html(ansSingle);
 							$('#ans_singleInp').val(json.queAnswer);
+							blMet.initShowInpByMaxOptNum(json.optNum,'answerBox_singel');
 							form.render();
 						}else if(json.hwType == '多选题'){
-							answerNum = json.queOptNum; //将当前选择的最大选项赋给answerNum
+							answerNum = json.optNum; //将当前选择的最大选项赋给answerNum
 							$('#answerSelectDiv_' + loreType).show().html(ansMulti);
+							blMet.initShowInpByMaxOptNum(json.optNum,'answerBox_multi');
 							form.render();
 						}else if(json.hwType == '填空选择题'){
-							answerNum = json.queOptNum; //将当前选择的最大选项赋给answerNum
+							answerNum = json.optNum; //将当前选择的最大选项赋给answerNum
 							$('.spaceBox').show();
 							$('#spaceNumInp').val(json.queOptNum);//初始化填空数量value
 							//匹配填空数量
 							$('#spaceNumSel').val(json.queOptNum);
 							$('#answerSelectDiv_' + loreType).show().html(tkSelStr);
+							blMet.initShowInpByMaxOptNum(json.optNum,'ansBox_multiTk');
 							form.render();
 						}else if(json.hwType == '判断题'){
 							$('.spaceBox').html('');
