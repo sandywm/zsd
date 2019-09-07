@@ -3922,7 +3922,6 @@ public class HomeWorkAction extends DispatchAction {
 							if(access == 9){//表示是第一级知识点诊断时一次性全部正确通过
 								option = 1;
 								success = 2;
-//								path = String.valueOf(currentLoreId);
 								nextLoreIdArray = String.valueOf(tjId);
 								success = 6;
 							}else{//通过溯源完成的
