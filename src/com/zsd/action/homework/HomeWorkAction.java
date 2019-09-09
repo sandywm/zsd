@@ -2940,6 +2940,7 @@ public class HomeWorkAction extends DispatchAction {
 						}
 						map_d.put("studyResult", result);//-1：未做,0:错,1:对
 					}else if(queArea.equals("sys")){
+						Integer optNum = 0;
 						LoreQuestion lq = lqm.getEntityByLqId(queId);
 						map_d.put("queSub", lq.getQueSub());
 						String lqType = lq.getQueType();
@@ -2981,6 +2982,25 @@ public class HomeWorkAction extends DispatchAction {
 							}else{//填空选择题
 								map_d.put("answerNum", lq.getQueAnswer().split(",").length);
 							}
+							if(!answerA.equals("")){
+								optNum++;
+							}
+							if(!answerB.equals("")){
+								optNum++;
+							}
+							if(!answerC.equals("")){
+								optNum++;
+							}
+							if(!answerD.equals("")){
+								optNum++;
+							}
+							if(!answerE.equals("")){
+								optNum++;
+							}
+							if(!answerF.equals("")){
+								optNum++;
+							}
+							map.put("optNum", optNum);
 						}
 						map_d.put("studyResult", result);//-1：未做,0:错,1:对
 						
