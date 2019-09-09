@@ -4563,6 +4563,7 @@ public class HomeWorkAction extends DispatchAction {
 	public ActionForward updateLogStatus(ActionMapping mapping ,ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
+		HwStudyTjManager tjm = (HwStudyTjManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_TJ_INFO);
 		HwTraceStudyLogManager slm = (HwTraceStudyLogManager) AppFactory.instance(null).getApp(Constants.WEB_HW_TRACE_STUDY_LOG_INFO);
 		HwTraceStudyDetailManager sdm = (HwTraceStudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_HW_TRACE_STUDY_DETAIL_INFO);
 		Map<String,Object> map = new HashMap<String,Object>();
@@ -4581,7 +4582,8 @@ public class HomeWorkAction extends DispatchAction {
 			HwTraceStudyLogInfo htsl = slm.getEntityByTjId(tjId);
 			if(htsl != null){
 				studyLogId = htsl.getId();
-				loreId = htsl.getHwStudyTjInfo().getSendHwInfo().getLoreInfo().getId();
+				HwStudyTjInfo tj = htsl.getHwStudyTjInfo();
+				loreId = tj.getSendHwInfo().getLoreInfo().getId();
 				taskNumber = htsl.getTaskNumber() + 1;
 				if(step.equals(3)){//再次诊断时用
 					if(access.equals(1)){//再次诊断全部正确
@@ -4639,6 +4641,15 @@ public class HomeWorkAction extends DispatchAction {
 				//step=0表示不对step进行修改
 				boolean flag = slm.updateStudyLog(studyLogId, step, stepComplete, isFinish, -1, access, taskNumber,"");
 				if(flag){
+					if(isFinish.equals(5)){//溯源完成
+						//修改作业完成状态
+						Integer diffDays = CurrentTime.compareDate(CurrentTime.getStringDate(),tj.getSendHwInfo().getEndDate());
+						Integer comStatus = 2;//补做完成
+						if(diffDays >= 0){//按时完成
+							comStatus = 1;
+						}
+						tjm.updateInfoById(tj.getId(), comStatus, 0, 0,1);
+					}
 					msg = "success";
 				}
 			}
