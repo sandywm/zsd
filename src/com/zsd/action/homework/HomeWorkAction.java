@@ -3000,7 +3000,7 @@ public class HomeWorkAction extends DispatchAction {
 							if(!answerF.equals("")){
 								optNum++;
 							}
-							map.put("optNum", optNum);
+							map_d.put("optNum", optNum);
 						}
 						map_d.put("studyResult", result);//-1：未做,0:错,1:对
 						
