@@ -4648,7 +4648,7 @@ public class HomeWorkAction extends DispatchAction {
 						if(diffDays >= 0){//按时完成
 							comStatus = 1;
 						}
-						tjm.updateInfoById(tj.getId(), comStatus, 0, 0,1);
+						tjm.updateInfoById(tj.getId(), comStatus, 0, 0,0);
 					}
 					msg = "success";
 				}

@@ -262,4 +262,15 @@ public interface UserManager {
 	 * @throws WEBException
 	 */
 	boolean updateSchoolInfo(Integer userId,Integer schoolId,Integer yearSystem) throws WEBException;
+	
+	/**
+	 * 修改学生升学标记
+	 * @author wm
+	 * @date 2019-9-9 下午05:30:11
+	 * @param userId
+	 * @param dateFlag 每年九月1日
+	 * @return
+	 * @throws WEBException
+	 */
+	boolean updateStuDateFlagById(Integer userId,String dateFlag) throws WEBException;
 }
