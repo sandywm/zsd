@@ -2781,48 +2781,50 @@ public class HomeWorkAction extends DispatchAction {
 				Integer hwType = tj.getSendHwInfo().getHwType();
 				Integer loreId = tj.getSendHwInfo().getLoreInfo().getId();//发布家庭作业时的知识点编号
 				Integer quoteLoreId = lm.getEntityById(loreId).getMainLoreId();
+				
+				if(!hwType.equals(3)){
+					msg = "success";
+				}else{//课前预习需要检测
+					msg = "success";
+					List<StudyMapInfo> smList = smm.listInfoByOpt(currUserId, loreId);
+					if(smList.size() > 0){//存在学习记录
+						StudyMapInfo sm = smList.get(0);
+						Integer currStep = sm.getCurrStep();
+						if(currStep.equals(0)){
+							if(loreTypeName.equals("知识讲解")){
+								smm.updateStepById(sm.getId(), 1);
+							}else{
+								msg = "zsjjNotStart";
+							}
+						}else if(currStep.equals(1)){
+							if(loreTypeName.equals("点拨指导")){
+								smm.updateStepById(sm.getId(), 2);
+							}else if(loreTypeName.equals("知识讲解")){
+								//知识讲解能点开，但是不更新层数
+							}else{
+								msg = "dbzdNotStart";
+							}
+						}else if(currStep.equals(2)){
+							if(loreTypeName.equals("知识清单")){
+								smm.updateStepById(sm.getId(), 3);
+							}else if(loreTypeName.equals("知识讲解") || loreTypeName.equals("点拨指导")){
+								//知识讲解,点拨指导都能点开，但是不更新层数
+							}else{//解题示范不能点开
+								msg = "zsqdNotStart";
+							}
+						}else if(currStep.equals(3)){
+							if(loreTypeName.equals("解题示范")){
+								smm.updateStepById(sm.getId(), 4);
+							}
+							//其他都能打开
+						}
+					}else{
+						smm.addSM(currUserId, loreId, 1);
+					}
+				}
+				
 				List<LoreQuestion> lqList = lqm.listInfoByLoreId(quoteLoreId, loreTypeName, 0);
 				if(lqList.size() > 0){
-					if(!hwType.equals(3)){
-						msg = "success";
-					}else{//课前预习需要检测
-						msg = "success";
-						List<StudyMapInfo> smList = smm.listInfoByOpt(currUserId, loreId);
-						if(smList.size() > 0){//存在学习记录
-							StudyMapInfo sm = smList.get(0);
-							Integer currStep = sm.getCurrStep();
-							if(currStep.equals(0)){
-								if(loreTypeName.equals("知识讲解")){
-									smm.updateStepById(sm.getId(), 1);
-								}else{
-									msg = "zsjjNotStart";
-								}
-							}else if(currStep.equals(1)){
-								if(loreTypeName.equals("点拨指导")){
-									smm.updateStepById(sm.getId(), 2);
-								}else if(loreTypeName.equals("知识讲解")){
-									//知识讲解能点开，但是不更新层数
-								}else{
-									msg = "dbzdNotStart";
-								}
-							}else if(currStep.equals(2)){
-								if(loreTypeName.equals("知识清单")){
-									smm.updateStepById(sm.getId(), 3);
-								}else if(loreTypeName.equals("知识讲解") || loreTypeName.equals("点拨指导")){
-									//知识讲解,点拨指导都能点开，但是不更新层数
-								}else{//解题示范不能点开
-									msg = "zsqdNotStart";
-								}
-							}else if(currStep.equals(3)){
-								if(loreTypeName.equals("解题示范")){
-									smm.updateStepById(sm.getId(), 4);
-								}
-								//其他都能打开
-							}
-						}else{
-							smm.addSM(currUserId, loreId, 1);
-						}
-					}
 					if(msg.equals("success")){
 						if(loreTypeName.equals("知识讲解")){
 							String sourceDetail = lqList.get(0).getQueAnswer();
@@ -2862,6 +2864,8 @@ public class HomeWorkAction extends DispatchAction {
 							map.put("sourceDetailList", list_d);
 						}
 					}
+				}else{
+					msg = "noInfo";
 				}
 			}
 		}
