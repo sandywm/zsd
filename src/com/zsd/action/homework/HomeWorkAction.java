@@ -4641,7 +4641,7 @@ public class HomeWorkAction extends DispatchAction {
 				//step=0表示不对step进行修改
 				boolean flag = slm.updateStudyLog(studyLogId, step, stepComplete, isFinish, -1, access, taskNumber,"");
 				if(flag){
-					if(isFinish.equals(5)){//溯源完成
+					if(isFinish.equals(2)){//溯源完成
 						//修改作业完成状态
 						Integer diffDays = CurrentTime.compareDate(CurrentTime.getStringDate(),tj.getSendHwInfo().getEndDate());
 						Integer comStatus = 2;//补做完成
