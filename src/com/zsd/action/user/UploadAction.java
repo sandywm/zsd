@@ -21,6 +21,7 @@ import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.actions.DispatchAction;
 
 import com.zsd.tools.CheckImage;
 import com.zsd.tools.CommonTools;
@@ -34,12 +35,13 @@ import com.zsd.util.WebUrl;
  * XDoclet definition:
  * @struts.action validate="true"
  */
-public class UploadAction extends Action {
+public class UploadAction extends DispatchAction {
 		/**
 		 * 上传头像
 		 */
-		public ActionForward execute(ActionMapping mapping,ActionForm form,
+		public ActionForward upImg(ActionMapping mapping,ActionForm form,
 				HttpServletRequest request,HttpServletResponse response)throws Exception{
+			String opt = CommonTools.getFinalStr("opt", request);//不传默认为上传头像用,queImg时为学生提问，老师答疑时上传图像用
 			Map<String,Object> map = new HashMap<String,Object>();
 			DiskFileItemFactory factory = new DiskFileItemFactory();
 			factory.setSizeThreshold(2048*1024);
@@ -47,6 +49,9 @@ public class UploadAction extends Action {
 			List<FileItem> filelist = fileUpload.parseRequest(request);
 			ListIterator<FileItem> iterator = filelist.listIterator();
 			String userPath = WebUrl.DATA_URL;
+			if(opt.equals("queImg")){
+				userPath = WebUrl.DATA_URL_QUE_FILE_UPLOAD;
+			}
 			boolean upFlag = false;
 			String msg ="";
 			String fileUrl="";
@@ -54,6 +59,9 @@ public class UploadAction extends Action {
 				FileItem item = (FileItem)iterator.next();
 				// 处理文件上传
 				String filename = item.getName();// 获取名字
+				if(filename == null){
+					continue;
+				}
 				Integer lastIndex = filename.lastIndexOf(".");
 				String suffix = filename.substring(lastIndex+1);
 				String filePre = filename.substring(0, lastIndex);
@@ -80,9 +88,15 @@ public class UploadAction extends Action {
 					fileOutputStream.write(data);// 写入文件
 					fileOutputStream.close();// 关闭文件流
 					msg = "success";
-					fileUrl +=  WebUrl.NEW_DATA_URL  + "\\" + filename + ",";
-					
+					if(opt.equals("queImg")){
+						fileUrl +=  WebUrl.NEW_DATA_URL_QUE_FILE_UPLOAD  + "\\" + filename + ",";
+					}else{
+						fileUrl +=  WebUrl.NEW_DATA_URL  + "\\" + filename + ",";
+					}
 				}
+			}
+			if(!fileUrl.equals("")){
+				fileUrl = fileUrl.substring(0,fileUrl.length() - 1);
 			}
 			map.put("result", msg);
 			map.put("imgSrc",fileUrl);
