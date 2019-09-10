@@ -122,4 +122,12 @@ public interface NetTeacherStudentManager {
 	  * @throws WEBException
 	  */
 	 boolean  isBindTeaBySubIdAndSchType(Integer stuId ,Integer subId,Integer schoolType)throws WEBException;
+	 
+	 /**
+	  * 获取绑定日期没结束且未取消未清除的信息列表
+	  * @param stuId 学生编号
+	  * @return
+	  * @throws WEBException
+	  */
+	 List<NetTeacherStudent> listValidInfoByOpt(Integer stuId)throws WEBException;
 }

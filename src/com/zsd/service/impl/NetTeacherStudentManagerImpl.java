@@ -199,4 +199,20 @@ public class NetTeacherStudentManagerImpl implements NetTeacherStudentManager {
 		}
 	}
 
+	@Override
+	public List<NetTeacherStudent> listValidInfoByOpt(Integer stuId)
+			throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			ntsDao = (NetTeacherStudentDao) DaoFactory.instance(null).getDao(Constants.DAO_NET_TEACHER_STUDENT);
+			Session sess  = HibernateUtil.currentSession();
+			return ntsDao.findValidInfoByOpt(sess, stuId);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("获取绑定日期没结束且未取消未清除的信息列表时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
 }

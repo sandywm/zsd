@@ -621,17 +621,16 @@ public class UserAction extends DispatchAction {
 		}
 		if(msg.equals("success")){
 			map.put("gduStatus", graduationStatus);//升学状态【0未升学，1升学】
-			map.put("currPara", currPara);//当前学段
-			map.put("currYearSystem", currYearSystem);//当前学年制
-			map.put("currUserGradeNumber", currUserGradeNumber);//当前年级号
-			map.put("currUserGradeName", Convert.NunberConvertChinese(currUserGradeNumber));//当前年级名称
 			if(graduationStatus.equals(1)){//升学，需要取消绑定的网络导师
-				//查看有无绑定的网络导师（未到期）
-				List<NetTeacherStudent> ntsList = ntsm.listByStuId(userId);
+				map.put("currPara", currPara);//当前学段
+				map.put("currYearSystem", currYearSystem);//当前学年制
+				map.put("currUserGradeNumber", currUserGradeNumber);//当前年级号
+				map.put("currUserGradeName", Convert.NunberConvertChinese(currUserGradeNumber));//当前年级名称
+				//查看绑定日期没结束且未取消未清除的信息列表
+				List<NetTeacherStudent> ntsList = ntsm.listValidInfoByOpt(userId);
 				if(ntsList.size() > 0){
 					for(NetTeacherStudent nts : ntsList){
 						Integer ntsId = nts.getId();
-						Integer bindStatus = nts.getBindStatus();
 						boolean flag = ntsm.clearUserNetTeacher(ntsId);
 						if(flag){
 							String title = "升学信息";
@@ -646,8 +645,6 @@ public class UserAction extends DispatchAction {
 						}
 					}
 				}
-				//查看有无会员信息(购买的日期会根据高中费用折算)
-				
 			}
 		}
 		map.put("result", msg);

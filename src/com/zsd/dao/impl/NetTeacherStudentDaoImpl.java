@@ -9,6 +9,7 @@ import com.zsd.module.NetTeacherStudent;
 import com.zsd.tools.CommonTools;
 import com.zsd.tools.CurrentTime;
 
+@SuppressWarnings("unchecked")
 public class NetTeacherStudentDaoImpl implements NetTeacherStudentDao {
 
 	@Override
@@ -36,27 +37,23 @@ public class NetTeacherStudentDaoImpl implements NetTeacherStudentDao {
 		sess.update(nts);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<NetTeacherStudent> findNTByStuId(Session sess, int stuId) {
 		String hql = "from NetTeacherStudent as nts where nts.user.id="+stuId+" and nts.clearStatus=0";
 		return  sess.createQuery(hql).list();
 	}
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<NetTeacherStudent> findNTByntId(Session sess, int ntId) {
 		String hql = "from NetTeacherStudent as nts where nts.netTeacherInfo.user.id="+ntId+" and nts.bindStatus!=0 and nts.endDate>'"+CurrentTime.getStringDate()+"' and nts.clearStatus=0";
 		return  sess.createQuery(hql).list();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<NetTeacherStudent> findNTByntId(Session sess, int ntId,Integer bindSta) {
 		String hql = "from NetTeacherStudent as nts where nts.netTeacherInfo.user.id="+ntId+" and nts.bindStatus="+bindSta;
 		return  sess.createQuery(hql).list();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<NetTeacherStudent> findNTByStuNameOrBindSta(Session sess,Integer ntId,Integer paySta,
 			Integer bindFlag, String stuName, Integer pageNo, Integer pageSize) {
@@ -165,7 +162,6 @@ public class NetTeacherStudentDaoImpl implements NetTeacherStudentDao {
 	    return CommonTools.longToInt(countObj);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public boolean isBindTeaBySubIdAndSchType(Session sess, Integer stuID,
 			Integer subID, Integer schoolType) {
@@ -178,6 +174,15 @@ public class NetTeacherStudentDaoImpl implements NetTeacherStudentDao {
 				return false;
 			}
 		
+	}
+
+	@Override
+	public List<NetTeacherStudent> findValidInfoByOpt(Session sess,
+			Integer stuId) {
+		// TODO Auto-generated method stub
+		String hql = " from NetTeacherStudent as nts where nts.user.id = "+stuId+ " and nts.clearStatus = 0";
+		hql += "  and nts.bindStatus != 0 and  nts.endDate > '"+CurrentTime.getStringDate()+"'";
+		return  sess.createQuery(hql).list();
 	}
 
 }

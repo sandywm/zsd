@@ -112,6 +112,10 @@
     <action path="/email" parameter="action" scope="request"  type="com.zsd.action.email.EmailAction">
       <set-property property="cancellable" value="true" />
     </action>
+    <!-- 购买会员、导师费用 -->
+    <action path="/pay.do"  parameter="action" scope="request"  type="com.zsd.action.pay.PayAction">
+      <set-property property="cancellable" value="true" />
+    </action>
   </action-mappings>
 
   <message-resources parameter="com.yourcompany.struts.ApplicationResources" />

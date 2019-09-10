@@ -135,6 +135,14 @@ public interface NetTeacherStudentDao {
 	 * @return
 	 */
 	boolean isBindTeaBySubIdAndSchType(Session sess, Integer stuID, Integer subID,Integer schoolType);
+	
+	/**
+	 * 获取绑定日期没结束且未取消未清除的信息列表
+	 * @param sess
+	 * @param stuId 学生编号
+	 * @return
+	 */
+	List<NetTeacherStudent> findValidInfoByOpt(Session sess,Integer stuId);
 		
 		
 }
