@@ -31,12 +31,12 @@ public class QuestionInfoManagerImpl implements QuestionInfoManager {
 	Transaction tran = null;
 
 	@Override
-	public List<QuestionInfo> listInfoByOpt(Integer subId, Integer readStatus,
+	public List<QuestionInfo> listInfoByOpt(Integer userId,Integer subId, Integer readStatus,
 			Integer pageNo, Integer pageSize) throws WEBException {
 		try {
 			qDao = (QuestionInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_QUESTION_INFO);
 			Session sess  = HibernateUtil.currentSession();
-			return qDao.findInfoByOpt(sess, subId, readStatus, pageNo, pageSize);
+			return qDao.findInfoByOpt(sess,userId, subId, readStatus, pageNo, pageSize);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new WEBException("根据学科,回复状态获取问题信息列表时出现异常!");
@@ -46,12 +46,12 @@ public class QuestionInfoManagerImpl implements QuestionInfoManager {
 	}
 
 	@Override
-	public Integer getInfoByOptCount(Integer subId, Integer readStatus)
+	public Integer getInfoByOptCount(Integer userId,Integer subId, Integer readStatus)
 			throws WEBException {
 		try {
 			qDao = (QuestionInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_QUESTION_INFO);
 			Session sess  = HibernateUtil.currentSession();
-			return qDao.getInfoByOptCount(sess, subId, readStatus);
+			return qDao.getInfoByOptCount(sess,userId, subId, readStatus);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new WEBException("根据学科,回复状态获取问题记录数时出现异常!");
@@ -62,7 +62,7 @@ public class QuestionInfoManagerImpl implements QuestionInfoManager {
 
 	@Override
 	public Integer adddQue(Integer subId, Integer userId, Integer ntId,
-			String queTitle, String queContent, String queTime,
+			String queTitle, String queContent,String queImg,String queTime,
 			String queReplyContent, String queReplyTime, Integer readStatus)
 			throws WEBException {
 		try {
@@ -81,6 +81,7 @@ public class QuestionInfoManagerImpl implements QuestionInfoManager {
 			qInfo.setNetTeacherInfo(netTeacherInfo);
 			qInfo.setQueTitle(queTitle);
 			qInfo.setQueContent(queContent);
+			qInfo.setQueImg(queImg);
 			qInfo.setQueTime(queTime);
 			qInfo.setQueReplyContent(queReplyContent);
 			qInfo.setQueReplyTime(queReplyTime);
@@ -97,7 +98,7 @@ public class QuestionInfoManagerImpl implements QuestionInfoManager {
 	}
 
 	@Override
-	public boolean updateQue(Integer qId, String queReplyContent,
+	public boolean updateQue(Integer qId, String queReplyContent,String queReplyImg,
 			String queReplyTime, Integer readStatus) throws WEBException {
 		try {
 			qDao = (QuestionInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_QUESTION_INFO);
@@ -106,6 +107,7 @@ public class QuestionInfoManagerImpl implements QuestionInfoManager {
 			QuestionInfo qInfo = qDao.get(sess, qId);
 			if(qInfo != null){
 				qInfo.setQueReplyContent(queReplyContent);
+				qInfo.setQueReplyImg(queReplyImg);
 				qInfo.setQueReplyTime(queReplyTime);
 				qInfo.setReadStatus(readStatus);
 				qDao.update(sess, qInfo);

@@ -45,4 +45,12 @@ public class NetTeacherStudioRelationDaoImpl implements
 		return  sess.createQuery(hql).list();
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<NetTeacherStudioRelationInfo> findInfoByTeaId(Session sess,
+			Integer ntId) {
+		String hql=" from  NetTeacherStudioRelationInfo as ntsr where  ntsr.teaId="+ntId;
+		return  sess.createQuery(hql).list();
+	}
+
 }

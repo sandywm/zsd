@@ -36,8 +36,17 @@ import com.zsd.util.WebUrl;
  * @struts.action validate="true"
  */
 public class UploadAction extends DispatchAction {
+		
 		/**
-		 * 上传头像
+		 * 上传图片
+		 * @author wm
+		 * @date 2019-9-10 下午04:46:51
+		 * @param mapping
+		 * @param form
+		 * @param request
+		 * @param response
+		 * @return
+		 * @throws Exception
 		 */
 		public ActionForward upImg(ActionMapping mapping,ActionForm form,
 				HttpServletRequest request,HttpServletResponse response)throws Exception{

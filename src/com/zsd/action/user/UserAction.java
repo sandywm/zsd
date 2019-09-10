@@ -626,7 +626,7 @@ public class UserAction extends DispatchAction {
 			map.put("currUserGradeNumber", currUserGradeNumber);//当前年级号
 			map.put("currUserGradeName", Convert.NunberConvertChinese(currUserGradeNumber));//当前年级名称
 			if(graduationStatus.equals(1)){//升学，需要取消绑定的网络导师
-				//查看有无绑定的网络导师
+				//查看有无绑定的网络导师（未到期）
 				List<NetTeacherStudent> ntsList = ntsm.listByStuId(userId);
 				if(ntsList.size() > 0){
 					for(NetTeacherStudent nts : ntsList){

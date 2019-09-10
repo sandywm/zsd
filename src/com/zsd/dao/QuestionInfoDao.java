@@ -71,18 +71,19 @@ public interface QuestionInfoDao {
 	 * @param readStatus 恢复状态
 	 * @return
 	 */
-	List<QuestionInfo> findInfoByOpt(Session sess,Integer subId,Integer readStatus, Integer pageNo,
+	List<QuestionInfo> findInfoByOpt(Session sess,Integer userId,Integer subId,Integer readStatus, Integer pageNo,
 			Integer pageSize);
 	/**
 	 * 
 	 * @author zong
 	 * 2019-5-20上午09:30:34
 	 * @param sess
+	 * @param userId 用户编号
 	 * @param subId 学科编号
 	 * @param readStatus 恢复状态
 	 * @return
 	 */
-	Integer  getInfoByOptCount(Session sess,Integer subId,Integer readStatus);
+	Integer  getInfoByOptCount(Session sess,Integer userId,Integer subId,Integer readStatus);
 	/**
 	 * 根据网络导师编号获取问题信息
 	 * @author zong

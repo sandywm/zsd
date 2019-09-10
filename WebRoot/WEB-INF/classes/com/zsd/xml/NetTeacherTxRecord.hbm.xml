@@ -15,6 +15,11 @@
                 <comment>老师编号</comment>
             </column>
         </many-to-one>
+        <property name="stuId" type="java.lang.Integer">
+            <column name="stu_id" not-null="true">
+                <comment>学生编号(提现时为0)</comment>
+            </column>
+        </property>
         <property name="txDate" type="java.lang.String">
             <column name="tx_date" length="30" not-null="true">
                 <comment>提现日期</comment>
@@ -22,12 +27,12 @@
         </property>
         <property name="txMoney" type="java.lang.Integer">
             <column name="tx_money" not-null="true">
-                <comment>提现金额&gt;=100</comment>
+                <comment>提现金额(大于等于100)</comment>
             </column>
         </property>
         <property name="operateUserId" type="java.lang.Integer">
             <column name="operate_user_id" not-null="true">
-                <comment>后台处理人员</comment>
+                <comment>后台处理人员(-1为返现记录,0为提现未到账,1为提现已到账)</comment>
             </column>
         </property>
         <property name="operateDate" type="java.lang.String">
@@ -36,12 +41,12 @@
             </column>
         </property>
         <property name="bankName" type="java.lang.String">
-            <column name="bank_name" length="30" not-null="true">
+            <column name="bank_name" length="30">
                 <comment>银行名称</comment>
             </column>
         </property>
         <property name="bankNo" type="java.lang.String">
-            <column name="bank_no" length="30" not-null="true">
+            <column name="bank_no" length="30">
                 <comment>银行账号</comment>
             </column>
         </property>

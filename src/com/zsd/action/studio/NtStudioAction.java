@@ -105,6 +105,92 @@ public class NtStudioAction extends DispatchAction {
 		return null;
 	}
 	/**
+	 * 获取其他工作室信息
+	 * @author zdf
+	 * 2019-9-5 上午09:56:46
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getOtherNTStudio(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		NetTeacherInfoManager ntManager = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
+		NetTeacherStudioRelationManager ntsrManager = (NetTeacherStudioRelationManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDIO_RELATION);
+		NetTeacherStudentManager ntsManager = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT); 
+		Integer userId=CommonTools.getLoginUserId(request);
+		List<NetTeacherInfo> ntlist =ntManager.listntInfoByuserId(userId);
+		Integer teaId =ntlist.get(0).getId();
+		String  teaName = ntlist.get(0).getUser().getRealName();
+	    List<NetTeacherStudioRelationInfo> ntsrlists = ntsrManager.listInfoByTeaId(teaId);
+	    String msg ="";
+		Map<String,Object> map = new HashMap<String,Object>();
+		List<Object> list_d = new ArrayList<Object>();
+	    if(ntsrlists.isEmpty()){
+	    	msg="noInfo";
+	    }else{
+	    	NetTeacherStudioRelationInfo ntsrInfo = ntsrlists.get(0);
+	    	map.put("id", ntsrInfo.getNetTeacherStudioInfo().getId());//工作室主键
+			map.put("studioName", ntsrInfo.getNetTeacherStudioInfo().getStudioName());//工作室名
+			map.put("studioCode", ntsrInfo.getNetTeacherStudioInfo().getStudioCode());//工作室邀请码
+			map.put("studioProfile", ntsrInfo.getNetTeacherStudioInfo().getStudioProfile());//工作室简介
+			
+			List<NetTeacherStudioRelationInfo> ntsrlist = ntsrManager.listInfoByNtStudioId(ntsrInfo.getNetTeacherStudioInfo().getId());
+			for (Iterator<NetTeacherStudioRelationInfo> itr = ntsrlist.iterator(); itr.hasNext();) {
+				NetTeacherStudioRelationInfo ntsrInfos = (NetTeacherStudioRelationInfo) itr.next();
+				Map<String,Object> map_d= new HashMap<String,Object>();
+				Integer ntId = ntsrInfos.getTeaId();
+				List<NetTeacherStudent> ntslist = ntsManager.listByntId(ntId);
+				String ntName =ntslist.get(0).getNetTeacherInfo().getUser().getRealName();
+				map_d.put("ntName", ntName);
+				map_d.put("freetrial", ntsManager.getByStuNum(teaId, -1));
+				map_d.put("free", ntsManager.getByStuNum(teaId, 2));
+				map_d.put("pay", ntsManager.getByStuNum(teaId, 1));
+				if(teaName.equals(ntName)){
+					list_d.add(0,map_d);
+				}else{
+					list_d.add(map_d);
+				}
+				
+			}
+	    }
+		
+		map.put("ntStudioInfo", list_d);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+		
+	}
+	/**
+	 * 判断是否加入工作室(通过用户编号)
+	 * @author zdf
+	 * 2019-9-5 上午11:31:08
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward checkOtherStudio(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		NetTeacherInfoManager ntManager = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
+		NetTeacherStudioRelationManager ntsrManager = (NetTeacherStudioRelationManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDIO_RELATION);
+		Integer userId=CommonTools.getLoginUserId(request);
+		List<NetTeacherInfo> ntlist =ntManager.listntInfoByuserId(userId);
+		Integer teaId =ntlist.get(0).getId();
+	    List<NetTeacherStudioRelationInfo> ntsrlists = ntsrManager.listInfoByTeaId(teaId);
+	    boolean flag = false;
+	    Map<String,Object> map = new HashMap<String,Object>();
+	    if(ntsrlists.isEmpty()){
+	    	flag = true;
+	    }
+	    map.put("msg", flag);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	/**
 	 * 添加网络老师工作室新闻
 	 * @author zdf
 	 * 2019-7-28 上午11:36:21
@@ -165,5 +251,6 @@ public class NtStudioAction extends DispatchAction {
 		return null;
 		
 	}
+	
 	
 }

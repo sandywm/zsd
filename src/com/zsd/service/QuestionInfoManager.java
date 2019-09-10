@@ -26,7 +26,7 @@ public interface QuestionInfoManager {
 	 * @return
 	 * @throws WEBException
 	 */
-	Integer adddQue(Integer subId,Integer userId,Integer ntId,String queTitle,String queContent,String queTime,String queReplyContent,
+	Integer adddQue(Integer subId,Integer userId,Integer ntId,String queTitle,String queContent,String queImg,String queTime,String queReplyContent,
 	 String queReplyTime,Integer readStatus)throws WEBException;
 	/**
 	 * 根据学科,恢复状态获取问题信息
@@ -39,7 +39,7 @@ public interface QuestionInfoManager {
 	 * @return
 	 * @throws WEBException
 	 */
-	public List<QuestionInfo> listInfoByOpt(Integer subId, Integer readStatus,
+	public List<QuestionInfo> listInfoByOpt(Integer userId,Integer subId, Integer readStatus,
 			Integer pageNo, Integer pageSize) throws WEBException;
 	/**
 	 * 
@@ -50,7 +50,7 @@ public interface QuestionInfoManager {
 	 * @return
 	 * @throws WEBException
 	 */
-	Integer getInfoByOptCount(Integer subId, Integer readStatus)throws WEBException;
+	Integer getInfoByOptCount(Integer userId,Integer subId, Integer readStatus)throws WEBException;
 	/**
 	 * 修改指定问题的回复内容,时间,状态
 	 * @author zong
@@ -59,10 +59,11 @@ public interface QuestionInfoManager {
 	 * @param queReplyContent 回复内容
 	 * @param queReplyTime 回复时间
 	 * @param readStatus 回复状态
+	 * @param queReplyImg 回复图片
 	 * @return
 	 * @throws WEBException
 	 */
-	boolean updateQue(Integer qId,String queReplyContent, String queReplyTime,Integer readStatus)throws WEBException;
+	boolean updateQue(Integer qId,String queReplyContent,String queReplyImg, String queReplyTime,Integer readStatus)throws WEBException;
 	/**
 	 * 根据网络导师编号获取问题信息
 	 * @author zong

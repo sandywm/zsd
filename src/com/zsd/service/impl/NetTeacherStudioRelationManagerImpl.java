@@ -58,4 +58,19 @@ public class NetTeacherStudioRelationManagerImpl implements
 		}
 	}
 
+	@Override
+	public List<NetTeacherStudioRelationInfo> listInfoByTeaId(Integer ntId)
+			throws WEBException {
+		try {
+			ntsrDao = (NetTeacherStudioRelationDao) DaoFactory.instance(null).getDao(Constants.DAO_NET_TEACHER_STUDIO_RELATION);
+			Session sess  = HibernateUtil.currentSession();
+			return ntsrDao.findInfoByTeaId(sess, ntId);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("根据导师编号获取工作室老师信息列表时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
 }

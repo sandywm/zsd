@@ -63,4 +63,13 @@ public interface NetTeacherStudioRelationDao {
 	 * @return
 	 */
 	List<NetTeacherStudioRelationInfo> findInfoByNtStudioId(Session sess, Integer ntStudioId);
+	/**
+	 * 根据导师编号获取工作室关联信息
+	 * @author zdf
+	 * 2019-9-4 下午05:29:11
+	 * @param sess
+	 * @param ntId 导师编号
+	 * @return
+	 */
+	List<NetTeacherStudioRelationInfo> findInfoByTeaId(Session sess, Integer ntId);
 }

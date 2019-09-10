@@ -45,13 +45,16 @@ public class QuestionInfoDaoImpl implements QuestionInfoDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<QuestionInfo> findInfoByOpt(Session sess, Integer subId,
+	public List<QuestionInfo> findInfoByOpt(Session sess,Integer userId, Integer subId,
 			Integer readStatus, Integer pageNo, Integer pageSize) {
 		int offset = (pageNo - 1) * pageSize;
 		if (offset < 0) {
 			offset = 0;
 		}
 		String hql = "from  QuestionInfo as q where 1=1";
+		if (!userId.equals(0)) {
+			hql += " and q.user.id=" + userId;
+		}
 		if (!subId.equals(0)) {
 			hql += " and q.subject.id=" + subId;
 		}
@@ -63,9 +66,12 @@ public class QuestionInfoDaoImpl implements QuestionInfoDao {
 	}
 
 	@Override
-	public Integer getInfoByOptCount(Session sess, Integer subId,
+	public Integer getInfoByOptCount(Session sess,Integer userId, Integer subId,
 			Integer readStatus) {
 		String hql = "select count(q.id)from  QuestionInfo as q where 1=1";
+		if (!userId.equals(0)) {
+			hql += " and q.user.id=" + userId;
+		}
 		if (!subId.equals(0)) {
 			hql += " and q.subject.id=" + subId;
 		}

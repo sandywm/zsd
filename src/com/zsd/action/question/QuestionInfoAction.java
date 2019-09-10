@@ -66,7 +66,8 @@ public class QuestionInfoAction extends DispatchAction {
 		String queTitle=Transcode.unescape_new1("qTitle",request);
 		String queContent=Transcode.unescape_new1("qCon",request);
 		String queTime= CurrentTime.getCurrentTime();
-		Integer qinfo =qManager.adddQue(subId, userId , ntId, queTitle, queContent, queTime, "", "", 0);
+		String queImg=CommonTools.getFinalStr("queImg",request);
+		Integer qinfo =qManager.adddQue(subId, userId , ntId, queTitle, queContent,queImg,queTime, "", "", 0);
 		Map<String, Object> map = new HashMap<String, Object>();
 		String msg ="fail";
 		if(qinfo>0){
@@ -92,17 +93,17 @@ public class QuestionInfoAction extends DispatchAction {
 			ActionForm form, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		QuestionInfoManager qManager = (QuestionInfoManager) AppFactory.instance(null).getApp(Constants.WEB_QUESTION_INFO);
-
+		Integer userId = CommonTools.getLoginUserId(request);
 		Integer subId = CommonTools.getFinalInteger("subId", request);
 		Integer readStatus = CommonTools.getFinalInteger("readStatus", request);
-		Integer count = qManager.getInfoByOptCount(subId, readStatus);
+		Integer count = qManager.getInfoByOptCount(userId,subId, readStatus);
 		String msg = "暂无记录";
 		Map<String, Object> map = new HashMap<String, Object>();
 		if (count > 0) {
 			Integer pageSize = PageConst.getPageSize(
 					String.valueOf(request.getParameter("limit")), 10);// 等同于pageSize
 			Integer pageNo = CommonTools.getFinalInteger("page", request);// 等同于pageNo
-			List<QuestionInfo> qList = qManager.listInfoByOpt(subId,
+			List<QuestionInfo> qList = qManager.listInfoByOpt(userId,subId,
 					readStatus, pageNo, pageSize);
 			List<Object> list_d = new ArrayList<Object>();
 			for (Iterator it = qList.iterator(); it.hasNext();) {
@@ -290,7 +291,7 @@ public class QuestionInfoAction extends DispatchAction {
 			Integer pageSize = PageConst.getPageSize(
 					String.valueOf(request.getParameter("limit")), 10);// 等同于pageSize
 			Integer pageNo = CommonTools.getFinalInteger("page", request);// 等同于pageNo
-			List<QuestionInfo> qList = qManager.listInfoByOpt(stuId,
+			List<QuestionInfo> qList = qManager.listInfoByStu(stuId,
 					readStatus, pageNo, pageSize);
 			List<Object> list_d = new ArrayList<Object>();
 			for (Iterator<QuestionInfo> it = qList.iterator(); it.hasNext();) {
@@ -331,9 +332,11 @@ public class QuestionInfoAction extends DispatchAction {
 		QuestionInfoManager qManager = (QuestionInfoManager) AppFactory.instance(null).getApp(Constants.WEB_QUESTION_INFO);
 		String queReplyContent =Transcode.unescape_new1("qReCon",request);
 		Integer qId = CommonTools.getFinalInteger("qId", request);
+		String queReplyImg=CommonTools.getFinalStr("queReplyImg",request);
 		String queReplyTime = CurrentTime.getCurrentTime();
 		Map<String, Object> map = new HashMap<String, Object>();
-		boolean qFlag = qManager.updateQue(qId, queReplyContent, queReplyTime, 1);
+		
+		boolean qFlag = qManager.updateQue(qId, queReplyContent,queReplyImg, queReplyTime, 1);
 		String msg ="fail";
 		if(qFlag){
 			msg ="success";

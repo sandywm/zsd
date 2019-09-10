@@ -19,12 +19,21 @@ public interface NetTeacherStudioRelationManager {
 	 */
 	Integer addNTStudioRelation(Integer ntStudioId,Integer teaId, String addTime,String outTime)throws WEBException;
 	/**
-	 * sss
+	 * 根据工作室编号获取工作室关联信息
 	 * @author zdf
 	 * 2019-7-30 上午09:42:40
-	 * @param ntStudioId
+	 * @param ntStudioId 工作室编号
 	 * @return
 	 * @throws WEBException
 	 */
 	List<NetTeacherStudioRelationInfo> listInfoByNtStudioId(Integer ntStudioId)throws WEBException;
+	/**
+	 * 根据导师编号获取工作室关联信息
+	 * @author zdf
+	 * 2019-9-4 下午05:32:44
+	 * @param ntId 导师编号
+	 * @return
+	 * @throws WEBException
+	 */
+	List<NetTeacherStudioRelationInfo> listInfoByTeaId(Integer ntId)throws WEBException;
 }
