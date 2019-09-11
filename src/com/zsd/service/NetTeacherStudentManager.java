@@ -130,4 +130,14 @@ public interface NetTeacherStudentManager {
 	  * @throws WEBException
 	  */
 	 List<NetTeacherStudent> listValidInfoByOpt(Integer stuId)throws WEBException;
+	 
+	 /**
+	  * 根据主键获取实体信息
+	  * @author wm
+	  * @date 2019-9-11 下午05:24:24
+	  * @param id
+	  * @return
+	  * @throws WEBException
+	  */
+	 NetTeacherStudent getEntityById(Integer id)throws WEBException;
 }

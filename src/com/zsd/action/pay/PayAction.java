@@ -4,6 +4,8 @@
  */
 package com.zsd.action.pay;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
@@ -12,8 +14,16 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
 
 import com.zsd.factory.AppFactory;
+import com.zsd.module.ClassInfo;
+import com.zsd.module.School;
+import com.zsd.module.User;
+import com.zsd.module.UserClassInfo;
+import com.zsd.service.SchoolManager;
 import com.zsd.service.SysFeeManager;
+import com.zsd.service.UserClassInfoManager;
 import com.zsd.tools.CommonTools;
+import com.zsd.tools.Convert;
+import com.zsd.tools.CurrentTime;
 import com.zsd.util.Constants;
 
 /** 
@@ -52,10 +62,54 @@ public class PayAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
 		SysFeeManager sfm = (SysFeeManager) AppFactory.instance(null).getApp(Constants.WEB_SYS_FEE_INFO);
+		UserClassInfoManager ucm = (UserClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
+		SchoolManager sm = (SchoolManager) AppFactory.instance(null).getApp(Constants.WEB_SCHOOL_INFO);
 		Integer stuId = CommonTools.getLoginUserId(request);
 		Integer roleId  = CommonTools.getLoginRoleId(request);
 		if(stuId > 0 && roleId.equals(Constants.STU_ROLE_ID)){
-			//获取
+			//获取当前学生能购买的的时长（最大到升学日期）不足一月按一月计算
+			List<UserClassInfo> uList = ucm.listInfoByOpt_1(stuId, roleId);
+			if(uList.size() > 0){
+				UserClassInfo uc = uList.get(0);
+				User user = uc.getUser();
+				ClassInfo c = uc.getClassInfo();
+				String buildClassDate = c.getBuildeClassDate();
+				String currDate = CurrentTime.getStringDate();
+				String endDate = user.getEndDate();
+				//判断会员有无过期
+				Integer currUserGradeNumber = 0;
+				if(CurrentTime.compareDate(currDate, endDate) > 0){//会员没过期
+					//计算endDate时的所在年级
+					currUserGradeNumber = Convert.dateConvertGradeNumber(endDate,buildClassDate);
+				}else{
+					//计算出当前学生今天所在的年级
+					currUserGradeNumber = Convert.dateConvertGradeNumber(buildClassDate);
+				}
+				Integer yearSystem = user.getYearSystem();//学年制6,5,4,3
+				Integer schoolId = user.getSchoolId();
+				List<School> sList = sm.listInfoById(schoolId);
+				if(sList.size() > 0){
+					Integer schoolType = sList.get(0).getSchoolType();
+					if(schoolType.equals(1)){//小学
+						if(yearSystem.equals(6)){//六年制
+							
+						}else{//五年制
+							
+						}
+					}else if(schoolType.equals(2)){//初中
+						if(yearSystem.equals(4)){//四年制
+							
+						}else{//三年制
+							
+						}
+					}else{
+						
+					}
+				}
+				if(currUserGradeNumber >= 1 && currUserGradeNumber <= 4){
+					//1-12个月可随便购买
+				}
+			}
 		}
 		return null;
 	}

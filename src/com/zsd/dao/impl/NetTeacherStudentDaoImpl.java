@@ -14,7 +14,12 @@ public class NetTeacherStudentDaoImpl implements NetTeacherStudentDao {
 
 	@Override
 	public NetTeacherStudent get(Session sess, int id) {
-		return (NetTeacherStudent) sess.load(NetTeacherStudent.class, id);
+		String hql = "from NetTeacherStudent as nts where nts.id = "+id;
+		List<NetTeacherStudent> ntsList = sess.createQuery(hql).list();
+		if(ntsList.size() > 0){
+			return ntsList.get(0);
+		}
+		return null;
 	}
 
 	@Override

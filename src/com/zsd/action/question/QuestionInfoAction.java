@@ -27,6 +27,7 @@ import com.zsd.module.QuestionInfo;
 import com.zsd.module.UserClassInfo;
 import com.zsd.page.PageConst;
 import com.zsd.service.ClassInfoManager;
+import com.zsd.service.EmailManager;
 import com.zsd.service.GradeSubjectManager;
 import com.zsd.service.NetTeacherStudentManager;
 import com.zsd.service.QuestionInfoManager;
@@ -57,6 +58,7 @@ public class QuestionInfoAction extends DispatchAction {
 	 */
 	public ActionForward addQuestion(ActionMapping mapping,ActionForm form, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
+		EmailManager em = (EmailManager) AppFactory.instance(null).getApp(Constants.WEB_EMAIL_INFO);
 		QuestionInfoManager qManager = (QuestionInfoManager) AppFactory.instance(null).getApp(Constants.WEB_QUESTION_INFO);
 		Integer subId = CommonTools.getFinalInteger("subId", request);
 		Integer ntId = CommonTools.getFinalInteger("ntId", request);
@@ -70,6 +72,13 @@ public class QuestionInfoAction extends DispatchAction {
 		String msg ="fail";
 		if(qinfo>0){
 			msg = "success";
+			List<QuestionInfo> qList = qManager.listInfoById(qinfo);
+			QuestionInfo que = qList.get(0);
+			String userName_stu = que.getUser().getRealName();
+			String userName_nt = que.getNetTeacherInfo().getUser().getRealName();
+			Integer userId_nt = que.getNetTeacherInfo().getUser().getId();
+			String content_tea = userName_nt+"导师，您好，"+userName_stu+"学生向您提出["+queTitle+"]问题，请最迟于当天晚上11点前及时回复，谢谢。[知识典]";
+			em.addEmail(1, "学生提问", content_tea, "sys", userId_nt);
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
@@ -374,16 +383,25 @@ public class QuestionInfoAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 		QuestionInfoManager qManager = (QuestionInfoManager) AppFactory.instance(null).getApp(Constants.WEB_QUESTION_INFO);
+		EmailManager em = (EmailManager) AppFactory.instance(null).getApp(Constants.WEB_EMAIL_INFO);
 		String queReplyContent =Transcode.unescape_new1("qReCon",request);
 		Integer qId = CommonTools.getFinalInteger("qId", request);
 		String queReplyImg=CommonTools.getFinalStr("queReplyImg",request);
 		String queReplyTime = CurrentTime.getCurrentTime();
 		Map<String, Object> map = new HashMap<String, Object>();
-		
-		boolean qFlag = qManager.updateQue(qId, queReplyContent,queReplyImg, queReplyTime, 1);
+		List<QuestionInfo> qList = qManager.listInfoById(qId);
 		String msg ="fail";
-		if(qFlag){
-			msg ="success";
+		if(qList.size() > 0){
+			boolean qFlag = qManager.updateQue(qId, queReplyContent,queReplyImg, queReplyTime, 1);
+			if(qFlag){
+				msg ="success";
+				QuestionInfo que = qList.get(0);
+				String userName_stu = que.getUser().getRealName();
+				String userName_nt = que.getNetTeacherInfo().getUser().getRealName();
+				Integer userId_nt = que.getNetTeacherInfo().getUser().getId();
+				String content_tea = userName_stu+"同学，你好，你提出["+que.getQueTitle()+"]问题已被"+userName_nt+"导师解答，请点击我的提问查看，谢谢。[知识典]";
+				em.addEmail(1, "网络导师已解答", content_tea, "sys", userId_nt);
+			}
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);

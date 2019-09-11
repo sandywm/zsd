@@ -25,12 +25,14 @@ import com.zsd.module.ClassInfo;
 import com.zsd.module.GradeSubject;
 import com.zsd.module.InviteCodeInfo;
 import com.zsd.module.NetTeacherInfo;
+import com.zsd.module.NetTeacherStudent;
 import com.zsd.module.RoleInfo;
 import com.zsd.module.RoleUserInfo;
 import com.zsd.module.School;
 import com.zsd.module.User;
 import com.zsd.module.UserClassInfo;
 import com.zsd.service.ClassInfoManager;
+import com.zsd.service.EmailManager;
 import com.zsd.service.GradeSubjectManager;
 import com.zsd.service.InviteCodeInfoManager;
 import com.zsd.service.NetTeacherInfoManager;
@@ -640,9 +642,11 @@ public class LoginAction extends DispatchAction {
 	 */
 	public ActionForward bindTeacherByCode(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		UserManager um = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
 		InviteCodeInfoManager icManager = (InviteCodeInfoManager) AppFactory.instance(null).getApp(Constants.WEB_INVITE_CODE_INFO);
 		NetTeacherStudentManager ntsManager = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT);
 		NetTeacherInfoManager ntManager  = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
+		EmailManager em = (EmailManager) AppFactory.instance(null).getApp(Constants.WEB_EMAIL_INFO);
 		String inviteCode=CommonTools.getFinalStr("inviteCode",request);
 		Integer userId = CommonTools.getLoginUserId(request);
 		List<InviteCodeInfo> icList = icManager.listIcInfoByicCode(inviteCode);//导师邀请码
@@ -650,19 +654,29 @@ public class LoginAction extends DispatchAction {
 		if(icList.isEmpty()){
 			map.put("msg","noInfo");
 		}else{
-			Integer teaId=icList.get(0).getInviteId();	
-		    List<NetTeacherInfo> ntlist=ntManager.listntInfoByTeaId(teaId);
-		    Integer schType = ntlist.get(0).getSchoolType();
-		    Integer  subId=ntlist.get(0).getSubject().getId();
-		    boolean flag = ntsManager.isBindTeaBySubIdAndSchType(userId, subId, schType);
-		    if(flag){
-		    	map.put("msg","binded");
-		    }else{
-		    	Integer ntsId =  ntsManager.addNTS(userId, teaId, CurrentTime.getCurrentTime(), -1, CurrentTime.getFinalDateTime(7), 0, "", "", 0);//4 缃戠粶瀵煎笀瀛︾敓缁戝畾
-				if(ntsId>0){
-					map.put("msg","success");
-				}
-		    }
+			List<User> uList = um.listEntityById(userId);
+			if(uList.size() > 0){
+				String userName_stu = uList.get(0).getRealName();
+				Integer teaId=icList.get(0).getInviteId();	
+			    List<NetTeacherInfo> ntlist=ntManager.listntInfoByTeaId(teaId);
+			    Integer userId_tea = ntlist.get(0).getUser().getId();
+			    String userName_tea = ntlist.get(0).getUser().getRealName();
+			    Integer schType = ntlist.get(0).getSchoolType();
+			    Integer  subId=ntlist.get(0).getSubject().getId();
+			    boolean flag = ntsManager.isBindTeaBySubIdAndSchType(userId, subId, schType);
+			    if(flag){
+			    	map.put("msg","binded");
+			    }else{
+			    	Integer ntsId =  ntsManager.addNTS(userId, teaId, CurrentTime.getCurrentTime(), -1, CurrentTime.getFinalDateTime(7), 0, "", "", 0);//4 缃戠粶瀵煎笀瀛︾敓缁戝畾
+					if(ntsId>0){
+						String content_stu = userName_stu+"同学,你好，你已成功绑定"+userName_tea+"老师为你的网络导师，如遇到学习上有什么问题，请及时向导师提出，谢谢。[知识典]";
+						String content_tea = userName_tea+"导师，您好，"+userName_stu+"学生已成功绑定您为他的网络导师，请全程为学生做好答疑引导服务，谢谢。[知识典]";
+						em.addEmail(1, "绑定导师成功", content_stu, "sys", userId);
+						em.addEmail(1, "绑定导师", content_tea, "sys", userId_tea);
+						map.put("msg","success");
+					}
+			    }
+			}
 		}
 		CommonTools.getJsonPkg(map, response);
 		return null;
@@ -680,16 +694,28 @@ public class LoginAction extends DispatchAction {
 	 */
 	public ActionForward unBindTeacher(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		EmailManager em = (EmailManager) AppFactory.instance(null).getApp(Constants.WEB_EMAIL_INFO);
 		NetTeacherStudentManager ntsManager = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT);
 		Map<String,Object> map = new HashMap<String,Object>();
 		Integer ntsId=CommonTools.getFinalInteger("ntsId", request); //绑定导师主键
-		String cancelDate= CurrentTime.getStringDate();		
-		boolean flag =	ntsManager.updateNTS(ntsId, 0, cancelDate);
-		String msg ="";
-		if(flag){
-			msg="success";
-		}else{
-			msg="fail";
+		String cancelDate= CurrentTime.getStringDate();
+		NetTeacherStudent nts = ntsManager.getEntityById(ntsId);
+		String msg ="error";
+		if(nts != null){
+			boolean flag =	ntsManager.updateNTS(ntsId, 0, cancelDate);
+			if(flag){
+				msg="success";
+				String userName_stu = nts.getUser().getRealName();
+				Integer userId_stu = nts.getUser().getId();
+				String userName_nt = nts.getNetTeacherInfo().getUser().getRealName();
+				Integer userId_nt = nts.getNetTeacherInfo().getUser().getId();
+				String content_stu = userName_stu+"同学,你好，你已取消和"+userName_nt+"老师的绑定关系。[知识典]";
+				String content_tea = userName_nt+"导师，您好，"+userName_stu+"学生已取消和您的绑定关系。[知识典]";
+				em.addEmail(1, "取消绑定导师", content_stu, "sys", userId_stu);
+				em.addEmail(1, "绑定取消", content_tea, "sys", userId_nt);
+			}else{
+				msg="fail";
+			}
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);

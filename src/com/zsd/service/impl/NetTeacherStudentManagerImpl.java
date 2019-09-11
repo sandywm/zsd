@@ -215,4 +215,19 @@ public class NetTeacherStudentManagerImpl implements NetTeacherStudentManager {
 		}
 	}
 
+	@Override
+	public NetTeacherStudent getEntityById(Integer id) throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			ntsDao = (NetTeacherStudentDao) DaoFactory.instance(null).getDao(Constants.DAO_NET_TEACHER_STUDENT);
+			Session sess  = HibernateUtil.currentSession();
+			return ntsDao.get(sess, id);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("根据主键获取信息实体时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
 }
