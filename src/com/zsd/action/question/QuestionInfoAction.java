@@ -116,7 +116,7 @@ public class QuestionInfoAction extends DispatchAction {
 				if (qInfo.getReadStatus() == 0) {
 					map_d.put("readSta", "未回复");
 				} else {
-					map_d.put("readSta", "回复");
+					map_d.put("readSta", "已回复");
 				}
 				list_d.add(map_d);
 			}
@@ -220,7 +220,7 @@ public class QuestionInfoAction extends DispatchAction {
 					NetTeacherStudent nts = (NetTeacherStudent) itt.next();
 					Integer sId  = nts.getNetTeacherInfo().getSubject().getId();//学科编号
 					if(subId.equals(sId)){
-						Integer ntId = nts.getNetTeacherInfo().getUser().getId();
+						Integer ntId = nts.getNetTeacherInfo().getId();
 						String ntName = nts.getNetTeacherInfo().getUser().getRealName();
 						map_d.put("sntId", subId+"/"+ntId);
 						map_d.put("sntName",subName+"("+ntName+")");
@@ -306,7 +306,7 @@ public class QuestionInfoAction extends DispatchAction {
 				if (qInfo.getReadStatus() == 0) {
 					map_d.put("readSta", "未回复");
 				} else {
-					map_d.put("readSta", "回复");
+					map_d.put("readSta", "已回复");
 				}
 				list_d.add(map_d);
 			}
@@ -336,10 +336,12 @@ public class QuestionInfoAction extends DispatchAction {
 			map_d.put("replyContent", qInfo.getQueReplyContent());
 			map_d.put("replyImg", qInfo.getQueReplyImg());
 			map_d.put("queTime", qInfo.getQueTime());
+			map_d.put("replyTime", qInfo.getQueReplyTime());
+			map_d.put("ntRealName", qInfo.getNetTeacherInfo().getUser().getRealName());
 			if (qInfo.getReadStatus() == 0) {
 				map_d.put("readSta", "未回复");
 			} else {
-				map_d.put("readSta", "回复");
+				map_d.put("readSta", "已回复");
 			}
 			list_d.add(map_d);
 		}

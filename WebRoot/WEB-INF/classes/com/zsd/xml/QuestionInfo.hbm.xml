@@ -26,7 +26,7 @@
             </column>
         </many-to-one>
         <property name="queTitle" type="java.lang.String">
-            <column name="que_title" length="30" not-null="true">
+            <column name="que_title" length="100" not-null="true">
                 <comment>问题标题</comment>
             </column>
         </property>

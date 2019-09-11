@@ -55,18 +55,18 @@ public class NetTeacherTxRecordDaoImpl implements NetTeacherTxRecordDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<NetTeacherTxRecord> findnTxReCordByNtId(Session sess,
-			Integer ntId, Integer pageNo, Integer pageSize) {
+			Integer userId, Integer pageNo, Integer pageSize) {
 		int offset = (pageNo - 1) * pageSize;
 		if (offset < 0) {
 			offset = 0;
 		}
-		String hql="from  NetTeacherTxRecord as ntx  where ntx.netTeacherInfo.id="+ntId;
+		String hql="from  NetTeacherTxRecord as ntx  where ntx.netTeacherInfo.user.id="+userId+" order by txDate desc";
 		return sess.createQuery(hql).setFirstResult(offset).setMaxResults(pageSize).list();
 	}
 
 	@Override
-	public Integer getnTxReCordCount(Session sess, Integer ntId) {
-		String hql="Select count(ntx.id) from  NetTeacherTxRecord as ntx  where ntx.netTeacherInfo.id="+ntId;
+	public Integer getnTxReCordCount(Session sess, Integer userId) {
+		String hql="Select count(ntx.id) from  NetTeacherTxRecord as ntx  where ntx.netTeacherInfo.user.id="+userId;
 		Object countObj = sess.createQuery(hql).uniqueResult();
 		return CommonTools.longToInt(countObj);
 	}

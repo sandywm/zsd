@@ -23,7 +23,6 @@ import com.zsd.factory.AppFactory;
 import com.zsd.module.NetTeacherBasicInfo;
 import com.zsd.module.NetTeacherCertificateInfo;
 import com.zsd.module.NetTeacherInfo;
-import com.zsd.module.NetTeacherReturnRecord;
 import com.zsd.module.NetTeacherStudent;
 import com.zsd.module.NetTeacherTxRecord;
 import com.zsd.module.StudentPayOrderInfo;
@@ -31,7 +30,6 @@ import com.zsd.module.User;
 import com.zsd.page.PageConst;
 import com.zsd.service.NetTeacherBasicInfoManager;
 import com.zsd.service.NetTeacherInfoManager;
-import com.zsd.service.NetTeacherReturnRecordManager;
 import com.zsd.service.NetTeacherStudentManager;
 import com.zsd.service.NetTeacherTxRecordManager;
 import com.zsd.service.NtCertificateInfoManager;
@@ -333,7 +331,7 @@ public class NetTeacherAction extends DispatchAction {
 		return null;
 	}
 	/**
-	 * 获取网络导师的提现记录信息
+	 * 获取网络导师用户编号的提现记录信息
 	 * @author zong
 	 * 2019-5-27下午03:40:02
 	 * @param mapping
@@ -346,25 +344,26 @@ public class NetTeacherAction extends DispatchAction {
 	public ActionForward listnTxReCord(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response)throws Exception {
 		NetTeacherTxRecordManager ntxManager = (NetTeacherTxRecordManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_TX_RECORD);
-		NetTeacherInfoManager ntManager = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
 		Integer userId=CommonTools.getLoginUserId(request);
-		List<NetTeacherInfo> ntlist = ntManager.listntInfoByuserId(userId);
-		Integer ntId = ntlist.get(0).getId();
-		Integer count = ntxManager.getnTxReCordCount(ntId);
+		Integer count = ntxManager.getnTxReCordCount(userId);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg ="暂无记录";
 		if(count>0){
 			Integer pageSize = PageConst.getPageSize(String.valueOf(request.getParameter("limit")), 10);//等同于pageSize
 			Integer pageNo = CommonTools.getFinalInteger("page", request);//等同于pageNo
-			List<NetTeacherTxRecord> ntxlist= ntxManager.listnTxReCordByNtId(ntId, pageNo, pageSize);
+			List<NetTeacherTxRecord> ntxlist= ntxManager.listnTxReCordByNtId(userId, pageNo, pageSize);
 			List<Object> list_d = new ArrayList<Object>();
 			for (Iterator<NetTeacherTxRecord> itr = ntxlist.iterator(); itr.hasNext();) {
 				NetTeacherTxRecord ntx = (NetTeacherTxRecord) itr.next();
 				Map<String,Object> map_d = new HashMap<String,Object>();
 				map_d.put("id", ntx.getId());
+				if(ntx.getOperateUserId().equals(-1)){
+					map_d.put("ntxName", "返现");
+				}else{
+					map_d.put("ntxName", "提现");
+				}
 				map_d.put("txMoney", ntx.getTxMoney());
 				map_d.put("txDate", ntx.getTxDate());
-				map_d.put("operDate", ntx.getOperateDate());
 				list_d.add(map_d);
 			}
 			map.put("data", list_d);
@@ -429,50 +428,7 @@ public class NetTeacherAction extends DispatchAction {
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
-	/**
-	 * 根据网络导师编号获取返现信息列表
-	 * @author zong
-	 * 2019-5-28下午04:21:20
-	 * @param mapping
-	 * @param form
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws Exception
-	 */
-	public ActionForward listnTrReCord(ActionMapping mapping, ActionForm form,
-			HttpServletRequest request, HttpServletResponse response)throws Exception {
-		NetTeacherReturnRecordManager  ntrManager = (NetTeacherReturnRecordManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_RETURN_RECORD);
-		NetTeacherInfoManager ntManager = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
-		Integer userId=CommonTools.getLoginUserId(request);
-		List<NetTeacherInfo> ntlist = ntManager.listntInfoByuserId(userId);
-		Integer ntId = ntlist.get(0).getId();
-		Integer count = ntrManager.getnTrRecordCount(ntId);
-		Map<String,Object> map = new HashMap<String,Object>();
-		String msg ="暂无记录";
-		if(count>0){
-			Integer pageSize = PageConst.getPageSize(String.valueOf(request.getParameter("limit")), 10);//等同于pageSize
-			Integer pageNo = CommonTools.getFinalInteger("page", request);//等同于pageNo
-			List<NetTeacherReturnRecord> ntrlist= ntrManager.listnTrRecordByNtId(ntId, pageNo, pageSize);
-			List<Object> list_d = new ArrayList<Object>();
-			for (Iterator<NetTeacherReturnRecord> itr = ntrlist.iterator(); itr.hasNext();) {
-				NetTeacherReturnRecord ntr = (NetTeacherReturnRecord) itr.next();
-				Map<String,Object> map_d = new HashMap<String,Object>();
-				map_d.put("id", ntr.getId());
-				map_d.put("stuName", ntr.getUser().getRealName());
-				map_d.put("reMoney", ntr.getReturnMoney());
-				map_d.put("reDate", ntr.getReturnMoney());
-				list_d.add(map_d);
-			}
-			map.put("data", list_d);
-			map.put("count", count);
-			map.put("code", 0);
-			msg = "success";
-		}
-		map.put("msg", msg);
-		CommonTools.getJsonPkg(map, response);
-		return null;
-	}
+
 	/**
 	 * 获取班级成员列表(我的班级)
 	 * @author zong

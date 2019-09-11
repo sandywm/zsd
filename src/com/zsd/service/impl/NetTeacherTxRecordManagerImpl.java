@@ -35,28 +35,28 @@ public class NetTeacherTxRecordManagerImpl implements NetTeacherTxRecordManager 
 		}
 	}
 	@Override
-	public List<NetTeacherTxRecord> listnTxReCordByNtId(Integer ntId,
+	public List<NetTeacherTxRecord> listnTxReCordByNtId(Integer userId,
 			Integer pageNo, Integer pageSize) throws WEBException {
 		try {
 			ntxDao= (NetTeacherTxRecordDao) DaoFactory.instance(null).getDao(Constants.DAO_NET_TEACHER_TX_RECORD);
 			Session sess  = HibernateUtil.currentSession();
-			return ntxDao.findnTxReCordByNtId(sess, ntId, pageNo, pageSize);
+			return ntxDao.findnTxReCordByNtId(sess, userId, pageNo, pageSize);
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new WEBException("根据网络导师编号分页获取提现信息时出现异常!");
+			throw new WEBException("根据导师用户编号分页获取提现信息时出现异常!");
 		}finally{
 			HibernateUtil.closeSession();
 		}
 	}
 	@Override
-	public Integer getnTxReCordCount(Integer ntId) throws WEBException {
+	public Integer getnTxReCordCount(Integer userId) throws WEBException {
 		try {
 			ntxDao= (NetTeacherTxRecordDao) DaoFactory.instance(null).getDao(Constants.DAO_NET_TEACHER_TX_RECORD);
 			Session sess  = HibernateUtil.currentSession();
-			return ntxDao.getnTxReCordCount(sess, ntId);
+			return ntxDao.getnTxReCordCount(sess, userId);
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new WEBException("根据网络导师编号获取提现记录数时出现异常!");
+			throw new WEBException("根据导师用户编号获取提现记录数时出现异常!");
 		}finally{
 			HibernateUtil.closeSession();
 		}

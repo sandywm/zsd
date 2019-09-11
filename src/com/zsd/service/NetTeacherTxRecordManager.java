@@ -23,20 +23,20 @@ public interface NetTeacherTxRecordManager {
 	 * 根据网络导师编号分页获取提现信息
 	 * @author zong
 	 * 2019-5-27上午11:25:20
-	 * @param ntId 网络导师编号
+	 * @param userId 用户编号
 	 * @param pageNo
 	 * @param pageSize
 	 * @return
 	 * @throws WEBException
 	 */
-	List<NetTeacherTxRecord> listnTxReCordByNtId(Integer ntId, Integer pageNo, Integer pageSize)throws WEBException;
+	List<NetTeacherTxRecord> listnTxReCordByNtId(Integer userId, Integer pageNo, Integer pageSize)throws WEBException;
 	/**
 	 * 	根据网络导师编号获取提现记录数
 	 * @author zong
 	 * 2019-5-27下午03:52:12
-	 * @param ntId 网络导师编号
+	 * @param userId 用户编号
 	 * @return
 	 * @throws WEBException
 	 */
-	Integer getnTxReCordCount(Integer ntId)throws WEBException;
+	Integer getnTxReCordCount(Integer userId)throws WEBException;
 }
