@@ -84,6 +84,7 @@ public class QuestionInfoManagerImpl implements QuestionInfoManager {
 			qInfo.setQueImg(queImg);
 			qInfo.setQueTime(queTime);
 			qInfo.setQueReplyContent(queReplyContent);
+			qInfo.setQueReplyImg("");
 			qInfo.setQueReplyTime(queReplyTime);
 			qInfo.setReadStatus(readStatus);
 			qDao.save(sess, qInfo);
