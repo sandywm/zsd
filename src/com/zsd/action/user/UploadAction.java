@@ -73,8 +73,9 @@ public class UploadAction extends DispatchAction {
 				}
 				Integer lastIndex = filename.lastIndexOf(".");
 				String suffix = filename.substring(lastIndex+1);
-				String filePre = filename.substring(0, lastIndex);
-				filename = filePre + "_" + CurrentTime.getRadomTime() + "." + suffix;
+//				String filePre = filename.substring(0, lastIndex);
+				filename = CurrentTime.getSimpleTime()+"_"+CommonTools.getLoginUserId(request)+"_"+CurrentTime.getRadomTime() + "." + suffix;
+//				filename = filePre + "_" + CurrentTime.getRadomTime() + "." + suffix;
 				CheckImage ci = new CheckImage();
 				//doc,docx,wps,xls,xlsx,txt,pdf,pptx,ppt,zip,rar,dwg,eml,jpg,png,bmp,gif,vsd,vsdx如果文件格式不在上述范围内请压缩成zip格式后上传
 				String checkFileSuffixInfo = ci.getUpFileStuffix(suffix);
@@ -98,9 +99,9 @@ public class UploadAction extends DispatchAction {
 					fileOutputStream.close();// 关闭文件流
 					msg = "success";
 					if(opt.equals("queImg")){
-						fileUrl +=  WebUrl.NEW_DATA_URL_QUE_FILE_UPLOAD  + "\\" + filename + ",";
+						fileUrl +=  WebUrl.NEW_DATA_URL_QUE_FILE_UPLOAD  + "/" + filename + ",";
 					}else{
-						fileUrl +=  WebUrl.NEW_DATA_URL  + "\\" + filename + ",";
+						fileUrl +=  WebUrl.NEW_DATA_URL  + "/" + filename + ",";
 					}
 				}
 			}

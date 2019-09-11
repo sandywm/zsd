@@ -525,6 +525,18 @@ public class CurrentTime {
     }
     
     /**
+     * 获取随机数（秒+毫秒）
+     * @author wm
+     * @date 2019-9-11 上午10:12:02
+     * @return
+     */
+    public static String getRadomTime_1(){
+    	Integer max = 100,min = 10;
+    	String radomStr = String.valueOf(Math.round(Math.random()*(max-min)+min));//两位随机数
+    	return getFormat("ss")+getFormat("SSS")+radomStr;
+    }
+    
+    /**
      * 将########日期转换成####-##-##
      * @description
      * @author Administrator
