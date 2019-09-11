@@ -5,6 +5,8 @@ import java.net.URLDecoder;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.codec.binary.Base64;
+
 public class Transcode {
 
 	public static String MyTranscodeUTF(String name) throws Exception{
@@ -219,5 +221,51 @@ public class Transcode {
     	}else{
     		return URLDecoder.decode(src, "utf-8");
     	}
+    }
+    
+    /**
+     * 对指定的字符串进行base64加密
+     * @author wm
+     * @date 2019-9-11 上午11:09:56
+     * @param src
+     * @param request
+     * @return
+     */
+    public static String encodeBase64Data(String src,HttpServletRequest request){
+    	src = String.valueOf(request.getParameter(src));
+    	if(src.equals("null")){
+    		return "";
+    	}else{
+    		try {
+				return new String(Base64.encodeBase64(src.getBytes("utf-8")), "utf-8");
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	}
+    	return "";
+    }
+    
+    /**
+     * 对指定的字符串进行base64解密
+     * @author wm
+     * @date 2019-9-11 上午11:10:43
+     * @param src
+     * @param request
+     * @return
+     */
+    public static String decodeBase64Data(String src,HttpServletRequest request){
+    	src = String.valueOf(request.getParameter(src));
+    	if(src.equals("null")){
+    		return "";
+    	}else{
+    		try {
+				return new String(Base64.decodeBase64(src.getBytes("utf-8")), "utf-8");
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	}
+    	return "";
     }
 }

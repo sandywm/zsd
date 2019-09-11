@@ -63,7 +63,8 @@ public class QuestionInfoAction extends DispatchAction {
 		Integer subId = CommonTools.getFinalInteger("subId", request);
 		Integer ntId = CommonTools.getFinalInteger("ntId", request);
 		Integer userId = CommonTools.getLoginUserId(request);
-		String queTitle=Transcode.unescape_new1("qTitle",request);
+//		String queTitle=Transcode.unescape_new1("qTitle",request);
+		String queTitle = Transcode.encodeBase64Data("qTitle", request);
 		String queContent=Transcode.unescape_new1("qCon",request);
 		String queTime= CurrentTime.getCurrentTime();
 		String queImg=CommonTools.getFinalStr("queImg",request);
