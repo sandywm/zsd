@@ -58,6 +58,7 @@ public class UploadAction extends DispatchAction {
 			List<FileItem> filelist = fileUpload.parseRequest(request);
 			ListIterator<FileItem> iterator = filelist.listIterator();
 			String userPath = WebUrl.DATA_URL;
+			Integer userId = CommonTools.getLoginUserId(request);
 			if(opt.equals("queImg")){
 				userPath = WebUrl.DATA_URL_QUE_FILE_UPLOAD;
 			}
@@ -74,7 +75,7 @@ public class UploadAction extends DispatchAction {
 				Integer lastIndex = filename.lastIndexOf(".");
 				String suffix = filename.substring(lastIndex+1);
 //				String filePre = filename.substring(0, lastIndex);
-				filename = CurrentTime.getSimpleTime()+"_"+CommonTools.getLoginUserId(request)+"_"+CurrentTime.getRadomTime() + "." + suffix;
+				filename = CurrentTime.getRadomTime() + "_" + userId + "." + suffix;
 //				filename = filePre + "_" + CurrentTime.getRadomTime() + "." + suffix;
 				CheckImage ci = new CheckImage();
 				//doc,docx,wps,xls,xlsx,txt,pdf,pptx,ppt,zip,rar,dwg,eml,jpg,png,bmp,gif,vsd,vsdx如果文件格式不在上述范围内请压缩成zip格式后上传

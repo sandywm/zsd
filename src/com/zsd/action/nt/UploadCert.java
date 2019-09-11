@@ -66,8 +66,8 @@ public class UploadCert extends Action {
 			String filename = item.getName();// 获取名字
 			Integer lastIndex = filename.lastIndexOf(".");
 			String suffix = filename.substring(lastIndex+1);
-			String filePre = filename.substring(0, lastIndex);
-			filename = filePre + "_" + CurrentTime.getRadomTime() + "." + suffix;
+//			String filePre = filename.substring(0, lastIndex);
+			filename = CurrentTime.getRadomTime() + "." + suffix;
 			CheckImage ci = new CheckImage();
 			//doc,docx,wps,xls,xlsx,txt,pdf,pptx,ppt,zip,rar,dwg,eml,jpg,png,bmp,gif,vsd,vsdx如果文件格式不在上述范围内请压缩成zip格式后上传
 			String checkFileSuffixInfo = ci.getUpFileStuffix(suffix);

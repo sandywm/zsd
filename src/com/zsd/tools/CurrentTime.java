@@ -512,7 +512,7 @@ public class CurrentTime {
     }
     
     /**
-     * 获取随机数（分+秒+毫秒）
+     * 获取yyyyMMddhhmmssSSS+2位随机数
      * @description
      * @author Administrator
      * @date 2018-10-9 下午04:42:50
@@ -521,19 +521,7 @@ public class CurrentTime {
     public static String getRadomTime(){
     	Integer max = 100,min = 10;
     	String radomStr = String.valueOf(Math.round(Math.random()*(max-min)+min));//两位随机数
-    	return getFormat("mm")+getFormat("ss")+getFormat("SSS")+radomStr;
-    }
-    
-    /**
-     * 获取随机数（秒+毫秒）
-     * @author wm
-     * @date 2019-9-11 上午10:12:02
-     * @return
-     */
-    public static String getRadomTime_1(){
-    	Integer max = 100,min = 10;
-    	String radomStr = String.valueOf(Math.round(Math.random()*(max-min)+min));//两位随机数
-    	return getFormat("ss")+getFormat("SSS")+radomStr;
+    	return CurrentTime.getStringTime1() + radomStr;
     }
     
     /**

@@ -1414,15 +1414,15 @@ public class LoreAction extends DispatchAction {
 					List<FileItem> filelist = fileUpload.parseRequest(request);
 					ListIterator<FileItem> iterator = filelist.listIterator();
 					String userPath = WebUrl.DIAGNOSIS_DATA_URL + "/" + loreId;
-					String filePre = "";
+//					String filePre = "";
 					while (iterator.hasNext()) {
 						FileItem fileItem = iterator.next();// 获取文件对象
 						// 处理文件上传
 						filename = fileItem.getName();// 获取名字
 						Integer lastIndex = filename.lastIndexOf(".");
 						String suffix = filename.substring(lastIndex+1);
-						filePre = filename.substring(0, lastIndex);
-						filename = filePre + "_" + CurrentTime.getRadomTime() + "." + suffix;
+//						filePre = filename.substring(0, lastIndex);
+						filename = CurrentTime.getRadomTime() + "." + suffix;
 						CheckImage ci = new CheckImage();
 						//xls,xlsx
 						if(suffix.equals("mp4") || suffix.equals("flv")){//文件限制50M
