@@ -255,7 +255,7 @@ public class Transcode {
      * @return
      */
     public static String decodeBase64Data(String src,HttpServletRequest request){
-    	src = String.valueOf(request.getParameter(src));
+    	src = String.valueOf(src);
     	if(src.equals("null")){
     		return "";
     	}else{

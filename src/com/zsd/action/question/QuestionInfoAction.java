@@ -111,7 +111,7 @@ public class QuestionInfoAction extends DispatchAction {
 				QuestionInfo qInfo = (QuestionInfo) it.next();
 				Map<String, Object> map_d = new HashMap<String, Object>();
 				map_d.put("qId", qInfo.getId()); //我的提问编号
-				map_d.put("queTitle", qInfo.getQueTitle());
+				map_d.put("queTitle", Transcode.decodeBase64Data(qInfo.getQueTitle(), request));
 				map_d.put("queTime", qInfo.getQueTime());
 				if (qInfo.getReadStatus() == 0) {
 					map_d.put("readSta", "未回复");
