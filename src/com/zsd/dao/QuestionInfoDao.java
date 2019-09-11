@@ -104,7 +104,7 @@ public interface QuestionInfoDao {
 	 * @param pageSize 每页多少条
 	 * @return
 	 */
-	List<QuestionInfo> findInfoByStu(Session sess,Integer stuId,Integer readStatus, Integer pageNo,
+	List<QuestionInfo> findInfoByStu(Session sess,Integer userId,Integer stuId,Integer readStatus, Integer pageNo,
 			Integer pageSize);
 	/**
 	 * 根据学生编号回复状态查看问题信息记录数
@@ -115,6 +115,14 @@ public interface QuestionInfoDao {
 	 * @param readStatus
 	 * @return
 	 */
-	Integer  getInfoByStuCount(Session sess,Integer stuId,Integer readStatus);
-	
+	Integer  getInfoByStuCount(Session sess,Integer userId,Integer stuId,Integer readStatus);
+	/**
+	 * 根据主键查看问题详情
+	 * @author zdf
+	 * 2019-9-11 上午08:15:38
+	 * @param sess
+	 * @param qId
+	 * @return
+	 */
+	List<QuestionInfo> findInfoById(Session sess,Integer qId);
 }

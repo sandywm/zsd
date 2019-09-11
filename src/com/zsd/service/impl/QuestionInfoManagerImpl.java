@@ -138,12 +138,12 @@ public class QuestionInfoManagerImpl implements QuestionInfoManager {
 	}
 
 	@Override
-	public List<QuestionInfo> listInfoByStu(Integer stuId, Integer readStatus,
+	public List<QuestionInfo> listInfoByStu(Integer userId,Integer stuId, Integer readStatus,
 			Integer pageNo, Integer pageSize) throws WEBException {
 		try {
 			qDao = (QuestionInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_QUESTION_INFO);
 			Session sess  = HibernateUtil.currentSession();
-			return qDao.findInfoByStu(sess, stuId, readStatus, pageNo, pageSize);
+			return qDao.findInfoByStu(sess,userId, stuId, readStatus, pageNo, pageSize);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new WEBException("根据学生编号,回复状态获取问题信息列表时出现异常!");
@@ -153,15 +153,29 @@ public class QuestionInfoManagerImpl implements QuestionInfoManager {
 	}
 
 	@Override
-	public Integer getInfoByStuCount(Integer stuId, Integer readStatus)
+	public Integer getInfoByStuCount(Integer userId,Integer stuId, Integer readStatus)
 			throws WEBException {
 		try {
 			qDao = (QuestionInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_QUESTION_INFO);
 			Session sess  = HibernateUtil.currentSession();
-			return qDao.getInfoByStuCount(sess, stuId, readStatus);
+			return qDao.getInfoByStuCount(sess,userId, stuId, readStatus);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new WEBException("根据学生编号,回复状态获取问题记录数时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public List<QuestionInfo> listInfoById(Integer qId) throws WEBException {
+		try {
+			qDao = (QuestionInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_QUESTION_INFO);
+			Session sess  = HibernateUtil.currentSession();
+			return qDao.findInfoById(sess, qId);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("根据主键获取问题信息详情时出现异常!");
 		} finally{
 			HibernateUtil.closeSession();
 		}

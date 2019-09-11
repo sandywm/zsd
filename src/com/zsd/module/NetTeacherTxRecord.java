@@ -14,6 +14,7 @@ public class NetTeacherTxRecord implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 	private Integer id;
 	private NetTeacherInfo netTeacherInfo;
+	private Integer stuId;
 	private String txDate;
 	private Integer txMoney;
 	private Integer operateUserId;
@@ -40,10 +41,11 @@ public class NetTeacherTxRecord implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public NetTeacherTxRecord(NetTeacherInfo netTeacherInfo, String txDate,
+	public NetTeacherTxRecord(NetTeacherInfo netTeacherInfo,Integer stuId, String txDate,
 			Integer txMoney, Integer operateUserId, String operateDate,
 			String bankName, String bankNo) {
 		this.netTeacherInfo = netTeacherInfo;
+		this.stuId = stuId;
 		this.txDate = txDate;
 		this.txMoney = txMoney;
 		this.operateUserId = operateUserId;
@@ -68,6 +70,14 @@ public class NetTeacherTxRecord implements java.io.Serializable {
 
 	public void setNetTeacherInfo(NetTeacherInfo netTeacherInfo) {
 		this.netTeacherInfo = netTeacherInfo;
+	}
+
+	public Integer getStuId() {
+		return stuId;
+	}
+
+	public void setStuId(Integer stuId) {
+		this.stuId = stuId;
 	}
 
 	public String getTxDate() {

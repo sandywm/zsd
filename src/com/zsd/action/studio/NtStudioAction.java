@@ -156,7 +156,7 @@ public class NtStudioAction extends DispatchAction {
 				
 			}
 	    }
-		
+		map.put("msg", msg);
 		map.put("ntStudioInfo", list_d);
 		CommonTools.getJsonPkg(map, response);
 		return null;

@@ -84,7 +84,7 @@ public interface QuestionInfoManager {
 	 * @return
 	 * @throws WEBException
 	 */
-	List<QuestionInfo> listInfoByStu(Integer stuId,Integer readStatus, Integer pageNo, Integer pageSize) throws WEBException;
+	List<QuestionInfo> listInfoByStu(Integer userId,Integer stuId,Integer readStatus, Integer pageNo, Integer pageSize) throws WEBException;
 	/**
 	 * 根据学生编号,回复状态获取记录数
 	 * @author zong
@@ -94,6 +94,15 @@ public interface QuestionInfoManager {
 	 * @return
 	 * @throws WEBException
 	 */
-	Integer getInfoByStuCount(Integer stuId,Integer readStatus)throws WEBException;
+	Integer getInfoByStuCount(Integer userId,Integer stuId,Integer readStatus)throws WEBException;
+	/**
+	 * 根据主键查看问题详情
+	 * @author zdf
+	 * 2019-9-11 上午08:17:46
+	 * @param qId
+	 * @return
+	 * @throws WEBException
+	 */
+	List<QuestionInfo> listInfoById(Integer qId) throws WEBException;
 
 }

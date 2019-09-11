@@ -58,7 +58,7 @@ public class QuestionInfoDaoImpl implements QuestionInfoDao {
 		if (!subId.equals(0)) {
 			hql += " and q.subject.id=" + subId;
 		}
-		if (!readStatus.equals(0)) {
+		if (!readStatus.equals(-1)) {
 			hql += " and q.readStatus=" + readStatus;
 		}
 		return sess.createQuery(hql).setFirstResult(offset)
@@ -75,7 +75,7 @@ public class QuestionInfoDaoImpl implements QuestionInfoDao {
 		if (!subId.equals(0)) {
 			hql += " and q.subject.id=" + subId;
 		}
-		if (!readStatus.equals(0)) {
+		if (!readStatus.equals(-1)) {
 			hql += " and q.readStatus=" + readStatus;
 		}
 		Object countObj = sess.createQuery(hql).uniqueResult();
@@ -91,17 +91,20 @@ public class QuestionInfoDaoImpl implements QuestionInfoDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<QuestionInfo> findInfoByStu(Session sess, Integer stuId,
+	public List<QuestionInfo> findInfoByStu(Session sess,Integer userId, Integer stuId,
 			Integer readStatus, Integer pageNo, Integer pageSize) {
 		int offset = (pageNo - 1) * pageSize;
 		if (offset < 0) {
 			offset = 0;
 		}
 		String hql = "from  QuestionInfo as q where 1=1";
+		if(!userId.equals(0)){
+			hql += " and q.netTeacherInfo.user.id=" + stuId;
+		}
 		if (!stuId.equals(0)) {
 			hql += " and q.user.id=" + stuId;
 		}
-		if (!readStatus.equals(0)) {
+		if (!readStatus.equals(-1)) {
 			hql += " and q.readStatus=" + readStatus;
 		}
 		return sess.createQuery(hql).setFirstResult(offset)
@@ -109,17 +112,27 @@ public class QuestionInfoDaoImpl implements QuestionInfoDao {
 	}
 
 	@Override
-	public Integer getInfoByStuCount(Session sess, Integer stuId,
+	public Integer getInfoByStuCount(Session sess,Integer userId, Integer stuId,
 			Integer readStatus) {
 		String hql = "select count(q.id)from  QuestionInfo as q where 1=1";
+		if(!userId.equals(0)){
+			hql += " and q.netTeacherInfo.user.id=" + stuId;
+		}
 		if (!stuId.equals(0)) {
 			hql += " and q.user.id=" + stuId;
 		}
-		if (!readStatus.equals(0)) {
+		if (!readStatus.equals(-1)) {
 			hql += " and q.readStatus=" + readStatus;
 		}
 		Object countObj = sess.createQuery(hql).uniqueResult();
 		return CommonTools.longToInt(countObj);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<QuestionInfo> findInfoById(Session sess, Integer qId) {
+		String hql = "from  QuestionInfo as q where q.id ="+qId;
+		return sess.createQuery(hql).list();
 	}
 
 }

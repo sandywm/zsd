@@ -109,6 +109,7 @@ public class QuestionInfoAction extends DispatchAction {
 			for (Iterator it = qList.iterator(); it.hasNext();) {
 				QuestionInfo qInfo = (QuestionInfo) it.next();
 				Map<String, Object> map_d = new HashMap<String, Object>();
+				map_d.put("qId", qInfo.getId()); //我的提问编号
 				map_d.put("queTitle", qInfo.getQueTitle());
 				map_d.put("queTime", qInfo.getQueTime());
 				if (qInfo.getReadStatus() == 0) {
@@ -284,19 +285,21 @@ public class QuestionInfoAction extends DispatchAction {
 		QuestionInfoManager qManager = (QuestionInfoManager) AppFactory.instance(null).getApp(Constants.WEB_QUESTION_INFO);
 		Integer stuId = CommonTools.getFinalInteger("stuId", request);
 		Integer readStatus = CommonTools.getFinalInteger("readStatus", request);
-		Integer count = qManager.getInfoByStuCount(stuId, readStatus);
+		Integer userId = CommonTools.getLoginUserId(request);	
+		Integer count = qManager.getInfoByStuCount(userId,stuId, readStatus);
 		String msg = "暂无记录";
 		Map<String, Object> map = new HashMap<String, Object>();
 		if (count > 0) {
 			Integer pageSize = PageConst.getPageSize(
 					String.valueOf(request.getParameter("limit")), 10);// 等同于pageSize
 			Integer pageNo = CommonTools.getFinalInteger("page", request);// 等同于pageNo
-			List<QuestionInfo> qList = qManager.listInfoByStu(stuId,
+			List<QuestionInfo> qList = qManager.listInfoByStu(userId,stuId,
 					readStatus, pageNo, pageSize);
 			List<Object> list_d = new ArrayList<Object>();
 			for (Iterator<QuestionInfo> it = qList.iterator(); it.hasNext();) {
 				QuestionInfo qInfo = (QuestionInfo) it.next();
 				Map<String, Object> map_d = new HashMap<String, Object>();
+				map_d.put("qId", qInfo.getId());
 				map_d.put("queTitle", qInfo.getQueTitle());
 				map_d.put("queTime", qInfo.getQueTime());
 				if (qInfo.getReadStatus() == 0) {
@@ -315,6 +318,36 @@ public class QuestionInfoAction extends DispatchAction {
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
+	public ActionForward getQuedetail(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response)throws Exception {
+		QuestionInfoManager qManager = (QuestionInfoManager) AppFactory.instance(null).getApp(Constants.WEB_QUESTION_INFO);
+		Integer qId = CommonTools.getFinalInteger("qId", request);
+		Map<String, Object> map = new HashMap<String, Object>();
+		List<QuestionInfo> qList = qManager.listInfoById(qId);
+		List<Object> list_d = new ArrayList<Object>();
+		for (Iterator<QuestionInfo> it = qList.iterator(); it.hasNext();) {
+			QuestionInfo qInfo = (QuestionInfo) it.next();
+			Map<String, Object> map_d = new HashMap<String, Object>();
+			map_d.put("qId", qInfo.getId());
+			map_d.put("queTitle", qInfo.getQueTitle());
+			map_d.put("queContent", qInfo.getQueContent());
+			map_d.put("queImg", qInfo.getQueImg());
+			map_d.put("replyContent", qInfo.getQueReplyContent());
+			map_d.put("replyImg", qInfo.getQueReplyImg());
+			map_d.put("queTime", qInfo.getQueTime());
+			if (qInfo.getReadStatus() == 0) {
+				map_d.put("readSta", "未回复");
+			} else {
+				map_d.put("readSta", "回复");
+			}
+			list_d.add(map_d);
+		}
+		map.put("data", list_d);
+		CommonTools.getJsonPkg(map, response);
+     	return null;
+		
+	}
+	
 	/**
 	 * 回复学生所提问题
 	 * @author zong
