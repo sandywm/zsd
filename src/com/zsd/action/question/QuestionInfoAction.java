@@ -296,6 +296,8 @@ public class QuestionInfoAction extends DispatchAction {
 				QuestionInfo qInfo = (QuestionInfo) it.next();
 				Map<String, Object> map_d = new HashMap<String, Object>();
 				map_d.put("qId", qInfo.getId());
+				map_d.put("stuName", qInfo.getUser().getRealName());
+				map_d.put("stuPortrait", qInfo.getUser().getPortrait());
 				map_d.put("queTitle", qInfo.getQueTitle());
 				map_d.put("queTime", qInfo.getQueTime());
 				if (qInfo.getReadStatus() == 0) {
@@ -314,6 +316,17 @@ public class QuestionInfoAction extends DispatchAction {
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
+	/**
+	 * 我的提问/我的答疑详情
+	 * @author zdf
+	 * 2019-9-11 下午03:56:24
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
 	public ActionForward getQuedetail(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response)throws Exception {
 		QuestionInfoManager qManager = (QuestionInfoManager) AppFactory.instance(null).getApp(Constants.WEB_QUESTION_INFO);

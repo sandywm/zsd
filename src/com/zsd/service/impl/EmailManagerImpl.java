@@ -32,7 +32,7 @@ public class EmailManagerImpl implements EmailManager{
 			Session sess = HibernateUtil.currentSession();
 			tran = sess.beginTransaction();
 			Email email = new Email(sendUserDao.getEntityById(sess, sendUserId).get(0), toUserDao.getEntityById(sess, toUserId).get(0), title,
-					content, CurrentTime.getCurrentTime(), emailType);
+					content, CurrentTime.getCurrentTime(), emailType,0);
 			eDao.save(sess, email);
 			tran.commit();
 			return email.getId();
@@ -46,7 +46,7 @@ public class EmailManagerImpl implements EmailManager{
 	}
 
 	@Override
-	public void delBatchInfoByIdStr(String emailIdStr) throws WEBException {
+	public void delBatchInfoByIdStr(String emailIdStr,Integer userId) throws WEBException {
 		// TODO Auto-generated method stub
 		try {
 			eDao = (EmailDao) DaoFactory.instance(null).getDao(Constants.DAO_EMAIL_INFO);
@@ -56,12 +56,17 @@ public class EmailManagerImpl implements EmailManager{
 				String[] emailIdArr = emailIdStr.split(",");
 				for(Integer i = 0 ; i < emailIdArr.length ; i++){
 					Integer emailId = Integer.parseInt(emailIdArr[i]);
-					eDao.delete(sess, emailId);
-					if(i % 10 == 0){//批插入的对象立即写入数据库并释放内存
-						sess.flush();
-						sess.clear();
-						tran.commit();
-						tran = sess.beginTransaction();
+					Email email = eDao.getEntity(sess, emailId);
+					if(email != null){
+						if(email.getUserByToUserId().equals(userId)){
+							eDao.delete(sess, emailId);
+							if(i % 10 == 0){//批插入的对象立即写入数据库并释放内存
+								sess.flush();
+								sess.clear();
+								tran.commit();
+								tran = sess.beginTransaction();
+							}
+						}
 					}
 				}
 				tran.commit();
@@ -105,6 +110,42 @@ public class EmailManagerImpl implements EmailManager{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			throw new WEBException("根据条件获取邮件记录时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public void updateBatchInfoByIdStr(String emailIdStr,Integer userId) throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			eDao = (EmailDao) DaoFactory.instance(null).getDao(Constants.DAO_EMAIL_INFO);
+			Session sess = HibernateUtil.currentSession();
+			tran = sess.beginTransaction();
+			if(!emailIdStr.equals("")){
+				String[] emailIdArr = emailIdStr.split(",");
+				for(Integer i = 0 ; i < emailIdArr.length ; i++){
+					Integer emailId = Integer.parseInt(emailIdArr[i]);
+					Email email = eDao.getEntity(sess, emailId);
+					if(email != null){
+						if(email.getUserByToUserId().equals(userId)){
+							email.setReadStatus(1);
+							eDao.update(sess, email);
+							if(i % 10 == 0){//批插入的对象立即写入数据库并释放内存
+								sess.flush();
+								sess.clear();
+								tran.commit();
+								tran = sess.beginTransaction();
+							}
+						}
+					}
+				}
+				tran.commit();
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new WEBException(" 批量修改消息已读标识时出现异常!");
 		} finally{
 			HibernateUtil.closeSession();
 		}

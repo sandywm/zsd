@@ -28,7 +28,7 @@ public interface EmailManager {
 	 * @param emailIdStr 邮件主键，多个逗号隔开
 	 * @throws WEBException
 	 */
-	void delBatchInfoByIdStr(String emailIdStr) throws WEBException;
+	void delBatchInfoByIdStr(String emailIdStr,Integer userId) throws WEBException;
 	
 	/**
 	 * 根据条件分页获取邮件列表
@@ -59,4 +59,13 @@ public interface EmailManager {
 	 * @throws WEBException
 	 */
 	Integer getCountByOpt(Integer userId,String title,String sDate,String eDate,String emailType) throws WEBException;
+	
+	/**
+	 * 批量修改消息已读标识
+	 * @author wm
+	 * @date 2019-9-11 下午04:47:32
+	 * @param emailIdStr 邮件主键，多个逗号隔开
+	 * @throws WEBException
+	 */
+	void updateBatchInfoByIdStr(String emailIdStr,Integer userId) throws WEBException;
 }

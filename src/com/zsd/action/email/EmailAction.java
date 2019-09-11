@@ -71,6 +71,9 @@ public class EmailAction extends DispatchAction {
 		String cilentInfo = CommonTools.getCilentInfo_new(request);
 		Integer pageNo = CommonTools.getFinalInteger("page", request);
 		Integer pageSize = CommonTools.getFinalInteger("limit", request);
+		if(emailType.equals("")){
+			emailType = "sys";
+		}
 		String msg = "暂无记录";
 		Map<String,Object> map = new HashMap<String,Object>();
 		if(cilentInfo.equals("pc")){
@@ -85,8 +88,10 @@ public class EmailAction extends DispatchAction {
 						map_d.put("emailId", email.getId());
 						map_d.put("title", email.getEmailTitle());
 						map_d.put("content", email.getEmailTitle());
-						map_d.put("emailType", email.getEmailType());
+//						map_d.put("emailType", email.getEmailType());
+						map_d.put("sendDate", email.getSendTime());
 						map_d.put("sendUserName", email.getUserBySendUserId().getRealName());
+						map_d.put("readStatus", email.getReadStatus());
 						list_d.add(map_d);
 					}
 					map.put("data", list_d);
@@ -104,7 +109,8 @@ public class EmailAction extends DispatchAction {
 					map_d.put("emailId", email.getId());
 					map_d.put("title", email.getEmailTitle());
 					map_d.put("content", email.getEmailTitle());
-					map_d.put("emailType", email.getEmailType());
+					map_d.put("sendDate", email.getSendTime());
+//					map_d.put("emailType", email.getEmailType());
 					map_d.put("sendUserName", email.getUserBySendUserId().getRealName());
 					list_d.add(map_d);
 				}
@@ -136,10 +142,38 @@ public class EmailAction extends DispatchAction {
 		String msg = "error";
 		Map<String,Object> map = new HashMap<String,Object>();
 		if(currUserId > 0 && !emailIdStr.equals("")){
-			em.delBatchInfoByIdStr(emailIdStr);
+			em.delBatchInfoByIdStr(emailIdStr,currUserId);
 			msg = "success";
 		}
-		map.put("msg", msg);
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 批量设置邮件已读标识
+	 * @author wm
+	 * @date 2019-9-11 下午04:50:56
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward updateBatchEmail(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		EmailManager em = (EmailManager) AppFactory.instance(null).getApp(Constants.WEB_EMAIL_INFO);
+		Integer currUserId = CommonTools.getLoginUserId(request);
+		String emailIdStr = CommonTools.getFinalStr("emailId", request);
+		String msg = "error";
+		Map<String,Object> map = new HashMap<String,Object>();
+		if(currUserId > 0 && !emailIdStr.equals("")){
+			em.updateBatchInfoByIdStr(emailIdStr,currUserId);
+			msg = "success";
+		}
+		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}

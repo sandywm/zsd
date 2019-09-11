@@ -25,7 +25,6 @@ import org.apache.struts.actions.DispatchAction;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.vdurmont.emoji.EmojiParser;
 import com.zsd.factory.AppFactory;
 import com.zsd.module.GradeSubject;
 import com.zsd.module.School;
@@ -320,22 +319,6 @@ public class BaseInfoAction extends DispatchAction {
 			}
 		}
 		map.put("result", msg);
-		CommonTools.getJsonPkg(map, response);
-		return null;
-	}
-	
-	public ActionForward testA(ActionMapping mapping,ActionForm form,
-			HttpServletRequest request,HttpServletResponse response) throws Exception{
-		Map<String,Object> map = new HashMap<String,Object>();
-		String str = CommonTools.getFinalStr("aa", request);
-		map.put("a1", EmojiParser.parseToHtmlDecimal(str));
-		map.put("a2", EmojiParser.parseToHtmlDecimal(str, EmojiParser.FitzpatrickAction.PARSE));
-		map.put("a3", EmojiParser.parseToHtmlDecimal(str, EmojiParser.FitzpatrickAction.REMOVE));
-		map.put("a4", EmojiParser.parseToHtmlDecimal(str, EmojiParser.FitzpatrickAction.IGNORE));
-		map.put("a5", EmojiParser.parseToHtmlHexadecimal(str));
-		
-		//还原
-		map.put("a6", EmojiParser.parseToUnicode(EmojiParser.parseToHtmlDecimal(str)));
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}

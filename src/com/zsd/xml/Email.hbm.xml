@@ -40,5 +40,10 @@
                 <comment>邮件类型[sys(系统邮件),per(个人邮件)]</comment>
             </column>
         </property>
+        <property name="readStatus" type="java.lang.Integer">
+            <column name="read_status" not-null="true">
+                <comment>已读标识(0：未读，1：已读)</comment>
+            </column>
+        </property>
     </class>
 </hibernate-mapping>

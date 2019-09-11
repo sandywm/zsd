@@ -55,7 +55,7 @@ public class PayAction extends DispatchAction {
 		Integer stuId = CommonTools.getLoginUserId(request);
 		Integer roleId  = CommonTools.getLoginRoleId(request);
 		if(stuId > 0 && roleId.equals(Constants.STU_ROLE_ID)){
-			
+			//获取
 		}
 		return null;
 	}

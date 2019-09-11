@@ -358,9 +358,9 @@ public class NetTeacherAction extends DispatchAction {
 				Map<String,Object> map_d = new HashMap<String,Object>();
 				map_d.put("id", ntx.getId());
 				if(ntx.getOperateUserId().equals(-1)){
-					map_d.put("ntxName", "返现");
+					map_d.put("ntxName", "收入");
 				}else{
-					map_d.put("ntxName", "提现");
+					map_d.put("ntxName", "支出");
 				}
 				map_d.put("txMoney", ntx.getTxMoney());
 				map_d.put("txDate", ntx.getTxDate());
@@ -375,6 +375,60 @@ public class NetTeacherAction extends DispatchAction {
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
+	/**
+	 * 账单信息详情
+	 * @author zdf
+	 * 2019-9-11 下午03:56:54
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward nTxRecordDetail(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response)throws Exception {
+		NetTeacherTxRecordManager ntxManager = (NetTeacherTxRecordManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_TX_RECORD);
+		UserManager uManager = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
+		Integer Id = CommonTools.getFinalInteger("ntxId", request);
+		List<NetTeacherTxRecord> ntxList = ntxManager.listnTxReCordById(Id);
+		Map<String, Object> map = new HashMap<String, Object>();
+		List<Object> list_d = new ArrayList<Object>();
+		for (Iterator<NetTeacherTxRecord> iterator = ntxList.iterator(); iterator.hasNext();) {
+			NetTeacherTxRecord ntx = (NetTeacherTxRecord) iterator.next();
+			Map<String, Object> map_d = new HashMap<String, Object>();
+			if(ntx.getOperateUserId().equals(-1)){
+				 List<User> ulist = uManager.listEntityById(ntx.getStuId());
+				 String reMark = "学生"+ulist.get(0).getRealName()+"绑定费返现";
+				 map_d.put("ntxTitle", "收入");	
+				 map_d.put("txMoney", ntx.getTxMoney());
+				 map_d.put("txDate", ntx.getTxDate());
+				 map_d.put("reMark", reMark);
+			}else if(ntx.getOperateUserId()>=0){
+				 map_d.put("ntxTitle", "支出");	
+				 map_d.put("txMoney", ntx.getTxMoney());
+				 map_d.put("txDate", ntx.getTxDate());
+				 map_d.put("bankName", ntx.getBankName());
+				 map_d.put("bankNo", ntx.getBankNo());
+				 map_d.put("operDate", ntx.getOperateDate());
+				 String operUser="";
+				 if(ntx.getOperateUserId()>0){
+					 List<User> ulist = uManager.listEntityById(ntx.getOperateUserId());
+					 operUser =ulist.get(0).getRealName() ;
+					 map_d.put("operUser", operUser); 
+				 }else{
+					 map_d.put("operUser", operUser);  
+				 }
+				
+			}
+			list_d.add(map_d);
+		}
+		map.put("data", list_d);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+		
+	}
+	
 	/**
 	 * 获取学生的购买订单信息
 	 * @author zong

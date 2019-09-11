@@ -22,7 +22,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson.JSON;
-import com.vdurmont.emoji.EmojiParser;
 import com.zsd.factory.AppFactory;
 import com.zsd.module.LoreInfo;
 import com.zsd.module.User;
@@ -861,17 +860,17 @@ public class CommonTools {
 //		}
 //		System.out.println(realAnswerChi);
 		
-		String str = "\ud83d\ude04正常中文\ud83d\ude04";
-        System.out.println("原始字符为：\n" + str);
-
-        System.out.println("to html：");
-        System.out.println(EmojiParser.parseToHtmlDecimal(str));
-        System.out.println(EmojiParser.parseToHtmlDecimal(str, EmojiParser.FitzpatrickAction.PARSE));
-        System.out.println(EmojiParser.parseToHtmlDecimal(str, EmojiParser.FitzpatrickAction.REMOVE));
-        System.out.println(EmojiParser.parseToHtmlDecimal(str, EmojiParser.FitzpatrickAction.IGNORE));
-
-        System.out.println("to html(hex)：");
-        System.out.println(EmojiParser.parseToHtmlHexadecimal(str));
-        System.out.println(EmojiParser.parseToUnicode(EmojiParser.parseToHtmlDecimal(str)));
+//		String str = "\ud83d\ude04正常中文\ud83d\ude04";
+//        System.out.println("原始字符为：\n" + str);
+//
+//        System.out.println("to html：");
+//        System.out.println(EmojiParser.parseToHtmlDecimal(str));
+//        System.out.println(EmojiParser.parseToHtmlDecimal(str, EmojiParser.FitzpatrickAction.PARSE));
+//        System.out.println(EmojiParser.parseToHtmlDecimal(str, EmojiParser.FitzpatrickAction.REMOVE));
+//        System.out.println(EmojiParser.parseToHtmlDecimal(str, EmojiParser.FitzpatrickAction.IGNORE));
+//
+//        System.out.println("to html(hex)：");
+//        System.out.println(EmojiParser.parseToHtmlHexadecimal(str));
+//        System.out.println(EmojiParser.parseToUnicode(EmojiParser.parseToHtmlDecimal(str)));
 	}
 }

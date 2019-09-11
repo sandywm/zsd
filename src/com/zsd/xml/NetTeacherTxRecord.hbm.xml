@@ -15,11 +15,11 @@
                 <comment>老师编号</comment>
             </column>
         </many-to-one>
-        <!--property name="stuId" type="java.lang.Integer">
+        <property name="stuId" type="java.lang.Integer">
             <column name="stu_id" not-null="true">
                 <comment>学生编号(提现时为0)</comment>
             </column>
-        </property-->
+        </property>
         <property name="txDate" type="java.lang.String">
             <column name="tx_date" length="30" not-null="true">
                 <comment>提现日期</comment>

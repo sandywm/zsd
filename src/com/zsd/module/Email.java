@@ -19,6 +19,7 @@ public class Email implements java.io.Serializable {
 	private String emailContent;
 	private String sendTime;
 	private String emailType;
+	private Integer readStatus;
 
 	// Constructors
 
@@ -26,25 +27,16 @@ public class Email implements java.io.Serializable {
 	public Email() {
 	}
 
-	/** minimal constructor */
-	public Email(User userBySendUserId, String emailTitle, String emailContent,
-			String sendTime, String emailType) {
-		this.userBySendUserId = userBySendUserId;
-		this.emailTitle = emailTitle;
-		this.emailContent = emailContent;
-		this.sendTime = sendTime;
-		this.emailType = emailType;
-	}
-
 	/** full constructor */
 	public Email(User userByToUserId, User userBySendUserId, String emailTitle,
-			String emailContent, String sendTime, String emailType) {
+			String emailContent, String sendTime, String emailType,Integer readStatus) {
 		this.userByToUserId = userByToUserId;
 		this.userBySendUserId = userBySendUserId;
 		this.emailTitle = emailTitle;
 		this.emailContent = emailContent;
 		this.sendTime = sendTime;
 		this.emailType = emailType;
+		this.readStatus = readStatus;
 	}
 
 	// Property accessors
@@ -103,6 +95,14 @@ public class Email implements java.io.Serializable {
 
 	public void setEmailType(String emailType) {
 		this.emailType = emailType;
+	}
+
+	public Integer getReadStatus() {
+		return readStatus;
+	}
+
+	public void setReadStatus(Integer readStatus) {
+		this.readStatus = readStatus;
 	}
 
 }
