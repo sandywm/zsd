@@ -2,6 +2,9 @@ package com.zsd.action.base;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -236,14 +239,26 @@ public class Transcode {
     	if(src.equals("null")){
     		return "";
     	}else{
-    		try {
-				return new String(Base64.encodeBase64(src.getBytes("utf-8")), "utf-8");
-			} catch (UnsupportedEncodingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+//    		try {
+//				return new String(Base64.encodeBase64(src.getBytes("utf-8")), "utf-8");
+//			} catch (UnsupportedEncodingException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+    		String patternString = "([\\x{10000}-\\x{10ffff}\ud800-\udfff])";
+    		Pattern pattern = Pattern.compile(patternString);
+    		Matcher matcher = pattern.matcher(src);
+    		StringBuffer sb = new StringBuffer();
+    		while(matcher.find()) {
+	    		try {
+	    			matcher.appendReplacement(sb,"[["+ URLEncoder.encode(matcher.group(1),"UTF-8") + "]]");
+	    		} catch(UnsupportedEncodingException e) {
+	    			e.printStackTrace();
+	    		}
+    		}
+    		matcher.appendTail(sb);
+    		return sb.toString();
     	}
-    	return "";
     }
     
     /**
@@ -259,13 +274,27 @@ public class Transcode {
     	if(src.equals("null")){
     		return "";
     	}else{
-    		try {
-				return new String(Base64.decodeBase64(src.getBytes("utf-8")), "utf-8");
-			} catch (UnsupportedEncodingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+//    		try {
+//				return new String(Base64.decodeBase64(src.getBytes("utf-8")), "utf-8");
+//			} catch (UnsupportedEncodingException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+    		String patternString = "\\[\\[(.*?)\\]\\]";
+    		Pattern pattern = Pattern.compile(patternString);
+    		Matcher matcher = pattern.matcher(src);
+    		StringBuffer sb = new StringBuffer();
+    		while(matcher.find()) {
+	    		try {
+	    			matcher.appendReplacement(sb,URLDecoder.decode(matcher.group(1), "UTF-8"));
+	    		} catch(UnsupportedEncodingException e) {
+	    		//LOG.error("emojiRecovery error", e);
+	    			e.printStackTrace();
+	    		}
+    		}
+    		matcher.appendTail(sb);
+    		//LOG.debug("emojiRecovery " + str + " to " + sb.toString());
+    		return sb.toString();
     	}
-    	return "";
     }
 }
