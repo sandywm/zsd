@@ -61,5 +61,19 @@ public class NetTeacherTxRecordManagerImpl implements NetTeacherTxRecordManager 
 			HibernateUtil.closeSession();
 		}
 	}
+	@Override
+	public List<NetTeacherTxRecord> listnTxReCordById(Integer Id)
+			throws WEBException {
+		try {
+			ntxDao= (NetTeacherTxRecordDao) DaoFactory.instance(null).getDao(Constants.DAO_NET_TEACHER_TX_RECORD);
+			Session sess  = HibernateUtil.currentSession();
+			return ntxDao.findnTxReCordById(sess, Id);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("根据主键编号获取账单信息时出现异常!");
+		}finally{
+			HibernateUtil.closeSession();
+		}
+	}
 
 }

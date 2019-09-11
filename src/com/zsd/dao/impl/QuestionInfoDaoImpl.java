@@ -99,7 +99,7 @@ public class QuestionInfoDaoImpl implements QuestionInfoDao {
 		}
 		String hql = "from  QuestionInfo as q where 1=1";
 		if(!userId.equals(0)){
-			hql += " and q.netTeacherInfo.user.id=" + stuId;
+			hql += " and q.netTeacherInfo.user.id=" + userId;
 		}
 		if (!stuId.equals(0)) {
 			hql += " and q.user.id=" + stuId;
@@ -116,7 +116,7 @@ public class QuestionInfoDaoImpl implements QuestionInfoDao {
 			Integer readStatus) {
 		String hql = "select count(q.id)from  QuestionInfo as q where 1=1";
 		if(!userId.equals(0)){
-			hql += " and q.netTeacherInfo.user.id=" + stuId;
+			hql += " and q.netTeacherInfo.user.id=" + userId;
 		}
 		if (!stuId.equals(0)) {
 			hql += " and q.user.id=" + stuId;

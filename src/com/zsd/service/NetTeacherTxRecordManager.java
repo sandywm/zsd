@@ -39,4 +39,13 @@ public interface NetTeacherTxRecordManager {
 	 * @throws WEBException
 	 */
 	Integer getnTxReCordCount(Integer userId)throws WEBException;
+	/**
+	 * 根据主键获取账单信息
+	 * @author zdf
+	 * 2019-9-11 下午03:07:26
+	 * @param Id 主键
+	 * @return
+	 * @throws WEBException
+	 */
+	List<NetTeacherTxRecord> listnTxReCordById( Integer Id)throws WEBException;
 }

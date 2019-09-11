@@ -85,4 +85,13 @@ public interface NetTeacherTxRecordDao {
 	 * @return
 	 */
 	Integer  getnTxReCordCount(Session sess,Integer userId);
+	/**
+	 * 根据主键获取账单详情
+	 * @author zdf
+	 * 2019-9-11 下午03:04:51
+	 * @param sess
+	 * @param Id 主键 
+	 * @return
+	 */
+	List<NetTeacherTxRecord> findnTxReCordById(Session sess,Integer Id);
 }

@@ -71,4 +71,11 @@ public class NetTeacherTxRecordDaoImpl implements NetTeacherTxRecordDao {
 		return CommonTools.longToInt(countObj);
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<NetTeacherTxRecord> findnTxReCordById(Session sess, Integer Id) {
+		String hql="from  NetTeacherTxRecord as ntx  where ntx.id="+Id;
+		return sess.createQuery(hql).list();
+	}
+
 }

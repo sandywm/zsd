@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson.JSON;
+import com.vdurmont.emoji.EmojiParser;
 import com.zsd.factory.AppFactory;
 import com.zsd.module.LoreInfo;
 import com.zsd.module.User;
@@ -842,22 +843,35 @@ public class CommonTools {
 //        }
 //		double aa = 7 * 10.0 / 9;
 //		System.out.println(Convert.convertInputNumber_6(aa));
-		String realAnswer = "9厘米,1厘米";
-		String myAnswer = "A,B";
-		String answerOpt = "1厘米,,4厘米,9厘米";
-		String realAnswerChi = "";
-		String[] answerOptArr = answerOpt.split(",");
-		String[] realAnswerArr = realAnswer.split(",");
-		for(int i = 0 ; i < realAnswerArr.length ; i++){
-			for(int j = 0 ; j < answerOptArr.length ; j++)
-			if(realAnswerArr[i].equals(answerOptArr[j])){
-				realAnswerChi += Convert.NumberConvertBigChar(j)+",";
-				break;
-			}
-		}
-		if(realAnswerChi.length() > 0){
-			realAnswerChi = realAnswerChi.substring(0, realAnswerChi.length() - 1);
-		}
-		System.out.println(realAnswerChi);
+//		String realAnswer = "9厘米,1厘米";
+//		String myAnswer = "A,B";
+//		String answerOpt = "1厘米,,4厘米,9厘米";
+//		String realAnswerChi = "";
+//		String[] answerOptArr = answerOpt.split(",");
+//		String[] realAnswerArr = realAnswer.split(",");
+//		for(int i = 0 ; i < realAnswerArr.length ; i++){
+//			for(int j = 0 ; j < answerOptArr.length ; j++)
+//			if(realAnswerArr[i].equals(answerOptArr[j])){
+//				realAnswerChi += Convert.NumberConvertBigChar(j)+",";
+//				break;
+//			}
+//		}
+//		if(realAnswerChi.length() > 0){
+//			realAnswerChi = realAnswerChi.substring(0, realAnswerChi.length() - 1);
+//		}
+//		System.out.println(realAnswerChi);
+		
+		String str = "\ud83d\ude04正常中文\ud83d\ude04";
+        System.out.println("原始字符为：\n" + str);
+
+        System.out.println("to html：");
+        System.out.println(EmojiParser.parseToHtmlDecimal(str));
+        System.out.println(EmojiParser.parseToHtmlDecimal(str, EmojiParser.FitzpatrickAction.PARSE));
+        System.out.println(EmojiParser.parseToHtmlDecimal(str, EmojiParser.FitzpatrickAction.REMOVE));
+        System.out.println(EmojiParser.parseToHtmlDecimal(str, EmojiParser.FitzpatrickAction.IGNORE));
+
+        System.out.println("to html(hex)：");
+        System.out.println(EmojiParser.parseToHtmlHexadecimal(str));
+        System.out.println(EmojiParser.parseToUnicode(EmojiParser.parseToHtmlDecimal(str)));
 	}
 }

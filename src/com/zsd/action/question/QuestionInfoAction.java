@@ -22,14 +22,12 @@ import com.zsd.action.base.Transcode;
 import com.zsd.factory.AppFactory;
 import com.zsd.module.ClassInfo;
 import com.zsd.module.GradeSubject;
-import com.zsd.module.NetTeacherInfo;
 import com.zsd.module.NetTeacherStudent;
 import com.zsd.module.QuestionInfo;
 import com.zsd.module.UserClassInfo;
 import com.zsd.page.PageConst;
 import com.zsd.service.ClassInfoManager;
 import com.zsd.service.GradeSubjectManager;
-import com.zsd.service.NetTeacherInfoManager;
 import com.zsd.service.NetTeacherStudentManager;
 import com.zsd.service.QuestionInfoManager;
 import com.zsd.service.UserClassInfoManager;
@@ -250,19 +248,17 @@ public class QuestionInfoAction extends DispatchAction {
 	public ActionForward getStu(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
-		QuestionInfoManager qManager = (QuestionInfoManager) AppFactory.instance(null).getApp(Constants.WEB_QUESTION_INFO);
-		NetTeacherInfoManager ntManager = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
+		 NetTeacherStudentManager  ntsManager = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT);
 		Integer userId = CommonTools.getLoginUserId(request);
-		List<NetTeacherInfo> ntlist = ntManager.listntInfoByuserId(userId);
-		Integer ntId = ntlist.get(0).getId();
+		List<NetTeacherStudent> ntsList = ntsManager.listByntId(userId);
 		Map<String,Object> map = new HashMap<String,Object>();
 		List<Object> list_d = new ArrayList<Object>();
-		List<QuestionInfo> qlist = qManager.findInfoByntId(ntId);
-		for (Iterator<QuestionInfo> it = qlist.iterator(); it.hasNext();) {
-			QuestionInfo qInfo = (QuestionInfo) it.next();
+		for (Iterator<NetTeacherStudent> it = ntsList.iterator(); it.hasNext();) {
+			NetTeacherStudent nts = (NetTeacherStudent) it.next();
 			Map<String,Object> map_d = new HashMap<String,Object>();
-			map_d.put("stuId", qInfo.getUser().getId());
-			map_d.put("stuName", qInfo.getUser().getRealName());
+			map_d.put("stuId", nts.getUser().getId());
+			map_d.put("stuName", nts.getUser().getRealName());
+			map_d.put("portrait", nts.getUser().getPortrait());
 			list_d.add(map_d);
 		}
 		map.put("stuList", list_d);
