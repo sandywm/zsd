@@ -3275,10 +3275,14 @@ public class HomeWorkAction extends DispatchAction {
 							if(tj.getSendHwInfo().getTraceStatus().equals(0)){//没开启溯源可直接提交
 								submitFlag = true;
 							}else{//开启溯源，查看溯源学习记录是否完成
-								HwTraceStudyLogInfo hsl = slm.getEntityById(tjId);
-								if(hsl != null){
-									if(hsl.getIsFinish().equals(2)){//作业溯源学习记录任务完成才能提交
-										submitFlag = true;
+								if(tj.getAllNum().equals(tj.getSuccNum())){//全部做对
+									submitFlag = true;
+								}else{//没全部做对就要看溯源是否完成
+									HwTraceStudyLogInfo hsl = slm.getEntityById(tjId);
+									if(hsl != null){
+										if(hsl.getIsFinish().equals(2)){//作业溯源学习记录任务完成才能提交
+											submitFlag = true;
+										}
 									}
 								}
 							}

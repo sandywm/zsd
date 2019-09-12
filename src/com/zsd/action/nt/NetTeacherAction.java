@@ -246,7 +246,7 @@ public class NetTeacherAction extends DispatchAction {
 		return null;
 	}
 	/**
-	 * 我的账号(网络导师)
+	 * 我的银行卡(网络导师)
 	 * @author zong
 	 * 2019-5-26上午10:18:46
 	 * @param mapping
@@ -256,23 +256,42 @@ public class NetTeacherAction extends DispatchAction {
 	 * @return
 	 * @throws Exception
 	 */
-	public ActionForward myAcc(ActionMapping mapping, ActionForm form,
+	public ActionForward myBankCard(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response)throws Exception {
+		NetTeacherInfoManager ntManager = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
+		Integer userId=CommonTools.getLoginUserId(request);
+		Map<String, Object> map = new HashMap<String, Object>();
+		List<NetTeacherInfo> ntlist = ntManager.listntInfoByuserId(userId);
+		String bName =ntlist.get(0).getBankName();
+		String bNum = ntlist.get(0).getBankNumber();
+		map.put("bankName", bName);//银行名称
+		map.put("bankNum", bNum);//银行账号
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	/**
+	 * 我的账户信息
+	 * @author zdf
+	 * 2019-9-11 下午05:27:33
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward myAccount(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response)throws Exception {
 		UserManager uManager = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
-		NetTeacherInfoManager ntManager = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
 		NetTeacherTxRecordManager ntxManager = (NetTeacherTxRecordManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_TX_RECORD);
-		StudentPayOrderInfoManager sOrdeManager = (StudentPayOrderInfoManager) AppFactory.instance(null).getApp(Constants.WEB_STUDENT_PAY_ORDER_INFO);
-		NetTeacherStudentManager ntsManager = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT);
+		NetTeacherInfoManager ntManager = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
 		Integer userId=CommonTools.getLoginUserId(request);
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<User> ulist = uManager.listEntityById(userId);
 		List<NetTeacherInfo> ntlist = ntManager.listntInfoByuserId(userId);
-		Integer accMon = ulist.get(0).getAccountMoney();
-		String bName =ntlist.get(0).getBankName();
-		String bNum = ntlist.get(0).getBankNumber();
 		Integer ntId = ntlist.get(0).getId();
-		List<NetTeacherTxRecord> ntxlist =ntxManager.findnTxReCordByNtId(ntId,0);//预计提现金额
-		List<NetTeacherTxRecord> ntxs =ntxManager.findnTxReCordByNtId(ntId,1);//提现金额
+		List<NetTeacherTxRecord> ntxlist =ntxManager.findnTxReCordByNtId(ntId,0);//等待到账
+		List<NetTeacherTxRecord> ntxs =ntxManager.findnTxReCordByNtId(ntId,1);//已到账
 		Integer ytxCash=0;
 		Integer txCash =0;
 		for (Iterator<NetTeacherTxRecord> it = ntxlist.iterator(); it.hasNext();) {
@@ -283,28 +302,15 @@ public class NetTeacherAction extends DispatchAction {
 			NetTeacherTxRecord ntxRe = (NetTeacherTxRecord) itr.next();
 			txCash+=ntxRe.getTxMoney();
 		}
-		List<NetTeacherStudent> ntslist=ntsManager.listNTByntId(ntId, 1);
-		Integer tMoney=0;
-		for (Iterator<NetTeacherStudent> iter = ntslist.iterator(); iter.hasNext();) {
-			NetTeacherStudent nts = (NetTeacherStudent) iter.next();
-			Integer ntsId = nts.getId();
-			List<StudentPayOrderInfo> sordeList = sOrdeManager.findSpayOrderInfoByOpt(ntsId, 1);
-			for (Iterator<StudentPayOrderInfo> itrs = sordeList.iterator(); itrs.hasNext();) {
-				StudentPayOrderInfo sorder = (StudentPayOrderInfo) itrs.next();
-				tMoney +=sorder.getPayMoney();
-			}
-		}
-		map.put("tMoney", tMoney);//预计总收入
-		map.put("mCash", accMon);//可提现金额
-		map.put("bName", bName);//银行名称
-		map.put("bNum", bNum);//银行账号
 		map.put("ytxCash", ytxCash);//等待到账金额
-		map.put("txCash", txCash);//已提现金额
+		map.put("txCash", txCash);//已到账金额
+		map.put("accMoney", ulist.get(0).getAccountMoney());//账户余额(可提现)
 		CommonTools.getJsonPkg(map, response);
 		return null;
+		
 	}
 	/**
-	 * 根据网络导师主键修改网络导师银行卡信息
+	 * 根据网络导师主键修改网络导师银行卡信息(添加更新银行卡)
 	 * @author zong
 	 * 2019-5-27上午10:34:03
 	 * @param mapping
@@ -314,12 +320,12 @@ public class NetTeacherAction extends DispatchAction {
 	 * @return
 	 * @throws Exception
 	 */
-	public ActionForward updateNtBankCard(ActionMapping mapping, ActionForm form,
+	public ActionForward addOrUpdateBankCard(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response)throws Exception {
 		NetTeacherInfoManager ntManager = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
 		Integer userId=CommonTools.getLoginUserId(request);
-		String bName = Transcode.unescape_new("bName", request);
-		String bNum = CommonTools.getFinalStr("bNum",request);
+		String bName = Transcode.unescape_new("bankName", request);
+		String bNum = CommonTools.getFinalStr("bankNum",request);
 		boolean ntFlag=ntManager.updateNtByBankCard(userId, bName, bNum);
 		Map<String, String> map = new HashMap<String, String>();
 		if(ntFlag){
@@ -331,7 +337,7 @@ public class NetTeacherAction extends DispatchAction {
 		return null;
 	}
 	/**
-	 * 获取网络导师用户编号的提现记录信息
+	 * 获取网络导师用户编号的提现记录信息(账单信息)
 	 * @author zong
 	 * 2019-5-27下午03:40:02
 	 * @param mapping
