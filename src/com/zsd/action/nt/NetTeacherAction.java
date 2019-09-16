@@ -366,14 +366,14 @@ public class NetTeacherAction extends DispatchAction {
 				Map<String,Object> map_d = new HashMap<String,Object>();
 				map_d.put("id", ntx.getId());
 				if(ntx.getOperateUserId().equals(-1)){
-					map_d.put("ntxName", "收入");
+					map_d.put("ntxName", "返现");
 				}else{
 					if(ntx.getOperateUserId().equals(0)){
 						map_d.put("opersta", "等待打款");
 					}else{
 						map_d.put("opersta", "已打款");
 					}
-					map_d.put("ntxName", "支出");
+					map_d.put("ntxName", "提现");
 				}
 				map_d.put("txMoney", ntx.getTxMoney());
 				map_d.put("txDate", ntx.getTxDate());

@@ -169,12 +169,20 @@ public class BuffetStudyAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
 		BuffetStudyDetailManager bsdm = (BuffetStudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_STUDY_DETAIL_INFO);
+		StudentParentInfoManager spm = (StudentParentInfoManager)AppFactory.instance(null).getApp(Constants.WEB_STUDENT_PARENT_INFO);
+		Integer roleId = CommonTools.getLoginRoleId(request);
 		Integer bsId = CommonTools.getFinalInteger("bsId", request);
 		Integer userId = CommonTools.getLoginUserId(request);
 		String msg = "noInfo";
 		Map<String,Object> map = new HashMap<String,Object>();
 		List<BuffetStudyDetailInfo> bsdList = bsdm.listInfoByBsId(bsId);
 		if(bsdList.size() > 0){
+			if(roleId.equals(Constants.PATENT_ROLE_ID)){//家长角色需要获取自己孩子的userId
+				StudentParentInfo sp = spm.getEntityByParId(userId);
+				if(sp != null){
+					userId = sp.getStu().getId();//孩子的Id
+				}
+			}
 			if(bsdList.get(0).getBuffetSendInfo().getStudyLogInfo().getUser().getId().equals(userId)){
 				msg = "success";
 				List<Object> list_d = new ArrayList<Object>();
