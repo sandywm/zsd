@@ -48,4 +48,19 @@ public interface NetTeacherTxRecordManager {
 	 * @throws WEBException
 	 */
 	List<NetTeacherTxRecord> listnTxReCordById( Integer Id)throws WEBException;
+	
+	/**
+	 * 增加提现/返现记录信息
+	 * @param stuId 学生编号
+	 * @param teaId 导师编号
+	 * @param txFee 提现费用
+	 * @param bankName 银行名称
+	 * @param bankNo 银行卡号
+	 * @param operateUserId 操作人员编号（等于-1的时候表示返现记录，0时表示提现记录未到账，大于0时表示提现记录已到账）
+	 * @param remark 备注
+	 * @return
+	 * @throws WEBException
+	 */
+	Integer addTX(Integer stuId,Integer teaId,Integer txFee,String bankName,String bankNo,
+			Integer operateUserId,String remark)throws WEBException;
 }

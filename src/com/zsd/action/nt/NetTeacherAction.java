@@ -715,10 +715,53 @@ public class NetTeacherAction extends DispatchAction {
 		
 	}
 	
+	/**
+	 * 增加网络导师提现
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
 	public ActionForward addTX(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
-				return null;
+		UserManager um = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
+		NetTeacherTxRecordManager txm = (NetTeacherTxRecordManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_TX_RECORD);
+		NetTeacherInfoManager ntm = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
+		Integer userId = CommonTools.getLoginUserId(request);
+		Integer roleId = CommonTools.getLoginRoleId(request);
+		Integer txFee = CommonTools.getFinalInteger("txFee", request);
+		Map<String,String> map = new HashMap<String, String>();
+		String msg = "error";
+		if(userId > 0 && roleId.equals(Constants.NET_TEA_ROLE_ID) && txFee >= 100){
+			List<User> uList = um.listEntityById(userId);
+			if(uList.size() > 0){
+				Integer accMoney = uList.get(0).getAccountMoney();
+				if(accMoney >= txFee){
+					List<NetTeacherInfo> ntList = ntm.listntInfoByuserId(userId);
+					if(ntList.size() > 0){
+						NetTeacherInfo nt = ntList.get(0);
+						String bankName = nt.getBankName();
+						String bankNo = nt.getBankNumber();
+						if(!bankName.equals("") && !bankNo.equals("")){
+							Integer txId = txm.addTX(0, nt.getId(), txFee, bankName, bankNo, 0, "");
+							if(txId > 0){
+								msg = "success";
+							}
+						}else{
+							msg = "bankNull";
+						}
+					}
+				}else{
+					msg = "feeError";
+				}
+			}
+		}
+		map.put("msg", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
 		
 	}
 }
