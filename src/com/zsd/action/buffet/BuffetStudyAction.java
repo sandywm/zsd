@@ -29,6 +29,7 @@ import com.zsd.module.BuffetStudyDetailInfo;
 import com.zsd.module.LoreInfo;
 import com.zsd.module.LoreQuestion;
 import com.zsd.module.LoreQuestionSubInfo;
+import com.zsd.module.StudentParentInfo;
 import com.zsd.module.StudyLogInfo;
 import com.zsd.module.json.LoreTreeMenuJson;
 import com.zsd.service.BuffetLoreRelateInfoManager;
@@ -38,6 +39,7 @@ import com.zsd.service.BuffetSendInfoManager;
 import com.zsd.service.BuffetStudyDetailManager;
 import com.zsd.service.LoreInfoManager;
 import com.zsd.service.LoreQuestionManager;
+import com.zsd.service.StudentParentInfoManager;
 import com.zsd.service.UserManager;
 import com.zsd.tools.CommonTools;
 import com.zsd.tools.Convert;
@@ -84,7 +86,9 @@ public class BuffetStudyAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
 		BuffetSendInfoManager bsm = (BuffetSendInfoManager)AppFactory.instance(null).getApp(Constants.WEB_BUFFET_SEND_INFO);
+		StudentParentInfoManager spm = (StudentParentInfoManager)AppFactory.instance(null).getApp(Constants.WEB_STUDENT_PARENT_INFO);
 		Integer userId = CommonTools.getLoginUserId(request);
+		Integer roleId = CommonTools.getLoginRoleId(request);
 		Integer subId = CommonTools.getFinalInteger("subId", request);
 		Integer comStatus = CommonTools.getFinalInteger("comStatus", request);//完成状态，默认未全部0
 		String sDate = CommonTools.getFinalStr("sDate", request);
@@ -111,6 +115,12 @@ public class BuffetStudyAction extends DispatchAction {
 			if(!opt.equals("")){//做完题后自动返回
 				pageSize = pageNo * pageSize;
 				pageNo = 1;
+			}
+			if(roleId.equals(Constants.PATENT_ROLE_ID)){//家长角色需要获取自己孩子的userId
+				StudentParentInfo sp = spm.getEntityByParId(userId);
+				if(sp != null){
+					userId = sp.getStu().getId();//孩子的Id
+				}
 			}
 			List<BuffetSendInfo> bsList = bsm.listPageInfoByOption(userId, subId, comStatus, sDate, eDate, pageNo, pageSize);
 //			Integer count = bsm.listBsInfoByOption(userId, subId, comStatus, sDate, eDate).size();

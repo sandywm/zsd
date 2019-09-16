@@ -748,6 +748,8 @@ public class NetTeacherAction extends DispatchAction {
 						if(!bankName.equals("") && !bankNo.equals("")){
 							Integer txId = txm.addTX(0, nt.getId(), txFee, bankName, bankNo, 0, "");
 							if(txId > 0){
+								//修改用户账户余额
+								um.updateUser(userId, 0, 0, 0, -txFee);
 								msg = "success";
 							}
 						}else{
