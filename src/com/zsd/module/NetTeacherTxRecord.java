@@ -21,6 +21,7 @@ public class NetTeacherTxRecord implements java.io.Serializable {
 	private String operateDate;
 	private String bankName;
 	private String bankNo;
+	private String remark;
 
 	// Constructors
 
@@ -43,7 +44,7 @@ public class NetTeacherTxRecord implements java.io.Serializable {
 	/** full constructor */
 	public NetTeacherTxRecord(NetTeacherInfo netTeacherInfo,Integer stuId, String txDate,
 			Integer txMoney, Integer operateUserId, String operateDate,
-			String bankName, String bankNo) {
+			String bankName, String bankNo,String remark) {
 		this.netTeacherInfo = netTeacherInfo;
 		this.stuId = stuId;
 		this.txDate = txDate;
@@ -52,6 +53,7 @@ public class NetTeacherTxRecord implements java.io.Serializable {
 		this.operateDate = operateDate;
 		this.bankName = bankName;
 		this.bankNo = bankNo;
+		this.remark = remark;
 	}
 
 	// Property accessors
@@ -126,6 +128,14 @@ public class NetTeacherTxRecord implements java.io.Serializable {
 
 	public void setBankNo(String bankNo) {
 		this.bankNo = bankNo;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
 	}
 
 }

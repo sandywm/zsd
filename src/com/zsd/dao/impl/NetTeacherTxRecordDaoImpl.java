@@ -61,7 +61,9 @@ public class NetTeacherTxRecordDaoImpl implements NetTeacherTxRecordDao {
 			offset = 0;
 		}
 		String hql="from  NetTeacherTxRecord as ntx  where ntx.netTeacherInfo.user.id="+userId;
-		hql+=" and substring(ntx.txDate,1,7)='"+txDate+"'";
+		if(!txDate.equals("")){
+			hql+=" and substring(ntx.txDate,1,7)='"+txDate+"'";
+		}
 		if(operFlag.equals(1)){
 			hql+=" and ntx.operateUserId = -1";
 		}else if(operFlag.equals(2)){
@@ -74,7 +76,9 @@ public class NetTeacherTxRecordDaoImpl implements NetTeacherTxRecordDao {
 	@Override
 	public Integer getnTxReCordCount(Session sess, Integer userId,String txDate,Integer operFlag) {
 		String hql="Select count(ntx.id) from  NetTeacherTxRecord as ntx  where ntx.netTeacherInfo.user.id="+userId;
-		hql+=" and substring(ntx.txDate,1,7)='"+txDate+"'";
+		if(!txDate.equals("")){
+			hql+=" and substring(ntx.txDate,1,7)='"+txDate+"'";
+		}
 		if(operFlag.equals(1)){
 			hql+=" and ntx.operateUserId = -1";
 		}else if(operFlag.equals(2)){

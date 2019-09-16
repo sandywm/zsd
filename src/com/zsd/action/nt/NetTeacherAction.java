@@ -368,6 +368,11 @@ public class NetTeacherAction extends DispatchAction {
 				if(ntx.getOperateUserId().equals(-1)){
 					map_d.put("ntxName", "收入");
 				}else{
+					if(ntx.getOperateUserId().equals(0)){
+						map_d.put("opersta", "等待打款");
+					}else{
+						map_d.put("opersta", "已打款");
+					}
 					map_d.put("ntxName", "支出");
 				}
 				map_d.put("txMoney", ntx.getTxMoney());
@@ -406,26 +411,29 @@ public class NetTeacherAction extends DispatchAction {
 			NetTeacherTxRecord ntx = (NetTeacherTxRecord) iterator.next();
 			Map<String, Object> map_d = new HashMap<String, Object>();
 			if(ntx.getOperateUserId().equals(-1)){
-				 List<User> ulist = uManager.listEntityById(ntx.getStuId());
-				 String reMark = "学生"+ulist.get(0).getRealName()+"绑定费返现";
+//				 List<User> ulist = uManager.listEntityById(ntx.getStuId());
+//				 String reMark = "学生"+ulist.get(0).getRealName()+"绑定费返现";
 				 map_d.put("ntxTitle", "收入");	
 				 map_d.put("txMoney", ntx.getTxMoney());
 				 map_d.put("txDate", ntx.getTxDate());
-				 map_d.put("reMark", reMark);
+				 map_d.put("reMark", ntx.getRemark());
 			}else if(ntx.getOperateUserId()>=0){
 				 map_d.put("ntxTitle", "支出");	
 				 map_d.put("txMoney", ntx.getTxMoney());
 				 map_d.put("txDate", ntx.getTxDate());
 				 map_d.put("bankName", ntx.getBankName());
 				 map_d.put("bankNo", ntx.getBankNo());
-				 map_d.put("operDate", ntx.getOperateDate());
 				 String operUser="";
 				 if(ntx.getOperateUserId()>0){
 					 List<User> ulist = uManager.listEntityById(ntx.getOperateUserId());
 					 operUser =ulist.get(0).getRealName() ;
 					 map_d.put("operUser", operUser); 
+					 map_d.put("operDate", ntx.getOperateDate());
+					 map_d.put("opersta", "已打款");
 				 }else{
 					 map_d.put("operUser", operUser);  
+					 map_d.put("operDate", "");
+					 map_d.put("opersta", "等待打款");
 				 }
 				
 			}
@@ -704,6 +712,13 @@ public class NetTeacherAction extends DispatchAction {
 		map.put("msg", msg);
 	   CommonTools.getJsonPkg(map, response);	
 	   return null;
+		
+	}
+	
+	public ActionForward addTX(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+				return null;
 		
 	}
 }

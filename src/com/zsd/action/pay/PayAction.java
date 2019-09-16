@@ -107,6 +107,8 @@ public class PayAction extends DispatchAction {
 				if(sList.size() > 0){
 					Integer schoolType = sList.get(0).getSchoolType();
 					if(schoolType.equals(1)){//小学
+						//不管是5年制还是6年制5年级和6年级都为小学费用
+						
 						if(yearSystem.equals(6)){//六年制
 							if(currUserGradeNumber_new < 7){//不涉及升学
 								//获取小学费用
@@ -118,26 +120,25 @@ public class PayAction extends DispatchAction {
 								}
 							}else{//涉及升学
 								if(feeType.equals(2)){//会员费可购买
-									msg = "success";
 									//肯定是从6年级买到7年级费用
-									Integer diffDays = CurrentTime.compareDate(endDate_fee, Convert.gradeNoToBuildeClassDate(7));//7年级天数
-									Integer remainDays = (selMonth * 30) - diffDays;//9年级天数
-									List<SysFeeInfo> sfList = sfm.listInfoByopt(feeType, schoolType, 1);
+									Integer diffDays = CurrentTime.compareDate(endDate_fee, Convert.gradeNoToBuildeClassDate(7));//6年级天数
+									Integer remainDays = (selMonth * 30) - diffDays;//7年级天数
+									List<SysFeeInfo> sfList = sfm.listInfoByopt(feeType, 1, 1);//小学费用
 									if(sfList.size() > 0){
-										List<SysFeeInfo> sfList_1 = sfm.listInfoByopt(feeType, 21, 1);//9年级费用
+										List<SysFeeInfo> sfList_1 = sfm.listInfoByopt(feeType, 2, 1);//7年级费用
 										if(sfList_1.size() > 0){
 											//可以购买--获取费用
 											msg = "success";
 											feeOpt = "diffFee";//存在不同费用
-											Integer fee_base = sfList.get(0).getFee();//6,7,8年级费用
-											Integer fee_base_1 = sfList_1.get(0).getFee();//9年级费用
+											Integer fee_base = sfList.get(0).getFee();//6年级费用
+											Integer fee_base_1 = sfList_1.get(0).getFee();//7年级费用
 											fee = fee_base * diffDays + fee_base_1 * remainDays;
 											map.put("fee_1", fee_base);
 											map.put("days_1", diffDays);
-											map.put("gradeName_1", "八年级");
+											map.put("gradeName_1", "六年级");
 											map.put("fee_2", fee_base_1);
 											map.put("days_2", remainDays);
-											map.put("gradeName_2", "九年级");
+											map.put("gradeName_2", "七年级");
 										}
 									}
 								}else{
@@ -156,6 +157,8 @@ public class PayAction extends DispatchAction {
 									fee = sfList.get(0).getFee() * selMonth;
 								}
 							}else{
+								//肯定是从5年级买到6年级费用
+								
 								//涉及到升学，当前月份时长不能购买
 								msg = "noBuy";
 							}

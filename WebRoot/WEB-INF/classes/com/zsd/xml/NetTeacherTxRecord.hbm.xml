@@ -50,5 +50,10 @@
                 <comment>银行账号</comment>
             </column>
         </property>
+        <property name="remark" type="java.lang.String">
+            <column name="remark" length="100">
+                <comment>备注</comment>
+            </column>
+        </property>
     </class>
 </hibernate-mapping>
