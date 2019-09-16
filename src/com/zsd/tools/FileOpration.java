@@ -1,9 +1,15 @@
 package com.zsd.tools;
 
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.util.Date;
+
+import javax.imageio.ImageIO;
 
 /**
  * 文件操作类
@@ -88,4 +94,46 @@ public class FileOpration {
 		}
 		return "";
 	}
+	
+	/**
+	  * 等比缩放图片
+	  * @description
+	  * @author Administrator
+	  * @date 2019-4-15 下午04:59:49
+	  * @param url
+	  * @param newWidth
+	  * @param newHeight
+	  * @param newUrl
+	  * @param formatName 生成图片的格式
+	  * @throws Exception
+	  */
+	 public static void makeImage(String url, Double rate, String newUrl, String formatName)throws Exception{
+		 //读取图片
+	     BufferedImage bi = ImageIO.read(new File(url));
+	     Integer width_old = bi.getWidth();//原始尺寸
+	     //用Image里的方法对图片进行等比压缩,只要宽和高其一值为负,则以正的那个值为最大边进行等比压缩
+	     Image image = bi.getScaledInstance((int)(width_old * rate), -1,Image.SCALE_AREA_AVERAGING);
+	     int height = image.getHeight(null);
+	     int width = image.getWidth(null);
+	     //以新的高和宽构造一个新的缓存图片
+	     BufferedImage bi1 = new BufferedImage(width, height,BufferedImage.TYPE_INT_RGB);
+	     Graphics g = bi1.getGraphics();
+	     //在新的缓存图片中画图
+	     g.drawImage(image, 0, 0, null);
+	     //构造IO流输出到文件
+	     FileOutputStream fos = new FileOutputStream(new File(newUrl));
+	     ImageIO.write(bi1, formatName, fos);
+	     fos.flush();
+	     fos.close();
+	 }
+	 
+	 public static void main(String[] args) throws Exception{
+		 for(int i = 1 ; i <= 5 ; i++){
+			 long systime = new Date().getTime();//当前系统时间
+			 FileOpration.makeImage("d:/12.jpg", i/10.0, "d:/12"+i+".jpg", "JPEG");
+			 long oldtime = new Date().getTime();//相比较的时间
+			 Long time = (oldtime - systime);//相差毫秒数
+			 System.out.println("按照"+(i*10)+"%等比压缩图片耗费时间："+time+"毫秒");
+		 }
+	 }
 }

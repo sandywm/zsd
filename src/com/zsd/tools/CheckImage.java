@@ -53,7 +53,7 @@ public class CheckImage
     	String gzStr = "doc,docx,wps,xls,xlsx,txt,pdf,pptx,ppt,zip,rar,dwg,eml,jpg,png,bmp,gif,vsd,vsdx";
     	String fileType = "";
     	if(gzStr.indexOf(suffix) >= 0){
-    		if(suffix.equals("jpg") || suffix.equals("jpeg") || suffix.equals("bmp") || suffix.equals("gif") || suffix.equals("png")){
+    		if(suffix.equalsIgnoreCase("jpg") || suffix.equalsIgnoreCase("jpeg") || suffix.equalsIgnoreCase("bmp") || suffix.equalsIgnoreCase("gif") || suffix.equalsIgnoreCase("png")){
         		fileType = "img";
     		}else{
     			fileType = "file";

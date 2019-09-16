@@ -26,6 +26,7 @@ import org.apache.struts.actions.DispatchAction;
 import com.zsd.tools.CheckImage;
 import com.zsd.tools.CommonTools;
 import com.zsd.tools.CurrentTime;
+import com.zsd.tools.FileOpration;
 import com.zsd.util.WebUrl;
 
 /** 
@@ -75,7 +76,8 @@ public class UploadAction extends DispatchAction {
 				Integer lastIndex = filename.lastIndexOf(".");
 				String suffix = filename.substring(lastIndex+1);
 //				String filePre = filename.substring(0, lastIndex);
-				filename = CurrentTime.getRadomTime() + "_" + userId + "." + suffix;
+				String fileNamePre = CurrentTime.getRadomTime() + "_" + userId;
+				filename = fileNamePre + "." + suffix;
 //				filename = filePre + "_" + CurrentTime.getRadomTime() + "." + suffix;
 				CheckImage ci = new CheckImage();
 				//doc,docx,wps,xls,xlsx,txt,pdf,pptx,ppt,zip,rar,dwg,eml,jpg,png,bmp,gif,vsd,vsdx如果文件格式不在上述范围内请压缩成zip格式后上传
@@ -96,14 +98,27 @@ public class UploadAction extends DispatchAction {
 		    			file.mkdirs();
 		    		}
 		    		FileOutputStream fileOutputStream = new FileOutputStream(userPath + "/" + filename);
-					fileOutputStream.write(data);// 写入文件
-					fileOutputStream.close();// 关闭文件流
+		    		fileOutputStream.write(data);// 写入文件
 					msg = "success";
 					if(opt.equals("queImg")){
-						fileUrl +=  WebUrl.NEW_DATA_URL_QUE_FILE_UPLOAD  + "/" + filename + ",";
+						//获取缩略图
+						String formatName = "JPEG";
+						if(suffix.equalsIgnoreCase("jpg") || suffix.equalsIgnoreCase("jpeg")){
+							formatName = "JPEG";
+						}else if(suffix.equalsIgnoreCase("png")){
+							formatName = "PNG";
+						}else if(suffix.equalsIgnoreCase("bmp")){
+							formatName = "BMP";
+						}else if(suffix.equalsIgnoreCase("gif")){
+							formatName = "GIF";
+						}
+						String smallImgPath = userPath  + "/" + fileNamePre + "_small." + suffix;
+						FileOpration.makeImage(userPath  + "/" + filename, 0.3, smallImgPath, formatName);
+						fileUrl +=  WebUrl.NEW_DATA_URL_QUE_FILE_UPLOAD  + fileNamePre + "_small." + suffix + ",";
 					}else{
-						fileUrl +=  WebUrl.NEW_DATA_URL  + "/" + filename + ",";
+						fileUrl +=  WebUrl.NEW_DATA_URL + filename + ",";
 					}
+					fileOutputStream.close();// 关闭文件流
 				}
 			}
 			if(!fileUrl.equals("")){

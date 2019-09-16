@@ -66,7 +66,8 @@ public class PayAction extends DispatchAction {
 		SchoolManager sm = (SchoolManager) AppFactory.instance(null).getApp(Constants.WEB_SCHOOL_INFO);
 		Integer stuId = CommonTools.getLoginUserId(request);
 		Integer roleId  = CommonTools.getLoginRoleId(request);
-		if(stuId > 0 && roleId.equals(Constants.STU_ROLE_ID)){
+		Integer selMonth = CommonTools.getFinalInteger("selMonth", request);
+		if(stuId > 0 && roleId.equals(Constants.STU_ROLE_ID) && selMonth > 0 && selMonth <= 12){
 			//获取当前学生能购买的的时长（最大到升学日期）不足一月按一月计算
 			List<UserClassInfo> uList = ucm.listInfoByOpt_1(stuId, roleId);
 			if(uList.size() > 0){
@@ -76,15 +77,21 @@ public class PayAction extends DispatchAction {
 				String buildClassDate = c.getBuildeClassDate();
 				String currDate = CurrentTime.getStringDate();
 				String endDate = user.getEndDate();
-				//判断会员有无过期
+				String endDate_fee = CurrentTime.getStringDate();//会员到期日，已到期时默认为当前日期
 				Integer currUserGradeNumber = 0;
+				//判断会员有无过期
 				if(CurrentTime.compareDate(currDate, endDate) > 0){//会员没过期
 					//计算endDate时的所在年级
 					currUserGradeNumber = Convert.dateConvertGradeNumber(endDate,buildClassDate);
+					endDate_fee = endDate;
 				}else{
 					//计算出当前学生今天所在的年级
 					currUserGradeNumber = Convert.dateConvertGradeNumber(buildClassDate);
 				}
+				//会员到期日+购买时长后的日期
+				String endDate_new = CurrentTime.getFinalDate_1(endDate_fee, selMonth);
+				//获取新的会员到期日后所在的年级
+				Integer currUserGradeNumber_new = Convert.dateConvertGradeNumber(endDate_new,buildClassDate);//购买会员费后到期日所在的年级
 				Integer yearSystem = user.getYearSystem();//学年制6,5,4,3
 				Integer schoolId = user.getSchoolId();
 				List<School> sList = sm.listInfoById(schoolId);
@@ -92,18 +99,26 @@ public class PayAction extends DispatchAction {
 					Integer schoolType = sList.get(0).getSchoolType();
 					if(schoolType.equals(1)){//小学
 						if(yearSystem.equals(6)){//六年制
-							
+							if(currUserGradeNumber < 7){
+								//可以购买
+							}else{
+								//涉及到升学，当前月份时长不能购买
+							}
 						}else{//五年制
-							
+							if(currUserGradeNumber < 6){
+								//可以购买
+							}else{
+								//涉及到升学，当前月份时长不能购买
+							}
 						}
 					}else if(schoolType.equals(2)){//初中
-						if(yearSystem.equals(4)){//四年制
-							
-						}else{//三年制
-							
+						if(currUserGradeNumber < 10){
+							//可以购买
+						}else{
+							//涉及到升学，当前月份时长不能购买
 						}
 					}else{
-						
+						//无封顶，可以购买
 					}
 				}
 				if(currUserGradeNumber >= 1 && currUserGradeNumber <= 4){
