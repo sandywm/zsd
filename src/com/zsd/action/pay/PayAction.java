@@ -67,7 +67,6 @@ public class PayAction extends DispatchAction {
 		// TODO Auto-generated method stub
 		SysFeeManager sfm = (SysFeeManager) AppFactory.instance(null).getApp(Constants.WEB_SYS_FEE_INFO);
 		UserClassInfoManager ucm = (UserClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
-		SchoolManager sm = (SchoolManager) AppFactory.instance(null).getApp(Constants.WEB_SCHOOL_INFO);
 		Integer stuId = CommonTools.getLoginUserId(request);
 		Integer roleId  = CommonTools.getLoginRoleId(request);
 		Integer selMonth = CommonTools.getFinalInteger("selMonth", request);
@@ -80,6 +79,7 @@ public class PayAction extends DispatchAction {
 			//获取当前学生能购买的的时长（最大到升学日期）不足一月按一月计算
 			List<UserClassInfo> uList = ucm.listInfoByOpt_1(stuId, roleId);
 			if(uList.size() > 0){
+				Double zkRate = CommonTools.getZkRate(selMonth);
 				UserClassInfo uc = uList.get(0);
 				User user = uc.getUser();
 				ClassInfo c = uc.getClassInfo();
@@ -101,149 +101,161 @@ public class PayAction extends DispatchAction {
 				String endDate_new = CurrentTime.getFinalDate_1(endDate_fee, selMonth);
 				//获取购买会员后新的会员到期日后所在的年级
 				Integer currUserGradeNumber_new = Convert.dateConvertGradeNumber(endDate_new,buildClassDate);//购买会员费后到期日所在的年级
-				Integer yearSystem = user.getYearSystem();//学年制6,5,4,3
-				Integer schoolId = user.getSchoolId();
-				List<School> sList = sm.listInfoById(schoolId);
-				if(sList.size() > 0){
-					Integer schoolType = sList.get(0).getSchoolType();
-					if(schoolType.equals(1)){//小学
-						//不管是5年制还是6年制5年级和6年级都为小学费用
-						
-						if(yearSystem.equals(6)){//六年制
-							if(currUserGradeNumber_new < 7){//不涉及升学
-								//获取小学费用
-								List<SysFeeInfo> sfList = sfm.listInfoByopt(feeType, schoolType, 1);
-								if(sfList.size() > 0){
-									//可以购买--获取费用
-									msg = "success";
-									fee = sfList.get(0).getFee() * selMonth;
-								}
-							}else{//涉及升学
-								if(feeType.equals(2)){//会员费可购买
-									//肯定是从6年级买到7年级费用
-									Integer diffDays = CurrentTime.compareDate(endDate_fee, Convert.gradeNoToBuildeClassDate(7));//6年级天数
-									Integer remainDays = (selMonth * 30) - diffDays;//7年级天数
-									List<SysFeeInfo> sfList = sfm.listInfoByopt(feeType, 1, 1);//小学费用
-									if(sfList.size() > 0){
-										List<SysFeeInfo> sfList_1 = sfm.listInfoByopt(feeType, 2, 1);//7年级费用
-										if(sfList_1.size() > 0){
-											//可以购买--获取费用
-											msg = "success";
-											feeOpt = "diffFee";//存在不同费用
-											Integer fee_base = sfList.get(0).getFee();//6年级费用
-											Integer fee_base_1 = sfList_1.get(0).getFee();//7年级费用
-											fee = fee_base * diffDays + fee_base_1 * remainDays;
-											map.put("fee_1", fee_base);
-											map.put("days_1", diffDays);
-											map.put("gradeName_1", "六年级");
-											map.put("fee_2", fee_base_1);
-											map.put("days_2", remainDays);
-											map.put("gradeName_2", "七年级");
-										}
-									}
-								}else{
-									
-								}
-								//涉及到升学，当前月份时长不能购买
-								msg = "noBuy";
-							}
-						}else{//五年制
-							if(currUserGradeNumber_new < 6){//不涉及升学
-								//获取小学费用
-								List<SysFeeInfo> sfList = sfm.listInfoByopt(feeType, schoolType, 1);
-								if(sfList.size() > 0){
-									//可以购买--获取费用
-									msg = "success";
-									fee = sfList.get(0).getFee() * selMonth;
-								}
-							}else{
-								//肯定是从5年级买到6年级费用
-								
-								//涉及到升学，当前月份时长不能购买
-								msg = "noBuy";
-							}
-						}
-					}else if(schoolType.equals(2)){//初中（9年级可进行切换8、7、[6]）
-						if(currUserGradeNumber_new < 10){
-							//可以购买
-							if(currUserGradeNumber_curr.equals(8) && currUserGradeNumber_new >= 9){
-								//8年级购买会员时包括了9年级部分。需要把8年级部分时间的费用和9年级部分时间的费用结合形成新的费用
-								//获取有多少天在8年级，有多少天在9年级
-								Integer diffDays = CurrentTime.compareDate(endDate_fee, Convert.gradeNoToBuildeClassDate(9));//8年级天数
-								Integer remainDays = (selMonth * 30) - diffDays;//9年级天数
-								List<SysFeeInfo> sfList = sfm.listInfoByopt(feeType, schoolType, 1);
-								if(sfList.size() > 0){
-									List<SysFeeInfo> sfList_1 = sfm.listInfoByopt(feeType, 21, 1);//9年级费用
-									if(sfList_1.size() > 0){
-										//可以购买--获取费用
-										msg = "success";
-										feeOpt = "diffFee";//存在不同费用
-										Integer fee_base = sfList.get(0).getFee();//6,7,8年级费用
-										Integer fee_base_1 = sfList_1.get(0).getFee();//9年级费用
-										fee = fee_base * diffDays + fee_base_1 * remainDays;
-										map.put("fee_1", fee_base);
-										map.put("days_1", diffDays);
-										map.put("gradeName_1", "八年级");
-										map.put("fee_2", fee_base_1);
-										map.put("days_2", remainDays);
-										map.put("gradeName_2", "九年级");
-									}
-								}
-							}else{
-								//获取初中费用
-								List<SysFeeInfo> sfList = sfm.listInfoByopt(feeType, schoolType, 1);
-								if(sfList.size() > 0){
-									//可以购买--获取费用
-									msg = "success";
-									fee = sfList.get(0).getFee() * selMonth;
-								}
-							}
-						}else{
-							//涉及到升学，当前月份时长不能购买
-							msg = "noBuy";
-						}
-					}else{//高中(高三可进行切换高一、二)
-						//无封顶，可以购买
+				if(currUserGradeNumber_curr < 6){
+					//获取小学费用
+					List<SysFeeInfo> sfList = sfm.listInfoByopt(feeType, 1, 1);
+					if(sfList.size() > 0){
+						//可以购买--获取费用
 						msg = "success";
-						if(currUserGradeNumber_curr.equals(11) && currUserGradeNumber_new >= 12){
-							//高二购买会员时包括了高三部分。需要把高二部分时间的费用和高三部分时间的费用结合形成新的费用
-							//获取有多少天在8年级，有多少天在9年级
-							Integer diffDays = CurrentTime.compareDate(endDate_fee, Convert.gradeNoToBuildeClassDate(12));//高二年级天数
-							Integer remainDays = (selMonth * 30) - diffDays;//高二年级天数
-							List<SysFeeInfo> sfList = sfm.listInfoByopt(feeType, schoolType, 1);
-							if(sfList.size() > 0){
-								List<SysFeeInfo> sfList_1 = sfm.listInfoByopt(feeType, 31, 1);//高三年级费用
-								if(sfList_1.size() > 0){
-									//可以购买--获取费用
-									msg = "success";
-									feeOpt = "diffFee";//存在不同费用
-									Integer fee_base = sfList.get(0).getFee();//高一、二年级费用
-									Integer fee_base_1 = sfList_1.get(0).getFee();//高三年级费用
-									fee = fee_base * diffDays + fee_base_1 * remainDays;
-									map.put("fee_1", fee_base);
-									map.put("days_1", diffDays);
-									map.put("gradeName_1", "高二");
-									map.put("fee_2", fee_base_1);
-									map.put("days_2", remainDays);
-									map.put("gradeName_2", "高三");
-								}
-							}
-						}else if(currUserGradeNumber_curr >= 12){//当前年级为高三
-							List<SysFeeInfo> sfList = sfm.listInfoByopt(feeType, 31, 1);
-							if(sfList.size() > 0){
+						fee = (int)(sfList.get(0).getFee() * selMonth * zkRate);
+					}
+				}else if(currUserGradeNumber_curr.equals(6)){
+					if(currUserGradeNumber_new.equals(6)){//从6年级买到6年级
+						//获取小学费用
+						List<SysFeeInfo> sfList = sfm.listInfoByopt(feeType, 1, 1);
+						if(sfList.size() > 0){
+							//可以购买--获取费用
+							msg = "success";
+							fee = (int)(sfList.get(0).getFee() * selMonth * zkRate);
+						}
+					}else{//从6年级买到7年级
+						Integer diffDays = CurrentTime.compareDate(endDate_fee, Convert.gradeNoToBuildeClassDate(7));//6年级天数
+						Integer remainDays = (selMonth * 30) - diffDays;//7年级天数
+						List<SysFeeInfo> sfList = sfm.listInfoByopt(feeType, 1, 1);//小学费用
+						if(sfList.size() > 0){
+							List<SysFeeInfo> sfList_1 = sfm.listInfoByopt(feeType, 2, 1);//7年级费用
+							if(sfList_1.size() > 0){
 								//可以购买--获取费用
 								msg = "success";
-								fee = sfList.get(0).getFee() * selMonth;
-							}
-						}else{
-							//获取高一、二费用
-							List<SysFeeInfo> sfList = sfm.listInfoByopt(feeType, 3, 1);
-							if(sfList.size() > 0){
-								//可以购买--获取费用
-								msg = "success";
-								fee = sfList.get(0).getFee() * selMonth;
+								feeOpt = "diffFee";//存在不同费用
+								Integer fee_base = sfList.get(0).getFee();//6年级费用
+								Integer fee_base_1 = sfList_1.get(0).getFee();//7年级费用
+								fee = fee_base * diffDays + fee_base_1 * remainDays;
+								map.put("fee_1", fee_base);
+								map.put("days_1", diffDays);
+								map.put("gradeName_1", "六年级");
+								map.put("fee_2", fee_base_1);
+								map.put("days_2", remainDays);
+								map.put("gradeName_2", "七年级");
 							}
 						}
+					}
+				}else if(currUserGradeNumber_curr.equals(7)){
+					//获取初中费用
+					List<SysFeeInfo> sfList = sfm.listInfoByopt(feeType, 2, 1);
+					if(sfList.size() > 0){
+						//可以购买--获取费用
+						msg = "success";
+						fee = sfList.get(0).getFee() * selMonth;
+					}
+				}else if(currUserGradeNumber_curr.equals(8)){
+					if(currUserGradeNumber_new.equals(8)){//从8年级买到8年级
+						//获取初中费用
+						List<SysFeeInfo> sfList = sfm.listInfoByopt(feeType, 2, 1);
+						if(sfList.size() > 0){
+							//可以购买--获取费用
+							msg = "success";
+							fee = sfList.get(0).getFee() * selMonth;
+						}
+					}else{//从8年级买到9年级
+						Integer diffDays = CurrentTime.compareDate(endDate_fee, Convert.gradeNoToBuildeClassDate(9));//8年级天数
+						Integer remainDays = (selMonth * 30) - diffDays;//9年级天数
+						List<SysFeeInfo> sfList = sfm.listInfoByopt(feeType, 2, 1);//初中费用
+						if(sfList.size() > 0){
+							List<SysFeeInfo> sfList_1 = sfm.listInfoByopt(feeType, 21, 1);//9年级费用
+							if(sfList_1.size() > 0){
+								//可以购买--获取费用
+								msg = "success";
+								feeOpt = "diffFee";//存在不同费用
+								Integer fee_base = sfList.get(0).getFee();//6年级费用
+								Integer fee_base_1 = sfList_1.get(0).getFee();//7年级费用
+								fee = fee_base * diffDays + fee_base_1 * remainDays;
+								map.put("fee_1", fee_base);
+								map.put("days_1", diffDays);
+								map.put("gradeName_1", "八年级");
+								map.put("fee_2", fee_base_1);
+								map.put("days_2", remainDays);
+								map.put("gradeName_2", "九年级");
+							}
+						}
+					}
+				}else if(currUserGradeNumber_curr.equals(9)){
+					if(currUserGradeNumber_new.equals(9)){//从9年级买到9年级
+						//获取9年级费用
+						List<SysFeeInfo> sfList = sfm.listInfoByopt(feeType, 21, 1);
+						if(sfList.size() > 0){
+							//可以购买--获取费用
+							msg = "success";
+							fee = sfList.get(0).getFee() * selMonth;
+						}
+					}else{//从9年级买到高一
+						Integer diffDays = CurrentTime.compareDate(endDate_fee, Convert.gradeNoToBuildeClassDate(10));//9年级天数
+						Integer remainDays = (selMonth * 30) - diffDays;//高一天数
+						List<SysFeeInfo> sfList = sfm.listInfoByopt(feeType, 21, 1);//9年级费用
+						if(sfList.size() > 0){
+							List<SysFeeInfo> sfList_1 = sfm.listInfoByopt(feeType, 3, 1);//高中费用
+							if(sfList_1.size() > 0){
+								//可以购买--获取费用
+								msg = "success";
+								feeOpt = "diffFee";//存在不同费用
+								Integer fee_base = sfList.get(0).getFee();//6年级费用
+								Integer fee_base_1 = sfList_1.get(0).getFee();//7年级费用
+								fee = fee_base * diffDays + fee_base_1 * remainDays;
+								map.put("fee_1", fee_base);
+								map.put("days_1", diffDays);
+								map.put("gradeName_1", "九年级");
+								map.put("fee_2", fee_base_1);
+								map.put("days_2", remainDays);
+								map.put("gradeName_2", "高一");
+							}
+						}
+					}
+				}else if(currUserGradeNumber_curr.equals(10)){
+					//获取高中费用
+					List<SysFeeInfo> sfList = sfm.listInfoByopt(feeType, 3, 1);
+					if(sfList.size() > 0){
+						//可以购买--获取费用
+						msg = "success";
+						fee = sfList.get(0).getFee() * selMonth;
+					}
+				}else if(currUserGradeNumber_curr.equals(11)){
+					if(currUserGradeNumber_new.equals(11)){//从高二买到高二
+						//获取高中费用
+						List<SysFeeInfo> sfList = sfm.listInfoByopt(feeType, 3, 1);
+						if(sfList.size() > 0){
+							//可以购买--获取费用
+							msg = "success";
+							fee = sfList.get(0).getFee() * selMonth;
+						}
+					}else{//从高二买到高三
+						Integer diffDays = CurrentTime.compareDate(endDate_fee, Convert.gradeNoToBuildeClassDate(12));//高二天数
+						Integer remainDays = (selMonth * 30) - diffDays;//高三天数
+						List<SysFeeInfo> sfList = sfm.listInfoByopt(feeType, 3, 1);//高一、二费用
+						if(sfList.size() > 0){
+							List<SysFeeInfo> sfList_1 = sfm.listInfoByopt(feeType, 31, 1);//高三费用
+							if(sfList_1.size() > 0){
+								//可以购买--获取费用
+								msg = "success";
+								feeOpt = "diffFee";//存在不同费用
+								Integer fee_base = sfList.get(0).getFee();//6年级费用
+								Integer fee_base_1 = sfList_1.get(0).getFee();//7年级费用
+								fee = fee_base * diffDays + fee_base_1 * remainDays;
+								map.put("fee_1", fee_base);
+								map.put("days_1", diffDays);
+								map.put("gradeName_1", "高二");
+								map.put("fee_2", fee_base_1);
+								map.put("days_2", remainDays);
+								map.put("gradeName_2", "高三");
+							}
+						}
+					}
+				}else if(currUserGradeNumber_curr.equals(12)){
+					//获取高中费用
+					List<SysFeeInfo> sfList = sfm.listInfoByopt(feeType, 31, 1);
+					if(sfList.size() > 0){
+						//可以购买--获取费用
+						msg = "success";
+						fee = sfList.get(0).getFee() * selMonth;
 					}
 				}
 			}

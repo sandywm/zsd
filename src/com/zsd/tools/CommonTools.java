@@ -792,6 +792,43 @@ public class CommonTools {
 		return diffDays;
 	}
 	
+	/**
+	 * 获取购买会员费、导师绑定费的折扣费
+	 * @author wm
+	 * @date 2019-9-16 下午05:47:47
+	 * @param selMonth
+	 * @return
+	 */
+	public static Double getZkRate(Integer selMonth){
+		Double zkRate = 1.0;
+		if(selMonth.equals(1)){
+			
+		}else if(selMonth.equals(2)){
+			zkRate = 0.99;
+		}else if(selMonth.equals(3)){
+			zkRate = 0.98;
+		}else if(selMonth.equals(4)){
+			zkRate = 0.97;
+		}else if(selMonth.equals(5)){
+			zkRate = 0.96;
+		}else if(selMonth.equals(6)){
+			zkRate = 0.95;
+		}else if(selMonth.equals(7)){
+			zkRate = 0.94;
+		}else if(selMonth.equals(8)){
+			zkRate = 0.93;
+		}else if(selMonth.equals(9)){
+			zkRate = 0.92;
+		}else if(selMonth.equals(10)){
+			zkRate = 0.91;
+		}else if(selMonth.equals(11)){
+			zkRate = 0.90;
+		}else if(selMonth.equals(12)){
+			zkRate = 0.85;
+		}
+		return zkRate;
+	}
+	
 	public static void main(String[] args) throws Exception, FileNotFoundException{
 //		Integer items[] = {1,2,3,4,5,11,12,21};
 //		Integer[] need_del_items =  {2,11,4};
