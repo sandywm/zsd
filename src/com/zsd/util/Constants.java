@@ -18,6 +18,19 @@ public class Constants {
 	public static final Integer COIN = 10;
 	public static final Integer EXPERIENCE = 1;
 	
+	//导师绑定费和会员费折扣
+	public static final Double FEE_RATE_2 = 0.99;//2个月
+	public static final Double FEE_RATE_3 = 0.98;
+	public static final Double FEE_RATE_4 = 0.97;
+	public static final Double FEE_RATE_5 = 0.96;
+	public static final Double FEE_RATE_6 = 0.95;
+	public static final Double FEE_RATE_7 = 0.94;
+	public static final Double FEE_RATE_8 = 0.93;
+	public static final Double FEE_RATE_9 = 0.92;
+	public static final Double FEE_RATE_10 = 0.91;
+	public static final Double FEE_RATE_11 = 0.90;
+	public static final Double FEE_RATE_12 = 0.85;//12个月
+	
 	
 	//-------------------WEB-------------------------//
 	public static final String WEB_EDITION_INFO = "edition_Web";

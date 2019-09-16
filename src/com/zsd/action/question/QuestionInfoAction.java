@@ -301,6 +301,7 @@ public class QuestionInfoAction extends DispatchAction {
 			List<QuestionInfo> qList = qManager.listInfoByStu(userId,stuId,
 					readStatus, pageNo, pageSize);
 			List<Object> list_d = new ArrayList<Object>();
+			Integer unAns=0;
 			for (Iterator<QuestionInfo> it = qList.iterator(); it.hasNext();) {
 				QuestionInfo qInfo = (QuestionInfo) it.next();
 				Map<String, Object> map_d = new HashMap<String, Object>();
@@ -311,11 +312,13 @@ public class QuestionInfoAction extends DispatchAction {
 				map_d.put("queTime", qInfo.getQueTime());
 				if (qInfo.getReadStatus() == 0) {
 					map_d.put("readSta", "未回复");
+					unAns++;
 				} else {
 					map_d.put("readSta", "已回复");
 				}
 				list_d.add(map_d);
 			}
+			map.put("unAns", unAns);
 			map.put("data", list_d);
 			map.put("count", count);
 			map.put("code", 0);

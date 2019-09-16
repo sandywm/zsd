@@ -455,7 +455,7 @@ public class NetTeacherAction extends DispatchAction {
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<NetTeacherInfo> ntlist = ntManager.listntInfoByuserId(userId);
 		Integer ntId = ntlist.get(0).getId();
-		List<NetTeacherStudent> ntslist=ntsManager.listNTByntId(ntId, 1);
+		List<NetTeacherStudent> ntslist=ntsManager.listNtsByNtId(ntId, 1);
 		List<Object> list_d = new ArrayList<Object>();
 		String  msg = "暂无记录";
 		Integer count =0;
@@ -658,5 +658,50 @@ public class NetTeacherAction extends DispatchAction {
 		map.put("list_ntc", list_ntc);
 		CommonTools.getJsonPkg(map, response);
 		return null;
+	}
+	/**
+	 * 导师获取绑定的学生
+	 * @author zdf
+	 * 2019-9-16 上午10:30:37
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getBindStu(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		NetTeacherStudentManager  ntsManager = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT);
+		Integer userId = CommonTools.getLoginUserId(request);
+		Integer bindStatus = CommonTools.getFinalInteger("bindStatus", request);
+		Integer count = ntsManager.getNTByntIdCount(userId, bindStatus);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg ="暂无记录";
+		if(count>0){
+			Integer pageSize = PageConst.getPageSize(String.valueOf(request.getParameter("limit")), 10);//等同于pageSize
+			Integer pageNo = CommonTools.getFinalInteger("page", request);//等同于pageNo
+			List<NetTeacherStudent> ntsList = ntsManager.listNTByntId(userId,bindStatus,pageNo,pageSize);
+			List<Object> list_d = new ArrayList<Object>();
+			for (Iterator<NetTeacherStudent> iterator = ntsList.iterator(); iterator.hasNext();) {
+				NetTeacherStudent nts = (NetTeacherStudent) iterator.next();
+				Map<String,Object> map_d = new HashMap<String,Object>();
+				map_d.put("stuName", nts.getUser().getRealName()); //学生真实姓名
+				map_d.put("stuProtrait", nts.getUser().getPortrait());//头像
+				map_d.put("bindStatus", nts.getBindStatus());//绑定状态
+				map_d.put("bindDate", nts.getBindDate());//绑定时间
+				map_d.put("endDate", nts.getEndDate());//结束时间
+				
+				list_d.add(map_d);
+			}
+		   map.put("data", list_d);
+		   map.put("count", count);
+		   msg = "success";
+		}
+		map.put("msg", msg);
+	   CommonTools.getJsonPkg(map, response);	
+	   return null;
+		
 	}
 }

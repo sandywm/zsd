@@ -186,7 +186,7 @@ public class NetTeacherInfoManagerImpl implements NetTeacherInfoManager {
 			NetTeacherInfo nt = ntList.get(0);
 			if(nt != null){
 				nt.setBankName(bName);
-				nt.setBankNumber(bName);
+				nt.setBankNumber(bNum);
 				tran.commit();
 				return true;
 			}

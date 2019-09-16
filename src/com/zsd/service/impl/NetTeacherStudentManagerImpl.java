@@ -100,12 +100,12 @@ public class NetTeacherStudentManagerImpl implements NetTeacherStudentManager {
 	}
 
 	@Override
-	public List<NetTeacherStudent> listNTByntId(Integer ntId, Integer bindSta)
+	public List<NetTeacherStudent> listNTByntId(Integer ntId, Integer bindSta,Integer pageNo,Integer pageSize)
 			throws WEBException {
 		try {
 			ntsDao = (NetTeacherStudentDao) DaoFactory.instance(null).getDao(Constants.DAO_NET_TEACHER_STUDENT);
 			Session sess  = HibernateUtil.currentSession();
-			return ntsDao.findNTByntId(sess, ntId, bindSta);
+			return ntsDao.findNTByntId(sess, ntId, bindSta, pageNo, pageSize);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new WEBException("根据网络导师编号,绑定状态获取绑定学生信息时出现异常!");
@@ -113,7 +113,20 @@ public class NetTeacherStudentManagerImpl implements NetTeacherStudentManager {
 			HibernateUtil.closeSession();
 		}
 	}
-
+	@Override
+	public Integer getNTByntIdCount(Integer ntId, Integer bindSta)
+			throws WEBException {
+		try {
+			ntsDao = (NetTeacherStudentDao) DaoFactory.instance(null).getDao(Constants.DAO_NET_TEACHER_STUDENT);
+			Session sess  = HibernateUtil.currentSession();
+			return ntsDao.getNTByNTIdCount(sess, ntId, bindSta);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("根据网络导师编号,绑定状态获取绑定学生记录数时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
 	@Override
 	public List<NetTeacherStudent> listNTByStuNameOrBindSta(Integer ntId,
 			Integer paySta, Integer bindFlag, String stuName, Integer pageNo,
@@ -230,4 +243,18 @@ public class NetTeacherStudentManagerImpl implements NetTeacherStudentManager {
 		}
 	}
 
+	@Override
+	public List<NetTeacherStudent> listNtsByNtId(Integer ntId, Integer bindSta)
+			throws WEBException {
+		try {
+			ntsDao = (NetTeacherStudentDao) DaoFactory.instance(null).getDao(Constants.DAO_NET_TEACHER_STUDENT);
+			Session sess  = HibernateUtil.currentSession();
+			return ntsDao.findNtsByNtId(sess, ntId, bindSta);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("根据网络导师编号,绑定状态获取绑定学生信息时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
 }

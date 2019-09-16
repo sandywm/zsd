@@ -70,7 +70,7 @@ public interface NetTeacherStudentDao {
 	 * @param stuId 用户编号
 	 * @return
 	 */
-	List<NetTeacherStudent> findNTByStuId(Session sess,int stuId);
+	List<NetTeacherStudent> findNTByStuId(Session sess,Integer stuId);
 	/**
 	 * 根据网络导师用户编号获取绑定学生
 	 * @author zong
@@ -79,7 +79,7 @@ public interface NetTeacherStudentDao {
 	 * @param ntId 用户编号
 	 * @return
 	 */
-	List<NetTeacherStudent> findNTByntId(Session sess,int ntId);
+	List<NetTeacherStudent> findNTByntId(Session sess,Integer ntId);
 	/**
 	 * 根据网络导师用户编号,绑定状态获取绑定学生
 	 * @author zong
@@ -89,7 +89,27 @@ public interface NetTeacherStudentDao {
 	 * @param bindSta 绑定状态(1付费)
 	 * @return
 	 */
-	List<NetTeacherStudent> findNTByntId(Session sess,int ntId,Integer bindSta);
+	List<NetTeacherStudent> findNTByntId(Session sess,Integer ntId,Integer bindSta,Integer pageNo,Integer pageSize);
+	/**
+	 * 根据网络导师用户编号,绑定状态获取绑定学生
+	 * @author zdf
+	 * 2019-9-16 下午02:08:49
+	 * @param sess
+	 * @param ntId
+	 * @param bindSta
+	 * @return
+	 */
+	List<NetTeacherStudent> findNtsByNtId(Session sess,Integer ntId,Integer bindSta);
+	/**
+	 * 根据网络导师用户编号,绑定状态获取绑定学生总记录数
+	 * @author zdf
+	 * 2019-9-16 上午11:41:09
+	 * @param sess
+	 * @param ntId
+	 * @param bindSta
+	 * @return
+	 */
+	Integer getNTByNTIdCount(Session sess,Integer ntId,Integer bindSta);
 	/**
 	 * 根据绑定状态,学生姓名查看网络导师学生绑定信息(我的班级)
 	 * @author zong

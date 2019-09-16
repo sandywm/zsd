@@ -107,6 +107,7 @@ public class QuestionInfoDaoImpl implements QuestionInfoDao {
 		if (!readStatus.equals(-1)) {
 			hql += " and q.readStatus=" + readStatus;
 		}
+		hql+=" order by queTime  DESC ";
 		return sess.createQuery(hql).setFirstResult(offset)
 				.setMaxResults(pageSize).list();
 	}

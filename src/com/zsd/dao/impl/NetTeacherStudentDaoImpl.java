@@ -43,20 +43,30 @@ public class NetTeacherStudentDaoImpl implements NetTeacherStudentDao {
 	}
 
 	@Override
-	public List<NetTeacherStudent> findNTByStuId(Session sess, int stuId) {
+	public List<NetTeacherStudent> findNTByStuId(Session sess, Integer stuId) {
 		String hql = "from NetTeacherStudent as nts where nts.user.id="+stuId+" and nts.clearStatus=0";
 		return  sess.createQuery(hql).list();
 	}
 	@Override
-	public List<NetTeacherStudent> findNTByntId(Session sess, int ntId) {
+	public List<NetTeacherStudent> findNTByntId(Session sess, Integer ntId) {
 		String hql = "from NetTeacherStudent as nts where nts.netTeacherInfo.user.id="+ntId+" and nts.bindStatus!=0 and nts.endDate>'"+CurrentTime.getStringDate()+"' and nts.clearStatus=0";
 		return  sess.createQuery(hql).list();
 	}
 
 	@Override
-	public List<NetTeacherStudent> findNTByntId(Session sess, int ntId,Integer bindSta) {
-		String hql = "from NetTeacherStudent as nts where nts.netTeacherInfo.user.id="+ntId+" and nts.bindStatus="+bindSta;
-		return  sess.createQuery(hql).list();
+	public List<NetTeacherStudent> findNTByntId(Session sess, Integer ntId,Integer bindSta,Integer pageNo,Integer pageSize) {
+		int offset = (pageNo - 1) * pageSize;
+		if (offset < 0) {
+			offset = 0;
+		}
+		String hql = "from NetTeacherStudent as nts where nts.netTeacherInfo.user.id="+ntId+" and nts.bindStatus="+bindSta+" and nts.clearStatus=0";
+		return  sess.createQuery(hql).setFirstResult(offset).setMaxResults(pageSize).list();
+	}
+	@Override
+	public Integer getNTByNTIdCount(Session sess, Integer ntId, Integer bindSta) {
+		String hql = "select count(nts.id) from NetTeacherStudent as nts where nts.netTeacherInfo.user.id="+ntId+" and nts.bindStatus="+bindSta+" and nts.clearStatus=0";
+		Object countObj = sess.createQuery(hql).uniqueResult();
+		return CommonTools.longToInt(countObj);
 	}
 
 	@Override
@@ -190,4 +200,10 @@ public class NetTeacherStudentDaoImpl implements NetTeacherStudentDao {
 		return  sess.createQuery(hql).list();
 	}
 
+	@Override
+	public List<NetTeacherStudent> findNtsByNtId(Session sess, Integer ntId,
+			Integer bindSta) {
+		String hql = "from NetTeacherStudent as nts where nts.netTeacherInfo.user.id="+ntId+" and nts.bindStatus="+bindSta+" and nts.clearStatus=0";
+		return  sess.createQuery(hql).list();
+	}
 }
