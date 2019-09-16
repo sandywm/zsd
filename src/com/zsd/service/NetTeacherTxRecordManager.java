@@ -29,7 +29,7 @@ public interface NetTeacherTxRecordManager {
 	 * @return
 	 * @throws WEBException
 	 */
-	List<NetTeacherTxRecord> listnTxReCordByNtId(Integer userId, Integer pageNo, Integer pageSize)throws WEBException;
+	List<NetTeacherTxRecord> listnTxReCordByNtId(Integer userId,String txDate,Integer operFlag, Integer pageNo, Integer pageSize)throws WEBException;
 	/**
 	 * 	根据网络导师编号获取提现记录数
 	 * @author zong
@@ -38,7 +38,7 @@ public interface NetTeacherTxRecordManager {
 	 * @return
 	 * @throws WEBException
 	 */
-	Integer getnTxReCordCount(Integer userId)throws WEBException;
+	Integer getnTxReCordCount(Integer userId,String txDate,Integer operFlag)throws WEBException;
 	/**
 	 * 根据主键获取账单信息
 	 * @author zdf

@@ -118,7 +118,28 @@ public class PayAction extends DispatchAction {
 								}
 							}else{//涉及升学
 								if(feeType.equals(2)){//会员费可购买
-									
+									msg = "success";
+									//肯定是从6年级买到7年级费用
+									Integer diffDays = CurrentTime.compareDate(endDate_fee, Convert.gradeNoToBuildeClassDate(7));//7年级天数
+									Integer remainDays = (selMonth * 30) - diffDays;//9年级天数
+									List<SysFeeInfo> sfList = sfm.listInfoByopt(feeType, schoolType, 1);
+									if(sfList.size() > 0){
+										List<SysFeeInfo> sfList_1 = sfm.listInfoByopt(feeType, 21, 1);//9年级费用
+										if(sfList_1.size() > 0){
+											//可以购买--获取费用
+											msg = "success";
+											feeOpt = "diffFee";//存在不同费用
+											Integer fee_base = sfList.get(0).getFee();//6,7,8年级费用
+											Integer fee_base_1 = sfList_1.get(0).getFee();//9年级费用
+											fee = fee_base * diffDays + fee_base_1 * remainDays;
+											map.put("fee_1", fee_base);
+											map.put("days_1", diffDays);
+											map.put("gradeName_1", "八年级");
+											map.put("fee_2", fee_base_1);
+											map.put("days_2", remainDays);
+											map.put("gradeName_2", "九年级");
+										}
+									}
 								}else{
 									
 								}

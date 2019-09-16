@@ -350,14 +350,16 @@ public class NetTeacherAction extends DispatchAction {
 	public ActionForward listnTxReCord(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response)throws Exception {
 		NetTeacherTxRecordManager ntxManager = (NetTeacherTxRecordManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_TX_RECORD);
+		Integer operFlag = CommonTools.getFinalInteger("operFlag", request);
+		String txDate = CommonTools.getFinalStr("txDate",request);
 		Integer userId=CommonTools.getLoginUserId(request);
-		Integer count = ntxManager.getnTxReCordCount(userId);
+		Integer count = ntxManager.getnTxReCordCount(userId,txDate,operFlag);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg ="暂无记录";
 		if(count>0){
 			Integer pageSize = PageConst.getPageSize(String.valueOf(request.getParameter("limit")), 10);//等同于pageSize
 			Integer pageNo = CommonTools.getFinalInteger("page", request);//等同于pageNo
-			List<NetTeacherTxRecord> ntxlist= ntxManager.listnTxReCordByNtId(userId, pageNo, pageSize);
+			List<NetTeacherTxRecord> ntxlist= ntxManager.listnTxReCordByNtId(userId,txDate,operFlag, pageNo, pageSize);
 			List<Object> list_d = new ArrayList<Object>();
 			for (Iterator<NetTeacherTxRecord> itr = ntxlist.iterator(); itr.hasNext();) {
 				NetTeacherTxRecord ntx = (NetTeacherTxRecord) itr.next();

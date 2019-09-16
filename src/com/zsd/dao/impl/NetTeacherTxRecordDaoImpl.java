@@ -55,18 +55,31 @@ public class NetTeacherTxRecordDaoImpl implements NetTeacherTxRecordDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<NetTeacherTxRecord> findnTxReCordByNtId(Session sess,
-			Integer userId, Integer pageNo, Integer pageSize) {
+			Integer userId,String txDate,Integer operFlag, Integer pageNo, Integer pageSize) {
 		int offset = (pageNo - 1) * pageSize;
 		if (offset < 0) {
 			offset = 0;
 		}
-		String hql="from  NetTeacherTxRecord as ntx  where ntx.netTeacherInfo.user.id="+userId+" order by txDate desc";
+		String hql="from  NetTeacherTxRecord as ntx  where ntx.netTeacherInfo.user.id="+userId;
+		hql+=" and substring(ntx.txDate,1,7)='"+txDate+"'";
+		if(operFlag.equals(1)){
+			hql+=" and ntx.operateUserId = -1";
+		}else if(operFlag.equals(2)){
+			hql+=" and ntx.operateUserId >=0";
+		}
+		hql+=" order by ntx.txDate desc";
 		return sess.createQuery(hql).setFirstResult(offset).setMaxResults(pageSize).list();
 	}
 
 	@Override
-	public Integer getnTxReCordCount(Session sess, Integer userId) {
+	public Integer getnTxReCordCount(Session sess, Integer userId,String txDate,Integer operFlag) {
 		String hql="Select count(ntx.id) from  NetTeacherTxRecord as ntx  where ntx.netTeacherInfo.user.id="+userId;
+		hql+=" and substring(ntx.txDate,1,7)='"+txDate+"'";
+		if(operFlag.equals(1)){
+			hql+=" and ntx.operateUserId = -1";
+		}else if(operFlag.equals(2)){
+			hql+=" and ntx.operateUserId >= 0";
+		}
 		Object countObj = sess.createQuery(hql).uniqueResult();
 		return CommonTools.longToInt(countObj);
 	}

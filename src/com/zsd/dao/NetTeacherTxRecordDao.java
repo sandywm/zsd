@@ -75,7 +75,7 @@ public interface NetTeacherTxRecordDao {
 	 * @param pageSize
 	 * @return
 	 */
-	List<NetTeacherTxRecord> findnTxReCordByNtId(Session sess,Integer userId, Integer pageNo,Integer pageSize);
+	List<NetTeacherTxRecord> findnTxReCordByNtId(Session sess,Integer userId,String txDate,Integer operFlag, Integer pageNo,Integer pageSize);
 	/**
 	 * 根据网络导师编号获取提现记录数
 	 * @author zong
@@ -84,7 +84,7 @@ public interface NetTeacherTxRecordDao {
 	 * @param ntId 网络导师编号
 	 * @return
 	 */
-	Integer  getnTxReCordCount(Session sess,Integer userId);
+	Integer  getnTxReCordCount(Session sess,Integer userId,String txDate,Integer operFlag);
 	/**
 	 * 根据主键获取账单详情
 	 * @author zdf
