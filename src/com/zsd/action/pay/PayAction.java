@@ -69,12 +69,17 @@ public class PayAction extends DispatchAction {
 		UserClassInfoManager ucm = (UserClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
 		Integer stuId = CommonTools.getLoginUserId(request);
 		Integer roleId  = CommonTools.getLoginRoleId(request);
-		Integer selMonth = CommonTools.getFinalInteger("selMonth", request);
+		Integer selMonth = CommonTools.getFinalInteger("selMonth", request);//默认进来为一个月
 		Integer feeType = CommonTools.getFinalInteger("feeType", request);//费用类型(1:导师费,2:会员费)
 		Integer fee = 0;//购买所需费用
 		String msg = "error";
 		String feeOpt = "sameFee";
 		Map<String,Object> map = new HashMap<String,Object>();
+		if(selMonth.equals(0)){
+			selMonth = 1;
+		}
+		stuId = 1;
+		roleId = 2;
 		if(stuId > 0 && roleId.equals(Constants.STU_ROLE_ID) && selMonth > 0 && selMonth <= 12 && feeType > 0){
 			//获取当前学生能购买的的时长（最大到升学日期）不足一月按一月计算
 			List<UserClassInfo> uList = ucm.listInfoByOpt_1(stuId, roleId);
@@ -97,10 +102,16 @@ public class PayAction extends DispatchAction {
 					//计算出当前学生今天所在的年级
 					currUserGradeNumber_curr = Convert.dateConvertGradeNumber(buildClassDate);
 				}
+				String gradeName_curr = Convert.NunberConvertChinese(currUserGradeNumber_curr);;
 				//会员到期日+购买时长后的日期
-				String endDate_new = CurrentTime.getFinalDate_1(endDate_fee, selMonth);
+				String endDate_new = CurrentTime.getFinalDate(endDate_fee, selMonth * 30);//购买会员后的新的到期日
 				//获取购买会员后新的会员到期日后所在的年级
-				Integer currUserGradeNumber_new = Convert.dateConvertGradeNumber(endDate_new,buildClassDate);//购买会员费后到期日所在的年级
+				Integer currUserGradeNumber_new = Convert.dateConvertGradeNumber(endDate_new,buildClassDate);//购买会员费后到期日所在的年级号
+				String gradeName_new = Convert.NunberConvertChinese(currUserGradeNumber_new);//购买会员后到期日所在的年级名称
+				map.put("gradeName_curr", gradeName_curr);
+				map.put("endDate_curr", endDate_fee);
+				map.put("gradeName_new", gradeName_new);
+				map.put("endDate_new", endDate_new);
 				if(currUserGradeNumber_curr < 6){
 					//获取小学费用
 					List<SysFeeInfo> sfList = sfm.listInfoByopt(feeType, 1, 1);

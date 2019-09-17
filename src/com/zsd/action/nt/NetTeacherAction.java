@@ -413,12 +413,12 @@ public class NetTeacherAction extends DispatchAction {
 			if(ntx.getOperateUserId().equals(-1)){
 //				 List<User> ulist = uManager.listEntityById(ntx.getStuId());
 //				 String reMark = "学生"+ulist.get(0).getRealName()+"绑定费返现";
-				 map_d.put("ntxTitle", "收入");	
+				 map_d.put("ntxTitle", "返现");	
 				 map_d.put("txMoney", ntx.getTxMoney());
 				 map_d.put("txDate", ntx.getTxDate());
 				 map_d.put("reMark", ntx.getRemark());
 			}else if(ntx.getOperateUserId()>=0){
-				 map_d.put("ntxTitle", "支出");	
+				 map_d.put("ntxTitle", "提现");	
 				 map_d.put("txMoney", ntx.getTxMoney());
 				 map_d.put("txDate", ntx.getTxDate());
 				 map_d.put("bankName", ntx.getBankName());
