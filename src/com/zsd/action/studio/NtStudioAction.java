@@ -79,28 +79,36 @@ public class NtStudioAction extends DispatchAction {
 		NetTeacherStudioManager ntStudioManager = (NetTeacherStudioManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDIO);
 		NetTeacherStudioRelationManager ntsrManager = (NetTeacherStudioRelationManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDIO_RELATION);
 		NetTeacherStudentManager ntsManager = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT); 
-		Integer userId=CommonTools.getLoginUserId(request);
+		Integer userId=2191;
 		Map<String,Object> map = new HashMap<String,Object>();
-		List<NetTeacherStudioInfo> ntStudiolist= ntStudioManager.listNTStudioByuId(userId);
-		NetTeacherStudioInfo ntStudio = ntStudiolist.get(0);
-		map.put("id", ntStudio.getId());
-		map.put("studioName", ntStudio.getStudioName());
-		map.put("studioCode", ntStudio.getStudioCode());
-		map.put("studioProfile", ntStudio.getStudioProfile());
 		List<Object> list_d = new ArrayList<Object>();
-		List<NetTeacherStudioRelationInfo> ntsrlist = ntsrManager.listInfoByNtStudioId(ntStudio.getId());
-		for (Iterator<NetTeacherStudioRelationInfo> itr = ntsrlist.iterator(); itr.hasNext();) {
-			NetTeacherStudioRelationInfo ntsrInfo = (NetTeacherStudioRelationInfo) itr.next();
-			Map<String,Object> map_d= new HashMap<String,Object>();
-			Integer teaId = ntsrInfo.getTeaId();
-			List<NetTeacherStudent> ntslist = ntsManager.listByntId(teaId);
-			map_d.put("ntName", ntslist.get(0).getNetTeacherInfo().getUser().getRealName());
-			map_d.put("freetrial", ntsManager.getByStuNum(teaId, -1));
-			map_d.put("free", ntsManager.getByStuNum(teaId, 2));
-			map_d.put("pay", ntsManager.getByStuNum(teaId, 1));
-			list_d.add(map_d);
+		List<NetTeacherStudioInfo> ntStudiolist= ntStudioManager.listNTStudioByuId(userId);
+		String msg="";
+		if(ntStudiolist.isEmpty()){
+			msg="暂无记录";
+		}else{
+			NetTeacherStudioInfo ntStudio = ntStudiolist.get(0);
+			map.put("id", ntStudio.getId());
+			map.put("studioName", ntStudio.getStudioName());
+			map.put("studioCode", ntStudio.getStudioCode());
+			map.put("studioProfile", ntStudio.getStudioProfile());
+			
+			List<NetTeacherStudioRelationInfo> ntsrlist = ntsrManager.listInfoByNtStudioId(ntStudio.getId());
+			for (Iterator<NetTeacherStudioRelationInfo> itr = ntsrlist.iterator(); itr.hasNext();) {
+				NetTeacherStudioRelationInfo ntsrInfo = (NetTeacherStudioRelationInfo) itr.next();
+				Map<String,Object> map_d= new HashMap<String,Object>();
+				Integer teaId = ntsrInfo.getTeaId();
+				List<NetTeacherStudent> ntslist = ntsManager.listByntId(teaId);
+				map_d.put("ntName", ntslist.get(0).getNetTeacherInfo().getUser().getRealName());
+				map_d.put("freetrial", ntsManager.getByStuNum(teaId, -1));
+				map_d.put("free", ntsManager.getByStuNum(teaId, 2));
+				map_d.put("pay", ntsManager.getByStuNum(teaId, 1));
+				list_d.add(map_d);
+			}
+			map.put("ntStudioInfo", list_d);
+			msg="success";
 		}
-		map.put("ntStudioInfo", list_d);
+		map.put("msg", msg);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}

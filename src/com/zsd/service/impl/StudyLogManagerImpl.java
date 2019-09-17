@@ -286,4 +286,18 @@ public class StudyLogManagerImpl implements StudyLogManager{
 		}
 	}
 
+	@Override
+	public List<StudyLogInfo> listStuLogByStu(Integer stuId,Integer subId,Integer guideSta,String sDate, String eDate) throws WEBException {
+		try {
+			slDao = (StudyLogDao) DaoFactory.instance(null).getDao(Constants.DAO_STUDY_LOG_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return slDao.findStuLogByStu(sess, stuId, subId, guideSta, sDate, eDate);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("根据学生编号,学科编号,指导状态,时间段获取指定学生跟踪指导记录时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
 }

@@ -92,4 +92,24 @@ public class StudyLogDaoImpl implements StudyLogDao{
 		return sess.createQuery(hql).list();
 	}
 
+	@Override
+	public List<StudyLogInfo> findStuLogByStu(Session sess,Integer stuId,Integer subId,Integer guideSta,String sDate, String eDate) {
+	
+		 String hql = " from StudyLogInfo as sl where sl.isFinish = 2 and sl.subject.id="+subId;
+		
+		   if(!stuId.equals(0)){
+			   hql +=" and sl.user.id = "+stuId;
+		   }
+		   
+		   if(guideSta.equals(1)){//未指导
+			  hql +=" and sl.teaAssess=''"; 
+		   }else if(guideSta.equals(2)){
+			   hql+=" and sl.teaAssess != ''";
+		   }
+		   if(!sDate.equals("")&& !eDate.equals("")){
+			    hql += " and substring(sl.addTime,1,10) >= '"+sDate+"' and substring(sl.addTime,1,10) <= '"+eDate+"'";
+		   }
+			return sess.createQuery(hql).list();
+	}
+
 }

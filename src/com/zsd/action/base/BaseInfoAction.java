@@ -28,11 +28,13 @@ import com.alibaba.fastjson.JSONObject;
 import com.zsd.factory.AppFactory;
 import com.zsd.module.GradeSubject;
 import com.zsd.module.School;
+import com.zsd.module.StudentParentInfo;
 import com.zsd.module.TownInfo;
 import com.zsd.module.User;
 import com.zsd.module.UserClassInfo;
 import com.zsd.service.GradeSubjectManager;
 import com.zsd.service.SchoolManager;
+import com.zsd.service.StudentParentInfoManager;
 import com.zsd.service.TownManager;
 import com.zsd.service.UserClassInfoManager;
 import com.zsd.service.UserManager;
@@ -280,14 +282,22 @@ public class BaseInfoAction extends DispatchAction {
 			HttpServletRequest request,HttpServletResponse response) throws Exception{
 		UserClassInfoManager ucm = (UserClassInfoManager)AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
 		GradeSubjectManager gsm = (GradeSubjectManager)AppFactory.instance(null).getApp(Constants.WEB_GRADE_SUBJECT_INFO);
+		StudentParentInfoManager spm = (StudentParentInfoManager)AppFactory.instance(null).getApp(Constants.WEB_STUDENT_PARENT_INFO);
 		//获取我所在年级的学科
 		Integer userId = CommonTools.getLoginUserId(request);
+		Integer roleId = CommonTools.getLoginRoleId(request);
 		Integer subId = CommonTools.getFinalInteger("subId", request);
 		String msg = "noInfo";
 		Map<String,Object> map = new HashMap<String,Object>();
 		if(userId > 0){
 			if(subId.equals(0)){
 				subId = 2;
+			}
+			if(roleId.equals(Constants.PATENT_ROLE_ID)){//家长角色需要获取自己孩子的userId
+				StudentParentInfo sp = spm.getEntityByParId(userId);
+				if(sp != null){
+					userId = sp.getStu().getId();//孩子的Id
+				}
 			}
 			List<UserClassInfo> ucList = ucm.listInfoByOpt_1(userId, Constants.STU_ROLE_ID);//获取学生所在班级信息
 			if(ucList.size() > 0){

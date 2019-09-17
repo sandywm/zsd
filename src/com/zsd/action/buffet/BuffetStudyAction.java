@@ -174,6 +174,7 @@ public class BuffetStudyAction extends DispatchAction {
 		Integer bsId = CommonTools.getFinalInteger("bsId", request);
 		Integer userId = CommonTools.getLoginUserId(request);
 		String msg = "noInfo";
+		String roleName = "";
 		Map<String,Object> map = new HashMap<String,Object>();
 		List<BuffetStudyDetailInfo> bsdList = bsdm.listInfoByBsId(bsId);
 		if(bsdList.size() > 0){
@@ -181,6 +182,7 @@ public class BuffetStudyAction extends DispatchAction {
 				StudentParentInfo sp = spm.getEntityByParId(userId);
 				if(sp != null){
 					userId = sp.getStu().getId();//孩子的Id
+					roleName = "家长";
 				}
 			}
 			if(bsdList.get(0).getBuffetSendInfo().getStudyLogInfo().getUser().getId().equals(userId)){
@@ -243,6 +245,7 @@ public class BuffetStudyAction extends DispatchAction {
 			}
 		}
 		map.put("result", msg);
+		map.put("roleName", roleName);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}

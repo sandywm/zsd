@@ -157,5 +157,17 @@ public interface StudyLogManager {
 	 * @throws WEBException
 	 */
 	List<StudyLogInfo> listStuLogByOption(Integer userId,Integer subId,String sDate, String eDate)throws WEBException;
-	
+	/**
+	 * 学生跟踪指导信息
+	 * @author zdf
+	 * 2019-9-17 上午09:20:37
+	 * @param sess
+	 * @param stuId  学生编号
+	 * @param isFinish 完成状态
+	 * @param sDate 开始时间
+	 * @param eDate 结束时间
+	 * @return
+	 * @throws WEBException
+	 */
+	List<StudyLogInfo> listStuLogByStu(Integer stuId,Integer subId,Integer guideSta,String sDate, String eDate)throws WEBException;
 }

@@ -30,6 +30,7 @@ import com.zsd.module.BuffetSendInfo;
 import com.zsd.module.BuffetStudyDetailInfo;
 import com.zsd.module.JoinLoreRelation;
 import com.zsd.module.NetTeacherStudent;
+import com.zsd.module.StudentParentInfo;
 import com.zsd.module.StudyDetailInfo;
 import com.zsd.module.StudyLogInfo;
 import com.zsd.module.Subject;
@@ -42,6 +43,7 @@ import com.zsd.service.BuffetSendInfoManager;
 import com.zsd.service.BuffetStudyDetailManager;
 import com.zsd.service.JoinLoreRelationManager;
 import com.zsd.service.NetTeacherStudentManager;
+import com.zsd.service.StudentParentInfoManager;
 import com.zsd.service.StudyDetailManager;
 import com.zsd.service.StudyLogManager;
 import com.zsd.service.SubjectManager;
@@ -91,9 +93,11 @@ public class StudyRecordAction extends DispatchAction {
 		StudyLogManager slManager = (StudyLogManager) AppFactory.instance(null).getApp(Constants.WEB_STUDY_LOG_INFO);
 		BuffetSendInfoManager bsManager = (BuffetSendInfoManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_SEND_INFO);
 		SubjectManager subManager = (SubjectManager) AppFactory.instance(null).getApp(Constants.WEB_SUBJECT_INFO);
+		StudentParentInfoManager spm = (StudentParentInfoManager)AppFactory.instance(null).getApp(Constants.WEB_STUDENT_PARENT_INFO);
 		Integer subId=CommonTools.getFinalInteger("subId", request);
 		Integer isfinish=CommonTools.getFinalInteger("isfinish", request);
 		Integer userId=CommonTools.getLoginUserId(request);
+		Integer roleId = CommonTools.getLoginRoleId(request);
 		Integer logType=CommonTools.getFinalInteger("logType",request);//1:自学,2:家庭作业,3,自助餐 -1全部
 		String sDate=CommonTools.getFinalStr("sDate",request);
 		String eDate=CommonTools.getFinalStr("eDate",request);
@@ -119,6 +123,13 @@ public class StudyRecordAction extends DispatchAction {
  	    	if(!subs.isEmpty()){
  	    		subName =subs.get(0).getSubName();
  	    	}
+ 	    }
+ 	    
+ 	    if(roleId.equals(Constants.PATENT_ROLE_ID)){//家长时需要获取孩子的userId
+ 	    	StudentParentInfo sp = spm.getEntityByParId(userId);
+			if(sp != null){
+				userId = sp.getStu().getId();//孩子的Id
+			}
  	    }
  	    
 		Map<String,Object> map = new HashMap<String,Object>();
@@ -1012,5 +1023,60 @@ public class StudyRecordAction extends DispatchAction {
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
-	
+	/**
+	 * 指定学生跟踪指导
+	 * @author zdf
+	 * 2019-9-17 上午09:26:03
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward  getGuideList(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		StudyLogManager slManager = (StudyLogManager) AppFactory.instance(null).getApp(Constants.WEB_STUDY_LOG_INFO);
+		NetTeacherStudentManager ntsManager = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT);
+		Integer stuId=CommonTools.getFinalInteger("stuId", request);//学生编号
+		Integer guideSta=CommonTools.getFinalInteger("guideSta", request);//指导状态 0 全部, 1 未指导, 2 指导
+		Integer ntId=CommonTools.getLoginUserId(request);
+		String sDate=CommonTools.getFinalStr("sDate",request);
+		String eDate=CommonTools.getFinalStr("eDate",request);
+		Integer subId = 0;
+		Integer diffDay =0;
+		Integer allStudyLog =0;
+		Map<String,Object> map = new HashMap<String,Object>();
+		List<Object> list_d = new ArrayList<Object>();
+		List<NetTeacherStudent> ntsList = ntsManager.listByntId(ntId);
+		if(!ntsList.isEmpty()){
+			subId = ntsList.get(0).getNetTeacherInfo().getSubject().getId();
+			if(stuId.equals(0)){
+				stuId = ntsList.get(0).getUser().getId();
+			}
+			if(sDate.equals("")){
+				//表示是默认的当前日期前3天的记录(包含当前，所以-2)
+				sDate = CurrentTime.getFinalDate(CurrentTime.getStringDate(), -3);
+				eDate = CurrentTime.getStringDate();
+			}else{
+				if(eDate.equals("")){
+					eDate = CurrentTime.getStringDate();
+				}
+			}
+		    diffDay = CurrentTime.compareDate(sDate,eDate);
+			List<StudyLogInfo> slList =  slManager.listStuLogByStu(stuId, subId, guideSta, sDate, eDate);
+			allStudyLog += slList.size();
+			for (Iterator<StudyLogInfo> itr = slList.iterator(); itr.hasNext();) {
+				StudyLogInfo slInfo = (StudyLogInfo) itr.next();
+				Map<String,Object> map_d= new HashMap<String,Object>();
+				map_d.put("studyLogId", slInfo.getId()); //学习记录主键
+				map_d.put("loreName", slInfo.getLoreInfo().getLoreName());//知识点名称
+				list_d.add(map_d);
+			}
+		}
+		map.put("slList", list_d);
+		map.put("diffDay", diffDay);
+		map.put("allStudyLog", allStudyLog);
+		return null;
+	}
 }
