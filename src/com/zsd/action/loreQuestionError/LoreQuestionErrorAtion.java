@@ -154,6 +154,7 @@ public class LoreQuestionErrorAtion extends DispatchAction {
 		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
 		LexInfoManager lexm = (LexInfoManager) AppFactory.instance(null).getApp(Constants.WEB_LEX_INFO);
 		Integer lqeId = CommonTools.getFinalInteger("lqeId", request);
+		String opt = CommonTools.getFinalStr("opt", request);//stu时表示学生查看是详情，不传时表示后台管理员查看详情
 		LoreQuestionErrorInfo lqe = lqem.getEntityById(lqeId);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "noInfo";
@@ -161,107 +162,135 @@ public class LoreQuestionErrorAtion extends DispatchAction {
 		if(lqe != null){
 			msg = "success";
 			LoreQuestion lq = lqe.getLoreQuestion();
-			Map<String,Object> map_d = new HashMap<String,Object>();
-			map_d.put("lqeId", lqeId);
-			map_d.put("lqId", lq.getId());
-			map_d.put("lqTitle", lq.getQueTitle());
-			map_d.put("loreName", lq.getLoreInfo().getLoreName());
-			String queType = lq.getQueType();
-			map_d.put("queType", queType);
-			map_d.put("queType2", lq.getQueType2());
-			Integer lexId = lq.getLexId();
-			map_d.put("lexId", lexId);
-			if(lexId > 0){
-				LexInfo lex = lexm.getEntityById(lexId);
-				if(lex != null){
-					map_d.put("lexTitle", lex.getLexTitle());
-					map_d.put("lexContent", lex.getLexContent());
+			if(opt.equals("stu")){
+				map.put("lqTitle", lq.getQueTitle());
+				String errorTypeEng = lqe.getErrorType();
+				String errorType_text = "";
+				if(errorTypeEng.contains("noPicError")){
+					errorType_text += "图片错误,";
 				}
-			}
-			map_d.put("lqSub", lq.getQueSub());
-			String answerA = lq.getA();
-			String answerB = lq.getB();
-			String answerC = lq.getC();
-			String answerD = lq.getD();
-			String answerE = lq.getE();
-			String answerF = lq.getF();
-			map_d.put("anserA", answerA);
-			map_d.put("anserB", answerB);
-			map_d.put("anserC", answerC);
-			map_d.put("anserD", answerD);
-			map_d.put("anserE", answerE);
-			map_d.put("anserF", answerF);
-			map_d.put("lqAnswer", lq.getQueAnswer());
-			Integer queOptNum = 0;//问题选项
-			Integer answerNum = 0;//答案数量
-			if(queType.equals("单选题") || queType.equals("多选题") || queType.equals("填空选择题")){
-				//有最大选项
-				if(!answerA.equals("")){
-					queOptNum++;
+				if(errorTypeEng.contains("contentError")){
+					errorType_text += "内容错误,";
 				}
-				if(!answerB.equals("")){
-					queOptNum++;
+				if(errorTypeEng.contains("anserError")){
+					errorType_text += "答案错误,";
 				}
-				if(!answerC.equals("")){
-					queOptNum++;
+				if(errorTypeEng.contains("otherError")){
+					errorType_text += "其他错误,";
 				}
-				if(!answerD.equals("")){
-					queOptNum++;
+				if(!errorType_text.equals("")){
+					errorType_text = errorType_text.substring(0,errorType_text.length() - 1);
 				}
-				if(!answerE.equals("")){
-					queOptNum++;
+				map.put("errorType", errorType_text);
+				map.put("content", lqe.getContent());
+				map.put("addate", lqe.getAddDate());
+				map.put("updateStatus", lqe.getCheckStatus().equals(0) ? "未修改" : "已修改");
+				map.put("updateDate", lqe.getOperateDate());
+				map.put("updateUserName", lqe.getOperateUserName());
+				map.put("remark", lqe.getRemark());
+			}else{
+				Map<String,Object> map_d = new HashMap<String,Object>();
+				map_d.put("lqeId", lqeId);
+				map_d.put("lqId", lq.getId());
+				map_d.put("lqTitle", lq.getQueTitle());
+				map_d.put("loreName", lq.getLoreInfo().getLoreName());
+				String queType = lq.getQueType();
+				map_d.put("queType", queType);
+				map_d.put("queType2", lq.getQueType2());
+				Integer lexId = lq.getLexId();
+				map_d.put("lexId", lexId);
+				if(lexId > 0){
+					LexInfo lex = lexm.getEntityById(lexId);
+					if(lex != null){
+						map_d.put("lexTitle", lex.getLexTitle());
+						map_d.put("lexContent", lex.getLexContent());
+					}
 				}
-				if(!answerF.equals("")){
-					queOptNum++;
-				}
-				map_d.put("queOptNum", queOptNum);
-				if(queType.equals("填空选择题")){
-					//有最大选项和填空数量
+				map_d.put("lqSub", lq.getQueSub());
+				String answerA = lq.getA();
+				String answerB = lq.getB();
+				String answerC = lq.getC();
+				String answerD = lq.getD();
+				String answerE = lq.getE();
+				String answerF = lq.getF();
+				map_d.put("anserA", answerA);
+				map_d.put("anserB", answerB);
+				map_d.put("anserC", answerC);
+				map_d.put("anserD", answerD);
+				map_d.put("anserE", answerE);
+				map_d.put("anserF", answerF);
+				map_d.put("lqAnswer", lq.getQueAnswer());
+				Integer queOptNum = 0;//问题选项
+				Integer answerNum = 0;//答案数量
+				if(queType.equals("单选题") || queType.equals("多选题") || queType.equals("填空选择题")){
+					//有最大选项
+					if(!answerA.equals("")){
+						queOptNum++;
+					}
+					if(!answerB.equals("")){
+						queOptNum++;
+					}
+					if(!answerC.equals("")){
+						queOptNum++;
+					}
+					if(!answerD.equals("")){
+						queOptNum++;
+					}
+					if(!answerE.equals("")){
+						queOptNum++;
+					}
+					if(!answerF.equals("")){
+						queOptNum++;
+					}
+					map_d.put("queOptNum", queOptNum);
+					if(queType.equals("填空选择题")){
+						//有最大选项和填空数量
+						answerNum = lq.getQueAnswer().split(",").length;//多个答案用,隔开
+						map_d.put("answerNum", answerNum);
+					}
+				}else if(queType.equals("填空题")){
 					answerNum = lq.getQueAnswer().split(",").length;//多个答案用,隔开
 					map_d.put("answerNum", answerNum);
 				}
-			}else if(queType.equals("填空题")){
-				answerNum = lq.getQueAnswer().split(",").length;//多个答案用,隔开
-				map_d.put("answerNum", answerNum);
-			}
-			map_d.put("lqResolution", lq.getQueResolution());
-			Integer queTipId = lq.getQueTips();
-			map_d.put("queTipId", queTipId);
-			List<LoreQuestionSubInfo> lqsList = lqm.listInfoByLoreId(lq.getLoreInfo().getId());
-			List<Object> list_d_1 = new ArrayList<Object>();
-			if(lqsList.size() > 0){
-				if(queTipId > 0){//提示为知识清单或者点拨指导的一内容
-					for(Iterator<LoreQuestionSubInfo> it = lqsList.iterator() ; it.hasNext();){
-						LoreQuestionSubInfo lqs = it.next();
-						Map<String,Object> map_d_1 = new HashMap<String,Object>();
-						map_d_1.put("lqsId", lqs.getId());
-						map_d_1.put("lqsTitle", lqs.getLqsTitle());
-						map_d_1.put("lqsContent", lqs.getLqsContent());
-						map_d_1.put("lqsType", lqs.getLoreTypeName());
-						if(queTipId.equals(lqs.getId())){
-							map_d_1.put("selStatus", true);
-						}else{
-							map_d_1.put("selStatus", false);
+				map_d.put("lqResolution", lq.getQueResolution());
+				Integer queTipId = lq.getQueTips();
+				map_d.put("queTipId", queTipId);
+				List<LoreQuestionSubInfo> lqsList = lqm.listInfoByLoreId(lq.getLoreInfo().getId());
+				List<Object> list_d_1 = new ArrayList<Object>();
+				if(lqsList.size() > 0){
+					if(queTipId > 0){//提示为知识清单或者点拨指导的一内容
+						for(Iterator<LoreQuestionSubInfo> it = lqsList.iterator() ; it.hasNext();){
+							LoreQuestionSubInfo lqs = it.next();
+							Map<String,Object> map_d_1 = new HashMap<String,Object>();
+							map_d_1.put("lqsId", lqs.getId());
+							map_d_1.put("lqsTitle", lqs.getLqsTitle());
+							map_d_1.put("lqsContent", lqs.getLqsContent());
+							map_d_1.put("lqsType", lqs.getLoreTypeName());
+							if(queTipId.equals(lqs.getId())){
+								map_d_1.put("selStatus", true);
+							}else{
+								map_d_1.put("selStatus", false);
+							}
+							list_d_1.add(map_d_1);
 						}
-						list_d_1.add(map_d_1);
-					}
-				}else{
-					for(Iterator<LoreQuestionSubInfo> it = lqsList.iterator() ; it.hasNext();){
-						LoreQuestionSubInfo lqs = it.next();
-						Map<String,Object> map_d_1 = new HashMap<String,Object>();
-						map_d_1.put("lqsId", lqs.getId());
-						map_d_1.put("lqsTitle", lqs.getLqsTitle());
-						map_d_1.put("lqsContent", lqs.getLqsContent());
-						map_d_1.put("lqsType", lqs.getLoreTypeName());
-						map_d_1.put("selStatus", false);
-						list_d_1.add(map_d_1);
+					}else{
+						for(Iterator<LoreQuestionSubInfo> it = lqsList.iterator() ; it.hasNext();){
+							LoreQuestionSubInfo lqs = it.next();
+							Map<String,Object> map_d_1 = new HashMap<String,Object>();
+							map_d_1.put("lqsId", lqs.getId());
+							map_d_1.put("lqsTitle", lqs.getLqsTitle());
+							map_d_1.put("lqsContent", lqs.getLqsContent());
+							map_d_1.put("lqsType", lqs.getLoreTypeName());
+							map_d_1.put("selStatus", false);
+							list_d_1.add(map_d_1);
+						}
 					}
 				}
+				map_d.put("tipsList", list_d_1);
+				map_d.put("lqType", lq.getLoreTypeName());
+				list_d.add(map_d);
+				map.put("listIfo", list_d);
 			}
-			map_d.put("tipsList", list_d_1);
-			map_d.put("lqType", lq.getLoreTypeName());
-			list_d.add(map_d);
-			map.put("listIfo", list_d);
 		}
 		map.put("msg", msg);
 		CommonTools.getJsonPkg(map, response);
