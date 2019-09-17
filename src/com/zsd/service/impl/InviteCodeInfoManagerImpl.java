@@ -53,4 +53,18 @@ public class InviteCodeInfoManagerImpl implements InviteCodeInfoManager {
 			HibernateUtil.closeSession();
 		}
 	}
+	@Override
+	public List<InviteCodeInfo> listIcInfoByOption(Integer inviteId,
+			String inviteType) throws WEBException {
+		try {
+			icDao = (InviteCodeInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_INVITE_CODE_INFO);
+			Session sess  = HibernateUtil.currentSession();
+			return icDao.findIcInfoByOption(sess, inviteId, inviteType);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("根据邀请编号,邀请码类型获取邀请码信息列表时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
 }

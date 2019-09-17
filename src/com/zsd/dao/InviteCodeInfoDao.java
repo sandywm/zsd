@@ -69,4 +69,14 @@ public interface InviteCodeInfoDao {
 	 * @return
 	 */
 	List<InviteCodeInfo> findIcInfoByicCode(Session sess,String inviteCode);
+	/**
+	 * 根据邀请编号,邀请码类型获取信息
+	 * @author zdf
+	 * 2019-9-17 下午04:06:14
+	 * @param sess
+	 * @param inviteId 邀请编号
+	 * @param inviteType 邀请类型
+	 * @return
+	 */
+	List<InviteCodeInfo> findIcInfoByOption(Session sess,Integer inviteId,String inviteType);
 }

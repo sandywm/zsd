@@ -995,7 +995,23 @@ public class StudyRecordAction extends DispatchAction {
 	public ActionForward sendBuffetDetiTj(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		BuffetStudyDetailManager bsdManager = (BuffetStudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_STUDY_DETAIL_INFO);
+		StudentParentInfoManager spm = (StudentParentInfoManager)AppFactory.instance(null).getApp(Constants.WEB_STUDENT_PARENT_INFO);
 		Integer bsId = CommonTools.getFinalInteger("bsId",request);
+		Integer roleId = CommonTools.getLoginRoleId(request);
+		Integer userId = CommonTools.getLoginUserId(request);
+		Integer subId = 0; 
+		if(roleId.equals(Constants.NET_TEA_ROLE_ID)){//网络导师
+			
+		}else if(roleId.equals(Constants.STU_ROLE_ID)){//学生
+			subId = CommonTools.getFinalInteger("subId", request);
+		}else if(roleId.equals(Constants.PATENT_ROLE_ID)){//家长
+			if(roleId.equals(Constants.PATENT_ROLE_ID)){//家长角色需要获取自己孩子的userId
+				StudentParentInfo sp = spm.getEntityByParId(userId);
+				if(sp != null){
+					userId = sp.getStu().getId();//孩子的Id
+				}
+			}
+		}
 		Map<String,Object> map = new HashMap<String,Object>();
 		List<BuffetStudyDetailInfo> bsdlist = bsdManager.listBsdInfoByBsdId(bsId);
 		int total =bsdlist.size();
@@ -1071,6 +1087,7 @@ public class StudyRecordAction extends DispatchAction {
 				Map<String,Object> map_d= new HashMap<String,Object>();
 				map_d.put("studyLogId", slInfo.getId()); //学习记录主键
 				map_d.put("loreName", slInfo.getLoreInfo().getLoreName());//知识点名称
+				map_d.put("isfinish", slInfo.getIsFinish());
 				list_d.add(map_d);
 			}
 		}

@@ -222,11 +222,18 @@ public class LoginAction extends DispatchAction {
 								map.put("subName","暂无");
 							}
 						}else if(roleId.equals(Constants.NET_TEA_ROLE_ID)){//网络导师
+							InviteCodeInfoManager icManager = (InviteCodeInfoManager) AppFactory.instance(null).getApp(Constants.WEB_INVITE_CODE_INFO);
+							List<InviteCodeInfo> icList =icManager.listIcInfoByOption(uid, "导师邀请码");
 							List<NetTeacherInfo> ntList = ntm.listntInfoByuserId(uid);
 							if(ntList.size() > 0){
 								map.put("subName",ntList.get(0).getSubject().getSubName());
 							}else{
 								map.put("subName","暂无");
+							}
+							if(icList.size()>0){
+								map.put("ntInviteCode", icList.get(0).getInviteCode());
+							}else{
+								map.put("ntInviteCode", "暂无");
 							}
 						}
 					}
@@ -568,7 +575,31 @@ public class LoginAction extends DispatchAction {
 					map.put("password", pwd);
 					map.put("portrait", portrait);
 					map.put("userId", uid);
+					if(roleId.equals(Constants.TEA_ROLE_ID)){//班内老师
+						UserClassInfoManager ucm = (UserClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
+						List<UserClassInfo> ucList = ucm.listTeaInfoByOpt(uid, roleId);
+						if(ucList.size() > 0){
+							map.put("subName",ucList.get(0).getSubjectName());
+						}else{
+							map.put("subName","暂无");
+						}
+					}else if(roleId.equals(Constants.NET_TEA_ROLE_ID)){//网络导师
+						NetTeacherInfoManager ntm = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
+						List<InviteCodeInfo> icList =icManager.listIcInfoByOption(uid, "导师邀请码");
+						List<NetTeacherInfo> ntList = ntm.listntInfoByuserId(uid);
+						if(ntList.size() > 0){
+							map.put("subName",ntList.get(0).getSubject().getSubName());
+						}else{
+							map.put("subName","暂无");
+						}
+						if(icList.size()>0){
+							map.put("ntInviteCode", icList.get(0).getInviteCode());
+						}else{
+							map.put("ntInviteCode", "暂无");
+						}
+					}
 					msg = "success";
+		
 				}else{//账号无效
 					msg = "lock";
 				}

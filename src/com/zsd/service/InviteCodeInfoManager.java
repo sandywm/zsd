@@ -29,4 +29,14 @@ public interface InviteCodeInfoManager {
 	 * @throws WEBException
 	 */
 	Integer addInviteCodeInfo( Integer inviteId,String inviteType,String inviteCode, Timestamp createDate) throws WEBException;
+	/**
+	 * 根据邀请编号,邀请码类型获取信息
+	 * @author zdf
+	 * 2019-9-17 下午04:06:14
+	 * @param inviteId 邀请编号
+	 * @param inviteType 邀请类型
+	 * @throws WEBException
+	 */
+	List<InviteCodeInfo> listIcInfoByOption(Integer inviteId,String inviteType)throws WEBException;
+	
 }

@@ -56,4 +56,12 @@ public class InviteCodeInfoDaoImpl implements InviteCodeInfoDao {
 		return sess.createQuery(hql).list();
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<InviteCodeInfo> findIcInfoByOption(Session sess,
+			Integer inviteId, String inviteType) {
+		String hql = " from InviteCodeInfo as ic where ic.inviteId="+inviteId+"  and ic.inviteType= '"+inviteType+"'";
+		return sess.createQuery(hql).list();
+	}
+
 }
