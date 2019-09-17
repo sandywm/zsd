@@ -1001,7 +1001,7 @@ public class StudyRecordAction extends DispatchAction {
 		Integer userId = CommonTools.getLoginUserId(request);
 		Integer subId = 0; 
 		if(roleId.equals(Constants.NET_TEA_ROLE_ID)){//网络导师
-			
+			//获取当前网络导师辅导学科下指定学生的自助餐统计图
 		}else if(roleId.equals(Constants.STU_ROLE_ID)){//学生
 			subId = CommonTools.getFinalInteger("subId", request);
 		}else if(roleId.equals(Constants.PATENT_ROLE_ID)){//家长
