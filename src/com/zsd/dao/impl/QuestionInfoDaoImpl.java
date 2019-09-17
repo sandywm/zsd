@@ -61,6 +61,7 @@ public class QuestionInfoDaoImpl implements QuestionInfoDao {
 		if (!readStatus.equals(-1)) {
 			hql += " and q.readStatus=" + readStatus;
 		}
+		hql += " order by q.id desc";
 		return sess.createQuery(hql).setFirstResult(offset)
 				.setMaxResults(pageSize).list();
 	}
@@ -107,7 +108,7 @@ public class QuestionInfoDaoImpl implements QuestionInfoDao {
 		if (!readStatus.equals(-1)) {
 			hql += " and q.readStatus=" + readStatus;
 		}
-		hql+=" order by q.queTime  DESC ";
+		hql+=" order by q.id  DESC ";
 		return sess.createQuery(hql).setFirstResult(offset)
 				.setMaxResults(pageSize).list();
 	}

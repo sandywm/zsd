@@ -107,8 +107,7 @@ public class QuestionInfoAction extends DispatchAction {
 		String msg = "暂无记录";
 		Map<String, Object> map = new HashMap<String, Object>();
 		if (count > 0) {
-			Integer pageSize = PageConst.getPageSize(
-					String.valueOf(request.getParameter("limit")), 10);// 等同于pageSize
+			Integer pageSize = PageConst.getPageSize(String.valueOf(request.getParameter("limit")), 10);// 等同于pageSize
 			Integer pageNo = CommonTools.getFinalInteger("page", request);// 等同于pageNo
 			List<QuestionInfo> qList = qManager.listInfoByOpt(userId,subId,
 					readStatus, pageNo, pageSize);
