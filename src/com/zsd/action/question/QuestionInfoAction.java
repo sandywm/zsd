@@ -109,10 +109,9 @@ public class QuestionInfoAction extends DispatchAction {
 		if (count > 0) {
 			Integer pageSize = PageConst.getPageSize(String.valueOf(request.getParameter("limit")), 10);// 等同于pageSize
 			Integer pageNo = CommonTools.getFinalInteger("page", request);// 等同于pageNo
-			List<QuestionInfo> qList = qManager.listInfoByOpt(userId,subId,
-					readStatus, pageNo, pageSize);
+			List<QuestionInfo> qList = qManager.listInfoByOpt(userId,subId,readStatus, pageNo, pageSize);
 			List<Object> list_d = new ArrayList<Object>();
-			for (Iterator it = qList.iterator(); it.hasNext();) {
+			for (Iterator<QuestionInfo> it = qList.iterator(); it.hasNext();) {
 				QuestionInfo qInfo = (QuestionInfo) it.next();
 				Map<String, Object> map_d = new HashMap<String, Object>();
 				map_d.put("qId", qInfo.getId()); //我的提问编号
@@ -300,7 +299,7 @@ public class QuestionInfoAction extends DispatchAction {
 			List<QuestionInfo> qList = qManager.listInfoByStu(userId,stuId,
 					readStatus, pageNo, pageSize);
 			List<Object> list_d = new ArrayList<Object>();
-			Integer unAns=0;
+			Integer unAns=qManager.getInfoByStuCount(userId,stuId, 0);;
 			for (Iterator<QuestionInfo> it = qList.iterator(); it.hasNext();) {
 				QuestionInfo qInfo = (QuestionInfo) it.next();
 				Map<String, Object> map_d = new HashMap<String, Object>();
@@ -311,7 +310,6 @@ public class QuestionInfoAction extends DispatchAction {
 				map_d.put("queTime", qInfo.getQueTime());
 				if (qInfo.getReadStatus() == 0) {
 					map_d.put("readSta", "未回复");
-					unAns++;
 				} else {
 					map_d.put("readSta", "已回复");
 				}
