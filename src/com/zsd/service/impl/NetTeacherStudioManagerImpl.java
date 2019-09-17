@@ -54,7 +54,6 @@ public class NetTeacherStudioManagerImpl implements NetTeacherStudioManager {
 			NetTeacherStudioInfo ntStudio = ntStudioDao.get(sess, id);
 			if(ntStudioDao != null){
 				ntStudio.setStudioName(studioName);
-				/*ntStudio.setMaxNum(maxNum);*/
 				ntStudio.setStudioProfile(studioProfile);
 				tran.commit();
 				return true;

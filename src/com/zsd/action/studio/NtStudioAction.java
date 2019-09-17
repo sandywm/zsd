@@ -4,6 +4,7 @@
  */
 package com.zsd.action.studio;
 
+import java.security.acl.Owner;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -24,6 +25,7 @@ import com.zsd.module.NetTeacherInfo;
 import com.zsd.module.NetTeacherStudent;
 import com.zsd.module.NetTeacherStudioInfo;
 import com.zsd.module.NetTeacherStudioRelationInfo;
+import com.zsd.module.User;
 import com.zsd.service.NetTeacherInfoManager;
 import com.zsd.service.NetTeacherStudentManager;
 import com.zsd.service.NetTeacherStudioManager;
@@ -99,7 +101,9 @@ public class NtStudioAction extends DispatchAction {
 				Map<String,Object> map_d= new HashMap<String,Object>();
 				Integer teaId = ntsrInfo.getTeaId();
 				List<NetTeacherStudent> ntslist = ntsManager.listByntId(teaId);
-				map_d.put("ntName", ntslist.get(0).getNetTeacherInfo().getUser().getRealName());
+				User user =  ntslist.get(0).getNetTeacherInfo().getUser();
+				map_d.put("ntName",user.getRealName());
+				map_d.put("ntPortrait", user.getPortrait());
 				map_d.put("freetrial", ntsManager.getByStuNum(teaId, -1));
 				map_d.put("free", ntsManager.getByStuNum(teaId, 2));
 				map_d.put("pay", ntsManager.getByStuNum(teaId, 1));
@@ -131,7 +135,6 @@ public class NtStudioAction extends DispatchAction {
 		Integer userId=CommonTools.getLoginUserId(request);
 		List<NetTeacherInfo> ntlist =ntManager.listntInfoByuserId(userId);
 		Integer teaId =ntlist.get(0).getId();
-		String  teaName = ntlist.get(0).getUser().getRealName();
 	    List<NetTeacherStudioRelationInfo> ntsrlists = ntsrManager.listInfoByTeaId(teaId);
 	    String msg ="";
 		Map<String,Object> map = new HashMap<String,Object>();
@@ -151,12 +154,13 @@ public class NtStudioAction extends DispatchAction {
 				Map<String,Object> map_d= new HashMap<String,Object>();
 				Integer ntId = ntsrInfos.getTeaId();
 				List<NetTeacherStudent> ntslist = ntsManager.listByntId(ntId);
-				String ntName =ntslist.get(0).getNetTeacherInfo().getUser().getRealName();
-				map_d.put("ntName", ntName);
+				User user =  ntslist.get(0).getNetTeacherInfo().getUser();
+				map_d.put("ntName",user.getRealName());
+				map_d.put("ntPortrait", user.getPortrait());
 				map_d.put("freetrial", ntsManager.getByStuNum(teaId, -1));
 				map_d.put("free", ntsManager.getByStuNum(teaId, 2));
 				map_d.put("pay", ntsManager.getByStuNum(teaId, 1));
-				if(teaName.equals(ntName)){
+				if(teaId.equals(ntslist.get(0).getNetTeacherInfo().getId())){
 					list_d.add(0,map_d);
 				}else{
 					list_d.add(map_d);
@@ -244,19 +248,63 @@ public class NtStudioAction extends DispatchAction {
 		NetTeacherInfoManager ntManager = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
 		String studioCode =CommonTools.getFinalStr("studioCode",request);
 		Integer userId=CommonTools.getLoginUserId(request);
-		List<NetTeacherStudioInfo> ntStudiolist = ntStudioManager.listNTStudioBystudioCode(studioCode);
-		List<NetTeacherInfo> ntlist =ntManager.listntInfoByuserId(userId);
-		Integer teaId =ntlist.get(0).getId();
-		Integer  ntStudioId = ntStudiolist.get(0).getId();
-		Map<String,Object> map = new HashMap<String,Object>();
+		Integer roleId = CommonTools.getLoginRoleId(request);
 		String msg = "fail";
-		Integer flag =ntsrManager.addNTStudioRelation(ntStudioId, teaId, CurrentTime.getCurrentTime(), "");
-		if(flag > 0){
-			msg ="success";
+		Map<String,Object> map = new HashMap<String,Object>();
+		if(userId > 0 && roleId.equals(Constants.NET_TEA_ROLE_ID)){
+			List<NetTeacherStudioInfo> ntStudiolist = ntStudioManager.listNTStudioBystudioCode(studioCode);
+			if(ntStudiolist.size() > 0){
+				Integer  ntStudioId = ntStudiolist.get(0).getId();
+				List<NetTeacherInfo> ntlist =ntManager.listntInfoByuserId(userId);
+				if(ntlist.size() > 0){
+					Integer teaId =ntlist.get(0).getId();
+					if(ntsrManager.listInfoByTeaId(teaId).size() > 0){//已加入别的工作室
+						msg = "noAdd";
+					}else{
+						Integer flag =ntsrManager.addNTStudioRelation(ntStudioId, teaId, CurrentTime.getCurrentTime(), "");
+						if(flag > 0){
+							msg ="success";
+						}
+					}
+				}
+			}else{
+				msg = "noInfo";
+			}
 		}
 		map.put("msg", msg);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 		
+	}
+	
+	/**
+	 * 根据邀请码获取工作室信息（申请加入是获取信息 用）
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getNtStudioInfo(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		NetTeacherStudioManager ntsm = (NetTeacherStudioManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDIO);
+		NetTeacherStudioRelationManager ntsrm = (NetTeacherStudioRelationManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDIO_RELATION);
+		String studioCode = CommonTools.getFinalStr("studioCode", request);
+		String msg = "noInfo";
+		Map<String, Object> map = new HashMap<String, Object>();
+		if(!studioCode.equals("")){
+			List<NetTeacherStudioInfo> ntsList = ntsm.listNTStudioBystudioCode(studioCode);
+			if(ntsList.size() >  0){
+				msg = "success";
+				NetTeacherStudioInfo nts = ntsList.get(0);
+				map.put("ownerInfo", nts.getNetTeacherInfo().getUser().getRealName());
+				map.put("studioName", nts.getStudioName());
+				map.put("teaNum", ntsrm.listInfoByNtStudioId(nts.getId()).size());
+			}
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
 	}
 }
