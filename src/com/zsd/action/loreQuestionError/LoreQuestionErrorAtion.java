@@ -85,6 +85,7 @@ public class LoreQuestionErrorAtion extends DispatchAction {
 		String msg = "暂无记录";
 		if(opt.equals("stu")){
 			addUserId = CommonTools.getLoginUserId(request);
+			checkStatus = -1;
 		}
 		Integer count = lqem.getCountByOptions(addUserId, 0,sDate, eDate, errorType,checkStatus);
 		if(count > 0){

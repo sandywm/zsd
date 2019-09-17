@@ -41,6 +41,7 @@ import com.zsd.module.LoreInfo;
 import com.zsd.module.LoreQuestion;
 import com.zsd.module.LoreQuestionSubInfo;
 import com.zsd.module.SendHwInfo;
+import com.zsd.module.StudentParentInfo;
 import com.zsd.module.StudyMapInfo;
 import com.zsd.module.TeaQueInfo;
 import com.zsd.module.User;
@@ -62,6 +63,7 @@ import com.zsd.service.HwTraceStudyLogManager;
 import com.zsd.service.LoreInfoManager;
 import com.zsd.service.LoreQuestionManager;
 import com.zsd.service.SendHwManager;
+import com.zsd.service.StudentParentInfoManager;
 import com.zsd.service.StudyMapManager;
 import com.zsd.service.TeaQueManager;
 import com.zsd.service.UserClassInfoManager;
@@ -2677,14 +2679,22 @@ public class HomeWorkAction extends DispatchAction {
 		// TODO Auto-generated method stub
 		HwStudyTjManager tjm = (HwStudyTjManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_TJ_INFO);
 		HwTraceStudyLogManager slm = (HwTraceStudyLogManager) AppFactory.instance(null).getApp(Constants.WEB_HW_TRACE_STUDY_LOG_INFO);
+		StudentParentInfoManager spm = (StudentParentInfoManager)AppFactory.instance(null).getApp(Constants.WEB_STUDENT_PARENT_INFO);
 		Integer opt = CommonTools.getFinalInteger("opt", request);//0:初始进来，1：上滑时
 		Integer option = CommonTools.getFinalInteger("option", request);//0：初始进来，1：做题时点击做完了按钮返回时
 		Integer showLsStatus = CommonTools.getFinalInteger("showLsStatus", request);//是否显示历史作业记录--0时显示,不等于0时不显示
 		Integer currUserId = CommonTools.getLoginUserId(request);
+		Integer roleId = CommonTools.getLoginRoleId(request);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "error";
 		String currDate = CurrentTime.getStringDate();
 		if(currUserId > 0){
+			if(roleId.equals(Constants.PATENT_ROLE_ID)){//家长时需要获取孩子的userId
+	 	    	StudentParentInfo sp = spm.getEntityByParId(currUserId);
+				if(sp != null){
+					currUserId = sp.getStu().getId();//孩子的Id
+				}
+	 	    }
 			msg = "success";
 			if(opt.equals(0) || option.equals(1)){//初始进来或者做题时点击做完了按钮返回时都需要获取今日作业
 				List<Object> list_d_1 = new ArrayList<Object>();
