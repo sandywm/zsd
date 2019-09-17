@@ -9,7 +9,6 @@ import com.zsd.dao.NetTeacherInfoDao;
 import com.zsd.dao.NetTeacherTxRecordDao;
 import com.zsd.exception.WEBException;
 import com.zsd.factory.DaoFactory;
-import com.zsd.module.NetTeacherInfo;
 import com.zsd.module.NetTeacherTxRecord;
 import com.zsd.service.NetTeacherTxRecordManager;
 import com.zsd.tools.CurrentTime;
@@ -79,6 +78,7 @@ public class NetTeacherTxRecordManagerImpl implements NetTeacherTxRecordManager 
 			HibernateUtil.closeSession();
 		}
 	}
+
 	@Override
 	public Integer addTX(Integer stuId, Integer teaId, Integer txFee,
 			String bankName, String bankNo, Integer operateUserId,String remark) throws WEBException {
@@ -100,5 +100,4 @@ public class NetTeacherTxRecordManagerImpl implements NetTeacherTxRecordManager 
 			HibernateUtil.closeSession();
 		}
 	}
-
 }
