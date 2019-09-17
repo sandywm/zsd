@@ -79,13 +79,13 @@ public class NtStudioAction extends DispatchAction {
 		NetTeacherStudioManager ntStudioManager = (NetTeacherStudioManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDIO);
 		NetTeacherStudioRelationManager ntsrManager = (NetTeacherStudioRelationManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDIO_RELATION);
 		NetTeacherStudentManager ntsManager = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT); 
-		Integer userId=2191;
+		Integer userId=CommonTools.getLoginUserId(request);
 		Map<String,Object> map = new HashMap<String,Object>();
 		List<Object> list_d = new ArrayList<Object>();
 		List<NetTeacherStudioInfo> ntStudiolist= ntStudioManager.listNTStudioByuId(userId);
 		String msg="";
 		if(ntStudiolist.isEmpty()){
-			msg="暂无记录";
+			msg="noInfo";
 		}else{
 			NetTeacherStudioInfo ntStudio = ntStudiolist.get(0);
 			map.put("id", ntStudio.getId());
