@@ -250,7 +250,8 @@ public class NtStudioAction extends DispatchAction {
 		Integer roleId = CommonTools.getLoginRoleId(request);
 		String msg = "fail";
 		Map<String,Object> map = new HashMap<String,Object>();
-		if(userId > 0 && roleId.equals(Constants.NET_TEA_ROLE_ID)){
+		if(userId > 0 && roleId.equals(Constants.NET_TEA_ROLE_ID) && !studioCode.equals("")){
+			studioCode = studioCode.toUpperCase();
 			List<NetTeacherStudioInfo> ntStudiolist = ntStudioManager.listNTStudioBystudioCode(studioCode);
 			if(ntStudiolist.size() > 0){
 				Integer  ntStudioId = ntStudiolist.get(0).getId();
@@ -298,6 +299,7 @@ public class NtStudioAction extends DispatchAction {
 		String msg = "noInfo";
 		Map<String, Object> map = new HashMap<String, Object>();
 		if(!studioCode.equals("")){
+			studioCode = studioCode.toUpperCase();
 			List<NetTeacherStudioInfo> ntsList = ntsm.listNTStudioBystudioCode(studioCode);
 			if(ntsList.size() >  0){
 				if(ntsList.get(0).getNetTeacherInfo().getUser().getId().equals(userId)){
