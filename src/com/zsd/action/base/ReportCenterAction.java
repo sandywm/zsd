@@ -74,12 +74,19 @@ public class ReportCenterAction  extends DispatchAction{
 		StudyAllTjInfoManager sAllTjInfoManager = (StudyAllTjInfoManager) AppFactory.instance(null).getApp(Constants.WEB_STUDY_ALL_TJ_INFO);
 		StudyStuTjInfoManager stuTjInfoManager = (StudyStuTjInfoManager) AppFactory.instance(null).getApp(Constants.WEB_STUDY_STU_TJ_INFO);
 		UserClassInfoManager ucManager = (UserClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
+		StudentParentInfoManager spm = (StudentParentInfoManager)AppFactory.instance(null).getApp(Constants.WEB_STUDENT_PARENT_INFO);
 		GradeSubjectManager gsManager = (GradeSubjectManager) AppFactory.instance(null).getApp(Constants.WEB_GRADE_SUBJECT_INFO);
 		Integer userId = CommonTools.getLoginUserId(request);
+		Integer roleId = CommonTools.getLoginRoleId(request);
 		Integer subId = CommonTools.getFinalInteger("subjectId",request);
 		String startTime = CommonTools.getFinalStr("startTime",request);
 		String endTime = CommonTools.getFinalStr("endTime",request);
-		
+		if(roleId.equals(Constants.PATENT_ROLE_ID)){//家长角色需要获取自己孩子的userId
+			StudentParentInfo sp = spm.getEntityByParId(userId);
+			if(sp != null){
+				userId = sp.getStu().getId();//孩子的Id
+			}
+		}
 		if(startTime.equals("")){//进入后不选择时间点查询
 			//表示是默认的当前日期前3天的记录(包含当前，所以-2)
 			startTime = CurrentTime.getFinalDate(CurrentTime.getStringDate(), -2);

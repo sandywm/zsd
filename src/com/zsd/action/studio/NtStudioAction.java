@@ -132,41 +132,47 @@ public class NtStudioAction extends DispatchAction {
 		NetTeacherStudioRelationManager ntsrManager = (NetTeacherStudioRelationManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDIO_RELATION);
 		NetTeacherStudentManager ntsManager = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT); 
 		Integer userId=CommonTools.getLoginUserId(request);
-		List<NetTeacherInfo> ntlist =ntManager.listntInfoByuserId(userId);
-		Integer teaId =ntlist.get(0).getId();
-	    List<NetTeacherStudioRelationInfo> ntsrlists = ntsrManager.listInfoByTeaId(teaId);
-	    String msg ="";
 		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "error";
 		List<Object> list_d = new ArrayList<Object>();
-	    if(ntsrlists.isEmpty()){
-	    	msg="noInfo";
-	    }else{
-	    	NetTeacherStudioRelationInfo ntsrInfo = ntsrlists.get(0);
-	    	map.put("id", ntsrInfo.getNetTeacherStudioInfo().getId());//工作室主键
-			map.put("studioName", ntsrInfo.getNetTeacherStudioInfo().getStudioName());//工作室名
-			map.put("studioCode", ntsrInfo.getNetTeacherStudioInfo().getStudioCode());//工作室邀请码
-			map.put("studioProfile", ntsrInfo.getNetTeacherStudioInfo().getStudioProfile());//工作室简介
-			
-			List<NetTeacherStudioRelationInfo> ntsrlist = ntsrManager.listInfoByNtStudioId(ntsrInfo.getNetTeacherStudioInfo().getId());
-			for (Iterator<NetTeacherStudioRelationInfo> itr = ntsrlist.iterator(); itr.hasNext();) {
-				NetTeacherStudioRelationInfo ntsrInfos = (NetTeacherStudioRelationInfo) itr.next();
-				Map<String,Object> map_d= new HashMap<String,Object>();
-				Integer ntId = ntsrInfos.getTeaId();
-				List<NetTeacherStudent> ntslist = ntsManager.listByntId(ntId);
-				User user =  ntslist.get(0).getNetTeacherInfo().getUser();
-				map_d.put("ntName",user.getRealName());
-				map_d.put("ntPortrait", user.getPortrait());
-				map_d.put("freetrial", ntsManager.getByStuNum(teaId, -1));
-				map_d.put("free", ntsManager.getByStuNum(teaId, 2));
-				map_d.put("pay", ntsManager.getByStuNum(teaId, 1));
-				if(teaId.equals(ntslist.get(0).getNetTeacherInfo().getId())){
-					list_d.add(0,map_d);
-				}else{
-					list_d.add(map_d);
-				}
-				
+		if(userId > 0){
+			List<NetTeacherInfo> ntlist = ntManager.listntInfoByuserId(userId);
+			if(ntlist.size() > 0){
+				Integer teaId =ntlist.get(0).getId();//当前导师的teaId
+				//获取我加入的工作室列表
+			    List<NetTeacherStudioRelationInfo> ntsrlists = ntsrManager.listInfoByTeaId(teaId);
+			    if(ntsrlists.isEmpty()){
+			    	msg = "noInfo";
+			    }else{
+			    	msg = "success";
+			    	NetTeacherStudioRelationInfo ntsrInfo = ntsrlists.get(0);
+			    	map.put("id", ntsrInfo.getNetTeacherStudioInfo().getId());//工作室主键
+					map.put("studioName", ntsrInfo.getNetTeacherStudioInfo().getStudioName());//工作室名
+					map.put("studioCode", ntsrInfo.getNetTeacherStudioInfo().getStudioCode());//工作室邀请码
+					map.put("studioProfile", ntsrInfo.getNetTeacherStudioInfo().getStudioProfile());//工作室简介
+					//获取工作室导师列表
+					List<NetTeacherStudioRelationInfo> ntsrlist = ntsrManager.listInfoByNtStudioId(ntsrInfo.getNetTeacherStudioInfo().getId());
+					for (Iterator<NetTeacherStudioRelationInfo> itr = ntsrlist.iterator(); itr.hasNext();) {
+						NetTeacherStudioRelationInfo ntsrInfos = (NetTeacherStudioRelationInfo) itr.next();
+						Map<String,Object> map_d= new HashMap<String,Object>();
+						Integer ntId = ntsrInfos.getTeaId();
+						List<NetTeacherInfo> ntlist_tmp = ntManager.listntInfoByTeaId(ntId);
+						User user =  ntlist_tmp.get(0).getUser();
+						map_d.put("ntName",user.getRealName());
+						map_d.put("ntPortrait", user.getPortrait());
+						map_d.put("freetrial", ntsManager.getByStuNum(ntId, -1));//免费试用绑定
+						map_d.put("free", ntsManager.getByStuNum(ntId, 2));//免费绑定
+						map_d.put("pay", ntsManager.getByStuNum(ntId, 1));//付费绑定
+						if(teaId.equals(ntlist_tmp.get(0).getId())){
+							list_d.add(0,map_d);
+						}else{
+							list_d.add(map_d);
+						}
+						
+					}
+			    }
 			}
-	    }
+		}
 		map.put("msg", msg);
 		map.put("ntStudioInfo", list_d);
 		CommonTools.getJsonPkg(map, response);
