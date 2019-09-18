@@ -294,16 +294,22 @@ public class NtStudioAction extends DispatchAction {
 		NetTeacherStudioManager ntsm = (NetTeacherStudioManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDIO);
 		NetTeacherStudioRelationManager ntsrm = (NetTeacherStudioRelationManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDIO_RELATION);
 		String studioCode = CommonTools.getFinalStr("studioCode", request);
+		Integer userId=CommonTools.getLoginUserId(request);
 		String msg = "noInfo";
 		Map<String, Object> map = new HashMap<String, Object>();
 		if(!studioCode.equals("")){
 			List<NetTeacherStudioInfo> ntsList = ntsm.listNTStudioBystudioCode(studioCode);
 			if(ntsList.size() >  0){
-				msg = "success";
-				NetTeacherStudioInfo nts = ntsList.get(0);
-				map.put("ownerInfo", nts.getNetTeacherInfo().getUser().getRealName());
-				map.put("studioName", nts.getStudioName());
-				map.put("teaNum", ntsrm.listInfoByNtStudioId(nts.getId()).size());
+				if(ntsList.get(0).getNetTeacherInfo().getUser().getId().equals(userId)){
+					msg = "noAddSelf";
+				}else{
+					msg = "success";
+					NetTeacherStudioInfo nts = ntsList.get(0);
+					map.put("ownerInfo", nts.getNetTeacherInfo().getUser().getRealName());
+					map.put("studioName", nts.getStudioName());
+					map.put("studioProfile", nts.getStudioProfile());
+					map.put("teaNum", ntsrm.listInfoByNtStudioId(nts.getId()).size());
+				}
 			}
 		}
 		map.put("result", msg);
