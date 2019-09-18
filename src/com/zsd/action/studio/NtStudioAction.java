@@ -77,6 +77,7 @@ public class NtStudioAction extends DispatchAction {
 	 */
 	public ActionForward getNTStudio(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		NetTeacherInfoManager ntManager = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
 		NetTeacherStudioManager ntStudioManager = (NetTeacherStudioManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDIO);
 		NetTeacherStudioRelationManager ntsrManager = (NetTeacherStudioRelationManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDIO_RELATION);
 		NetTeacherStudentManager ntsManager = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT); 
@@ -84,7 +85,7 @@ public class NtStudioAction extends DispatchAction {
 		Map<String,Object> map = new HashMap<String,Object>();
 		List<Object> list_d = new ArrayList<Object>();
 		List<NetTeacherStudioInfo> ntStudiolist= ntStudioManager.listNTStudioByuId(userId);
-		String msg="";
+		String msg="error";
 		if(ntStudiolist.isEmpty()){
 			msg="noInfo";
 		}else{
@@ -93,20 +94,21 @@ public class NtStudioAction extends DispatchAction {
 			map.put("studioName", ntStudio.getStudioName());
 			map.put("studioCode", ntStudio.getStudioCode());
 			map.put("studioProfile", ntStudio.getStudioProfile());
-			
 			List<NetTeacherStudioRelationInfo> ntsrlist = ntsrManager.listInfoByNtStudioId(ntStudio.getId());
 			for (Iterator<NetTeacherStudioRelationInfo> itr = ntsrlist.iterator(); itr.hasNext();) {
 				NetTeacherStudioRelationInfo ntsrInfo = (NetTeacherStudioRelationInfo) itr.next();
 				Map<String,Object> map_d= new HashMap<String,Object>();
-				Integer teaId = ntsrInfo.getTeaId();
-				List<NetTeacherStudent> ntslist = ntsManager.listByntId(teaId);
-				User user =  ntslist.get(0).getNetTeacherInfo().getUser();
-				map_d.put("ntName",user.getRealName());
-				map_d.put("ntPortrait", user.getPortrait());
-				map_d.put("freetrial", ntsManager.getByStuNum(teaId, -1));
-				map_d.put("free", ntsManager.getByStuNum(teaId, 2));
-				map_d.put("pay", ntsManager.getByStuNum(teaId, 1));
-				list_d.add(map_d);
+				Integer ntId = ntsrInfo.getTeaId();
+				List<NetTeacherInfo> ntlist_tmp = ntManager.listntInfoByTeaId(ntId);
+				if(ntlist_tmp.size() > 0){
+					User user =  ntlist_tmp.get(0).getUser();
+					map_d.put("ntName",user.getRealName());
+					map_d.put("ntPortrait", user.getPortrait());
+					map_d.put("freetrial", ntsManager.getByStuNum(ntId, -1));//免费试用绑定
+					map_d.put("free", ntsManager.getByStuNum(ntId, 2));//免费绑定
+					map_d.put("pay", ntsManager.getByStuNum(ntId, 1));//付费绑定
+					list_d.add(map_d);
+				}
 			}
 			map.put("ntStudioInfo", list_d);
 			msg="success";
