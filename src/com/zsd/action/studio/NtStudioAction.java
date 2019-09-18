@@ -157,18 +157,19 @@ public class NtStudioAction extends DispatchAction {
 						Map<String,Object> map_d= new HashMap<String,Object>();
 						Integer ntId = ntsrInfos.getTeaId();
 						List<NetTeacherInfo> ntlist_tmp = ntManager.listntInfoByTeaId(ntId);
-						User user =  ntlist_tmp.get(0).getUser();
-						map_d.put("ntName",user.getRealName());
-						map_d.put("ntPortrait", user.getPortrait());
-						map_d.put("freetrial", ntsManager.getByStuNum(ntId, -1));//免费试用绑定
-						map_d.put("free", ntsManager.getByStuNum(ntId, 2));//免费绑定
-						map_d.put("pay", ntsManager.getByStuNum(ntId, 1));//付费绑定
-						if(teaId.equals(ntlist_tmp.get(0).getId())){
-							list_d.add(0,map_d);
-						}else{
-							list_d.add(map_d);
+						if(ntlist_tmp.size() > 0){
+							User user =  ntlist_tmp.get(0).getUser();
+							map_d.put("ntName",user.getRealName());
+							map_d.put("ntPortrait", user.getPortrait());
+							map_d.put("freetrial", ntsManager.getByStuNum(ntId, -1));//免费试用绑定
+							map_d.put("free", ntsManager.getByStuNum(ntId, 2));//免费绑定
+							map_d.put("pay", ntsManager.getByStuNum(ntId, 1));//付费绑定
+							if(teaId.equals(ntlist_tmp.get(0).getId())){
+								list_d.add(0,map_d);
+							}else{
+								list_d.add(map_d);
+							}
 						}
-						
 					}
 			    }
 			}
