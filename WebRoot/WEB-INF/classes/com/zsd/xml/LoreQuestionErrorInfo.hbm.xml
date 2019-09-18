@@ -21,7 +21,7 @@
             </column>
         </many-to-one>
         <property name="errorType" type="java.lang.String">
-            <column name="error_type" length="30" not-null="true">
+            <column name="error_type" length="60" not-null="true">
                 <comment>错误类型（noPicError,contentError,anserError,otherError）</comment>
             </column>
         </property>

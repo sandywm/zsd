@@ -254,15 +254,19 @@ public class NtStudioAction extends DispatchAction {
 			List<NetTeacherStudioInfo> ntStudiolist = ntStudioManager.listNTStudioBystudioCode(studioCode);
 			if(ntStudiolist.size() > 0){
 				Integer  ntStudioId = ntStudiolist.get(0).getId();
-				List<NetTeacherInfo> ntlist =ntManager.listntInfoByuserId(userId);
-				if(ntlist.size() > 0){
-					Integer teaId =ntlist.get(0).getId();
-					if(ntsrManager.listInfoByTeaId(teaId).size() > 0){//已加入别的工作室
-						msg = "noAdd";
-					}else{
-						Integer flag =ntsrManager.addNTStudioRelation(ntStudioId, teaId, CurrentTime.getCurrentTime(), "");
-						if(flag > 0){
-							msg ="success";
+				if(ntStudiolist.get(0).getNetTeacherInfo().getUser().getId().equals(userId)){
+					msg = "noAddSelf";
+				}else{
+					List<NetTeacherInfo> ntlist =ntManager.listntInfoByuserId(userId);
+					if(ntlist.size() > 0){
+						Integer teaId =ntlist.get(0).getId();
+						if(ntsrManager.listInfoByTeaId(teaId).size() > 0){//已加入别的工作室
+							msg = "noAdd";
+						}else{
+							Integer flag =ntsrManager.addNTStudioRelation(ntStudioId, teaId, CurrentTime.getCurrentTime(), "");
+							if(flag > 0){
+								msg ="success";
+							}
 						}
 					}
 				}
