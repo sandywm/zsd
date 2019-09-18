@@ -582,12 +582,26 @@ public class StudyRecordAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		BuffetStudyDetailManager bsdManager = (BuffetStudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_STUDY_DETAIL_INFO);
 		NetTeacherStudentManager ntsManager = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT);
-		Integer stuId=CommonTools.getFinalInteger("stuId", request);//学生编号
+		StudentParentInfoManager spm = (StudentParentInfoManager)AppFactory.instance(null).getApp(Constants.WEB_STUDENT_PARENT_INFO);
+		Integer roleId = CommonTools.getLoginRoleId(request);
+		Integer stuId = 0;//学生编号
 		Integer userId=CommonTools.getLoginUserId(request);//老师用户编号
-		List<NetTeacherStudent> ntsList = ntsManager.listByntId(userId);
 		String subName = "all";
-		if(ntsList.size()>0){
-			subName = ntsList.get(0).getNetTeacherInfo().getSubject().getSubName();
+		if(roleId.equals(Constants.STU_ROLE_ID)){
+			stuId = CommonTools.getLoginUserId(request);
+			subName = Transcode.unescape_new1("subName", request);
+		}else if(roleId.equals(Constants.PATENT_ROLE_ID)){
+			StudentParentInfo sp = spm.getEntityByParId(userId);
+			if(sp != null){
+				stuId = sp.getStu().getId();//孩子的Id
+			}
+			subName = Transcode.unescape_new1("subName", request);
+		}else if(roleId.equals(Constants.NET_TEA_ROLE_ID)){
+			stuId=CommonTools.getFinalInteger("stuId", request);//学生编号
+			List<NetTeacherStudent> ntsList = ntsManager.listByntId(userId);
+			if(ntsList.size()>0){
+				subName = ntsList.get(0).getNetTeacherInfo().getSubject().getSubName();
+			}
 		}
 		
 		//当前学生所有学习巴菲特汇总学习情况
@@ -995,23 +1009,7 @@ public class StudyRecordAction extends DispatchAction {
 	public ActionForward sendBuffetDetiTj(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		BuffetStudyDetailManager bsdManager = (BuffetStudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_STUDY_DETAIL_INFO);
-		StudentParentInfoManager spm = (StudentParentInfoManager)AppFactory.instance(null).getApp(Constants.WEB_STUDENT_PARENT_INFO);
 		Integer bsId = CommonTools.getFinalInteger("bsId",request);
-		Integer roleId = CommonTools.getLoginRoleId(request);
-		Integer userId = CommonTools.getLoginUserId(request);
-		Integer subId = 0; 
-		if(roleId.equals(Constants.NET_TEA_ROLE_ID)){//网络导师
-			//获取当前网络导师辅导学科下指定学生的自助餐统计图
-		}else if(roleId.equals(Constants.STU_ROLE_ID)){//学生
-			subId = CommonTools.getFinalInteger("subId", request);
-		}else if(roleId.equals(Constants.PATENT_ROLE_ID)){//家长
-			if(roleId.equals(Constants.PATENT_ROLE_ID)){//家长角色需要获取自己孩子的userId
-				StudentParentInfo sp = spm.getEntityByParId(userId);
-				if(sp != null){
-					userId = sp.getStu().getId();//孩子的Id
-				}
-			}
-		}
 		Map<String,Object> map = new HashMap<String,Object>();
 		List<BuffetStudyDetailInfo> bsdlist = bsdManager.listBsdInfoByBsdId(bsId);
 		int total =bsdlist.size();
