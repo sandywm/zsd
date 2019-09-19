@@ -146,7 +146,6 @@ public class LoginAction extends DispatchAction {
 		String msg = "error";
 		//客户端信息
 		String clientInfo = CommonTools.getCilentInfo_new(request);
-		System.out.println("客户端信息---"+request.getHeader("User-agent"));
 		boolean uFlag= false;
 		if(account!=""&& password!=""){
 			if(clientInfo.equals("pc")){//电脑端需要匹配验证码

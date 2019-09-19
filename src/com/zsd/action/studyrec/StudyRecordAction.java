@@ -568,7 +568,7 @@ public class StudyRecordAction extends DispatchAction {
 		return null;
 	}
 	/**
-	 * 指定学生的知识点图表数据信息
+	 * 指定学生的知识点图表数据信息（导师、家长、学生用）
 	 * @author zdf
 	 * 2019-7-2 上午11:23:39
 	 * @param mapping
@@ -583,33 +583,51 @@ public class StudyRecordAction extends DispatchAction {
 		BuffetStudyDetailManager bsdManager = (BuffetStudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_STUDY_DETAIL_INFO);
 		NetTeacherStudentManager ntsManager = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT);
 		StudentParentInfoManager spm = (StudentParentInfoManager)AppFactory.instance(null).getApp(Constants.WEB_STUDENT_PARENT_INFO);
+		SubjectManager sm = (SubjectManager)AppFactory.instance(null).getApp(Constants.WEB_SUBJECT_INFO);
 		Integer roleId = CommonTools.getLoginRoleId(request);
 		Integer stuId = 0;//学生编号
 		Integer userId=CommonTools.getLoginUserId(request);//老师用户编号
-		String subName = "all";
+		Integer subId = 0;
+		String subName = "全部";
+		Map<String,Object> map = new HashMap<String,Object>();
 		if(roleId.equals(Constants.STU_ROLE_ID)){
 			stuId = CommonTools.getLoginUserId(request);
-			subName = Transcode.unescape_new1("subName", request);
+			subId = CommonTools.getFinalInteger("subId", request);
+			List<Subject> sbList =  sm.listEntityById(subId);
+			if(sbList.size() > 0){
+				subName = sbList.get(0).getSubName();
+			}
 		}else if(roleId.equals(Constants.PATENT_ROLE_ID)){
 			StudentParentInfo sp = spm.getEntityByParId(userId);
 			if(sp != null){
 				stuId = sp.getStu().getId();//孩子的Id
 			}
-			subName = Transcode.unescape_new1("subName", request);
+			subId = CommonTools.getFinalInteger("subId", request);
+			List<Subject> sbList =  sm.listEntityById(subId);
+			if(sbList.size() > 0){
+				subName = sbList.get(0).getSubName();
+			}
 		}else if(roleId.equals(Constants.NET_TEA_ROLE_ID)){
 			stuId=CommonTools.getFinalInteger("stuId", request);//学生编号
 			List<NetTeacherStudent> ntsList = ntsManager.listByntId(userId);
 			if(ntsList.size()>0){
-				subName = ntsList.get(0).getNetTeacherInfo().getSubject().getSubName();
+				subId = ntsList.get(0).getNetTeacherInfo().getSubject().getId();
+				List<Subject> sbList =  sm.listEntityById(subId);
+				if(sbList.size() > 0){
+					subName = sbList.get(0).getSubName();
+				}
 			}
 		}
-		
-		//当前学生所有学习巴菲特汇总学习情况
-		List<BuffetStudyDetailInfo> bsStuList = bsdManager.listInfoByStuId(stuId, subName, -1);
-		
-		List<BuffetStudyDetailInfoJson> bsdJson = new BuffetStudyDetailInfoJson().getBuffetStudyInfoJson(bsStuList);
-		Map<String,Object> map = new HashMap<String,Object>();
-		map.put("result", bsdJson);
+		if(stuId > 0 && roleId > 0){
+			//当前学生所有学习巴菲特汇总学习情况
+			List<BuffetStudyDetailInfo> bsStuList = bsdManager.listInfoByStuId(stuId, subId, -1);
+			
+			List<BuffetStudyDetailInfoJson> bsdJson = new BuffetStudyDetailInfoJson().getBuffetStudyInfoJson(bsStuList);
+			map.put("result", bsdJson);
+		}else{
+			map.put("result", "error");
+		}
+		map.put("subName", subName);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}

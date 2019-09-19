@@ -74,12 +74,12 @@ public interface BuffetStudyDetailManager {
 	 * @author zdf
 	 * 2019-7-2 下午04:45:46
 	 * @param stuId 学生编号
-	 * @param subName 学科名称
+	 * @param subId 学科编号
 	 * @param succFlag  成功状态
 	 * @return
 	 * @throws WEBException
 	 */
-	List<BuffetStudyDetailInfo> listInfoByStuId(Integer stuId,String subName, Integer succFlag)throws WEBException;
+	List<BuffetStudyDetailInfo> listInfoByStuId(Integer stuId,Integer subId, Integer succFlag)throws WEBException;
 	/**
 	 * 添加自助餐详情
 	 * @author zdf

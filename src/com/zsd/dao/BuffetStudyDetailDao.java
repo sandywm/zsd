@@ -51,11 +51,11 @@ public interface BuffetStudyDetailDao {
 	 * 2019-7-2 下午04:45:46
 	 * @param sess
 	 * @param stuId 学生编号
-	 * @param subName 学科名称
+	 * @param subId 学科编号
 	 * @param succFlag  成功状态
 	 * @return
 	 */
-	List<BuffetStudyDetailInfo> findInfoByStuId(Session sess,Integer stuId,String subName,Integer succFlag);
+	List<BuffetStudyDetailInfo> findInfoByStuId(Session sess,Integer stuId,Integer subId,Integer succFlag);
 	/**
 	 * 根据自助餐发送编号获取自助餐完成学习详情表列表 
 	 * @author zdf

@@ -43,10 +43,10 @@ public class BuffetStudyDetailDaoImpl implements BuffetStudyDetailDao{
 
 	@Override
 	public List<BuffetStudyDetailInfo> findInfoByStuId(Session sess,
-			Integer stuId, String subName, Integer succFlag) {
+			Integer stuId, Integer subId, Integer succFlag) {
 		String hql=" from BuffetStudyDetailInfo as bsd where bsd.buffetSendInfo.studyLogInfo.user.id="+stuId;
-		if(!subName.equals("all")){
-			hql += " and bsd.buffetSendInfo.studyLogInfo.subject.subName = '"+ subName +"'";
+		if(subId > 0){
+			hql += " and bsd.buffetSendInfo.studyLogInfo.subject.id = "+subId;
 		}
 		if(!succFlag.equals(-1)){
 			hql += " and bsd.result = "+succFlag;

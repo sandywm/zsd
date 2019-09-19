@@ -134,6 +134,7 @@ public class NtStudioAction extends DispatchAction {
 		NetTeacherStudioRelationManager ntsrManager = (NetTeacherStudioRelationManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDIO_RELATION);
 		NetTeacherStudentManager ntsManager = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT); 
 		Integer userId=CommonTools.getLoginUserId(request);
+		userId = CommonTools.getFinalInteger("userId", request);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "error";
 		List<Object> list_d = new ArrayList<Object>();

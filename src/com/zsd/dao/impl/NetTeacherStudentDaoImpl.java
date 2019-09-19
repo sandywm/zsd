@@ -166,7 +166,7 @@ public class NetTeacherStudentDaoImpl implements NetTeacherStudentDao {
 
 	@Override
 	public Integer getByStuNum(Session sess, Integer ntId, Integer bindFlag) {
-		String hql = "select count(nts.id) from NetTeacherStudent as nts where nts.netTeacherInfo.user.id="+ ntId;
+		String hql = "select count(nts.id) from NetTeacherStudent as nts where nts.netTeacherInfo.id="+ ntId;
 		 hql+=" and nts.clearStatus =0  and  nts.endDate>'"+CurrentTime.getStringDate()+"' ";
 		 if(bindFlag.equals(-1)|| bindFlag.equals(2)){//免费试用或者免费
 			hql+=" and nts.bindStatus="+bindFlag+" and nts.payStatus=0";
