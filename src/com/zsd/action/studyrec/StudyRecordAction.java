@@ -48,6 +48,7 @@ import com.zsd.service.StudentParentInfoManager;
 import com.zsd.service.StudyDetailManager;
 import com.zsd.service.StudyLogManager;
 import com.zsd.service.SubjectManager;
+import com.zsd.service.UserManager;
 import com.zsd.tools.CommonTools;
 import com.zsd.tools.CurrentTime;
 import com.zsd.util.Constants;
@@ -1106,6 +1107,7 @@ public class StudyRecordAction extends DispatchAction {
 	public ActionForward  getGuideList(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		StudyLogManager slManager = (StudyLogManager) AppFactory.instance(null).getApp(Constants.WEB_STUDY_LOG_INFO);
+		UserManager um = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
 		NetTeacherStudentManager ntsManager = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT);
 		Integer stuId=CommonTools.getFinalInteger("stuId", request);//学生编号
 		Integer guideSta=CommonTools.getFinalInteger("guideSta", request);//指导状态 0 全部, 1 未指导, 2 指导
@@ -1115,6 +1117,7 @@ public class StudyRecordAction extends DispatchAction {
 		Integer subId = 0;
 		Integer diffDay =0;
 		Integer allStudyLog =0;
+		String stuName = "";
 		Map<String,Object> map = new HashMap<String,Object>();
 		List<Object> list_d = new ArrayList<Object>();
 		List<NetTeacherStudent> ntsList = ntsManager.listByntId(ntId);
@@ -1122,17 +1125,20 @@ public class StudyRecordAction extends DispatchAction {
 			subId = ntsList.get(0).getNetTeacherInfo().getSubject().getId();
 			if(stuId.equals(0)){
 				stuId = ntsList.get(0).getUser().getId();
+				stuName = ntsList.get(0).getUser().getRealName();
+			}else{
+				stuName = um.listEntityById(stuId).get(0).getRealName();
 			}
 			if(sDate.equals("")){
 				//表示是默认的当前日期前3天的记录(包含当前，所以-2)
-				sDate = CurrentTime.getFinalDate(CurrentTime.getStringDate(), -3);
+				sDate = CurrentTime.getFinalDate(CurrentTime.getStringDate(), -2);
 				eDate = CurrentTime.getStringDate();
 			}else{
 				if(eDate.equals("")){
 					eDate = CurrentTime.getStringDate();
 				}
 			}
-		    diffDay = CurrentTime.compareDate(sDate,eDate);
+		    diffDay = CurrentTime.compareDate(sDate,eDate) + 1;
 			List<StudyLogInfo> slList =  slManager.listStuLogByStu(stuId, subId, guideSta, sDate, eDate);
 			allStudyLog += slList.size();
 			for (Iterator<StudyLogInfo> itr = slList.iterator(); itr.hasNext();) {
@@ -1148,9 +1154,11 @@ public class StudyRecordAction extends DispatchAction {
 		map.put("diffDay", diffDay);
 		map.put("allStudyLog", allStudyLog);
 		map.put("stuId", stuId);
+		map.put("stuName", stuName);
 		map.put("guideSta", guideSta);
 		map.put("sDate", sDate);
 		map.put("eDate", eDate);
+		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
 }
