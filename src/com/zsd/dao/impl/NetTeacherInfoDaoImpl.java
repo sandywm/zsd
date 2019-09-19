@@ -102,4 +102,16 @@ public class NetTeacherInfoDaoImpl implements NetTeacherInfoDao {
 		return CommonTools.longToInt(countObj);
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public boolean checkNtInfoByUserId(Session sess, Integer userId) {
+		String hql ="from  NetTeacherInfo as nt where nt.user.id="+userId+"  and nt.checkStatus=2";
+		List<NetTeacherInfo> ntlist= sess.createQuery(hql).list();
+		if(ntlist.isEmpty()){
+			return false;
+		}else{
+			return true;
+		}
+	}
+
 }

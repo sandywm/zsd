@@ -150,4 +150,13 @@ public interface NetTeacherInfoManager {
 	 * @throws WEBException
 	 */
 	Integer  getNtByOptionCount (String accName,String realName,Integer checkSta,String sDate,String eDate)throws WEBException;
+	/**
+	 * 根据用户编号判断网络导师是否审核通过
+	 * @author zdf
+	 * 2019-9-19 下午03:09:31
+	 * @param userId 用户编号
+	 * @return
+	 * @throws WEBException
+	 */
+	boolean checkNtInfoByUserId(Integer userId)throws WEBException;
 }

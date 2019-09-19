@@ -76,20 +76,20 @@ public interface NetTeacherStudentDao {
 	 * @author zong
 	 * 2019-5-23上午11:00:33
 	 * @param sess
-	 * @param ntId 用户编号
+	 * @param userId 用户编号
 	 * @return
 	 */
-	List<NetTeacherStudent> findNTByntId(Session sess,Integer ntId);
+	List<NetTeacherStudent> findNTByntId(Session sess,Integer userId);
 	/**
 	 * 根据网络导师用户编号,绑定状态获取绑定学生
 	 * @author zong
 	 * 2019-5-27上午09:41:30
 	 * @param sess
-	 * @param ntId 用户编号
+	 * @param userId 用户编号
 	 * @param bindSta 绑定状态(1付费)
 	 * @return
 	 */
-	List<NetTeacherStudent> findNTByntId(Session sess,Integer ntId,Integer bindSta,Integer pageNo,Integer pageSize);
+	List<NetTeacherStudent> findNTByntId(Session sess,Integer userId,Integer bindSta,Integer pageNo,Integer pageSize);
 	/**
 	 * 根据网络导师用户编号,绑定状态获取绑定学生
 	 * @author zdf
@@ -109,7 +109,7 @@ public interface NetTeacherStudentDao {
 	 * @param bindSta
 	 * @return
 	 */
-	Integer getNTByNTIdCount(Session sess,Integer ntId,Integer bindSta);
+	Integer getNTByNTIdCount(Session sess,Integer userId,Integer bindSta);
 	/**
 	 * 根据绑定状态,学生姓名查看网络导师学生绑定信息(我的班级)
 	 * @author zong

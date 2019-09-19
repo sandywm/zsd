@@ -21,7 +21,6 @@ import org.apache.struts.actions.DispatchAction;
 import com.zsd.action.base.Transcode;
 import com.zsd.factory.AppFactory;
 import com.zsd.module.NetTeacherInfo;
-import com.zsd.module.NetTeacherStudent;
 import com.zsd.module.NetTeacherStudioInfo;
 import com.zsd.module.NetTeacherStudioRelationInfo;
 import com.zsd.module.User;
@@ -81,7 +80,7 @@ public class NtStudioAction extends DispatchAction {
 		NetTeacherStudioManager ntStudioManager = (NetTeacherStudioManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDIO);
 		NetTeacherStudioRelationManager ntsrManager = (NetTeacherStudioRelationManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDIO_RELATION);
 		NetTeacherStudentManager ntsManager = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT); 
-		Integer userId=CommonTools.getLoginUserId(request);
+		Integer userId=CommonTools.getLoginUserId(request);;
 		Map<String,Object> map = new HashMap<String,Object>();
 		List<Object> list_d = new ArrayList<Object>();
 		List<NetTeacherStudioInfo> ntStudiolist= ntStudioManager.listNTStudioByuId(userId);

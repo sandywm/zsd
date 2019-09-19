@@ -99,6 +99,15 @@ public interface NetTeacherInfoDao {
 	 * @return
 	 */
 	Integer  getNtByOptionCount (Session sess,String accName,String realName,Integer checkSta,String sDate,String eDate);
+	/**
+	 * 根据用户编号判断网络导师是否审核通过
+	 * @author zdf
+	 * 2019-9-19 下午02:59:56
+	 * @param sess
+	 * @param userId 用户编号
+	 * @return
+	 */
+	boolean  checkNtInfoByUserId(Session sess,Integer userId);
 	
 
 }

@@ -766,4 +766,25 @@ public class NetTeacherAction extends DispatchAction {
 		return null;
 		
 	}
+	/**
+	 * 判断网络导师是否审核通过
+	 * @author zdf
+	 * 2019-9-19 下午03:18:16
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward checkNtVerify(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response)throws Exception {
+		NetTeacherInfoManager ntManager = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
+		Integer userId = CommonTools.getLoginUserId(request);
+		boolean flag = ntManager.checkNtInfoByUserId(userId);
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("result", flag);// false 没有通过  true 通过
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
 }

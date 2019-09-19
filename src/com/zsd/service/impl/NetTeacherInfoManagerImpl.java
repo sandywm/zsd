@@ -229,5 +229,19 @@ public class NetTeacherInfoManagerImpl implements NetTeacherInfoManager {
 		}
 	}
 
+	@Override
+	public boolean checkNtInfoByUserId(Integer userId) throws WEBException {
+		try {
+			ntDao = (NetTeacherInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_NET_TEACHER_INFO);
+			Session sess  = HibernateUtil.currentSession();
+			return ntDao.checkNtInfoByUserId(sess, userId);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("根据用户编号判断网络导师是否审核通过时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
 
 }

@@ -86,11 +86,11 @@ public class NetTeacherStudentManagerImpl implements NetTeacherStudentManager {
 	}
 
 	@Override
-	public List<NetTeacherStudent> listByntId(Integer ntId) throws WEBException {
+	public List<NetTeacherStudent> listByntId(Integer userId) throws WEBException {
 		try {
 			ntsDao = (NetTeacherStudentDao) DaoFactory.instance(null).getDao(Constants.DAO_NET_TEACHER_STUDENT);
 			Session sess  = HibernateUtil.currentSession();
-			return ntsDao.findNTByntId(sess, ntId);
+			return ntsDao.findNTByntId(sess, userId);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new WEBException("根据网络导师编号获取绑定学生信息时出现异常!");
@@ -100,12 +100,12 @@ public class NetTeacherStudentManagerImpl implements NetTeacherStudentManager {
 	}
 
 	@Override
-	public List<NetTeacherStudent> listNTByntId(Integer ntId, Integer bindSta,Integer pageNo,Integer pageSize)
+	public List<NetTeacherStudent> listNTByntId(Integer userId, Integer bindSta,Integer pageNo,Integer pageSize)
 			throws WEBException {
 		try {
 			ntsDao = (NetTeacherStudentDao) DaoFactory.instance(null).getDao(Constants.DAO_NET_TEACHER_STUDENT);
 			Session sess  = HibernateUtil.currentSession();
-			return ntsDao.findNTByntId(sess, ntId, bindSta, pageNo, pageSize);
+			return ntsDao.findNTByntId(sess, userId, bindSta, pageNo, pageSize);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new WEBException("根据网络导师编号,绑定状态获取绑定学生信息时出现异常!");
@@ -114,12 +114,12 @@ public class NetTeacherStudentManagerImpl implements NetTeacherStudentManager {
 		}
 	}
 	@Override
-	public Integer getNTByntIdCount(Integer ntId, Integer bindSta)
+	public Integer getNTByntIdCount(Integer userId, Integer bindSta)
 			throws WEBException {
 		try {
 			ntsDao = (NetTeacherStudentDao) DaoFactory.instance(null).getDao(Constants.DAO_NET_TEACHER_STUDENT);
 			Session sess  = HibernateUtil.currentSession();
-			return ntsDao.getNTByNTIdCount(sess, ntId, bindSta);
+			return ntsDao.getNTByNTIdCount(sess, userId, bindSta);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new WEBException("根据网络导师编号,绑定状态获取绑定学生记录数时出现异常!");

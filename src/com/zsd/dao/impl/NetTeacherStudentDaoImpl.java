@@ -48,23 +48,23 @@ public class NetTeacherStudentDaoImpl implements NetTeacherStudentDao {
 		return  sess.createQuery(hql).list();
 	}
 	@Override
-	public List<NetTeacherStudent> findNTByntId(Session sess, Integer ntId) {
-		String hql = "from NetTeacherStudent as nts where nts.netTeacherInfo.user.id="+ntId+" and nts.bindStatus!=0 and nts.endDate>'"+CurrentTime.getStringDate()+"' and nts.clearStatus=0";
+	public List<NetTeacherStudent> findNTByntId(Session sess, Integer userId) {
+		String hql = "from NetTeacherStudent as nts where nts.netTeacherInfo.user.id="+userId+" and nts.bindStatus!=0 and nts.endDate>'"+CurrentTime.getStringDate()+"' and nts.clearStatus=0";
 		return  sess.createQuery(hql).list();
 	}
 
 	@Override
-	public List<NetTeacherStudent> findNTByntId(Session sess, Integer ntId,Integer bindSta,Integer pageNo,Integer pageSize) {
+	public List<NetTeacherStudent> findNTByntId(Session sess, Integer userId,Integer bindSta,Integer pageNo,Integer pageSize) {
 		int offset = (pageNo - 1) * pageSize;
 		if (offset < 0) {
 			offset = 0;
 		}
-		String hql = "from NetTeacherStudent as nts where nts.netTeacherInfo.user.id="+ntId+" and nts.bindStatus="+bindSta+" and nts.clearStatus=0";
+		String hql = "from NetTeacherStudent as nts where nts.netTeacherInfo.user.id="+userId+" and nts.bindStatus="+bindSta+" and nts.clearStatus=0";
 		return  sess.createQuery(hql).setFirstResult(offset).setMaxResults(pageSize).list();
 	}
 	@Override
-	public Integer getNTByNTIdCount(Session sess, Integer ntId, Integer bindSta) {
-		String hql = "select count(nts.id) from NetTeacherStudent as nts where nts.netTeacherInfo.user.id="+ntId+" and nts.bindStatus="+bindSta+" and nts.clearStatus=0";
+	public Integer getNTByNTIdCount(Session sess, Integer userId, Integer bindSta) {
+		String hql = "select count(nts.id) from NetTeacherStudent as nts where nts.netTeacherInfo.user.id="+userId+" and nts.bindStatus="+bindSta+" and nts.clearStatus=0";
 		Object countObj = sess.createQuery(hql).uniqueResult();
 		return CommonTools.longToInt(countObj);
 	}
@@ -76,7 +76,7 @@ public class NetTeacherStudentDaoImpl implements NetTeacherStudentDao {
 		if (offset < 0) {
 			offset = 0;
 		}
-		String hql = "from NetTeacherStudent as nts where nts.netTeacherInfo.user.id="+ ntId;
+		String hql = "from NetTeacherStudent as nts where nts.netTeacherInfo.id="+ ntId;
 		 if(bindFlag.equals(1)){//正在使用
 			 hql+=" and nts.clearStatus =0  and  nts.endDate>'"+CurrentTime.getStringDate()+"' ";
 			 if(paySta==0){//免费试用
@@ -121,7 +121,7 @@ public class NetTeacherStudentDaoImpl implements NetTeacherStudentDao {
 
 	@Override
 	public Integer getNtsBystunameOrBindSta(Session sess,Integer ntId,Integer paySta,Integer bindFlag, String stuName) {
-		String hql = "select count(nts.id) from NetTeacherStudent as nts where nts.netTeacherInfo.user.id="+ ntId;
+		String hql = "select count(nts.id) from NetTeacherStudent as nts where nts.netTeacherInfo.id="+ ntId;
 		 if(bindFlag.equals(1)){//正在使用
 			 hql+=" and nts.clearStatus =0  and  nts.endDate>'"+CurrentTime.getStringDate()+"' ";
 			 if(paySta==0){//免费试用
@@ -203,7 +203,7 @@ public class NetTeacherStudentDaoImpl implements NetTeacherStudentDao {
 	@Override
 	public List<NetTeacherStudent> findNtsByNtId(Session sess, Integer ntId,
 			Integer bindSta) {
-		String hql = "from NetTeacherStudent as nts where nts.netTeacherInfo.user.id="+ntId+" and nts.bindStatus="+bindSta+" and nts.clearStatus=0";
+		String hql = "from NetTeacherStudent as nts where nts.netTeacherInfo.id="+ntId+" and nts.bindStatus="+bindSta+" and nts.clearStatus=0";
 		return  sess.createQuery(hql).list();
 	}
 }
