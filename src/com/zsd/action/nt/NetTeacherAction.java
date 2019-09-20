@@ -785,6 +785,6 @@ public class NetTeacherAction extends DispatchAction {
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("result", flag);// false 没有通过  true 通过
 		CommonTools.getJsonPkg(map, response);
-		return null;
+		return null; 
 	}
 }

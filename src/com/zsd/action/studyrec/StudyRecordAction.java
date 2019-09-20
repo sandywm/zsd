@@ -1161,4 +1161,27 @@ public class StudyRecordAction extends DispatchAction {
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
+	/**
+	 * 添加导师建议
+	 * @author zdf
+	 * 2019-9-20 上午08:11:10
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward  addTeaAssess(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		StudyLogManager slManager = (StudyLogManager) AppFactory.instance(null).getApp(Constants.WEB_STUDY_LOG_INFO);
+		Integer stuLogId=CommonTools.getFinalInteger("stuLogId", request);
+		String teaAssess=Transcode.unescape_new("teaAssess", request);
+	    boolean flag =  slManager.addTeaAssess(stuLogId, teaAssess);
+	    Map<String,Object> map = new HashMap<String,Object>();
+	    map.put("result", flag);// true 添加成功  
+		CommonTools.getJsonPkg(map, response);
+		return null; 
+		
+	}
 }
