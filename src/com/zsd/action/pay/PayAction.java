@@ -74,6 +74,7 @@ public class PayAction extends DispatchAction {
 		Integer fee = 0;//购买所需费用
 		String msg = "error";
 		String feeOpt = "sameFee";
+		Double zkRate = 0.0;
 		Map<String,Object> map = new HashMap<String,Object>();
 		if(selMonth.equals(0)){
 			selMonth = 1;
@@ -84,7 +85,7 @@ public class PayAction extends DispatchAction {
 			//获取当前学生能购买的的时长（最大到升学日期）不足一月按一月计算
 			List<UserClassInfo> uList = ucm.listInfoByOpt_1(stuId, roleId);
 			if(uList.size() > 0){
-				Double zkRate = CommonTools.getZkRate(selMonth);
+				zkRate = CommonTools.getZkRate(selMonth);
 				UserClassInfo uc = uList.get(0);
 				User user = uc.getUser();
 				ClassInfo c = uc.getClassInfo();
@@ -143,7 +144,7 @@ public class PayAction extends DispatchAction {
 								Integer fee_base_1 = sfList_1.get(0).getFee();//7年级费用
 								Double month_1 = Convert.convertInputNumber_2(diffDays / 30.0);
 								Double month_2 = Convert.convertInputNumber_2(remainDays / 30.0);
-								fee = (int)(fee_base * month_1 + fee_base_1 * month_2);
+								fee = (int)(fee_base * month_1 * zkRate + fee_base_1 * month_2 * zkRate);
 								map.put("fee_1", fee_base);//第一阶段费用标准
 								map.put("days_1", diffDays);//第一阶段购买时间
 								map.put("gradeName_1", "六年级");//第一阶段所在年级
@@ -159,7 +160,7 @@ public class PayAction extends DispatchAction {
 					if(sfList.size() > 0){
 						//可以购买--获取费用
 						msg = "success";
-						fee = sfList.get(0).getFee() * selMonth;
+						fee = (int)(sfList.get(0).getFee() * selMonth * zkRate);
 					}
 				}else if(currUserGradeNumber_curr.equals(8)){
 					if(currUserGradeNumber_new.equals(8)){//从8年级买到8年级
@@ -168,7 +169,7 @@ public class PayAction extends DispatchAction {
 						if(sfList.size() > 0){
 							//可以购买--获取费用
 							msg = "success";
-							fee = sfList.get(0).getFee() * selMonth;
+							fee = (int)(sfList.get(0).getFee() * selMonth * zkRate);
 						}
 					}else{//从8年级买到9年级
 						Integer diffDays = CurrentTime.compareDate(endDate_fee, (Integer.parseInt(endDate_fee.substring(0,4)) + 1)+"-09-01");//8年级天数
@@ -184,7 +185,7 @@ public class PayAction extends DispatchAction {
 								Integer fee_base_1 = sfList_1.get(0).getFee();//7年级费用
 								Double month_1 = Convert.convertInputNumber_2(diffDays / 30.0);
 								Double month_2 = Convert.convertInputNumber_2(remainDays / 30.0);
-								fee = (int)(fee_base * month_1 + fee_base_1 * month_2);
+								fee = (int)(fee_base * month_1 * zkRate + fee_base_1 * month_2 * zkRate);
 								map.put("fee_1", fee_base);
 								map.put("days_1", diffDays);
 								map.put("gradeName_1", "八年级");
@@ -201,7 +202,7 @@ public class PayAction extends DispatchAction {
 						if(sfList.size() > 0){
 							//可以购买--获取费用
 							msg = "success";
-							fee = sfList.get(0).getFee() * selMonth;
+							fee = (int)(sfList.get(0).getFee() * selMonth * zkRate);
 						}
 					}else{//从9年级买到高一
 						Integer diffDays = CurrentTime.compareDate(endDate_fee, (Integer.parseInt(endDate_fee.substring(0,4)) + 1)+"-09-01");//9年级天数
@@ -217,7 +218,7 @@ public class PayAction extends DispatchAction {
 								Integer fee_base_1 = sfList_1.get(0).getFee();//7年级费用
 								Double month_1 = Convert.convertInputNumber_2(diffDays / 30.0);
 								Double month_2 = Convert.convertInputNumber_2(remainDays / 30.0);
-								fee = (int)(fee_base * month_1 + fee_base_1 * month_2);
+								fee = (int)(fee_base * month_1 * zkRate + fee_base_1 * month_2 * zkRate);
 								map.put("fee_1", fee_base);
 								map.put("days_1", diffDays);
 								map.put("gradeName_1", "九年级");
@@ -233,7 +234,7 @@ public class PayAction extends DispatchAction {
 					if(sfList.size() > 0){
 						//可以购买--获取费用
 						msg = "success";
-						fee = sfList.get(0).getFee() * selMonth;
+						fee = (int)(sfList.get(0).getFee() * selMonth * zkRate);
 					}
 				}else if(currUserGradeNumber_curr.equals(11)){
 					if(currUserGradeNumber_new.equals(11)){//从高二买到高二
@@ -242,7 +243,7 @@ public class PayAction extends DispatchAction {
 						if(sfList.size() > 0){
 							//可以购买--获取费用
 							msg = "success";
-							fee = sfList.get(0).getFee() * selMonth;
+							fee = (int)(sfList.get(0).getFee() * selMonth * zkRate);
 						}
 					}else{//从高二买到高三
 						Integer diffDays = CurrentTime.compareDate(endDate_fee, (Integer.parseInt(endDate_fee.substring(0,4)) + 1)+"-09-01");//高二天数
@@ -258,7 +259,7 @@ public class PayAction extends DispatchAction {
 								Integer fee_base_1 = sfList_1.get(0).getFee();//7年级费用
 								Double month_1 = Convert.convertInputNumber_2(diffDays / 30.0);
 								Double month_2 = Convert.convertInputNumber_2(remainDays / 30.0);
-								fee = (int)(fee_base * month_1 + fee_base_1 * month_2);
+								fee = (int)(fee_base * month_1 * zkRate + fee_base_1 * month_2 * zkRate);
 								map.put("fee_1", fee_base);
 								map.put("days_1", diffDays);
 								map.put("gradeName_1", "高二");
@@ -274,7 +275,7 @@ public class PayAction extends DispatchAction {
 					if(sfList.size() > 0){
 						//可以购买--获取费用
 						msg = "success";
-						fee = sfList.get(0).getFee() * selMonth;
+						fee = (int)(sfList.get(0).getFee() * selMonth * zkRate);
 					}
 				}
 			}
@@ -282,6 +283,7 @@ public class PayAction extends DispatchAction {
 		if(msg.equals("success")){
 			map.put("feeOpt", feeOpt);//diffFee时在存在2种费用，才会存在fee_1,days_1,gradeName_1和2
 			map.put("fee", fee);//购买会员总费用
+			map.put("zkRate", zkRate * 100 + "%");
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
@@ -303,14 +305,20 @@ public class PayAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
 		SysFeeManager sfm = (SysFeeManager) AppFactory.instance(null).getApp(Constants.WEB_SYS_FEE_INFO);
-		SchoolManager sm = (SchoolManager) AppFactory.instance(null).getApp(Constants.WEB_SCHOOL_INFO);
 		UserClassInfoManager ucm = (UserClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
 		Integer stuId = CommonTools.getLoginUserId(request);
 		Integer roleId  = CommonTools.getLoginRoleId(request);
 		Integer selMonth = CommonTools.getFinalInteger("selMonth", request);//默认进来为一个月
 		Integer feeType = 1;//费用类型(1:导师费,2:会员费)
 		Integer fee = 0;//购买所需费用
+		String buyDate = "";//获取指定购买月份后的日期
+		String currDate = CurrentTime.getStringDate();
+		Integer currUserGradeNumber_curr = 0;//当前所在年级
+		Integer currUserGradeNumber_new = 0;//选取购买月份后所在年级
+		String gradeName_curr = "";
+		String gradeName_new = "";
 		String msg = "error";
+		Double zkRate = 0.0;
 		Map<String,Object> map = new HashMap<String,Object>();
 		if(selMonth.equals(0)){
 			selMonth = 1;
@@ -321,25 +329,23 @@ public class PayAction extends DispatchAction {
 			//获取当前学生能购买的的时长（最大到升学日期）不足一月按一月计算
 			List<UserClassInfo> uList = ucm.listInfoByOpt_1(stuId, roleId);
 			if(uList.size() > 0){
-				Double zkRate = CommonTools.getZkRate(selMonth);
+				zkRate = CommonTools.getZkRate(selMonth);
 				UserClassInfo uc = uList.get(0);
-				User user = uc.getUser();
 				ClassInfo c = uc.getClassInfo();
 				Integer schoolType = c.getSchool().getSchoolType();//当前学生所处的学段
 				Integer yearSystem = c.getSchool().getYearSystem();//当前学生的学年制
 				String buildClassDate = c.getBuildeClassDate();
 				Integer buildClassYear = Integer.parseInt(buildClassDate.substring(0, 4));
 				String byDate = "";//毕业时间
-				String currDate = CurrentTime.getStringDate();
-				Integer currUserGradeNumber_curr = Convert.dateConvertGradeNumber(buildClassDate);//当前会员到期日所在的年级
-				String gradeName_curr = Convert.NunberConvertChinese(currUserGradeNumber_curr);
-				String buyDate = CurrentTime.getFinalDate(currDate, selMonth * 30);//购买导师服务费的日期
+				currUserGradeNumber_curr = Convert.dateConvertGradeNumber(buildClassDate);//当前会员到期日所在的年级
+				gradeName_curr = Convert.NunberConvertChinese(currUserGradeNumber_curr);
+				buyDate = CurrentTime.getFinalDate(currDate, selMonth * 30);//购买导师服务费的日期
 				//获取购买导师服务费的日期后所在的年级
-				Integer currUserGradeNumber_new = Convert.dateConvertGradeNumber(buyDate,buildClassDate);
+				currUserGradeNumber_new = Convert.dateConvertGradeNumber(buyDate,buildClassDate);
 				if(currUserGradeNumber_new > 12){
 					currUserGradeNumber_new = 12;
 				}
-				String gradeName_new = Convert.NunberConvertChinese(currUserGradeNumber_new);//购买会员后到期日所在的年级名称
+				gradeName_new = Convert.NunberConvertChinese(currUserGradeNumber_new);//购买会员后到期日所在的年级名称
 				map.put("gradeName_curr", gradeName_curr);//当前用户所在的年级
 				map.put("gradeName_new", gradeName_new);//购买导师服务费的日期后所在的年级名称
 				map.put("buyDate_end", buyDate);//购买导师到期日
@@ -366,7 +372,7 @@ public class PayAction extends DispatchAction {
 					if(sfList.size() > 0){
 						//可以购买--获取费用
 						msg = "success";
-						fee = sfList.get(0).getFee() * selMonth;
+						fee = (int)(sfList.get(0).getFee() * selMonth * zkRate);
 					}
 				}else{
 					//涉及升学，不能进行购买
@@ -374,6 +380,15 @@ public class PayAction extends DispatchAction {
 				}
 			}
 		}
+		map.put("result", msg);
+		if(msg.equals("success")){
+			map.put("gradeName_curr", gradeName_curr);//当前所在年级
+			map.put("gradeName_new", gradeName_new);//选取购买时长后所在的年级
+			map.put("buyDate", buyDate);//绑定截止日期
+			map.put("fee", fee);//费用
+			map.put("zkRate", zkRate * 100 + "%");
+		}
+		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
 }

@@ -571,41 +571,6 @@ public class StudyRecordAction extends DispatchAction {
 	}
 	
 	/**
-	 * 获取辅导学生自助餐数据统计
-	 * @author wm
-	 * @date 2019-9-19 下午05:41:42
-	 * @param mapping
-	 * @param form
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws Exception
-	 */
-	public ActionForward getStuBuffetData(ActionMapping mapping, ActionForm form,
-			HttpServletRequest request, HttpServletResponse response) throws Exception {
-		BuffetStudyDetailManager bsdm = (BuffetStudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_STUDY_DETAIL_INFO);
-		NetTeacherStudentManager ntsm = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT);
-		Integer userId = CommonTools.getLoginUserId(request);//老师用户编号
-		Map<String,Object> map = new HashMap<String,Object>();
-		if(userId > 0){
-			List<NetTeacherStudent> ntsList = ntsm.listByntId(userId);//正在绑定、没清除的学生列表
-			if(ntsList.size() > 0){
-				Integer subId = ntsList.get(0).getNetTeacherInfo().getSubject().getId();
-				for(NetTeacherStudent nts : ntsList){
-					Map<String,Object> map_d = new HashMap<String,Object>();
-					User stu = nts.getUser();
-					map_d.put("stuId", stu.getId());
-					map_d.put("stuName", stu.getRealName());
-					map_d.put("stuPortrait", stu.getPortrait());
-					//获取该学生的自助餐统计信息
-					List<BuffetStudyDetailInfo> bsStuList = bsdm.listInfoByStuId(stu.getId(), subId, -1);
-				}
-			}
-		}
-		return null;
-	}
-	
-	/**
 	 * 指定学生的知识点图表数据信息（导师、家长、学生用）
 	 * @author zdf
 	 * 2019-7-2 上午11:23:39
