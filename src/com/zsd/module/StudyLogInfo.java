@@ -28,6 +28,7 @@ public class StudyLogInfo implements java.io.Serializable {
 	private Integer taskNumber;
 	private Integer finalScore;
 	private Integer logType;
+	private Integer teaId;
 
 	// Constructors
 
@@ -59,7 +60,7 @@ public class StudyLogInfo implements java.io.Serializable {
 			Integer access, String addTime, Integer step, Integer stepComplete,
 			Integer currentGold, Integer guideStatus, Integer isFinish,
 			String sysAssess, String teaAssess, Integer taskNumber,
-			Integer finalScore, Integer logType) {
+			Integer finalScore, Integer logType,Integer teaId) {
 		this.subject = subject;
 		this.user = user;
 		this.loreInfo = loreInfo;
@@ -75,6 +76,7 @@ public class StudyLogInfo implements java.io.Serializable {
 		this.taskNumber = taskNumber;
 		this.finalScore = finalScore;
 		this.logType = logType;
+		this.teaId = teaId;
 	}
 
 	// Property accessors
@@ -205,6 +207,14 @@ public class StudyLogInfo implements java.io.Serializable {
 
 	public void setLogType(Integer logType) {
 		this.logType = logType;
+	}
+
+	public Integer getTeaId() {
+		return teaId;
+	}
+
+	public void setTeaId(Integer teaId) {
+		this.teaId = teaId;
 	}
 
 }

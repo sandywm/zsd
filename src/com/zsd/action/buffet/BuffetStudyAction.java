@@ -39,6 +39,7 @@ import com.zsd.service.BuffetSendInfoManager;
 import com.zsd.service.BuffetStudyDetailManager;
 import com.zsd.service.LoreInfoManager;
 import com.zsd.service.LoreQuestionManager;
+import com.zsd.service.NetTeacherInfoManager;
 import com.zsd.service.StudentParentInfoManager;
 import com.zsd.service.UserManager;
 import com.zsd.tools.CommonTools;
@@ -87,6 +88,7 @@ public class BuffetStudyAction extends DispatchAction {
 		// TODO Auto-generated method stub
 		BuffetSendInfoManager bsm = (BuffetSendInfoManager)AppFactory.instance(null).getApp(Constants.WEB_BUFFET_SEND_INFO);
 		StudentParentInfoManager spm = (StudentParentInfoManager)AppFactory.instance(null).getApp(Constants.WEB_STUDENT_PARENT_INFO);
+		NetTeacherInfoManager ntm = (NetTeacherInfoManager)AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
 		Integer userId = CommonTools.getLoginUserId(request);
 		Integer roleId = CommonTools.getLoginRoleId(request);
 		Integer subId = CommonTools.getFinalInteger("subId", request);
@@ -96,6 +98,7 @@ public class BuffetStudyAction extends DispatchAction {
 		String opt = CommonTools.getFinalStr("opt", request);//默认为正常滑动，其他的时候为做完题后返回
 		Integer pageNo = CommonTools.getFinalInteger("pageNo", request);//默认为1
 		Integer pageSize = CommonTools.getFinalInteger("pageSize", request);//默认为10
+		Integer teaId = 0;
 		if(pageSize <= 0){
 			pageSize = 10;
 		}
@@ -121,8 +124,10 @@ public class BuffetStudyAction extends DispatchAction {
 				if(sp != null){
 					userId = sp.getStu().getId();//孩子的Id
 				}
+			}else if(roleId.equals(Constants.NET_TEA_ROLE_ID)){//网络导师时
+				ntm.listntInfoByuserId(userId);
 			}
-			List<BuffetSendInfo> bsList = bsm.listPageInfoByOption(userId, subId, comStatus, sDate, eDate, pageNo, pageSize);
+			List<BuffetSendInfo> bsList = bsm.listPageInfoByOption(userId, subId, comStatus, teaId, sDate, eDate, pageNo, pageSize);
 //			Integer count = bsm.listBsInfoByOption(userId, subId, comStatus, sDate, eDate).size();
 			if(bsList.size() > 0){
 				msg = "success";

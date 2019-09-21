@@ -44,7 +44,7 @@ public class NetTeacherStudentDaoImpl implements NetTeacherStudentDao {
 
 	@Override
 	public List<NetTeacherStudent> findNTByStuId(Session sess, Integer stuId) {
-		String hql = "from NetTeacherStudent as nts where nts.user.id="+stuId+" and nts.clearStatus=0";
+		String hql = "from NetTeacherStudent as nts where nts.user.id="+stuId+" and nts.bindStatus!=0 and nts.endDate>'"+CurrentTime.getStringDate()+"'  and nts.clearStatus=0";
 		return  sess.createQuery(hql).list();
 	}
 	@Override
@@ -205,5 +205,22 @@ public class NetTeacherStudentDaoImpl implements NetTeacherStudentDao {
 			Integer bindSta) {
 		String hql = "from NetTeacherStudent as nts where nts.netTeacherInfo.id="+ntId+" and nts.bindStatus="+bindSta+" and nts.clearStatus=0";
 		return  sess.createQuery(hql).list();
+	}
+
+	@Override
+	public List<NetTeacherStudent> findBindStu(Session sess, Integer userId/*,Integer bindFlag*/) {
+		String hql = "from NetTeacherStudent as nts where nts.netTeacherInfo.user.id="+ userId;
+	/*	 if(bindFlag.equals(1)){//正在使用
+			 hql+=" and nts.clearStatus =0  and  nts.endDate>'"+CurrentTime.getStringDate()+"' ";
+			 hql+=" and ((nts.bindStatus=1) or (nts.bindStatus= -1) or (nts.bindStatus=2) )" ;
+			
+		 }else if(bindFlag==2){//取消绑定关系
+			 hql+=" (and nts.clearStatus =0  and  nts.endDate<'"+CurrentTime.getStringDate()+"'";
+			 hql+=" and ((nts.bindStatus=1) or (nts.bindStatus=-1) or (nts.bindStatus=2)))";
+			 hql+=" or ( and nts.clearStatus =0  and nts.bindStatus=0)";
+			 hql+=" or ( and  nts.clearStatus =1)";
+			
+		 }*/
+		return sess.createQuery(hql).list();
 	}
 }

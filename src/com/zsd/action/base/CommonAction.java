@@ -1105,16 +1105,22 @@ public class CommonAction extends DispatchAction {
 			map.put("msg","success");
 			Integer teaId=icList.get(0).getInviteId();	
 		    List<NetTeacherInfo> ntlist=ntManager.listntInfoByTeaId(teaId);
-		    map.put("realName", ntlist.get(0).getUser().getRealName());//导师姓名
-		    Integer schType = ntlist.get(0).getSchoolType();
-		    if(schType.equals(1)){
-		    	 map.put("schoolType","小学");
-		    }else if (schType.equals(2)){
-		    	 map.put("schoolType", "初中");
-		    }else if(schType.equals(3)){
-		    	 map.put("schoolType", "高中");
+		    if(ntlist.size() > 0){
+		    	if(ntlist.get(0).getCheckStatus().equals(2)){//审核通过
+		    		 map.put("realName", ntlist.get(0).getUser().getRealName());//导师姓名
+		 		    Integer schType = ntlist.get(0).getSchoolType();
+		 		    if(schType.equals(1)){
+		 		    	 map.put("schoolType","小学");
+		 		    }else if (schType.equals(2)){
+		 		    	 map.put("schoolType", "初中");
+		 		    }else if(schType.equals(3)){
+		 		    	 map.put("schoolType", "高中");
+		 		    }
+		 		    map.put("subName", ntlist.get(0).getSubject().getSubName());
+		    	}else{
+		    		map.put("msg", "noInfo");
+		    	}
 		    }
-		    map.put("subName", ntlist.get(0).getSubject().getSubName());
 		}
 		CommonTools.getJsonPkg(map, response);
 		return null;

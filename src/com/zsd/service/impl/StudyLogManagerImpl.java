@@ -40,7 +40,7 @@ public class StudyLogManagerImpl implements StudyLogManager{
 			tran = sess.beginTransaction();
 			StudyLogInfo sl = new StudyLogInfo(sDao.get(sess, subId), uDao.get(sess, userId), lDao.getEntityById(sess, loreId),
 					access, addTime, step, stepComplete,currentGold, 0, isFinish,
-					sysAssess, "", taskNumber,0, logType);
+					sysAssess, "", taskNumber,0, logType,0);
 			slDao.save(sess, sl);
 			tran.commit();
 			return sl.getId();
@@ -287,11 +287,11 @@ public class StudyLogManagerImpl implements StudyLogManager{
 	}
 
 	@Override
-	public List<StudyLogInfo> listStuLogByStu(Integer stuId,Integer subId,Integer guideSta,String sDate, String eDate) throws WEBException {
+	public List<StudyLogInfo> listStuLogByStu(Integer teaId,Integer stuId,Integer guideSta,String sDate, String eDate) throws WEBException {
 		try {
 			slDao = (StudyLogDao) DaoFactory.instance(null).getDao(Constants.DAO_STUDY_LOG_INFO);
 			Session sess = HibernateUtil.currentSession();
-			return slDao.findStuLogByStu(sess, stuId, subId, guideSta, sDate, eDate);
+			return slDao.findStuLogByStu(sess, teaId,stuId, guideSta, sDate, eDate);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new WEBException("根据学生编号,学科编号,指导状态,时间段获取指定学生跟踪指导记录时出现异常!");

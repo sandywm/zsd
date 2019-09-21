@@ -169,5 +169,5 @@ public interface StudyLogManager {
 	 * @return
 	 * @throws WEBException
 	 */
-	List<StudyLogInfo> listStuLogByStu(Integer stuId,Integer subId,Integer guideSta,String sDate, String eDate)throws WEBException;
+	List<StudyLogInfo> listStuLogByStu(Integer teaId,Integer stuId,Integer guideSta,String sDate, String eDate)throws WEBException;
 }

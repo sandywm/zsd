@@ -37,6 +37,7 @@ public interface BuffetSendInfoManager {
 	 * @param stuId 学生编号
 	 * @param subId  学科编号
 	 * @param isfinish 完成状态(0(全部),1(未完成),2(已完成))
+	 * @param teaId 网络导师编号(学生家长时为0，网络导师时为自己的teaId)
 	 * @param sDate 开始时间
 	 * @param eDate 结束时间
 	 * @param pageNo
@@ -44,7 +45,7 @@ public interface BuffetSendInfoManager {
 	 * @return
 	 * @throws WEBException
 	 */
-	List<BuffetSendInfo> listPageInfoByOption(Integer stuId,Integer subId, Integer isfinish, 
+	List<BuffetSendInfo> listPageInfoByOption(Integer stuId,Integer subId, Integer isfinish,Integer teaId, 
 			String sDate, String eDate,Integer pageNo,Integer pageSize)throws WEBException;
 	
 	/**

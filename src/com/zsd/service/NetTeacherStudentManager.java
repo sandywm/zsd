@@ -160,4 +160,14 @@ public interface NetTeacherStudentManager {
 	  * @throws WEBException
 	  */
 	 List<NetTeacherStudent> listNtsByNtId(Integer ntId,Integer bindSta) throws WEBException;
+	 /**
+	  * 根据网络导师用户编号获取绑定学生信息
+	  * @author zdf
+	  * 2019-9-20 下午05:42:45
+	  * @param userId 导师用户编号
+	  * @param bindFlag 绑定标识
+	  * @return
+	  * @throws WEBException
+	  */
+	 List<NetTeacherStudent> listBindStu(Integer userId/*,Integer bindFlag*/)throws WEBException;
 }

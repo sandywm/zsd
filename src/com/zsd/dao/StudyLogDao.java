@@ -106,5 +106,5 @@ public interface StudyLogDao {
 	 * @param eDate 结束时间
 	 * @return
 	 */
-	List<StudyLogInfo> findStuLogByStu(Session sess,Integer stuId,Integer subId,Integer guideSta,String sDate, String eDate);
+	List<StudyLogInfo> findStuLogByStu(Session sess,Integer teaId,Integer stuId,/*Integer subId,*/Integer guideSta,String sDate, String eDate);
 }

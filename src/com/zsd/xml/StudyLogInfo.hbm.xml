@@ -83,6 +83,11 @@
                 <comment>学习记录类型(1:自学,2:家庭作业)</comment>
             </column>
         </property>
+         <property name="teaId" type="java.lang.Integer">
+            <column name="teaId">
+                <comment> 导师编号</comment>
+            </column>
+        </property>
         <!--set name="studyTaskInfos" inverse="true">
             <key>
                 <column name="study_log_id" not-null="true">

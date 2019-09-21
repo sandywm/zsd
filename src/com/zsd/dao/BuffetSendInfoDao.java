@@ -85,13 +85,14 @@ public interface BuffetSendInfoDao {
 	 * @param stuId 学生编号
 	 * @param subId  学科编号
 	 * @param isfinish 完成状态-1(全部),1(完成),2(未完成))
+	 * @param teaId 网络导师编号(学生家长时为0，网络导师时为自己的teaId)
 	 * @param sDate 开始时间
 	 * @param eDate 结束时间
 	 * @param pageNo
 	 * @param pageSize
 	 * @return
 	 */
-	List<BuffetSendInfo> findPageInfoByOption(Session sess, Integer stuId,Integer subId, Integer isfinish, 
+	List<BuffetSendInfo> findPageInfoByOption(Session sess, Integer stuId,Integer subId, Integer isfinish, Integer teaId,
 			String sDate, String eDate,Integer pageNo,Integer pageSize);
 	/**
 	 * 根据学习记录主键查询自助餐发送信息

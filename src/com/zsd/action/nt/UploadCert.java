@@ -25,7 +25,7 @@ import org.apache.struts.action.ActionMapping;
 import com.zsd.tools.CheckImage;
 import com.zsd.tools.CommonTools;
 import com.zsd.tools.CurrentTime;
-import com.zsd.tools.Upload;
+import com.zsd.tools.FileOpration;
 import com.zsd.util.WebUrl;
 
 /** 
@@ -59,15 +59,14 @@ public class UploadCert extends Action {
 		boolean upFlag = false;
 		String msg ="";
 		String fileUrl="";
-		Upload upload = new Upload();
 		while(iterator.hasNext()){
 			FileItem item = (FileItem)iterator.next();
 			// 处理文件上传
 			String filename = item.getName();// 获取名字
 			Integer lastIndex = filename.lastIndexOf(".");
 			String suffix = filename.substring(lastIndex+1);
-//			String filePre = filename.substring(0, lastIndex);
-			filename = CurrentTime.getRadomTime() + "." + suffix;
+			String fileNamePre = CurrentTime.getRadomTime();
+			filename = fileNamePre + "." + suffix;
 			CheckImage ci = new CheckImage();
 			//doc,docx,wps,xls,xlsx,txt,pdf,pptx,ppt,zip,rar,dwg,eml,jpg,png,bmp,gif,vsd,vsdx如果文件格式不在上述范围内请压缩成zip格式后上传
 			String checkFileSuffixInfo = ci.getUpFileStuffix(suffix);
@@ -90,14 +89,16 @@ public class UploadCert extends Action {
 				fileOutputStream.write(data);// 写入文件
 				fileOutputStream.close();// 关闭文件流
 				msg = "success";
-				fileUrl +=  WebUrl.NEW_PERSONAL_HONOR  + "\\" + filename ;
-				
-				smallUrl = WebUrl.NEW_PERSONAL_HONOR + upload.makeImage(userPath+"\\"+filename, 130, -1, upload.makeNewUrl(userPath, suffix, "_zoom"), suffix.substring(1))+"_zoom"+suffix;
+//				fileUrl +=  WebUrl.NEW_PERSONAL_HONOR  + "\\" + filename ;
+				//生成小图
+				String smallImgPath = userPath  + "/" + fileNamePre + "_small." + suffix;
+				FileOpration.makeImage(userPath  + "/" + filename, 0.3, smallImgPath, suffix.toUpperCase());
+				smallUrl = WebUrl.NEW_PERSONAL_HONOR + "\\" + fileNamePre + "_small." + suffix;
 			}
 		}
 		map.put("result", msg);
-		map.put("imgUrl",fileUrl);
-		map.put("simgUrl", smallUrl);
+//		map.put("imgUrl",fileUrl);
+		map.put("smallUrl", smallUrl);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}

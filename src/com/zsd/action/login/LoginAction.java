@@ -689,22 +689,27 @@ public class LoginAction extends DispatchAction {
 				String userName_stu = uList.get(0).getRealName();
 				Integer teaId=icList.get(0).getInviteId();	
 			    List<NetTeacherInfo> ntlist=ntManager.listntInfoByTeaId(teaId);
-			    Integer userId_tea = ntlist.get(0).getUser().getId();
-			    String userName_tea = ntlist.get(0).getUser().getRealName();
-			    Integer schType = ntlist.get(0).getSchoolType();
-			    Integer  subId=ntlist.get(0).getSubject().getId();
-			    boolean flag = ntsManager.isBindTeaBySubIdAndSchType(userId, subId, schType);
-			    if(flag){
-			    	map.put("msg","binded");
+			    if(ntlist.size() > 0){
+			    	NetTeacherInfo nt = ntlist.get(0);
+			    	Integer userId_tea = nt.getUser().getId();
+				    String userName_tea = nt.getUser().getRealName();
+				    Integer schType = nt.getSchoolType();
+				    Integer  subId=nt.getSubject().getId();
+				    boolean flag = ntsManager.isBindTeaBySubIdAndSchType(userId, subId, schType);
+				    if(flag){
+				    	map.put("msg","binded");
+				    }else{
+				    	Integer ntsId =  ntsManager.addNTS(userId, teaId, CurrentTime.getCurrentTime(), -1, CurrentTime.getFinalDateTime(7), 0, "", "", 0);//4 缃戠粶瀵煎笀瀛︾敓缁戝畾
+						if(ntsId>0){
+							String content_stu = userName_stu+"同学,你好，你已成功绑定"+userName_tea+"老师为你的网络导师，如遇到学习上有什么问题，请及时向导师提出，谢谢。[知识典]";
+							String content_tea = userName_tea+"导师，您好，"+userName_stu+"学生已成功绑定您为他的网络导师，请全程为学生做好答疑引导服务，谢谢。[知识典]";
+							em.addEmail(1, "绑定导师成功", content_stu, "sys", userId);
+							em.addEmail(1, "绑定导师", content_tea, "sys", userId_tea);
+							map.put("msg","success");
+						}
+				    }
 			    }else{
-			    	Integer ntsId =  ntsManager.addNTS(userId, teaId, CurrentTime.getCurrentTime(), -1, CurrentTime.getFinalDateTime(7), 0, "", "", 0);//4 缃戠粶瀵煎笀瀛︾敓缁戝畾
-					if(ntsId>0){
-						String content_stu = userName_stu+"同学,你好，你已成功绑定"+userName_tea+"老师为你的网络导师，如遇到学习上有什么问题，请及时向导师提出，谢谢。[知识典]";
-						String content_tea = userName_tea+"导师，您好，"+userName_stu+"学生已成功绑定您为他的网络导师，请全程为学生做好答疑引导服务，谢谢。[知识典]";
-						em.addEmail(1, "绑定导师成功", content_stu, "sys", userId);
-						em.addEmail(1, "绑定导师", content_tea, "sys", userId_tea);
-						map.put("msg","success");
-					}
+			    	map.put("msg","noInfo");
 			    }
 			}
 		}

@@ -93,9 +93,9 @@ public class StudyLogDaoImpl implements StudyLogDao{
 	}
 
 	@Override
-	public List<StudyLogInfo> findStuLogByStu(Session sess,Integer stuId,Integer subId,Integer guideSta,String sDate, String eDate) {
+	public List<StudyLogInfo> findStuLogByStu(Session sess,Integer teaId,Integer stuId,/*Integer subId,*/Integer guideSta,String sDate, String eDate) {
 	
-		 String hql = " from StudyLogInfo as sl where sl.subject.id="+subId;
+		 String hql = " from StudyLogInfo as sl where sl.teaId="+teaId;
 		
 		   if(!stuId.equals(0)){
 			   hql +=" and sl.user.id = "+stuId;

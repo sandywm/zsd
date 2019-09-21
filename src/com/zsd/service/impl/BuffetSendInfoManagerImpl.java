@@ -53,13 +53,13 @@ public class BuffetSendInfoManagerImpl implements BuffetSendInfoManager {
 
 	@Override
 	public List<BuffetSendInfo> listPageInfoByOption(Integer stuId,
-			Integer subId, Integer isfinish, String sDate, String eDate,
+			Integer subId, Integer isfinish, Integer teaId, String sDate, String eDate,
 			Integer pageNo, Integer pageSize) throws WEBException {
 		// TODO Auto-generated method stub
 		try {
 			bsDao = (BuffetSendInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_BUFFET_SEND_INFO);
 			Session sess = HibernateUtil.currentSession();
-			return bsDao.findPageInfoByOption(sess, stuId, subId, isfinish, sDate, eDate, pageNo, pageSize);
+			return bsDao.findPageInfoByOption(sess, stuId, subId, isfinish, teaId, sDate, eDate, pageNo, pageSize);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new WEBException("根据指定学生,学科,完成状态,时间段分页获取自助餐发布信息时出现异常!");

@@ -163,6 +163,16 @@ public interface NetTeacherStudentDao {
 	 * @return
 	 */
 	List<NetTeacherStudent> findValidInfoByOpt(Session sess,Integer stuId);
+	/**
+	 * 根据网络导师用户编号获取绑定学生信息
+	 * @author zdf
+	 * 2019-9-20 下午05:15:20
+	 * @param sess
+	 * @param userId  用户编号
+	 * @param bindFlag  绑定标识
+	 * @return
+	 */
+	List<NetTeacherStudent> findBindStu(Session  sess, Integer userId/*,Integer bindFlag*/);
 		
 		
 }

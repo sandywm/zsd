@@ -141,24 +141,30 @@ public class NetTeacherAction extends DispatchAction {
 		Integer id = CommonTools.getFinalInteger("ntcId", request);// 主键
 		String icardName = Transcode.unescape_new("icardName", request);//身份证姓名
 		String icardNum = Transcode.unescape_new("icardNum", request);//身份证号
-		String icardImgFrontBig = Transcode.unescape_new("icardImgFrontBig", request); //身份证正面大
-		String icardImgBackBig = Transcode.unescape_new("icardImgBackBig", request); //身份正背面大
+		String icardImgFrontBig = ""; //身份证正面大
+		String icardImgBackBig = ""; //身份正背面大
 		String icardImgFrontSmall = Transcode.unescape_new("icardImgFrontSmall", request); //身份证正面小
 		String icardImgBackSmall = Transcode.unescape_new("icardImgBackSmall", request); //身份正背面小
-		if(id>0){
-			boolean ntcFlag = ntcManager.updateNtcInfo(id, icardImgFrontBig, icardImgBackBig, icardImgFrontSmall, icardImgBackSmall, icardName, icardNum, "", "", "", "");
-			if(ntcFlag){
-				map.put("result", "success");
+		if(!icardImgFrontSmall.equals("") && !icardImgBackSmall.equals("")){
+			icardImgFrontBig = icardImgFrontSmall.replace("_small", "");
+			icardImgBackBig = icardImgBackSmall.replace("_small", "");
+			if(id>0){
+				boolean ntcFlag = ntcManager.updateNtcInfo(id, icardImgFrontBig, icardImgBackBig, icardImgFrontSmall, icardImgBackSmall, icardName, icardNum, "", "", "", "");
+				if(ntcFlag){
+					map.put("result", "success");
+				}else{
+					map.put("result", "fail");
+				}
 			}else{
-				map.put("result", "fail");
+				Integer ntcId = ntcManager.addNtcInfo(ntId, icardImgFrontBig, icardImgBackBig, icardImgFrontSmall, icardImgBackSmall, icardName, icardNum, "", "", "", "", 0, "", 0, "", "", "", "");
+				if(ntcId>0){
+					map.put("result", "success");
+				}else{
+					map.put("result", "fail");
+				}
 			}
 		}else{
-			Integer ntcId = ntcManager.addNtcInfo(ntId, icardImgFrontBig, icardImgBackBig, icardImgFrontSmall, icardImgBackSmall, icardName, icardNum, "", "", "", "", 0, "", 0, "", "", "", "");
-			if(ntcId>0){
-				map.put("result", "success");
-			}else{
-				map.put("result", "fail");
-			}
+			map.put("result", "error");
 		}
 		CommonTools.getJsonPkg(map, response);
 		return null;
@@ -184,22 +190,27 @@ public class NetTeacherAction extends DispatchAction {
 		List<NetTeacherInfo> ntList = ntManager.listntInfoByuserId(userId);
 		Integer ntId = ntList.get(0).getId();
 		Integer id = CommonTools.getFinalInteger("ntcId", request);// 主键
-		String xlzImgBig = Transcode.unescape_new("xlzImgBig", request); //学历证大
+		String xlzImgBig = ""; //学历证大
 		String xlzImgSmall = Transcode.unescape_new("xlzImgSmall", request); //学历证小
-		if(id>0){
-			boolean   ntcFlag = ntcManager.updateNtcInfo(id, "", "", "", "", "", "", "", "", xlzImgBig, xlzImgSmall);
-			if(ntcFlag){
-				map.put("result", "success");
+		if(!xlzImgSmall.equals("")){
+			xlzImgBig = xlzImgSmall.replace("_small", "");
+			if(id>0){
+				boolean   ntcFlag = ntcManager.updateNtcInfo(id, "", "", "", "", "", "", "", "", xlzImgBig, xlzImgSmall);
+				if(ntcFlag){
+					map.put("result", "success");
+				}else{
+					map.put("result", "fail");
+				}
 			}else{
-				map.put("result", "fail");
+				Integer  ntcId = ntcManager.addNtcInfo(ntId, "", "", "", "", "", "", "", "", xlzImgBig, xlzImgSmall,0, "", 0, "", "", "", "");
+				if(ntcId>0){
+					map.put("result", "success");
+				}else{
+					map.put("result", "fail");
+				}	
 			}
 		}else{
-			Integer  ntcId = ntcManager.addNtcInfo(ntId, "", "", "", "", "", "", "", "", xlzImgBig, xlzImgSmall,0, "", 0, "", "", "", "");
-			if(ntcId>0){
-				map.put("result", "success");
-			}else{
-				map.put("result", "fail");
-			}	
+			map.put("result", "error");
 		}
 		CommonTools.getJsonPkg(map, response);
 		return null;
@@ -225,22 +236,27 @@ public class NetTeacherAction extends DispatchAction {
 		List<NetTeacherInfo> ntList = ntManager.listntInfoByuserId(userId);
 		Integer ntId = ntList.get(0).getId();
 		Integer id = CommonTools.getFinalInteger("ntcId", request);// 主键
-		String zgzImgBig = Transcode.unescape_new("zgzImgBig", request); //学历证大
+		String zgzImgBig = ""; //学历证大
 		String zgzImgSmall = Transcode.unescape_new("zgzImgSmall", request); //学历证小
-		if(id>0){
-			boolean   ntcFlag = ntcManager.updateNtcInfo(id, "", "", "", "", "", "", zgzImgBig, zgzImgSmall, "", "");
-			if(ntcFlag){
-				map.put("result", "success");
+		if(!zgzImgSmall.equals("")){
+			zgzImgBig = zgzImgSmall.replace("_small", "");
+			if(id>0){
+				boolean   ntcFlag = ntcManager.updateNtcInfo(id, "", "", "", "", "", "", zgzImgBig, zgzImgSmall, "", "");
+				if(ntcFlag){
+					map.put("result", "success");
+				}else{
+					map.put("result", "fail");
+				}
 			}else{
-				map.put("result", "fail");
+				Integer  ntcId = ntcManager.addNtcInfo(ntId, "", "", "", "", "", "",zgzImgBig, zgzImgSmall, "", "",0, "", 0, "", "", "", "");
+				if(ntcId>0){
+					map.put("result", "success");
+				}else{
+					map.put("result", "fail");
+				}	
 			}
 		}else{
-			Integer  ntcId = ntcManager.addNtcInfo(ntId, "", "", "", "", "", "",zgzImgBig, zgzImgSmall, "", "",0, "", 0, "", "", "", "");
-			if(ntcId>0){
-				map.put("result", "success");
-			}else{
-				map.put("result", "fail");
-			}	
+			map.put("result", "error");
 		}
 		CommonTools.getJsonPkg(map, response);
 		return null;
@@ -670,7 +686,7 @@ public class NetTeacherAction extends DispatchAction {
 		return null;
 	}
 	/**
-	 * 导师获取绑定的学生
+	 * 导师获取绑定的学生(我的学生)
 	 * @author zdf
 	 * 2019-9-16 上午10:30:37
 	 * @param mapping
@@ -781,9 +797,10 @@ public class NetTeacherAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response)throws Exception {
 		NetTeacherInfoManager ntManager = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
 		Integer userId = CommonTools.getLoginUserId(request);
-		boolean flag = ntManager.checkNtInfoByUserId(userId);
+		List<NetTeacherInfo> ntList = ntManager.listntInfoByuserId(userId);
+		Integer checkSta= ntList.get(0).getCheckStatus();
 		Map<String,Object> map = new HashMap<String,Object>();
-		map.put("result", flag);// false 没有通过  true 通过
+		map.put("checkSta", checkSta);// 0:未审核,1:审核不通过,2:审核通过
 		CommonTools.getJsonPkg(map, response);
 		return null; 
 	}

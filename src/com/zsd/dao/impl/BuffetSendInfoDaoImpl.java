@@ -60,7 +60,6 @@ public class BuffetSendInfoDaoImpl implements BuffetSendInfoDao {
 		return sess.createQuery(hql).list();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<BuffetSendInfo> findBsInfoById(Session sess, Integer id) {
 		String hql="from BuffetSendInfo as bs where bs.id ="+id;
@@ -69,7 +68,7 @@ public class BuffetSendInfoDaoImpl implements BuffetSendInfoDao {
 
 	@Override
 	public List<BuffetSendInfo> findPageInfoByOption(Session sess,
-			Integer stuId, Integer subId, Integer isfinish, String sDate,
+			Integer stuId, Integer subId, Integer isfinish, Integer teaId, String sDate,
 			String eDate, Integer pageNo, Integer pageSize) {
 		// TODO Auto-generated method stub
 		String hql = " from BuffetSendInfo as bs where bs.studyLogInfo.user.id ="+stuId;
@@ -78,6 +77,9 @@ public class BuffetSendInfoDaoImpl implements BuffetSendInfoDao {
 		}
 		if(!isfinish.equals(-1)){
 			hql+=" and bs.studyResult="+isfinish;
+		}
+		if(teaId > 0){//网络导师
+			hql += " and bs.studyLogInfo.teaId = "+teaId;
 		}
 		if (!sDate.equals("") && !eDate.equals("")){
 			hql += " and substring(bs.sendTime,1,10) >= '"+ sDate + "'";
