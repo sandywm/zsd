@@ -13,7 +13,9 @@ import java.net.URLConnection;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -827,6 +829,53 @@ public class CommonTools {
 			zkRate = 0.85;
 		}
 		return zkRate;
+	}
+	
+	/**
+	 * 获取用户账号登录状态
+	 * success:账号正常，loginOut：账号别处登录,sessionLose:超过3天未登陆,accountInvalid(账号无效)
+	 * @author wm
+	 * @date 2019-9-22 下午05:47:19
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	public static String checkUserLoginStatus(HttpServletRequest request) throws Exception{
+		//客户端信息
+		String clientInfo = CommonTools.getCilentInfo_new(request);
+		String result = "accountError";//用户账号状态--账号错误(默认)
+		if(!clientInfo.equals("pc")){
+			UserManager um = (UserManager)AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
+			Integer login_status_dataBase = -1;
+			Integer userId_local = CommonTools.getFinalInteger("userId", request);
+			Integer loginStatus_local = CommonTools.getFinalInteger("loginStatus", request);
+			String lastLoginDate_db = "";
+			String currDate = CurrentTime.getStringDate();
+			if(userId_local > 0 && loginStatus_local > 0){
+				List<User> uList = um.listEntityById(userId_local);
+				if(uList.size() > 0){
+					if(uList.get(0).getAccountStatus().equals(1)){
+						lastLoginDate_db = uList.get(0).getLastLoginDate().substring(0, 10);
+						Integer diffDays = CurrentTime.compareDate(lastLoginDate_db, currDate);
+						if(diffDays > 3){
+							result = "sessionLose";//3天无操作
+						}else{
+							login_status_dataBase = uList.get(0).getLoginStatus();
+							if(login_status_dataBase.equals(loginStatus_local)){
+								result = "success";//账号正常
+							}else{
+								result = "loginOut";//账号别处登录
+							}
+						}
+					}else{
+						result = "acountLock";//账号被锁定
+					}
+				}
+			}
+		}else{
+			result = "success";
+		}
+		return result;
 	}
 	
 	public static void main(String[] args) throws Exception, FileNotFoundException{

@@ -132,39 +132,44 @@ public class NetTeacherAction extends DispatchAction {
 	public ActionForward saveICard(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
-		NtCertificateInfoManager ntcManager = (NtCertificateInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_CERTIFICATE_INFO);
-		NetTeacherInfoManager ntManager = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
+		String checkLoginStatus = CommonTools.checkUserLoginStatus(request);
 		Map<String, String> map = new HashMap<String, String>();
-		Integer userId = CommonTools.getLoginUserId(request);
-		List<NetTeacherInfo> ntList = ntManager.listntInfoByuserId(userId);
-		Integer ntId = ntList.get(0).getId();
-		Integer id = CommonTools.getFinalInteger("ntcId", request);// 主键
-		String icardName = Transcode.unescape_new("icardName", request);//身份证姓名
-		String icardNum = Transcode.unescape_new("icardNum", request);//身份证号
-		String icardImgFrontBig = ""; //身份证正面大
-		String icardImgBackBig = ""; //身份正背面大
-		String icardImgFrontSmall = Transcode.unescape_new("icardImgFrontSmall", request); //身份证正面小
-		String icardImgBackSmall = Transcode.unescape_new("icardImgBackSmall", request); //身份正背面小
-		if(!icardImgFrontSmall.equals("") && !icardImgBackSmall.equals("")){
-			icardImgFrontBig = icardImgFrontSmall.replace("_small", "");
-			icardImgBackBig = icardImgBackSmall.replace("_small", "");
-			if(id>0){
-				boolean ntcFlag = ntcManager.updateNtcInfo(id, icardImgFrontBig, icardImgBackBig, icardImgFrontSmall, icardImgBackSmall, icardName, icardNum, "", "", "", "");
-				if(ntcFlag){
-					map.put("result", "success");
+		if(checkLoginStatus.equals("success")){
+			NtCertificateInfoManager ntcManager = (NtCertificateInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_CERTIFICATE_INFO);
+			NetTeacherInfoManager ntManager = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
+			Integer userId = CommonTools.getLoginUserId(request);
+			List<NetTeacherInfo> ntList = ntManager.listntInfoByuserId(userId);
+			Integer ntId = ntList.get(0).getId();
+			Integer id = CommonTools.getFinalInteger("ntcId", request);// 主键
+			String icardName = Transcode.unescape_new("icardName", request);//身份证姓名
+			String icardNum = Transcode.unescape_new("icardNum", request);//身份证号
+			String icardImgFrontBig = ""; //身份证正面大
+			String icardImgBackBig = ""; //身份正背面大
+			String icardImgFrontSmall = Transcode.unescape_new("icardImgFrontSmall", request); //身份证正面小
+			String icardImgBackSmall = Transcode.unescape_new("icardImgBackSmall", request); //身份正背面小
+			if(userId > 0 && !icardImgFrontSmall.equals("") && !icardImgBackSmall.equals("")){
+				icardImgFrontBig = icardImgFrontSmall.replace("_small", "");
+				icardImgBackBig = icardImgBackSmall.replace("_small", "");
+				if(id>0){
+					boolean ntcFlag = ntcManager.updateNtcInfo(id, icardImgFrontBig, icardImgBackBig, icardImgFrontSmall, icardImgBackSmall, icardName, icardNum, "", "", "", "");
+					if(ntcFlag){
+						map.put("result", "success");
+					}else{
+						map.put("result", "fail");
+					}
 				}else{
-					map.put("result", "fail");
+					Integer ntcId = ntcManager.addNtcInfo(ntId, icardImgFrontBig, icardImgBackBig, icardImgFrontSmall, icardImgBackSmall, icardName, icardNum, "", "", "", "", 0, "", 0, "", "", "", "");
+					if(ntcId>0){
+						map.put("result", "success");
+					}else{
+						map.put("result", "fail");
+					}
 				}
 			}else{
-				Integer ntcId = ntcManager.addNtcInfo(ntId, icardImgFrontBig, icardImgBackBig, icardImgFrontSmall, icardImgBackSmall, icardName, icardNum, "", "", "", "", 0, "", 0, "", "", "", "");
-				if(ntcId>0){
-					map.put("result", "success");
-				}else{
-					map.put("result", "fail");
-				}
+				map.put("result", "error");
 			}
 		}else{
-			map.put("result", "error");
+			map.put("result", checkLoginStatus);
 		}
 		CommonTools.getJsonPkg(map, response);
 		return null;
@@ -181,36 +186,40 @@ public class NetTeacherAction extends DispatchAction {
 	 * @throws Exception
 	 */
 	public ActionForward saveEduCert(ActionMapping mapping, ActionForm form,
-			HttpServletRequest request, HttpServletResponse response)
-	throws Exception {
-		NtCertificateInfoManager ntcManager = (NtCertificateInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_CERTIFICATE_INFO);
-		NetTeacherInfoManager ntManager = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
+			HttpServletRequest request, HttpServletResponse response)throws Exception {
+		String checkLoginStatus = CommonTools.checkUserLoginStatus(request);
 		Map<String, String> map = new HashMap<String, String>();
-		Integer userId = CommonTools.getLoginUserId(request);
-		List<NetTeacherInfo> ntList = ntManager.listntInfoByuserId(userId);
-		Integer ntId = ntList.get(0).getId();
-		Integer id = CommonTools.getFinalInteger("ntcId", request);// 主键
-		String xlzImgBig = ""; //学历证大
-		String xlzImgSmall = Transcode.unescape_new("xlzImgSmall", request); //学历证小
-		if(!xlzImgSmall.equals("")){
-			xlzImgBig = xlzImgSmall.replace("_small", "");
-			if(id>0){
-				boolean   ntcFlag = ntcManager.updateNtcInfo(id, "", "", "", "", "", "", "", "", xlzImgBig, xlzImgSmall);
-				if(ntcFlag){
-					map.put("result", "success");
+		if(checkLoginStatus.equals("success")){
+			NtCertificateInfoManager ntcManager = (NtCertificateInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_CERTIFICATE_INFO);
+			NetTeacherInfoManager ntManager = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
+			Integer userId = CommonTools.getLoginUserId(request);
+			List<NetTeacherInfo> ntList = ntManager.listntInfoByuserId(userId);
+			Integer ntId = ntList.get(0).getId();
+			Integer id = CommonTools.getFinalInteger("ntcId", request);// 主键
+			String xlzImgBig = ""; //学历证大
+			String xlzImgSmall = Transcode.unescape_new("xlzImgSmall", request); //学历证小
+			if(userId > 0 && !xlzImgSmall.equals("")){
+				xlzImgBig = xlzImgSmall.replace("_small", "");
+				if(id>0){
+					boolean   ntcFlag = ntcManager.updateNtcInfo(id, "", "", "", "", "", "", "", "", xlzImgBig, xlzImgSmall);
+					if(ntcFlag){
+						map.put("result", "success");
+					}else{
+						map.put("result", "fail");
+					}
 				}else{
-					map.put("result", "fail");
+					Integer  ntcId = ntcManager.addNtcInfo(ntId, "", "", "", "", "", "", "", "", xlzImgBig, xlzImgSmall,0, "", 0, "", "", "", "");
+					if(ntcId>0){
+						map.put("result", "success");
+					}else{
+						map.put("result", "fail");
+					}	
 				}
 			}else{
-				Integer  ntcId = ntcManager.addNtcInfo(ntId, "", "", "", "", "", "", "", "", xlzImgBig, xlzImgSmall,0, "", 0, "", "", "", "");
-				if(ntcId>0){
-					map.put("result", "success");
-				}else{
-					map.put("result", "fail");
-				}	
+				map.put("result", "error");
 			}
 		}else{
-			map.put("result", "error");
+			map.put("result", checkLoginStatus);
 		}
 		CommonTools.getJsonPkg(map, response);
 		return null;
@@ -227,36 +236,40 @@ public class NetTeacherAction extends DispatchAction {
 	 * @throws Exception
 	 */
 	public ActionForward saveNtCert(ActionMapping mapping, ActionForm form,
-			HttpServletRequest request, HttpServletResponse response)
-	throws Exception {
-		NtCertificateInfoManager ntcManager = (NtCertificateInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_CERTIFICATE_INFO);
-		NetTeacherInfoManager ntManager = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
+			HttpServletRequest request, HttpServletResponse response)throws Exception {
+		String checkLoginStatus = CommonTools.checkUserLoginStatus(request);
 		Map<String, String> map = new HashMap<String, String>();
-		Integer userId = CommonTools.getLoginUserId(request);
-		List<NetTeacherInfo> ntList = ntManager.listntInfoByuserId(userId);
-		Integer ntId = ntList.get(0).getId();
-		Integer id = CommonTools.getFinalInteger("ntcId", request);// 主键
-		String zgzImgBig = ""; //学历证大
-		String zgzImgSmall = Transcode.unescape_new("zgzImgSmall", request); //学历证小
-		if(!zgzImgSmall.equals("")){
-			zgzImgBig = zgzImgSmall.replace("_small", "");
-			if(id>0){
-				boolean   ntcFlag = ntcManager.updateNtcInfo(id, "", "", "", "", "", "", zgzImgBig, zgzImgSmall, "", "");
-				if(ntcFlag){
-					map.put("result", "success");
+		if(checkLoginStatus.equals("success")){
+			NtCertificateInfoManager ntcManager = (NtCertificateInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_CERTIFICATE_INFO);
+			NetTeacherInfoManager ntManager = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
+			Integer userId = CommonTools.getLoginUserId(request);
+			List<NetTeacherInfo> ntList = ntManager.listntInfoByuserId(userId);
+			Integer ntId = ntList.get(0).getId();
+			Integer id = CommonTools.getFinalInteger("ntcId", request);// 主键
+			String zgzImgBig = ""; //学历证大
+			String zgzImgSmall = Transcode.unescape_new("zgzImgSmall", request); //学历证小
+			if(userId >0 && !zgzImgSmall.equals("")){
+				zgzImgBig = zgzImgSmall.replace("_small", "");
+				if(id>0){
+					boolean   ntcFlag = ntcManager.updateNtcInfo(id, "", "", "", "", "", "", zgzImgBig, zgzImgSmall, "", "");
+					if(ntcFlag){
+						map.put("result", "success");
+					}else{
+						map.put("result", "fail");
+					}
 				}else{
-					map.put("result", "fail");
+					Integer  ntcId = ntcManager.addNtcInfo(ntId, "", "", "", "", "", "",zgzImgBig, zgzImgSmall, "", "",0, "", 0, "", "", "", "");
+					if(ntcId>0){
+						map.put("result", "success");
+					}else{
+						map.put("result", "fail");
+					}	
 				}
 			}else{
-				Integer  ntcId = ntcManager.addNtcInfo(ntId, "", "", "", "", "", "",zgzImgBig, zgzImgSmall, "", "",0, "", 0, "", "", "", "");
-				if(ntcId>0){
-					map.put("result", "success");
-				}else{
-					map.put("result", "fail");
-				}	
+				map.put("result", "error");
 			}
 		}else{
-			map.put("result", "error");
+			map.put("result", checkLoginStatus);
 		}
 		CommonTools.getJsonPkg(map, response);
 		return null;

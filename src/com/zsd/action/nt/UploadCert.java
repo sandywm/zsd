@@ -57,7 +57,7 @@ public class UploadCert extends Action {
 		String userPath = WebUrl.PERSONAL_HONOR;
 		String smallUrl = "";
 		boolean upFlag = false;
-		String msg ="";
+		String msg = "error";
 		String fileUrl="";
 		while(iterator.hasNext()){
 			FileItem item = (FileItem)iterator.next();
@@ -97,8 +97,9 @@ public class UploadCert extends Action {
 			}
 		}
 		map.put("result", msg);
-//		map.put("imgUrl",fileUrl);
-		map.put("smallUrl", smallUrl);
+		if(msg.equals("success")){
+			map.put("smallUrl", smallUrl);
+		}
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
