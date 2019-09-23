@@ -2687,81 +2687,87 @@ public class HomeWorkAction extends DispatchAction {
 		Integer roleId = CommonTools.getLoginRoleId(request);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "error";
+		Integer loginStatus_local = CommonTools.getFinalInteger("loginStatus", request);
+		String checkLoginStatus = CommonTools.checkUserLoginStatus(request,currUserId,loginStatus_local);
 		String currDate = CurrentTime.getStringDate();
-		if(currUserId > 0){
-			if(roleId.equals(Constants.PATENT_ROLE_ID)){//家长时需要获取孩子的userId
-	 	    	StudentParentInfo sp = spm.getEntityByParId(currUserId);
-				if(sp != null){
-					currUserId = sp.getStu().getId();//孩子的Id
-				}
-	 	    }
-			msg = "success";
-			if(opt.equals(0) || option.equals(1)){//初始进来或者做题时点击做完了按钮返回时都需要获取今日作业
-				List<Object> list_d_1 = new ArrayList<Object>();
-				//step1:获取今日作业
-				List<HwStudyTjInfo> tjList_1 = tjm.listInfoByOpt_1(0, 0, currUserId, -1, currDate, currDate, false, 0, 0);
-				if(tjList_1.size() > 0){
-					for(HwStudyTjInfo tj : tjList_1){
-						Map<String,Object> map_d = new HashMap<String,Object>();
-						SendHwInfo hw = tj.getSendHwInfo();
-						map_d.put("tjId", tj.getId());
-						map_d.put("loreName", hw.getLoreInfo().getLoreName());
-						map_d.put("subName", hw.getSubject().getSubName());
-						map_d.put("teaName", hw.getUser().getRealName());
-						map_d.put("comStatus", tj.getComStatus());//作业完成状态0-未完成，1-按时完成，2-补做完成
-						Integer hwType = hw.getHwType();
-						map_d.put("hwType", hwType);//课前预习会进入听说读写页面，完成后再进入题库页面
-						map_d.put("hwTitle", hw.getHwTitle());
-						if(tj.getComStatus().equals(0)){
-							//没完成就要检测该作业是否已经开始溯源
-							if(slm.getEntityByTjId(tj.getId()) != null){//表示已有溯源记录
-								map_d.put("traceFlag", true);
-							}
-						}
-						list_d_1.add(map_d);
+		if(checkLoginStatus.equals("success")){
+			if(currUserId > 0){
+				if(roleId.equals(Constants.PATENT_ROLE_ID)){//家长时需要获取孩子的userId
+		 	    	StudentParentInfo sp = spm.getEntityByParId(currUserId);
+					if(sp != null){
+						currUserId = sp.getStu().getId();//孩子的Id
 					}
-				}
-				map.put("currHwList", list_d_1);
-			}
-			if(showLsStatus.equals(0)){
-				Integer pageNo = CommonTools.getFinalInteger("pageNo", request);
-				Integer pageSize = CommonTools.getFinalInteger("pageSize", request);
-				if(pageSize.equals(0)){
-					pageSize = 10;
-				}
-				//step2:获取历史作业
-				List<Object> list_d_2 = new ArrayList<Object>();
-				if(option.equals(1)){
-					pageSize = pageNo * pageSize;
-					pageNo = 1;
-				}
-				List<HwStudyTjInfo> tjList_2 = tjm.listInfoByOpt_2(0, 0, currUserId, -1, pageNo, pageSize);
-				if(tjList_2.size() > 0){
-					for(HwStudyTjInfo tj : tjList_2){
-						Map<String,Object> map_d = new HashMap<String,Object>();
-						SendHwInfo hw = tj.getSendHwInfo();
-						map_d.put("tjId", tj.getId());
-						map_d.put("loreName", hw.getLoreInfo().getLoreName());
-						map_d.put("sendDate", hw.getSendDate().substring(0, 10));
-						map_d.put("endDate", hw.getEndDate());
-						map_d.put("comStatus", tj.getComStatus());//作业完成状态0-未完成，1-按时完成，2-补做完成
-						map_d.put("comDate", tj.getComDate().equals("") ?  "" : tj.getComDate().substring(0, 10));
-						map_d.put("subName", hw.getSubject().getSubName());
-						map_d.put("teaName", hw.getUser().getRealName());
-						Integer hwType = hw.getHwType();
-						map_d.put("hwType", hwType);//课前预习会进入听说读写页面，完成后再进入题库页面
-						map_d.put("hwTitle", hw.getHwTitle());
-						if(tj.getComStatus().equals(0)){
-							//没完成就要检测该作业是否已经开始溯源
-							if(slm.getEntityByTjId(tj.getId()) != null){//表示已有溯源记录
-								map_d.put("traceFlag", true);
+		 	    }
+				msg = "success";
+				if(opt.equals(0) || option.equals(1)){//初始进来或者做题时点击做完了按钮返回时都需要获取今日作业
+					List<Object> list_d_1 = new ArrayList<Object>();
+					//step1:获取今日作业
+					List<HwStudyTjInfo> tjList_1 = tjm.listInfoByOpt_1(0, 0, currUserId, -1, currDate, currDate, false, 0, 0);
+					if(tjList_1.size() > 0){
+						for(HwStudyTjInfo tj : tjList_1){
+							Map<String,Object> map_d = new HashMap<String,Object>();
+							SendHwInfo hw = tj.getSendHwInfo();
+							map_d.put("tjId", tj.getId());
+							map_d.put("loreName", hw.getLoreInfo().getLoreName());
+							map_d.put("subName", hw.getSubject().getSubName());
+							map_d.put("teaName", hw.getUser().getRealName());
+							map_d.put("comStatus", tj.getComStatus());//作业完成状态0-未完成，1-按时完成，2-补做完成
+							Integer hwType = hw.getHwType();
+							map_d.put("hwType", hwType);//课前预习会进入听说读写页面，完成后再进入题库页面
+							map_d.put("hwTitle", hw.getHwTitle());
+							if(tj.getComStatus().equals(0)){
+								//没完成就要检测该作业是否已经开始溯源
+								if(slm.getEntityByTjId(tj.getId()) != null){//表示已有溯源记录
+									map_d.put("traceFlag", true);
+								}
 							}
+							list_d_1.add(map_d);
 						}
-						list_d_2.add(map_d);
 					}
+					map.put("currHwList", list_d_1);
 				}
-				map.put("preHwList", list_d_2);
+				if(showLsStatus.equals(0)){
+					Integer pageNo = CommonTools.getFinalInteger("pageNo", request);
+					Integer pageSize = CommonTools.getFinalInteger("pageSize", request);
+					if(pageSize.equals(0)){
+						pageSize = 10;
+					}
+					//step2:获取历史作业
+					List<Object> list_d_2 = new ArrayList<Object>();
+					if(option.equals(1)){
+						pageSize = pageNo * pageSize;
+						pageNo = 1;
+					}
+					List<HwStudyTjInfo> tjList_2 = tjm.listInfoByOpt_2(0, 0, currUserId, -1, pageNo, pageSize);
+					if(tjList_2.size() > 0){
+						for(HwStudyTjInfo tj : tjList_2){
+							Map<String,Object> map_d = new HashMap<String,Object>();
+							SendHwInfo hw = tj.getSendHwInfo();
+							map_d.put("tjId", tj.getId());
+							map_d.put("loreName", hw.getLoreInfo().getLoreName());
+							map_d.put("sendDate", hw.getSendDate().substring(0, 10));
+							map_d.put("endDate", hw.getEndDate());
+							map_d.put("comStatus", tj.getComStatus());//作业完成状态0-未完成，1-按时完成，2-补做完成
+							map_d.put("comDate", tj.getComDate().equals("") ?  "" : tj.getComDate().substring(0, 10));
+							map_d.put("subName", hw.getSubject().getSubName());
+							map_d.put("teaName", hw.getUser().getRealName());
+							Integer hwType = hw.getHwType();
+							map_d.put("hwType", hwType);//课前预习会进入听说读写页面，完成后再进入题库页面
+							map_d.put("hwTitle", hw.getHwTitle());
+							if(tj.getComStatus().equals(0)){
+								//没完成就要检测该作业是否已经开始溯源
+								if(slm.getEntityByTjId(tj.getId()) != null){//表示已有溯源记录
+									map_d.put("traceFlag", true);
+								}
+							}
+							list_d_2.add(map_d);
+						}
+					}
+					map.put("preHwList", list_d_2);
+				}
 			}
+		}else{
+			msg = checkLoginStatus;
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);

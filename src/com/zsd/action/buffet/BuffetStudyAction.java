@@ -99,59 +99,66 @@ public class BuffetStudyAction extends DispatchAction {
 		Integer pageNo = CommonTools.getFinalInteger("pageNo", request);//默认为1
 		Integer pageSize = CommonTools.getFinalInteger("pageSize", request);//默认为10
 		Integer teaId = 0;
-		if(pageSize <= 0){
-			pageSize = 10;
-		}
-		if(subId.equals(0)){
-			subId = 2;//默认为数学
-		}
-		if(sDate.equals("") && eDate.equals("")){
-			eDate = CurrentTime.getStringDate();
-			sDate = CurrentTime.getFinalDate(-2);
-		}
-		if(comStatus.equals(0)){
-			comStatus = -1;
-		}
+		Integer loginStatus_local = CommonTools.getFinalInteger("loginStatus", request);
+		String checkLoginStatus = CommonTools.checkUserLoginStatus(request,userId,loginStatus_local);
 		String msg = "error";
 		Map<String,Object> map = new HashMap<String,Object>();
-		if(userId > 0){
-			if(!opt.equals("")){//做完题后自动返回
-				pageSize = pageNo * pageSize;
-				pageNo = 1;
+		if(checkLoginStatus.equals("success")){
+			if(pageSize <= 0){
+				pageSize = 10;
 			}
-			if(roleId.equals(Constants.PATENT_ROLE_ID)){//家长角色需要获取自己孩子的userId
-				StudentParentInfo sp = spm.getEntityByParId(userId);
-				if(sp != null){
-					userId = sp.getStu().getId();//孩子的Id
+			if(subId.equals(0)){
+				subId = 2;//默认为数学
+			}
+			if(sDate.equals("") && eDate.equals("")){
+				eDate = CurrentTime.getStringDate();
+				sDate = CurrentTime.getFinalDate(-2);
+			}
+			if(comStatus.equals(0)){
+				comStatus = -1;
+			}
+			if(userId > 0){
+				if(!opt.equals("")){//做完题后自动返回
+					pageSize = pageNo * pageSize;
+					pageNo = 1;
 				}
-			}else if(roleId.equals(Constants.NET_TEA_ROLE_ID)){//网络导师时
-				ntm.listntInfoByuserId(userId);
-			}
-			List<BuffetSendInfo> bsList = bsm.listPageInfoByOption(userId, subId, comStatus, teaId, sDate, eDate, pageNo, pageSize);
-//			Integer count = bsm.listBsInfoByOption(userId, subId, comStatus, sDate, eDate).size();
-			if(bsList.size() > 0){
-				msg = "success";
-//				Integer countPage = PageConst.getPageCount(count, pageSize);
-//				pageNo = PageConst.getPageNo(pageNo, countPage);
-				List<Object> list_d = new ArrayList<Object>();
-				for(BuffetSendInfo bs : bsList){
-					Map<String,Object> map_d = new HashMap<String,Object>();
-					map_d.put("bsId", bs.getId());
-					map_d.put("subName", bs.getStudyLogInfo().getSubject().getSubName());
-					map_d.put("loreName", bs.getStudyLogInfo().getLoreInfo().getLoreName());
-					map_d.put("studyResult", bs.getStudyResult());//1:未完成，2:已完成
-					map_d.put("allNumber", bs.getSendNumber());
-					map_d.put("comNumber", bs.getComNumber());
-					map_d.put("sendUserInfo", bs.getUser().getRealName());
-					map_d.put("sendDate", bs.getSendTime().substring(0, 10));
-					list_d.add(map_d);
+				if(roleId.equals(Constants.PATENT_ROLE_ID)){//家长角色需要获取自己孩子的userId
+					StudentParentInfo sp = spm.getEntityByParId(userId);
+					if(sp != null){
+						userId = sp.getStu().getId();//孩子的Id
+					}
+				}else if(roleId.equals(Constants.NET_TEA_ROLE_ID)){//网络导师时
+					ntm.listntInfoByuserId(userId);
 				}
-				map.put("studyList", list_d);
-//				map.put("countPage", countPage);
-			}else{
-				msg = "noInfo";
+				List<BuffetSendInfo> bsList = bsm.listPageInfoByOption(userId, subId, comStatus, teaId, sDate, eDate, pageNo, pageSize);
+//				Integer count = bsm.listBsInfoByOption(userId, subId, comStatus, sDate, eDate).size();
+				if(bsList.size() > 0){
+					msg = "success";
+//					Integer countPage = PageConst.getPageCount(count, pageSize);
+//					pageNo = PageConst.getPageNo(pageNo, countPage);
+					List<Object> list_d = new ArrayList<Object>();
+					for(BuffetSendInfo bs : bsList){
+						Map<String,Object> map_d = new HashMap<String,Object>();
+						map_d.put("bsId", bs.getId());
+						map_d.put("subName", bs.getStudyLogInfo().getSubject().getSubName());
+						map_d.put("loreName", bs.getStudyLogInfo().getLoreInfo().getLoreName());
+						map_d.put("studyResult", bs.getStudyResult());//1:未完成，2:已完成
+						map_d.put("allNumber", bs.getSendNumber());
+						map_d.put("comNumber", bs.getComNumber());
+						map_d.put("sendUserInfo", bs.getUser().getRealName());
+						map_d.put("sendDate", bs.getSendTime().substring(0, 10));
+						list_d.add(map_d);
+					}
+					map.put("studyList", list_d);
+//					map.put("countPage", countPage);
+				}else{
+					msg = "noInfo";
+				}
 			}
+		}else{
+			msg = checkLoginStatus;
 		}
+		
 		map.put("result", msg);
 		map.put("sDate", sDate);
 		map.put("eDate", eDate);

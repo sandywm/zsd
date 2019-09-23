@@ -157,200 +157,206 @@ public class OnlineStudyAction extends DispatchAction {
 		StuSubjectEduManager ssem = (StuSubjectEduManager)  AppFactory.instance(null).getApp(Constants.WEB_STU_SUB_EDU_INFO);
 		Integer userId = CommonTools.getLoginUserId(request);
 		Integer roleId = CommonTools.getLoginRoleId(request);
+		Integer loginStatus_local = CommonTools.getFinalInteger("loginStatus", request);
+		String checkLoginStatus = CommonTools.checkUserLoginStatus(request,userId,loginStatus_local);
 		Map<String,Object> map = new HashMap<String,Object>();
-		Integer subId = CommonTools.getFinalInteger("subId", request);//学科编号
-		Integer ediId = CommonTools.getFinalInteger("ediId", request);//出版社编号
-		Integer gradeNumber = CommonTools.getFinalInteger("gradeNumber", request);//高三初三复习时传递过来的年级编号
-		String opt = "manu";//手动选择
-		List<Object> list_edu = new ArrayList<Object>();
 		String msg = "error";
-		Integer gsId_curr = 0;
-		if(roleId.equals(2)){
-			msg = "success";
-			String gradeName = "";
-			//获取该学生的班级,然后获取该班级所在年级
-			List<UserClassInfo> ucList = ucm.listInfoByOpt_1(userId, roleId);
-			ClassInfo c = null;
-			if(ucList.size() > 0){
-				UserClassInfo uc = ucList.get(0);
-				c = uc.getClassInfo();
-				User user = uc.getUser();
-				Integer remainDays = CurrentTime.compareDate(CurrentTime.getStringDate(), user.getEndDate());
-				Integer freeStatus = user.getFreeStatus();//0:收费,1:免费
-				List<Object> list_grade = new ArrayList<Object>();
-				Integer realGradeNumber = Convert.dateConvertGradeNumber(c.getBuildeClassDate());//当前学生的真实年级
-				if(realGradeNumber > 0){
-					if(realGradeNumber >= 12 || realGradeNumber.equals(9)){//初三或者高三的时候可以复习之前的
-						if(realGradeNumber > 12){
-							realGradeNumber = 12;
-						}
-						for(Integer i = 2 ; i >= 0 ; i--){
-							Map<String,Object> map_d = new HashMap<String,Object>();
-							map_d.put("gradeNumber", realGradeNumber - i);
-							map_d.put("gradeName", Convert.NunberConvertChinese(realGradeNumber - i));
-							if(gradeNumber.equals(0)){
-								if(i.equals(0)){
-									map_d.put("selFlag", true);
-								}else{
-									map_d.put("selFlag", false);
-								}
-							}else{
-								if(gradeNumber.equals(realGradeNumber - i)){
-									map_d.put("selFlag", true);
-								}else{
-									map_d.put("selFlag", false);
-								}
+		if(checkLoginStatus.equals("success")){
+			Integer subId = CommonTools.getFinalInteger("subId", request);//学科编号
+			Integer ediId = CommonTools.getFinalInteger("ediId", request);//出版社编号
+			Integer gradeNumber = CommonTools.getFinalInteger("gradeNumber", request);//高三初三复习时传递过来的年级编号
+			String opt = "manu";//手动选择
+			List<Object> list_edu = new ArrayList<Object>();
+			Integer gsId_curr = 0;
+			if(roleId.equals(2)){
+				msg = "success";
+				String gradeName = "";
+				//获取该学生的班级,然后获取该班级所在年级
+				List<UserClassInfo> ucList = ucm.listInfoByOpt_1(userId, roleId);
+				ClassInfo c = null;
+				if(ucList.size() > 0){
+					UserClassInfo uc = ucList.get(0);
+					c = uc.getClassInfo();
+					User user = uc.getUser();
+					Integer remainDays = CurrentTime.compareDate(CurrentTime.getStringDate(), user.getEndDate());
+					Integer freeStatus = user.getFreeStatus();//0:收费,1:免费
+					List<Object> list_grade = new ArrayList<Object>();
+					Integer realGradeNumber = Convert.dateConvertGradeNumber(c.getBuildeClassDate());//当前学生的真实年级
+					if(realGradeNumber > 0){
+						if(realGradeNumber >= 12 || realGradeNumber.equals(9)){//初三或者高三的时候可以复习之前的
+							if(realGradeNumber > 12){
+								realGradeNumber = 12;
 							}
+							for(Integer i = 2 ; i >= 0 ; i--){
+								Map<String,Object> map_d = new HashMap<String,Object>();
+								map_d.put("gradeNumber", realGradeNumber - i);
+								map_d.put("gradeName", Convert.NunberConvertChinese(realGradeNumber - i));
+								if(gradeNumber.equals(0)){
+									if(i.equals(0)){
+										map_d.put("selFlag", true);
+									}else{
+										map_d.put("selFlag", false);
+									}
+								}else{
+									if(gradeNumber.equals(realGradeNumber - i)){
+										map_d.put("selFlag", true);
+									}else{
+										map_d.put("selFlag", false);
+									}
+								}
+								list_grade.add(map_d);
+							}
+						}else{//其他年级时只有一组
+							Map<String,Object> map_d = new HashMap<String,Object>();
+							map_d.put("gradeNumber", realGradeNumber);
+							map_d.put("gradeNanme", Convert.NunberConvertChinese(realGradeNumber));
 							list_grade.add(map_d);
 						}
-					}else{//其他年级时只有一组
-						Map<String,Object> map_d = new HashMap<String,Object>();
-						map_d.put("gradeNumber", realGradeNumber);
-						map_d.put("gradeNanme", Convert.NunberConvertChinese(realGradeNumber));
-						list_grade.add(map_d);
 					}
-				}
-				map.put("gradeList", list_grade);
-				if(gradeNumber.equals(0)){//如果页面没传递，直接通过学生获取
-					gradeNumber = realGradeNumber;
-				}
-				if(gradeNumber > 0){
-					if(subId.equals(0)){
-						opt = "init";//初始加载
-						subId = 2;//默认为数学
+					map.put("gradeList", list_grade);
+					if(gradeNumber.equals(0)){//如果页面没传递，直接通过学生获取
+						gradeNumber = realGradeNumber;
 					}
-					gradeName = Convert.NunberConvertChinese(gradeNumber);
-					//获取当前年级对应的学科列表
-					List<GradeSubject>  gsList = gsm.listSpecInfoByGname(gradeName);
-					List<Object> list_sub = new ArrayList<Object>();
-					List<Object> list_edi = new ArrayList<Object>();
-					if(gsList.size() > 0){
-						for(Iterator<GradeSubject> it = gsList.iterator() ; it.hasNext();){
-							GradeSubject gs = it.next();
-							Subject sub = gs.getSubject();
-							Map<String,Object> map_d = new HashMap<String,Object>();
-							map_d.put("subId", sub.getId());
-							if(sub.getId().equals(subId)){//默认为数学
-								gsId_curr = gs.getId();
-								map_d.put("selFlag", true);
-							}else{
-								map_d.put("selFlag", false);
-							}
-							map_d.put("subName", sub.getSubName());
-							map_d.put("subImg", sub.getImgUrl());
-							list_sub.add(map_d);
+					if(gradeNumber > 0){
+						if(subId.equals(0)){
+							opt = "init";//初始加载
+							subId = 2;//默认为数学
 						}
-						map.put("subList", list_sub);
-						if(opt.equals("init")){//打开在线学习页面初始化加载时
-							//获取学生学科教材信息列表
-							List<StuSubjectEduInfo> sseList = ssem.listInfoByOpt(userId, subId);
-							if(sseList.size() > 0){
-								msg = "success";
-								for(StuSubjectEduInfo sse : sseList){
-									Education edu_study = sse.getEducation();
-									Integer ediId_study = edu_study.getEdition().getId();
-									if(ediId.equals(0)){
-										ediId = ediId_study;
-									}
-									List<Education> eduList = edum.listInfoByOpt(ediId, gsId_curr);//获取当前年级学科、出版社下的教材信息
-									if(eduList.size() > 0){
-										for(Integer i = 0 ; i < eduList.size() ; i++){
-											Education edu = eduList.get(i);
-											ssem.updateSSEById(sse.getId(), edu.getId());
-											Map<String,Object> map_d = new HashMap<String,Object>();
-											map_d.put("eduId", edu.getId());
-											Subject sub = edu.getGradeSubject().getSubject();
-											map_d.put("subName", sub.getSubName());
-											map_d.put("subImg", sub.getImgUrl());
-											map_d.put("eduVolume", edu.getEduVolume());
-											map_d.put("remainDays", remainDays);
-											map_d.put("studyDays", CurrentTime.compareDate(user.getSignDate().substring(0, 10), CurrentTime.getStringDate()));
-											map_d.put("freeStatus", freeStatus.equals(0) ? "免费试用/付费使用" : "免费使用");
-											if(freeStatus.equals(0)){
-												map_d.put("date_range", user.getSignDate().substring(0, 10) + "至" + user.getEndDate().substring(0, 10));
-											}else{
-												map_d.put("date_range", user.getSignDate() + "至[长期免费]");
-											}
-											list_edu.add(map_d);
-										}
-										map.put("studyList", list_edu);
-										break;
-									}else{
-										msg = "noInfo";
-									}
+						gradeName = Convert.NunberConvertChinese(gradeNumber);
+						//获取当前年级对应的学科列表
+						List<GradeSubject>  gsList = gsm.listSpecInfoByGname(gradeName);
+						List<Object> list_sub = new ArrayList<Object>();
+						List<Object> list_edi = new ArrayList<Object>();
+						if(gsList.size() > 0){
+							for(Iterator<GradeSubject> it = gsList.iterator() ; it.hasNext();){
+								GradeSubject gs = it.next();
+								Subject sub = gs.getSubject();
+								Map<String,Object> map_d = new HashMap<String,Object>();
+								map_d.put("subId", sub.getId());
+								if(sub.getId().equals(subId)){//默认为数学
+									gsId_curr = gs.getId();
+									map_d.put("selFlag", true);
+								}else{
+									map_d.put("selFlag", false);
 								}
-							}else{
-								msg = "noInfo";//mei
+								map_d.put("subName", sub.getSubName());
+								map_d.put("subImg", sub.getImgUrl());
+								list_sub.add(map_d);
 							}
-						}else if(opt.equals("manu")){
-							List<Education> eduList = edum.listInfoByOpt(ediId, gsId_curr);//获取当前年级学科、出版社下的教材信息
-							if(eduList.size() > 0){
-								msg = "success";
+							map.put("subList", list_sub);
+							if(opt.equals("init")){//打开在线学习页面初始化加载时
 								//获取学生学科教材信息列表
 								List<StuSubjectEduInfo> sseList = ssem.listInfoByOpt(userId, subId);
 								if(sseList.size() > 0){
-									for(Integer j = 0 ; j < sseList.size() ; j++){
-										ssem.updateSSEById(sseList.get(j).getId(), eduList.get(j).getId());
+									msg = "success";
+									for(StuSubjectEduInfo sse : sseList){
+										Education edu_study = sse.getEducation();
+										Integer ediId_study = edu_study.getEdition().getId();
+										if(ediId.equals(0)){
+											ediId = ediId_study;
+										}
+										List<Education> eduList = edum.listInfoByOpt(ediId, gsId_curr);//获取当前年级学科、出版社下的教材信息
+										if(eduList.size() > 0){
+											for(Integer i = 0 ; i < eduList.size() ; i++){
+												Education edu = eduList.get(i);
+												ssem.updateSSEById(sse.getId(), edu.getId());
+												Map<String,Object> map_d = new HashMap<String,Object>();
+												map_d.put("eduId", edu.getId());
+												Subject sub = edu.getGradeSubject().getSubject();
+												map_d.put("subName", sub.getSubName());
+												map_d.put("subImg", sub.getImgUrl());
+												map_d.put("eduVolume", edu.getEduVolume());
+												map_d.put("remainDays", remainDays);
+												map_d.put("studyDays", CurrentTime.compareDate(user.getSignDate().substring(0, 10), CurrentTime.getStringDate()));
+												map_d.put("freeStatus", freeStatus.equals(0) ? "免费试用/付费使用" : "免费使用");
+												if(freeStatus.equals(0)){
+													map_d.put("date_range", user.getSignDate().substring(0, 10) + "至" + user.getEndDate().substring(0, 10));
+												}else{
+													map_d.put("date_range", user.getSignDate() + "至[长期免费]");
+												}
+												list_edu.add(map_d);
+											}
+											map.put("studyList", list_edu);
+											break;
+										}else{
+											msg = "noInfo";
+										}
 									}
 								}else{
-									for(Integer i = 0 ; i < eduList.size() ; i++){
-										ssem.addSSE(userId, subId, eduList.get(i).getId());
-									}
+									msg = "noInfo";//mei
 								}
-								for(Integer i = 0 ; i < eduList.size() ; i++){
-									Education edu = eduList.get(i);
-									Map<String,Object> map_d = new HashMap<String,Object>();
-									map_d.put("eduId", edu.getId());
-									Subject sub = edu.getGradeSubject().getSubject();
-									map_d.put("subName", sub.getSubName());
-									map_d.put("subImg", sub.getImgUrl());
-									map_d.put("eduVolume", edu.getEduVolume());
-									map_d.put("remainDays", remainDays);
-									map_d.put("studyDays", CurrentTime.compareDate(user.getSignDate().substring(0, 10), CurrentTime.getStringDate()));
-									map_d.put("freeStatus", freeStatus.equals(0) ? "免费试用/付费使用" : "免费使用");
-									if(freeStatus.equals(0)){
-										map_d.put("date_range", user.getSignDate().substring(0, 10) + "至" + user.getEndDate().substring(0, 10));
+							}else if(opt.equals("manu")){
+								List<Education> eduList = edum.listInfoByOpt(ediId, gsId_curr);//获取当前年级学科、出版社下的教材信息
+								if(eduList.size() > 0){
+									msg = "success";
+									//获取学生学科教材信息列表
+									List<StuSubjectEduInfo> sseList = ssem.listInfoByOpt(userId, subId);
+									if(sseList.size() > 0){
+										for(Integer j = 0 ; j < sseList.size() ; j++){
+											ssem.updateSSEById(sseList.get(j).getId(), eduList.get(j).getId());
+										}
 									}else{
-										map_d.put("date_range", user.getSignDate() + "至[长期免费]");
+										for(Integer i = 0 ; i < eduList.size() ; i++){
+											ssem.addSSE(userId, subId, eduList.get(i).getId());
+										}
 									}
-									list_edu.add(map_d);
-								}
-								map.put("studyList", list_edu);
-							}else{
-								msg = "noInfo";
-							}
-						}
-						//获取出版社列表
-						List<Edition> ediList = em.listInfoByShowStatus(0, 0);
-						for(Iterator<Edition> it = ediList.iterator() ; it.hasNext();){
-							Edition edi = it.next();
-							Map<String,Object> map_d = new HashMap<String,Object>();
-							if(edi.getEdiName().contains("通用")){
-								continue;
-							}
-							map_d.put("ediId", edi.getId());
-							map_d.put("ediName", edi.getEdiName());
-							if(ediId.equals(0)){//默认没有出版社
-								map_d.put("selFlag", false);
-							}else{
-								if(ediId.equals(edi.getId())){
-									map_d.put("selFlag", true);
+									for(Integer i = 0 ; i < eduList.size() ; i++){
+										Education edu = eduList.get(i);
+										Map<String,Object> map_d = new HashMap<String,Object>();
+										map_d.put("eduId", edu.getId());
+										Subject sub = edu.getGradeSubject().getSubject();
+										map_d.put("subName", sub.getSubName());
+										map_d.put("subImg", sub.getImgUrl());
+										map_d.put("eduVolume", edu.getEduVolume());
+										map_d.put("remainDays", remainDays);
+										map_d.put("studyDays", CurrentTime.compareDate(user.getSignDate().substring(0, 10), CurrentTime.getStringDate()));
+										map_d.put("freeStatus", freeStatus.equals(0) ? "免费试用/付费使用" : "免费使用");
+										if(freeStatus.equals(0)){
+											map_d.put("date_range", user.getSignDate().substring(0, 10) + "至" + user.getEndDate().substring(0, 10));
+										}else{
+											map_d.put("date_range", user.getSignDate() + "至[长期免费]");
+										}
+										list_edu.add(map_d);
+									}
+									map.put("studyList", list_edu);
 								}else{
-									map_d.put("selFlag", false);
+									msg = "noInfo";
 								}
 							}
-							list_edi.add(map_d);
+							//获取出版社列表
+							List<Edition> ediList = em.listInfoByShowStatus(0, 0);
+							for(Iterator<Edition> it = ediList.iterator() ; it.hasNext();){
+								Edition edi = it.next();
+								Map<String,Object> map_d = new HashMap<String,Object>();
+								if(edi.getEdiName().contains("通用")){
+									continue;
+								}
+								map_d.put("ediId", edi.getId());
+								map_d.put("ediName", edi.getEdiName());
+								if(ediId.equals(0)){//默认没有出版社
+									map_d.put("selFlag", false);
+								}else{
+									if(ediId.equals(edi.getId())){
+										map_d.put("selFlag", true);
+									}else{
+										map_d.put("selFlag", false);
+									}
+								}
+								list_edi.add(map_d);
+							}
+							map.put("ediList", list_edi);
+						}else{
+							 msg = "error";
 						}
-						map.put("ediList", list_edi);
 					}else{
 						 msg = "error";
 					}
 				}else{
 					 msg = "error";
 				}
-			}else{
-				 msg = "error";
 			}
+		}else{
+			msg = checkLoginStatus;
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
