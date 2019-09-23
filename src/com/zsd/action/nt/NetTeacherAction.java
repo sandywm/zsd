@@ -77,8 +77,8 @@ public class NetTeacherAction extends DispatchAction {
 					Integer checkStatus_all = ntList.get(0).getCheckStatus();
 					Integer ntId = ntList.get(0).getId();
 					List<NetTeacherCertificateInfo> ntcList = ntcm.getNtcByTeaId(ntId);
+					msg = "success";
 					if(ntcList.size() > 0){
-						msg = "success";
 						NetTeacherCertificateInfo ntc = ntcList.get(0);
 						String iCardBackInfo = ntc.getIcardImgBackSmall();
 						String iCardFrontInfo = ntc.getIcardImgFrontSmall();
@@ -135,6 +135,16 @@ public class NetTeacherAction extends DispatchAction {
 							iCardStatus = "审核通过";
 							zgzStatus = "审核通过";
 							xlzStatus = "审核通过";
+						}
+					}else{
+						if(checkStatus_all.equals(2)){//未审核(以/未上传未审核)
+							iCardStatus = "审核通过";
+							zgzStatus = "审核通过";
+							xlzStatus = "审核通过";
+						}else{
+							iCardStatus = "未上传";
+							zgzStatus = "未上传";
+							xlzStatus = "未上传";
 						}
 					}
 				}
