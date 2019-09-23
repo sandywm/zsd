@@ -69,6 +69,12 @@ public class NetTeacherAction extends DispatchAction {
 		String iCardStatus = "";
 		String zgzStatus = "";
 		String xlzStatus = "";
+		String iCardNo = "";
+		String iCardName = "";
+		String iCardBackInfo = "";
+		String iCardFrontInfo = "";
+		String zgzInfo = "";//教师资格证
+		String xlzInfo = "";//教师学历证
 		String msg = "error";
 		if(checkLoginStatus.equals("success")){
 			if(userId > 0 && roleId.equals(Constants.NET_TEA_ROLE_ID)){
@@ -80,10 +86,12 @@ public class NetTeacherAction extends DispatchAction {
 					msg = "success";
 					if(ntcList.size() > 0){
 						NetTeacherCertificateInfo ntc = ntcList.get(0);
-						String iCardBackInfo = ntc.getIcardImgBackSmall();
-						String iCardFrontInfo = ntc.getIcardImgFrontSmall();
-						String zgzInfo = ntc.getZgzImgSmall();//教师资格证
-						String xlzInfo = ntc.getXlzImgSmall();//教师学历证
+						iCardNo = ntc.getIcardNum();
+						iCardName = ntc.getIcardName();
+						iCardBackInfo = ntc.getIcardImgBackSmall();
+						iCardFrontInfo = ntc.getIcardImgFrontSmall();
+						zgzInfo = ntc.getZgzImgSmall();//教师资格证
+						xlzInfo = ntc.getXlzImgSmall();//教师学历证
 						if(checkStatus_all.equals(0)){//未审核(以/未上传未审核)
 							if(!iCardBackInfo.equals("") && iCardFrontInfo.equals("")){//已经上传未审核
 								iCardStatus = "已上传未审核";
@@ -158,6 +166,12 @@ public class NetTeacherAction extends DispatchAction {
 			map.put("iCardStatus", iCardStatus);
 			map.put("zgzStatus", zgzStatus);
 			map.put("xlzStatus", xlzStatus);
+			map.put("iCardNo", iCardNo);
+			map.put("iCardName", iCardName);
+			map.put("iCardFrontImg", iCardFrontInfo);
+			map.put("iCardBackImg", iCardBackInfo);
+			map.put("zgzImg", zgzInfo);
+			map.put("xlzImg", xlzInfo);
 		}
 		CommonTools.getJsonPkg(map, response);
 		return null;
