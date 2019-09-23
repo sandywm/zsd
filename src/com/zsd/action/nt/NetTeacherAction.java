@@ -64,7 +64,8 @@ public class NetTeacherAction extends DispatchAction {
 		NtCertificateInfoManager ntcm = (NtCertificateInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_CERTIFICATE_INFO);
 		Integer userId = CommonTools.getLoginUserId(request);
 		Integer roleId = CommonTools.getLoginRoleId(request);
-		String checkLoginStatus = CommonTools.checkUserLoginStatus(request);
+		Integer loginStatus_local = CommonTools.getFinalInteger("loginStatus", request);
+		String checkLoginStatus = CommonTools.checkUserLoginStatus(request,userId,loginStatus_local);
 		String iCardStatus = "";
 		String zgzStatus = "";
 		String xlzStatus = "";
@@ -172,7 +173,8 @@ public class NetTeacherAction extends DispatchAction {
 		Integer roleId = CommonTools.getLoginRoleId(request);
 		Map<String, String> map = new HashMap<String, String>();
 		String msg = "error";
-		String checkLoginStatus = CommonTools.checkUserLoginStatus(request);
+		Integer loginStatus_local = CommonTools.getFinalInteger("loginStatus", request);
+		String checkLoginStatus = CommonTools.checkUserLoginStatus(request,userId,loginStatus_local);
 		if(checkLoginStatus.equals("success")){
 			if(userId > 0 && roleId.equals(Constants.NET_TEA_ROLE_ID)){
 				List<User> uList = um.listEntityById(userId);
@@ -268,14 +270,15 @@ public class NetTeacherAction extends DispatchAction {
 	public ActionForward saveICard(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
-		String checkLoginStatus = CommonTools.checkUserLoginStatus(request);
+		Integer loginStatus_local = CommonTools.getFinalInteger("loginStatus", request);
+		Integer userId = CommonTools.getLoginUserId(request);
+		Integer roleId = CommonTools.getLoginRoleId(request);
+		String checkLoginStatus = CommonTools.checkUserLoginStatus(request,userId,loginStatus_local);
 		Map<String, String> map = new HashMap<String, String>();
 		String msg = "error";
 		if(checkLoginStatus.equals("success")){
 			NtCertificateInfoManager ntcManager = (NtCertificateInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_CERTIFICATE_INFO);
 			NetTeacherInfoManager ntManager = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
-			Integer userId = CommonTools.getLoginUserId(request);
-			Integer roleId = CommonTools.getLoginRoleId(request);
 			if(userId > 0 && roleId.equals(Constants.NET_TEA_ROLE_ID)){
 				List<NetTeacherInfo> ntList = ntManager.listntInfoByuserId(userId);
 				if(ntList.size() > 0){
@@ -331,14 +334,15 @@ public class NetTeacherAction extends DispatchAction {
 	 */
 	public ActionForward saveEduCert(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response)throws Exception {
-		String checkLoginStatus = CommonTools.checkUserLoginStatus(request);
+		Integer userId = CommonTools.getLoginUserId(request);
+		Integer roleId = CommonTools.getLoginRoleId(request);
+		Integer loginStatus_local = CommonTools.getFinalInteger("loginStatus", request);
+		String checkLoginStatus = CommonTools.checkUserLoginStatus(request,userId,loginStatus_local);
 		Map<String, String> map = new HashMap<String, String>();
 		String msg = "error";
 		if(checkLoginStatus.equals("success")){
 			NtCertificateInfoManager ntcManager = (NtCertificateInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_CERTIFICATE_INFO);
 			NetTeacherInfoManager ntManager = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
-			Integer userId = CommonTools.getLoginUserId(request);
-			Integer roleId = CommonTools.getLoginRoleId(request);
 			if(userId > 0 && roleId.equals(Constants.NET_TEA_ROLE_ID)){
 				List<NetTeacherInfo> ntList = ntManager.listntInfoByuserId(userId);
 				if(ntList.size() > 0){
@@ -390,14 +394,15 @@ public class NetTeacherAction extends DispatchAction {
 	 */
 	public ActionForward saveNtCert(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response)throws Exception {
-		String checkLoginStatus = CommonTools.checkUserLoginStatus(request);
+		Integer userId = CommonTools.getLoginUserId(request);
+		Integer roleId = CommonTools.getLoginRoleId(request);
+		Integer loginStatus_local = CommonTools.getFinalInteger("loginStatus", request);
+		String checkLoginStatus = CommonTools.checkUserLoginStatus(request,userId,loginStatus_local);
 		String msg = "error";
 		Map<String, String> map = new HashMap<String, String>();
 		if(checkLoginStatus.equals("success")){
 			NtCertificateInfoManager ntcManager = (NtCertificateInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_CERTIFICATE_INFO);
 			NetTeacherInfoManager ntManager = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
-			Integer userId = CommonTools.getLoginUserId(request);
-			Integer roleId = CommonTools.getLoginRoleId(request);
 			if(userId > 0 && roleId.equals(Constants.NET_TEA_ROLE_ID)){
 				List<NetTeacherInfo> ntList = ntManager.listntInfoByuserId(userId);
 				if(ntList.size() > 0){

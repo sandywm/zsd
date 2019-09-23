@@ -840,15 +840,15 @@ public class CommonTools {
 	 * @return
 	 * @throws Exception
 	 */
-	public static String checkUserLoginStatus(HttpServletRequest request) throws Exception{
+	public static String checkUserLoginStatus(HttpServletRequest request,Integer userId_local,Integer loginStatus_local) throws Exception{
 		//客户端信息
 		String clientInfo = CommonTools.getCilentInfo_new(request);
 		String result = "accountError";//用户账号状态--账号错误(默认)
 		if(!clientInfo.equals("pc")){
 			UserManager um = (UserManager)AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
 			Integer login_status_dataBase = -1;
-			Integer userId_local = CommonTools.getFinalInteger("userId", request);
-			Integer loginStatus_local = CommonTools.getFinalInteger("loginStatus", request);
+//			Integer userId_local = CommonTools.getFinalInteger("userId", request);
+//			Integer loginStatus_local = CommonTools.getFinalInteger("loginStatus", request);
 			String lastLoginDate_db = "";
 			String currDate = CurrentTime.getStringDate();
 			if(userId_local > 0 && loginStatus_local > 0){

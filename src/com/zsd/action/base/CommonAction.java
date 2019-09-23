@@ -1097,6 +1097,9 @@ public class CommonAction extends DispatchAction {
 		InviteCodeInfoManager icManager = (InviteCodeInfoManager) AppFactory.instance(null).getApp(Constants.WEB_INVITE_CODE_INFO);
 		NetTeacherInfoManager ntManager  = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
 		String inviteCode=CommonTools.getFinalStr("inviteCode",request);
+		if(!inviteCode.equals("")){
+			inviteCode = inviteCode.toUpperCase();
+		}
 		List<InviteCodeInfo> icList = icManager.listIcInfoByicCode(inviteCode);//导师邀请码
 		Map<String,Object> map = new HashMap<String,Object>();
 		if(icList.isEmpty()){

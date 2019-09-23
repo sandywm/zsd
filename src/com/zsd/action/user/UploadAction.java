@@ -142,7 +142,9 @@ public class UploadAction extends DispatchAction {
 		 */
 		public ActionForward upCert(ActionMapping mapping,ActionForm form,
 				HttpServletRequest request,HttpServletResponse response)throws Exception{
-			String checkLoginStatus = CommonTools.checkUserLoginStatus(request);
+			Integer userId = CommonTools.getLoginUserId(request);
+			Integer loginStatus_local = CommonTools.getFinalInteger("loginStatus", request);
+			String checkLoginStatus = CommonTools.checkUserLoginStatus(request,userId,loginStatus_local);
 			Map<String,Object> map = new HashMap<String,Object>();
 			if(checkLoginStatus.equals("success")){
 				DiskFileItemFactory factory = new DiskFileItemFactory();
