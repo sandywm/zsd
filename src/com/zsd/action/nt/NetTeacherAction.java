@@ -304,6 +304,8 @@ public class NetTeacherAction extends DispatchAction {
 						if(ntcList.size() > 0){//存在网络导师证件信息
 							Integer ntcId = ntcList.get(0).getId();
 							if(!icardImgFrontSmall.equals("") && !icardImgBackSmall.equals("")){
+								icardImgFrontBig = icardImgFrontSmall.replace("_small", "");
+								icardImgBackBig = icardImgBackBig.replace("_small", "");
 								boolean ntcFlag = ntcManager.updateNtcInfo(ntcId, icardImgFrontBig, icardImgBackBig, icardImgFrontSmall, icardImgBackSmall, icardName, icardNum, "", "", "", "");
 								if(ntcFlag){
 									msg = "success";
@@ -313,6 +315,8 @@ public class NetTeacherAction extends DispatchAction {
 							}
 						}else{//不存在导师证件信息
 							if(!icardImgFrontSmall.equals("") && !icardImgBackSmall.equals("")){
+								icardImgFrontBig = icardImgFrontSmall.replace("_small", "");
+								icardImgBackBig = icardImgBackBig.replace("_small", "");
 								Integer ntcId = ntcManager.addNtcInfo(ntId, icardImgFrontBig, icardImgBackBig, icardImgFrontSmall, icardImgBackSmall, icardName, icardNum, "", "", "", "", 0, "", 0, "", "", "", "");
 								if(ntcId>0){
 									msg = "success";
