@@ -65,6 +65,10 @@ public class NetTeacherAction extends DispatchAction {
 		Integer userId = CommonTools.getLoginUserId(request);
 		Integer roleId = CommonTools.getLoginRoleId(request);
 		String checkLoginStatus = CommonTools.checkUserLoginStatus(request);
+		String iCardStatus = "";
+		String zgzStatus = "";
+		String xlzStatus = "";
+		String msg = "error";
 		if(checkLoginStatus.equals("success")){
 			if(userId > 0 && roleId.equals(Constants.NET_TEA_ROLE_ID)){
 				List<NetTeacherInfo> ntList = ntm.listntInfoByuserId(userId);
@@ -73,19 +77,78 @@ public class NetTeacherAction extends DispatchAction {
 					Integer ntId = ntList.get(0).getId();
 					List<NetTeacherCertificateInfo> ntcList = ntcm.getNtcByTeaId(ntId);
 					if(ntcList.size() > 0){
+						msg = "success";
 						NetTeacherCertificateInfo ntc = ntcList.get(0);
-						Integer checkStatus = ntc.getCheckStatus();
-						if(checkStatus.equals(0)){//未审核
-							
-						}else if(checkStatus.equals(1)){//审核未通过
-							
+						String iCardBackInfo = ntc.getIcardImgBackSmall();
+						String iCardFrontInfo = ntc.getIcardImgFrontSmall();
+						String zgzInfo = ntc.getZgzImgSmall();//教师资格证
+						String xlzInfo = ntc.getXlzImgSmall();//教师学历证
+						if(checkStatus_all.equals(0)){//未审核(以/未上传未审核)
+							if(!iCardBackInfo.equals("") && iCardFrontInfo.equals("")){//已经上传未审核
+								iCardStatus = "已上传未审核";
+							}else{//未上传未审核
+								iCardStatus = "未上传";
+							}
+							if(zgzInfo.equals("")){
+								zgzStatus =  "未上传";
+							}else{
+								zgzStatus =  "已上传未审核";
+							}
+							if(xlzInfo.equals("")){
+								xlzStatus =  "未上传";
+							}else{
+								xlzStatus =  "已上传未审核";
+							}
+						}else if(checkStatus_all.equals(1)){//审核未通过(未上传)
+							if(!iCardBackInfo.equals("") && iCardFrontInfo.equals("")){//已经上传
+								iCardStatus = "已上传";
+								if(ntc.getCheckReasonICard().equals("")){//不通过时才存在
+									iCardStatus += "审核通过";
+								}else{
+									iCardStatus += "审核未通过";
+								}
+							}else{//未上传未审核
+								iCardStatus = "未上传";
+							}
+							if(zgzInfo.equals("")){
+								zgzStatus =  "未上传";
+							}else{
+								zgzStatus =  "已上传";
+								if(ntc.getCheckReasonZgz().equals("")){
+									zgzStatus += "审核通过";
+								}else{
+									zgzStatus += "审核未通过";
+								}
+							}
+							if(xlzInfo.equals("")){
+								xlzStatus =  "未上传";
+							}else{
+								xlzStatus =  "已上传";
+								if(ntc.getCheckReasonXlz().equals("")){
+									xlzStatus += "审核通过";
+								}else{
+									xlzStatus += "审核未通过";
+								}
+							}
 						}else{//审核通过
-							
+							iCardStatus = "审核通过";
+							zgzStatus = "审核通过";
+							xlzStatus = "审核通过";
 						}
 					}
 				}
 			}
+		}else{
+			msg = checkLoginStatus;
 		}
+		Map<String,String> map = new HashMap<String,String>();
+		map.put("result", msg);
+		if(msg.equals("success")){
+			map.put("iCardStatus", iCardStatus);
+			map.put("zgzStatus", zgzStatus);
+			map.put("xlzStatus", xlzStatus);
+		}
+		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
 	
@@ -109,31 +172,36 @@ public class NetTeacherAction extends DispatchAction {
 		Integer roleId = CommonTools.getLoginRoleId(request);
 		Map<String, String> map = new HashMap<String, String>();
 		String msg = "error";
-		if(userId > 0 && roleId.equals(Constants.NET_TEA_ROLE_ID)){
-			List<User> uList = um.listEntityById(userId);
-			if(uList.size() > 0){
-				List<NetTeacherInfo> ntList = ntInfoManager.listntInfoByTeaId(userId);
-				if(ntList.size() > 0){
-					Integer ntId = ntList.get(0).getId();
-					String realName = Transcode.unescape_new("realName", request);
-					String nickName = Transcode.unescape_new("nickName", request);
-					String teaSign = Transcode.unescape_new("teaSign", request);
-					String teaEdu = Transcode.unescape_new("teaEdu", request);
-					String graduateSchool = Transcode.unescape_new("graduateSchool",request);
-					String major = Transcode.unescape_new("major", request);
-					Integer schoolAge = CommonTools.getFinalInteger("schoolAge", request);
-					String sex = CommonTools.getFinalStr("sex", request);
-					String birthday = CommonTools.getFinalStr("birthday", request);
-					boolean ntFlag = ntInfoManager.updateNtBybasicInfo(ntId, realName,
-							nickName, teaSign, teaEdu, graduateSchool, major, schoolAge,
-							sex, birthday);
-					if (ntFlag) {
-						msg = "success";
-					} else {
-						msg = "fail";
+		String checkLoginStatus = CommonTools.checkUserLoginStatus(request);
+		if(checkLoginStatus.equals("success")){
+			if(userId > 0 && roleId.equals(Constants.NET_TEA_ROLE_ID)){
+				List<User> uList = um.listEntityById(userId);
+				if(uList.size() > 0){
+					List<NetTeacherInfo> ntList = ntInfoManager.listntInfoByTeaId(userId);
+					if(ntList.size() > 0){
+						Integer ntId = ntList.get(0).getId();
+						String realName = Transcode.unescape_new("realName", request);
+						String nickName = Transcode.unescape_new("nickName", request);
+						String teaSign = Transcode.unescape_new("teaSign", request);
+						String teaEdu = Transcode.unescape_new("teaEdu", request);
+						String graduateSchool = Transcode.unescape_new("graduateSchool",request);
+						String major = Transcode.unescape_new("major", request);
+						Integer schoolAge = CommonTools.getFinalInteger("schoolAge", request);
+						String sex = CommonTools.getFinalStr("sex", request);
+						String birthday = CommonTools.getFinalStr("birthday", request);
+						boolean ntFlag = ntInfoManager.updateNtBybasicInfo(ntId, realName,
+								nickName, teaSign, teaEdu, graduateSchool, major, schoolAge,
+								sex, birthday);
+						if (ntFlag) {
+							msg = "success";
+						} else {
+							msg = "fail";
+						}
 					}
 				}
 			}
+		}else{
+			msg = checkLoginStatus;
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
