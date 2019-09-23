@@ -38,6 +38,7 @@ public class NtCertificateInfoManagerImpl implements NtCertificateInfoManager {
 			tran = sess.beginTransaction();
 			NetTeacherInfo netTeacherInfo = ntDao.get(sess, ntId);
 			NetTeacherCertificateInfo ntc =  new NetTeacherCertificateInfo(netTeacherInfo, icardImgFrontBig, icardImgBackBig, icardImgFrontSmall, icardImgBackSmall, icardName, icardNum, zgzImgBig, zgzImgSmall, xlzImgBig, xlzImgSmall, checkUserId, checkUserAccount, checkStatus, checkTime, checkReasonICard, checkReasonZgz, checkReasonXlz);
+			ntcDao.save(sess, ntc);
 			tran.commit();
 			return ntc.getId();
 		} catch (Exception e) {
@@ -90,7 +91,7 @@ public class NtCertificateInfoManagerImpl implements NtCertificateInfoManager {
 				if(!xlzImgSmall.equals("")||xlzImgSmall!=ntc.getXlzImgSmall()){
 					ntc.setXlzImgSmall(xlzImgSmall);
 				}
-				
+				ntcDao.update(sess, ntc);
 				tran.commit();
 				return true;
 			}
@@ -121,6 +122,7 @@ public class NtCertificateInfoManagerImpl implements NtCertificateInfoManager {
 				ntc.setCheckReasonICard(checkReasonICard);
 				ntc.setCheckReasonZgz(checkReasonZgz);
 				ntc.setCheckReasonXlz(checkReasonXlz);
+				ntcDao.update(sess, ntc);
 				tran.commit();
 				return true;
 			}
