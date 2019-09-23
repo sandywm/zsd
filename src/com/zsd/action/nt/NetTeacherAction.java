@@ -93,7 +93,7 @@ public class NetTeacherAction extends DispatchAction {
 						zgzInfo = ntc.getZgzImgSmall();//教师资格证
 						xlzInfo = ntc.getXlzImgSmall();//教师学历证
 						if(checkStatus_all.equals(0)){//未审核(以/未上传未审核)
-							if(!iCardBackInfo.equals("") && iCardFrontInfo.equals("")){//已经上传未审核
+							if(!iCardBackInfo.equals("") && !iCardFrontInfo.equals("")){//已经上传未审核
 								iCardStatus = "已上传未审核";
 							}else{//未上传未审核
 								iCardStatus = "未上传";
@@ -109,7 +109,7 @@ public class NetTeacherAction extends DispatchAction {
 								xlzStatus =  "已上传未审核";
 							}
 						}else if(checkStatus_all.equals(1)){//审核未通过(未上传)
-							if(!iCardBackInfo.equals("") && iCardFrontInfo.equals("")){//已经上传
+							if(!iCardBackInfo.equals("") && !iCardFrontInfo.equals("")){//已经上传
 								iCardStatus = "已上传";
 								if(ntc.getCheckReasonICard().equals("")){//不通过时才存在
 									iCardStatus += "审核通过";
