@@ -173,6 +173,15 @@ public interface NetTeacherStudentDao {
 	 * @return
 	 */
 	List<NetTeacherStudent> findBindStu(Session  sess, Integer userId/*,Integer bindFlag*/);
+	/**
+	 * 根据学生用户编号获取绑定信息
+	 * @author zdf
+	 * 2019-9-23 下午03:38:17
+	 * @param sess
+	 * @param stuId  学生用户编号
+	 * @return
+	 */
+	List<NetTeacherStudent> findBindNt(Session sess, Integer stuId);
 		
 		
 }

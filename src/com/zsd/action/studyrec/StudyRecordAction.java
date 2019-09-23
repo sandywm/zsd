@@ -35,7 +35,6 @@ import com.zsd.module.StudentParentInfo;
 import com.zsd.module.StudyDetailInfo;
 import com.zsd.module.StudyLogInfo;
 import com.zsd.module.Subject;
-import com.zsd.module.User;
 import com.zsd.module.json.LoreTreeMenuJson;
 import com.zsd.module.json.MyTreeNode;
 import com.zsd.service.BuffetAbilityRelationInfoManager;
@@ -1122,6 +1121,7 @@ public class StudyRecordAction extends DispatchAction {
 			map_d.put("studyLogId", slInfo.getId()); //学习记录主键
 			map_d.put("loreName", slInfo.getLoreInfo().getLoreName());//知识点名称
 			map_d.put("isfinish", slInfo.getIsFinish());
+			map_d.put("guideSta", guideSta);
 			list_d.add(map_d);
 		}
 	
@@ -1227,5 +1227,65 @@ public class StudyRecordAction extends DispatchAction {
 			map.put("stuName", firstStuName);
 			CommonTools.getJsonPkg(map, response);
 			return null;
+	}	
+	/**
+	 * 学生获取绑定的导师(我的导师)
+	 * @author zdf
+	 * 2019-9-23 下午04:21:51
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward  getBindNt(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+			NetTeacherStudentManager  ntsManager = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT);
+			Integer userId = CommonTools.getLoginUserId(request);
+			List<NetTeacherStudent> ntsList = ntsManager.listBindNt(userId);
+			Map<String,Object> map = new HashMap<String,Object>();
+			List<Object> list_b = new ArrayList<Object>();//已过期,已取消
+			List<Object> list_u = new ArrayList<Object>();//正在绑定
+			for (Iterator<NetTeacherStudent> it = ntsList.iterator(); it.hasNext();) {
+				NetTeacherStudent nts = (NetTeacherStudent) it.next();
+				Map<String,Object> map_d = new HashMap<String,Object>();
+				Integer bindStatus = nts.getBindStatus();
+				Integer clearStatus = nts.getClearStatus();//0:不清除,1:清除
+				map_d.put("ntId", nts.getNetTeacherInfo().getId());//导师编号
+				map_d.put("realName", nts.getNetTeacherInfo().getUser().getRealName());
+				map_d.put("portrait", nts.getNetTeacherInfo().getUser().getPortrait());
+				map_d.put("subName", nts.getNetTeacherInfo().getSubject().getSubName());
+				Integer schType = nts.getNetTeacherInfo().getSchoolType();
+				String schTypeName ="";
+				if(schType.equals(1)){
+					schTypeName = "小学";
+				}else if(schType.equals(2)){
+					schTypeName = "初中";
+				}else if(schType.equals(3)){
+					schTypeName = "高中";
+				}
+				map_d.put("schTypeName", schTypeName);
+				if(bindStatus.equals(0)){//取消绑定
+					list_b.add(map_d);	
+				}else{
+					if(clearStatus.equals(1)){//升学清除	
+						list_b.add(map_d);
+					}else {//未升学判断是到期
+						Integer diffDay = CurrentTime.compareDate(CurrentTime.getStringDate(),nts.getEndDate());
+						if(diffDay > 0){//正在绑定
+							map_d.put("diffDay", diffDay);
+							list_u.add(map_d);
+						}else{//已到期
+							list_b.add(map_d);	
+						}
+					}
+				}
+			}
+			map.put("bindStu", list_u);
+			map.put("unbindStu", list_b);
+			CommonTools.getJsonPkg(map, response);
+			return null;
 	}
+			
 }

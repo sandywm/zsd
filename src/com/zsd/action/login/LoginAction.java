@@ -364,10 +364,23 @@ public class LoginAction extends DispatchAction {
 							spManager.addSpInfo(upId, userId);
 							msg = "success";//注册用户成功
 							if(ruId>0){//绑定角色成功
-								List<InviteCodeInfo> icList = icManager.listIcInfoByicCode(inviteCode);//导师邀请码
-								if(icList.size()>0){
-									Integer teaId=icList.get(0).getInviteId();
-									ntsManager.addNTS(userId, teaId, CurrentTime.getCurrentTime(), -1, CurrentTime.getFinalDateTime(7), 0, "", "", 0);//4 缃戠粶瀵煎笀瀛︾敓缁戝畾
+								if(!inviteCode.equals("")){
+									List<InviteCodeInfo> icList = icManager.listIcInfoByicCode(inviteCode.toUpperCase());//导师邀请码
+									if(icList.size()>0){
+										Integer teaId=icList.get(0).getInviteId();
+										List<NetTeacherInfo> ntlist=ntManager.listntInfoByTeaId(teaId);
+										if(ntlist.get(0).getCheckStatus().equals(2)){//审核通过的导师
+											List<School> schList = scManager.listInfoById(schoolId);
+									    	Integer stuSchType =0;
+									    	Integer ntSchType = ntlist.get(0).getSchoolType();
+									    	if(!schList.isEmpty()){
+									    		stuSchType=schList.get(0).getSchoolType();
+									    	}
+									    	if(ntSchType.equals(stuSchType)){
+									    		ntsManager.addNTS(userId, teaId, CurrentTime.getCurrentTime(), -1, CurrentTime.getFinalDateTime(7), 0, "", "", 0);//4 缃戠粶瀵煎笀瀛︾敓缁戝畾	
+									    	}
+										}
+									}
 								}
 								List<ClassInfo> ciList = ciManager.listClassInfoByOption(gradeNo, CurrentTime.getCurrentTime(), schoolId, className);
 								if(ciList.size()>0){
@@ -677,9 +690,13 @@ public class LoginAction extends DispatchAction {
 		NetTeacherStudentManager ntsManager = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT);
 		NetTeacherInfoManager ntManager  = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
 		EmailManager em = (EmailManager) AppFactory.instance(null).getApp(Constants.WEB_EMAIL_INFO);
+		SchoolManager schManger = (SchoolManager) AppFactory.instance(null).getApp(Constants.WEB_SCHOOL_INFO);
 		String inviteCode=CommonTools.getFinalStr("inviteCode",request);
 		Integer userId = CommonTools.getLoginUserId(request);
-		List<InviteCodeInfo> icList = icManager.listIcInfoByicCode(inviteCode);//导师邀请码
+		List<InviteCodeInfo> icList = null;
+		if (!inviteCode.equals("")) {
+		   icList = icManager.listIcInfoByicCode(inviteCode.toUpperCase());//导师邀请码 
+		}
 		Map<String,Object> map = new HashMap<String,Object>();
 		if(icList.isEmpty()){
 			map.put("msg","noInfo");
@@ -689,7 +706,7 @@ public class LoginAction extends DispatchAction {
 				String userName_stu = uList.get(0).getRealName();
 				Integer teaId=icList.get(0).getInviteId();	
 			    List<NetTeacherInfo> ntlist=ntManager.listntInfoByTeaId(teaId);
-			    if(ntlist.size() > 0){
+			    if(ntlist.get(0).getCheckStatus().equals(2)){
 			    	NetTeacherInfo nt = ntlist.get(0);
 			    	Integer userId_tea = nt.getUser().getId();
 				    String userName_tea = nt.getUser().getRealName();
@@ -699,14 +716,24 @@ public class LoginAction extends DispatchAction {
 				    if(flag){
 				    	map.put("msg","binded");
 				    }else{
-				    	Integer ntsId =  ntsManager.addNTS(userId, teaId, CurrentTime.getCurrentTime(), -1, CurrentTime.getFinalDateTime(7), 0, "", "", 0);//4 缃戠粶瀵煎笀瀛︾敓缁戝畾
-						if(ntsId>0){
-							String content_stu = userName_stu+"同学,你好，你已成功绑定"+userName_tea+"老师为你的网络导师，如遇到学习上有什么问题，请及时向导师提出，谢谢。[知识典]";
-							String content_tea = userName_tea+"导师，您好，"+userName_stu+"学生已成功绑定您为他的网络导师，请全程为学生做好答疑引导服务，谢谢。[知识典]";
-							em.addEmail(1, "绑定导师成功", content_stu, "sys", userId);
-							em.addEmail(1, "绑定导师", content_tea, "sys", userId_tea);
-							map.put("msg","success");
-						}
+				    	List<School> schList = schManger.listInfoById(uList.get(0).getSchoolId());
+				    	Integer stuSchType =0;
+				    	if(!schList.isEmpty()){
+				    		stuSchType=schList.get(0).getSchoolType();
+				    	}
+				    	if(schType.equals(stuSchType)){
+				    		Integer ntsId =  ntsManager.addNTS(userId, teaId, CurrentTime.getCurrentTime(), -1, CurrentTime.getFinalDateTime(7), 0, "", "", 0);//4 缃戠粶瀵煎笀瀛︾敓缁戝畾
+							if(ntsId>0){
+								String content_stu = userName_stu+"同学,你好，你已成功绑定"+userName_tea+"老师为你的网络导师，如遇到学习上有什么问题，请及时向导师提出，谢谢。[知识典]";
+								String content_tea = userName_tea+"导师，您好，"+userName_stu+"学生已成功绑定您为他的网络导师，请全程为学生做好答疑引导服务，谢谢。[知识典]";
+								em.addEmail(1, "绑定导师成功", content_stu, "sys", userId);
+								em.addEmail(1, "绑定导师", content_tea, "sys", userId_tea);
+								map.put("msg","success");
+							}
+				    	}else{
+				    		map.put("msg", "schTypeError");
+				    	}
+				    	
 				    }
 			    }else{
 			    	map.put("msg","noInfo");

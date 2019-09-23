@@ -272,4 +272,19 @@ public class NetTeacherStudentManagerImpl implements NetTeacherStudentManager {
 			HibernateUtil.closeSession();
 		}
 	}
+
+	@Override
+	public List<NetTeacherStudent> listBindNt(Integer stuId)
+			throws WEBException {
+		try {
+			ntsDao = (NetTeacherStudentDao) DaoFactory.instance(null).getDao(Constants.DAO_NET_TEACHER_STUDENT);
+			Session sess  = HibernateUtil.currentSession();
+			return ntsDao.findBindNt(sess, stuId);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException(" 根据学生用户编号获取绑定信息时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
 }

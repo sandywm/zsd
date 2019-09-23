@@ -223,4 +223,10 @@ public class NetTeacherStudentDaoImpl implements NetTeacherStudentDao {
 		 }*/
 		return sess.createQuery(hql).list();
 	}
+
+	@Override
+	public List<NetTeacherStudent> findBindNt(Session sess, Integer stuId) {
+		String hql = " from NetTeacherStudent as nts where nts.user.id = "+stuId;
+		return sess.createQuery(hql).list();
+	}
 }

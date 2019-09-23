@@ -142,63 +142,56 @@ public class UploadAction extends DispatchAction {
 		 */
 		public ActionForward upCert(ActionMapping mapping,ActionForm form,
 				HttpServletRequest request,HttpServletResponse response)throws Exception{
-			Integer userId = CommonTools.getLoginUserId(request);
-			Integer loginStatus_local = CommonTools.getFinalInteger("loginStatus", request);
-			String checkLoginStatus = CommonTools.checkUserLoginStatus(request,userId,loginStatus_local);
 			Map<String,Object> map = new HashMap<String,Object>();
-			if(checkLoginStatus.equals("success")){
-				DiskFileItemFactory factory = new DiskFileItemFactory();
-				factory.setSizeThreshold(2048*1024);
-				ServletFileUpload fileUpload = new ServletFileUpload(factory);
-				List<FileItem> filelist = fileUpload.parseRequest(request);
-				ListIterator<FileItem> iterator = filelist.listIterator();
-				String userPath = WebUrl.PERSONAL_HONOR;
-				String smallUrl = "";
-				boolean upFlag = false;
-				String msg = "error";
-				while(iterator.hasNext()){
-					FileItem item = (FileItem)iterator.next();
-					// 处理文件上传
-					String filename = item.getName();// 获取名字
-					Integer lastIndex = filename.lastIndexOf(".");
-					String suffix = filename.substring(lastIndex+1);
-					String fileNamePre = CurrentTime.getRadomTime();
-					filename = fileNamePre + "." + suffix;
-					CheckImage ci = new CheckImage();
-					//doc,docx,wps,xls,xlsx,txt,pdf,pptx,ppt,zip,rar,dwg,eml,jpg,png,bmp,gif,vsd,vsdx如果文件格式不在上述范围内请压缩成zip格式后上传
-					String checkFileSuffixInfo = ci.getUpFileStuffix(suffix);
-					if(checkFileSuffixInfo.equals("img")){//图片限制5M
-						upFlag = ci.checkItemSize(item, 5 * 1024 * 1024);
-						if(!upFlag){
-							msg = "outSize";
-						}
-					}else{
-						msg = "suffixError";
+			DiskFileItemFactory factory = new DiskFileItemFactory();
+			factory.setSizeThreshold(2048*1024);
+			ServletFileUpload fileUpload = new ServletFileUpload(factory);
+			List<FileItem> filelist = fileUpload.parseRequest(request);
+			ListIterator<FileItem> iterator = filelist.listIterator();
+			String userPath = WebUrl.PERSONAL_HONOR;
+			String smallUrl = "";
+			boolean upFlag = false;
+			String msg = "error";
+			while(iterator.hasNext()){
+				FileItem item = (FileItem)iterator.next();
+				// 处理文件上传
+				String filename = item.getName();// 获取名字
+				Integer lastIndex = filename.lastIndexOf(".");
+				String suffix = filename.substring(lastIndex+1);
+				String fileNamePre = CurrentTime.getRadomTime();
+				filename = fileNamePre + "." + suffix;
+				CheckImage ci = new CheckImage();
+				//doc,docx,wps,xls,xlsx,txt,pdf,pptx,ppt,zip,rar,dwg,eml,jpg,png,bmp,gif,vsd,vsdx如果文件格式不在上述范围内请压缩成zip格式后上传
+				String checkFileSuffixInfo = ci.getUpFileStuffix(suffix);
+				if(checkFileSuffixInfo.equals("img")){//图片限制5M
+					upFlag = ci.checkItemSize(item, 5 * 1024 * 1024);
+					if(!upFlag){
+						msg = "outSize";
 					}
-					if(upFlag){
-						byte[] data = item.get();// 获取数据
-						//没有该文件夹先创建文件夹
-			    		File file = new File(userPath);
-			    		if(!file.exists()){
-			    			file.mkdirs();
-			    		}
-			    		FileOutputStream fileOutputStream = new FileOutputStream(userPath + "/" + filename);
-						fileOutputStream.write(data);// 写入文件
-						fileOutputStream.close();// 关闭文件流
-						msg = "success";
+				}else{
+					msg = "suffixError";
+				}
+				if(upFlag){
+					byte[] data = item.get();// 获取数据
+					//没有该文件夹先创建文件夹
+		    		File file = new File(userPath);
+		    		if(!file.exists()){
+		    			file.mkdirs();
+		    		}
+		    		FileOutputStream fileOutputStream = new FileOutputStream(userPath + "/" + filename);
+					fileOutputStream.write(data);// 写入文件
+					fileOutputStream.close();// 关闭文件流
+					msg = "success";
 //						fileUrl +=  WebUrl.NEW_PERSONAL_HONOR  + "\\" + filename ;
-						//生成小图
-						String smallImgPath = userPath  + "/" + fileNamePre + "_small." + suffix;
-						FileOpration.makeImage(userPath  + "/" + filename, 0.3, smallImgPath, suffix.toUpperCase());
-						smallUrl = WebUrl.NEW_PERSONAL_HONOR + "\\" + fileNamePre + "_small." + suffix;
-					}
+					//生成小图
+					String smallImgPath = userPath  + "/" + fileNamePre + "_small." + suffix;
+					FileOpration.makeImage(userPath  + "/" + filename, 0.3, smallImgPath, suffix.toUpperCase());
+					smallUrl = WebUrl.NEW_PERSONAL_HONOR + "\\" + fileNamePre + "_small." + suffix;
 				}
-				map.put("result", msg);
-				if(msg.equals("success")){
-					map.put("smallUrl", smallUrl);
-				}
-			}else{
-				map.put("result", checkLoginStatus);
+			}
+			map.put("result", msg);
+			if(msg.equals("success")){
+				map.put("smallUrl", smallUrl);
 			}
 			CommonTools.getJsonPkg(map, response);
 			return null;

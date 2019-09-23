@@ -30,9 +30,9 @@ public class InitServlet extends HttpServlet
     	
     	WebUrl.NEW_DATA_URL_UP_FILE_UPLOAD = "Module/uploadFile/";
     	
-        WebUrl.PERSONAL_HONOR = getServletContext().getRealPath("/Module/commonJs/ueditor/jsp/honor");
+        WebUrl.PERSONAL_HONOR = getServletContext().getRealPath("/Module/uploadFile/honor");
         
-        WebUrl.NEW_PERSONAL_HONOR = "Module/commonJs/ueditor/jsp/honor/";
+        WebUrl.NEW_PERSONAL_HONOR = "Module/uploadFile/honor/";
     	
     	WebUrl.DIAGNOSIS_DATA_URL = getServletContext().getRealPath("/Module/commonJs/ueditor/jsp/video");
     	
