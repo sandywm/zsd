@@ -186,8 +186,11 @@ public class UploadAction extends DispatchAction {
 					//生成小图
 					String smallImgPath = userPath  + "/" + fileNamePre + "_small." + suffix;
 					FileOpration.makeImage(userPath  + "/" + filename, 0.3, smallImgPath, suffix.toUpperCase());
-					smallUrl = WebUrl.NEW_PERSONAL_HONOR + "\\" + fileNamePre + "_small." + suffix;
+					smallUrl += WebUrl.NEW_PERSONAL_HONOR + fileNamePre + "_small." + suffix + ",";
 				}
+			}
+			if(!smallUrl.equals("")){
+				smallUrl = smallUrl.substring(0,smallUrl.length() - 1);
 			}
 			map.put("result", msg);
 			if(msg.equals("success")){
