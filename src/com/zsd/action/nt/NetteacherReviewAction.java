@@ -25,6 +25,7 @@ import com.zsd.module.NetTeacherInfo;
 import com.zsd.page.PageConst;
 import com.zsd.service.NetTeacherInfoManager;
 import com.zsd.service.NtCertificateInfoManager;
+import com.zsd.service.UserManager;
 import com.zsd.tools.CommonTools;
 import com.zsd.tools.CurrentTime;
 import com.zsd.util.Constants;
@@ -181,31 +182,37 @@ public class NetteacherReviewAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response)throws Exception {
 		NtCertificateInfoManager ntcManager = (NtCertificateInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_CERTIFICATE_INFO);
 		NetTeacherInfoManager ntManager = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
-		Integer ntId = CommonTools.getFinalInteger("ntId", request);//网络导师主键
+		UserManager um = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
 		Integer id = CommonTools.getFinalInteger("id", request);//网络导师证件主键
 		Integer userId = CommonTools.getLoginUserId(request);
-		String checkUserAccount=(String) request.getSession().getAttribute("userAcc");
 		String checkICard = Transcode.unescape_new("checkICard", request);//身份证审核状态
 		String checkZgz = Transcode.unescape_new("checkZgz", request);//资格证审核状态
 		String checkXlz = Transcode.unescape_new("checkXlz", request);//学历证审核状态
 		String checkTime=CurrentTime.getCurrentTime();//当前时间
-		
-		Integer checkStatus=0;
-		if(checkICard.replace(" ", "").equalsIgnoreCase("notpass")||checkZgz.replace(" ", "").equalsIgnoreCase("notpass")||checkXlz.replace(" ", "").equalsIgnoreCase("notpass")){
-			checkStatus =1;
-		}else if(checkICard.replace(" ", "").equalsIgnoreCase("pass")&&checkZgz.replace(" ", "").equalsIgnoreCase("pass")&&checkXlz.replace(" ", "").equalsIgnoreCase("pass")){
-			checkStatus =2;
-		}
-		boolean ntcFlag = ntcManager.updateNtcByCheck(id, userId, checkUserAccount, checkStatus, checkTime, checkICard, checkZgz, checkXlz);
-		boolean ntFlag = false;
-		if(ntcFlag){
-		  ntFlag =ntManager.updateNtInfoByCheckSta(ntId, checkStatus);
-		}
 		Map<String, String> map = new HashMap<String, String>();
-		if (ntFlag) {
-			map.put("result", "success");
-		} else {
-			map.put("result", "fail");
+		if(id > 0){
+			List<NetTeacherCertificateInfo> ntcList =  ntcManager.listEntityByid(id);
+			if(ntcList.size() >  0){
+				Integer ntId = ntcList.get(0).getNetTeacherInfo().getId();
+				Integer checkStatus=0;
+				if(checkICard.equals("notpass") || checkZgz.equals("notpass") || checkXlz.equalsIgnoreCase("notpass")){
+					checkStatus = 1;
+				}else if(checkICard.equals("pass") && checkZgz.equals("pass") && checkXlz.equals("pass")){
+					checkStatus = 2;
+				}
+				boolean ntcFlag = ntcManager.updateNtcByCheck(id, userId, um.listEntityById(userId).get(0).getRealName(), checkStatus, checkTime, checkICard, checkZgz, checkXlz);
+				boolean ntFlag = false;
+				if(ntcFlag){
+				  ntFlag =ntManager.updateNtInfoByCheckSta(ntId, checkStatus);
+				  if (ntFlag) {
+						map.put("result", "success");
+					} else {
+						map.put("result", "fail");
+					}
+				}
+			}
+		}else{
+			map.put("result", "error");
 		}
 		CommonTools.getJsonPkg(map, response);
 		return null;
