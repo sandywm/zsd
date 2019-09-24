@@ -100,4 +100,46 @@ public interface NtCertificateInfoManager {
 	 * @throws WEBException
 	 */
 	List<NetTeacherCertificateInfo> getNtcByTeaId(Integer teaId)throws WEBException;
+	
+	/**
+	 * 修改导师身份证信息
+	 * @author wm
+	 * @date 2019-9-24 下午03:03:40
+	 * @param id
+	 * @param icardImgFrontBig
+	 * @param icardImgBackBig
+	 * @param icardImgFrontSmall
+	 * @param icardImgBackSmall
+	 * @param icardName
+	 * @param icardNum
+	 * @return
+	 * @throws WEBException
+	 */
+	boolean updateiCardInfo(Integer id,String icardImgFrontBig,
+			String icardImgBackBig, String icardImgFrontSmall,
+			String icardImgBackSmall, String icardName, String icardNum)throws WEBException;
+	
+	/**
+	 * 修改导师学历证信息
+	 * @author wm
+	 * @date 2019-9-24 下午03:03:53
+	 * @param id
+	 * @param xlzImgBig
+	 * @param xlzImgSmall
+	 * @return
+	 * @throws WEBException
+	 */
+	boolean updateXlzInfo(Integer id,String xlzImgBig,String xlzImgSmall)throws WEBException;
+	
+	/**
+	 * 修改导师资格证信息
+	 * @author wm
+	 * @date 2019-9-24 下午03:04:04
+	 * @param id
+	 * @param zgzImgBig
+	 * @param zgzImgSmall
+	 * @return
+	 * @throws WEBException
+	 */
+	boolean updateZgzInfo(Integer id,String zgzImgBig, String zgzImgSmall)throws WEBException;
 }

@@ -163,4 +163,89 @@ public class NtCertificateInfoManagerImpl implements NtCertificateInfoManager {
 			HibernateUtil.closeSession();
 		}
 	}
+
+	@Override
+	public boolean updateiCardInfo(Integer id, String icardImgFrontBig,
+			String icardImgBackBig, String icardImgFrontSmall,
+			String icardImgBackSmall, String icardName, String icardNum)
+			throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			ntcDao =(NetTeacherCertificateInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_NET_TEACHER_CERTIFICATE_INFO);
+			Session sess  = HibernateUtil.currentSession();
+			tran = sess.beginTransaction();
+			NetTeacherCertificateInfo ntc = ntcDao.get(sess, id);
+			if(ntc != null){
+				ntc.setIcardImgFrontBig(icardImgFrontBig);	
+				ntc.setIcardImgBackBig(icardImgBackBig);
+				ntc.setIcardImgFrontSmall(icardImgFrontSmall);
+				ntc.setIcardImgBackSmall(icardImgBackSmall);
+				if(!icardName.equals("")){
+					ntc.setIcardName(icardName);
+				}
+				if(!icardNum.equals("")){
+					ntc.setIcardNum(icardNum);
+				}
+				ntcDao.update(sess, ntc);
+				tran.commit();
+				return true;
+			}
+			return false;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("修改指定网络导师证件信息时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public boolean updateXlzInfo(Integer id, String xlzImgBig,
+			String xlzImgSmall) throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			ntcDao =(NetTeacherCertificateInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_NET_TEACHER_CERTIFICATE_INFO);
+			Session sess  = HibernateUtil.currentSession();
+			tran = sess.beginTransaction();
+			NetTeacherCertificateInfo ntc = ntcDao.get(sess, id);
+			if(ntc != null){
+				ntc.setXlzImgBig(xlzImgBig);
+				ntc.setXlzImgSmall(xlzImgSmall);
+				ntcDao.update(sess, ntc);
+				tran.commit();
+				return true;
+			}
+			return false;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("修改指定网络导师证件信息时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public boolean updateZgzInfo(Integer id, String zgzImgBig,
+			String zgzImgSmall) throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			ntcDao =(NetTeacherCertificateInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_NET_TEACHER_CERTIFICATE_INFO);
+			Session sess  = HibernateUtil.currentSession();
+			tran = sess.beginTransaction();
+			NetTeacherCertificateInfo ntc = ntcDao.get(sess, id);
+			if(ntc != null){
+				ntc.setZgzImgBig(zgzImgBig);
+				ntc.setZgzImgSmall(zgzImgSmall);
+				ntcDao.update(sess, ntc);
+				tran.commit();
+				return true;
+			}
+			return false;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("修改指定网络导师证件信息时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
 }

@@ -320,7 +320,7 @@ public class NetTeacherAction extends DispatchAction {
 							if(!icardImgFrontSmall.equals("") && !icardImgBackSmall.equals("")){
 								icardImgFrontBig = icardImgFrontSmall.replace("_small", "");
 								icardImgBackBig = icardImgBackSmall.replace("_small", "");
-								boolean ntcFlag = ntcManager.updateNtcInfo(ntcId, icardImgFrontBig, icardImgBackBig, icardImgFrontSmall, icardImgBackSmall, icardName, icardNum, "", "", "", "");
+								boolean   ntcFlag = ntcManager.updateiCardInfo(ntcId, icardImgFrontBig, icardImgBackBig, icardImgFrontSmall, icardImgBackSmall, icardName, icardNum);
 								if(ntcFlag){
 									msg = "success";
 								}else{
@@ -383,7 +383,7 @@ public class NetTeacherAction extends DispatchAction {
 							Integer ntcId = ntcList.get(0).getId();
 							if(!xlzImgSmall.equals("")){
 								xlzImgBig = xlzImgSmall.replace("_small", "");
-								boolean   ntcFlag = ntcManager.updateNtcInfo(ntcId, "", "", "", "", "", "", "", "", xlzImgBig, xlzImgSmall);
+								boolean   ntcFlag = ntcManager.updateXlzInfo(ntcId, xlzImgBig, xlzImgSmall);
 								if(ntcFlag){
 									msg = "success";
 								}else{
@@ -445,7 +445,7 @@ public class NetTeacherAction extends DispatchAction {
 							Integer ntcId = ntcList.get(0).getId();
 							if(!zgzImgSmall.equals("")){
 								zgzImgBig = zgzImgSmall.replace("_small", "");
-								boolean   ntcFlag = ntcManager.updateNtcInfo(ntcId, "", "", "", "", "", "", zgzImgBig, zgzImgSmall, "", "");
+								boolean   ntcFlag = ntcManager.updateZgzInfo(ntcId, zgzImgBig, zgzImgSmall);
 								if(ntcFlag){
 									msg = "success";
 								}else{
