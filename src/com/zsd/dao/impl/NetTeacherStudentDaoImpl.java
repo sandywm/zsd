@@ -229,4 +229,16 @@ public class NetTeacherStudentDaoImpl implements NetTeacherStudentDao {
 		String hql = " from NetTeacherStudent as nts where nts.user.id = "+stuId;
 		return sess.createQuery(hql).list();
 	}
+
+	@Override
+	public NetTeacherStudent getValidInfoByOpt(Session sess, Integer stuId,Integer subId) {
+		// TODO Auto-generated method stub
+		String hql = " from NetTeacherStudent as nts where nts.user.id = "+stuId+ " and nts.clearStatus = 0 and nts.netTeacherInfo.subject.id = "+subId;
+		hql += "  and nts.bindStatus != 0 and  nts.endDate > '"+CurrentTime.getStringDate()+"'";
+		List<NetTeacherStudent> ntsList = sess.createQuery(hql).list();
+		if(ntsList.size() > 0){
+			return ntsList.get(0);
+		}
+		return null;
+	}
 }

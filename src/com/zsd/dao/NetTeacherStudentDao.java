@@ -182,6 +182,17 @@ public interface NetTeacherStudentDao {
 	 * @return
 	 */
 	List<NetTeacherStudent> findBindNt(Session sess, Integer stuId);
+	
+	/**
+	 * 获取指定学生指定学科的绑定日期没结束且未取消未清除的信息
+	 * @author wm
+	 * @date 2019-9-24 下午05:49:08
+	 * @param sess
+	 * @param stuId 学生编号
+	 * @param subId 科目编号
+	 * @return
+	 */
+	NetTeacherStudent getValidInfoByOpt(Session sess,Integer stuId,Integer subId);
 		
 		
 }

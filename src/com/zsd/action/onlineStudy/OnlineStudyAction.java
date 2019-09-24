@@ -29,6 +29,7 @@ import com.zsd.module.GradeSubject;
 import com.zsd.module.LoreInfo;
 import com.zsd.module.LoreQuestion;
 import com.zsd.module.LoreQuestionSubInfo;
+import com.zsd.module.NetTeacherStudent;
 import com.zsd.module.RelationZdResult;
 import com.zsd.module.School;
 import com.zsd.module.StuSubjectEduInfo;
@@ -49,6 +50,7 @@ import com.zsd.service.EducationManager;
 import com.zsd.service.GradeSubjectManager;
 import com.zsd.service.LoreInfoManager;
 import com.zsd.service.LoreQuestionManager;
+import com.zsd.service.NetTeacherStudentManager;
 import com.zsd.service.RelationZdResultManager;
 import com.zsd.service.SchoolManager;
 import com.zsd.service.StuSubjectEduManager;
@@ -2299,6 +2301,7 @@ public class OnlineStudyAction extends DispatchAction {
 		StudyStuTjInfoManager ssm = (StudyStuTjInfoManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_STU_TJ_INFO);
 		StudyAllTjInfoManager sam = (StudyAllTjInfoManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_ALL_TJ_INFO);
 		StudyTaskManager stm = (StudyTaskManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_TASK_INFO);
+		NetTeacherStudentManager ntsm = (NetTeacherStudentManager)AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT);
 		Integer loreId = CommonTools.getFinalInteger("loreId", request);//最初的知识点
 		Integer studyLogId = CommonTools.getFinalInteger("studyLogId", request);
 //		Integer currentLoreId = CommonTools.getFinalInteger("currentLoreId", request);//当前做题的知识点编号
@@ -2440,7 +2443,14 @@ public class OnlineStudyAction extends DispatchAction {
 								if(result.equals(1)){//题做对了
 									oldStepMoney++;
 								}
-								studyLogId = slm.addStudyLog(stuId, loreId, subjectId, step, stepComplete, isFinish, "", oldStepMoney, access, currTime, 1, logType);
+								//获取当前学生正在绑定的指定学科的导师
+								Integer ntId = 0;
+								Integer subId = lq.getLoreInfo().getChapter().getEducation().getGradeSubject().getSubject().getId();
+								NetTeacherStudent nts = ntsm.getValidInfoByOpt(stuId, subId);
+								if(nts != null){
+									ntId = nts.getNetTeacherInfo().getId();
+								}
+								studyLogId = slm.addStudyLog(stuId, ntId, loreId, subjectId, step, stepComplete, isFinish, "", oldStepMoney, access, currTime, 1, logType);
 								if(studyLogId > 0){
 									updateFlag = true;
 								}

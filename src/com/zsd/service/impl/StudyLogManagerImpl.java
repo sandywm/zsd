@@ -24,8 +24,9 @@ public class StudyLogManagerImpl implements StudyLogManager{
 	SubjectDao sDao = null;
 	StudyLogDao slDao = null;
 	Transaction tran = null;
+	
 	@Override
-	public Integer addStudyLog(Integer userId, Integer loreId, Integer subId,
+	public Integer addStudyLog(Integer userId ,Integer ntId, Integer loreId, Integer subId,
 			Integer step, Integer stepComplete, Integer isFinish,
 			String sysAssess, Integer currentGold, Integer access,
 			String addTime, Integer taskNumber, Integer logType)
@@ -40,7 +41,7 @@ public class StudyLogManagerImpl implements StudyLogManager{
 			tran = sess.beginTransaction();
 			StudyLogInfo sl = new StudyLogInfo(sDao.get(sess, subId), uDao.get(sess, userId), lDao.getEntityById(sess, loreId),
 					access, addTime, step, stepComplete,currentGold, 0, isFinish,
-					sysAssess, "", taskNumber,0, logType,0);
+					sysAssess, "", taskNumber,0, logType,ntId);
 			slDao.save(sess, sl);
 			tran.commit();
 			return sl.getId();
@@ -299,5 +300,4 @@ public class StudyLogManagerImpl implements StudyLogManager{
 			HibernateUtil.closeSession();
 		}
 	}
-
 }

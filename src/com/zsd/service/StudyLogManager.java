@@ -13,6 +13,7 @@ public interface StudyLogManager {
 	 * @author wm
 	 * @date 2019-5-29 上午08:52:21
 	 * @param userId 学生编号
+	 * @param ntId 导师编号(有导师时存在，没有时为0)
 	 * @param loreId 知识点编号
 	 * @param subId 科目编号
 	 * @param step 答题阶段（共5段）
@@ -27,7 +28,7 @@ public interface StudyLogManager {
 	 * @return
 	 * @throws WEBException
 	 */
-	Integer addStudyLog(Integer userId,Integer loreId,Integer subId,Integer step,Integer stepComplete,Integer isFinish,
+	Integer addStudyLog(Integer userId,Integer ntId,Integer loreId,Integer subId,Integer step,Integer stepComplete,Integer isFinish,
 			String sysAssess,Integer currentGold,Integer access,String addTime,Integer taskNumber,Integer logType) throws WEBException;
 	
 	/**

@@ -180,4 +180,15 @@ public interface NetTeacherStudentManager {
 	  * @throws WEBException
 	  */
 	 List<NetTeacherStudent> listBindNt(Integer stuId)throws WEBException;
+	 
+	 /**
+	  * 获取指定学生指定学科的绑定日期没结束且未取消未清除的信息
+	  * @author wm
+	  * @date 2019-9-24 下午05:53:14
+	  * @param stuId 学生编号
+	  * @param subId 科目编号
+	  * @return
+	  * @throws WEBException
+	  */
+	 NetTeacherStudent getValidInfoByOpt(Integer stuId,Integer subId)throws WEBException;
 }
