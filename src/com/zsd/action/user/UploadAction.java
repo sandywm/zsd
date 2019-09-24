@@ -148,7 +148,7 @@ public class UploadAction extends DispatchAction {
 			ServletFileUpload fileUpload = new ServletFileUpload(factory);
 			List<FileItem> filelist = fileUpload.parseRequest(request);
 			ListIterator<FileItem> iterator = filelist.listIterator();
-			String userPath = WebUrl.PERSONAL_HONOR;
+			String userPath = WebUrl.PERSONAL_HONOR + "/" + CommonTools.getLoginUserId(request);
 			String smallUrl = "";
 			boolean upFlag = false;
 			String msg = "error";
