@@ -148,7 +148,8 @@ public class UploadAction extends DispatchAction {
 			ServletFileUpload fileUpload = new ServletFileUpload(factory);
 			List<FileItem> filelist = fileUpload.parseRequest(request);
 			ListIterator<FileItem> iterator = filelist.listIterator();
-			String userPath = WebUrl.PERSONAL_HONOR + "/" + CommonTools.getLoginUserId(request);
+			Integer userId = CommonTools.getLoginUserId(request);
+			String userPath = WebUrl.PERSONAL_HONOR + "/" + userId;
 			String smallUrl = "";
 			boolean upFlag = false;
 			String msg = "error";
@@ -186,7 +187,7 @@ public class UploadAction extends DispatchAction {
 					//生成小图
 					String smallImgPath = userPath  + "/" + fileNamePre + "_small." + suffix;
 					FileOpration.makeImage(userPath  + "/" + filename, 0.3, smallImgPath, suffix.toUpperCase());
-					smallUrl += WebUrl.NEW_PERSONAL_HONOR + fileNamePre + "_small." + suffix + ",";
+					smallUrl += WebUrl.NEW_PERSONAL_HONOR + userId + "/" + fileNamePre + "_small." + suffix + ",";
 				}
 			}
 			if(!smallUrl.equals("")){
