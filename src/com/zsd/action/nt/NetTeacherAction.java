@@ -36,7 +36,9 @@ import com.zsd.service.NtCertificateInfoManager;
 import com.zsd.service.StudentPayOrderInfoManager;
 import com.zsd.service.UserManager;
 import com.zsd.tools.CommonTools;
+import com.zsd.tools.FileOpration;
 import com.zsd.util.Constants;
+import com.zsd.util.WebUrl;
 
 /**
  * MyEclipse Struts Creation date: 05-12-2019
@@ -316,10 +318,24 @@ public class NetTeacherAction extends DispatchAction {
 						String icardImgFrontSmall = Transcode.unescape_new("icardImgFrontSmall", request); //身份证正面小
 						String icardImgBackSmall = Transcode.unescape_new("icardImgBackSmall", request); //身份正背面小
 						if(ntcList.size() > 0){//存在网络导师证件信息
-							Integer ntcId = ntcList.get(0).getId();
+							NetTeacherCertificateInfo ntc = ntcList.get(0);
+							Integer ntcId = ntc.getId();
 							if(!icardImgFrontSmall.equals("") && !icardImgBackSmall.equals("")){
 								icardImgFrontBig = icardImgFrontSmall.replace("_small", "");
 								icardImgBackBig = icardImgBackSmall.replace("_small", "");
+								String icardImgFrontSmall_base = ntc.getIcardImgFrontSmall();
+								String icardImgBackSmall_base = ntc.getIcardImgBackSmall();
+								//删除之前上传的
+								if(!icardImgFrontSmall.equals(icardImgFrontSmall_base)){
+									String icardImgFrontBig_base = icardImgFrontSmall_base.replace("_small", "");
+									FileOpration.deleteFile(WebUrl.DATA_URL_PRO  + icardImgFrontSmall_base);
+									FileOpration.deleteFile(WebUrl.DATA_URL_PRO  + icardImgFrontBig_base);
+								}
+								if(!icardImgBackSmall.equals(icardImgBackSmall_base)){
+									String icardImgBackBig_base = icardImgBackSmall_base.replace("_small", "");
+									FileOpration.deleteFile(WebUrl.DATA_URL_PRO  + icardImgBackSmall_base);
+									FileOpration.deleteFile(WebUrl.DATA_URL_PRO  + icardImgBackBig_base);
+								}
 								boolean   ntcFlag = ntcManager.updateiCardInfo(ntcId, icardImgFrontBig, icardImgBackBig, icardImgFrontSmall, icardImgBackSmall, icardName, icardNum);
 								if(ntcFlag){
 									msg = "success";
@@ -382,7 +398,13 @@ public class NetTeacherAction extends DispatchAction {
 						if(ntcList.size() > 0){//存在网络导师证件信息
 							Integer ntcId = ntcList.get(0).getId();
 							if(!xlzImgSmall.equals("")){
+								String xlzImgSmall_base = ntcList.get(0).getXlzImgSmall();
 								xlzImgBig = xlzImgSmall.replace("_small", "");
+								//删除之前上传的
+								if(!xlzImgSmall.equals(xlzImgSmall_base)){
+									FileOpration.deleteFile(WebUrl.DATA_URL_PRO  + xlzImgSmall_base);
+									FileOpration.deleteFile(WebUrl.DATA_URL_PRO  + xlzImgSmall_base.replace("_small", ""));
+								}
 								boolean   ntcFlag = ntcManager.updateXlzInfo(ntcId, xlzImgBig, xlzImgSmall);
 								if(ntcFlag){
 									msg = "success";
@@ -445,6 +467,12 @@ public class NetTeacherAction extends DispatchAction {
 							Integer ntcId = ntcList.get(0).getId();
 							if(!zgzImgSmall.equals("")){
 								zgzImgBig = zgzImgSmall.replace("_small", "");
+								String zgzImgSmall_base = ntcList.get(0).getZgzImgSmall();
+								//删除之前上传的
+								if(!zgzImgSmall.equals(zgzImgSmall_base)){
+									FileOpration.deleteFile(WebUrl.DATA_URL_PRO  + zgzImgSmall_base);
+									FileOpration.deleteFile(WebUrl.DATA_URL_PRO  + zgzImgSmall_base.replace("_small", ""));
+								}
 								boolean   ntcFlag = ntcManager.updateZgzInfo(ntcId, zgzImgBig, zgzImgSmall);
 								if(ntcFlag){
 									msg = "success";
