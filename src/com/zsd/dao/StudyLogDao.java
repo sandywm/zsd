@@ -88,13 +88,14 @@ public interface StudyLogDao {
 	 * @author zdf
 	 * 2019-6-28 下午04:26:18
 	 * @param sess
-	 * @param userId 学生编号
+	 * @param userId 导师用户编号
 	 * @param subId 学科编号
+	 * @param stuIdStr 学生编号(多个用逗号隔开)
 	 * @param sDate 开始时间
 	 * @param eDate 结束时间
 	 * @return
 	 */
-	List<StudyLogInfo> findStuLogByOption(Session sess,Integer userId,Integer subId,String sDate, String eDate);
+	List<StudyLogInfo> findStuLogByOption(Session sess,Integer userId,Integer subId,String stuId,String sDate, String eDate);
 	/**
 	 * 学生跟踪指导信息
 	 * @author zdf

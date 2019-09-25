@@ -80,11 +80,12 @@ public class StudyLogDaoImpl implements StudyLogDao{
 	}
 
 	@Override
-	public List<StudyLogInfo> findStuLogByOption(Session sess, Integer userId,Integer subId,
-			String sDate, String eDate) {
+	public List<StudyLogInfo> findStuLogByOption(Session sess,Integer userId,Integer subId,String stuIdStr,String sDate, String eDate) {
 		String hql = " from StudyLogInfo as sl where sl.isFinish = 2 and sl.subject.id="+subId;
-			   if(!userId.equals(0)){
-				   hql +=" and sl.user.id = "+userId;
+			   if(stuIdStr.indexOf(",") >= 0){
+				   hql +=" and sl.user.id in ('"+stuIdStr+"')";
+			   }else{//单个
+				   hql +=" and sl.user.id = "+Integer.parseInt(stuIdStr);
 			   }
 			   if(!sDate.equals("")&& !eDate.equals("")){
 				    hql += " and substring(sl.addTime,1,10) >= '"+sDate+"' and substring(sl.addTime,1,10) <= '"+eDate+"'";
@@ -95,8 +96,12 @@ public class StudyLogDaoImpl implements StudyLogDao{
 	@Override
 	public List<StudyLogInfo> findStuLogByStu(Session sess,Integer teaId,Integer stuId,/*Integer subId,*/Integer guideSta,String sDate, String eDate) {
 	
-		 String hql = " from StudyLogInfo as sl where sl.teaId="+teaId;
+		 String hql = " from StudyLogInfo as sl where 1 = 1";
 		
+		   if(teaId > 0){
+			   hql += " and sl.teaId="+teaId;
+		   }
+		 
 		   if(!stuId.equals(0)){
 			   hql +=" and sl.user.id = "+stuId;
 		   }

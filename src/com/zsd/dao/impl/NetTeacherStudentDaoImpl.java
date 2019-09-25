@@ -54,17 +54,23 @@ public class NetTeacherStudentDaoImpl implements NetTeacherStudentDao {
 	}
 
 	@Override
-	public List<NetTeacherStudent> findNTByntId(Session sess, Integer userId,Integer bindSta,Integer pageNo,Integer pageSize) {
+	public List<NetTeacherStudent> findNTByntId(Session sess, Integer userId,String stuName,Integer bindSta,Integer pageNo,Integer pageSize) {
 		int offset = (pageNo - 1) * pageSize;
 		if (offset < 0) {
 			offset = 0;
 		}
 		String hql = "from NetTeacherStudent as nts where nts.netTeacherInfo.user.id="+userId+" and nts.bindStatus="+bindSta+" and nts.clearStatus=0";
+		 if(!stuName.equals("")){
+				hql +=" and nts.user.realName like '%"+stuName+"%'"; 
+		  }
 		return  sess.createQuery(hql).setFirstResult(offset).setMaxResults(pageSize).list();
 	}
 	@Override
-	public Integer getNTByNTIdCount(Session sess, Integer userId, Integer bindSta) {
+	public Integer getNTByNTIdCount(Session sess, Integer userId,String stuName, Integer bindSta) {
 		String hql = "select count(nts.id) from NetTeacherStudent as nts where nts.netTeacherInfo.user.id="+userId+" and nts.bindStatus="+bindSta+" and nts.clearStatus=0";
+		 if(!stuName.equals("")){
+				hql +=" and nts.user.realName like '%"+stuName+"%'"; 
+		  }
 		Object countObj = sess.createQuery(hql).uniqueResult();
 		return CommonTools.longToInt(countObj);
 	}
@@ -235,6 +241,17 @@ public class NetTeacherStudentDaoImpl implements NetTeacherStudentDao {
 		// TODO Auto-generated method stub
 		String hql = " from NetTeacherStudent as nts where nts.user.id = "+stuId+ " and nts.clearStatus = 0 and nts.netTeacherInfo.subject.id = "+subId;
 		hql += "  and nts.bindStatus != 0 and  nts.endDate > '"+CurrentTime.getStringDate()+"'";
+		List<NetTeacherStudent> ntsList = sess.createQuery(hql).list();
+		if(ntsList.size() > 0){
+			return ntsList.get(0);
+		}
+		return null;
+	}
+
+	@Override
+	public NetTeacherStudent getEntityInfoByOpt(Session sess, Integer userId,Integer stuId) {
+		// TODO Auto-generated method stub
+		String hql = " from NetTeacherStudent as nts where nts.user.id = "+stuId + " and nts.netTeacherInfo.user.id = "+userId;
 		List<NetTeacherStudent> ntsList = sess.createQuery(hql).list();
 		if(ntsList.size() > 0){
 			return ntsList.get(0);

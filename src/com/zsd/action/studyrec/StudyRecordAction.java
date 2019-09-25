@@ -475,7 +475,8 @@ public class StudyRecordAction extends DispatchAction {
 		StudyLogManager slManager = (StudyLogManager) AppFactory.instance(null).getApp(Constants.WEB_STUDY_LOG_INFO);
 		NetTeacherStudentManager ntsManager = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT);
 		BuffetSendInfoManager bsManager = (BuffetSendInfoManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_SEND_INFO);
-		Integer userId=CommonTools.getFinalInteger("stuId", request);//学生编号
+		NetTeacherStudentManager ntsm = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT);
+		Integer stuId=CommonTools.getFinalInteger("stuId", request);//学生编号
 		Integer sendFlag=CommonTools.getFinalInteger("sendFlag", request);//发布标记
 		Integer ntId=CommonTools.getLoginUserId(request);
 		String sDate=CommonTools.getFinalStr("sDate",request);
@@ -489,11 +490,19 @@ public class StudyRecordAction extends DispatchAction {
 		String stuUserName ="";
 		Map<String,Object> map = new HashMap<String,Object>();
 		List<Object> list_d = new ArrayList<Object>();
-		List<NetTeacherStudent> ntsList = ntsManager.listByntId(ntId);
+		List<NetTeacherStudent> ntsList = ntsManager.listBindStu(ntId);//获取该导师所有有绑定关系的学生列表
 		if(!ntsList.isEmpty()){
 			subId = ntsList.get(0).getNetTeacherInfo().getSubject().getId();
-			if(!userId.equals(0)){
+			String stuIdStr = "";
+			if(!stuId.equals(0)){//指定学生
 				stuUserName = ntsList.get(0).getUser().getRealName();
+			}else{
+				for(NetTeacherStudent nts : ntsList){
+					stuIdStr += nts.getUser().getId() + ",";
+				}
+				if(!stuIdStr.equals("")){
+					stuIdStr = stuIdStr.substring(0, stuIdStr.length() - 1);
+				}
 			}
 		    if(sDate.equals("")){
 				//表示是默认的当前日期前3天的记录(包含当前，所以-2)
@@ -505,55 +514,73 @@ public class StudyRecordAction extends DispatchAction {
 				}
 			}
 		    diffDay = CurrentTime.compareDate(sDate,eDate);
-			List<StudyLogInfo> slList =  slManager.listStuLogByOption(userId,subId, sDate, eDate);
+		    //获取该到时下所有有过绑定关系的学生的所有记录
+			List<StudyLogInfo> slList =  slManager.listStuLogByOption(0,subId,stuIdStr, sDate, eDate);
 			for (Iterator<StudyLogInfo> itr = slList.iterator(); itr.hasNext();) {
 				StudyLogInfo slInfo = (StudyLogInfo) itr.next();
-				Map<String,Object> map_d= new HashMap<String,Object>();
-				Integer stuLogId = slInfo.getId();
-				map_d.put("studyLogId", stuLogId); //学习记录主键
-				map_d.put("loreId", slInfo.getLoreInfo().getId()); //知识点主键
-				map_d.put("loreName", slInfo.getLoreInfo().getLoreName());//知识点名称
-				map_d.put("mainLoreId", slInfo.getLoreInfo().getMainLoreId());//引用知识点
-				map_d.put("stuId", slInfo.getUser().getId());//学生编号
-				map_d.put("stuName", slInfo.getUser().getRealName());//学生真实姓名
-				List<BuffetSendInfo> bsList = bsManager.listBsInfoByStudyLogId(stuLogId);
-				if(bsList.isEmpty() && sendFlag.equals(0)){
-					map_d.put("bs_id",0);
-					map_d.put("bs_sendTime", "");
-					map_d.put("bs_result", "");
-					list_d.add(map_d);
-				}else if(!bsList.isEmpty() && sendFlag.equals(1)){
-					BuffetSendInfo bs = bsList.get(0);
-					map_d.put("bs_id", bs.getId());
-					map_d.put("bs_sendTime", bs.getSendTime());
-					map_d.put("bs_result", bs.getStudyResult());
-					BuffetSendNum++;
-					if(bs.getStudyResult().equals(1)){
-						comBuffetNum++;
-					}
-					list_d.add(map_d);
-				}else if(sendFlag.equals(2)){
-					if(bsList.isEmpty()){
-						map_d.put("bs_id",0);
-						map_d.put("bs_sendTime", "");
-						map_d.put("bs_result", "");
-					}else if(!bsList.isEmpty()){
-						BuffetSendInfo bs = bsList.get(0);
-						map_d.put("bs_id", bs.getId());
-						map_d.put("bs_sendTime", bs.getSendTime());
-						map_d.put("bs_result", bs.getStudyResult());
-						BuffetSendNum++;
-						if(bs.getStudyResult().equals(1)){
-							comBuffetNum++;
+				NetTeacherStudent nts = ntsm.getEntityInfoByOpt(ntId, slInfo.getUser().getId());
+				if(nts != null){//存在绑定记录
+					Integer clearStatus = nts.getClearStatus();
+					Integer bindStatus = nts.getBindStatus();
+					String endDate = nts.getEndDate();
+					boolean flag = false;
+					if(!bindStatus.equals(0) && clearStatus.equals(0) && CurrentTime.compareDate(CurrentTime.getStringDate(), endDate) > 0){//没取消没升学没到期
+						//获取该学生指定指导状态下指定时间内的所有学习记录，否则必须获取绑定期限内时的学习记录
+						flag = true;
+					}else{
+						if(slInfo.getTeaId().equals(nts.getNetTeacherInfo().getId())){//不是正在绑定时只显示之前的记录
+							flag = true;
 						}
 					}
-					list_d.add(map_d);
+					if(flag){
+						Map<String,Object> map_d= new HashMap<String,Object>();
+						Integer stuLogId = slInfo.getId();
+						map_d.put("studyLogId", stuLogId); //学习记录主键
+						map_d.put("loreId", slInfo.getLoreInfo().getId()); //知识点主键
+						map_d.put("loreName", slInfo.getLoreInfo().getLoreName());//知识点名称
+						map_d.put("mainLoreId", slInfo.getLoreInfo().getMainLoreId());//引用知识点
+						map_d.put("stuId", slInfo.getUser().getId());//学生编号
+						map_d.put("stuName", slInfo.getUser().getRealName());//学生真实姓名
+						List<BuffetSendInfo> bsList = bsManager.listBsInfoByStudyLogId(stuLogId);
+						if(bsList.isEmpty() && sendFlag.equals(0)){
+							map_d.put("bs_id",0);
+							map_d.put("bs_sendTime", "");
+							map_d.put("bs_result", "");
+							list_d.add(map_d);
+						}else if(!bsList.isEmpty() && sendFlag.equals(1)){
+							BuffetSendInfo bs = bsList.get(0);
+							map_d.put("bs_id", bs.getId());
+							map_d.put("bs_sendTime", bs.getSendTime());
+							map_d.put("bs_result", bs.getStudyResult());
+							BuffetSendNum++;
+							if(bs.getStudyResult().equals(1)){
+								comBuffetNum++;
+							}
+							list_d.add(map_d);
+						}else if(sendFlag.equals(2)){
+							if(bsList.isEmpty()){
+								map_d.put("bs_id",0);
+								map_d.put("bs_sendTime", "");
+								map_d.put("bs_result", "");
+							}else if(!bsList.isEmpty()){
+								BuffetSendInfo bs = bsList.get(0);
+								map_d.put("bs_id", bs.getId());
+								map_d.put("bs_sendTime", bs.getSendTime());
+								map_d.put("bs_result", bs.getStudyResult());
+								BuffetSendNum++;
+								if(bs.getStudyResult().equals(1)){
+									comBuffetNum++;
+								}
+							}
+							list_d.add(map_d);
+						}
+						
+					}
+					if(BuffetSendNum > 0){
+						unComBuffetNum = BuffetSendNum - comBuffetNum;
+						comRate = String.format("%.2f", (double)comBuffetNum * 100 / BuffetSendNum) + "%";//完成率
+					}
 				}
-				
-			}
-			if(BuffetSendNum > 0){
-				unComBuffetNum = BuffetSendNum - comBuffetNum;
-				comRate = String.format("%.2f", (double)comBuffetNum * 100 / BuffetSendNum) + "%";//完成率
 			}
 		}
 		
@@ -1060,7 +1087,7 @@ public class StudyRecordAction extends DispatchAction {
 		return null;
 	}
 	/**
-	 * 指定学生跟踪指导
+	 * 指定学生跟踪指导(网络导师获取跟踪指导时获取学生的学习记录)
 	 * @author zdf
 	 * 2019-9-17 上午09:26:03
 	 * @param mapping
@@ -1073,58 +1100,52 @@ public class StudyRecordAction extends DispatchAction {
 	public ActionForward  getGuideList(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		StudyLogManager slManager = (StudyLogManager) AppFactory.instance(null).getApp(Constants.WEB_STUDY_LOG_INFO);
-		NetTeacherInfoManager ntManager = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
-		UserManager um = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
-		NetTeacherStudentManager ntsManager = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT);
+		NetTeacherStudentManager ntsm = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT);
 		Integer stuId=CommonTools.getFinalInteger("stuId", request);//学生编号
 		Integer guideSta=CommonTools.getFinalInteger("guideSta", request);//指导状态 0 全部, 1 未指导, 2 指导
 		Integer userId=CommonTools.getLoginUserId(request);
 		String sDate=CommonTools.getFinalStr("sDate",request);
 		String eDate=CommonTools.getFinalStr("eDate",request);
-	
 		Integer teaId = 0;
 		Integer allStudyLog =0;
 		String stuName = "";
-		Map<String,Object> map = new HashMap<String,Object>();
+		Integer diffDay = 0;
 		List<Object> list_d = new ArrayList<Object>();
-		if(sDate.equals("")){
-			//表示是默认的当前日期前3天的记录(包含当前，所以-2)
-			sDate = CurrentTime.getFinalDate(CurrentTime.getStringDate(), -2);
-			eDate = CurrentTime.getStringDate();
-		}else{
-			if(eDate.equals("")){
+		Map<String,Object> map = new HashMap<String,Object>();
+		if(stuId > 0 && userId > 0){
+			if(sDate.equals("")){
+				//表示是默认的当前日期前3天的记录(包含当前，所以-2)
+				sDate = CurrentTime.getFinalDate(CurrentTime.getStringDate(), -2);
 				eDate = CurrentTime.getStringDate();
+			}else{
+				if(eDate.equals("")){
+					eDate = CurrentTime.getStringDate();
+				}
+			}
+		    diffDay = CurrentTime.compareDate(sDate,eDate) + 1;
+		    NetTeacherStudent nts = ntsm.getEntityInfoByOpt(userId, stuId);
+			if(nts != null){//存在绑定记录
+				Integer clearStatus = nts.getClearStatus();
+				Integer bindStatus = nts.getBindStatus();
+				String endDate = nts.getEndDate();
+				teaId = nts.getNetTeacherInfo().getId();
+				stuName = nts.getUser().getRealName();
+				if(!bindStatus.equals(0) && clearStatus.equals(0) && CurrentTime.compareDate(CurrentTime.getStringDate(), endDate) > 0){//没取消没升学没到期
+					teaId = 0;//获取该学生指定指导状态下指定时间内的所有学习记录，否则必须获取绑定期限内时的学习记录
+				}
+				List<StudyLogInfo> slList =  slManager.listStuLogByStu(teaId, stuId, guideSta, sDate, eDate);
+				allStudyLog += slList.size();
+				for (Iterator<StudyLogInfo> itr = slList.iterator(); itr.hasNext();) {
+					StudyLogInfo slInfo = (StudyLogInfo) itr.next();
+					Map<String,Object> map_d= new HashMap<String,Object>();
+					map_d.put("studyLogId", slInfo.getId()); //学习记录主键
+					map_d.put("loreName", slInfo.getLoreInfo().getLoreName());//知识点名称
+					map_d.put("isfinish", slInfo.getIsFinish());
+					map_d.put("guideSta", guideSta);
+					list_d.add(map_d);
+				}
 			}
 		}
-	    Integer diffDay = CurrentTime.compareDate(sDate,eDate) + 1;
-			
-		if(stuId.equals(0)){
-			List<NetTeacherStudent> ntsList = ntsManager.listByntId(userId);
-			if(ntsList.size() > 0){
-				teaId = ntsList.get(0).getNetTeacherInfo().getId();
-				stuId = ntsList.get(0).getUser().getId();
-				stuName = ntsList.get(0).getUser().getRealName();
-			}
-		}else{
-			List<NetTeacherInfo>  ntList= ntManager.listntInfoByuserId(userId);
-			if(ntList.size() > 0){
-				teaId=ntList.get(0).getId();
-				stuName = um.listEntityById(stuId).get(0).getRealName();
-			}
-		}
-		
-		List<StudyLogInfo> slList =  slManager.listStuLogByStu(teaId, stuId, guideSta, sDate, eDate);
-		allStudyLog += slList.size();
-		for (Iterator<StudyLogInfo> itr = slList.iterator(); itr.hasNext();) {
-			StudyLogInfo slInfo = (StudyLogInfo) itr.next();
-			Map<String,Object> map_d= new HashMap<String,Object>();
-			map_d.put("studyLogId", slInfo.getId()); //学习记录主键
-			map_d.put("loreName", slInfo.getLoreInfo().getLoreName());//知识点名称
-			map_d.put("isfinish", slInfo.getIsFinish());
-			map_d.put("guideSta", guideSta);
-			list_d.add(map_d);
-		}
-	
 		map.put("slList", list_d);
 		map.put("diffDay", diffDay);
 		map.put("allStudyLog", allStudyLog);
@@ -1219,5 +1240,4 @@ public class StudyRecordAction extends DispatchAction {
 			CommonTools.getJsonPkg(map, response);
 			return null;
 	}
-			
 }

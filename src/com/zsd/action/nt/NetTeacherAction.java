@@ -942,13 +942,14 @@ public class NetTeacherAction extends DispatchAction {
 		NetTeacherStudentManager  ntsManager = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT);
 		Integer userId = CommonTools.getLoginUserId(request);
 		Integer bindStatus = CommonTools.getFinalInteger("bindStatus", request);
-		Integer count = ntsManager.getNTByntIdCount(userId, bindStatus);
+		String stuName = Transcode.unescape_new1("stuName", request);
+		Integer count = ntsManager.getNTByntIdCount(userId,stuName, bindStatus);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg ="暂无记录";
 		if(count>0){
 			Integer pageSize = PageConst.getPageSize(String.valueOf(request.getParameter("limit")), 10);//等同于pageSize
 			Integer pageNo = CommonTools.getFinalInteger("page", request);//等同于pageNo
-			List<NetTeacherStudent> ntsList = ntsManager.listNTByntId(userId,bindStatus,pageNo,pageSize);
+			List<NetTeacherStudent> ntsList = ntsManager.listNTByntId(userId,stuName,bindStatus,pageNo,pageSize);
 			List<Object> list_d = new ArrayList<Object>();
 			for (Iterator<NetTeacherStudent> iterator = ntsList.iterator(); iterator.hasNext();) {
 				NetTeacherStudent nts = (NetTeacherStudent) iterator.next();

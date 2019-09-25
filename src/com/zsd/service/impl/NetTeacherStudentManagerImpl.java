@@ -100,12 +100,12 @@ public class NetTeacherStudentManagerImpl implements NetTeacherStudentManager {
 	}
 
 	@Override
-	public List<NetTeacherStudent> listNTByntId(Integer userId, Integer bindSta,Integer pageNo,Integer pageSize)
+	public List<NetTeacherStudent> listNTByntId(Integer userId,String stuName, Integer bindSta,Integer pageNo,Integer pageSize)
 			throws WEBException {
 		try {
 			ntsDao = (NetTeacherStudentDao) DaoFactory.instance(null).getDao(Constants.DAO_NET_TEACHER_STUDENT);
 			Session sess  = HibernateUtil.currentSession();
-			return ntsDao.findNTByntId(sess, userId, bindSta, pageNo, pageSize);
+			return ntsDao.findNTByntId(sess, userId,stuName, bindSta, pageNo, pageSize);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new WEBException("根据网络导师编号,绑定状态获取绑定学生信息时出现异常!");
@@ -114,12 +114,12 @@ public class NetTeacherStudentManagerImpl implements NetTeacherStudentManager {
 		}
 	}
 	@Override
-	public Integer getNTByntIdCount(Integer userId, Integer bindSta)
+	public Integer getNTByntIdCount(Integer userId,String stuName, Integer bindSta)
 			throws WEBException {
 		try {
 			ntsDao = (NetTeacherStudentDao) DaoFactory.instance(null).getDao(Constants.DAO_NET_TEACHER_STUDENT);
 			Session sess  = HibernateUtil.currentSession();
-			return ntsDao.getNTByNTIdCount(sess, userId, bindSta);
+			return ntsDao.getNTByNTIdCount(sess, userId,stuName, bindSta);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new WEBException("根据网络导师编号,绑定状态获取绑定学生记录数时出现异常!");
@@ -299,6 +299,21 @@ public class NetTeacherStudentManagerImpl implements NetTeacherStudentManager {
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new WEBException("获取指定学生指定学科的绑定日期没结束且未取消未清除的信息时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public NetTeacherStudent getEntityInfoByOpt(Integer userId, Integer stuId)throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			ntsDao = (NetTeacherStudentDao) DaoFactory.instance(null).getDao(Constants.DAO_NET_TEACHER_STUDENT);
+			Session sess  = HibernateUtil.currentSession();
+			return ntsDao.getEntityInfoByOpt(sess, userId, stuId);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("根据导师用户编号、学生编号获取绑定的信息时出现异常!");
 		} finally{
 			HibernateUtil.closeSession();
 		}

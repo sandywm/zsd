@@ -64,7 +64,7 @@ public interface NetTeacherStudentManager {
 	 * @return
 	 * @throws WEBException
 	 */
-	List<NetTeacherStudent> listNTByntId(Integer userId,Integer bindSta,Integer pageNo,Integer pageSize)throws WEBException;
+	List<NetTeacherStudent> listNTByntId(Integer userId,String stuName,Integer bindSta,Integer pageNo,Integer pageSize)throws WEBException;
 	/**
 	 * 根据网络导师用户编号,绑定状态 获取绑定学生总记录数
 	 * @author zdf
@@ -74,7 +74,7 @@ public interface NetTeacherStudentManager {
 	 * @return
 	 * @throws WEBException
 	 */
-	Integer getNTByntIdCount(Integer userId,Integer bindSta)throws WEBException;
+	Integer getNTByntIdCount(Integer userId,String stuName,Integer bindSta)throws WEBException;
 	/**
 	 * 根据绑定状态,学生姓名查看网络导师学生绑定信息(我的班级)
 	 * @author zong
@@ -191,4 +191,15 @@ public interface NetTeacherStudentManager {
 	  * @throws WEBException
 	  */
 	 NetTeacherStudent getValidInfoByOpt(Integer stuId,Integer subId)throws WEBException;
+	 
+	 /**
+	  * 根据导师用户编号、学生编号获取绑定的信息
+	  * @author wm
+	  * @date 2019-9-25 下午04:05:54
+	  * @param ntId 导师用户编号
+	  * @param stuId 学生编号
+	  * @return
+	  * @throws WEBException
+	  */
+	 NetTeacherStudent getEntityInfoByOpt(Integer userId,Integer stuId)throws WEBException;
 }

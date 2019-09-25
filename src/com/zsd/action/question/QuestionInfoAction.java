@@ -29,6 +29,7 @@ import com.zsd.page.PageConst;
 import com.zsd.service.ClassInfoManager;
 import com.zsd.service.EmailManager;
 import com.zsd.service.GradeSubjectManager;
+import com.zsd.service.NetTeacherInfoManager;
 import com.zsd.service.NetTeacherStudentManager;
 import com.zsd.service.QuestionInfoManager;
 import com.zsd.service.UserClassInfoManager;
@@ -293,11 +294,9 @@ public class QuestionInfoAction extends DispatchAction {
 		String msg = "暂无记录";
 		Map<String, Object> map = new HashMap<String, Object>();
 		if (count > 0) {
-			Integer pageSize = PageConst.getPageSize(
-					String.valueOf(request.getParameter("limit")), 10);// 等同于pageSize
+			Integer pageSize = PageConst.getPageSize(String.valueOf(request.getParameter("limit")), 10);// 等同于pageSize
 			Integer pageNo = CommonTools.getFinalInteger("page", request);// 等同于pageNo
-			List<QuestionInfo> qList = qManager.listInfoByStu(userId,stuId,
-					readStatus, pageNo, pageSize);
+			List<QuestionInfo> qList = qManager.listInfoByStu(userId,stuId,readStatus, pageNo, pageSize);
 			List<Object> list_d = new ArrayList<Object>();
 			Integer unAns=qManager.getInfoByStuCount(userId,stuId, 0);;
 			for (Iterator<QuestionInfo> it = qList.iterator(); it.hasNext();) {
