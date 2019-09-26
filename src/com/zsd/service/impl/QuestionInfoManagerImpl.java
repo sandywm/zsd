@@ -182,4 +182,28 @@ public class QuestionInfoManagerImpl implements QuestionInfoManager {
 		}
 	}
 
+	@Override
+	public boolean updateQueImgById(Integer id, String queImg)
+			throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			qDao = (QuestionInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_QUESTION_INFO);
+			Session sess  = HibernateUtil.currentSession();
+			tran = sess.beginTransaction();
+			QuestionInfo qInfo = qDao.get(sess, id);
+			if(qInfo != null){
+				qInfo.setQueImg(queImg);
+				qDao.update(sess, qInfo);
+				tran.commit();
+				return true;
+			}
+			return false;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("修改提问时的图片路径时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
 }

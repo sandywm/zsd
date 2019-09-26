@@ -35,6 +35,7 @@ import com.zsd.module.UserClassInfo;
 import com.zsd.page.PageConst;
 import com.zsd.service.EditionManager;
 import com.zsd.service.EducationManager;
+import com.zsd.service.EmailManager;
 import com.zsd.service.GradeSubjectManager;
 import com.zsd.service.InviteCodeInfoManager;
 import com.zsd.service.NetTeacherInfoManager;
@@ -1225,5 +1226,36 @@ public class CommonAction extends DispatchAction {
 	public ActionForward  downApp(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		return mapping.findForward("downAppPage");
+	}
+	/**
+	 * 发送邮件
+	 * @author zdf
+	 * 2019-9-26 上午11:34:43
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward  sendMsg(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		EmailManager eManager = (EmailManager) AppFactory.instance(null).getApp(Constants.WEB_EMAIL_INFO);
+		Integer userId = CommonTools.getLoginUserId(request);
+		String emailType = CommonTools.getFinalStr("emailType",request);;
+		String content= Transcode.unescape_new1("contect", request);
+		String title = Transcode.unescape_new1("title", request);
+		Integer toUserId=CommonTools.getFinalInteger("toUserId", request);
+		Integer emailId = eManager.addEmail(userId, title, content, emailType, toUserId);
+		Map<String, String> map = new HashMap<String, String>();
+		String msg = "fail";
+		if(emailId>0){
+			msg ="success";
+		}
+		
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+		
 	}
 }

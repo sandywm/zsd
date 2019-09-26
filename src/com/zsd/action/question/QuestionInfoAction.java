@@ -72,21 +72,41 @@ public class QuestionInfoAction extends DispatchAction {
 		String queTime= CurrentTime.getCurrentTime();
 		String queImg=CommonTools.getFinalStr("queImg",request);
 		String queImgFinal = "";
-		if(!queImg.equals("")){
-			String[] queImgArr = queImg.split(",");
-			for(int i = 0 ; i < queImgArr.length ; i++){
-				String queImgName = queImgArr[i].substring(queImgArr[i].lastIndexOf("/") + 1);
-				queImgFinal += WebUrl.NEW_DATA_URL_QUE_FILE_UPLOAD + queImgName + ",";
-			}
-			if(!queImgFinal.equals("")){
-				queImgFinal = queImgFinal.substring(0, queImgFinal.length() - 1);
-			}
-		}
-		Integer qId =qManager.adddQue(subId, userId , ntId, queTitle, queContent,queImgFinal,queTime, "", "", 0);
 		Map<String, Object> map = new HashMap<String, Object>();
 		String msg ="fail";
+		Integer qId = qManager.adddQue(subId, userId , ntId, queTitle, queContent,"",queTime, "", "", 0);
 		if(qId>0){
-			String newUrl = WebUrl.DATA_URL_QUE_FILE_UPLOAD + "/" + qId;
+			if(!queImg.equals("")){
+				String[] queImgArr = queImg.split(",");
+				String newUrl = WebUrl.DATA_URL_QUE_FILE_UPLOAD + "/" + qId;
+				for(int i = 0 ; i < queImgArr.length ; i++){
+					String queImgName = queImgArr[i].substring(queImgArr[i].lastIndexOf("/") + 1);
+					queImgFinal += WebUrl.NEW_DATA_URL_QUE_FILE_UPLOAD + qId + "/" + queImgName + ",";
+					File file = new File(newUrl);
+		    		if(!file.exists()){
+		    			file.mkdirs();
+		    		}
+		    		//将缓存中的图片剪切到提问路径目录下
+		    		//复制缩略图
+					boolean flag = FileOpration.copyFile(WebUrl.DATA_URL_PRO + queImgArr[i].substring(1), newUrl + "/" + queImgName);
+					if(flag){
+						//剪切缩略图
+						flag = FileOpration.deleteFile(WebUrl.DATA_URL_PRO + queImgArr[i].substring(1));
+						if(flag){
+							//复制原图
+							flag = FileOpration.copyFile(WebUrl.DATA_URL_PRO + queImgArr[i].replace("_small", "").substring(1), newUrl + "/" + queImgName.replace("_small", ""));
+							if(flag){
+								//剪切原图
+								FileOpration.deleteFile(WebUrl.DATA_URL_PRO + queImgArr[i].replace("_small", "").substring(1));
+							}
+						}
+					}
+				}
+				if(!queImgFinal.equals("")){
+					queImgFinal = queImgFinal.substring(0, queImgFinal.length() - 1);
+				}
+				qManager.updateQueImgById(qId, queImgFinal);
+			}
 			msg = "success";
 			List<QuestionInfo> qList = qManager.listInfoById(qId);
 			QuestionInfo que = qList.get(0);
@@ -95,22 +115,6 @@ public class QuestionInfoAction extends DispatchAction {
 			Integer userId_nt = que.getNetTeacherInfo().getUser().getId();
 			String content_tea = userName_nt+"导师，您好，"+userName_stu+"学生向您提出["+queTitle+"]问题，请最迟于当天晚上11点前及时回复，谢谢。[知识典]";
 			em.addEmail(1, "学生提问", content_tea, "sys", userId_nt);
-			//将缓存中的图片剪切到提问路径目录下1
-			if(!queImg.equals("")){
-				String[] queImgArr = queImg.split(",");
-				for(int i = 0 ; i < queImgArr.length ; i++){
-					String queImgName = queImgArr[i].substring(queImgArr[i].lastIndexOf("/") + 1);
-					File file = new File(WebUrl.DATA_URL_QUE_FILE_UPLOAD + "/" + qId);
-		    		if(!file.exists()){
-		    			file.mkdirs();
-		    		}
-					boolean flag = FileOpration.copyFile(WebUrl.DATA_URL_PRO + queImgArr[i], newUrl + "/" + queImgName);
-					if(flag){
-						System.out.println(WebUrl.DATA_URL_PRO + queImgArr[i]);
-						FileOpration.deleteFile(WebUrl.DATA_URL_PRO + queImgArr[i]);
-					}
-				}
-			}
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
@@ -409,9 +413,7 @@ public class QuestionInfoAction extends DispatchAction {
 	 * @return
 	 * @throws Exception
 	 */
-	public ActionForward updateQue(ActionMapping mapping, ActionForm form,
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+	public ActionForward updateQue(ActionMapping mapping, ActionForm form,HttpServletRequest request, HttpServletResponse response)throws Exception {
 		QuestionInfoManager qManager = (QuestionInfoManager) AppFactory.instance(null).getApp(Constants.WEB_QUESTION_INFO);
 		EmailManager em = (EmailManager) AppFactory.instance(null).getApp(Constants.WEB_EMAIL_INFO);
 		String queReplyContent =Transcode.unescape_new1("qReCon",request);
@@ -422,6 +424,37 @@ public class QuestionInfoAction extends DispatchAction {
 		List<QuestionInfo> qList = qManager.listInfoById(qId);
 		String msg ="fail";
 		if(qList.size() > 0){
+			if(!queReplyImg.equals("")){
+				String queImgFinal = "";
+				String[] queImgArr = queReplyImg.split(",");
+				String newUrl = WebUrl.DATA_URL_QUE_FILE_UPLOAD + "/" + qId;
+				for(int i = 0 ; i < queImgArr.length ; i++){
+					String queImgName = queImgArr[i].substring(queImgArr[i].lastIndexOf("/") + 1);
+					queImgFinal += WebUrl.NEW_DATA_URL_QUE_FILE_UPLOAD + qId + "/" + queImgName + ",";
+					File file = new File(newUrl);
+		    		if(!file.exists()){
+		    			file.mkdirs();
+		    		}
+		    		//将缓存中的图片剪切到提问路径目录下
+		    		//复制缩略图
+					boolean flag = FileOpration.copyFile(WebUrl.DATA_URL_PRO + queImgArr[i].substring(1), newUrl + "/" + queImgName);
+					if(flag){
+						//剪切缩略图
+						flag = FileOpration.deleteFile(WebUrl.DATA_URL_PRO + queImgArr[i].substring(1));
+						if(flag){
+							//复制原图
+							flag = FileOpration.copyFile(WebUrl.DATA_URL_PRO + queImgArr[i].replace("_small", "").substring(1), newUrl + "/" + queImgName.replace("_small", ""));
+							if(flag){
+								//剪切原图
+								FileOpration.deleteFile(WebUrl.DATA_URL_PRO + queImgArr[i].replace("_small", "").substring(1));
+							}
+						}
+					}
+				}
+				if(!queImgFinal.equals("")){
+					queReplyImg = queImgFinal.substring(0, queImgFinal.length() - 1);
+				}
+			}
 			boolean qFlag = qManager.updateQue(qId, queReplyContent,queReplyImg, queReplyTime, 1);
 			if(qFlag){
 				msg ="success";

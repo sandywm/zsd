@@ -104,5 +104,16 @@ public interface QuestionInfoManager {
 	 * @throws WEBException
 	 */
 	List<QuestionInfo> listInfoById(Integer qId) throws WEBException;
+	
+	/**
+	 * 根据主键修改学生提问时的图片路径
+	 * @author wm
+	 * @date 2019-9-26 上午11:19:48
+	 * @param id
+	 * @param queImg 图片路径
+	 * @return
+	 * @throws WEBException
+	 */
+	boolean updateQueImgById(Integer id,String queImg) throws WEBException;
 
 }

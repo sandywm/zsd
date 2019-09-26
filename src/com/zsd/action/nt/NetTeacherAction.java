@@ -954,6 +954,7 @@ public class NetTeacherAction extends DispatchAction {
 			for (Iterator<NetTeacherStudent> iterator = ntsList.iterator(); iterator.hasNext();) {
 				NetTeacherStudent nts = (NetTeacherStudent) iterator.next();
 				Map<String,Object> map_d = new HashMap<String,Object>();
+				map_d.put("stuId", nts.getUser().getId());
 				map_d.put("stuName", nts.getUser().getRealName()); //学生真实姓名
 				map_d.put("stuProtrait", nts.getUser().getPortrait());//头像
 				map_d.put("bindStatus", nts.getBindStatus());//绑定状态
