@@ -965,6 +965,7 @@ public class NetTeacherAction extends DispatchAction {
 			}
 		   map.put("data", list_d);
 		   map.put("count", count);
+		   map.put("bindSta", bindStatus);
 		   msg = "success";
 		}
 		map.put("msg", msg);
