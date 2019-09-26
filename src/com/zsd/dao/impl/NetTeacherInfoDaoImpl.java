@@ -71,8 +71,8 @@ public class NetTeacherInfoDaoImpl implements NetTeacherInfoDao {
 		if(checkSta >= 0){
 			hql+=" and nt.checkStatus="+checkSta;
 		}
-	
-		if(!sDate.equals("") && eDate.equals("")){
+		hql += " order by nt.id desc";
+		if(!sDate.equals("") && !eDate.equals("")){
 			hql += " and substring(nt.user.signDate,1,10) >= '"+sDate+"'";
 			hql += " and substring(nt.user.signDate,1,10) <= '"+eDate+"'";
 		}
@@ -94,7 +94,7 @@ public class NetTeacherInfoDaoImpl implements NetTeacherInfoDao {
 			hql+=" and nt.checkStatus="+checkSta;
 		}
 	
-		if(!sDate.equals("") && eDate.equals("")){
+		if(!sDate.equals("") && !eDate.equals("")){
 			hql += " and substring(nt.user.signDate,1,10) >= '"+sDate+"'";
 			hql += " and substring(nt.user.signDate,1,10) <= '"+eDate+"'";
 		}

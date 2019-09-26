@@ -73,8 +73,8 @@ public class NetteacherReviewAction extends DispatchAction {
 		Integer checkSta = CommonTools.getFinalInteger("checkSta", request);//审核状态
 		String accName = Transcode.unescape_new("accName", request);//账户名
 		String realName = Transcode.unescape_new("realName", request);//真实姓名
-		String sDate = Transcode.unescape_new("sDate", request);//注册时间(开始)
-		String eDate = Transcode.unescape_new("eDate", request);//注册时间(结束)
+		String sDate = "";//注册时间(开始)
+		String eDate = "";//注册时间(结束)
 		Integer ntCount = ntManager.getNtByOptionCount(accName, realName, checkSta, sDate, eDate);
 		String msg = "暂无记录";
 		Map<String,Object> map = new HashMap<String,Object>();
