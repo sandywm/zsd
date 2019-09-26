@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+ 	<meta charset="utf-8"/>
+ 	<link href="/plugins/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+ 	<link href="/Module/ntVerifyManager/css/ntVerifyManager.css" rel="stylesheet" type="text/css"/>
+ 	<link href="/plugins/pace/pace-theme-flash.min.css" rel="stylesheet" type="text/css"/>
+	<script src="/plugins/pace/pace.min.js" type="text/javascript"></script>	
+  	<title>网络导师审核</title>
+</head>
+<body>
+	<div class="verifyBox">
+		<div class="layui-clear">
+			<!-- 个人信息身份审核 -->
+			<div class="comVerifyBox perIdenNum">
+				<strong class="modTit">个人信息身份证审核</strong>
+				<div class="modInp layui-clear">
+					<span>姓名</span>
+					<input id="icardName" type="text" class="layui-input" disabled/>
+				</div>
+				<div class="modInp layui-clear">
+					<span>身份证号</span>
+					<input id="icardNum" type="text" class="layui-input" disabled/>
+				</div>
+				<div class="imgWrap layui-clear">
+					<input type="hidden" id="icardInp"/>
+					<div class="innerImgBox">
+						<div id="frontImg" class="imgBox"></div>
+						<p>手持身份证正面</p>
+					</div>
+					<div class="innerImgBox">
+						<div id="behindImg" class="imgBox"></div>
+						<p>手持身份证反面</p>
+					</div>
+				</div>
+				<div class="verfiyBtnBox">
+					<a class="noPassBtn" onclick="verifyIdCard('notpass')" href="javascript:void(0)">不通过</a>
+					<a class="passBtn" onclick="verifyIdCard('pass')" href="javascript:void(0)">审核通过</a>
+				</div>
+				<div id="idCardVerify" class="verifyStaPic"></div>
+			</div>
+			<!-- 学历认证审核 -->
+			<div class="comVerifyBox degree">
+				<input type="hidden" id="degreeInp"/>
+				<strong class="modTit">学历认证审核</strong>
+				<div class="imgWrap layui-clear">
+					<div class="innerImgBox spec">
+						<div id="degreeImg" class="imgBox"></div>
+					</div>
+				</div>
+				<div class="verfiyBtnBox">
+					<a class="noPassBtn" onclick="verifyDegree('notpass')" href="javascript:void(0)">不通过</a>
+					<a class="passBtn" onclick="verifyDegree('pass')" href="javascript:void(0)">审核通过</a>
+				</div>
+				<div id="degreeVeify" class="verifyStaPic"></div>
+			</div>
+			<!-- 教师资格证审核 -->
+			<div class="comVerifyBox teacher">
+				<input type="hidden" id="zgzInp"/>
+				<strong class="modTit">教师资格证审核</strong>
+				<div class="imgWrap layui-clear">
+					<div class="innerImgBox spec">
+						<div id="zgzImg" class="imgBox"></div>
+					</div>
+				</div>
+				<div class="verfiyBtnBox">
+					<a class="noPassBtn" onclick="verifyZgz('notpass')" href="javascript:void(0)">不通过</a>
+					<a class="passBtn" onclick="verifyZgz('pass')" href="javascript:void(0)">审核通过</a>
+				</div>
+				<div id="zgzVerify" class="verifyStaPic"></div>
+			</div>
+		</div>
+		<span class="saveBtn">保存</span>
+	</div>
+	
+	
+	<script src="/plugins/jquery/jquery.min.js"></script>
+	<script src="/plugins/layui/layui.js"></script>
+	<script type="text/javascript">
+		var ntcId = parent.ntcId;
+		layui.use(['layer'],function(){
+			var page = {
+				init : function(){
+					this.loadNtVerifyInfo();
+					this.bindEvent();
+				},
+				bindEvent : function(){
+					$('.saveBtn').on('click',function(){
+						var icardInp = $('#icardInp').val(),
+							degreeInp = $('#degreeInp').val(),
+							zgzInp = $('#zgzInp').val(),
+							index = parent.layer.getFrameIndex(window.name);;
+						if(icardInp == ''){
+							layer.msg('请审核身份证！', {time:2000});
+						}else if(degreeInp == ''){
+							layer.msg('请审核学历证书！', {time:2000});
+						}else if(zgzInp == ''){
+			        		layer.msg('请审核教师资格证', {time:2000});
+			        	}else{
+			        		alert(icardInp)
+			        		var field = {id:ntcId,checkICard:icardInp,checkXlz:degreeInp,checkZgz:zgzInp};
+			        		$.ajax({
+								type:'post',
+						        dataType:'json',
+						        data:field,
+						        url:'/netTeacherReview.do?action=updateReview',
+						        success:function (json){
+						        	layer.closeAll('loading');	
+						        	if(json.result == 'success'){
+						        		layer.msg('审核成功',{icon:1,time:1000},function(){
+						        			parent.layer.close(index);
+						        			parent.verifyFlag = true;
+		   				        		});
+						        	}else if(json.result == 'fail'){
+						        		layer.msg('审核失败，请重试', {time:2000});
+						        	}
+						        	
+						        }
+							});
+			        		
+			        	}
+					});
+				},
+				loadNtVerifyInfo : function(){
+					var _this = this;
+					$.ajax({
+						type:'post',
+				        dataType:'json',
+				        data:{id:ntcId},
+				        url:'/netTeacherReview.do?action=getNtCertById',
+				        success:function (json){
+				        	layer.closeAll('loading');	
+				        	if(json.result == 'success'){
+				        		console.log( json )
+				        		_this.renderNtInfo(json);
+				        	}else if(json.result == 'noInfo'){
+				        		layer.msg('当前暂无此导师信息', {time:2000});
+				        	}
+				        	
+				        }
+					});
+				},
+				renderNtInfo : function(json){
+					$('#icardName').val(json.icardName);
+					$('#icardNum').val(json.icardNum);
+					$('#icardInp').val(json.checkReasonICard);
+					$('#degreeInp').val(json.checkReasonXlz);
+					$('#zgzInp').val(json.checkReasonZgz);
+					if(json.icardImgFrontSmall != ''){
+						$('#frontImg').html('<img bigImg="'+ json.icardImgFrontBig +'" src="/'+ json.icardImgFrontSmall +'"/>');
+						$('#behindImg').html('<img bigImg="'+ json.icardImgBackBig +'" src="/'+ json.icardImgBackSmall +'"/>');
+						if(json.checkReasonICard == 'notpass'){
+							$('#idCardVerify').removeClass("passPic").addClass("noPassPic");
+						}else if(json.checkReasonICard == 'pass'){
+							$('#idCardVerify').removeClass("noPassPic").addClass("passPic");
+						}
+					}
+					if(json.xlzImgSmall != ''){
+						$('#degreeImg').html('<img bigImg="'+ json.xlzImgBig +'" src="/'+ json.xlzImgSmall +'"/>');
+						if(json.checkReasonXlz == 'notpass'){
+							$('#degreeVeify').removeClass("passPic").addClass("noPassPic");
+						}else if(json.checkReasonXlz == 'pass'){
+							$('#degreeVeify').removeClass("noPassPic").addClass("passPic");
+						}
+					}
+					if(json.zgzImgSmall != ''){
+						$('#zgzImg').html('<img bigImg="'+ json.zgzImgBig +'" src="/'+ json.zgzImgSmall +'"/>');	
+						if(json.checkReasonZgz == 'notpass'){
+							$('#zgzVerify').removeClass("passPic").addClass("noPassPic");
+						}else if(json.checkReasonZgz == 'pass'){
+							$('#zgzVerify').removeClass("noPassPic").addClass("passPic");
+						}
+					}
+				}
+			};
+			page.init();
+		});
+		//验证身份证
+		function verifyIdCard(num){
+			var img_sfz_font = $("#frontImg").find("img").attr("src");
+			var img_sfz_back = $("#behindImg").find("img").attr("src");
+			if(img_sfz_font != undefined && img_sfz_back != undefined){
+				if(num == 'notpass'){//不通过
+					$('#icardInp').val('notpass');
+					$('#idCardVerify').removeClass("passPic").addClass("noPassPic");
+				}else{
+					$('#icardInp').val('pass');
+					$('#idCardVerify').removeClass("noPassPic").addClass("passPic");
+				}
+			}else{
+				layer.msg('当前没有上传身份证不能进行审核', {time:2000});
+			}
+		}
+		//验证学历证书
+		function verifyDegree(num){
+			var img_sfz_font = $("#degreeImg").find("img").attr("src");
+			if(img_sfz_font != undefined){
+				if(num == 'notpass'){//不通过
+					$('#degreeInp').val('notpass');
+					$('#degreeVeify').removeClass("passPic").addClass("noPassPic");
+				}else{
+					$('#degreeInp').val('pass');
+					$('#degreeVeify').removeClass("noPassPic").addClass("passPic");
+				}
+			}else{
+				layer.msg('当前没有上传学历证书不能进行审核', {time:2000});
+			}
+		}
+		//验证教师资格证
+		function verifyZgz(num){
+			var img_sfz_font = $("#zgzImg").find("img").attr("src");
+			if(img_sfz_font != undefined){
+				if(num == 'notpass'){//不通过
+					$('#zgzInp').val('notpass');
+					$('#zgzVerify').removeClass("passPic").addClass("noPassPic");
+				}else{
+					$('#zgzInp').val('pass');
+					$('#zgzVerify').removeClass("noPassPic").addClass("passPic");
+				}
+			}else{
+				layer.msg('当前没有上传教师资格证不能进行审核', {time:2000});
+			}
+		}
+	</script>
+</body> 
+</html>

@@ -74,7 +74,7 @@
     </action>
     <!--网络导师证件审核-->
     <action path="/netTeacherReview" parameter="action" scope="request"  type="com.zsd.action.nt.NetteacherReviewAction">
-        <forward name="reviewPage" path="/###.jsp"></forward><!-- 老师审核页面 -->
+        <forward name="reviewPage" path="/Module/ntVerifyManager/jsp/ntVerifyManager.jsp"></forward><!-- 老师审核页面 -->
     </action>
       <!--我的提问-->
     <action path="/questionInfo"  parameter="action" scope="request" type="com.zsd.action.question.QuestionInfoAction">

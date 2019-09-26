@@ -41,7 +41,7 @@
 				</div>
 				<div class="itemDivs" style="width:140px;">
 					<div class="layui-input-inline">
-						<input type="hidden" id="upStaInp" value="0"/>
+						<input type="hidden" id="upStaInp" value="-1"/>
 						<select id="upStaSel" lay-filter="upStaSel">
 							<option value="">请选择修改状态</option>
 							<option value="0">未修改</option>
@@ -64,7 +64,7 @@
 	  						<p id="currLoc"></p>
 	  						<!-- 知识点列表 -->
 	  						<div class="loreList">
-	  							<p class="tipsTxt_lore">请根据对应的条件对错题进行查看！</p>
+	  							<!-- p class="tipsTxt_lore">请根据对应的条件对错题进行查看！</p -->
 	  							<table id="errListTab" class="layui-table" lay-filter="errListTab"></table>
 	  						</div>
 	  						<!-- 题库题型对应增加编辑结构 -->
@@ -132,6 +132,7 @@
 					$('#stDate').val(stDate);
 					$('#edDate').val(edDate);
 					this.initImgEditor();
+					this.loadErrList();
 					this.queryErrList();
 					this.subLore();
 				},
