@@ -95,7 +95,7 @@ public class QuestionInfoAction extends DispatchAction {
 			Integer userId_nt = que.getNetTeacherInfo().getUser().getId();
 			String content_tea = userName_nt+"导师，您好，"+userName_stu+"学生向您提出["+queTitle+"]问题，请最迟于当天晚上11点前及时回复，谢谢。[知识典]";
 			em.addEmail(1, "学生提问", content_tea, "sys", userId_nt);
-			//将缓存中的图片剪切到提问路径目录下
+			//将缓存中的图片剪切到提问路径目录下1
 			if(!queImg.equals("")){
 				String[] queImgArr = queImg.split(",");
 				for(int i = 0 ; i < queImgArr.length ; i++){
