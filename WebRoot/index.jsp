@@ -78,6 +78,7 @@
   					<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="chapter.do?action=goChapterPage" tab-id="6">章节管理</a></li>
   					<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="lore.do?action=goLoreCatalogPage" tab-id="7">知识点目录管理</a></li>
   					<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="lore.do?action=goLoreQuePage" tab-id="8">知识点管理</a></li>
+  					<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="netTeacherReview.do?action=goNtReviewPage" tab-id="15">网络导师审核管理</a></li>
   					<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="loreRelate.do?action=goLoreRelatePage" tab-id="9">关联知识点</a></li>
   					<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="lex.do?action=goLexPage" tab-id="10">词库管理</a></li>
   					<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="buffet.do?action=goBuffetPage" tab-id="11">自助餐管理</a></li>
@@ -96,7 +97,8 @@
 	            </ul>
 	            <div class="layui-tab-content">
 	                <div class="layui-tab-item layui-show">
-	                	<iframe id="mainIframe" src="hw.do?action=goTeaQuePage" frameborder="0" scrolling="yes" width="100%" height="100%"></iframe>
+	               		<iframe id="mainIframe" src="netTeacherReview.do?action=goNtReviewPage" frameborder="0" scrolling="yes" width="100%" height="100%"></iframe>
+	                	<!--  iframe id="mainIframe" src="hw.do?action=goHwPage" frameborder="0" scrolling="yes" width="100%" height="100%"></iframe-->
 	                	<!-- iframe id="mainIframe" src="buffet.do?action=goBuffetPage" frameborder="0" scrolling="yes" width="100%" height="100%"></iframe>
 	                	<iframe id="mainIframe" src="user.do?action=goWelcomePage" frameborder="0" scrolling="yes" width="100%" height="100%"></iframe -->
 	                </div>
