@@ -355,6 +355,12 @@ public class BaseInfoAction extends DispatchAction {
 			map.put("realName", spInfo.getParent().getRealName());
 			map.put("nickName", spInfo.getParent().getNickName());
 			map.put("userAcc", spInfo.getParent().getUserAccount());
+			String pass ="E10ADC3949BA59ABBE56E057F20F883E";
+			if(pass.equalsIgnoreCase(spInfo.getParent().getPassword())){
+				map.put("password", 123456);
+			}else{
+				map.put("password", "******");
+			}
 			map.put("mobile", spInfo.getParent().getMobile());
 			map.put("email", spInfo.getParent().getEmail());
 			map.put("birthday", spInfo.getParent().getBirthday());
