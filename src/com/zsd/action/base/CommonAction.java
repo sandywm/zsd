@@ -1210,4 +1210,20 @@ public class CommonAction extends DispatchAction {
 			CommonTools.getJsonPkg(map, response);
 			return null;
 	}	
+	
+	/**
+	 * 进入下载app页面
+	 * @author wm
+	 * @date 2019-9-26 上午08:34:18
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward  downApp(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		return mapping.findForward("downAppPage");
+	}
 }

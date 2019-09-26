@@ -68,7 +68,7 @@ public class NetTeacherInfoDaoImpl implements NetTeacherInfoDao {
 		if(!realName.equals("")){
 			hql+=" and nt.user.realName='"+realName+"'";
 		}
-		if(checkSta > 0){
+		if(checkSta >= 0){
 			hql+=" and nt.checkStatus="+checkSta;
 		}
 	
@@ -90,7 +90,7 @@ public class NetTeacherInfoDaoImpl implements NetTeacherInfoDao {
 		if(!realName.equals("")){
 			hql+=" and ntc.user.realName='"+realName+"'";
 		}
-		if(checkSta > 0){
+		if(checkSta >= 0){
 			hql+=" and nt.checkStatus="+checkSta;
 		}
 	
