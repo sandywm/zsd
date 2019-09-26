@@ -85,18 +85,18 @@ public class NetTeacherInfoDaoImpl implements NetTeacherInfoDao {
 			String realName, Integer checkSta, String sDate, String eDate) {
 		String hql ="select count(nt.id) from NetTeacherInfo as nt where 1=1 ";
 		if(!accName.equals("")){
-			hql+=" and ntc.user.userAccount='"+accName+"'";
+			hql+=" and nt.user.userAccount='"+accName+"'";
 		}
 		if(!realName.equals("")){
-			hql+=" and ntc.user.realName='"+realName+"'";
+			hql+=" and nt.user.realName='"+realName+"'";
 		}
 		if(checkSta >= 0){
 			hql+=" and nt.checkStatus="+checkSta;
 		}
 	
 		if(!sDate.equals("") && eDate.equals("")){
-			hql += " and substring(ntc.user.signDate,1,10) >= '"+sDate+"'";
-			hql += " and substring(ntc.user.signDate,1,10) <= '"+eDate+"'";
+			hql += " and substring(nt.user.signDate,1,10) >= '"+sDate+"'";
+			hql += " and substring(nt.user.signDate,1,10) <= '"+eDate+"'";
 		}
 		Object countObj = sess.createQuery(hql).uniqueResult();
 		return CommonTools.longToInt(countObj);
