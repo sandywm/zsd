@@ -4,6 +4,7 @@
  */
 package com.zsd.action.question;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -36,7 +37,9 @@ import com.zsd.service.UserClassInfoManager;
 import com.zsd.tools.CommonTools;
 import com.zsd.tools.Convert;
 import com.zsd.tools.CurrentTime;
+import com.zsd.tools.FileOpration;
 import com.zsd.util.Constants;
+import com.zsd.util.WebUrl;
 
 /**
  * MyEclipse Struts Creation date: 05-20-2019
@@ -68,18 +71,46 @@ public class QuestionInfoAction extends DispatchAction {
 		String queContent=Transcode.unescape_new1("qCon",request);
 		String queTime= CurrentTime.getCurrentTime();
 		String queImg=CommonTools.getFinalStr("queImg",request);
-		Integer qinfo =qManager.adddQue(subId, userId , ntId, queTitle, queContent,queImg,queTime, "", "", 0);
+		String queImgFinal = "";
+		if(!queImg.equals("")){
+			String[] queImgArr = queImg.split(",");
+			for(int i = 0 ; i < queImgArr.length ; i++){
+				String queImgName = queImgArr[i].substring(queImgArr[i].lastIndexOf("/") + 1);
+				queImgFinal += WebUrl.NEW_DATA_URL_QUE_FILE_UPLOAD + queImgName + ",";
+			}
+			if(!queImgFinal.equals("")){
+				queImgFinal = queImgFinal.substring(0, queImgFinal.length() - 1);
+			}
+		}
+		Integer qId =qManager.adddQue(subId, userId , ntId, queTitle, queContent,queImgFinal,queTime, "", "", 0);
 		Map<String, Object> map = new HashMap<String, Object>();
 		String msg ="fail";
-		if(qinfo>0){
+		if(qId>0){
+			String newUrl = WebUrl.DATA_URL_QUE_FILE_UPLOAD + "/" + qId;
 			msg = "success";
-			List<QuestionInfo> qList = qManager.listInfoById(qinfo);
+			List<QuestionInfo> qList = qManager.listInfoById(qId);
 			QuestionInfo que = qList.get(0);
 			String userName_stu = que.getUser().getRealName();
 			String userName_nt = que.getNetTeacherInfo().getUser().getRealName();
 			Integer userId_nt = que.getNetTeacherInfo().getUser().getId();
 			String content_tea = userName_nt+"导师，您好，"+userName_stu+"学生向您提出["+queTitle+"]问题，请最迟于当天晚上11点前及时回复，谢谢。[知识典]";
 			em.addEmail(1, "学生提问", content_tea, "sys", userId_nt);
+			//将缓存中的图片剪切到提问路径目录下
+			if(!queImg.equals("")){
+				String[] queImgArr = queImg.split(",");
+				for(int i = 0 ; i < queImgArr.length ; i++){
+					String queImgName = queImgArr[i].substring(queImgArr[i].lastIndexOf("/") + 1);
+					File file = new File(WebUrl.DATA_URL_QUE_FILE_UPLOAD + "/" + qId);
+		    		if(!file.exists()){
+		    			file.mkdirs();
+		    		}
+					boolean flag = FileOpration.copyFile(WebUrl.DATA_URL_PRO + queImgArr[i], newUrl + "/" + queImgName);
+					if(flag){
+						System.out.println(WebUrl.DATA_URL_PRO + queImgArr[i]);
+						FileOpration.deleteFile(WebUrl.DATA_URL_PRO + queImgArr[i]);
+					}
+				}
+			}
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);

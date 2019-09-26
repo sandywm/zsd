@@ -59,7 +59,14 @@ public class NetTeacherStudentDaoImpl implements NetTeacherStudentDao {
 		if (offset < 0) {
 			offset = 0;
 		}
-		String hql = "from NetTeacherStudent as nts where nts.netTeacherInfo.user.id="+userId+" and nts.bindStatus="+bindSta+" and nts.clearStatus=0";
+		String hql = "from NetTeacherStudent as nts where nts.netTeacherInfo.user.id="+userId+"  and nts.clearStatus=0";
+		 if(bindSta.equals(3)){ // 绑定到期
+			hql+=" and nts.bindStatus !=0  and nts.endDate<='"+CurrentTime.getStringDate()+"'";
+		 }else if (bindSta.equals(0)) { //取消绑定
+			 hql+="  and nts.bindStatus="+bindSta;
+		 }else{//正在绑定
+			 hql+="  and nts.bindStatus="+bindSta+" and nts.endDate>'"+CurrentTime.getStringDate()+"'"; 
+		 }
 		 if(!stuName.equals("")){
 				hql +=" and nts.user.realName like '%"+stuName+"%'"; 
 		  }
@@ -67,7 +74,14 @@ public class NetTeacherStudentDaoImpl implements NetTeacherStudentDao {
 	}
 	@Override
 	public Integer getNTByNTIdCount(Session sess, Integer userId,String stuName, Integer bindSta) {
-		String hql = "select count(nts.id) from NetTeacherStudent as nts where nts.netTeacherInfo.user.id="+userId+" and nts.bindStatus="+bindSta+" and nts.clearStatus=0";
+		String hql = "select count(nts.id) from NetTeacherStudent as nts where nts.netTeacherInfo.user.id="+userId+"  and nts.clearStatus=0";
+		 if(bindSta.equals(3)){ // 绑定到期
+			  hql+=" and nts.bindStatus !=0  and nts.endDate<='"+CurrentTime.getStringDate()+"'";
+		 }else if (bindSta.equals(0)) { //取消绑定
+			 hql+="  and nts.bindStatus="+bindSta;
+		 }else{//正在绑定
+			 hql+="  and nts.bindStatus="+bindSta+" and nts.endDate>'"+CurrentTime.getStringDate()+"'"; 
+		 }
 		 if(!stuName.equals("")){
 				hql +=" and nts.user.realName like '%"+stuName+"%'"; 
 		  }

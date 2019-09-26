@@ -38,7 +38,7 @@ import com.zsd.util.WebUrl;
 public class UploadAction extends DispatchAction {
 		
 		/**
-		 * 上传图片
+		 * 上传图片(全部存到缓存路径)
 		 * @author wm
 		 * @date 2019-9-10 下午04:46:51
 		 * @param mapping
@@ -58,9 +58,10 @@ public class UploadAction extends DispatchAction {
 			List<FileItem> filelist = fileUpload.parseRequest(request);
 			ListIterator<FileItem> iterator = filelist.listIterator();
 			String userPath = WebUrl.DATA_URL;
-			Integer userId = CommonTools.getLoginUserId(request);
+//			Integer userId = CommonTools.getLoginUserId(request);
 			if(opt.equals("queImg")){
-				userPath = WebUrl.DATA_URL_QUE_FILE_UPLOAD;
+//				userPath = WebUrl.DATA_URL_QUE_FILE_UPLOAD + "/" + userId;
+				userPath = WebUrl.DATA_UPLOAD_IMG_CACHE_URL;
 			}
 			boolean upFlag = false;
 			String msg ="";
@@ -75,7 +76,7 @@ public class UploadAction extends DispatchAction {
 				Integer lastIndex = filename.lastIndexOf(".");
 				String suffix = filename.substring(lastIndex+1);
 //				String filePre = filename.substring(0, lastIndex);
-				String fileNamePre = CurrentTime.getRadomTime() + "_" + userId;
+				String fileNamePre = CurrentTime.getRadomTime();
 				filename = fileNamePre + "." + suffix;
 //				filename = filePre + "_" + CurrentTime.getRadomTime() + "." + suffix;
 				CheckImage ci = new CheckImage();
@@ -113,7 +114,8 @@ public class UploadAction extends DispatchAction {
 						}
 						String smallImgPath = userPath  + "/" + fileNamePre + "_small." + suffix;
 						FileOpration.makeImage(userPath  + "/" + filename, 0.3, smallImgPath, formatName);
-						fileUrl +=  WebUrl.NEW_DATA_URL_QUE_FILE_UPLOAD  + fileNamePre + "_small." + suffix + ",";
+//						fileUrl +=  WebUrl.NEW_DATA_URL_QUE_FILE_UPLOAD + userId + "/" + fileNamePre + "_small." + suffix + ",";
+						fileUrl +=  WebUrl.NEW_DATA_UPLOAD_IMG_CACHE_URL + fileNamePre + "_small." + suffix + ",";
 					}else{
 						fileUrl +=  WebUrl.NEW_DATA_URL + filename + ",";
 					}

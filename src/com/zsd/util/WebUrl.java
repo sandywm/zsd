@@ -46,4 +46,9 @@ public class WebUrl {
     //学生提问，老师答疑上传图片相对路径
     public static String NEW_DATA_URL_QUE_FILE_UPLOAD;
     
+    //上传图片缓存绝对路径
+    public static String DATA_UPLOAD_IMG_CACHE_URL;
+    //上传图片缓存相对路径
+    public static String NEW_DATA_UPLOAD_IMG_CACHE_URL;
+    
 }
