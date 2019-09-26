@@ -70,5 +70,15 @@ public interface StudentParentInfoDao {
 	 * @return
 	 */
 	StudentParentInfo getEntityByParentId(Session sess,Integer parId);
+	/**
+	 * 通过学生编号获取孩子家长关联信息实体信息
+	 * @author zdf
+	 * 2019-9-26 下午03:31:16
+	 * @param sess
+	 * @param stuId 学生编号
+	 * @return
+	 */
+	StudentParentInfo getEntityByStuId(Session sess,Integer stuId);
+	
 
 }

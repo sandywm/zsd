@@ -24,4 +24,13 @@ public interface StudentParentInfoManager {
 	 * @throws WEBException
 	 */
 	StudentParentInfo getEntityByParId(Integer parId)throws WEBException;
+	/**
+	 *  根据学生编号获取孩子家长关联信息实体
+	 * @author zdf
+	 * 2019-9-26 下午03:33:57
+	 * @param stuId 学生编号
+	 * @return
+	 * @throws WEBException
+	 */
+	StudentParentInfo getEntityBystuId(Integer stuId)throws WEBException;
 }

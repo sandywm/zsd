@@ -48,4 +48,15 @@ public class StudentParentInfoDaoImpl implements StudentParentInfoDao {
 		return null;
 	}
 
+	@Override
+	public StudentParentInfo getEntityByStuId(Session sess, Integer stuId) {
+		String hql = " from StudentParentInfo as sp where sp.stu.id= "+ stuId;
+		@SuppressWarnings("unchecked")
+		List<StudentParentInfo> spList = sess.createQuery(hql).list();
+		if(spList.size() > 0){
+			return spList.get(0);
+		}
+		return null;
+	}
+
 }

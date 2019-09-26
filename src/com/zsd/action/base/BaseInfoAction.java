@@ -332,4 +332,37 @@ public class BaseInfoAction extends DispatchAction {
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
+	/**
+	 * 根据学生编号获取学生家长信息
+	 * @author zdf
+	 * 2019-9-26 下午03:38:01
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getParentInfo(ActionMapping mapping,ActionForm form,
+			HttpServletRequest request,HttpServletResponse response) throws Exception{
+		StudentParentInfoManager spManager = (StudentParentInfoManager) AppFactory.instance(null).getApp(Constants.WEB_STUDENT_PARENT_INFO);
+		Integer stuId = CommonTools.getLoginUserId(request);
+		
+		StudentParentInfo spInfo =  spManager.getEntityBystuId(stuId);
+		Map<String,Object> map = new HashMap<String,Object>();
+		if(spInfo!= null){
+			map.put("portrait", spInfo.getParent().getPortrait());
+			map.put("realName", spInfo.getParent().getRealName());
+			map.put("nickName", spInfo.getParent().getNickName());
+			map.put("userAcc", spInfo.getParent().getUserAccount());
+			map.put("mobile", spInfo.getParent().getMobile());
+			map.put("email", spInfo.getParent().getEmail());
+			map.put("birthday", spInfo.getParent().getBirthday());
+		}
+		CommonTools.getJsonPkg(map, response);
+		return null;
+		
+	}
+	
+	
 }
