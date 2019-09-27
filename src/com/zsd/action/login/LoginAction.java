@@ -310,6 +310,9 @@ public class LoginAction extends DispatchAction {
 		}
 		msg ="fail";//注册用户失败
 		if(roleName.equals("家长")){
+		   String xsName=Transcode.unescape_new("stuName",request);
+		   String  xsPwd =CommonTools.getFinalStr("xspassword",request);
+		   String xsPassword=new MD5().calcMD5(xsPwd);
 			if(xsAccount==userAccount){
 				msg ="identical";//学生家长账户一样
 			}else{
@@ -322,7 +325,7 @@ public class LoginAction extends DispatchAction {
 					userId=uManager.addUser(userAccount, realName, password, mobile, lastLoginDate, lastLoginIp, 
 							signDate, schoolId, CurrentTime.getFinalDate(30), yearSystem, prov, city);
 					if(userId>0){//学生账户
-						xsId=uManager.addUser(userAccount, realName, password, mobile, lastLoginDate, lastLoginIp, 
+						xsId=uManager.addUser(xsAccount, xsName, xsPassword, mobile, lastLoginDate, lastLoginIp, 
 								signDate, schoolId, CurrentTime.getFinalDate(30), yearSystem, prov, city);
 						if(xsId > 0){
 							msg = "success";
