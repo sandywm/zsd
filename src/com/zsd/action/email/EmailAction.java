@@ -71,50 +71,32 @@ public class EmailAction extends DispatchAction {
 		String cilentInfo = CommonTools.getCilentInfo_new(request);
 		Integer pageNo = CommonTools.getFinalInteger("page", request);
 		Integer pageSize = CommonTools.getFinalInteger("limit", request);
-		if(emailType.equals("")){
-			emailType = "sys";
-		}
-		String msg = "暂无记录";
+		String msg = "noInfo";
 		Map<String,Object> map = new HashMap<String,Object>();
-		if(cilentInfo.equals("pc")){
-			Integer count = em.getCountByOpt(currUserId, title, sDate, eDate, emailType);
-			if(count > 0){
-				List<Email> eList = em.listPageInfoByOpt(currUserId, title, sDate, eDate, emailType, pageNo, pageSize);
-				if(eList.size() > 0){
-					List<Object> list_d = new ArrayList<Object>();
-					msg = "success";
-					for(Email email : eList){
-						Map<String,Object> map_d = new HashMap<String,Object>();
-						map_d.put("emailId", email.getId());
-						map_d.put("title", email.getEmailTitle());
-						map_d.put("content", email.getEmailTitle());
-//						map_d.put("emailType", email.getEmailType());
-						map_d.put("sendDate", email.getSendTime());
-						map_d.put("sendUserName", email.getUserBySendUserId().getRealName());
-						map_d.put("readStatus", email.getReadStatus());
-						list_d.add(map_d);
-					}
-					map.put("data", list_d);
-					map.put("count", count);
-					map.put("code", 0);
-				}
+		List<Email> eList = em.listPageInfoByOpt(currUserId, title, sDate, eDate, emailType, pageNo, pageSize);
+		if(eList.size() > 0){
+			List<Object> list_d = new ArrayList<Object>();
+			msg = "success";
+			for(Email email : eList){
+				Map<String,Object> map_d = new HashMap<String,Object>();
+				map_d.put("emailId", email.getId());
+				map_d.put("title", email.getEmailTitle());
+				map_d.put("content", email.getEmailTitle());
+				map_d.put("sendDate", email.getSendTime());
+				map_d.put("emailType", email.getEmailType());
+				map_d.put("sendUserName", email.getUserBySendUserId().getRealName());
+				map_d.put("readStatus", email.getReadStatus());
+				list_d.add(map_d);
 			}
-		}else{//手机端
-			List<Email> eList = em.listPageInfoByOpt(currUserId, title, sDate, eDate, emailType, pageNo, pageSize);
-			if(eList.size() > 0){
-				List<Object> list_d = new ArrayList<Object>();
-				msg = "success";
-				for(Email email : eList){
-					Map<String,Object> map_d = new HashMap<String,Object>();
-					map_d.put("emailId", email.getId());
-					map_d.put("title", email.getEmailTitle());
-					map_d.put("content", email.getEmailTitle());
-					map_d.put("sendDate", email.getSendTime());
-//					map_d.put("emailType", email.getEmailType());
-					map_d.put("sendUserName", email.getUserBySendUserId().getRealName());
-					list_d.add(map_d);
-				}
-				map.put("data", list_d);
+			map.put("data", list_d);
+			if(cilentInfo.equals("pc")){
+				Integer count = em.getCountByOpt(currUserId, title, sDate, eDate, emailType);
+				map.put("count", count);
+				map.put("code", 0);
+			}
+		}else{
+			if(cilentInfo.equals("pc")){
+				msg = "暂无记录";
 			}
 		}
 		map.put("msg", msg);
