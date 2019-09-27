@@ -90,7 +90,8 @@
 		<mapping resource="com/zsd/xml/QuestionInfo.hbm.xml" />
 		<mapping resource="com/zsd/xml/StudentPayOrderInfo.hbm.xml" />
 		<mapping resource="com/zsd/xml/MobileCode.hbm.xml" />
-		<mapping resource="com/zsd/xml/BuffetLoreStudyDetailInfo.hbm.xml" />
+		<mapping
+			resource="com/zsd/xml/BuffetLoreStudyDetailInfo.hbm.xml" />
 		<mapping resource="com/zsd/xml/BuffetLoreRelateInfo.hbm.xml" />
 		<mapping resource="com/zsd/xml/StudyAllTjInfo.hbm.xml" />
 		<mapping resource="com/zsd/xml/Edition.hbm.xml" />
@@ -98,7 +99,8 @@
 		<mapping resource="com/zsd/xml/ModuleActionInfo.hbm.xml" />
 		<mapping resource="com/zsd/xml/BuffetQueInfo.hbm.xml" />
 		<mapping resource="com/zsd/xml/GradeSubject.hbm.xml" />
-		<mapping resource="com/zsd/xml/NetTeacherCertificateInfo.hbm.xml" />
+		<mapping
+			resource="com/zsd/xml/NetTeacherCertificateInfo.hbm.xml" />
 		<mapping resource="com/zsd/xml/Chapter.hbm.xml" />
 		<mapping resource="com/zsd/xml/LoreQuestionErrorInfo.hbm.xml" />
 		<mapping resource="com/zsd/xml/StudyTaskInfo.hbm.xml" />
@@ -110,7 +112,8 @@
 		<mapping resource="com/zsd/xml/BuffetMindRelationInfo.hbm.xml" />
 		<mapping resource="com/zsd/xml/BuffetAbilityTypeInfo.hbm.xml" />
 		<mapping resource="com/zsd/xml/BuffetTypeInfo.hbm.xml" />
-		<mapping resource="com/zsd/xml/BuffetAbilityRelationInfo.hbm.xml" />
+		<mapping
+			resource="com/zsd/xml/BuffetAbilityRelationInfo.hbm.xml" />
 		<mapping resource="com/zsd/xml/JoinLoreRelation.hbm.xml" />
 		<mapping resource="com/zsd/xml/RelationZdResult.hbm.xml" />
 		<mapping resource="com/zsd/xml/TownInfo.hbm.xml" />
@@ -124,10 +127,15 @@
 		<mapping resource="com/zsd/xml/HwAbilityRelationInfo.hbm.xml" />
 		<mapping resource="com/zsd/xml/HwQueInfo.hbm.xml" />
 		<mapping resource="com/zsd/xml/SendHwInfo.hbm.xml" />
-		<mapping resource="com/zsd/xml/NetTeacherStudioNewsInfo.hbm.xml" />
-		<mapping resource="com/zsd/xml/NetTeacherStudioRelationInfo.hbm.xml" />
+		<mapping
+			resource="com/zsd/xml/NetTeacherStudioNewsInfo.hbm.xml" />
+		<mapping
+			resource="com/zsd/xml/NetTeacherStudioRelationInfo.hbm.xml" />
 		<mapping resource="com/zsd/xml/NetTeacherStudioInfo.hbm.xml" />
 		<mapping resource="com/zsd/xml/SysFeeInfo.hbm.xml" />
+		<mapping resource="com/zsd/xml/ParentClubInfo.hbm.xml" />
+		<mapping
+			resource="com/zsd/xml/ParentClubRelationInfo.hbm.xml" />
 	</session-factory>
 
 </hibernate-configuration>

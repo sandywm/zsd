@@ -128,6 +128,8 @@ public class ReportCenterAction  extends DispatchAction{
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("nlReport", nlReport);
 		map.put("diffDays", days);
+		map.put("sDate", startTime);
+		map.put("eDate", endTime);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
