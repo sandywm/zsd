@@ -325,7 +325,7 @@ public class LoginAction extends DispatchAction {
 					userId=uManager.addUser(userAccount, realName, password, mobile, lastLoginDate, lastLoginIp, 
 							signDate, schoolId, CurrentTime.getFinalDate(30), yearSystem, prov, city);
 					if(userId>0){//学生账户
-						xsId=uManager.addUser(xsAccount, xsName, xsPassword, mobile, lastLoginDate, lastLoginIp, 
+						xsId=uManager.addUser(xsAccount, xsName, xsPassword, "", lastLoginDate, lastLoginIp, 
 								signDate, schoolId, CurrentTime.getFinalDate(30), yearSystem, prov, city);
 						if(xsId > 0){
 							msg = "success";
