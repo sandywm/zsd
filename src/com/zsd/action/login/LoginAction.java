@@ -486,8 +486,9 @@ public class LoginAction extends DispatchAction {
 						ruManager.addRoleUserInfo(userId, roleId, "", "", "", "", 0, 0, 0, 0);
 						//获取学生角色信息
 						List<RoleInfo> xslist = rManager.listRoleInfo("学生");
+						Integer xsRoleId=0;
 						if(xslist.size() > 0){
-							Integer xsRoleId = xslist.get(0).getId();
+							 xsRoleId = xslist.get(0).getId();
 							//学生绑定角色
 							ruManager.addRoleUserInfo(xsId, xsRoleId, "", "", "", "", 0, 0, 0, 0);
 						}
@@ -498,7 +499,7 @@ public class LoginAction extends DispatchAction {
 							List<ClassInfo> ciList = ciManager.listClassInfoByOption(gradeNo, CurrentTime.getCurrentTime(), schoolId, className);
 							if(ciList.size()>0){
 								Integer classId = ciList.get(0).getId();
-								ucManager.addUcInfo(xsId, classId, roleId); //3 绑定用户班级
+								ucManager.addUcInfo(xsId, classId, xsRoleId); //3 绑定用户班级
 							}else{//班级不存在
 								List<School> scLists = scManager.listInfoById(schoolId);
 								String pr="";
@@ -548,7 +549,7 @@ public class LoginAction extends DispatchAction {
 									}
 								}
 								
-								ucManager.addUcInfo(xsId, ciId, roleId); //学生用户 绑定班级	
+								ucManager.addUcInfo(xsId, ciId, xsRoleId); //学生用户 绑定班级	
 							}
 						}
 					}
