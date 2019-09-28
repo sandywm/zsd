@@ -15,6 +15,8 @@ public class Constants {
 	public static final Integer TEA_ROLE_ID = 4;
 	public static final Integer PATENT_ROLE_ID = 6;
 	
+	public static final Integer MATH_ID = 2;//数学学科编号
+	
 	public static final Integer COIN = 10;
 	public static final Integer EXPERIENCE = 1;
 	

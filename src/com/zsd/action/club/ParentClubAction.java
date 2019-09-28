@@ -130,7 +130,6 @@ public class ParentClubAction extends DispatchAction {
 		ParentClubRelationManager pcrManager = (ParentClubRelationManager) AppFactory.instance(null).getApp(Constants.WEB_PARENT_CLUB_RELATION);
 		UserManager uManager = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
 		Integer userId=CommonTools.getLoginUserId(request);
-		userId = CommonTools.getFinalInteger("userId", request);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "error";
 		List<Object> list_d = new ArrayList<Object>();
@@ -252,7 +251,7 @@ public class ParentClubAction extends DispatchAction {
 	 * @return
 	 * @throws Exception
 	 */
-	public ActionForward getNtStudioInfo(ActionMapping mapping, ActionForm form,
+	public ActionForward getPClubInfo(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		ParentClubRelationManager pcrManager = (ParentClubRelationManager) AppFactory.instance(null).getApp(Constants.WEB_PARENT_CLUB_RELATION);
 		ParentClubManager pcManager = (ParentClubManager) AppFactory.instance(null).getApp(Constants.WEB_PARENT_CLUB);
