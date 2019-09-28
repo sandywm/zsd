@@ -38,6 +38,7 @@ public class ParentClubRelationManagerImpl implements ParentClubRelationManager 
 			pcrInfo.setParentClubInfo(parentClubInfo);
 			pcrInfo.setAddTime(addTime);
 			pcrInfo.setOutTime(outTime);
+			pcrDao.save(sess, pcrInfo);
 			tran.commit();
 			return pcrInfo.getId();
 		} catch (Exception e) {
