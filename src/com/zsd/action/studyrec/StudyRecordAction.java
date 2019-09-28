@@ -548,6 +548,7 @@ public class StudyRecordAction extends DispatchAction {
 				subId = ntsList.get(0).getNetTeacherInfo().getSubject().getId();
 				String stuIdStr = "";
 				if(!stuId.equals(0)){//指定学生
+					stuIdStr = String.valueOf(stuId);
 					stuUserName = ntsList.get(0).getUser().getRealName();
 				}else{
 					for(NetTeacherStudent nts : ntsList){
