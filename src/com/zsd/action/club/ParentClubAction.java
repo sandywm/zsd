@@ -134,8 +134,8 @@ public class ParentClubAction extends DispatchAction {
 		String msg = "error";
 		List<Object> list_d = new ArrayList<Object>();
 		if(userId > 0){
-				//获取我加入的工作室列表
-			    List<ParentClubRelationInfo> pcrlists =pcrManager.listInfoByParentCludId(userId);
+				//获取我加入的家长群列表
+			    List<ParentClubRelationInfo> pcrlists =pcrManager.listInfoByUserId(userId);
 			    if(pcrlists.isEmpty()){
 			    	msg = "noInfo";
 			    }else{
