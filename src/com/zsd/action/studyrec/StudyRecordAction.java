@@ -29,7 +29,6 @@ import com.zsd.module.BuffetQueInfo;
 import com.zsd.module.BuffetSendInfo;
 import com.zsd.module.BuffetStudyDetailInfo;
 import com.zsd.module.JoinLoreRelation;
-import com.zsd.module.NetTeacherInfo;
 import com.zsd.module.NetTeacherStudent;
 import com.zsd.module.StudentParentInfo;
 import com.zsd.module.StudyDetailInfo;
@@ -43,13 +42,11 @@ import com.zsd.service.BuffetQueInfoManager;
 import com.zsd.service.BuffetSendInfoManager;
 import com.zsd.service.BuffetStudyDetailManager;
 import com.zsd.service.JoinLoreRelationManager;
-import com.zsd.service.NetTeacherInfoManager;
 import com.zsd.service.NetTeacherStudentManager;
 import com.zsd.service.StudentParentInfoManager;
 import com.zsd.service.StudyDetailManager;
 import com.zsd.service.StudyLogManager;
 import com.zsd.service.SubjectManager;
-import com.zsd.service.UserManager;
 import com.zsd.tools.CommonTools;
 import com.zsd.tools.CurrentTime;
 import com.zsd.util.Constants;
@@ -1220,9 +1217,11 @@ public class StudyRecordAction extends DispatchAction {
 				}
 				map_d.put("schTypeName", schTypeName);
 				if(bindStatus.equals(0)){//取消绑定
+					map_d.put("status", "cancel");
 					list_b.add(map_d);	
 				}else{
-					if(clearStatus.equals(1)){//升学清除	
+					if(clearStatus.equals(1)){//升学清除
+						map_d.put("status", "clear");
 						list_b.add(map_d);
 					}else {//未升学判断是到期
 						Integer diffDay = CurrentTime.compareDate(CurrentTime.getStringDate(),nts.getEndDate());
@@ -1230,6 +1229,7 @@ public class StudyRecordAction extends DispatchAction {
 							map_d.put("diffDay", diffDay);
 							list_u.add(map_d);
 						}else{//已到期
+							map_d.put("status", "endDate");
 							list_b.add(map_d);	
 						}
 					}
