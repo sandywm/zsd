@@ -527,7 +527,7 @@ public class StudyRecordAction extends DispatchAction {
 						map_d.put("loreName", slInfo.getLoreInfo().getLoreName());//知识点名称
 						map_d.put("mainLoreId", slInfo.getLoreInfo().getMainLoreId());//引用知识点
 						map_d.put("stuId", slInfo.getUser().getId());//学生编号
-						map_d.put("stuName", slInfo.getUser().getRealName());//学生真实姓名
+						map_d.put("stuUserName", slInfo.getUser().getRealName());//学生真实姓名
 						map_d.put("bs_id", bs.getId());
 						map_d.put("bs_sendTime", bs.getSendTime());
 						map_d.put("bs_result", bs.getStudyResult());
