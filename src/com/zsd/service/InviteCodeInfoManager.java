@@ -15,10 +15,11 @@ public interface InviteCodeInfoManager {
 	 * 根据邀请码获取邀请码信息
 	 * @param sess
 	 * @param inviteCode 邀请码
+	 * @param inviteType 邀请类型
 	 * @return
 	 * @throws WEBException
 	 */
-	List<InviteCodeInfo> listIcInfoByicCode(String inviteCode)throws WEBException;
+	List<InviteCodeInfo> listIcInfoByOpt(String inviteCode,String inviteType)throws WEBException;
 	/**
 	 * 添加邀请码信息
 	 * @param inviteId  邀请编号

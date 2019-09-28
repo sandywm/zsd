@@ -17,16 +17,28 @@ import org.apache.struts.actions.DispatchAction;
 
 import com.zsd.factory.AppFactory;
 import com.zsd.module.ClassInfo;
+import com.zsd.module.InviteCodeInfo;
+import com.zsd.module.NetTeacherInfo;
+import com.zsd.module.NetTeacherStudent;
 import com.zsd.module.School;
+import com.zsd.module.StudentParentInfo;
+import com.zsd.module.StudentPayOrderInfo;
 import com.zsd.module.SysFeeInfo;
 import com.zsd.module.User;
 import com.zsd.module.UserClassInfo;
+import com.zsd.service.InviteCodeInfoManager;
+import com.zsd.service.NetTeacherInfoManager;
+import com.zsd.service.NetTeacherStudentManager;
 import com.zsd.service.SchoolManager;
+import com.zsd.service.StudentParentInfoManager;
+import com.zsd.service.StudentPayOrderInfoManager;
 import com.zsd.service.SysFeeManager;
 import com.zsd.service.UserClassInfoManager;
+import com.zsd.service.UserManager;
 import com.zsd.tools.CommonTools;
 import com.zsd.tools.Convert;
 import com.zsd.tools.CurrentTime;
+import com.zsd.tools.InviteCode;
 import com.zsd.util.Constants;
 
 /** 
@@ -281,6 +293,7 @@ public class PayAction extends DispatchAction {
 			}
 		}
 		if(msg.equals("success")){
+			map.put("payOpt", "serviceFee");
 			map.put("feeOpt", feeOpt);//diffFee时在存在2种费用，才会存在fee_1,days_1,gradeName_1和2
 			map.put("fee", fee);//购买会员总费用
 			map.put("zkRate", zkRate * 100 + "%");
@@ -305,86 +318,156 @@ public class PayAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
 		SysFeeManager sfm = (SysFeeManager) AppFactory.instance(null).getApp(Constants.WEB_SYS_FEE_INFO);
+		SchoolManager sm = (SchoolManager) AppFactory.instance(null).getApp(Constants.WEB_SCHOOL_INFO);
 		UserClassInfoManager ucm = (UserClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
-		Integer stuId = CommonTools.getLoginUserId(request);
+		UserManager um = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
+		InviteCodeInfoManager icm = (InviteCodeInfoManager) AppFactory.instance(null).getApp(Constants.WEB_INVITE_CODE_INFO);
+		NetTeacherInfoManager ntm = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
+		NetTeacherStudentManager ntsm = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT);
+		Integer userId = CommonTools.getLoginUserId(request);
 		Integer roleId  = CommonTools.getLoginRoleId(request);
+		Integer ntId = CommonTools.getFinalInteger("ntId", request);//当是在我的导师页面点击绑定时
+		String ntCode = CommonTools.getFinalStr("ntCode", request);//当是通过导师邀请码绑定时
 		Integer selMonth = CommonTools.getFinalInteger("selMonth", request);//默认进来为一个月
 		Integer feeType = 1;//费用类型(1:导师费,2:会员费)
 		Integer fee = 0;//购买所需费用
 		String buyDate = "";//获取指定购买月份后的日期
 		String currDate = CurrentTime.getStringDate();
-		Integer currUserGradeNumber_curr = 0;//当前所在年级
+//		Integer currUserGradeNumber_curr = 0;//当前所在年级
 		Integer currUserGradeNumber_new = 0;//选取购买月份后所在年级
-		String gradeName_curr = "";
-		String gradeName_new = "";
+//		String gradeName_curr = "";
+//		String gradeName_new = "";
+		Integer schoolId = 0;
 		String msg = "error";
 		Double zkRate = 0.0;
 		Map<String,Object> map = new HashMap<String,Object>();
 		if(selMonth.equals(0)){
 			selMonth = 1;
 		}
-		stuId = CommonTools.getFinalInteger("userId", request);
-		roleId = CommonTools.getFinalInteger("roleId", request);
-		if(stuId > 0 && roleId.equals(Constants.STU_ROLE_ID) && selMonth > 0 && selMonth <= 12){
-			//获取当前学生能购买的的时长（最大到升学日期）不足一月按一月计算
-			List<UserClassInfo> uList = ucm.listInfoByOpt_1(stuId, roleId);
+		if(!ntCode.equals("")){//从邀请码进入
+			List<InviteCodeInfo>  icList = icm.listIcInfoByOpt(ntCode, "导师邀请码");
+			if(icList.size() > 0){
+				List<NetTeacherInfo> ntList = ntm.listntInfoByuserId(icList.get(0).getInviteId());
+				if(ntList.size() > 0){
+					ntId = ntList.get(0).getId();
+				}
+			}
+		}else if(ntId > 0){//从导师列表进入
+			
+		}
+		if(userId > 0 && roleId.equals(Constants.STU_ROLE_ID) && selMonth > 0 && selMonth <= 12 && ntId > 0){
+			Integer stuSchoolType = 0;
+			List<User> uList = um.listEntityById(userId);
 			if(uList.size() > 0){
-				zkRate = CommonTools.getZkRate(selMonth);
-				UserClassInfo uc = uList.get(0);
-				ClassInfo c = uc.getClassInfo();
-				Integer schoolType = c.getSchool().getSchoolType();//当前学生所处的学段
-				Integer yearSystem = c.getSchool().getYearSystem();//当前学生的学年制
-				String buildClassDate = c.getBuildeClassDate();
-				Integer buildClassYear = Integer.parseInt(buildClassDate.substring(0, 4));
-				String byDate = "";//毕业时间
-				currUserGradeNumber_curr = Convert.dateConvertGradeNumber(buildClassDate);//当前会员到期日所在的年级
-				gradeName_curr = Convert.NunberConvertChinese(currUserGradeNumber_curr);
-				buyDate = CurrentTime.getFinalDate(currDate, selMonth * 30);//购买导师服务费的日期
-				//获取购买导师服务费的日期后所在的年级
-				currUserGradeNumber_new = Convert.dateConvertGradeNumber(buyDate,buildClassDate);
-				if(currUserGradeNumber_new > 12){
-					currUserGradeNumber_new = 12;
-				}
-				gradeName_new = Convert.NunberConvertChinese(currUserGradeNumber_new);//购买会员后到期日所在的年级名称
-				map.put("gradeName_curr", gradeName_curr);//当前用户所在的年级
-				map.put("gradeName_new", gradeName_new);//购买导师服务费的日期后所在的年级名称
-				map.put("buyDate_end", buyDate);//购买导师到期日
-				Integer gradeNumber = 0;
-				if(schoolType.equals(1)){//小学
-					gradeNumber = yearSystem;
-					if(yearSystem.equals(6)){//6+3+3年制
-						//计算升学时间
-						byDate = (buildClassYear + 8) + "-09-01";
-					}else{//5+4+3年制
-						byDate = (buildClassYear + 7) + "-09-01";
+				schoolId = uList.get(0).getSchoolId();
+			}
+			if(schoolId > 0){
+				List<School> sList = sm.listInfoById(schoolId);
+				if(sList.size() > 0){
+					stuSchoolType = sList.get(0).getSchoolType();
+					Integer yearSystem = sList.get(0).getYearSystem();
+					List<NetTeacherInfo>  ntList = ntm.listntInfoByTeaId(ntId);
+					if(ntList.size() > 0){
+						NetTeacherInfo nt = ntList.get(0);
+						User user = nt.getUser();
+						Integer subId = nt.getSubject().getId();
+						Integer schoolType =  nt.getSchoolType();
+						Integer checkStatus = nt.getCheckStatus();
+						if(stuSchoolType.equals(schoolType)){//学段相同才能绑定
+							if(checkStatus.equals(2)){
+								//该科没有正在绑定的导师
+								NetTeacherStudent nts = ntsm.getValidInfoByOpt(userId, subId);
+								if(nts == null){//没有，可以进行绑定
+									String schoolTypeChi = "";
+									if(schoolType.equals(1)){
+										schoolTypeChi = "小学";
+									}else if(schoolType.equals(2)){
+										schoolTypeChi = "初中";
+									}else{
+										schoolTypeChi = "高中";
+									}
+									
+									//获取当前学生能购买的的时长（最大到升学日期）不足一月按一月计算
+									List<UserClassInfo> ucList = ucm.listInfoByOpt_1(userId, roleId);
+									if(ucList.size() > 0){
+										zkRate = CommonTools.getZkRate(selMonth);
+										UserClassInfo uc = ucList.get(0);
+										ClassInfo c = uc.getClassInfo();
+										schoolType = c.getSchool().getSchoolType();//当前学生所处的学段
+										yearSystem = c.getSchool().getYearSystem();//当前学生的学年制
+										String buildClassDate = c.getBuildeClassDate();
+										Integer buildClassYear = Integer.parseInt(buildClassDate.substring(0, 4));
+										String byDate = "";//毕业时间
+//										currUserGradeNumber_curr = Convert.dateConvertGradeNumber(buildClassDate);//当前会员到期日所在的年级
+//										gradeName_curr = Convert.NunberConvertChinese(currUserGradeNumber_curr);
+										buyDate = CurrentTime.getFinalDate(currDate, selMonth * 30);//购买导师服务费的日期
+										//获取购买导师服务费的日期后所在的年级
+										currUserGradeNumber_new = Convert.dateConvertGradeNumber(buyDate,buildClassDate);
+										if(currUserGradeNumber_new > 12){
+											currUserGradeNumber_new = 12;
+										}
+//										gradeName_new = Convert.NunberConvertChinese(currUserGradeNumber_new);//购买会员后到期日所在的年级名称
+//										map.put("gradeName_curr", gradeName_curr);//当前用户所在的年级
+//										map.put("gradeName_new", gradeName_new);//购买导师服务费的日期后所在的年级名称
+										map.put("buyDate_end", buyDate);//购买导师到期日
+										Integer gradeNumber = 0;
+										if(schoolType.equals(1)){//小学
+											gradeNumber = yearSystem;
+											if(yearSystem.equals(6)){//6+3+3年制
+												//计算升学时间
+												byDate = (buildClassYear + 8) + "-09-01";
+											}else{//5+4+3年制
+												byDate = (buildClassYear + 7) + "-09-01";
+											}
+										}else if(schoolType.equals(2)){//初中
+											byDate = (buildClassYear + 11) + "-09-01";
+											gradeNumber = 10;
+										}else if(schoolType.equals(3)){//高中
+											//不区分
+											byDate = (buildClassYear + 14) + "-09-01";
+											gradeNumber = 12;
+										}
+										if(currUserGradeNumber_new <= gradeNumber){
+											//不涉及升学
+											List<SysFeeInfo> sfList = sfm.listInfoByopt(feeType, 1, 1);
+											if(sfList.size() > 0){
+												//可以购买--获取费用
+												map.put("ntId", ntId);
+												map.put("ntName", user.getRealName());
+												map.put("subId", subId);
+												map.put("subName", nt.getSubject().getSubName());
+												map.put("schoolType",schoolTypeChi);
+												msg = "success";
+												fee = (int)(sfList.get(0).getFee() * selMonth * zkRate);
+											}
+										}else{
+											//涉及升学，不能进行购买
+											msg = "noBuy";
+										}
+									}
+								}else{
+									//查看是不是当前学生和当前网络导师的信息存在
+									msg = "bindExist";//该科目前存在正在绑定的导师
+								}
+							}else{
+								msg = "checkFail";//该导师没有审核通过
+							}
+						}else{
+							msg = "paraDiff";//学段不一致
+						}
+					}else{
+						msg = "noInfo";
 					}
-				}else if(schoolType.equals(2)){//初中
-					byDate = (buildClassYear + 11) + "-09-01";
-					gradeNumber = 10;
-				}else if(schoolType.equals(3)){//高中
-					//不区分
-					byDate = (buildClassYear + 14) + "-09-01";
-					gradeNumber = 12;
-				}
-				if(currUserGradeNumber_new <= gradeNumber){
-					//不涉及升学
-					List<SysFeeInfo> sfList = sfm.listInfoByopt(feeType, 1, 1);
-					if(sfList.size() > 0){
-						//可以购买--获取费用
-						msg = "success";
-						fee = (int)(sfList.get(0).getFee() * selMonth * zkRate);
-					}
-				}else{
-					//涉及升学，不能进行购买
-					msg = "noBuy";
 				}
 			}
 		}
 		map.put("result", msg);
 		if(msg.equals("success")){
-			map.put("gradeName_curr", gradeName_curr);//当前所在年级
-			map.put("gradeName_new", gradeName_new);//选取购买时长后所在的年级
+//			map.put("gradeName_curr", gradeName_curr);//当前所在年级
+//			map.put("gradeName_new", gradeName_new);//选取购买时长后所在的年级
+			map.put("payOpt", "ntFee");
 			map.put("buyDate", buyDate);//绑定截止日期
+			map.put("selMonth", selMonth);//购买月数
 			map.put("fee", fee);//费用
 			map.put("zkRate", zkRate * 100 + "%");
 		}

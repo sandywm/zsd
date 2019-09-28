@@ -50,9 +50,8 @@ public class InviteCodeInfoDaoImpl implements InviteCodeInfoDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<InviteCodeInfo> findIcInfoByicCode(Session sess,
-			String inviteCode) {
-		String hql = " from InviteCodeInfo as ic where ic.inviteCode='"+inviteCode+"'";
+	public List<InviteCodeInfo> findIcInfoByOpt(Session sess,String inviteCode,String inviteType) {
+		String hql = " from InviteCodeInfo as ic where ic.inviteCode='"+inviteCode+"' and ic.inviteType = '"+inviteType+"'";
 		return sess.createQuery(hql).list();
 	}
 

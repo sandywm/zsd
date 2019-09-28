@@ -202,4 +202,18 @@ public interface NetTeacherStudentManager {
 	  * @throws WEBException
 	  */
 	 NetTeacherStudent getEntityInfoByOpt(Integer userId,Integer stuId)throws WEBException;
+	 
+	 /**
+	  * 修改绑定信息
+	  * @author wm
+	  * @date 2019-9-28 下午06:03:44
+	  * @param id
+	  * @param bindDate 绑定日期
+	  * @param bindStatus 绑定状态
+	  * @param endDate 结束日期
+	  * @param payStatus 付款状态
+	  * @return
+	  * @throws WEBException
+	  */
+	 boolean updateInfoById(Integer id,String bindDate,Integer bindStatus,String endDate,Integer payStatus)throws WEBException;
 }

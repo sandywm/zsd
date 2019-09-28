@@ -318,4 +318,31 @@ public class NetTeacherStudentManagerImpl implements NetTeacherStudentManager {
 			HibernateUtil.closeSession();
 		}
 	}
+
+	@Override
+	public boolean updateInfoById(Integer id, String bindDate,
+			Integer bindStatus, String endDate, Integer payStatus)
+			throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			ntsDao = (NetTeacherStudentDao) DaoFactory.instance(null).getDao(Constants.DAO_NET_TEACHER_STUDENT);
+			Session sess  = HibernateUtil.currentSession();
+			tran = sess.beginTransaction();
+			NetTeacherStudent nts = ntsDao.get(sess, id);
+			if(nts != null){
+				nts.setBindDate(bindDate);
+				nts.setBindStatus(bindStatus);
+				nts.setEndDate(endDate);
+				nts.setPayStatus(payStatus);
+				tran.commit();
+				return true;
+			}
+			return false;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("修改绑定信息时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
 }

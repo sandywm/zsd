@@ -17,16 +17,21 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
 
+import com.zsd.action.base.Transcode;
 import com.zsd.factory.AppFactory;
 import com.zsd.module.NetTeacherInfo;
 import com.zsd.module.NetTeacherStudent;
+import com.zsd.module.School;
 import com.zsd.module.StudentParentInfo;
 import com.zsd.module.StudentPayOrderInfo;
+import com.zsd.module.User;
 import com.zsd.page.PageConst;
 import com.zsd.service.NetTeacherInfoManager;
 import com.zsd.service.NetTeacherStudentManager;
+import com.zsd.service.SchoolManager;
 import com.zsd.service.StudentParentInfoManager;
 import com.zsd.service.StudentPayOrderInfoManager;
+import com.zsd.service.UserManager;
 import com.zsd.tools.CommonTools;
 import com.zsd.tools.CurrentTime;
 import com.zsd.util.Constants;
@@ -70,9 +75,8 @@ public class OrderAction extends DispatchAction {
 	public ActionForward getOrderData(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
-		NetTeacherInfoManager ntm = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
-		StudentPayOrderInfoManager om = (StudentPayOrderInfoManager) AppFactory.instance(null).getApp(Constants.WEB_STUDENT_PAY_ORDER_INFO);
 		NetTeacherStudentManager ntsm = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT);
+		StudentPayOrderInfoManager om = (StudentPayOrderInfoManager) AppFactory.instance(null).getApp(Constants.WEB_STUDENT_PAY_ORDER_INFO);
 		StudentParentInfoManager spm = (StudentParentInfoManager) AppFactory.instance(null).getApp(Constants.WEB_STUDENT_PARENT_INFO);
 		Integer userId = CommonTools.getLoginUserId(request);
 		Integer roleId = CommonTools.getLoginRoleId(request);
@@ -95,47 +99,226 @@ public class OrderAction extends DispatchAction {
 			List<Object> list_d = new ArrayList<Object>();
 			Integer pageSize = PageConst.getPageSize(String.valueOf(request.getParameter("limit")), 10);//等同于pageSize
 			Integer pageNo = CommonTools.getFinalInteger("page", request);//等同于pageNo
-			List<StudentPayOrderInfo> sordeList = om.listOrderPageInfoByOpt(userId, sDate, eDate, comStatus, pageNo, pageSize);
-			for (Iterator<StudentPayOrderInfo> itrs = sordeList.iterator(); itrs.hasNext();) {
-				StudentPayOrderInfo sorder = (StudentPayOrderInfo) itrs.next();
-				Map<String,Object> map_d = new HashMap<String,Object>();
-				map_d.put("stuName", sorder.getUser().getRealName());
-				map_d.put("payDate", sorder.getAddDate());
-				map_d.put("payMoney", sorder.getPayMoney());
-//					map_d.put("endDate", sorder.getEndDate());
-				list_d.add(map_d);
+			//客户端信息
+			String clientInfo = CommonTools.getCilentInfo_new(request);
+			if(clientInfo.equals("pc")){
+				Integer count = om.getCountByOpt(userId, sDate, eDate, comStatus);
+				if(count > 0){
+					msg = "success";
+					List<StudentPayOrderInfo> sordeList = om.listOrderPageInfoByOpt(userId, sDate, eDate, comStatus, pageNo, pageSize);
+					for (Iterator<StudentPayOrderInfo> itrs = sordeList.iterator(); itrs.hasNext();) {
+						StudentPayOrderInfo sorder = (StudentPayOrderInfo) itrs.next();
+						Map<String,Object> map_d = new HashMap<String,Object>();
+						map_d.put("stuName", sorder.getUser().getRealName());
+						map_d.put("payDate", sorder.getAddDate());
+						map_d.put("payMoney", sorder.getPayMoney());
+						list_d.add(map_d);
+					}
+					map.put("data", list_d);
+					map.put("count", count);
+					map.put("code", 0);
+				}
+			}else{
+				List<StudentPayOrderInfo> sordeList = om.listOrderPageInfoByOpt(userId, sDate, eDate, comStatus, pageNo, pageSize);
+				if(sordeList.size() > 0){
+					msg = "success";
+					for (Iterator<StudentPayOrderInfo> itrs = sordeList.iterator(); itrs.hasNext();) {
+						StudentPayOrderInfo spo = (StudentPayOrderInfo) itrs.next();
+						Map<String,Object> map_d = new HashMap<String,Object>();
+						Integer ntsId = spo.getNtsId();
+						map_d.put("orderId", spo.getId());
+						map_d.put("addDate", spo.getAddDate());
+						map_d.put("buyDays", spo.getBuyDays() * 30);
+						map_d.put("payMoney", spo.getPayMoney());
+						map_d.put("comStatus", spo.getComStatus());
+						map_d.put("ntsId", ntsId);//0时表示购买会员，大于0表示绑定导师
+						if(ntsId > 0){
+							NetTeacherStudent nts = ntsm.getEntityById(ntsId);
+							if(nts != null){
+								Integer schoolType = nts.getNetTeacherInfo().getSchoolType();
+								String subName = nts.getNetTeacherInfo().getSubject().getSubName();
+								String ntName = nts.getNetTeacherInfo().getUser().getRealName();
+								map_d.put("ntName", ntName);
+								map_d.put("schoolType", schoolType);
+								map_d.put("subName", subName);
+								
+							}
+						}else{
+							map_d.put("payInfo", "会员购买");
+						}
+						list_d.add(map_d);
+					}
+				}else{
+					msg = "noInfo";
+				}
 			}
-			
-//			List<NetTeacherInfo> ntlist = ntm.listntInfoByuserId(userId);
-//			Integer ntId = ntlist.get(0).getId();
-//			List<NetTeacherStudent> ntslist=ntsm.listNtsByNtId(ntId, 1);
-//			List<Object> list_d = new ArrayList<Object>();
-//			Integer count =0;
-//			if(!ntslist.isEmpty()){
-//				for (Iterator<NetTeacherStudent> iter = ntslist.iterator(); iter.hasNext();) {
-//					NetTeacherStudent nts = (NetTeacherStudent) iter.next();
-//					 Integer ntsId = nts.getId();
-//					 count = om.getspOrderInfoCount(ntsId);
-//					 if(count>0){
-//						 msg="success";
-//						 Integer pageSize = PageConst.getPageSize(String.valueOf(request.getParameter("limit")), 10);//等同于pageSize
-//						 Integer pageNo = CommonTools.getFinalInteger("page", request);//等同于pageNo
-//						 List<StudentPayOrderInfo> sordeList = om.listOrderPageInfoByOpt(userId, sDate, eDate, comStatus, pageNo, pageSize);
-//							for (Iterator<StudentPayOrderInfo> itrs = sordeList.iterator(); itrs.hasNext();) {
-//								StudentPayOrderInfo sorder = (StudentPayOrderInfo) itrs.next();
-//								Map<String,Object> map_d = new HashMap<String,Object>();
-//								map_d.put("stuName", sorder.getUser().getRealName());
-//								map_d.put("payDate", sorder.getAddDate());
-//								map_d.put("payMoney", sorder.getPayMoney());
-////								map_d.put("endDate", sorder.getEndDate());
-//								list_d.add(map_d);
-//							}
-//					 }
-//				}
-//				map.put("data", list_d);
-//				map.put("count", count);
-//				map.put("code", 0);
-//			}
+		}else{
+			msg = "error";
+		}
+		map.put("msg", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 查看订单详情
+	 * @author wm
+	 * @date 2019-9-28 下午06:39:51
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getOrderDetail(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		NetTeacherStudentManager ntsm = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT);
+		StudentPayOrderInfoManager om = (StudentPayOrderInfoManager) AppFactory.instance(null).getApp(Constants.WEB_STUDENT_PAY_ORDER_INFO);
+		StudentParentInfoManager spm = (StudentParentInfoManager) AppFactory.instance(null).getApp(Constants.WEB_STUDENT_PARENT_INFO);
+		UserManager um = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
+		Integer userId = CommonTools.getLoginUserId(request);
+		Integer roleId = CommonTools.getLoginRoleId(request);
+		Integer orderId = CommonTools.getFinalInteger("orderId", request);//订单编号
+		Integer stuId = 0;
+		String  msg = "error";
+		Map<String, Object> map = new HashMap<String, Object>();
+		if(orderId > 0 && userId > 0 && roleId > 0){
+			if(roleId.equals(Constants.PATENT_ROLE_ID)){
+				StudentParentInfo sp = spm.getEntityByParId(userId);
+				if(sp != null){//获取自己孩子的id
+					stuId = sp.getStu().getId();
+				}
+			}else if(roleId.equals(Constants.STU_ROLE_ID)){
+				stuId = userId;
+			}
+			if(stuId > 0){
+				StudentPayOrderInfo spo = om.getEntityById(orderId);
+				if(spo != null){
+					msg = "success";
+					Integer ntsId = spo.getNtsId();
+					if(ntsId > 0){
+						NetTeacherStudent nts = ntsm.getEntityById(ntsId);
+						if(nts != null){
+							Integer schoolType = nts.getNetTeacherInfo().getSchoolType();
+							String subName = nts.getNetTeacherInfo().getSubject().getSubName();
+							String ntName = nts.getNetTeacherInfo().getUser().getRealName();
+							map.put("ntName", ntName);
+							map.put("schoolType", schoolType);
+							map.put("subName", subName);
+						}
+					}else{
+						map.put("payInfo", "会员购买");
+						map.put("orderDetail", spo.getOrderDetail());
+					}
+					map.put("addDate", spo.getAddDate());
+					map.put("buyDays", spo.getBuyDays() * 30);
+					map.put("payMoney", spo.getPayMoney());
+					map.put("payType", spo.getPayType());
+					map.put("comStatus", spo.getComStatus());
+					map.put("ntsId", ntsId);//0时表示购买会员，大于0表示绑定导师
+					Integer comStatus = spo.getComStatus();
+					if(comStatus.equals(2)){
+						map.put("comDate", spo.getComDate());
+						map.put("payUserName", um.listEntityById(spo.getPayUserId()).get(0).getRealName());
+					}
+				}else{
+					msg = "noInfo";
+				}
+			}
+		}
+		map.put("msg", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 增加订单
+	 * @author wm
+	 * @date 2019-9-28 下午06:39:38
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward addOrder(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		NetTeacherStudentManager ntsm = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT);
+		StudentPayOrderInfoManager om = (StudentPayOrderInfoManager) AppFactory.instance(null).getApp(Constants.WEB_STUDENT_PAY_ORDER_INFO);
+		NetTeacherInfoManager ntm = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
+		SchoolManager sm = (SchoolManager) AppFactory.instance(null).getApp(Constants.WEB_SCHOOL_INFO);
+		UserManager um = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
+		Integer userId = CommonTools.getLoginUserId(request);
+		Integer roleId = CommonTools.getLoginRoleId(request);
+		Integer payType = CommonTools.getFinalInteger("payType", request);//支付方式
+		Integer payMoney = CommonTools.getFinalInteger("payMoney", request);//付款金额
+		Integer selMonth = CommonTools.getFinalInteger("selMonth", request);//购买月数
+		String orderDetail = Transcode.unescape_new1("orderDetail", request);//订单详情
+		String payOpt = CommonTools.getFinalStr("payOpt", request);//ntFee：绑定导师,serviceFee:购买会员
+		String currDate = CurrentTime.getStringDate();
+		Map<String, String> map = new HashMap<String, String>();
+		String msg = "error";
+		if(userId > 0 && roleId.equals(Constants.STU_ROLE_ID) && payType > 0 && payMoney > 0 && selMonth > 0){
+			selMonth = selMonth / 30;
+			Integer ntsId = -1;
+			if(payOpt.equals("ntFee")){
+				Integer ntId = CommonTools.getFinalInteger("ntId", request);//绑定导师时传递导师编号
+				Integer stuSchoolType = 0;
+				Integer schoolId = 0;
+				List<User> uList = um.listEntityById(userId);
+				if(uList.size() > 0){
+					schoolId = uList.get(0).getSchoolId();//获取当前学生所在的学校编号
+				}
+				if(schoolId > 0){
+					List<School> sList = sm.listInfoById(schoolId);
+					if(sList.size() > 0){
+						stuSchoolType = sList.get(0).getSchoolType();//获取当前学生所在的学段
+						List<NetTeacherInfo>  ntList = ntm.listntInfoByTeaId(ntId);
+						if(ntList.size() > 0){
+							NetTeacherInfo nt = ntList.get(0);
+							Integer subId = nt.getSubject().getId();
+							Integer schoolType =  nt.getSchoolType();
+							Integer checkStatus = nt.getCheckStatus();
+							if(stuSchoolType.equals(schoolType)){//学段相同才能绑定
+								if(checkStatus.equals(2)){//审核通过
+									NetTeacherStudent nts = ntsm.getValidInfoByOpt(userId, subId);
+									if(nts == null){//该科没有在绑定的关系，可以进行绑定
+										nts = ntsm.getEntityInfoByOpt(ntId, userId);//获取该学生和该导师有无绑定信息
+										if(nts == null){//不存在绑定关系--增加
+											ntsId = ntsm.addNTS(userId, ntId, currDate, 1, currDate, 0, "", "", 0);
+										}else{//存在到期，取消--修改
+											boolean flag = ntsm.updateInfoById(nts.getId(), currDate, 1, currDate, 0);
+											if(flag){
+												ntsId = nts.getId();
+											}
+										}
+									}else{
+										msg = "bindExist";//该科目前存存在正在绑定的导师
+									}
+								}else{
+									msg = "checkFail";//该导师没有审核通过
+								}
+							}else{
+								msg = "paraDiff";//学段不一致
+							}
+						}else{
+							msg = "noInfo";
+						}
+					}
+				}
+			}else if(payOpt.equals("serviceFee")){
+				ntsId = 0;
+			}
+			if(ntsId >= 0){
+				Integer orderId = om.addOrder(userId, CurrentTime.getStringTime2(), payType, payMoney, ntsId, selMonth, orderDetail);
+				if(orderId > 0){
+					msg = "success";
+				}
+			}
 		}
 		map.put("msg", msg);
 		CommonTools.getJsonPkg(map, response);

@@ -86,4 +86,49 @@ public interface StudentPayOrderInfoManager {
 	 * @throws WEBException
 	 */
 	Integer getCountByOpt(Integer userId,String sDate,String eDate,Integer comSta)throws WEBException;
+	
+	/**
+	 * 根据主键获取实体信息
+	 * @author wm
+	 * @date 2019-9-28 下午02:37:40
+	 * @param id
+	 * @return
+	 * @throws WEBException
+	 */
+	StudentPayOrderInfo getEntityById(Integer id)throws WEBException;
+	
+	/**
+	 * 增加订单
+	 * @author wm
+	 * @date 2019-9-28 下午03:23:52
+	 * @param stuId 学生编号
+	 * @param orderNo 订单号
+	 * @param payType 付款类型1(微信),2(支付宝)
+	 * @param payMoney 付款金额
+	 * @param ntsId 老师学生绑定关系编号
+	 * @param buyMonth 购买月份
+	 * @param orderDetail 费用详情
+	 * @return
+	 * @throws WEBException
+	 */
+	Integer addOrder(Integer stuId,String orderNo,Integer payType,Integer payMoney,Integer ntsId,Integer buyMonth,String orderDetail)throws WEBException;
+	
+	/**
+	 * 
+	 * @author wm
+	 * @date 2019-9-28 下午03:26:01
+	 * @param id 主键
+	 * @param payType 付款类型1(微信),2(支付宝)，0不修改
+	 * @param payMoney 付款金额 （0不修改）
+	 * @param buyMonth 购买月份（0不修改）
+	 * @param orderDetail 费用详情（""不修改）
+	 * @param comStatus 完成状态 (-1不修改)
+	 * @param comDate 完成时间 （""不修稿）
+	 * @param payUserId 购买人 （0不修改）
+	 * @param payUserRoleId 购买人角色（0不修改）
+	 * @return
+	 * @throws WEBException
+	 */
+	boolean updateOrderById(Integer id,Integer payType,Integer payMoney,Integer buyMonth,String orderDetail,Integer comStatus,String comDate,
+			Integer payUserId,Integer payUserRoleId)throws WEBException;
 }

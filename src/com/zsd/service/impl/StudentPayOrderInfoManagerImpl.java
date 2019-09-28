@@ -6,10 +6,13 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import com.zsd.dao.StudentPayOrderInfoDao;
+import com.zsd.dao.UserDao;
 import com.zsd.exception.WEBException;
 import com.zsd.factory.DaoFactory;
 import com.zsd.module.StudentPayOrderInfo;
+import com.zsd.module.User;
 import com.zsd.service.StudentPayOrderInfoManager;
+import com.zsd.tools.CurrentTime;
 import com.zsd.tools.HibernateUtil;
 import com.zsd.util.Constants;
 
@@ -20,6 +23,7 @@ import com.zsd.util.Constants;
 public class StudentPayOrderInfoManagerImpl implements
 		StudentPayOrderInfoManager {
 	StudentPayOrderInfoDao sOrderInfoDao =null;
+	UserDao uDao = null;
 	Transaction tran = null;
 	@Override
 	public List<StudentPayOrderInfo> findSpayOrderInfoByOpt(Integer ntsId,
@@ -139,6 +143,89 @@ public class StudentPayOrderInfoManagerImpl implements
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new WEBException("根据条件获取订单记录条数时出现异常!");
+		}finally{
+			HibernateUtil.closeSession();
+		}
+	}
+	@Override
+	public StudentPayOrderInfo getEntityById(Integer id) throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			sOrderInfoDao = (StudentPayOrderInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_STUDENT_PAY_ORDER_INFO);
+			Session sess  = HibernateUtil.currentSession();
+			return sOrderInfoDao.get(sess, id);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("根据主键获取实体信息时出现异常!");
+		}finally{
+			HibernateUtil.closeSession();
+		}
+	}
+	@Override
+	public Integer addOrder(Integer stuId, String orderNo, Integer payType,
+			Integer payMoney, Integer ntsId, Integer buyMonth,
+			String orderDetail) throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			sOrderInfoDao = (StudentPayOrderInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_STUDENT_PAY_ORDER_INFO);
+			uDao = (UserDao) DaoFactory.instance(null).getDao(Constants.DAO_USER_INFO);
+			Session sess  = HibernateUtil.currentSession();
+			tran = sess.beginTransaction();
+			StudentPayOrderInfo spo = new StudentPayOrderInfo(orderNo, uDao.get(sess, stuId),
+					 payType, payMoney, ntsId, CurrentTime.getCurrentTime(),
+					 buyMonth, orderDetail, 0,"", 0,0);
+			sOrderInfoDao.save(sess, spo);
+			return spo.getId();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("增加订单时出现异常!");
+		}finally{
+			HibernateUtil.closeSession();
+		}
+	}
+	@Override
+	public boolean updateOrderById(Integer id, Integer payType,
+			Integer payMoney, Integer buyMonth, String orderDetail,
+			Integer comStatus, String comDate, Integer payUserId,
+			Integer payUserRoleId) throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			sOrderInfoDao = (StudentPayOrderInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_STUDENT_PAY_ORDER_INFO);
+			uDao = (UserDao) DaoFactory.instance(null).getDao(Constants.DAO_USER_INFO);
+			Session sess  = HibernateUtil.currentSession();
+			tran = sess.beginTransaction();
+			StudentPayOrderInfo spo = sOrderInfoDao.get(sess, id);
+			if(spo != null){
+				if(payType > 0){
+					spo.setPayType(payType);
+				}
+				if(payMoney > 0){
+					spo.setPayMoney(payMoney);
+				}
+				if(buyMonth > 0){
+					spo.setBuyDays(buyMonth);
+				}
+				if(!orderDetail.equals("")){
+					spo.setOrderDetail(orderDetail);
+				}
+				if(comStatus > 0){
+					spo.setComStatus(comStatus);
+				}
+				if(!comDate.equals("")){
+					spo.setComDate(comDate);
+				}
+				if(payUserId > 0 && payUserRoleId > 0){
+					spo.setPayUserId(payUserId);
+					spo.setPayUserRoleId(payUserRoleId);
+				}
+				sOrderInfoDao.update(sess, spo);
+				tran.commit();
+				return true;
+			}
+			return false;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("修改订单时出现异常!");
 		}finally{
 			HibernateUtil.closeSession();
 		}

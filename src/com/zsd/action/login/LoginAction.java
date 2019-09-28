@@ -371,10 +371,10 @@ public class LoginAction extends DispatchAction {
 							msg = "success";//注册用户成功
 							if(ruId>0){//绑定角色成功
 								if(!inviteCode.equals("")){
-									List<InviteCodeInfo> icList = icManager.listIcInfoByicCode(inviteCode.toUpperCase());//导师邀请码
+									List<InviteCodeInfo> icList = icManager.listIcInfoByOpt(inviteCode.toUpperCase(),"导师邀请码");//导师邀请码
 									if(icList.size()>0){
 										Integer teaId=icList.get(0).getInviteId();
-										List<NetTeacherInfo> ntlist=ntManager.listntInfoByTeaId(teaId);
+										List<NetTeacherInfo> ntlist=ntManager.listntInfoByuserId(teaId);
 										if(ntlist.get(0).getCheckStatus().equals(2)){//审核通过的导师
 											List<School> schList = scManager.listInfoById(schoolId);
 									    	Integer stuSchType =0;
@@ -703,7 +703,7 @@ public class LoginAction extends DispatchAction {
 		Integer userId = CommonTools.getLoginUserId(request);
 		List<InviteCodeInfo> icList = null;
 		if (!inviteCode.equals("")) {
-		   icList = icManager.listIcInfoByicCode(inviteCode.toUpperCase());//导师邀请码 
+		   icList = icManager.listIcInfoByOpt(inviteCode.toUpperCase(),"导师邀请码");//导师邀请码 
 		}
 		Map<String,Object> map = new HashMap<String,Object>();
 		if(icList.isEmpty()){
@@ -713,7 +713,7 @@ public class LoginAction extends DispatchAction {
 			if(uList.size() > 0){
 				String userName_stu = uList.get(0).getRealName();
 				Integer teaId=icList.get(0).getInviteId();	
-			    List<NetTeacherInfo> ntlist=ntManager.listntInfoByTeaId(teaId);
+			    List<NetTeacherInfo> ntlist=ntManager.listntInfoByuserId(teaId);
 			    if(ntlist.get(0).getCheckStatus().equals(2)){
 			    	NetTeacherInfo nt = ntlist.get(0);
 			    	Integer userId_tea = nt.getUser().getId();

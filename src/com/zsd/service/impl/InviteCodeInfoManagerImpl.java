@@ -22,12 +22,11 @@ public class InviteCodeInfoManagerImpl implements InviteCodeInfoManager {
 	InviteCodeInfoDao icDao = null;
 	Transaction tran = null;
 	@Override
-	public List<InviteCodeInfo> listIcInfoByicCode(
-			String inviteCode) throws WEBException {
+	public List<InviteCodeInfo> listIcInfoByOpt(String inviteCode,String inviteType) throws WEBException {
 		try {
 			icDao = (InviteCodeInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_INVITE_CODE_INFO);
 			Session sess  = HibernateUtil.currentSession();
-			return icDao.findIcInfoByicCode(sess, inviteCode);
+			return icDao.findIcInfoByOpt(sess, inviteCode, inviteType);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new WEBException("根据邀请码编号获取邀请码信息列表时出现异常!");

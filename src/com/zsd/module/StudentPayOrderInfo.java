@@ -15,7 +15,7 @@ public class StudentPayOrderInfo implements java.io.Serializable {
 	private Integer id;
 	private String orderNo;
 	private User user;
-	private String payType;
+	private Integer payType;
 	private Integer payMoney;
 	private Integer ntsId;
 	private String addDate;
@@ -34,11 +34,10 @@ public class StudentPayOrderInfo implements java.io.Serializable {
 	}
 	
 	/** full constructor */
-	public StudentPayOrderInfo(Integer id, String orderNo, User user,
-			String payType, Integer payMoney, Integer ntsId, String addDate,
+	public StudentPayOrderInfo(String orderNo, User user,
+			Integer payType, Integer payMoney, Integer ntsId, String addDate,
 			Integer buyDays, String orderDetail, Integer comStatus,
 			String comDate, Integer payUserId, Integer payUserRoleId) {
-		this.id = id;
 		this.orderNo = orderNo;
 		this.user = user;
 		this.payType = payType;
@@ -79,11 +78,11 @@ public class StudentPayOrderInfo implements java.io.Serializable {
 		this.user = user;
 	}
 
-	public String getPayType() {
+	public Integer getPayType() {
 		return payType;
 	}
 
-	public void setPayType(String payType) {
+	public void setPayType(Integer payType) {
 		this.payType = payType;
 	}
 

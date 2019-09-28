@@ -66,9 +66,10 @@ public interface InviteCodeInfoDao {
 	 * @author zong
 	 * @param sess
 	 * @param inviteCode 邀请码
+	 * @param inviteType 邀请类型
 	 * @return
 	 */
-	List<InviteCodeInfo> findIcInfoByicCode(Session sess,String inviteCode);
+	List<InviteCodeInfo> findIcInfoByOpt(Session sess,String inviteCode,String inviteType);
 	/**
 	 * 根据邀请编号,邀请码类型获取信息
 	 * @author zdf
