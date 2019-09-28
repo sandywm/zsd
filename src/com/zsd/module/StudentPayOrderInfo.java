@@ -13,64 +13,66 @@ public class StudentPayOrderInfo implements java.io.Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	private Integer id;
+	private String orderNo;
 	private User user;
 	private String payType;
 	private Integer payMoney;
 	private Integer ntsId;
 	private String addDate;
-	private String endDate;
-	private Integer clearStatus;
-	private String clearDate;
-	private String cancelDate;
+	private Integer buyDays;
+	private String orderDetail;
 	private Integer comStatus;
 	private String comDate;
-
+	private Integer payUserId;
+	private Integer payUserRoleId;
+	
 	// Constructors
 
 	/** default constructor */
 	public StudentPayOrderInfo() {
+	
 	}
-
-	/** minimal constructor */
-	public StudentPayOrderInfo(User user, String payType, Integer payMoney,
-			Integer clearStatus, Integer comStatus) {
-		this.user = user;
-		this.payType = payType;
-		this.payMoney = payMoney;
-		this.clearStatus = clearStatus;
-		this.comStatus = comStatus;
-	}
-
+	
 	/** full constructor */
-	public StudentPayOrderInfo(User user, String payType, Integer payMoney,
-			Integer ntsId, String addDate, String endDate, Integer clearStatus,
-			String clearDate, String cancelDate, Integer comStatus,
-			String comDate) {
+	public StudentPayOrderInfo(Integer id, String orderNo, User user,
+			String payType, Integer payMoney, Integer ntsId, String addDate,
+			Integer buyDays, String orderDetail, Integer comStatus,
+			String comDate, Integer payUserId, Integer payUserRoleId) {
+		this.id = id;
+		this.orderNo = orderNo;
 		this.user = user;
 		this.payType = payType;
 		this.payMoney = payMoney;
 		this.ntsId = ntsId;
 		this.addDate = addDate;
-		this.endDate = endDate;
-		this.clearStatus = clearStatus;
-		this.clearDate = clearDate;
-		this.cancelDate = cancelDate;
+		this.buyDays = buyDays;
+		this.orderDetail = orderDetail;
 		this.comStatus = comStatus;
 		this.comDate = comDate;
+		this.payUserId = payUserId;
+		this.payUserRoleId = payUserRoleId;
 	}
 
 	// Property accessors
-
+	
 	public Integer getId() {
-		return this.id;
+		return id;
 	}
 
 	public void setId(Integer id) {
 		this.id = id;
 	}
 
+	public String getOrderNo() {
+		return orderNo;
+	}
+
+	public void setOrderNo(String orderNo) {
+		this.orderNo = orderNo;
+	}
+
 	public User getUser() {
-		return this.user;
+		return user;
 	}
 
 	public void setUser(User user) {
@@ -78,7 +80,7 @@ public class StudentPayOrderInfo implements java.io.Serializable {
 	}
 
 	public String getPayType() {
-		return this.payType;
+		return payType;
 	}
 
 	public void setPayType(String payType) {
@@ -86,7 +88,7 @@ public class StudentPayOrderInfo implements java.io.Serializable {
 	}
 
 	public Integer getPayMoney() {
-		return this.payMoney;
+		return payMoney;
 	}
 
 	public void setPayMoney(Integer payMoney) {
@@ -94,7 +96,7 @@ public class StudentPayOrderInfo implements java.io.Serializable {
 	}
 
 	public Integer getNtsId() {
-		return this.ntsId;
+		return ntsId;
 	}
 
 	public void setNtsId(Integer ntsId) {
@@ -102,47 +104,31 @@ public class StudentPayOrderInfo implements java.io.Serializable {
 	}
 
 	public String getAddDate() {
-		return this.addDate;
+		return addDate;
 	}
 
 	public void setAddDate(String addDate) {
 		this.addDate = addDate;
 	}
 
-	public String getEndDate() {
-		return this.endDate;
+	public Integer getBuyDays() {
+		return buyDays;
 	}
 
-	public void setEndDate(String endDate) {
-		this.endDate = endDate;
+	public void setBuyDays(Integer buyDays) {
+		this.buyDays = buyDays;
 	}
 
-	public Integer getClearStatus() {
-		return this.clearStatus;
+	public String getOrderDetail() {
+		return orderDetail;
 	}
 
-	public void setClearStatus(Integer clearStatus) {
-		this.clearStatus = clearStatus;
-	}
-
-	public String getClearDate() {
-		return this.clearDate;
-	}
-
-	public void setClearDate(String clearDate) {
-		this.clearDate = clearDate;
-	}
-
-	public String getCancelDate() {
-		return this.cancelDate;
-	}
-
-	public void setCancelDate(String cancelDate) {
-		this.cancelDate = cancelDate;
+	public void setOrderDetail(String orderDetail) {
+		this.orderDetail = orderDetail;
 	}
 
 	public Integer getComStatus() {
-		return this.comStatus;
+		return comStatus;
 	}
 
 	public void setComStatus(Integer comStatus) {
@@ -150,11 +136,27 @@ public class StudentPayOrderInfo implements java.io.Serializable {
 	}
 
 	public String getComDate() {
-		return this.comDate;
+		return comDate;
 	}
 
 	public void setComDate(String comDate) {
 		this.comDate = comDate;
+	}
+
+	public Integer getPayUserId() {
+		return payUserId;
+	}
+
+	public void setPayUserId(Integer payUserId) {
+		this.payUserId = payUserId;
+	}
+
+	public Integer getPayUserRoleId() {
+		return payUserRoleId;
+	}
+
+	public void setPayUserRoleId(Integer payUserRoleId) {
+		this.payUserRoleId = payUserRoleId;
 	}
 
 }

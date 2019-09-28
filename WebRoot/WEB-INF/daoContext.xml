@@ -66,4 +66,6 @@
 	<dao id="net_teacher_studio_relation_Dao" class="com.zsd.dao.impl.NetTeacherStudioRelationDaoImpl" />
 	<dao id="email_Dao" class="com.zsd.dao.impl.EmailDaoImpl" />
 	<dao id="sys_fee_Dao" class="com.zsd.dao.impl.SysFeeDaoImpl" />
+	<dao id="parent_club_Dao" class="com.zsd.dao.impl.ParentClubDaoImpl" />
+	<dao id="parent_club_relation_Dao" class="com.zsd.dao.impl.ParentClubRelationDaoImpl" />
 </daoContext>

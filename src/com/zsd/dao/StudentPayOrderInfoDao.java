@@ -85,5 +85,33 @@ public interface StudentPayOrderInfoDao {
 	 * @return
 	 */
 	Integer getspOrderInfoCount(Session sess,Integer ntsId);
+	
+	/**
+	 * 根据条件获取订单列表
+	 * @author wm
+	 * @date 2019-9-28 上午10:09:20
+	 * @param sess
+	 * @param userId 学生编号
+	 * @param sDate 开始日期
+	 * @param eDate 结束日期
+	 * @param comSta 完成状态（-1：全部,0:未完成,1:已完成,2:已取消）
+	 * @param pageNo
+	 * @param pageSize
+	 * @return
+	 */
+	List<StudentPayOrderInfo> findOrderPageInfoByOpt(Session sess,Integer userId,String sDate,String eDate,Integer comSta,Integer pageNo,Integer pageSize);
+	
+	/**
+	 * 根据条件获取订单记录条数
+	 * @author wm
+	 * @date 2019-9-28 上午10:19:11
+	 * @param sess
+	 * @param userId 学生编号
+	 * @param sDate 开始日期
+	 * @param eDate 结束日期
+	 * @param comSta 完成状态（-1：全部,0:未完成,1:已完成,2:已取消）
+	 * @return
+	 */
+	Integer getCountByOpt(Session sess,Integer userId,String sDate,String eDate,Integer comSta);
 
 }

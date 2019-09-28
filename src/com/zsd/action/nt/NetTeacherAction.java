@@ -25,6 +25,7 @@ import com.zsd.module.NetTeacherCertificateInfo;
 import com.zsd.module.NetTeacherInfo;
 import com.zsd.module.NetTeacherStudent;
 import com.zsd.module.NetTeacherTxRecord;
+import com.zsd.module.StudentParentInfo;
 import com.zsd.module.StudentPayOrderInfo;
 import com.zsd.module.User;
 import com.zsd.page.PageConst;
@@ -33,6 +34,7 @@ import com.zsd.service.NetTeacherInfoManager;
 import com.zsd.service.NetTeacherStudentManager;
 import com.zsd.service.NetTeacherTxRecordManager;
 import com.zsd.service.NtCertificateInfoManager;
+import com.zsd.service.StudentParentInfoManager;
 import com.zsd.service.StudentPayOrderInfoManager;
 import com.zsd.service.UserManager;
 import com.zsd.tools.CommonTools;
@@ -714,44 +716,6 @@ public class NetTeacherAction extends DispatchAction {
 	 */
 	public ActionForward listStuPayOrder(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response)throws Exception {
-		NetTeacherInfoManager ntManager = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
-		StudentPayOrderInfoManager sOrdeManager = (StudentPayOrderInfoManager) AppFactory.instance(null).getApp(Constants.WEB_STUDENT_PAY_ORDER_INFO);
-		NetTeacherStudentManager ntsManager = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT);
-		Integer userId=CommonTools.getLoginUserId(request);
-		Map<String, Object> map = new HashMap<String, Object>();
-		List<NetTeacherInfo> ntlist = ntManager.listntInfoByuserId(userId);
-		Integer ntId = ntlist.get(0).getId();
-		List<NetTeacherStudent> ntslist=ntsManager.listNtsByNtId(ntId, 1);
-		List<Object> list_d = new ArrayList<Object>();
-		String  msg = "暂无记录";
-		Integer count =0;
-		if(!ntslist.isEmpty()){
-			for (Iterator<NetTeacherStudent> iter = ntslist.iterator(); iter.hasNext();) {
-				NetTeacherStudent nts = (NetTeacherStudent) iter.next();
-				 Integer ntsId = nts.getId();
-				 count = sOrdeManager.getspOrderInfoCount(ntsId);
-				 if(count>0){
-					 msg="success";
-					 Integer pageSize = PageConst.getPageSize(String.valueOf(request.getParameter("limit")), 10);//等同于pageSize
-					 Integer pageNo = CommonTools.getFinalInteger("page", request);//等同于pageNo
-					 List<StudentPayOrderInfo> sordeList = sOrdeManager.listSpayOrderInfoByOpt(ntsId, pageNo, pageSize);
-						for (Iterator<StudentPayOrderInfo> itrs = sordeList.iterator(); itrs.hasNext();) {
-							StudentPayOrderInfo sorder = (StudentPayOrderInfo) itrs.next();
-							Map<String,Object> map_d = new HashMap<String,Object>();
-							map_d.put("stuName", sorder.getUser().getRealName());
-							map_d.put("payDate", sorder.getAddDate());
-							map_d.put("payMoney", sorder.getPayMoney());
-							map_d.put("endDate", sorder.getEndDate());
-							list_d.add(map_d);
-						}
-				 }
-			}
-			map.put("data", list_d);
-			map.put("count", count);
-			map.put("code", 0);
-		}
-		map.put("msg", msg);
-		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
 

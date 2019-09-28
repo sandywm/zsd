@@ -84,6 +84,8 @@ public class Constants {
 	public static final String WEB_NET_TEACHER_STUDIO_RELATION = "net_teacher_studio_relation_Web";
 	public static final String WEB_EMAIL_INFO = "email_Web";
 	public static final String WEB_SYS_FEE_INFO = "sys_fee_Web";
+	public static final String WEB_PARENT_CLUB = "parent_club_Web";
+	public static final String WEB_PARENT_CLUB_RELATION = "parent_club_relation_Web";
 	
 	//-------------------DAO-------------------------//
 	public static final String DAO_EDITION_INFO = "edition_Dao";
@@ -151,5 +153,7 @@ public class Constants {
 	public static final String DAO_NET_TEACHER_STUDIO_RELATION = "net_teacher_studio_relation_Dao";
 	public static final String DAO_EMAIL_INFO = "email_Dao";
 	public static final String DAO_SYS_FEE_INFO = "sys_fee_Dao";
+	public static final String DAO_PARENT_CLUB = "parent_club_Dao";
+	public static final String DAO_PARENT_CLUB_RELATION = "parent_club_relation_Dao";
 }
 

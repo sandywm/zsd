@@ -116,6 +116,13 @@
     <action path="/pay"  parameter="action" scope="request"  type="com.zsd.action.pay.PayAction">
       <set-property property="cancellable" value="true" />
     </action>
+    <action path="/parentClub"  parameter="action" scope="request"  type="com.zsd.action.club.ParentClubAction">
+      <set-property property="cancellable" value="true" />
+    </action>
+    <!-- 订单 -->
+    <action path="/order" parameter="action" scope="request"  type="com.zsd.action.order.OrderAction">
+      <set-property property="cancellable" value="true" />
+    </action>
   </action-mappings>
 
   <message-resources parameter="com.yourcompany.struts.ApplicationResources" />

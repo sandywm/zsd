@@ -112,5 +112,36 @@ public class StudentPayOrderInfoManagerImpl implements
 			HibernateUtil.closeSession();
 		}
 	}
+	@Override
+	public List<StudentPayOrderInfo> listOrderPageInfoByOpt(Integer userId,
+			String sDate, String eDate, Integer comSta, Integer pageNo,
+			Integer pageSize) throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			sOrderInfoDao = (StudentPayOrderInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_STUDENT_PAY_ORDER_INFO);
+			Session sess  = HibernateUtil.currentSession();
+			return sOrderInfoDao.findOrderPageInfoByOpt(sess, userId, sDate, eDate, comSta, pageNo, pageSize);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("根据条件获取订单列表时出现异常!");
+		}finally{
+			HibernateUtil.closeSession();
+		}
+	}
+	@Override
+	public Integer getCountByOpt(Integer userId, String sDate, String eDate,
+			Integer comSta) throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			sOrderInfoDao = (StudentPayOrderInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_STUDENT_PAY_ORDER_INFO);
+			Session sess  = HibernateUtil.currentSession();
+			return sOrderInfoDao.getCountByOpt(sess, userId, sDate, eDate, comSta);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("根据条件获取订单记录条数时出现异常!");
+		}finally{
+			HibernateUtil.closeSession();
+		}
+	}
 
 }

@@ -15,9 +15,14 @@
                 <comment>学生编号</comment>
             </column>
         </many-to-one>
-        <property name="payType" type="java.lang.String">
-            <column name="pay_type" length="30" not-null="true">
-                <comment>购买类型(study,bind)</comment>
+        <property name="orderNo" type="java.lang.String">
+            <column name="order_no" length="30" not-null="true">
+                <comment>订单编号</comment>
+            </column>
+        </property>
+        <property name="payType" type="java.lang.Integer">
+            <column name="pay_type" not-null="true">
+                <comment>付款类型(1(微信),2(支付宝))</comment>
             </column>
         </property>
         <property name="payMoney" type="java.lang.Integer">
@@ -32,37 +37,37 @@
         </property>
         <property name="addDate" type="java.lang.String">
             <column name="add_date" length="30">
-                <comment>增加时间</comment>
+                <comment>创建订单时间</comment>
             </column>
         </property>
-        <property name="endDate" type="java.lang.String">
-            <column name="end_date" length="30">
-                <comment>到期时间</comment>
+        <property name="buyDays" type="java.lang.Integer">
+            <column name="buy_days" not-null="true">
+                <comment>购买时长</comment>
             </column>
         </property>
-        <property name="clearStatus" type="java.lang.Integer">
-            <column name="clear_status" not-null="true">
-                <comment>清除状态(0:默认不清除,1:清除)</comment>
-            </column>
-        </property>
-        <property name="clearDate" type="java.lang.String">
-            <column name="clear_date" length="30">
-                <comment>清除时间</comment>
-            </column>
-        </property>
-        <property name="cancelDate" type="java.lang.String">
-            <column name="cancel_date" length="30">
-                <comment>取消时间</comment>
+        <property name="orderDetail" type="java.lang.String">
+            <column name="order_detail" length="200" not-null="true">
+                <comment>订单详情</comment>
             </column>
         </property>
         <property name="comStatus" type="java.lang.Integer">
             <column name="com_status" not-null="true">
-                <comment>订单完成状态(0：未完成，1：已完成)</comment>
+                <comment>订单完成状态(0：未完成，1：已完成，2：已取消)</comment>
             </column>
         </property>
         <property name="comDate" type="java.lang.String">
             <column name="com_date">
                 <comment>订单完成时间</comment>
+            </column>
+        </property>
+        <property name="payUserId" type="java.lang.Integer">
+            <column name="pay_user_id" not-null="true">
+                <comment>付款人编号</comment>
+            </column>
+        </property>
+        <property name="payUserRoleId" type="java.lang.Integer">
+            <column name="pay_user_role_id" not-null="true">
+                <comment>付款人角色编号</comment>
             </column>
         </property>
     </class>

@@ -58,4 +58,32 @@ public interface StudentPayOrderInfoManager {
 	 * @throws WEBException
 	 */
 	boolean delSpecUnComPayOrder(Integer id)throws WEBException;
+	
+	/**
+	 * 根据条件获取订单列表
+	 * @author wm
+	 * @date 2019-9-28 上午10:21:04
+	 * @param userId 学生编号
+	 * @param sDate 开始日期
+	 * @param eDate 结束日期
+	 * @param comSta 完成状态（-1：全部,0:未完成,1:已完成,2:已取消）
+	 * @param pageNo
+	 * @param pageSize
+	 * @return
+	 * @throws WEBException
+	 */
+	List<StudentPayOrderInfo> listOrderPageInfoByOpt(Integer userId,String sDate,String eDate,Integer comSta,Integer pageNo,Integer pageSize)throws WEBException;
+	
+	/**
+	 * 根据条件获取订单记录条数
+	 * @author wm
+	 * @date 2019-9-28 上午10:22:11
+	 * @param userId 学生编号
+	 * @param sDate 开始日期
+	 * @param eDate 结束日期
+	 * @param comSta 完成状态（-1：全部,0:未完成,1:已完成,2:已取消）
+	 * @return
+	 * @throws WEBException
+	 */
+	Integer getCountByOpt(Integer userId,String sDate,String eDate,Integer comSta)throws WEBException;
 }

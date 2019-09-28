@@ -879,6 +879,7 @@ public class CommonTools {
 	}
 	
 	public static void main(String[] args) throws Exception, FileNotFoundException{
+		System.out.println(System.currentTimeMillis());
 //		Integer items[] = {1,2,3,4,5,11,12,21};
 //		Integer[] need_del_items =  {2,11,4};
 //	    List<Integer> list1=Arrays.asList(items);

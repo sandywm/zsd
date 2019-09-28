@@ -64,4 +64,6 @@
 	<app id="net_teacher_studio_relation_Web" class="com.zsd.service.impl.NetTeacherStudioRelationManagerImpl"/>
 	<app id="email_Web" class="com.zsd.service.impl.EmailManagerImpl"/>
 	<app id="sys_fee_Web" class="com.zsd.service.impl.SysFeeManagerImpl"/>
+	<app id="parent_club_Web" class="com.zsd.service.impl.ParentClubManagerImpl"/>
+	<app id="parent_club_relation_Web" class="com.zsd.service.impl.ParentClubRelationManagerImpl"/>
 </appContext>

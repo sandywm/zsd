@@ -77,4 +77,38 @@ public class StudentPayOrderInfoDaoImpl implements StudentPayOrderInfoDao {
 		return CommonTools.longToInt(countObj);
 	}
 
+	@Override
+	public List<StudentPayOrderInfo> findOrderPageInfoByOpt(Session sess,
+			Integer userId, String sDate, String eDate, Integer comSta,
+			Integer pageNo, Integer pageSize) {
+		// TODO Auto-generated method stub
+		int offset = (pageNo - 1) * pageSize;
+		if (offset < 0) {
+			offset = 0;
+		}
+		String hql=" from StudentPayOrderInfo as spo where spo.user.id = "+userId;
+		if(!sDate.equals("") && !eDate.equals("")){
+			hql += " and substring(spo.addDate,1,10) >= '"+sDate+"' and substring(spo.addDate,1,10) <= '"+eDate+"'";
+		}
+		if(comSta >= 0){
+			hql += " and spo.comStatus = "+ comSta;
+		}
+		return sess.createQuery(hql).setFirstResult(offset).setMaxResults(pageSize).list();
+	}
+
+	@Override
+	public Integer getCountByOpt(Session sess, Integer userId, String sDate,
+			String eDate, Integer comSta) {
+		// TODO Auto-generated method stub
+		String hql="select count(spo.id) from StudentPayOrderInfo as spo where spo.user.id = "+userId;
+		if(!sDate.equals("") && !eDate.equals("")){
+			hql += " and substring(spo.addDate,1,10) >= '"+sDate+"' and substring(spo.addDate,1,10) <= '"+eDate+"'";
+		}
+		if(comSta >= 0){
+			hql += " and spo.comStatus = "+ comSta;
+		}
+		Object countObj = sess.createQuery(hql).uniqueResult();
+		return CommonTools.longToInt(countObj);
+	}
+
 }

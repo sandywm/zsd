@@ -1235,8 +1235,8 @@ public class StudyRecordAction extends DispatchAction {
 					}
 				}
 			}
-			map.put("bindStu", list_u);
-			map.put("unbindStu", list_b);
+			map.put("bindNT", list_u);
+			map.put("unbindNT", list_b);
 			CommonTools.getJsonPkg(map, response);
 			return null;
 	}

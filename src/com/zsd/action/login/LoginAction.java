@@ -38,6 +38,7 @@ import com.zsd.service.InviteCodeInfoManager;
 import com.zsd.service.NetTeacherInfoManager;
 import com.zsd.service.NetTeacherStudentManager;
 import com.zsd.service.NetTeacherStudioManager;
+import com.zsd.service.ParentClubManager;
 import com.zsd.service.RoleInfoManager;
 import com.zsd.service.RoleUserInfoManager;
 import com.zsd.service.SchoolManager;
@@ -279,6 +280,7 @@ public class LoginAction extends DispatchAction {
 		NetTeacherInfoManager ntManager = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
 		GradeSubjectManager gsManager = (GradeSubjectManager) AppFactory.instance(null).getApp(Constants.WEB_GRADE_SUBJECT_INFO);
 		NetTeacherStudioManager ntStudioManager = (NetTeacherStudioManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDIO);
+		ParentClubManager pcManager = (ParentClubManager) AppFactory.instance(null).getApp(Constants.WEB_PARENT_CLUB);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String userAccount =CommonTools.getFinalStr("userAccount",request);
 		String xsAccount = CommonTools.getFinalStr("xsAccount",request);
@@ -365,6 +367,7 @@ public class LoginAction extends DispatchAction {
 							}
 							// 7 学生家长绑定
 							spManager.addSpInfo(upId, userId);
+							pcManager.addParentClub(upId, userAccount+"_jz"+"的家长群", InviteCode.getRandomAllStr(6), 100, "");
 							msg = "success";//注册用户成功
 							if(ruId>0){//绑定角色成功
 								if(!inviteCode.equals("")){
@@ -494,6 +497,7 @@ public class LoginAction extends DispatchAction {
 						}
 						//学生家长绑定
 						spManager.addSpInfo(userId, xsId);
+						pcManager.addParentClub(userId, userAccount+"的家长群", InviteCode.getRandomAllStr(6), 100, "");
 						msg = "success";//注册用户成功
 						if(xsId>0){//绑定角色成功
 							List<ClassInfo> ciList = ciManager.listClassInfoByOption(gradeNo, CurrentTime.getCurrentTime(), schoolId, className);
