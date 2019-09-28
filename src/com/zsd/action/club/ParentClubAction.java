@@ -271,7 +271,7 @@ public class ParentClubAction extends DispatchAction {
 					map.put("ownerInfo", pc.getUser().getRealName());
 					map.put("clubName", pc.getClubName());
 					map.put("clubProfile", pc.getClubProfile());
-					map.put("clubNum", pcrManager.listInfoByParentCludId(pc.getId()));
+					map.put("clubNum", pcrManager.listInfoByParentCludId(pc.getId()).size());
 				}
 			}
 		}
