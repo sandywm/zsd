@@ -47,6 +47,7 @@ import com.zsd.service.StudentParentInfoManager;
 import com.zsd.service.StudyDetailManager;
 import com.zsd.service.StudyLogManager;
 import com.zsd.service.SubjectManager;
+import com.zsd.service.UserManager;
 import com.zsd.tools.CommonTools;
 import com.zsd.tools.CurrentTime;
 import com.zsd.util.Constants;
@@ -469,6 +470,7 @@ public class StudyRecordAction extends DispatchAction {
 	public ActionForward getBuffetSendList(ActionMapping mapping,
 			ActionForm form, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
+		UserManager um = (UserManager)  AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
 		StudyLogManager slManager = (StudyLogManager) AppFactory.instance(null).getApp(Constants.WEB_STUDY_LOG_INFO);
 		NetTeacherStudentManager ntsManager = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT);
 		BuffetSendInfoManager bsManager = (BuffetSendInfoManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_SEND_INFO);
@@ -549,7 +551,7 @@ public class StudyRecordAction extends DispatchAction {
 				String stuIdStr = "";
 				if(!stuId.equals(0)){//指定学生
 					stuIdStr = String.valueOf(stuId);
-					stuUserName = ntsList.get(0).getUser().getRealName();
+					stuUserName = um.listEntityById(stuId).get(0).getRealName();
 				}else{
 					for(NetTeacherStudent nts : ntsList){
 						stuIdStr += nts.getUser().getId() + ",";
