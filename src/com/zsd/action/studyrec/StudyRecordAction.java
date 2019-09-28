@@ -516,7 +516,7 @@ public class StudyRecordAction extends DispatchAction {
 					}
 				    diffDay = CurrentTime.compareDate(sDate,eDate);
 				    //获取指定学科的老师发布的自助餐记录
-				    List<BuffetSendInfo> bsList = bsManager.listBsInfoByOption(stuId, subId, 0, sDate, eDate);
+				    List<BuffetSendInfo> bsList = bsManager.listBsInfoByOption(stuId, subId, -1, sDate, eDate);
 				    BuffetSendNum = bsList.size();
 				    for(BuffetSendInfo bs : bsList){
 				    	Map<String,Object> map_d= new HashMap<String,Object>();
