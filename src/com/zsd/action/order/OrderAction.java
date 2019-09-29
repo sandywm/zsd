@@ -107,11 +107,29 @@ public class OrderAction extends DispatchAction {
 					msg = "success";
 					List<StudentPayOrderInfo> sordeList = om.listOrderPageInfoByOpt(userId, sDate, eDate, comStatus, pageNo, pageSize);
 					for (Iterator<StudentPayOrderInfo> itrs = sordeList.iterator(); itrs.hasNext();) {
-						StudentPayOrderInfo sorder = (StudentPayOrderInfo) itrs.next();
+						StudentPayOrderInfo spo = (StudentPayOrderInfo) itrs.next();
 						Map<String,Object> map_d = new HashMap<String,Object>();
-						map_d.put("stuName", sorder.getUser().getRealName());
-						map_d.put("payDate", sorder.getAddDate());
-						map_d.put("payMoney", sorder.getPayMoney());
+						Integer ntsId = spo.getNtsId();
+						map_d.put("orderId", spo.getId());
+						map_d.put("addDate", spo.getAddDate());
+						map_d.put("buyDays", spo.getBuyDays() * 30);
+						map_d.put("payMoney", spo.getPayMoney());
+						map_d.put("comStatus", spo.getComStatus());
+						map_d.put("ntsId", ntsId);//0时表示购买会员，大于0表示绑定导师
+						if(ntsId > 0){
+							NetTeacherStudent nts = ntsm.getEntityById(ntsId);
+							if(nts != null){
+								Integer schoolType = nts.getNetTeacherInfo().getSchoolType();
+								String subName = nts.getNetTeacherInfo().getSubject().getSubName();
+								String ntName = nts.getNetTeacherInfo().getUser().getRealName();
+								map_d.put("ntName", ntName);
+								map_d.put("schoolType", schoolType);
+								map_d.put("subName", subName);
+								
+							}
+						}else{
+							map_d.put("payInfo", "会员购买");
+						}
 						list_d.add(map_d);
 					}
 					map.put("data", list_d);
@@ -212,6 +230,7 @@ public class OrderAction extends DispatchAction {
 						map.put("payInfo", "会员购买");
 						map.put("orderDetail", spo.getOrderDetail());
 					}
+					map.put("orderId", orderId);
 					map.put("addDate", spo.getAddDate());
 					map.put("buyDays", spo.getBuyDays() * 30);
 					map.put("payMoney", spo.getPayMoney());
@@ -263,7 +282,6 @@ public class OrderAction extends DispatchAction {
 		Map<String, String> map = new HashMap<String, String>();
 		String msg = "error";
 		if(userId > 0 && roleId.equals(Constants.STU_ROLE_ID) && payType > 0 && payMoney > 0 && selMonth > 0){
-			selMonth = selMonth / 30;
 			Integer ntsId = -1;
 			if(payOpt.equals("ntFee")){
 				Integer ntId = CommonTools.getFinalInteger("ntId", request);//绑定导师时传递导师编号
@@ -287,7 +305,7 @@ public class OrderAction extends DispatchAction {
 								if(checkStatus.equals(2)){//审核通过
 									NetTeacherStudent nts = ntsm.getValidInfoByOpt(userId, subId);
 									if(nts == null){//该科没有在绑定的关系，可以进行绑定
-										nts = ntsm.getEntityInfoByOpt(ntId, userId);//获取该学生和该导师有无绑定信息
+										nts = ntsm.getEntityInfoByOpt(nt.getUser().getId(), userId);//获取该学生和该导师有无绑定信息
 										if(nts == null){//不存在绑定关系--增加
 											ntsId = ntsm.addNTS(userId, ntId, currDate, 1, currDate, 0, "", "", 0);
 										}else{//存在到期，取消--修改

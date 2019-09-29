@@ -350,21 +350,25 @@ public class PayAction extends DispatchAction {
 				List<NetTeacherInfo> ntList = ntm.listntInfoByuserId(icList.get(0).getInviteId());
 				if(ntList.size() > 0){
 					ntId = ntList.get(0).getId();
+				}else{
+					msg = "noInfo";
 				}
 			}
 		}else if(ntId > 0){//从导师列表进入
 			
+		}else{
+			msg = "noInfo";
 		}
 		if(userId > 0 && roleId.equals(Constants.STU_ROLE_ID) && selMonth > 0 && selMonth <= 12 && ntId > 0){
 			Integer stuSchoolType = 0;
 			List<User> uList = um.listEntityById(userId);
 			if(uList.size() > 0){
-				schoolId = uList.get(0).getSchoolId();
+				schoolId = uList.get(0).getSchoolId();//获取学生所在的学校
 			}
 			if(schoolId > 0){
 				List<School> sList = sm.listInfoById(schoolId);
 				if(sList.size() > 0){
-					stuSchoolType = sList.get(0).getSchoolType();
+					stuSchoolType = sList.get(0).getSchoolType();//获取学生所在的学段
 					Integer yearSystem = sList.get(0).getYearSystem();
 					List<NetTeacherInfo>  ntList = ntm.listntInfoByTeaId(ntId);
 					if(ntList.size() > 0){
@@ -373,10 +377,9 @@ public class PayAction extends DispatchAction {
 						Integer subId = nt.getSubject().getId();
 						Integer schoolType =  nt.getSchoolType();
 						Integer checkStatus = nt.getCheckStatus();
-						if(stuSchoolType.equals(schoolType)){//学段相同才能绑定
-							if(checkStatus.equals(2)){
-								//该科没有正在绑定的导师
-								NetTeacherStudent nts = ntsm.getValidInfoByOpt(userId, subId);
+						if(stuSchoolType.equals(schoolType)){//导师学段要和学生学段相同才能绑定
+							if(checkStatus.equals(2)){//该导师必须为审核通过的导师才能进行绑定
+								NetTeacherStudent nts = ntsm.getValidInfoByOpt(userId, subId);//该科有没有正在绑定的导师
 								if(nts == null){//没有，可以进行绑定
 									String schoolTypeChi = "";
 									if(schoolType.equals(1)){
@@ -386,7 +389,6 @@ public class PayAction extends DispatchAction {
 									}else{
 										schoolTypeChi = "高中";
 									}
-									
 									//获取当前学生能购买的的时长（最大到升学日期）不足一月按一月计算
 									List<UserClassInfo> ucList = ucm.listInfoByOpt_1(userId, roleId);
 									if(ucList.size() > 0){
@@ -409,22 +411,16 @@ public class PayAction extends DispatchAction {
 //										gradeName_new = Convert.NunberConvertChinese(currUserGradeNumber_new);//购买会员后到期日所在的年级名称
 //										map.put("gradeName_curr", gradeName_curr);//当前用户所在的年级
 //										map.put("gradeName_new", gradeName_new);//购买导师服务费的日期后所在的年级名称
-										map.put("buyDate_end", buyDate);//购买导师到期日
 										Integer gradeNumber = 0;
 										if(schoolType.equals(1)){//小学
 											gradeNumber = yearSystem;
-											if(yearSystem.equals(6)){//6+3+3年制
-												//计算升学时间
-												byDate = (buildClassYear + 8) + "-09-01";
-											}else{//5+4+3年制
-												byDate = (buildClassYear + 7) + "-09-01";
-											}
+											byDate = (buildClassYear + yearSystem) + "-09-01";//计算升学时间
 										}else if(schoolType.equals(2)){//初中
-											byDate = (buildClassYear + 11) + "-09-01";
+											byDate = (buildClassYear + 9) + "-09-01";
 											gradeNumber = 10;
 										}else if(schoolType.equals(3)){//高中
 											//不区分
-											byDate = (buildClassYear + 14) + "-09-01";
+											byDate = (buildClassYear + 12) + "-09-01";
 											gradeNumber = 12;
 										}
 										if(currUserGradeNumber_new <= gradeNumber){

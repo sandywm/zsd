@@ -1114,7 +1114,8 @@ public class CommonAction extends DispatchAction {
 		    List<NetTeacherInfo> ntlist=ntManager.listntInfoByuserId(teaId);
 		    if(ntlist.size() > 0){
 		    	if(ntlist.get(0).getCheckStatus().equals(2)){//审核通过
-		    		 map.put("realName", ntlist.get(0).getUser().getRealName());//导师姓名
+		    		map.put("realName", ntlist.get(0).getUser().getRealName());//导师姓名
+		    		map.put("portrait", ntlist.get(0).getUser().getPortrait());
 		 		    Integer schType = ntlist.get(0).getSchoolType();
 		 		    if(schType.equals(1)){
 		 		    	 map.put("schoolType","小学");

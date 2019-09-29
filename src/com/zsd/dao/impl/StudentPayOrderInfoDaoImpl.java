@@ -49,12 +49,12 @@ public class StudentPayOrderInfoDaoImpl implements StudentPayOrderInfoDao {
 	@Override
 	public List<StudentPayOrderInfo> findSpayOrderInfoByOpt(Session sess,
 			Integer ntsId, Integer comSta) {
-		String hql="from StudentPayOrderInfo as spo where 1=1";
+		String hql=" from StudentPayOrderInfo as spo where 1=1";
 		if(ntsId > 0){
-			hql += "and spo.ntsId = " +ntsId;
+			hql += " and spo.ntsId = " +ntsId;
 		}
 		if(comSta > -1){
-			hql += "and spo.comStatus = " +comSta;
+			hql += " and spo.comStatus = " +comSta;
 		}
 		return sess.createQuery(hql).list();
 	}
@@ -66,7 +66,7 @@ public class StudentPayOrderInfoDaoImpl implements StudentPayOrderInfoDao {
 		if (offset < 0) {
 			offset = 0;
 		}
-		String hql="from StudentPayOrderInfo as spo where spo.ntsId="+ntsId+" and spo.comStatus=1";
+		String hql=" from StudentPayOrderInfo as spo where spo.ntsId="+ntsId+" and spo.comStatus=1";
 		return sess.createQuery(hql).setFirstResult(offset).setMaxResults(pageSize).list();
 	}
 

@@ -175,6 +175,7 @@ public class StudentPayOrderInfoManagerImpl implements
 					 payType, payMoney, ntsId, CurrentTime.getCurrentTime(),
 					 buyMonth, orderDetail, 0,"", 0,0);
 			sOrderInfoDao.save(sess, spo);
+			tran.commit();
 			return spo.getId();
 		} catch (Exception e) {
 			e.printStackTrace();
