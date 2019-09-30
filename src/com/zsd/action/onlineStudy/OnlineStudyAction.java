@@ -2890,7 +2890,7 @@ public class OnlineStudyAction extends DispatchAction {
 					StudyStuQfTjInfo qftj = tjm.getEntityByOpt(stuId, subId, CurrentTime.getStringDate());
 					if(qftj != null){
 						//修改
-						Integer fmNum = qftj.getOneZdFailNum() + oneZdFailNum + qftj.getRelateZdFailNum() + relateZdFailNum;//一次性通过总数+关联诊断未通过
+						Integer fmNum = qftj.getOneZdFailNum() + oneZdFailNum + qftj.getRelateZdFailNum() + relateZdFailNum;//一次性未通过总数+关联诊断未通过
 						Integer againXxSuccNum_real = qftj.getAgainXxSuccNum() + againXxSuccNum;//再次诊断学习通过次数
 						if(fmNum > 0 && againXxSuccNum_real > 0){
 							rate = Convert.convertInputNumber_1(againXxSuccNum_real * 100.0  / fmNum) + "%";//转换率

@@ -564,8 +564,8 @@ public class ReportCenterAction  extends DispatchAction{
 					relateXxSuccNum_1 = Convert.convertInputNumber_2(relateXxSuccNum * 1.0 / specNum);
 					relateXxFailNum_1 = Convert.convertInputNumber_2(relateXxFailNum * 1.0 / specNum);
 				}
+				fmNum = Convert.convertInputNumber_2(oneZdFailNum_new + relateZdFailNum_new);//一次性通过总数+关联诊断未通过
 				if(fmNum > 0){
-					fmNum = Convert.convertInputNumber_2(oneZdFailNum_new + relateZdFailNum_new);//一次性通过总数+关联诊断未通过
 					rate = Convert.convertInputNumber_1(againXxSuccNum_real * 100.0  / fmNum) + "%";//转换率
 				}
 				Double oneZdFailNumAll_new = 0.0;
@@ -587,8 +587,8 @@ public class ReportCenterAction  extends DispatchAction{
 					relateXxSuccNum_all_1 = Convert.convertInputNumber_2(relateXxSuccNumAll * 1.0 / allNum);
 					relateXxFailNum_all_1 = Convert.convertInputNumber_2(relateXxFailNumAll * 1.0 / allNum);
 				}
+				fmNumAll = Convert.convertInputNumber_2(oneZdFailNumAll_new + relateZdFailNumAll_new);//一次性未通过总数+关联诊断未通过
 				if(fmNumAll > 0){
-					fmNumAll = Convert.convertInputNumber_2(oneZdFailNumAll_new + relateZdFailNumAll_new);//一次性通过总数+关联诊断未通过
 					rateAll = Convert.convertInputNumber_1(againXxSuccNum_real_all * 100.0  / fmNumAll) + "%";//转换率
 				}
 				map.put("oneZdSuccNum", oneZdSuccNum_1);
