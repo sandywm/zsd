@@ -168,7 +168,7 @@ public class UserManagerImpl implements UserManager {
 				if(!endDate.equals("")){
 					user.setEndDate(endDate);
 				}
-				if(freeSta!=-1){
+				if(!freeSta.equals(0)){
 					user.setFreeStatus(freeSta);
 				}
 				tran.commit();

@@ -304,6 +304,7 @@ public class LoginAction extends DispatchAction {
 		Integer yearSystem=0;
 		if(scList.size()>0){
 			yearSystem = scList.get(0).getYearSystem();
+			
 		}
 		List<User> uList = uManager.listInfoByAccount(userAccount);//判断账户是否存在
 		List<User> xsulist =null; 
@@ -455,7 +456,7 @@ public class LoginAction extends DispatchAction {
 				if(userId>0){
 				//网络导师生成自己的邀请码
 				String ivCode = InviteCode.getRandomCode();
-				Integer icId=icManager.addInviteCodeInfo(userId, "导师邀请码", ivCode, CurrentTime.getCurrentTime1());
+				Integer icId=icManager.addInviteCodeInfo(userId, "导师邀请码", ivCode.toUpperCase(), CurrentTime.getCurrentTime1());
 				if(icId>0){
 					Integer baseMoney = 0;
 //					if(schoolType.equals(1)){
@@ -497,9 +498,27 @@ public class LoginAction extends DispatchAction {
 						}
 						//学生家长绑定
 						spManager.addSpInfo(userId, xsId);
-						pcManager.addParentClub(userId, userAccount+"的家长群", InviteCode.getRandomAllStr(6), 100, "");
+						Integer pcId=pcManager.addParentClub(userId, userAccount+"的家长群", InviteCode.getRandomAllStr(6), 100, "");
 						msg = "success";//注册用户成功
-						if(xsId>0){//绑定角色成功
+						if(pcId>0){//家长建群成功
+							if(!inviteCode.equals("")){
+								List<InviteCodeInfo> icList = icManager.listIcInfoByOpt(inviteCode.toUpperCase(),"导师邀请码");//导师邀请码
+								if(icList.size()>0){
+									Integer teaId=icList.get(0).getInviteId();
+									List<NetTeacherInfo> ntlist=ntManager.listntInfoByuserId(teaId);
+									if(ntlist.get(0).getCheckStatus().equals(2)){//审核通过的导师
+										List<School> schList = scManager.listInfoById(schoolId);
+								    	Integer stuSchType =0;
+								    	Integer ntSchType = ntlist.get(0).getSchoolType();
+								    	if(!schList.isEmpty()){
+								    		stuSchType=schList.get(0).getSchoolType();
+								    	}
+								    	if(ntSchType.equals(stuSchType)){
+								    		ntsManager.addNTS(userId, teaId, CurrentTime.getCurrentTime(), -1, CurrentTime.getFinalDateTime(7), 0, "", "", 0);//4 缃戠粶瀵煎笀瀛︾敓缁戝畾	
+								    	}
+									}
+								}
+							}
 							List<ClassInfo> ciList = ciManager.listClassInfoByOption(gradeNo, CurrentTime.getCurrentTime(), schoolId, className);
 							if(ciList.size()>0){
 								Integer classId = ciList.get(0).getId();

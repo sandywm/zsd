@@ -2612,7 +2612,7 @@ public class OnlineStudyAction extends DispatchAction {
 		StudyStuQfTjManager tjm = (StudyStuQfTjManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_STU_QFTJ_INFO);
 		UserClassInfoManager ucm = (UserClassInfoManager)AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
 		Integer stuId = CommonTools.getLoginUserId(request);
-		String submitType = CommonTools.getFinalStr("type", request);//巩固训练传study，其他不传
+		String submitType = CommonTools.getFinalStr("type", request);//巩固训练传study，zdxzd(针对性诊断),againzd(再次诊断)
 		String currentStepLoreIdStr = CommonTools.getFinalStr("currentStepLoreArray", request);
 		Integer loreId = CommonTools.getFinalInteger("loreId", request);//最初的知识点
 		Integer studyLogId = CommonTools.getFinalInteger("studyLogId", request);
@@ -2627,6 +2627,7 @@ public class OnlineStudyAction extends DispatchAction {
 		if(logType.equals(0)){
 			logType = 1;
 		}
+		Integer access_final = access;//刚从页面传递过来的access
 		String[] currentStepLoreArray = null;
 		//以下是勤奋报告统计用变量
 		Integer subId = 0;
@@ -2751,14 +2752,14 @@ public class OnlineStudyAction extends DispatchAction {
 						}
 					}
 				}
-				Integer oneZdSuccNum = 0;//一次性通过总数
-				Integer oneZdFailNum = 0;//一次性未通过总数
-				Integer againXxSuccNum = 0;//再次诊断(学习)通过
-				Integer againXxFailNum = 0;//再次诊断(学习)未通过
-				Integer noRelateNum = 0;//未溯源个数
-				Integer relateZdFailNum = 0;//关联诊断未通过
-				Integer relateXxSuccNum = 0;//关联学习通过
-				Integer relateXxFailNum = 0;//关联未学习通过
+				Integer oneZdSuccNum = 0;//一次性通过总数(本知识点)--第一次针对性诊断时第一个知识点(本知识点)完全正确+1
+				Integer oneZdFailNum = 0;//一次性未通过总数(本知识点)--第一次针对性诊断时第一个知识点(本知识点)部分正确+1
+				Integer againXxSuccNum = 0;//再次诊断(学习)通过(本知识点)--第一知识点(本知识点)再次诊断全部通过+1
+				Integer againXxFailNum = 0;//再次诊断(学习)未通过(本知识点)--第一知识点(本知识点)第一次再次诊断未全部正确+1
+				Integer noRelateNum = 0;//未溯源个数--第一次针对性诊断时第一个知识点(本知识点)部分正确+1
+				Integer relateZdFailNum = 0;//关联诊断未通过(关联知识点)--关联知识点未通过初次诊断+1(如果N级关联知识点为3个知识点那就加3)
+				Integer relateXxSuccNum = 0;//关联学习通过(关联知识点)--关联知识点通过再次诊断+1
+				Integer relateXxFailNum = 0;//关联未学习通过(关联知识点)--关联知识点针对性诊断未通过时+1(如果N级关联知识点为3个知识点那就加3)
 				String rate = "";//转化率
 				
 				//step=0表示不对step进行修改
@@ -2788,8 +2789,8 @@ public class OnlineStudyAction extends DispatchAction {
 						for(int i = 0 ; i < currentStepLoreArray.length ; i++){
 							Integer loreId_curr = Integer.parseInt(currentStepLoreArray[i]);//当前层的知识点编号
 								//针对性诊断只有一次，不需要修改，直接插入记录
-								if(access.equals(1)){//当前层全部正确
-									zdxzd_flag = access;
+								if(access_final.equals(1)){//当前层全部正确
+									zdxzd_flag = access_final;
 								}else{//未完全正确或全部错误
 									zdxzd_flag = 0;
 								}
@@ -2797,18 +2798,18 @@ public class OnlineStudyAction extends DispatchAction {
 							rzrm.addRZR(studyLogId, loreId_curr, zdxzd_flag, -1, -1, 0, 0);
 						}
 						if(currentStepLoreArray.length > 0){//其他学校不参与
-							if(access.equals(1)){//当前关联知识点的针对性诊断全部正确
-								noRelateNum = -1;//关联诊断完成，未溯源个数-1
+							if(access_final.equals(1)){//当前关联知识点的针对性诊断全部正确
+								noRelateNum = 0;//关联诊断完成，未溯源个数不加
 							}else{//未完全正确或全部错误
 								relateZdFailNum = currentStepLoreArray.length;//当前层有多少个知识点就有多少个关联知识点针对性诊断未通过次数
 								relateXxFailNum = currentStepLoreArray.length;
 							}
 						}
 					}else if(step_curr.equals(3)){//关联知识点再次诊断
-						if(access.equals(1)){//当前层全部正确
-							zczd_flag = access;
+						if(access_final.equals(1)){//当前层全部正确
+							zczd_flag = 1;
 							relateXxSuccNum = 1;//关联学习通过+1
-							relateXxFailNum = -1;//关联学习未通过-1
+							relateXxFailNum = 0;//关联学习未通过不加
 						}else{//未完全正确或全部错误
 							zczd_flag = 0;
 						}
@@ -2820,8 +2821,6 @@ public class OnlineStudyAction extends DispatchAction {
 						}
 					}else if(step_curr.equals(4)){//最后一个关联知识点再次诊断完全正确后step会变成4
 						Integer current_lore_id = Integer.parseInt(currentStepLoreArray[0]);
-						relateXxSuccNum = 1;//关联学习通过+1
-						relateXxFailNum = -1;//关联学习未通过-1
 						if(!current_lore_id.equals(loreId)){
 							//最后一个关联知识点全部正确后，access肯定为1
 							RelationZdResult rzr = rzrm.getEntityByOpt(studyLogId, current_lore_id);
@@ -2829,6 +2828,8 @@ public class OnlineStudyAction extends DispatchAction {
 								zczd_flag = 1;
 								rzrm.updateEntity(rzr.getId(), -1, -1, zczd_flag, -1, rzr.getZczdTimes()+1);
 							}
+							relateXxSuccNum = 1;//关联学习通过+1
+							relateXxFailNum = 0;//关联学习未通过不加
 						}
 						
 					}
@@ -2855,9 +2856,8 @@ public class OnlineStudyAction extends DispatchAction {
 						//增加一次性通过次数，其他全部不修改
 						oneZdSuccNum = 1;
 					}else{//表示是经过五部学习法学习后通过
-						//肯定之前再次诊断学习未通过时+1，现在通过了需要减1
+						//肯定之前再次诊断学习未通过时+1
 						againXxSuccNum = 1;//再次诊断学习通过+1
-						againXxFailNum = -1;//再次诊断学习未通过-1
 						rightRate = allQuestionRightNumber * 100 / allQuestionNumber ;
 						if(rightRate >= 80){
 							gdProposal = "您已经完成了该知识点，证明您对本知识掌握的很好，做的非常棒。(";
@@ -2870,9 +2870,19 @@ public class OnlineStudyAction extends DispatchAction {
 				}else{//未通过
 					if(currentLoreId.equals(loreId)){//当前知识点是主知识点时
 						//主知识点的针对性诊断未通过
-						oneZdFailNum = 1;
-						againXxFailNum = 1;
-						noRelateNum = 1;
+						//两种情况
+						if(submitType.equals("zdxzd")){//本知识点初次诊断时
+							oneZdFailNum = 1;
+							noRelateNum = 1;
+						}else if(submitType.equals("againzd")){//本知识点再次诊断时
+							//获取本知识点已做过的再次诊断题
+							List<StudyDetailInfo> sdList = sdm.listInfoByOpt(studyLogId, currentLoreId, "再次诊断");
+							//获取本知识点所有再次诊断题
+							List<LoreQuestion> lqList = lqm.listInfoByLoreId(CommonTools.getQuoteLoreId(currentLoreId), "再次诊断", 0);
+							if(lqList.size() == sdList.size()){//表示是第一次做再次诊断题未全部正确提交时
+								againXxFailNum = 1;
+							}
+						}
 					}
 				}
 				if(schoolId > 0){//其他学校不参与统计

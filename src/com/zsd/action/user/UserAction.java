@@ -89,7 +89,7 @@ public class UserAction extends DispatchAction {
 	}
 	
 	/**
-	 * 
+	 * 根据条件查看用户信息(用户管理)
 	 * @author zong
 	 * 2019-6-11上午11:28:14
 	 * @param mapping

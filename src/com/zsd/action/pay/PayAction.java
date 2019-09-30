@@ -91,8 +91,6 @@ public class PayAction extends DispatchAction {
 		if(selMonth.equals(0)){
 			selMonth = 1;
 		}
-		stuId = CommonTools.getFinalInteger("userId", request);
-		roleId = CommonTools.getFinalInteger("roleId", request);
 		if(stuId > 0 && roleId.equals(Constants.STU_ROLE_ID) && selMonth > 0 && selMonth <= 12){
 			//获取当前学生能购买的的时长（最大到升学日期）不足一月按一月计算
 			List<UserClassInfo> uList = ucm.listInfoByOpt_1(stuId, roleId);
@@ -143,7 +141,12 @@ public class PayAction extends DispatchAction {
 							fee = (int)(sfList.get(0).getFee() * selMonth * zkRate);
 						}
 					}else{//从6年级买到7年级
-						Integer diffDays = CurrentTime.compareDate(endDate_fee, (Integer.parseInt(endDate_fee.substring(0,4)) + 1)+"-09-01");//6年级天数
+						Integer month = Integer.parseInt(endDate_fee.substring(5,7));
+						Integer year = Integer.parseInt(endDate_fee.substring(0,4));
+						if(month >= 9){
+							year += 1;
+						}
+						Integer diffDays = CurrentTime.compareDate(endDate_fee, year+"-09-01");//6年级天数;
 						Integer remainDays = (selMonth * 30) - diffDays;//7年级天数
 						List<SysFeeInfo> sfList = sfm.listInfoByopt(feeType, 1, 1);//小学费用
 						if(sfList.size() > 0){
@@ -159,10 +162,10 @@ public class PayAction extends DispatchAction {
 								fee = (int)(fee_base * month_1 * zkRate + fee_base_1 * month_2 * zkRate);
 								map.put("fee_1", fee_base);//第一阶段费用标准
 								map.put("days_1", diffDays);//第一阶段购买时间
-								map.put("gradeName_1", "六年级");//第一阶段所在年级
+//								map.put("gradeName_1", "六年级");//第一阶段所在年级
 								map.put("fee_2", fee_base_1);
 								map.put("days_2", remainDays);
-								map.put("gradeName_2", "七年级");
+//								map.put("gradeName_2", "七年级");
 							}
 						}
 					}
@@ -184,7 +187,12 @@ public class PayAction extends DispatchAction {
 							fee = (int)(sfList.get(0).getFee() * selMonth * zkRate);
 						}
 					}else{//从8年级买到9年级
-						Integer diffDays = CurrentTime.compareDate(endDate_fee, (Integer.parseInt(endDate_fee.substring(0,4)) + 1)+"-09-01");//8年级天数
+						Integer month = Integer.parseInt(endDate_fee.substring(5,7));
+						Integer year = Integer.parseInt(endDate_fee.substring(0,4));
+						if(month >= 9){
+							year += 1;
+						}
+						Integer diffDays = CurrentTime.compareDate(endDate_fee, year+"-09-01");//8年级天数
 						Integer remainDays = (selMonth * 30) - diffDays;//9年级天数
 						List<SysFeeInfo> sfList = sfm.listInfoByopt(feeType, 2, 1);//初中费用
 						if(sfList.size() > 0){
@@ -200,10 +208,10 @@ public class PayAction extends DispatchAction {
 								fee = (int)(fee_base * month_1 * zkRate + fee_base_1 * month_2 * zkRate);
 								map.put("fee_1", fee_base);
 								map.put("days_1", diffDays);
-								map.put("gradeName_1", "八年级");
+//								map.put("gradeName_1", "八年级");
 								map.put("fee_2", fee_base_1);
 								map.put("days_2", remainDays);
-								map.put("gradeName_2", "九年级");
+//								map.put("gradeName_2", "九年级");
 							}
 						}
 					}
@@ -217,7 +225,12 @@ public class PayAction extends DispatchAction {
 							fee = (int)(sfList.get(0).getFee() * selMonth * zkRate);
 						}
 					}else{//从9年级买到高一
-						Integer diffDays = CurrentTime.compareDate(endDate_fee, (Integer.parseInt(endDate_fee.substring(0,4)) + 1)+"-09-01");//9年级天数
+						Integer month = Integer.parseInt(endDate_fee.substring(5,7));
+						Integer year = Integer.parseInt(endDate_fee.substring(0,4));
+						if(month >= 9){
+							year += 1;
+						}
+						Integer diffDays = CurrentTime.compareDate(endDate_fee, year+"-09-01");//9年级天数
 						Integer remainDays = (selMonth * 30) - diffDays;//高一天数
 						List<SysFeeInfo> sfList = sfm.listInfoByopt(feeType, 21, 1);//9年级费用
 						if(sfList.size() > 0){
@@ -233,10 +246,10 @@ public class PayAction extends DispatchAction {
 								fee = (int)(fee_base * month_1 * zkRate + fee_base_1 * month_2 * zkRate);
 								map.put("fee_1", fee_base);
 								map.put("days_1", diffDays);
-								map.put("gradeName_1", "九年级");
+//								map.put("gradeName_1", "九年级");
 								map.put("fee_2", fee_base_1);
 								map.put("days_2", remainDays);
-								map.put("gradeName_2", "高一");
+//								map.put("gradeName_2", "高一");
 							}
 						}
 					}
@@ -258,7 +271,12 @@ public class PayAction extends DispatchAction {
 							fee = (int)(sfList.get(0).getFee() * selMonth * zkRate);
 						}
 					}else{//从高二买到高三
-						Integer diffDays = CurrentTime.compareDate(endDate_fee, (Integer.parseInt(endDate_fee.substring(0,4)) + 1)+"-09-01");//高二天数
+						Integer month = Integer.parseInt(endDate_fee.substring(5,7));
+						Integer year = Integer.parseInt(endDate_fee.substring(0,4));
+						if(month >= 9){
+							year += 1;
+						}
+						Integer diffDays = CurrentTime.compareDate(endDate_fee, year+"-09-01");//高二年级天数
 						Integer remainDays = (selMonth * 30) - diffDays;//高三天数
 						List<SysFeeInfo> sfList = sfm.listInfoByopt(feeType, 3, 1);//高一、二费用
 						if(sfList.size() > 0){
