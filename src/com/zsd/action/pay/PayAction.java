@@ -371,6 +371,8 @@ public class PayAction extends DispatchAction {
 				}else{
 					msg = "noInfo";
 				}
+			}else{
+				msg = "noInfo";
 			}
 		}else if(ntId > 0){//从导师列表进入
 			
