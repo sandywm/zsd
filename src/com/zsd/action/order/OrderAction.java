@@ -232,6 +232,8 @@ public class OrderAction extends DispatchAction {
 					map.put("payType", spo.getPayType());
 					map.put("comStatus", spo.getComStatus());
 					map.put("ntsId", ntsId);//0时表示购买会员，大于0表示绑定导师
+					Double zkRate = CommonTools.getZkRate(spo.getBuyDays());
+					map.put("zkRate", zkRate * 100 + "%");
 					Integer comStatus = spo.getComStatus();
 					if(comStatus.equals(2)){
 						map.put("comDate", spo.getComDate());
