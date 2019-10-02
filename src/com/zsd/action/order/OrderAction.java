@@ -161,6 +161,7 @@ public class OrderAction extends DispatchAction {
 						}
 						list_d.add(map_d);
 					}
+					map.put("data", list_d);
 				}else{
 					msg = "noInfo";
 				}
@@ -196,8 +197,6 @@ public class OrderAction extends DispatchAction {
 		Integer orderId = CommonTools.getFinalInteger("orderId", request);//订单编号
 		Integer stuId = 0;
 		String  msg = "error";
-		stuId = CommonTools.getFinalInteger("userId", request);
-		roleId = CommonTools.getFinalInteger("roleId", request);
 		Map<String, Object> map = new HashMap<String, Object>();
 		if(orderId > 0 && userId > 0 && roleId > 0){
 			if(roleId.equals(Constants.PATENT_ROLE_ID)){
