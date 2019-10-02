@@ -89,6 +89,22 @@ public class UserAction extends DispatchAction {
 	}
 	
 	/**
+	 * 导向用户管理页面
+	 * @author wm
+	 * @date 2019-10-2 上午08:53:12
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward goUserPage (ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		return mapping.findForward("userPage");
+	}
+	
+	/**
 	 * 根据条件查看用户信息(用户管理)
 	 * @author zong
 	 * 2019-6-11上午11:28:14
