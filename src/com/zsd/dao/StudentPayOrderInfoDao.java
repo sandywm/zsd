@@ -113,5 +113,16 @@ public interface StudentPayOrderInfoDao {
 	 * @return
 	 */
 	Integer getCountByOpt(Session sess,Integer userId,String sDate,String eDate,Integer comSta);
+	
+	/**
+	 * 根据条件获取未完成订单
+	 * @author wm
+	 * @date 2019-10-2 下午04:58:02
+	 * @param sess
+	 * @param userId 用户编号
+	 * @param ntsId 绑定导师关系编号
+	 * @return
+	 */
+	List<StudentPayOrderInfo> findUnComInfoByOpt(Session sess,Integer userId,Integer ntsId);
 
 }

@@ -231,5 +231,20 @@ public class StudentPayOrderInfoManagerImpl implements
 			HibernateUtil.closeSession();
 		}
 	}
+	@Override
+	public List<StudentPayOrderInfo> listUnComInfoByOpt(Integer userId,
+			Integer ntsId) throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			sOrderInfoDao = (StudentPayOrderInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_STUDENT_PAY_ORDER_INFO);
+			Session sess  = HibernateUtil.currentSession();
+			return sOrderInfoDao.findUnComInfoByOpt(sess, userId, ntsId);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("根据条件获取未完成订单时出现异常!");
+		}finally{
+			HibernateUtil.closeSession();
+		}
+	}
 
 }

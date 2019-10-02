@@ -308,52 +308,60 @@ public class OrderAction extends DispatchAction {
 		if(userId > 0 && roleId.equals(Constants.STU_ROLE_ID) && payType > 0 && payMoney > 0 && selMonth > 0){
 			Integer ntsId = -1;
 			if(payOpt.equals("ntFee")){
-				Integer ntId = CommonTools.getFinalInteger("ntId", request);//绑定导师时传递导师编号
-				Integer stuSchoolType = 0;
-				Integer schoolId = 0;
-				List<User> uList = um.listEntityById(userId);
-				if(uList.size() > 0){
-					schoolId = uList.get(0).getSchoolId();//获取当前学生所在的学校编号
-				}
-				if(schoolId > 0){
-					List<School> sList = sm.listInfoById(schoolId);
-					if(sList.size() > 0){
-						stuSchoolType = sList.get(0).getSchoolType();//获取当前学生所在的学段
-						List<NetTeacherInfo>  ntList = ntm.listntInfoByTeaId(ntId);
-						if(ntList.size() > 0){
-							NetTeacherInfo nt = ntList.get(0);
-							Integer subId = nt.getSubject().getId();
-							Integer schoolType =  nt.getSchoolType();
-							Integer checkStatus = nt.getCheckStatus();
-							if(stuSchoolType.equals(schoolType)){//学段相同才能绑定
-								if(checkStatus.equals(2)){//审核通过
-									NetTeacherStudent nts = ntsm.getValidInfoByOpt(userId, subId);
-									if(nts == null){//该科没有在绑定的关系，可以进行绑定
-										nts = ntsm.getEntityInfoByOpt(nt.getUser().getId(), userId);//获取该学生和该导师有无绑定信息
-										if(nts == null){//不存在绑定关系--增加
-											ntsId = ntsm.addNTS(userId, ntId, currDate, 1, currDate, 0, "", "", 0);
-										}else{//存在到期，取消--修改
-											boolean flag = ntsm.updateInfoById(nts.getId(), currDate, 1, currDate, 0);
-											if(flag){
-												ntsId = nts.getId();
+				if(om.listUnComInfoByOpt(userId, 1).size() == 0){//没有未完成订单
+					Integer ntId = CommonTools.getFinalInteger("ntId", request);//绑定导师时传递导师编号
+					Integer stuSchoolType = 0;
+					Integer schoolId = 0;
+					List<User> uList = um.listEntityById(userId);
+					if(uList.size() > 0){
+						schoolId = uList.get(0).getSchoolId();//获取当前学生所在的学校编号
+					}
+					if(schoolId > 0){
+						List<School> sList = sm.listInfoById(schoolId);
+						if(sList.size() > 0){
+							stuSchoolType = sList.get(0).getSchoolType();//获取当前学生所在的学段
+							List<NetTeacherInfo>  ntList = ntm.listntInfoByTeaId(ntId);
+							if(ntList.size() > 0){
+								NetTeacherInfo nt = ntList.get(0);
+								Integer subId = nt.getSubject().getId();
+								Integer schoolType =  nt.getSchoolType();
+								Integer checkStatus = nt.getCheckStatus();
+								if(stuSchoolType.equals(schoolType)){//学段相同才能绑定
+									if(checkStatus.equals(2)){//审核通过
+										NetTeacherStudent nts = ntsm.getValidInfoByOpt(userId, subId);
+										if(nts == null){//该科没有在绑定的关系，可以进行绑定
+											nts = ntsm.getEntityInfoByOpt(nt.getUser().getId(), userId);//获取该学生和该导师有无绑定信息
+											if(nts == null){//不存在绑定关系--增加
+												ntsId = ntsm.addNTS(userId, ntId, currDate, 1, currDate, 0, "", "", 0);
+											}else{//存在到期，取消--修改
+												boolean flag = ntsm.updateInfoById(nts.getId(), currDate, 1, currDate, 0);
+												if(flag){
+													ntsId = nts.getId();
+												}
 											}
+										}else{
+											msg = "bindExist";//该科目前存存在正在绑定的导师
 										}
 									}else{
-										msg = "bindExist";//该科目前存存在正在绑定的导师
+										msg = "checkFail";//该导师没有审核通过
 									}
 								}else{
-									msg = "checkFail";//该导师没有审核通过
+									msg = "paraDiff";//学段不一致
 								}
 							}else{
-								msg = "paraDiff";//学段不一致
+								msg = "noInfo";
 							}
-						}else{
-							msg = "noInfo";
 						}
 					}
+				}else{
+					msg = "existOrder";//存在未完成订单
 				}
 			}else if(payOpt.equals("serviceFee")){
 				ntsId = 0;
+				if(om.listUnComInfoByOpt(userId, 0).size() > 0){//存在未完成订单
+					msg = "existOrder";//存在未完成订单
+					ntsId = -1;
+				}
 			}
 			if(ntsId >= 0){
 				orderNo = CurrentTime.getStringTime2();
@@ -371,16 +379,37 @@ public class OrderAction extends DispatchAction {
 		return null;
 	}
 	
+	/**
+	 * 取消订单
+	 * @author wm
+	 * @date 2019-10-2 下午04:48:10
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
 	public ActionForward cancelOrder(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
-		NetTeacherStudentManager ntsm = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT);
 		StudentPayOrderInfoManager om = (StudentPayOrderInfoManager) AppFactory.instance(null).getApp(Constants.WEB_STUDENT_PAY_ORDER_INFO);
-		NetTeacherInfoManager ntm = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
-		SchoolManager sm = (SchoolManager) AppFactory.instance(null).getApp(Constants.WEB_SCHOOL_INFO);
-		UserManager um = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
 		Integer userId = CommonTools.getLoginUserId(request);
 		Integer roleId = CommonTools.getLoginRoleId(request);
+		Integer orderId = CommonTools.getFinalInteger("orderId", request);
+		Map<String, Object> map = new HashMap<String, Object>();
+		String msg = "error";
+		if(userId > 0 && roleId.equals(Constants.STU_ROLE_ID) && orderId > 0){
+			StudentPayOrderInfo spo = om.getEntityById(orderId);
+			if(spo != null){
+				if(spo.getUser().getId().equals(userId)){
+					om.updateOrderById(orderId, 0, 0, 0, "", 2, "", 0, 0);
+					msg = "success";
+				}
+			}
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
 }

@@ -111,4 +111,17 @@ public class StudentPayOrderInfoDaoImpl implements StudentPayOrderInfoDao {
 		return CommonTools.longToInt(countObj);
 	}
 
+	@Override
+	public List<StudentPayOrderInfo> findUnComInfoByOpt(Session sess,
+			Integer userId, Integer ntsId) {
+		// TODO Auto-generated method stub
+		String hql = " from StudentPayOrderInfo as spo where spo.user.id = "+userId + " and spo.comStatus = 0";
+		if(ntsId > 0){
+			hql += " and spo.ntsId > 0";
+		}else{
+			hql += " and spo.ntsId = 0";
+		}
+		return sess.createQuery(hql).list();
+	}
+
 }

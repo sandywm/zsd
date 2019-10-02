@@ -131,4 +131,15 @@ public interface StudentPayOrderInfoManager {
 	 */
 	boolean updateOrderById(Integer id,Integer payType,Integer payMoney,Integer buyMonth,String orderDetail,Integer comStatus,String comDate,
 			Integer payUserId,Integer payUserRoleId)throws WEBException;
+	
+	/**
+	 * 根据条件获取未完成订单
+	 * @author wm
+	 * @date 2019-10-2 下午05:01:03
+	 * @param userId 用户编号
+	 * @param ntsId 绑定导师关系编号(大于0表示购买的导师费，等于0表示购买的会员费)
+	 * @return
+	 * @throws WEBException
+	 */
+	List<StudentPayOrderInfo> listUnComInfoByOpt(Integer userId,Integer ntsId)throws WEBException;
 }
