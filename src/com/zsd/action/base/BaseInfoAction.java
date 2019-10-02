@@ -370,5 +370,39 @@ public class BaseInfoAction extends DispatchAction {
 		
 	}
 	
-	
+	/**
+	 * 获取我的金币数量
+	 * @author wm
+	 * @date 2019-10-2 下午03:26:09
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getSelfCoin(ActionMapping mapping,ActionForm form,
+			HttpServletRequest request,HttpServletResponse response) throws Exception{
+		UserManager um = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
+		Integer userId = CommonTools.getLoginUserId(request);
+		Map<String,Object> map = new HashMap<String,Object>();
+		String msg = "error";
+		Integer coin = 0;
+		Integer zsdCoin = 0;
+		if(userId > 0){
+			List<User> uList = um.listEntityById(userId);
+			if(uList.size() > 0){
+				msg = "success";
+				coin = uList.get(0).getCoin();
+				zsdCoin = uList.get(0).getCoinZsd();
+			}
+		}
+		map.put("result", msg);
+		if(msg.equals("success")){
+			map.put("coin", coin);
+			map.put("zsdCoin", zsdCoin);
+		}
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
 }

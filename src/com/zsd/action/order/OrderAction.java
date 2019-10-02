@@ -127,8 +127,6 @@ public class OrderAction extends DispatchAction {
 								map_d.put("subName", subName);
 								
 							}
-						}else{
-							map_d.put("payInfo", "会员购买");
 						}
 						list_d.add(map_d);
 					}
@@ -159,10 +157,7 @@ public class OrderAction extends DispatchAction {
 								map_d.put("ntName", ntName);
 								map_d.put("schoolType", schoolType);
 								map_d.put("subName", subName);
-								
 							}
-						}else{
-							map_d.put("payInfo", "会员购买");
 						}
 						list_d.add(map_d);
 					}
