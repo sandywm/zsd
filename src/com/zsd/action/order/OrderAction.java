@@ -112,7 +112,7 @@ public class OrderAction extends DispatchAction {
 						Integer ntsId = spo.getNtsId();
 						map_d.put("orderId", spo.getId());
 						map_d.put("orderNo", spo.getOrderNo());
-						map_d.put("addDate", spo.getAddDate().subSequence(0, 10));
+						map_d.put("addDate", spo.getAddDate().substring(0, 10));
 						map_d.put("buyDays", spo.getBuyDays() * 30);
 						map_d.put("payMoney", spo.getPayMoney());
 						map_d.put("comStatus", spo.getComStatus());
@@ -121,12 +121,19 @@ public class OrderAction extends DispatchAction {
 							NetTeacherStudent nts = ntsm.getEntityById(ntsId);
 							if(nts != null){
 								Integer schoolType = nts.getNetTeacherInfo().getSchoolType();
+								String schoolTypeChi = "";
+								if(schoolType.equals(1)){
+									schoolTypeChi = "小学";
+								}else if(schoolType.equals(2)){
+									schoolTypeChi = "初中";
+								}else{
+									schoolTypeChi = "高中";
+								}
 								String subName = nts.getNetTeacherInfo().getSubject().getSubName();
 								String ntName = nts.getNetTeacherInfo().getUser().getRealName();
 								map_d.put("ntName", ntName);
-								map_d.put("schoolType", schoolType);
+								map_d.put("schoolType", schoolTypeChi);
 								map_d.put("subName", subName);
-								
 							}
 						}
 						list_d.add(map_d);
@@ -154,10 +161,18 @@ public class OrderAction extends DispatchAction {
 							NetTeacherStudent nts = ntsm.getEntityById(ntsId);
 							if(nts != null){
 								Integer schoolType = nts.getNetTeacherInfo().getSchoolType();
+								String schoolTypeChi = "";
+								if(schoolType.equals(1)){
+									schoolTypeChi = "小学";
+								}else if(schoolType.equals(2)){
+									schoolTypeChi = "初中";
+								}else{
+									schoolTypeChi = "高中";
+								}
 								String subName = nts.getNetTeacherInfo().getSubject().getSubName();
 								String ntName = nts.getNetTeacherInfo().getUser().getRealName();
 								map_d.put("ntName", ntName);
-								map_d.put("schoolType", schoolType);
+								map_d.put("schoolType", schoolTypeChi);
 								map_d.put("subName", subName);
 							}
 						}
