@@ -216,10 +216,18 @@ public class OrderAction extends DispatchAction {
 						NetTeacherStudent nts = ntsm.getEntityById(ntsId);
 						if(nts != null){
 							Integer schoolType = nts.getNetTeacherInfo().getSchoolType();
+							String schoolTypeChi = "";
+							if(schoolType.equals(1)){
+								schoolTypeChi = "小学";
+							}else if(schoolType.equals(2)){
+								schoolTypeChi = "初中";
+							}else{
+								schoolTypeChi = "高中";
+							}
 							String subName = nts.getNetTeacherInfo().getSubject().getSubName();
 							String ntName = nts.getNetTeacherInfo().getUser().getRealName();
 							map.put("ntName", ntName);
-							map.put("schoolType", schoolType);
+							map.put("schoolType", schoolTypeChi);
 							map.put("subName", subName);
 						}
 					}
@@ -230,12 +238,12 @@ public class OrderAction extends DispatchAction {
 					map.put("buyMonth", spo.getBuyDays());
 					map.put("payMoney", spo.getPayMoney());
 					map.put("payType", spo.getPayType());
-					map.put("comStatus", spo.getComStatus());
 					map.put("ntsId", ntsId);//0时表示购买会员，大于0表示绑定导师
 					Double zkRate = CommonTools.getZkRate(spo.getBuyDays());
 					map.put("zkRate", zkRate * 100 + "%");
 					Integer comStatus = spo.getComStatus();
-					if(comStatus.equals(2)){
+					map.put("comStatus", comStatus);
+					if(comStatus.equals(1)){
 						map.put("comDate", spo.getComDate());
 						map.put("payUserName", um.listEntityById(spo.getPayUserId()).get(0).getRealName());
 					}
