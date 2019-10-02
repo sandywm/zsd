@@ -152,7 +152,7 @@ public class OrderAction extends DispatchAction {
 						Integer ntsId = spo.getNtsId();
 						map_d.put("orderId", spo.getId());
 						map_d.put("orderNo", spo.getOrderNo());
-						map_d.put("addDate", spo.getAddDate());
+						map_d.put("addDate", spo.getAddDate().substring(0, 10));
 						map_d.put("buyDays", spo.getBuyDays() * 30);
 						map_d.put("payMoney", spo.getPayMoney());
 						map_d.put("comStatus", spo.getComStatus());
@@ -368,6 +368,19 @@ public class OrderAction extends DispatchAction {
 			map.put("orderId", orderId);
 		}
 		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	public ActionForward cancelOrder(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		NetTeacherStudentManager ntsm = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT);
+		StudentPayOrderInfoManager om = (StudentPayOrderInfoManager) AppFactory.instance(null).getApp(Constants.WEB_STUDENT_PAY_ORDER_INFO);
+		NetTeacherInfoManager ntm = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
+		SchoolManager sm = (SchoolManager) AppFactory.instance(null).getApp(Constants.WEB_SCHOOL_INFO);
+		UserManager um = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
+		Integer userId = CommonTools.getLoginUserId(request);
+		Integer roleId = CommonTools.getLoginRoleId(request);
 		return null;
 	}
 }
