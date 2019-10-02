@@ -91,4 +91,12 @@ public class EmailDaoImpl implements EmailDao{
 		Object countObj = sess.createQuery(hql).uniqueResult();
 		return CommonTools.longToInt(countObj);
 	}
+
+	@Override
+	public Integer getUnReadCount(Session sess, Integer userId) {
+		// TODO Auto-generated method stub
+		String hql = " from Email as e where e.readStatus = 0 and e.userByToUserId.id = "+userId;
+		Object countObj = sess.createQuery(hql).uniqueResult();
+		return CommonTools.longToInt(countObj);
+	}
 }

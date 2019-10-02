@@ -53,4 +53,14 @@ public interface EmailDao {
 	 * @return
 	 */
 	Integer getCountByOpt(Session sess,Integer userId,String title,String sDate,String eDate,String emailType);
+	
+	/**
+	 * 获取用户下的未读邮件条数
+	 * @author wm
+	 * @date 2019-10-2 上午09:10:25
+	 * @param sess
+	 * @param userId 用户编号
+	 * @return
+	 */
+	Integer getUnReadCount(Session sess,Integer userId);
 }

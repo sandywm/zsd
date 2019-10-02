@@ -49,6 +49,37 @@ public class EmailAction extends DispatchAction {
 	}
 	
 	/**
+	 * 获取指定用户下未读邮件记录条数
+	 * @author wm
+	 * @date 2019-10-2 上午09:14:43
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception 
+	 */
+	public ActionForward getUnReadCount(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		EmailManager em = (EmailManager) AppFactory.instance(null).getApp(Constants.WEB_EMAIL_INFO);
+		Integer currUserId = CommonTools.getLoginUserId(request);
+		String msg = "error";
+		Map<String,Object> map = new HashMap<String,Object>();
+		Integer count = 0;
+		if(currUserId > 0){
+			count = em.getUnReadCount(currUserId);
+			msg = "success";
+		}
+		map.put("result", msg);
+		if(msg.equals("success")){
+			map.put("unReadeCount", count);
+		}
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
 	 * 根据条件获取邮件列表
 	 * @author wm
 	 * @date 2019-8-31 上午10:27:49

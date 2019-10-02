@@ -68,4 +68,14 @@ public interface EmailManager {
 	 * @throws WEBException
 	 */
 	void updateBatchInfoByIdStr(String emailIdStr,Integer userId) throws WEBException;
+	
+	/**
+	 * 获取用户下的未读邮件条数
+	 * @author wm
+	 * @date 2019-10-2 上午09:13:12
+	 * @param userId 用户编号
+	 * @return
+	 * @throws WEBException
+	 */
+	Integer getUnReadCount(Integer userId) throws WEBException;
 }

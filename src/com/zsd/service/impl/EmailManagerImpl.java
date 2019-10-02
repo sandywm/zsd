@@ -151,4 +151,20 @@ public class EmailManagerImpl implements EmailManager{
 		}
 	}
 
+	@Override
+	public Integer getUnReadCount(Integer userId) throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			eDao = (EmailDao) DaoFactory.instance(null).getDao(Constants.DAO_EMAIL_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return eDao.getUnReadCount(sess, userId);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new WEBException("获取用户下的未读邮件条数时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
 }
