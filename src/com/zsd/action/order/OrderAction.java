@@ -281,7 +281,9 @@ public class OrderAction extends DispatchAction {
 		String orderDetail = Transcode.unescape_new1("orderDetail", request);//订单详情
 		String payOpt = CommonTools.getFinalStr("payOpt", request);//ntFee：绑定导师,serviceFee:购买会员
 		String currDate = CurrentTime.getStringDate();
-		Map<String, String> map = new HashMap<String, String>();
+		Integer orderId = 0;
+		String orderNo = "";
+		Map<String, Object> map = new HashMap<String, Object>();
 		String msg = "error";
 		if(userId > 0 && roleId.equals(Constants.STU_ROLE_ID) && payType > 0 && payMoney > 0 && selMonth > 0){
 			Integer ntsId = -1;
@@ -334,13 +336,18 @@ public class OrderAction extends DispatchAction {
 				ntsId = 0;
 			}
 			if(ntsId >= 0){
-				Integer orderId = om.addOrder(userId, CurrentTime.getStringTime2(), payType, payMoney, ntsId, selMonth, orderDetail);
+				orderNo = CurrentTime.getStringTime2();
+				orderId = om.addOrder(userId, orderNo, payType, payMoney, ntsId, selMonth, orderDetail);
 				if(orderId > 0){
 					msg = "success";
 				}
 			}
 		}
 		map.put("msg", msg);
+		if(msg.equals("success")){
+			map.put("orderId", orderId);
+			map.put("orderNo", orderNo);
+		}
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
