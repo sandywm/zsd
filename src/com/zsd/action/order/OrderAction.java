@@ -252,7 +252,7 @@ public class OrderAction extends DispatchAction {
 					map.put("orderId", orderId);
 					map.put("orderNo", spo.getOrderNo());
 					map.put("addDate", spo.getAddDate());
-					map.put("buyMonth", spo.getBuyDays());
+					map.put("buyDays", spo.getBuyDays());
 					map.put("payMoney", spo.getPayMoney());
 					map.put("payType", spo.getPayType());
 					map.put("ntsId", ntsId);//0时表示购买会员，大于0表示绑定导师
