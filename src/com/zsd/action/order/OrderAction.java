@@ -223,11 +223,10 @@ public class OrderAction extends DispatchAction {
 							map.put("schoolType", schoolType);
 							map.put("subName", subName);
 						}
-					}else{
-						map.put("payInfo", "会员购买");
-						map.put("orderDetail", spo.getOrderDetail());
 					}
+					map.put("orderDetail", spo.getOrderDetail());
 					map.put("orderId", orderId);
+					map.put("orderNo", spo.getOrderNo());
 					map.put("addDate", spo.getAddDate());
 					map.put("buyMonth", spo.getBuyDays());
 					map.put("payMoney", spo.getPayMoney());
