@@ -340,7 +340,6 @@ public class OrderAction extends DispatchAction {
 		map.put("msg", msg);
 		if(msg.equals("success")){
 			map.put("orderId", orderId);
-			map.put("orderNo", orderNo);
 		}
 		CommonTools.getJsonPkg(map, response);
 		return null;
