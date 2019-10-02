@@ -111,7 +111,8 @@ public class OrderAction extends DispatchAction {
 						Map<String,Object> map_d = new HashMap<String,Object>();
 						Integer ntsId = spo.getNtsId();
 						map_d.put("orderId", spo.getId());
-						map_d.put("addDate", spo.getAddDate());
+						map_d.put("orderNo", spo.getOrderNo());
+						map_d.put("addDate", spo.getAddDate().subSequence(0, 10));
 						map_d.put("buyDays", spo.getBuyDays() * 30);
 						map_d.put("payMoney", spo.getPayMoney());
 						map_d.put("comStatus", spo.getComStatus());
@@ -143,6 +144,7 @@ public class OrderAction extends DispatchAction {
 						Map<String,Object> map_d = new HashMap<String,Object>();
 						Integer ntsId = spo.getNtsId();
 						map_d.put("orderId", spo.getId());
+						map_d.put("orderNo", spo.getOrderNo());
 						map_d.put("addDate", spo.getAddDate());
 						map_d.put("buyDays", spo.getBuyDays() * 30);
 						map_d.put("payMoney", spo.getPayMoney());
