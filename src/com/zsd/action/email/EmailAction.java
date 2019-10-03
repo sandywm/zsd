@@ -136,6 +136,26 @@ public class EmailAction extends DispatchAction {
 	}
 	
 	/**
+	 * 获取邮件详情
+	 * @author wm
+	 * @date 2019-10-3 上午08:55:21
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getEmailDetail(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		EmailManager em = (EmailManager) AppFactory.instance(null).getApp(Constants.WEB_EMAIL_INFO);
+		Integer currUserId = CommonTools.getLoginUserId(request);
+		Integer emailId = CommonTools.getFinalInteger("emailId", request);
+		return null;
+	}
+	
+	/**
 	 * 批量删除邮件
 	 * @author wm
 	 * @date 2019-8-31 上午10:43:26

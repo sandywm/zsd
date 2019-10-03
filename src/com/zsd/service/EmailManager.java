@@ -78,4 +78,14 @@ public interface EmailManager {
 	 * @throws WEBException
 	 */
 	Integer getUnReadCount(Integer userId) throws WEBException;
+	
+	/**
+	 * 根据邮件主键获取邮件信息内容
+	 * @author wm
+	 * @date 2019-10-3 上午08:59:29
+	 * @param emailId 邮件编号
+	 * @return
+	 * @throws WEBException
+	 */
+	Email getEntityById(Integer emailId) throws WEBException;
 }

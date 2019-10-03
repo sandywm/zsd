@@ -167,4 +167,10 @@ public class EmailManagerImpl implements EmailManager{
 		}
 	}
 
+	@Override
+	public Email getEntityById(Integer emailId) throws WEBException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

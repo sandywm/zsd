@@ -28,7 +28,7 @@ public class Email implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public Email(User userByToUserId, User userBySendUserId, String emailTitle,
+	public Email(User userBySendUserId, User userByToUserId, String emailTitle,
 			String emailContent, String sendTime, String emailType,Integer readStatus) {
 		this.userByToUserId = userByToUserId;
 		this.userBySendUserId = userBySendUserId;
