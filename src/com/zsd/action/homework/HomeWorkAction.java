@@ -2593,6 +2593,20 @@ public class HomeWorkAction extends DispatchAction {
 						map_d.put("answerF", lq.getF());
 						map_d.put("lqType", lq.getQueType());
 						String realAnswer = lq.getQueAnswer();
+						String[] answerOptArr = {lq.getA() , lq.getB() , lq.getC() , lq.getD() , lq.getE() , lq.getF()};
+						String dataBaseAnswerChar = "";//转化成A-F的答案
+						String[] dataBaseAnswerArray = realAnswer.split(",");//数据库真实答案数组
+						for(int i = 0 ; i < dataBaseAnswerArray.length ; i++){
+							for(int j = 0 ; j < answerOptArr.length ; j++)
+							if(dataBaseAnswerArray[i].equals(answerOptArr[j])){
+								dataBaseAnswerChar += Convert.NumberConvertBigChar(j)+",";
+								break;
+							}
+						}
+						if(!dataBaseAnswerChar.equals("")){
+							dataBaseAnswerChar = dataBaseAnswerChar.substring(0, dataBaseAnswerChar.length() - 1);
+						}
+						realAnswer = dataBaseAnswerChar;
 						if(result >= 0){//做完题后才出正确答案
 							map_d.put("realAnswer", realAnswer);
 						}
