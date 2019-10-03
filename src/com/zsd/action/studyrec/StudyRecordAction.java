@@ -1252,7 +1252,15 @@ public class StudyRecordAction extends DispatchAction {
 	public ActionForward  getBindNt(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 			NetTeacherStudentManager  ntsManager = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT);
+			StudentParentInfoManager spm = (StudentParentInfoManager)AppFactory.instance(null).getApp(Constants.WEB_STUDENT_PARENT_INFO);
 			Integer userId = CommonTools.getLoginUserId(request);
+			Integer roleId = CommonTools.getLoginRoleId(request);
+			if(roleId.equals(Constants.PATENT_ROLE_ID)){
+				StudentParentInfo sp = spm.getEntityByParId(userId);
+				if(sp != null){
+					userId = sp.getStu().getId();//孩子的Id
+				}
+			}
 			List<NetTeacherStudent> ntsList = ntsManager.listBindNt(userId);
 			Map<String,Object> map = new HashMap<String,Object>();
 			List<Object> list_b = new ArrayList<Object>();//已过期,已取消
