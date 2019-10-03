@@ -200,6 +200,7 @@ public interface UserManager {
 	 * @param prov 省
 	 * @param city 市
 	 * @param county 县
+	 * @param town 乡镇
 	 * @param schoolType 学段
 	 * @param gradeNo 年级编号
 	 * @param pageNo  总页数
@@ -209,7 +210,7 @@ public interface UserManager {
 	 */
 	List<User> listUserInfoByoption(String accName,
 			String realName, Integer schoolId, Integer roleId, String prov,
-			String city, String county, Integer schoolType, Integer gradeNo,
+			String city, String county, String town, Integer schoolType, Integer gradeNo,
 			Integer classId, Integer pageNo, Integer pageSize)throws WEBException;
 	/**
 	 * 根据用户条件获取用户信息总记录数
@@ -222,6 +223,7 @@ public interface UserManager {
 	 * @param prov 省
 	 * @param city 市
 	 * @param county 县
+	 * @param town 乡镇
 	 * @param schoolType 学段
 	 * @param gradeNo 年级编号
 	 * @return
@@ -229,7 +231,7 @@ public interface UserManager {
 	 */
 	Integer getUserByoptionCount(String accName,
 			String realName, Integer schoolId, Integer roleId, String prov,
-			String city, String county, Integer schoolType, Integer gradeNo,
+			String city, String county, String town, Integer schoolType, Integer gradeNo,
 			Integer classId)throws WEBException;
 	/**
 	 * 更新用户头像信息

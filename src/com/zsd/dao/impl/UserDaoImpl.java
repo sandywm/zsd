@@ -60,20 +60,20 @@ public class UserDaoImpl implements UserDao {
 	@Override
 	public List<User> findUserInfoByoption(Session sess, String accName,
 			String realName, Integer schoolId, Integer roleId, String prov,
-			String city, String county, Integer schoolType, Integer gradeNo,
+			String city, String county,String town, Integer schoolType, Integer gradeNo,
 			Integer classId, Integer pageNo, Integer pageSize) {
 		int offset = (pageNo - 1) * pageSize;
 		if (offset < 0) {
 			offset = 0;
 		}
-		String hql ="from  User as u where 1=1";
+		String hql = " from  User as u where 1=1";
 		if(!accName.equals("")){
-			hql+=" and u.userAccount='"+accName+"'";
+			hql+=" and u.userAccount = '%"+accName+"%'";
 		}
 		if(!accName.equals("")){
-			hql+=" and u.realName='"+realName+"'";
+			hql+=" and u.realName like '%"+realName+"%'";
 		}
-		hql+="exists(from RoleUserInfo as ru where u.id=ru.user.id";
+		hql+=" exists(from RoleUserInfo as ru where u.id=ru.user.id";
 		if(schoolId!=0){
 			hql +=" and ru.schoolId="+schoolId;
 		}
@@ -88,6 +88,9 @@ public class UserDaoImpl implements UserDao {
 		}
 		if(county!=""){
 			hql += " and ru.county='"+county+"'";
+		}
+		if(town!=""){
+			hql += " and ru.town='"+town+"'";
 		}
 		if(schoolType!=0){
 			hql +=" and ru.schoolType='"+schoolType+"'";
@@ -105,16 +108,16 @@ public class UserDaoImpl implements UserDao {
 	@Override
 	public Integer getUserByoptionCount(Session sess, String accName,
 			String realName, Integer schoolId, Integer roleId, String prov,
-			String city, String county, Integer schoolType, Integer gradeNo,
+			String city, String county,String town, Integer schoolType, Integer gradeNo,
 			Integer classId) {
 		String hql ="select count(u.id) from  User as u where 1=1";
 		if(!accName.equals("")){
-			hql+=" and u.userAccount='"+accName+"'";
+			hql+=" and u.userAccount = '%"+accName+"%'";
 		}
 		if(!accName.equals("")){
-			hql+=" and u.realName='"+realName+"'";
+			hql+=" and u.realName like '%"+realName+"%'";
 		}
-		hql+="exists(from RoleUserInfo as ru where u.id=ru.user.id";
+		hql+=" exists(from RoleUserInfo as ru where u.id=ru.user.id";
 		if(schoolId!=0){
 			hql +=" and ru.schoolId="+schoolId;
 		}
@@ -129,6 +132,9 @@ public class UserDaoImpl implements UserDao {
 		}
 		if(county!=""){
 			hql += " and ru.county='"+county+"'";
+		}
+		if(town!=""){
+			hql += " and ru.town='"+town+"'";
 		}
 		if(schoolType!=0){
 			hql +=" and ru.schoolType='"+schoolType+"'";

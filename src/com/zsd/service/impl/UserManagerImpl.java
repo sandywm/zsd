@@ -325,13 +325,13 @@ public class UserManagerImpl implements UserManager {
 	@Override
 	public List<User> listUserInfoByoption(String accName, String realName,
 			Integer schoolId, Integer roleId, String prov, String city,
-			String county, Integer schoolType, Integer gradeNo,
+			String county, String town,Integer schoolType, Integer gradeNo,
 			Integer classId, Integer pageNo, Integer pageSize)
 			throws WEBException {
 		try {
 			userDao = (UserDao) DaoFactory.instance(null).getDao(Constants.DAO_USER_INFO);
 			Session sess  = HibernateUtil.currentSession();
-			return userDao.findUserInfoByoption(sess, accName, realName, schoolId, roleId, prov, city, county, schoolType, gradeNo, classId, pageNo, pageSize);
+			return userDao.findUserInfoByoption(sess, accName, realName, schoolId, roleId, prov, city, county, town, schoolType, gradeNo, classId, pageNo, pageSize);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new WEBException("根据账户名,真实姓名,学校编号,角色编号,省市县,班级,年级获取用户信息时出现异常!");
@@ -343,12 +343,12 @@ public class UserManagerImpl implements UserManager {
 	@Override
 	public Integer getUserByoptionCount(String accName, String realName,
 			Integer schoolId, Integer roleId, String prov, String city,
-			String county, Integer schoolType, Integer gradeNo, Integer classId)
+			String county, String town,Integer schoolType, Integer gradeNo, Integer classId)
 			throws WEBException {
 		try {
 			userDao = (UserDao) DaoFactory.instance(null).getDao(Constants.DAO_USER_INFO);
 			Session sess  = HibernateUtil.currentSession();
-			return userDao.getUserByoptionCount(sess, accName, realName, schoolId, roleId, prov, city, county, schoolType, gradeNo, classId);
+			return userDao.getUserByoptionCount(sess, accName, realName, schoolId, roleId, prov, city, county, town, schoolType, gradeNo, classId);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new WEBException("根据账户名,真实姓名,学校编号,角色编号,省市县,班级,年级获取用户信息记录数时出现异常!");

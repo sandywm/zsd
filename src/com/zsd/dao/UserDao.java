@@ -84,13 +84,15 @@ public interface UserDao {
 	 * @param prov 省
 	 * @param city 市
 	 * @param county 县
+	 * @param town 乡镇
 	 * @param schoolType 学段
 	 * @param gradeNo 年级编号
 	 * @param pageNo  总页数
 	 * @param pageSize 每页多少条
 	 * @return
 	 */
-	List<User> findUserInfoByoption(Session sess,String accName,String realName,Integer schoolId,Integer roleId,String prov, String city, String county,Integer schoolType,
+	List<User> findUserInfoByoption(Session sess,String accName,String realName,Integer schoolId,Integer roleId,
+			String prov, String city, String county,String town,Integer schoolType,
 			Integer gradeNo,Integer classId,Integer pageNo,Integer pageSize);
 	/**
 	 * 根据用户条件查询用户信息总记录数
@@ -104,11 +106,13 @@ public interface UserDao {
 	 * @param prov 省
 	 * @param city 市
 	 * @param county 县
+	 * @param town 乡镇
 	 * @param schoolType 学段
 	 * @param gradeNo 年级编号
 	 * @return 记录数
 	 */
-	Integer getUserByoptionCount(Session sess,String accName,String realName,Integer schoolId,Integer roleId,String prov, String city, String county,Integer schoolType,
+	Integer getUserByoptionCount(Session sess,String accName,String realName,Integer schoolId,Integer roleId,
+			String prov, String city, String county,String town,Integer schoolType,
 			Integer gradeNo,Integer classId);
 	/**
 	 * 根据手机号码查询记录
