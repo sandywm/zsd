@@ -187,6 +187,8 @@ public class OrderAction extends DispatchAction {
 			msg = "error";
 		}
 		map.put("msg", msg);
+		map.put("sDate", sDate);
+		map.put("eDate", eDate);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
