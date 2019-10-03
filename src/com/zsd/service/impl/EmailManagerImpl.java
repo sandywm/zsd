@@ -58,7 +58,7 @@ public class EmailManagerImpl implements EmailManager{
 					Integer emailId = Integer.parseInt(emailIdArr[i]);
 					Email email = eDao.getEntity(sess, emailId);
 					if(email != null){
-						if(email.getUserByToUserId().equals(userId)){
+						if(email.getUserByToUserId().getId().equals(userId)){
 							eDao.delete(sess, emailId);
 							if(i % 10 == 0){//批插入的对象立即写入数据库并释放内存
 								sess.flush();
@@ -128,7 +128,7 @@ public class EmailManagerImpl implements EmailManager{
 					Integer emailId = Integer.parseInt(emailIdArr[i]);
 					Email email = eDao.getEntity(sess, emailId);
 					if(email != null){
-						if(email.getUserByToUserId().equals(userId)){
+						if(email.getUserByToUserId().getId().equals(userId)){
 							email.setReadStatus(1);
 							eDao.update(sess, email);
 							if(i % 10 == 0){//批插入的对象立即写入数据库并释放内存
