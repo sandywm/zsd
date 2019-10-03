@@ -73,7 +73,7 @@ public class UserDaoImpl implements UserDao {
 		if(!accName.equals("")){
 			hql+=" and u.realName like '%"+realName+"%'";
 		}
-		hql+=" and exists(from RoleUserInfo as ru where u.id=ru.user.id";
+		hql+=" and exists(select ru.id from RoleUserInfo as ru where u.id=ru.user.id";
 		if(schoolId!=0){
 			hql +=" and ru.schoolId="+schoolId;
 		}
@@ -101,6 +101,7 @@ public class UserDaoImpl implements UserDao {
 		if(classId!=0){
 			hql +=" and classId='"+classId+"'";
 		}
+		hql+=")";
 		return sess.createQuery(hql).setFirstResult(offset).setMaxResults(pageSize).list();
 	}
 
@@ -116,7 +117,7 @@ public class UserDaoImpl implements UserDao {
 		if(!accName.equals("")){
 			hql+=" and u.realName like '%"+realName+"%'";
 		}
-		hql+=" and exists(from RoleUserInfo as ru where u.id=ru.user.id";
+		hql+=" and exists(select ru.id from RoleUserInfo as ru where u.id=ru.user.id";
 		if(schoolId!=0){
 			hql +=" and ru.schoolId="+schoolId;
 		}

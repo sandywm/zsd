@@ -183,10 +183,19 @@ public class UserAction extends DispatchAction {
 				}
 				map_u.put("schoolType", schTypeStr);
 				List<School> schList = schManager.listInfoById(ruInfo.getSchoolId());
-				map_u.put("schoolName", schList.get(0).getSchoolName());
+				if(schList.size() > 0){
+					map_u.put("schoolName", schList.get(0).getSchoolName());
+				}else{
+					map_u.put("schoolName", "");
+				}
 				map_u.put("gradeName", Convert.NunberConvertChinese(ruInfo.getGradeNo()));
 				List<ClassInfo> cInfo = cManager.listClassInfoById(ruInfo.getClassId());
-				map_u.put("className", cInfo.get(0).getClassName());
+				if(cInfo.size() > 0){
+					map_u.put("className", cInfo.get(0).getClassName());
+				}else{
+					map_u.put("className", "");
+				}
+				
 				list.add(map_u);
 			}
 			map.put("data", list);
