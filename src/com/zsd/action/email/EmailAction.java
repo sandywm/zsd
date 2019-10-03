@@ -152,16 +152,28 @@ public class EmailAction extends DispatchAction {
 		EmailManager em = (EmailManager) AppFactory.instance(null).getApp(Constants.WEB_EMAIL_INFO);
 		Integer userId = CommonTools.getLoginUserId(request);
 		Integer emailId = CommonTools.getFinalInteger("emailId", request);
-//		String 
+		String msg = "error";
+		Map<String,Object> map = new HashMap<String,Object>();
 		if(userId > 0 && emailId > 0){
 			Email email = em.getEntityById(emailId);
 			if(email != null){
 				if(email.getUserByToUserId().getId().equals(userId) || email.getUserBySendUserId().getId().equals(userId)){
 					//只有涉及到邮件双方人员才能查看
-					
+					msg = "success";
+					map.put("emailId", email.getId());
+					map.put("title", email.getEmailTitle());
+					map.put("content", email.getEmailContent());
+					map.put("sendDate", email.getSendTime());
+					map.put("emailType", email.getEmailType());
+					map.put("sendUserName", email.getUserBySendUserId().getRealName());
+					if(email.getReadStatus().equals(0)){
+						em.updateBatchInfoByIdStr(String.valueOf(emailId), userId);
+					}
 				}
 			}
 		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
 	
