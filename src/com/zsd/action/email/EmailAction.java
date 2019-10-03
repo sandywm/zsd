@@ -150,8 +150,18 @@ public class EmailAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
 		EmailManager em = (EmailManager) AppFactory.instance(null).getApp(Constants.WEB_EMAIL_INFO);
-		Integer currUserId = CommonTools.getLoginUserId(request);
+		Integer userId = CommonTools.getLoginUserId(request);
 		Integer emailId = CommonTools.getFinalInteger("emailId", request);
+//		String 
+		if(userId > 0 && emailId > 0){
+			Email email = em.getEntityById(emailId);
+			if(email != null){
+				if(email.getUserByToUserId().getId().equals(userId) || email.getUserBySendUserId().getId().equals(userId)){
+					//只有涉及到邮件双方人员才能查看
+					
+				}
+			}
+		}
 		return null;
 	}
 	

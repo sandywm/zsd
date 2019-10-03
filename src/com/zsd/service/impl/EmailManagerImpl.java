@@ -170,7 +170,17 @@ public class EmailManagerImpl implements EmailManager{
 	@Override
 	public Email getEntityById(Integer emailId) throws WEBException {
 		// TODO Auto-generated method stub
-		return null;
+		try {
+			eDao = (EmailDao) DaoFactory.instance(null).getDao(Constants.DAO_EMAIL_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return eDao.getEntity(sess, emailId);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new WEBException("获取用户下的未读邮件条数时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
 	}
 
 }

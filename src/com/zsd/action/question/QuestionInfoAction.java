@@ -114,7 +114,7 @@ public class QuestionInfoAction extends DispatchAction {
 			String userName_nt = que.getNetTeacherInfo().getUser().getRealName();
 			Integer userId_nt = que.getNetTeacherInfo().getUser().getId();
 			String content_tea = userName_nt+"导师，您好，"+userName_stu+"学生向您提出["+queTitle+"]问题，请最迟于当天晚上11点前及时回复，谢谢。[知识典]";
-			em.addEmail(1, "学生提问", content_tea, "sys", userId_nt);
+			em.addEmail(que.getUser().getId(), "学生提问", content_tea, "sys", userId_nt);
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
@@ -463,7 +463,7 @@ public class QuestionInfoAction extends DispatchAction {
 				String userName_nt = que.getNetTeacherInfo().getUser().getRealName();
 				Integer userId_nt = que.getNetTeacherInfo().getUser().getId();
 				String content_tea = userName_stu+"同学，你好，你提出["+que.getQueTitle()+"]问题已被"+userName_nt+"导师解答，请点击我的提问查看，谢谢。[知识典]";
-				em.addEmail(1, "网络导师已解答", content_tea, "sys", userId_nt);
+				em.addEmail(userId_nt, "网络导师已解答", content_tea, "sys",que.getUser().getId());
 			}
 		}
 		map.put("result", msg);
