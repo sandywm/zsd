@@ -407,7 +407,7 @@ public class LoginAction extends DispatchAction {
 						msg = "noInfo";
 					}
 				}else{
-					uManager.addUser(userAccount, realName, password, mobile, lastLoginDate, lastLoginIp, 
+					userId = uManager.addUser(userAccount, realName, password, mobile, lastLoginDate, lastLoginIp, 
 							signDate, schoolId, endDate, yearSystem, prov, city);
 					msg = "success";
 				}
