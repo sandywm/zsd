@@ -112,7 +112,7 @@ public class EmailAction extends DispatchAction {
 				Map<String,Object> map_d = new HashMap<String,Object>();
 				map_d.put("emailId", email.getId());
 				map_d.put("title", email.getEmailTitle());
-				map_d.put("content", email.getEmailTitle());
+				map_d.put("content", email.getEmailContent());
 				map_d.put("sendDate", email.getSendTime());
 				map_d.put("emailType", email.getEmailType());
 				map_d.put("sendUserName", email.getUserBySendUserId().getRealName());
