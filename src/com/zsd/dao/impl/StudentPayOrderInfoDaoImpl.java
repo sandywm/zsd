@@ -56,6 +56,7 @@ public class StudentPayOrderInfoDaoImpl implements StudentPayOrderInfoDao {
 		if(comSta > -1){
 			hql += " and spo.comStatus = " +comSta;
 		}
+		hql += " order by spo.id desc";
 		return sess.createQuery(hql).list();
 	}
 
@@ -67,6 +68,7 @@ public class StudentPayOrderInfoDaoImpl implements StudentPayOrderInfoDao {
 			offset = 0;
 		}
 		String hql=" from StudentPayOrderInfo as spo where spo.ntsId="+ntsId+" and spo.comStatus=1";
+		hql += " order by spo.id desc";
 		return sess.createQuery(hql).setFirstResult(offset).setMaxResults(pageSize).list();
 	}
 
@@ -93,6 +95,7 @@ public class StudentPayOrderInfoDaoImpl implements StudentPayOrderInfoDao {
 		if(comSta >= 0){
 			hql += " and spo.comStatus = "+ comSta;
 		}
+		hql += " order by spo.id desc";
 		return sess.createQuery(hql).setFirstResult(offset).setMaxResults(pageSize).list();
 	}
 
@@ -121,6 +124,7 @@ public class StudentPayOrderInfoDaoImpl implements StudentPayOrderInfoDao {
 		}else{
 			hql += " and spo.ntsId = 0";
 		}
+		hql += " order by spo.id desc";
 		return sess.createQuery(hql).list();
 	}
 

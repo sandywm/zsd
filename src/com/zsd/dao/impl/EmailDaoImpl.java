@@ -64,6 +64,7 @@ public class EmailDaoImpl implements EmailDao{
 		if(!emailType.equals("")){
 			hql += " and e.emailType = '"+emailType+"'";
 		}
+		hql += " order by e.id desc";
 		int offset = (pageNo - 1) * pageSize;
 		if (offset < 0) {
 			offset = 0;

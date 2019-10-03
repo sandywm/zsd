@@ -91,10 +91,10 @@ public class OrderAction extends DispatchAction {
 				if(sp != null){//获取自己孩子的id
 					userId = sp.getStu().getId();
 				}
-				if(sDate.equals("") || eDate.equals("")){
-					eDate = CurrentTime.getStringDate();
-					sDate = CurrentTime.getFinalDate(-2);
-				}
+			}
+			if(sDate.equals("") || eDate.equals("")){
+				eDate = CurrentTime.getStringDate();
+				sDate = CurrentTime.getFinalDate(-2);
 			}
 			List<Object> list_d = new ArrayList<Object>();
 			Integer pageSize = PageConst.getPageSize(String.valueOf(request.getParameter("limit")), 10);//等同于pageSize
