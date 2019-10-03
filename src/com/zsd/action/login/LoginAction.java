@@ -342,7 +342,20 @@ public class LoginAction extends DispatchAction {
 						    	if(!schList.isEmpty()){
 						    		stuSchType=schList.get(0).getSchoolType();
 						    		if(ntSchType.equals(stuSchType)){
-							    		msg = "success";
+						    			userId=uManager.addUser(userAccount, realName, password, mobile, lastLoginDate, lastLoginIp, 
+												signDate, schoolId, endDate, yearSystem, prov, city);
+										if(userId>0){//学生账户
+											xsId = uManager.addUser(xsAccount, xsName, xsPassword, "", lastLoginDate, lastLoginIp, 
+													signDate, schoolId, endDate, yearSystem, prov, city);
+											if(xsId > 0){
+												ntsManager.addNTS(xsId, ntId, currDate, -1, CurrentTime.getFinalDate(7), 0, "", "", 0);
+												msg = "success";
+											}else{
+												msg = "fail";
+											}
+										}else{
+											msg = "fail";
+										}
 							    	}else{
 							    		msg = "paraDiff";//学段不一致
 							    	}
@@ -354,23 +367,9 @@ public class LoginAction extends DispatchAction {
 							msg = "noInfo";
 						}
 					}else{
-						msg = "success";
-					}
-					if(msg.equals("success")){
-						userId=uManager.addUser(userAccount, realName, password, mobile, lastLoginDate, lastLoginIp, 
+						uManager.addUser(userAccount, realName, password, mobile, lastLoginDate, lastLoginIp, 
 								signDate, schoolId, endDate, yearSystem, prov, city);
-						if(userId>0){//学生账户
-							xsId = uManager.addUser(xsAccount, xsName, xsPassword, "", lastLoginDate, lastLoginIp, 
-									signDate, schoolId, endDate, yearSystem, prov, city);
-							if(xsId > 0){
-								ntsManager.addNTS(xsId, ntId, currDate, -1, CurrentTime.getFinalDate(7), 0, "", "", 0);
-								msg = "success";
-							}else{
-								msg = "fail";
-							}
-						}else{
-							msg = "fail";
-						}
+						msg = "success";
 					}
 				}
 			}
@@ -391,6 +390,11 @@ public class LoginAction extends DispatchAction {
 					    	if(!schList.isEmpty()){
 					    		stuSchType=schList.get(0).getSchoolType();
 					    		if(ntSchType.equals(stuSchType)){
+					    			userId=uManager.addUser(userAccount, realName, password, mobile, lastLoginDate, lastLoginIp, 
+											signDate, schoolId, endDate, yearSystem, prov, city);
+									if(userId > 0){
+										ntsManager.addNTS(userId, ntId, currDate, -1, CurrentTime.getFinalDate(7), 0, "", "", 0);
+									}
 						    		msg = "success";
 						    	}else{
 						    		msg = "paraDiff";//学段不一致
@@ -403,15 +407,9 @@ public class LoginAction extends DispatchAction {
 						msg = "noInfo";
 					}
 				}else{
-					msg = "success";
-				}
-				if(msg.equals("success")){
-					userId=uManager.addUser(userAccount, realName, password, mobile, lastLoginDate, lastLoginIp, 
+					uManager.addUser(userAccount, realName, password, mobile, lastLoginDate, lastLoginIp, 
 							signDate, schoolId, endDate, yearSystem, prov, city);
-					if(userId > 0){
-						ntsManager.addNTS(userId, ntId, currDate, -1, CurrentTime.getFinalDate(7), 0, "", "", 0);
-						msg = "success";
-					}
+					msg = "success";
 				}
 			}
 		}else{
