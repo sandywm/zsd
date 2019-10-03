@@ -336,10 +336,11 @@ public class OrderAction extends DispatchAction {
 											if(nts == null){//不存在绑定关系--增加
 												ntsId = ntsm.addNTS(userId, ntId, currDate, 1, currDate, 0, "", "", 0);
 											}else{//存在到期，取消--修改
-												boolean flag = ntsm.updateInfoById(nts.getId(), currDate, 1, currDate, 0);
-												if(flag){
-													ntsId = nts.getId();
-												}
+												ntsId = nts.getId();
+//												boolean flag = ntsm.updateInfoById(nts.getId(), currDate, 1, currDate, 0);
+//												if(flag){
+//													
+//												}
 											}
 										}else{
 											msg = "bindExist";//该科目前存存在正在绑定的导师

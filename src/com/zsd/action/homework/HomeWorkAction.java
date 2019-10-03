@@ -3169,9 +3169,11 @@ public class HomeWorkAction extends DispatchAction {
 										if(myAnswer.equals(realAnswer)){
 											result = 1;
 											succNum = 1;
+											myAnswer = "A";
 										}else{
 											result = 0;
 											errorNum = 1;
+											myAnswer = "B";
 										}
 									}else{
 										//获取真实答案对应的A-F的选项
