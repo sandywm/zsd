@@ -3989,9 +3989,12 @@ public class HomeWorkAction extends DispatchAction {
 								success = 6;
 							}else{//通过溯源完成的
 								option = 2;
-								nextLoreIdArray = String.valueOf(tjId);
+								nextLoreIdArray = String.valueOf(0);
 								successStep = "本知识点的诊断题";
 								success = 6;//全部完成
+								String[] studyPathArr = ltmj.getStudyPath(path,pathChi);
+								studyPath = studyPathArr[0];
+								studyPathChi = studyPathArr[1];
 							}
 						}
 					}
