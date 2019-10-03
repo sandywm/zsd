@@ -73,23 +73,23 @@ public class UserDaoImpl implements UserDao {
 		if(!accName.equals("")){
 			hql+=" and u.realName like '%"+realName+"%'";
 		}
-		hql+=" exists(from RoleUserInfo as ru where u.id=ru.user.id";
+		hql+=" and exists(from RoleUserInfo as ru where u.id=ru.user.id";
 		if(schoolId!=0){
 			hql +=" and ru.schoolId="+schoolId;
 		}
 		if(roleId!=0){
 			hql += " and ru.roleInfo.id ="+roleId;
 		}
-		if(prov!=""){
+		if(!prov.equals("")){
 			hql +=" and ru.prov='"+prov+"'";
 		}
-		if(city != ""){
+		if(!city.equals("")){
 			hql +=" and ru.city='"+city+"'";
 		}
-		if(county!=""){
+		if(!county.equals("")){
 			hql += " and ru.county='"+county+"'";
 		}
-		if(town!=""){
+		if(!town.equals("")){
 			hql += " and ru.town='"+town+"'";
 		}
 		if(schoolType!=0){
@@ -101,7 +101,6 @@ public class UserDaoImpl implements UserDao {
 		if(classId!=0){
 			hql +=" and classId='"+classId+"'";
 		}
-		hql+=")";
 		return sess.createQuery(hql).setFirstResult(offset).setMaxResults(pageSize).list();
 	}
 
@@ -117,23 +116,23 @@ public class UserDaoImpl implements UserDao {
 		if(!accName.equals("")){
 			hql+=" and u.realName like '%"+realName+"%'";
 		}
-		hql+=" exists(from RoleUserInfo as ru where u.id=ru.user.id";
+		hql+=" and exists(from RoleUserInfo as ru where u.id=ru.user.id";
 		if(schoolId!=0){
 			hql +=" and ru.schoolId="+schoolId;
 		}
 		if(roleId!=0){
 			hql += " and ru.roleInfo.id ="+roleId;
 		}
-		if(prov!=""){
+		if(!prov.equals("")){
 			hql +=" and ru.prov='"+prov+"'";
 		}
-		if(city != ""){
+		if(!city.equals("")){
 			hql +=" and ru.city='"+city+"'";
 		}
-		if(county!=""){
+		if(!county.equals("")){
 			hql += " and ru.county='"+county+"'";
 		}
-		if(town!=""){
+		if(!town.equals("")){
 			hql += " and ru.town='"+town+"'";
 		}
 		if(schoolType!=0){
