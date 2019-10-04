@@ -158,14 +158,7 @@ public class UserAction extends DispatchAction {
 					sex="女";
 				}
 				map_u.put("sex", sex);
-				Integer accSta = user.getAccountStatus();
-				String accStr = "";
-				if(accSta.equals(0)){
-					accStr="无效";
-				}else if(accSta.equals(1)){
-					accStr="有效";
-				}
-				map_u.put("accStatus",accStr);
+				map_u.put("accStatus", user.getAccountStatus());
 				map_u.put("QQ", user.getQq());
 				map_u.put("birthday", user.getBirthday());
 				map_u.put("endDate",user.getEndDate());
@@ -173,6 +166,7 @@ public class UserAction extends DispatchAction {
 				map_u.put("city",ruInfo.getCity());
 				map_u.put("county", ruInfo.getCounty());
 				map_u.put("town", ruInfo.getTown());
+				map_u.put("freeStatus", user.getFreeStatus());
 				Integer schType = ruInfo.getSchoolType();
 				String schTypeStr = "";
 				if(schType.equals(1)){
@@ -208,6 +202,42 @@ public class UserAction extends DispatchAction {
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
+	
+	/**
+	 * 获取用户明细
+	 * @author wm
+	 * @date 2019-10-4 下午02:21:58
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getUserDetail(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		UserManager um = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
+		Integer userId = CommonTools.getFinalInteger("userId", request);
+		String msg = "error";
+		Map<String,Object> map = new HashMap<String,Object>();
+		if(userId > 0){
+			List<User> uList = um.listEntityById(userId);
+			if(uList.size() > 0){
+				User user = uList.get(0);
+				msg = "success";
+				map.put("userId", userId);
+				map.put("accStatus", user.getAccountStatus());
+				map.put("endDate",user.getEndDate());
+				map.put("freeStatus", user.getFreeStatus());
+			}else{
+				msg = "noInfo";
+			}
+		}
+		map.put("msg", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
 	/**
 	 * 修改用户的截止时间或者账号状态
 	 * @author zong

@@ -111,7 +111,7 @@ public class NetTeacherAction extends DispatchAction {
 						}else if(checkStatus_all.equals(1)){//审核未通过(未上传)
 							if(!iCardBackInfo.equals("") && !iCardFrontInfo.equals("")){//已经上传
 								iCardStatus = "已上传";
-								if(ntc.getCheckReasonICard().equals("")){//不通过时才存在
+								if(ntc.getCheckReasonICard().equals("pass")){//不通过时才存在
 									iCardStatus += "审核通过";
 								}else{
 									iCardStatus += "审核未通过";
@@ -123,7 +123,7 @@ public class NetTeacherAction extends DispatchAction {
 								zgzStatus =  "未上传";
 							}else{
 								zgzStatus =  "已上传";
-								if(ntc.getCheckReasonZgz().equals("")){
+								if(ntc.getCheckReasonZgz().equals("pass")){
 									zgzStatus += "审核通过";
 								}else{
 									zgzStatus += "审核未通过";
@@ -133,7 +133,7 @@ public class NetTeacherAction extends DispatchAction {
 								xlzStatus =  "未上传";
 							}else{
 								xlzStatus =  "已上传";
-								if(ntc.getCheckReasonXlz().equals("")){
+								if(ntc.getCheckReasonXlz().equals("pass")){
 									xlzStatus += "审核通过";
 								}else{
 									xlzStatus += "审核未通过";

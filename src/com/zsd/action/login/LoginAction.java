@@ -227,6 +227,16 @@ public class LoginAction extends DispatchAction {
 							List<NetTeacherInfo> ntList = ntm.listntInfoByuserId(uid);
 							if(ntList.size() > 0){
 								map.put("subName",ntList.get(0).getSubject().getSubName());
+								Integer schoolType_nt = ntList.get(0).getSchoolType();
+								String schoolTypeChi = "";
+								if(schoolType_nt.equals(1)){
+									schoolTypeChi = "小学";
+								}else if(schoolType_nt.equals(2)){
+									schoolTypeChi = "初中";
+								}else if(schoolType_nt.equals(3)){
+									schoolTypeChi = "高中";
+								}
+								map.put("subName",schoolTypeChi+ntList.get(0).getSubject().getSubName());
 							}else{
 								map.put("subName","暂无");
 							}
@@ -659,7 +669,16 @@ public class LoginAction extends DispatchAction {
 						List<InviteCodeInfo> icList =icManager.listIcInfoByOption(uid, "导师邀请码");
 						List<NetTeacherInfo> ntList = ntm.listntInfoByuserId(uid);
 						if(ntList.size() > 0){
-							map.put("subName",ntList.get(0).getSubject().getSubName());
+							Integer schoolType_nt = ntList.get(0).getSchoolType();
+							String schoolTypeChi = "";
+							if(schoolType_nt.equals(1)){
+								schoolTypeChi = "小学";
+							}else if(schoolType_nt.equals(2)){
+								schoolTypeChi = "初中";
+							}else if(schoolType_nt.equals(3)){
+								schoolTypeChi = "高中";
+							}
+							map.put("subName",schoolTypeChi+ntList.get(0).getSubject().getSubName());
 						}else{
 							map.put("subName","暂无");
 						}
