@@ -2593,20 +2593,23 @@ public class HomeWorkAction extends DispatchAction {
 						map_d.put("answerF", lq.getF());
 						map_d.put("lqType", lq.getQueType());
 						String realAnswer = lq.getQueAnswer();
-						String[] answerOptArr = {lq.getA() , lq.getB() , lq.getC() , lq.getD() , lq.getE() , lq.getF()};
-						String dataBaseAnswerChar = "";//转化成A-F的答案
-						String[] dataBaseAnswerArray = realAnswer.split(",");//数据库真实答案数组
-						for(int i = 0 ; i < dataBaseAnswerArray.length ; i++){
-							for(int j = 0 ; j < answerOptArr.length ; j++)
-							if(dataBaseAnswerArray[i].equals(answerOptArr[j])){
-								dataBaseAnswerChar += Convert.NumberConvertBigChar(j)+",";
-								break;
+						String queType = lq.getQueType();
+						if(queType.equals("单选题") || queType.equals("多选题") || queType.equals("填空选择题")){
+							String[] answerOptArr = {lq.getA() , lq.getB() , lq.getC() , lq.getD() , lq.getE() , lq.getF()};
+							String dataBaseAnswerChar = "";//转化成A-F的答案
+							String[] dataBaseAnswerArray = realAnswer.split(",");//数据库真实答案数组
+							for(int i = 0 ; i < dataBaseAnswerArray.length ; i++){
+								for(int j = 0 ; j < answerOptArr.length ; j++)
+								if(dataBaseAnswerArray[i].equals(answerOptArr[j])){
+									dataBaseAnswerChar += Convert.NumberConvertBigChar(j)+",";
+									break;
+								}
 							}
+							if(!dataBaseAnswerChar.equals("")){
+								dataBaseAnswerChar = dataBaseAnswerChar.substring(0, dataBaseAnswerChar.length() - 1);
+							}
+							realAnswer = dataBaseAnswerChar;
 						}
-						if(!dataBaseAnswerChar.equals("")){
-							dataBaseAnswerChar = dataBaseAnswerChar.substring(0, dataBaseAnswerChar.length() - 1);
-						}
-						realAnswer = dataBaseAnswerChar;
 						if(result >= 0){//做完题后才出正确答案
 							map_d.put("realAnswer", realAnswer);
 						}
@@ -2963,6 +2966,7 @@ public class HomeWorkAction extends DispatchAction {
 						map_d.put("queSub", hq.getSubject());
 						String lqType = hq.getQueType();
 						map_d.put("lqType", lqType);
+						map_d.put("optNum", hq.getOptNum());
 						if(result >= 0){//做完题
 							map_d.put("myAnswer", myAnswer);
 							map_d.put("realAnswer", hq.getAnswer());
@@ -2995,20 +2999,22 @@ public class HomeWorkAction extends DispatchAction {
 						map_d.put("answerD", answerD);
 						map_d.put("answerE", answerE);
 						map_d.put("answerF", answerF);
-						String[] answerOptArr = {answerA , answerB , answerC , answerD , answerE , answerF};
-						String dataBaseAnswerChar = "";//转化成A-F的答案
-						String[] dataBaseAnswerArray = realAnswer.split(",");//数据库真实答案数组
-						for(int i = 0 ; i < dataBaseAnswerArray.length ; i++){
-							for(int j = 0 ; j < answerOptArr.length ; j++)
-							if(dataBaseAnswerArray[i].equals(answerOptArr[j])){
-								dataBaseAnswerChar += Convert.NumberConvertBigChar(j)+",";
-								break;
+						if(lqType.equals("单选题") || lqType.equals("多选题") || lqType.equals("填空选择题")){
+							String[] answerOptArr = {answerA , answerB , answerC , answerD , answerE , answerF};
+							String dataBaseAnswerChar = "";//转化成A-F的答案
+							String[] dataBaseAnswerArray = realAnswer.split(",");//数据库真实答案数组
+							for(int i = 0 ; i < dataBaseAnswerArray.length ; i++){
+								for(int j = 0 ; j < answerOptArr.length ; j++)
+								if(dataBaseAnswerArray[i].equals(answerOptArr[j])){
+									dataBaseAnswerChar += Convert.NumberConvertBigChar(j)+",";
+									break;
+								}
 							}
+							if(!dataBaseAnswerChar.equals("")){
+								dataBaseAnswerChar = dataBaseAnswerChar.substring(0, dataBaseAnswerChar.length() - 1);
+							}
+							realAnswer = dataBaseAnswerChar;
 						}
-						if(!dataBaseAnswerChar.equals("")){
-							dataBaseAnswerChar = dataBaseAnswerChar.substring(0, dataBaseAnswerChar.length() - 1);
-						}
-						realAnswer = dataBaseAnswerChar;
 						if(result >= 0){//做完题后才出正确答案
 							map_d.put("myAnswer", myAnswer);
 							map_d.put("realAnswer", realAnswer);
@@ -3046,6 +3052,7 @@ public class HomeWorkAction extends DispatchAction {
 						map_d.put("queSub", tq.getQueSub());
 						String lqType = tq.getQueType();
 						map_d.put("lqType", lqType);
+						map_d.put("optNum", tq.getOptNum());
 						if(result >= 0){//做完题后才出正确答案
 							map_d.put("myAnswer", myAnswer);
 							map_d.put("realAnswer", tq.getQueAnswer());
@@ -3169,11 +3176,9 @@ public class HomeWorkAction extends DispatchAction {
 										if(myAnswer.equals(realAnswer)){
 											result = 1;
 											succNum = 1;
-											myAnswer = "A";
 										}else{
 											result = 0;
 											errorNum = 1;
-											myAnswer = "B";
 										}
 									}else{
 										//获取真实答案对应的A-F的选项
@@ -3233,13 +3238,14 @@ public class HomeWorkAction extends DispatchAction {
 									String realAnswer = tq.getQueAnswer();
 									String resolution = tq.getQueResolution();
 									String lqType = tq.getQueType();
+									String newMyAnswer = myAnswer;
 									Integer result = -1;
 									Integer succNum = 0;
 									Integer errorNum = 0;
 									if(lqType.equals("多选题")){//无序
 										String[] myAnserArray = myAnswer.split(",");
 										String[] realAnswerArray = realAnswer.split(",");
-										String newMyAnswer = CommonTools.arraySort(myAnserArray);//排序后我的答案
+										newMyAnswer = CommonTools.arraySort(myAnserArray);//排序后我的答案
 										String newRealAnswer = CommonTools.arraySort(realAnswerArray);//排序后后台正确答案
 										if(newMyAnswer.equals(newRealAnswer)){
 											result = 1;//正确
@@ -3257,7 +3263,7 @@ public class HomeWorkAction extends DispatchAction {
 											errorNum = 1;
 										}
 									}
-									hsdm.updateInfoById(hsdId, myAnswer, result);
+									hsdm.updateInfoById(hsdId, newMyAnswer, result);
 									tjm.updateInfoById(tj.getId(), 0, succNum, errorNum,0);
 									map.put("myAnswer", myAnswer);
 									map.put("realAnswer", realAnswer);
