@@ -1238,7 +1238,7 @@ public class HomeWorkAction extends DispatchAction {
 						list_d.add(map_d);
 					}
 					map.put("stuInfo", list_d);
-					avgScore = Convert.convertInputNumber_5(allScore * 100.0 / stuNum);
+					avgScore = Convert.convertInputNumber_5(allScore * 1.0 / stuNum);
 					map.put("avgScore", avgScore);
 					map.put("zsComNum", zsComNum);
 					map.put("bzComNum", bzComNum);
@@ -3985,7 +3985,7 @@ public class HomeWorkAction extends DispatchAction {
 							if(access == 9){//表示是第一级知识点诊断时一次性全部正确通过
 								option = 1;
 								success = 2;
-								nextLoreIdArray = String.valueOf(tjId);
+								nextLoreIdArray = String.valueOf(0);
 								success = 6;
 							}else{//通过溯源完成的
 								option = 2;

@@ -70,7 +70,7 @@ public class UserDaoImpl implements UserDao {
 		if(!accName.equals("")){
 			hql+=" and u.userAccount = '%"+accName+"%'";
 		}
-		if(!accName.equals("")){
+		if(!realName.equals("")){
 			hql+=" and u.realName like '%"+realName+"%'";
 		}
 		hql+=" and exists(select ru.id from RoleUserInfo as ru where u.id=ru.user.id";
@@ -114,7 +114,7 @@ public class UserDaoImpl implements UserDao {
 		if(!accName.equals("")){
 			hql+=" and u.userAccount = '%"+accName+"%'";
 		}
-		if(!accName.equals("")){
+		if(!realName.equals("")){
 			hql+=" and u.realName like '%"+realName+"%'";
 		}
 		hql+=" and exists(select ru.id from RoleUserInfo as ru where u.id=ru.user.id";

@@ -77,7 +77,7 @@ public class HwStudyTjManagerImpl implements HwStudyTjManager{
 						Integer comNum_db = hwTj.getAllNum();
 						//计算得分
 						if(comNum_db > 0){
-							hwTj.setHwScore(succNum_db / comNum_db);
+							hwTj.setHwScore(succNum_db * 100 / comNum_db);
 						}
 					}
 				}
