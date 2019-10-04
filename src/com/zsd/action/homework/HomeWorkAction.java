@@ -3123,13 +3123,14 @@ public class HomeWorkAction extends DispatchAction {
 									String realAnswer = hq.getAnswer();
 									String resolution = hq.getResolution();
 									String lqType = hq.getQueType();
+									String newMyAnswer = myAnswer;
 									Integer result = -1;
 									Integer succNum = 0;
 									Integer errorNum = 0;
 									if(lqType.equals("多选题")){//无序
 										String[] myAnserArray = myAnswer.split(",");
 										String[] realAnswerArray = realAnswer.split(",");
-										String newMyAnswer = CommonTools.arraySort(myAnserArray);//排序后我的答案
+										newMyAnswer = CommonTools.arraySort(myAnserArray);//排序后我的答案
 										String newRealAnswer = CommonTools.arraySort(realAnswerArray);//排序后后台正确答案
 										if(newMyAnswer.equals(newRealAnswer)){
 											result = 1;//正确
@@ -3147,7 +3148,7 @@ public class HomeWorkAction extends DispatchAction {
 											errorNum = 1;
 										}
 									}
-									hsdm.updateInfoById(hsdId, myAnswer, result);
+									hsdm.updateInfoById(hsdId, newMyAnswer, result);
 									tjm.updateInfoById(tj.getId(), 0, succNum, errorNum,0);
 									map.put("myAnswer", myAnswer);
 									map.put("realAnswer", realAnswer);

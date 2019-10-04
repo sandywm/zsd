@@ -1305,6 +1305,7 @@ public class BuffetStudyAction extends DispatchAction {
 		Integer currentLoreId = 0;
 		String loreName = "";
 		String msg = "error";
+		Integer originLoreId = 0;//第一级第一个知识点
 		Map<String,Object> map = new HashMap<String,Object>();
 		BuffetStudyDetailInfo bsd = bsdm.getEntityById(bsdId);
 		if(bsd != null){
@@ -1329,6 +1330,7 @@ public class BuffetStudyAction extends DispatchAction {
 				String[] pathArr = CommonTools.getBuffetLorePath(buffetId, buffetName, basicLoreId, "diagnosis");
 				String path =  pathArr[0];
 				map.put("path", path);
+				originLoreId = Integer.parseInt(path.split(":")[1].split("\\|")[0]);
 				List<LoreQuestion> lqList_old = new ArrayList<LoreQuestion>();
 				List<BuffetLoreStudyDetailInfo> sdList_used = new ArrayList<BuffetLoreStudyDetailInfo>();
 				BuffetLoreStudyLogInfo blsl = blslm.getEntityByBsdId(bsdId);
@@ -1689,6 +1691,7 @@ public class BuffetStudyAction extends DispatchAction {
 				map.put("bsdId", bsdId);
 				map.put("loreName", loreName);
 				map.put("subDetail", "针对该知识点而设定的题目共计"+list_d.size()+"题");
+				map.put("basicLoreId", originLoreId);
 			}
 		}
 		map.put("result", msg);
