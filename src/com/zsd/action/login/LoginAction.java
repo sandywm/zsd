@@ -291,6 +291,7 @@ public class LoginAction extends DispatchAction {
 		GradeSubjectManager gsManager = (GradeSubjectManager) AppFactory.instance(null).getApp(Constants.WEB_GRADE_SUBJECT_INFO);
 		NetTeacherStudioManager ntStudioManager = (NetTeacherStudioManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDIO);
 		ParentClubManager pcManager = (ParentClubManager) AppFactory.instance(null).getApp(Constants.WEB_PARENT_CLUB);
+		EmailManager em = (EmailManager) AppFactory.instance(null).getApp(Constants.WEB_EMAIL_INFO);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String userAccount =CommonTools.getFinalStr("userAccount",request);
 		String xsAccount = CommonTools.getFinalStr("xsAccount",request);
@@ -444,7 +445,7 @@ public class LoginAction extends DispatchAction {
 							//2学生 绑定角色
 							Integer ruId=ruManager.addRoleUserInfo(userId, roleId, "", "", "", "", 0, 0, 0, 0);
 							//5 生成家长账户
-							Integer upId = uManager.addUser(userAccount+"_jz", "", password_base, "", lastLoginDate, lastLoginIp, signDate, schoolId, CurrentTime.getFinalDateTime(30), yearSystem, prov, city);
+							Integer upId = uManager.addUser(userAccount+"_jz", "", password_base, "", lastLoginDate, lastLoginIp, signDate, schoolId, CurrentTime.getFinalDate(30), yearSystem, prov, city);
 							//6 家长绑定角色
 							List<RoleInfo> jzlist = rManager.listRoleInfo("家长");
 							if(jzlist.size() > 0){
@@ -686,6 +687,11 @@ public class LoginAction extends DispatchAction {
 							map.put("ntInviteCode", icList.get(0).getInviteCode());
 						}else{
 							map.put("ntInviteCode", "暂无");
+						}
+						//发送上传证件邮件
+						List<User> uLists_admin = uManager.listInfoByAccount("wmk");
+						if(uLists_admin.size() > 0){
+							em.addEmail(uLists_admin.get(0).getId(), "导师认证", "导师您好，为了更好的体验知识典的功能，请尽快在个人中心上传证件进行认证，谢谢!", "sys", uid);
 						}
 					}
 					msg = "success";

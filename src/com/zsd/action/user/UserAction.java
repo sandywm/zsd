@@ -252,7 +252,7 @@ public class UserAction extends DispatchAction {
 	public ActionForward updateUserBydateOraccSta(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		UserManager uManager = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
-		Integer userId=CommonTools.getLoginUserId(request);
+		Integer userId=CommonTools.getFinalInteger("userId", request);
 		String endDate=CommonTools.getFinalStr("endDate",request);
 		Integer accStatus=CommonTools.getFinalInteger("accStatus", request);
 		Integer freeSta=CommonTools.getFinalInteger("freeSta", request);
