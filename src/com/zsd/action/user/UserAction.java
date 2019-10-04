@@ -172,6 +172,7 @@ public class UserAction extends DispatchAction {
 				map_u.put("prov", ruInfo.getProv());
 				map_u.put("city",ruInfo.getCity());
 				map_u.put("county", ruInfo.getCounty());
+				map_u.put("town", ruInfo.getTown());
 				Integer schType = ruInfo.getSchoolType();
 				String schTypeStr = "";
 				if(schType.equals(1)){
