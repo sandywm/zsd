@@ -102,6 +102,7 @@ public class UserLoginFilter implements Filter{
 						&& !requesturi.endsWith("ttf")
 						&& !requesturi.endsWith("json")
 						&& !requesturi.endsWith("html")
+						&& !requesturi.endsWith("apk")
 						&& !requesturi.endsWith(httpServletRequest.getContextPath()+ "/")){
 	                String url = "window.top.location.href='login.do?action=loginOut'";
 					String authorizeScript = "由于您60分钟内没上线，系统已强制您下线，请重新登录！";
