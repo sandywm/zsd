@@ -707,7 +707,6 @@ public class CommonTools {
 	 */
 	public static String[] getLorePath(Integer loreId,String pathType) throws Exception{
 		LoreInfoManager lm = (LoreInfoManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
-		BuffetQueInfoManager bqm = (BuffetQueInfoManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_QUE_INFO);
 		String[] pathArr = new String[2];
 		String path = "";
 		LoreTreeMenuJson ltmj = new LoreTreeMenuJson();
@@ -720,30 +719,26 @@ public class CommonTools {
 		pathArr[0] = path;
 		pathArr[1] = pathChi;
 		if(pathType.equals("diagnosis")){//诊断
-			return pathArr;
-			//新版本--start
-//			String loreIdStr = "";
-//			String loreNameStr = "";
-//			path = path.replaceAll(":", ",").replaceAll("\\|", ",");
-//			//去掉第一个--自助餐编号
-//			Integer length = path.indexOf(",");
-//			Integer buffetId = Integer.parseInt(path.substring(0, length));
-//			path = path.substring(length+1);
-//			List<LoreInfo> loreList = lm.listInfoInLoreId(path,"desc");
-//			BuffetQueInfo bq = bqm.getEntityById(buffetId);
-//			if(bq != null && loreList.size() > 0){
-//				loreIdStr += bq.getId();
-//				loreNameStr += bq.getTitle();
-//				for(LoreInfo lore : loreList){
-//					loreIdStr += lore.getId() + ":";
-//					loreNameStr += lore.getLoreName() + ":";
-//				}
-//				loreIdStr = loreIdStr.substring(0, loreIdStr.length() - 1);
-//				loreNameStr = loreNameStr.substring(0, loreNameStr.length() - 1);
-//			}
-//			pathArr[0] = loreIdStr;
-//			pathArr[1] = loreNameStr;
 //			return pathArr;
+			//新版本--start
+			String loreIdStr = "";
+			String loreNameStr = "";
+			path = path.replaceAll(":", ",").replaceAll("\\|", ",");
+			//去掉第一个--自助餐编号
+			Integer length = path.indexOf(",");
+			path = path.substring(length+1);
+			List<LoreInfo> loreList = lm.listInfoInLoreId(path,"desc");
+			if(loreList.size() > 0){
+				for(LoreInfo lore : loreList){
+					loreIdStr += lore.getId() + ":";
+					loreNameStr += lore.getLoreName() + ":";
+				}
+				loreIdStr = loreIdStr.substring(0, loreIdStr.length() - 1);
+				loreNameStr = loreNameStr.substring(0, loreNameStr.length() - 1);
+			}
+			pathArr[0] = loreIdStr;
+			pathArr[1] = loreNameStr;
+			return pathArr;
 			//新版本--end
 		}else{//学习
 			return ltmj.getStudyPath(path,pathChi);

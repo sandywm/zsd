@@ -868,7 +868,7 @@ public class BuffetStudyAction extends DispatchAction {
 										
 										//获取studyPath_new的第二组的数据中的第一组数据
 //										nextLoreIdArray = studyPath.split(":")[1].split("\\|")[0];
-										nextLoreIdArray = studyPath.split(":")[0];
+										nextLoreIdArray = studyPath.split(":")[1];
 										currentLoreId = Integer.parseInt(nextLoreIdArray);
 										String currentLoreName = lm.getEntityById(currentLoreId).getLoreName();
 										loreTaskName = stepNumber+"级关联知识点("+currentLoreName+")学习";
@@ -1069,7 +1069,7 @@ public class BuffetStudyAction extends DispatchAction {
 									success = 3;
 									//获取studyPath_new的第二组的数据中的第一组数据
 //									nextLoreIdArray = studyPath.split(":")[1].split("\\|")[0];
-									nextLoreIdArray = studyPath.split(":")[0];
+									nextLoreIdArray = studyPath.split(":")[1];
 									if(nextLoreIdArray.equals(String.valueOf(basicLoreId))){
 										nextLoreStep = "本知识点";
 									}
@@ -1332,7 +1332,8 @@ public class BuffetStudyAction extends DispatchAction {
 				String[] pathArr = CommonTools.getBuffetLorePath(buffetId, buffetName, basicLoreId, "diagnosis");
 				String path =  pathArr[0];
 				map.put("path", path);
-				originLoreId = Integer.parseInt(path.split(":")[1].split("\\|")[0]);
+//				originLoreId = Integer.parseInt(path.split(":")[1].split("\\|")[0]);
+				originLoreId = Integer.parseInt(path.split(":")[1]);
 				List<LoreQuestion> lqList_old = new ArrayList<LoreQuestion>();
 				List<BuffetLoreStudyDetailInfo> sdList_used = new ArrayList<BuffetLoreStudyDetailInfo>();
 				BuffetLoreStudyLogInfo blsl = blslm.getEntityByBsdId(bsdId);
