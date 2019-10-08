@@ -101,7 +101,7 @@ public class OrderAction extends DispatchAction {
 			Integer pageNo = CommonTools.getFinalInteger("page", request);//等同于pageNo
 			//客户端信息
 			String clientInfo = CommonTools.getCilentInfo_new(request);
-			if(clientInfo.equals("pc")){
+			if(clientInfo.equals("pc") || clientInfo.indexOf("Web") > 0){
 				Integer count = om.getCountByOpt(userId, sDate, eDate, comStatus);
 				if(count > 0){
 					msg = "success";

@@ -67,7 +67,7 @@ public class UserLoginFilter implements Filter{
 		//攻击检测增加代码---end
 		//客户端信息
 		String clientInfo = CommonTools.getCilentInfo_new(httpServletRequest);
-		if(!clientInfo.equals("pc")){//手机端不检验
+		if(!clientInfo.equals("pc") || clientInfo.indexOf("Web") > 0){//手机端不检验
 			chain.doFilter(request, response);
 		}else{
 			String requesturi = requestUrl[0]; 

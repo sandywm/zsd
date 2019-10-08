@@ -111,7 +111,7 @@ public class ApplyClassAction extends DispatchAction {
 			toUserId = currUserId;
 		}
 		String cilentInfo = CommonTools.getCilentInfo_new(request);
-		if(cilentInfo.equals("pc")){
+		if(cilentInfo.equals("pc") || cilentInfo.indexOf("Web") > 0){
 			checkStatus = -1;//移动端为全部
 		}
 		List<ApplyClassInfo> acList = acm.listPageInfoByOpt(sendUserId, toUserId, checkStatus, sDate, eDate, pageNo, 10);

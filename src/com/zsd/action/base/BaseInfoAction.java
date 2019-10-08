@@ -480,5 +480,23 @@ public class BaseInfoAction extends DispatchAction {
 		return null;
 	}
 	
-	
+	/**
+	 * 获取当前设备信息
+	 * @author wm
+	 * @date 2019-10-8 上午09:48:05
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws IOException
+	 */
+	public ActionForward getCilentInfo(ActionMapping mapping,ActionForm form,
+			HttpServletRequest request,HttpServletResponse response) throws IOException{
+		String cilentInfo = CommonTools.getCilentInfo_new(request);
+		Map<String,String> map = new HashMap<String,String>();
+		map.put("result", cilentInfo);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
 }

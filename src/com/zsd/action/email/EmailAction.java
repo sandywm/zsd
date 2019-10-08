@@ -120,7 +120,7 @@ public class EmailAction extends DispatchAction {
 				list_d.add(map_d);
 			}
 			map.put("data", list_d);
-			if(cilentInfo.equals("pc")){
+			if(cilentInfo.equals("pc") || cilentInfo.indexOf("Web") > 0){
 				Integer count = em.getCountByOpt(currUserId, title, sDate, eDate, emailType);
 				map.put("count", count);
 				map.put("code", 0);

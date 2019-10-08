@@ -149,7 +149,7 @@ public class LoginAction extends DispatchAction {
 		String clientInfo = CommonTools.getCilentInfo_new(request);
 		boolean uFlag= false;
 		if(account!=""&& password!=""){
-			if(clientInfo.equals("pc")){//电脑端需要匹配验证码
+			if(clientInfo.equals("pc") || clientInfo.indexOf("Web") > 0){//电脑端需要匹配验证码
 				if(!vercode.equals(vercode2)){
 					msg = "vercodeFail";//验证码不匹配 
 					uFlag = false;
@@ -353,6 +353,7 @@ public class LoginAction extends DispatchAction {
 						    	if(!schList.isEmpty()){
 						    		stuSchType=schList.get(0).getSchoolType();
 						    		if(ntSchType.equals(stuSchType)){
+						    			//新增家长账户
 						    			userId=uManager.addUser(userAccount, realName, password, mobile, lastLoginDate, lastLoginIp, 
 												signDate, schoolId, endDate, yearSystem, prov, city);
 										if(userId>0){//学生账户
@@ -378,9 +379,15 @@ public class LoginAction extends DispatchAction {
 							msg = "noInfo";
 						}
 					}else{
-						uManager.addUser(userAccount, realName, password, mobile, lastLoginDate, lastLoginIp, 
-								signDate, schoolId, endDate, yearSystem, prov, city);
-						msg = "success";
+						//新增家长账户
+						userId= uManager.addUser(userAccount, realName, password, mobile, lastLoginDate, lastLoginIp, 
+									signDate, schoolId, endDate, yearSystem, prov, city);
+						if(userId>0){//学生账户
+							xsId = uManager.addUser(xsAccount, xsName, xsPassword, "", lastLoginDate, lastLoginIp, 
+									signDate, schoolId, endDate, yearSystem, prov, city);
+							msg = "success";
+						}
+						
 					}
 				}
 			}

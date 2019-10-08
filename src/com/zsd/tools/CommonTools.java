@@ -443,7 +443,12 @@ public class CommonTools {
 					if(clientInfo.indexOf("Html5") > 0){
 						cilentQuip = "commonApp";////手机app封装html页面
 					}else{
-						cilentQuip = "pc";//移动端浏览器效果同于PC
+						//cilentQuip = "pc";//移动端浏览器效果同于PC
+						if(clientInfo.indexOf("Android") >= 0){//安卓手机浏览器
+							cilentQuip = "andriodWeb";
+						}else if(clientInfo.indexOf("iPad") >= 0 || clientInfo.indexOf("iPhone") >= 0){//苹果手机浏览器
+							cilentQuip = "iphoneWeb";
+						}
 					}
 				}else{
 					if(clientInfo.indexOf("Android") >= 0){//移动端APP
