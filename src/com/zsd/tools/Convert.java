@@ -1,5 +1,10 @@
 package com.zsd.tools;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -7,6 +12,10 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 
 import net.sourceforge.pinyin4j.PinyinHelper;
 import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
@@ -454,15 +463,35 @@ public class Convert {
 	    }
 	 }
 	
-	public static void main(String[] args){
+	public static void main(String[] args) throws Exception, FileNotFoundException{
 		
-		String aa = "1233:11|12:12";
-		String[] array = aa.split(":");
-		String[] array_1 = array[1].split("\\|");
-		System.out.println(array_1[0]);
+//		String aa = "1233:11|12:12";
+//		String[] array = aa.split(":");
+//		String[] array_1 = array[1].split("\\|");
+//		System.out.println(array_1[0]);
+		long start = System.currentTimeMillis();
+		System.out.println("读取开始"+start);
+		String s = null;
+		InputStreamReader br = new InputStreamReader(new FileInputStream(new File("E:/appVersion.json")),"utf-8");//读取文件,同时指定编码
+		StringBuffer sb = new StringBuffer();
+        char[] ch = new char[128];  //一次读取128个字符
+        int len = 0;
+        while((len = br.read(ch,0, ch.length)) != -1){
+            sb.append(ch, 0, len);
+        }
+        s = sb.toString();
+        String newVersion = "";
+        JSONObject dataJson = JSON.parseObject(s); 
+        JSONArray features = dataJson.getJSONArray("versionList");// 找到features json数组
+        if(features.size() > 0){
+        	newVersion = features.getJSONObject(1).getString("version");
+        }
+		System.out.println(newVersion);
+		long end = System.currentTimeMillis();
+		System.out.println("耗时"+(end-start));
 		
 //		System.out.println(Convert.MoneyToCNFormat(157894.26));
-		Map<String,Object> map = new HashMap<String,Object>();
+//		Map<String,Object> map = new HashMap<String,Object>();
 //		List<Object> list_d1 = new ArrayList<Object>();
 //		for(int j = 1 ; j <= 2 ; j++){
 //			Map<String,Object> map_1 = new HashMap<String,Object>();

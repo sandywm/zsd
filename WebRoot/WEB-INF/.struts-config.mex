@@ -74,6 +74,12 @@
       <AbsolutePoint location="720,2250" />
     </AutomaticBendpoints>
   </StrutsTransition>
+  <StrutsTransition id="/common.do,downAppPage,/Module/educManager/jsp/educManager.jsp,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="1375,102" />
+      <AbsolutePoint location="1398,1676" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
   <StrutsTransition id="/user.do,managerPage,/index.jsp,1" routingType="0">
     <AutomaticBendpoints>
       <AbsolutePoint location="461,154" />
