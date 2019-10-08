@@ -867,7 +867,8 @@ public class BuffetStudyAction extends DispatchAction {
 										Integer stepNumber = CommonTools.getCurrentStep(path.split(":"), currentLoreId) - 1;
 										
 										//获取studyPath_new的第二组的数据中的第一组数据
-										nextLoreIdArray = studyPath.split(":")[1].split("\\|")[0];
+//										nextLoreIdArray = studyPath.split(":")[1].split("\\|")[0];
+										nextLoreIdArray = studyPath.split(":")[0];
 										currentLoreId = Integer.parseInt(nextLoreIdArray);
 										String currentLoreName = lm.getEntityById(currentLoreId).getLoreName();
 										loreTaskName = stepNumber+"级关联知识点("+currentLoreName+")学习";
@@ -1067,7 +1068,8 @@ public class BuffetStudyAction extends DispatchAction {
 									successStep = stepNumber+"级关联知识点的诊断题";
 									success = 3;
 									//获取studyPath_new的第二组的数据中的第一组数据
-									nextLoreIdArray = studyPath.split(":")[1].split("\\|")[0];
+//									nextLoreIdArray = studyPath.split(":")[1].split("\\|")[0];
+									nextLoreIdArray = studyPath.split(":")[0];
 									if(nextLoreIdArray.equals(String.valueOf(basicLoreId))){
 										nextLoreStep = "本知识点";
 									}

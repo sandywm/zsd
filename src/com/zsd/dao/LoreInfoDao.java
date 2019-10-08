@@ -150,4 +150,15 @@ public interface LoreInfoDao {
 	 * @return
 	 */
 	List<LoreInfo> findAllInfo(Session sess);
+	
+	/**
+	 * 根据知识点字符串获取知识点信息列表
+	 * @author wm
+	 * @date 2019-10-8 下午03:35:16
+	 * @param sess
+	 * @param loreIdStr 知识点字符串
+	 * @param orderStr desc/asc
+	 * @return
+	 */
+	List<LoreInfo> findInfoInLoreId(Session sess,String loreIdStr,String orderStr);
 }

@@ -366,4 +366,21 @@ public class LoreInfoManagerImpl implements LoreInfoManager{
 		}
 	}
 
+	@Override
+	public List<LoreInfo> listInfoInLoreId(String loreIdStr,String orderStr)
+			throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			lDao = (LoreInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_LORE_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return lDao.findInfoInLoreId(sess, loreIdStr,orderStr);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new WEBException("根据知识点字符串获取知识点信息列表时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
 }

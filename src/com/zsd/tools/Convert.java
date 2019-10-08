@@ -470,35 +470,44 @@ public class Convert {
 //		String[] array = aa.split(":");
 //		String[] array_1 = array[1].split("\\|");
 //		System.out.println(array_1[0]);
-		long start = System.currentTimeMillis();
-		System.out.println("读取开始"+start);
-		String s = null;
-		File file = new File("E:/appVersion.json");
-		if(file.exists()){
-			InputStreamReader br = new InputStreamReader(new FileInputStream(new File("E:/appVersion.json")),"utf-8");//读取文件,同时指定编码
-			StringBuffer sb = new StringBuffer();
-	        char[] ch = new char[128];  //一次读取128个字符
-	        int len = 0;
-	        while((len = br.read(ch,0, ch.length)) != -1){
-	            sb.append(ch, 0, len);
-	        }
-	        s = sb.toString();
-	        String newVersion = "";
-	        String remark = "";
-	        JSONObject dataJson = JSON.parseObject(s); 
-	        JSONArray features = dataJson.getJSONArray("versionList");// 找到features json数组
-	        for(Integer i = 0 ; i < features.size() ; i++){
-	        	remark = features.getJSONObject(i).getString("remark");
-	        	newVersion = features.getJSONObject(i).getString("version");
-	        }
-	        if(features.size() > 0){
-	        	newVersion = features.getJSONObject(1).getString("version");
-	        }
-			System.out.println(newVersion);
-			long end = System.currentTimeMillis();
-			System.out.println("耗时"+(end-start));
-		}
+//		long start = System.currentTimeMillis();
+//		System.out.println("读取开始"+start);
+//		String s = null;
+//		File file = new File("E:/appVersion.json");
+//		if(file.exists()){
+//			InputStreamReader br = new InputStreamReader(new FileInputStream(new File("E:/appVersion.json")),"utf-8");//读取文件,同时指定编码
+//			StringBuffer sb = new StringBuffer();
+//	        char[] ch = new char[128];  //一次读取128个字符
+//	        int len = 0;
+//	        while((len = br.read(ch,0, ch.length)) != -1){
+//	            sb.append(ch, 0, len);
+//	        }
+//	        s = sb.toString();
+//	        String newVersion = "";
+//	        String remark = "";
+//	        JSONObject dataJson = JSON.parseObject(s); 
+//	        JSONArray features = dataJson.getJSONArray("versionList");// 找到features json数组
+//	        for(Integer i = 0 ; i < features.size() ; i++){
+//	        	remark = features.getJSONObject(i).getString("remark");
+//	        	newVersion = features.getJSONObject(i).getString("version");
+//	        }
+//	        if(features.size() > 0){
+//	        	newVersion = features.getJSONObject(1).getString("version");
+//	        }
+//			System.out.println(newVersion);
+//			long end = System.currentTimeMillis();
+//			System.out.println("耗时"+(end-start));
+//		}
 		
+		String path = "6472:7444|7446:7433:7432|7431:7407|7406:7405|7397:7393|7390|7396|7394:7392:7389";
+		path = path.replaceAll(":", ",").replaceAll("\\|", ",");
+		StringBuffer studyPath = new StringBuffer();
+		for(int i = path.split(",").length - 1 ; i >= 0 ; i--){
+			studyPath.append(path.split(",")[i]).append(",");
+		}
+		studyPath = studyPath.delete(studyPath.length() - 1, studyPath.length());
+		System.out.println(studyPath);
+		System.out.println(studyPath.substring(studyPath.indexOf(",")+1));
 //		System.out.println(Convert.MoneyToCNFormat(157894.26));
 //		Map<String,Object> map = new HashMap<String,Object>();
 //		List<Object> list_d1 = new ArrayList<Object>();

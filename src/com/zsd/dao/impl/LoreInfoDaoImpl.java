@@ -132,4 +132,11 @@ public class LoreInfoDaoImpl implements LoreInfoDao{
 		return sess.createQuery(hql).list();
 	}
 
+	@Override
+	public List<LoreInfo> findInfoInLoreId(Session sess, String loreIdStr,String orderStr) {
+		// TODO Auto-generated method stub
+		String hql =  " from LoreInfo as lore where lore.id in("+loreIdStr+") order by lore.loreCode "+orderStr+"";
+		return sess.createQuery(hql).list();
+	}
+
 }

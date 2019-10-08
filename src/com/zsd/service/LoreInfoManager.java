@@ -162,4 +162,15 @@ public interface LoreInfoManager {
 	 * @throws WEBException
 	 */
 	void updateBatchLoreCode(List<LoreInfo> lList)throws WEBException;
+	
+	/**
+	 * 根据知识点字符串获取知识点信息列表
+	 * @author wm
+	 * @date 2019-10-8 下午03:38:15
+	 * @param loreIdStr 知识点编号字符串
+	 * @param orderStr desc/asc
+	 * @return
+	 * @throws WEBException
+	 */
+	List<LoreInfo> listInfoInLoreId(String loreIdStr,String orderStr)throws WEBException;
 }

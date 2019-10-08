@@ -7,11 +7,13 @@ import java.util.List;
 import java.util.Map;
 
 import com.zsd.factory.AppFactory;
+import com.zsd.module.BuffetQueInfo;
 import com.zsd.module.Chapter;
 import com.zsd.module.LoreInfo;
 import com.zsd.module.LoreRelateInfo;
 import com.zsd.module.RelationZdResult;
 import com.zsd.module.json.MyTreeNode;
+import com.zsd.service.BuffetQueInfoManager;
 import com.zsd.service.ChapterManager;
 import com.zsd.service.LoreInfoManager;
 import com.zsd.service.LoreRelateManager;
@@ -289,29 +291,73 @@ public class LoreTreeMenuJson {
 	 * @date 2019-5-30 上午10:40:02
 	 * @param path
 	 * @return
+	 * @throws Exception 
 	 */
-	public String[] getStudyPath(String path,String pathChi){
+	public String[] getStudyPath(String path,String pathChi) throws Exception{
 		StringBuffer studyPath = new StringBuffer();
 		StringBuffer studyChiPath = new StringBuffer();
+		LoreInfoManager lm = (LoreInfoManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
+		BuffetQueInfoManager bqm = (BuffetQueInfoManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_QUE_INFO);
 		String[] studyPathArr = new String[2];
+		Integer buffetId = 0;
+		String loreIdStr = "";
+		String loreNameStr = "";
 		if(!path.equals("")){
-			for(int i = path.split(":").length - 1 ; i >= 0 ; i--){
-				String[] reverseArray = path.split(":")[i].split("\\|");
-				String[] reverseChiArray = pathChi.split(":")[i].split("\\|");
-				for(int j = reverseArray.length - 1 ; j >= 0 ; j--){
-					studyPath.append(reverseArray[j]).append("|");
-					studyChiPath.append(reverseChiArray[j]).append("|");
+//			新版本--将诊断path全部降序升序
+			path = path.replaceAll(":", ",").replaceAll("\\|", ",");
+			for(int i = 0 ; i < path.split(",").length ; i++){
+				if(i > 0){
+					studyPath.append(path.split(",")[i]).append(",");
+				}else{//第一个是自助餐编号
+					buffetId = Integer.parseInt(path.split(",")[i]);
 				}
-				studyPath.replace(studyPath.length() - 1, studyPath.length(), ":");
-				studyChiPath.replace(studyChiPath.length() - 1, studyChiPath.length(), ":");
 			}
 			if(studyPath.length() > 0){
 				studyPath = studyPath.delete(studyPath.length() - 1, studyPath.length());
-				studyChiPath = studyChiPath.delete(studyChiPath.length() - 1, studyChiPath.length());
+				List<LoreInfo> loreList = lm.listInfoInLoreId(studyPath.toString(),"asc");
+				BuffetQueInfo bq = bqm.getEntityById(buffetId);
+				for(LoreInfo lore : loreList){
+					loreIdStr += lore.getId() + ":";
+					loreNameStr += lore.getLoreName() + ":";
+				}
+				if(bq != null){
+					loreIdStr += bq.getId();
+					loreNameStr += bq.getTitle();
+				}else{
+					loreIdStr = loreIdStr.substring(0, loreIdStr.length() - 1);
+					loreNameStr = loreNameStr.substring(0, loreNameStr.length() - 1);
+				}
+				studyPathArr[0] = loreIdStr;
+				studyPathArr[1] = loreNameStr;
 			}
+			//新版本--结束
+//			之前版本
+//			for(int i = path.split(":").length - 1 ; i >= 0 ; i--){
+//				String[] reverseArray = path.split(":")[i].split("\\|");
+//				String[] reverseChiArray = pathChi.split(":")[i].split("\\|");
+////				String loreIdStr = "";
+//				for(int j = reverseArray.length - 1 ; j >= 0 ; j--){
+////					loreIdStr += reverseArray[j] + ",";
+//					
+//					studyPath.append(reverseArray[j]).append("|");
+//					studyChiPath.append(reverseChiArray[j]).append("|");
+//				}
+////				List<LoreInfo> loreList = lm.listInfoInLoreId(loreIdStr.substring(0, loreIdStr.length() - 1));
+////				for(LoreInfo lore : loreList){
+////					studyPath.append(lore.getId()).append("|");
+////					studyChiPath.append(lore.getLoreName()).append("|");
+////				}
+//					
+//				studyPath.replace(studyPath.length() - 1, studyPath.length(), ":");
+//				studyChiPath.replace(studyChiPath.length() - 1, studyChiPath.length(), ":");
+//			}
+//			if(studyPath.length() > 0){
+//				studyPath = studyPath.delete(studyPath.length() - 1, studyPath.length());
+//				studyChiPath = studyChiPath.delete(studyChiPath.length() - 1, studyChiPath.length());
+//			}
 		}
-		studyPathArr[0] = studyPath.toString();
-		studyPathArr[1] = studyChiPath.toString();
+//		studyPathArr[0] = studyPath.toString();
+//		studyPathArr[1] = studyChiPath.toString();
 		return studyPathArr;
 	}
 	
