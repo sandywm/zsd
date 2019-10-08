@@ -3,6 +3,7 @@ package com.zsd.tools;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
@@ -463,7 +464,7 @@ public class Convert {
 	    }
 	 }
 	
-	public static void main(String[] args) throws Exception, FileNotFoundException{
+	public static void main(String[] args) throws IOException, FileNotFoundException{
 		
 //		String aa = "1233:11|12:12";
 //		String[] array = aa.split(":");
@@ -472,23 +473,31 @@ public class Convert {
 		long start = System.currentTimeMillis();
 		System.out.println("读取开始"+start);
 		String s = null;
-		InputStreamReader br = new InputStreamReader(new FileInputStream(new File("E:/appVersion.json")),"utf-8");//读取文件,同时指定编码
-		StringBuffer sb = new StringBuffer();
-        char[] ch = new char[128];  //一次读取128个字符
-        int len = 0;
-        while((len = br.read(ch,0, ch.length)) != -1){
-            sb.append(ch, 0, len);
-        }
-        s = sb.toString();
-        String newVersion = "";
-        JSONObject dataJson = JSON.parseObject(s); 
-        JSONArray features = dataJson.getJSONArray("versionList");// 找到features json数组
-        if(features.size() > 0){
-        	newVersion = features.getJSONObject(1).getString("version");
-        }
-		System.out.println(newVersion);
-		long end = System.currentTimeMillis();
-		System.out.println("耗时"+(end-start));
+		File file = new File("E:/appVersion.json");
+		if(file.exists()){
+			InputStreamReader br = new InputStreamReader(new FileInputStream(new File("E:/appVersion.json")),"utf-8");//读取文件,同时指定编码
+			StringBuffer sb = new StringBuffer();
+	        char[] ch = new char[128];  //一次读取128个字符
+	        int len = 0;
+	        while((len = br.read(ch,0, ch.length)) != -1){
+	            sb.append(ch, 0, len);
+	        }
+	        s = sb.toString();
+	        String newVersion = "";
+	        String remark = "";
+	        JSONObject dataJson = JSON.parseObject(s); 
+	        JSONArray features = dataJson.getJSONArray("versionList");// 找到features json数组
+	        for(Integer i = 0 ; i < features.size() ; i++){
+	        	remark = features.getJSONObject(i).getString("remark");
+	        	newVersion = features.getJSONObject(i).getString("version");
+	        }
+	        if(features.size() > 0){
+	        	newVersion = features.getJSONObject(1).getString("version");
+	        }
+			System.out.println(newVersion);
+			long end = System.currentTimeMillis();
+			System.out.println("耗时"+(end-start));
+		}
 		
 //		System.out.println(Convert.MoneyToCNFormat(157894.26));
 //		Map<String,Object> map = new HashMap<String,Object>();

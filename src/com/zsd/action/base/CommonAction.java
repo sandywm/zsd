@@ -6,8 +6,11 @@ package com.zsd.action.base;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -1221,21 +1224,6 @@ public class CommonAction extends DispatchAction {
 	}	
 	
 	/**
-	 * 进入下载app页面
-	 * @author wm
-	 * @date 2019-9-26 上午08:34:18
-	 * @param mapping
-	 * @param form
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws Exception
-	 */
-	public ActionForward  downApp(ActionMapping mapping, ActionForm form,
-			HttpServletRequest request, HttpServletResponse response) throws Exception {
-		return mapping.findForward("downAppPage");
-	}
-	/**
 	 * 发送邮件
 	 * @author zdf
 	 * 2019-9-26 上午11:34:43
@@ -1265,41 +1253,4 @@ public class CommonAction extends DispatchAction {
 		return null;
 	}
 	
-	/**
-	 * 获取版本号
-	 * @author wm
-	 * @date 2019-10-8 上午08:34:01
-	 * @param mapping
-	 * @param form
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws Exception
-	 */
-	public ActionForward getNewAppVersion(ActionMapping mapping,ActionForm form,
-			HttpServletRequest request,HttpServletResponse response) throws Exception{
-		String s = null;
-		InputStreamReader br = new InputStreamReader(new FileInputStream(new File("E:/appVersion.json")),"utf-8");//读取文件,同时指定编码
-		StringBuffer sb = new StringBuffer();
-        char[] ch = new char[128];  //一次读取128个字符
-        int len = 0;
-        while((len = br.read(ch,0, ch.length)) != -1){
-            sb.append(ch, 0, len);
-        }
-        s = sb.toString();
-        String newVersion = "";
-        JSONObject dataJson = JSON.parseObject(s); 
-        JSONArray features = dataJson.getJSONArray("versionList");// 找到features json数组
-        if(features.size() > 0){
-        	newVersion = features.getJSONObject(0).getString("version");
-        }
-        Map<String,String> map = new HashMap<String,String>();
-        map.put("version",newVersion);
-		String json = JSON.toJSONString(map);
-		PrintWriter pw = response.getWriter();
-		pw.write(json);
-		pw.flush();
-		pw.close();
-		return null;
-	}
 }

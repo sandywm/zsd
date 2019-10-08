@@ -6,6 +6,7 @@ package com.zsd.action.base;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Date;
@@ -405,4 +406,79 @@ public class BaseInfoAction extends DispatchAction {
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
+	
+	/**
+	 * 进入下载app页面
+	 * @author wm
+	 * @date 2019-9-26 上午08:34:18
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward  downApp(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		return mapping.findForward("downAppPage");
+	}
+	
+	/**
+	 * 获取版本号
+	 * @author wm
+	 * @date 2019-10-8 上午08:34:01
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws IOException 
+	 * @throws Exception
+	 */
+	public ActionForward getNewAppVersion(ActionMapping mapping,ActionForm form,
+			HttpServletRequest request,HttpServletResponse response) throws IOException{
+		String s = null;
+		Map<String,Object> map = new HashMap<String,Object>();
+        String msg = "error";
+		File file = new File("E:/appVersion.json");
+		if(file.exists()){
+			InputStreamReader br = new InputStreamReader(new FileInputStream(file),"utf-8");//读取文件,同时指定编码
+			String opt = CommonTools.getFinalStr("opt", request);//new或者不传时为获取最新版本，all时表示获取全部版本
+			if(opt.equals("")){
+				opt = "new";
+			}
+			StringBuffer sb = new StringBuffer();
+	        char[] ch = new char[128];  //一次读取128个字符
+	        int len = 0;
+	        while((len = br.read(ch,0, ch.length)) != -1){
+	            sb.append(ch, 0, len);
+	        }
+	        s = sb.toString();
+	        JSONObject dataJson = JSON.parseObject(s); 
+	        JSONArray features = dataJson.getJSONArray("versionList");// 找到features json数组
+	        Integer length = features.size();
+	        if(length > 0){
+	        	if(opt.equals("new")){
+	        		msg = "success";
+	        		map.put("version",features.getJSONObject(length - 1).getString("version"));
+	        	}else if(opt.equals("all")){
+	        		msg = "success";
+	        		List<Object> list_d = new ArrayList<Object>();
+	        		for(Integer i = 0 ; i < length ; i++){
+	        			 Map<String,Object> map_d = new HashMap<String,Object>();
+	        			 map_d.put("version", features.getJSONObject(i).getString("version"));
+	        			 map_d.put("date", features.getJSONObject(i).getString("date"));
+	        			 map_d.put("upLog", features.getJSONObject(i).getString("upLog"));
+	        			 list_d.add(map_d);
+	        		}
+	        		map.put("versionList", list_d);
+	        	}
+	        }
+		}
+        map.put("result", msg);
+        CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	
 }
