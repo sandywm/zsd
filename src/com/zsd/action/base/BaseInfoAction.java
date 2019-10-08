@@ -461,12 +461,16 @@ public class BaseInfoAction extends DispatchAction {
 	        	if(opt.equals("new")){
 	        		msg = "success";
 	        		map.put("version",features.getJSONObject(length - 1).getString("version"));
+	        		map.put("appSize",features.getJSONObject(length - 1).getString("appSize"));
+	        		map.put("date",features.getJSONObject(length - 1).getString("date"));
+	        		map.put("upLog", features.getJSONObject(length - 1).getString("upLog"));
 	        	}else if(opt.equals("all")){
 	        		msg = "success";
 	        		List<Object> list_d = new ArrayList<Object>();
 	        		for(Integer i = 0 ; i < length ; i++){
 	        			 Map<String,Object> map_d = new HashMap<String,Object>();
 	        			 map_d.put("version", features.getJSONObject(i).getString("version"));
+	        			 map_d.put("appSize", features.getJSONObject(i).getString("appSize"));
 	        			 map_d.put("date", features.getJSONObject(i).getString("date"));
 	        			 map_d.put("upLog", features.getJSONObject(i).getString("upLog"));
 	        			 list_d.add(map_d);
