@@ -57,11 +57,6 @@
 						</select> 
 					</div>
 				</div>
-				<!-- div class="itemDivs" style="margin-right:0px;">
-					<div class="layui-input-inline">
-						<button id="queryBtn" class="layui-btn"><i class="layui-icon layui-icon-search"></i></button>
-					</div>
-				</div -->
 			</div>
 			<!-- 搜索知识点 -->
 			<div class="searchZsd">
@@ -167,7 +162,7 @@
 		var result_answer_text = "",answerNum=0,answerType='',lexContent='',
 			smLoreTypeZHN='主题',//用于点拨指导类型的判断
 			multiAnsArr=[],queTipsArr=[],currNumLen=0;//复选框text
-		
+		var optFiled = {};
 		layui.config({
 			base: '/plugins/frame/js/'
 		}).use(['layer','table','form','baseDataMet','relate','uploadPro','loreManager','comLoreDOM','buffetLoreDOM','buffetLoreMet','lorePractice'], function() {
@@ -753,6 +748,7 @@
 					$('.addEditBack').on('click',function(){
 						$('.loreQuesList').hide();
 						$('.loreList').show();
+						$('.layui-table-fixed').removeClass('layui-hide');
 						relate.comBackFun();
 						$('#currLoc').html('');
 					});
@@ -831,6 +827,7 @@
 					if(listInfo.length > 0){
 						currNumLen = listInfo.length;
 						for(var i=0;i<listInfo.length;i++){
+							var maxTkNum = listInfo[i].queType == '填空选择题' ? listInfo[i].answerNum : listInfo[i].lqAnswer.split(',').length;
 							currNum = i;
 							loreTypeZHN = listInfo[i].lqType;
 							if(listInfo[i].lqType == '主题' || listInfo[i].lqType == '重点' || listInfo[i].lqType == '难点' || listInfo[i].lqType == '关键点' || listInfo[i].lqType == '易混点'){
@@ -938,11 +935,19 @@
 											answer5 = listInfo[i].anserE,
 											answer6 = listInfo[i].anserF;
 										
+										optFiled.answer1 = listInfo[i].anserA;
+										optFiled.answer2 = listInfo[i].anserB;
+										optFiled.answer3 = listInfo[i].anserC;
+										optFiled.answer4 = listInfo[i].anserD;
+										optFiled.answer5 = listInfo[i].anserE;
+										optFiled.answer6 = listInfo[i].anserF;
+										optFiled.queOptNum = listInfo[i].queOptNum;
+										optFiled.answerNum = maxTkNum;
+										
 										realAnswer = listInfo[i].lqAnswer;
 										if(listInfo[i].queType == '单选题'){
 											$('#maxChoiceNumSel').val(listInfo[i].queOptNum);
 											answerNum = listInfo[i].queOptNum; //将当前选择的最大选项赋给answerNum
-											
 											result_answer = listInfo[i].lqAnswer + ",";
 											$('#answerSelectDiv_' + loreType).show().html(ansType + selAnsTxt + selAnsImg + ansSingle);
 											$('#ans_singleInp').val(listInfo[i].lqAnswer);
@@ -950,15 +955,28 @@
 						        			blMet.inputBlur();
 											form.render();
 										}else if(listInfo[i].queType == '多选题'){
+											//打开切换多选题
+											$('.switchDxTkTypeBox').show();//切换题型显示
+											$('.switchDxTkTxt').html('切换至填空选择题');
+											$('.resetBtn_dxtk').html('还原至多选题');
+											blMet.switchDxAndTkxzFun('多选题');
+											blMet.resetTgDxAndTkFun('多选题');
+											
 											$('#maxChoiceNumSel').val(listInfo[i].queOptNum);
 											answerNum = listInfo[i].queOptNum; //将当前选择的最大选项赋给answerNum
-											
 											$('#answerSelectDiv_' + loreType).show().html(ansType + selAnsTxt + selAnsImg + ansMulti);
 											blMet.initShowInpByMaxOptNum(listInfo[i].queOptNum,'answerBox_multi');
 											blMet.inputBlur();
 											//multiAnsArr = listInfo[i].lqAnswer.split(',');
 											form.render();
 										}else if(listInfo[i].queType == '填空选择题'){
+											//打开切换多选题
+											$('.switchDxTkTypeBox').show();//切换题型显示
+											$('.switchDxTkTxt').html('切换至多选题');
+											$('.resetBtn_dxtk').html('还原至填空选择题');
+											blMet.switchDxAndTkxzFun('填空选择题');
+											blMet.resetTgDxAndTkFun('填空选择题');
+											
 											$('#maxChoiceNumSel').val(listInfo[i].queOptNum);
 											answerNum = listInfo[i].queOptNum; //将当前选择的最大选项赋给answerNum
 											$('.spaceBox').show();
@@ -1079,6 +1097,11 @@
 					}else if(lqType == '知识讲解'){
 						loreType = 'zsjj';
 					}			
+					//每次添加知识点将多选题和填空选择题之间的切换flag重置为false
+	        		isSwitchFlag_tk = false;
+	        		isSwitchFlag_dx = false;
+	        		swithToTkFlag = false;
+	        		swtichToDxFlag = false;
 					layer.load('1');
 					$.ajax({
 						type:'post',
@@ -1166,6 +1189,11 @@
 					realAnswer = '';//每次修改知识点下不同题库 清空全局变量 realAnswer
 	        		result_answer = '';
 	        		result_answer_text = '';
+	        		//每次添加知识点将多选题和填空选择题之间的切换flag重置为false
+	        		isSwitchFlag_tk = false;
+	        		isSwitchFlag_dx = false;
+	        		swithToTkFlag = false;
+	        		swtichToDxFlag = false;
 					page.bindEvent();
 					page.addLoreQuesInit();
 				}else if(obj.event == 'viewFun'){//浏览知识点

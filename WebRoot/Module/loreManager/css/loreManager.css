@@ -440,17 +440,24 @@ input[name='answer_multiTk']:hover{
 	cursor:pointer;
 	font-size:30px;
 }
-.switchTgGanTypeBox{
+.switchTgGanTypeBox,
+.switchDxTkTypeBox{
 	float:left;
 	margin-left:10px;
 }
-.switchTgGanTypeBox a{
+.switchTgGanTypeBox a,
+.switchDxTkTypeBox a{
 	color:#F47837;
 }
-.switchTgGanTypeBox a:hover{
+.switchDxTkTypeBox a em{
+	font-style:normal;
+}
+.switchTgGanTypeBox a:hover,
+.switchDxTkTypeBox a:hover{
 	font-weight:600;
 }
-.resetBtn{
+.resetBtn,
+.resetBtn_dxtk{
 	margin-left:10px;
 	display:none;
 }

@@ -137,7 +137,7 @@ layui.define(['form','buffetLoreMet'],function(exports){
 				    	_this.renderSwxlInfo(json.swxl);
 				    	_this.renderZlkfInfo(json.zlkf);
 				    	_this.renderNlpyInfo(json.nlpy);
-				    	_this.renderZgkslInfo(json.zkslt);
+				    	_this.renderZgkslInfo(json.zksl);
 				    	blMet.goTarget();
 			    	}else if(json.result == 'noInfo'){
 			    		if(currPage == 'buffetPage'){

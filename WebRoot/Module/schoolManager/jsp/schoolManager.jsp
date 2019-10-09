@@ -57,6 +57,14 @@
 								     	</select>
 		  							</div>
 		  						</div>
+		  						<div class="itemDivs" style="width:150px;">
+		  							<div class="layui-input-inline">
+		  								<input type="hidden" id="townInp"/>
+										<select class="town" name="town" lay-filter="town" disabled>
+									       	<option value="">请选择乡/镇</option>
+									    </select>
+		  							</div>
+		  						</div>
 		  						<div class="itemDivs">
 		  							<div class="layui-input-inline">
 		  								<button id="queryBtn" class="layui-btn"><i class="layui-icon layui-icon-search"></i></button>
@@ -104,18 +112,18 @@
 						_this.openEducLayer('添加学校');
 					});
 					//查询
-					var _this = this;
 					$('#queryBtn').on('click',function(){
 						_this.loadSchoolList();
 					});
 				},
 				loadSchoolList : function(){
-					var schNameInpVal = $.trim($('#schNameInp').val()),
+					var schNameInpVal = $.trim(escape($('#schNameInp').val())),
 						schTypeInpVal = $('#schTypeInp').val(),
 						provInpVal = $('#provInp').val(),
 						cityInpVal = $('#cityInp').val(),
-						countyInpVal = $('#countyInp').val();
-					var field = {prov:provInpVal,city:cityInpVal,county:countyInpVal,town:'',
+						countyInpVal = $('#countyInp').val(),
+						townInpVal = $('#townInp').val();
+					var field = {prov:provInpVal,city:cityInpVal,county:countyInpVal,town:townInpVal,
 									schoolType:schTypeInpVal,schoolName:schNameInpVal};
 					table.render({
 						elem: '#schoolTable',

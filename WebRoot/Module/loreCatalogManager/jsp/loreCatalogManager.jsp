@@ -136,7 +136,7 @@
 						_this.loadLoreCataLogList();
 					});
 					//批量生成知识点编码
-					$('#zsdCodeBtn').on('click',function(){
+					/*$('#zsdCodeBtn').on('click',function(){
 						cptId = $('#chapterInp').val();//获取章节Id
 						if(cptId != ''){
 							var codeRes = baseDataMet.createLoreCode(cptId);
@@ -164,7 +164,7 @@
 						}else{
 							layer.msg('请选择章节',{icon:5,anim:6,time:2000});
 						}
-					});
+					});*/
 				},
 				//加载章节基础知识点记录
 				loadLoreCataLogList : function(){

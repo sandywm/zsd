@@ -29,6 +29,9 @@ layui.define(['form'],function(exports){
     			tiganStr += '<p id="tiganTypeTxt"></p>';
     			tiganStr += '<div class="switchTgGanTypeBox" style="display:none;"><a href="javascript:void(0)" class="switchTiganBtn"><i class="iconfont layui-extend-qiehuan"></i>切换题型</a>';
     			tiganStr += '<a class="resetBtn" href="javascript:void(0)">还原</a></div>';
+    			//多选题 填空选择题之间的切换
+    			tiganStr += '<div class="switchDxTkTypeBox" style="display:none;"><a href="javascript:void(0)" class="switchTiganBtn_dxTk"><i class="iconfont layui-extend-qiehuan"></i><em class="switchDxTkTxt"></em></a>';
+    			tiganStr += '<a class="resetBtn_dxtk" href="javascript:void(0)"></a></div>';
     		}
     		tiganStr += '</div>';
     		if(currPage == 'lorePage'){

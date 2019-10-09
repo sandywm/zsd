@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+ 	<meta charset="utf-8"/>
+ 	<link href="/plugins/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+ 	<link href="/plugins/pace/pace-theme-flash.min.css" rel="stylesheet" type="text/css"/>
+	<script src="/plugins/pace/pace.min.js" type="text/javascript"></script>	
+  	<title>编辑用户信息</title>
+  	<style>
+  		.itemDiv{
+  			width:80%;
+  			margin-top:15px;
+  		}
+  	</style>
+</head>
+<body style="background:#fff;">
+	<div class="layui-form">
+		<div class="layui-clear">
+			<div class="itemDiv">
+				<label class="layui-form-label">会员有效期</label>
+				<div class="layui-input-block">
+					<input id="dateInp" type="text" class="layui-input" readonly placeholder="请设置会员有效期"/>
+				</div>
+			</div>
+			<div class="itemDiv">
+				<label class="layui-form-label">账号状态</label>
+				<input type="hidden" id="accStaHidInp" value="1"/>
+				<div class="layui-input-inline">
+					<input type="radio" name="accStaInp" class="accStaInp" value="1" lay-filter="accFilter" title="有效">
+      				<input type="radio" name="accStaInp" class="accStaInp" value="0" lay-filter="accFilter" title="无效">
+				</div>
+			</div>
+			
+			<div class="itemDiv">
+				<label class="layui-form-label">是否免费</label>
+				<input type="hidden" id="freeStaHidInp" value="0"/>
+				<div class="layui-input-inline">
+					<input type="radio" name="freeStaInp" class="freeStaInp" lay-filter="freeFilter" value="0" title="收费">
+      				<input type="radio" name="freeStaInp" class="freeStaInp" lay-filter="freeFilter" value="1" title="免费">
+				</div>
+			</div>
+		</div>
+		<div class="layui-clear" style="text-align:center;margin-top:20px;">
+			<button class="saveBtn layui-btn" style="width:100px;display:inline-block;">保存</button>
+		</div>
+	</div>
+	<script src="/plugins/layui/layui.js"></script>
+	<script type="text/javascript">
+		var schId = parent.schId;
+		layui.config({
+			base: '/plugins/frame/js/'
+		}).use(['layer','jquery','form','laydate'],function(){
+			var layer = layui.layer,$ = layui.jquery,form = layui.form,laydate=layui.laydate;
+			form.on('radio(accFilter)', function(data){
+				$('#accStaHidInp').val(data.value);
+			});
+			form.on('radio(freeFilter)', function(data){
+				$('#freeStaHidInp').val(data.value);
+			});
+			var page = {
+				init : function(){
+					this.loadStInfo();
+					this.bindEvent();
+					laydate.render({'elem':'#dateInp'});
+				},
+				bindEvent : function(){
+					var _this = this;
+					$('.saveBtn').on('click',function(){
+						var endDate = $('#dateInp').val(),
+							accStaHidInp = $('#accStaHidInp').val(),
+							freeStaHidInp = $('#freeStaHidInp').val();
+						if(endDate == ''){
+							layer.msg('请设置会员到期时间',{icon:5,anim:6,time:1500});
+							return;
+						}
+						layer.load('1');
+						var field = {userId:parent.globalUserId,endDate:endDate,accStatus:accStaHidInp,freeSta:freeStaHidInp};
+						console.log(field)
+						$.ajax({
+							type:'post',
+					        dataType:'json',
+					        data:field,
+					        url:'/user.do?action=updateUserBydateOraccSta',
+					        success:function (json){
+					        	layer.closeAll('loading');		        	
+					        	if(json['msg'] == 'success'){
+					        		var index= parent.layer.getFrameIndex(window.name);
+					        		layer.msg('设置成功',{icon:1,time:1000},function(){
+					        			parent.layer.close(index);
+					        			parent.isUpDateFlag = true;
+	   				        		});
+					        	}else if(json['msg'] == 'fail'){
+					        		layer.msg('设置失败',{icon:5,anim:6,time:1500});
+					        	}
+					        }
+						});
+					});
+				},
+				loadStInfo : function(){
+					var _this = this;
+					layer.load('1');
+					$.ajax({
+						type:'post',
+				        dataType:'json',
+				        data:{userId:parent.globalUserId},
+				        url:'/user.do?action=getUserDetail',
+				        success:function (json){
+				        	layer.closeAll('loading');		        	
+				        	if(json['msg'] == 'success'){
+				        		$('#dateInp').val(json.endDate);
+				        		$('#accStaHidInp').val(json.accStatus);
+				        		$('#freeStaHidInp').val(json.freeStatus);
+				        		$('.accStaInp').each(function(i){
+									if($('.accStaInp').eq(i).val() == json.accStatus){
+										$('.accStaInp').eq(i).attr('checked',true);
+									}
+								});	
+				        		$('.freeStaInp').each(function(i){
+									if($('.freeStaInp').eq(i).val() == json.freeStatus){
+										$('.freeStaInp').eq(i).attr('checked',true);
+									}
+								});	
+				        		form.render();
+				        	}else if(json['msg'] == 'noInfo'){
+				        		layer.msg('暂无此学生信息',{icon:5,anim:6,time:1500});
+				        	}else if(json['msg'] == 'error'){
+				        		layer.msg('服务器错误',{icon:5,anim:6,time:1500});
+				        	}
+				        }
+					});
+				}
+			};
+			page.init();
+		});
+	</script>
+</body> 
+</html>

@@ -645,7 +645,7 @@ layui.define(['form','table','relate'],function(exports){
 		}
 		if(currPage == 'loreCataPage'){
 			$('#addLoreCata').show();
-			$('#zsdCodeBtn').show();
+			//$('#zsdCodeBtn').show();
 			//加载章节对应知识点目录
 			obj.getLoreCataList(value);
 		}else if(currPage == 'lorePage' || currPage == 'buffetPage' || currPage == 'relatePage' || currPage == 'lexRelatePage' || currPage == 'sysHwPage' || currPage == 'teaHwPage'){

@@ -1,0 +1,178 @@
+body{
+	background: #fff;
+	padding-bottom: .25rem;
+}
+.downTopPart{
+	padding: .2667rem .2667rem;
+}
+.logo{
+	float: left;
+	width: 2.64rem;
+	height: 2.64rem;
+	border:1px solid #e6e6e6;
+	border-radius: 6px;
+}
+.logo img{
+	width: 100%;
+	height: 100%;
+	border-radius: 6px;
+}
+.topPartCon{
+	width: 6.5rem;
+	height: 2.68rem;
+	float: left;
+	margin-left: .25rem;
+	position: relative;
+}
+.topPartCon strong.appName{
+	font-size: .48rem;
+	font-weight: 620;
+	color: #333;
+	display: block;
+	line-height: .8rem;
+}
+.topPartCon p{
+	line-height: .6rem;
+	font-size: .4rem;
+	color: #333;
+}
+.topPartCon p span{
+	color: #666666;
+}
+.tagGroup{
+	height: .8rem;
+}
+.tagGroup span{
+	background: #d9d9d9;
+	height: .55rem;
+	line-height: .6rem;
+	font-size: .35rem;
+	color: #333;
+	border-radius: 4px;
+	display: block;
+	padding: 0 .2rem;
+	float: left;
+	margin-right: .25rem;
+	margin-top: .15rem;
+}
+.topPartCon .downBtn{
+	width: 1.7333rem;
+	height: 0.7rem;
+	line-height: .72rem;
+	background: #4d47f1;
+	color: #fff;
+	text-align: center;
+	position: absolute;
+	right: 0;
+	top: 0;
+	font-size: .35rem;
+	border-radius: 20px;
+}
+.introCon{
+	height: 9.7rem;
+	margin-top: .5rem;
+}
+.introCon ul{
+	width: 100%;
+	 display: -webkit-box;
+	overflow-x: scroll;
+	-webkit-overflow-scrolling:touch;
+}
+.introCon ul li{
+	width: 5.4666rem;
+	height: 9.7rem;
+	background: #4d47f1;
+	border-radius: 6px;
+	margin-left: .2667rem;
+	position: relative;
+}
+.topImg{
+	margin-top: .7rem;
+}
+.topImg.hwImg{
+	width: 74%;
+	display: block;
+	margin:.7rem auto 0;
+}
+.topImg.zzcImg{
+	width: 89%;
+	display: block;
+	margin:.7rem auto 0;
+}
+.titImg{
+	width: 60%;
+	margin: .3rem 0 0 .2667rem;
+}
+.titImg.zzcTitImg{
+	width: 42%;
+}
+.introTxt{
+	font-size: .35rem;
+	color: #fff;
+	padding: 0 .2667rem;
+	margin-top: .3rem;
+	line-height: .65rem;
+}
+.introTxtWrap{
+	padding: 0 .2667rem;
+	color: #333;
+	margin-top: .5rem;
+}
+.introTxtWrap strong{
+	height: .8rem;
+	line-height: .8rem;
+	font-size: .42rem;
+	color: #333;
+	font-weight: 620;
+	display: block;
+}
+.introTxtWrap p{
+	line-height: .65rem;
+	font-size: .35rem;
+}
+.layer{
+	width:100%;
+	height:100%;
+	display:none;
+	position:fixed;
+	left:0;
+	top:0;
+	z-index:980;
+	/*opacity:0;*/
+	background:rgba(0,0,0,.6);
+}
+.tipDiv{
+	width: 5.2rem;
+    height:4.6rem;
+    background: url(../../../images/tipBg.png) no-repeat;
+    background-size:cover;
+    position: absolute;
+    right: 20px;
+    top: 0px;
+    z-index: 1000;
+    text-align: center;
+    color: #333;
+    font-size: 0.16rem;
+    display: none;
+}
+.tipDiv p{
+	width: 90%;
+    position: absolute;
+    left: 5px;
+    bottom: 15px;
+    font-size:.38rem;
+    color:#666;
+}
+.tipDiv p span{
+	width:3rem;
+	height:.8rem;
+	line-height:.8rem;
+	text-align:center;
+	color:#fff;
+	background:#4d47f1;
+	display:inline-block;
+}
+.versionTxt,
+.appSizeTxt{
+	font-style:normal;
+}

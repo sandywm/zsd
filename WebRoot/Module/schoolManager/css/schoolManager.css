@@ -1,6 +1,7 @@
 .itemDivs{
 	float:left;
 	margin-right:15px;
+	position:relative;
 }
 .searchForm .itemDiv:first-child{
 	margin-left:0px;
@@ -20,7 +21,8 @@
 .sucColor{
 	color:#01AAED;
 }
-.warningCol{
+.warningCol,
+.canNotUseAcc{
 	color:#FF5722;
 }
 .showTxt{
@@ -29,4 +31,37 @@
 }
 .hideTxt{
 	color:#F47837;
+}
+.canUseAcc{
+	color:#1E9FFF;
+}
+.selSch{
+	height:36px;
+	line-height:36px;
+	border:1px solid #e6e6e6;
+	border-radius:2px;
+	padding-left:10px;
+	cursor:pointer;
+	color:#333;
+}
+.selSch.notSel{
+	color:#777;
+}
+.layui-icon-triangle-d{
+	position:absolute;
+	right:10px;
+	top:7px;
+	color:#c2c2c2;
+}
+#selSchoolWrap,
+#adminWrap{
+	display:none;
+}
+#selSchoolWrap.hasMargLeft{
+	margin-left:-16px;
+}
+.districtWrap{
+	display:none;
+	float:left;
+	margin-left:-16px;
 }

@@ -196,7 +196,6 @@
 								url = '/school.do?action=addSchool';
 								var field = {schoolName:escape(schNameInpVal),prov:escape(provInpVal),provCode:provCode,city:escape(cityInpVal),cityCode:cityCode,county:escape(countyInpVal),countyCode:countyCode,town:escape(townInpVal),townCode:townCode,yearSystem:yearSysInpVal,schoolType:schTypeInpVal};
 							}
-							console.log(field)
 							layer.load('1');
 							$.ajax({
 								type:'post',

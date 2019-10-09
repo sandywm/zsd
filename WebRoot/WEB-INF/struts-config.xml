@@ -15,11 +15,11 @@
     <action path="/user" parameter="action" scope="request" type="com.zsd.action.user.UserAction">
       <forward name="managerPage" path="/index.jsp"></forward><!-- 知识点/超级管理员登录后欢迎界面 -->
       <forward name="welcomePage" path="/Module/welcome/jsp/welcome.jsp"></forward><!-- 普通用户登录后欢迎界面 -->
-      <forward name="userPage" path="/Module/welcome/jsp/welcome.jsp"></forward><!-- 用户管理界面 -->
+      <forward name="userPage" path="/Module/userManager/jsp/userManager.jsp"></forward><!-- 用户管理界面 -->
     </action>
     <!-- 基础数据 -->
     <action path="/baseInfo" parameter="action" scope="request" type="com.zsd.action.base.BaseInfoAction">
-      <set-property property="cancellable" value="true" />
+   		<forward name="downAppPage" path="/Module/downApp/jsp/downApp.jsp"></forward><!-- 下载app页面 -->
     </action>
     <!-- 学校管理 -->
     <action path="/school" parameter="action" scope="request" type="com.zsd.action.school.SchoolAction">
@@ -31,7 +31,6 @@
       <forward name="subjectPage" path="/Module/subManager/jsp/subManager.jsp"></forward><!-- 学科管理首页 -->
       <forward name="gsPage" path="/Module/gradeSubManager/jsp/gradeSubManager.jsp"></forward><!-- 年级学科管理首页 -->
       <forward name="eduPage" path="/Module/educManager/jsp/educManager.jsp"></forward><!-- 教材管理首页 -->
-      <forward name="downAppPage" path="/Module/educManager/jsp/educManager.jsp"></forward><!-- 下载app页面 -->
     </action>
     <!-- 章节管理 -->
     <action path="/chapter" parameter="action" scope="request" type="com.zsd.action.chapter.ChapterAction">

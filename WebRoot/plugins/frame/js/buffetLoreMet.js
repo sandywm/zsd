@@ -3,6 +3,8 @@
  * @author: hlf
  */
 var answerSelectImg = null,imgLayerIndex = 0,editor_answer_select = null,lexOpts='';
+var isSwitchFlag_tk = false,isSwitchFlag_dx = false;
+var swtichToDxFlag = false,swithToTkFlag = false;
 //自定义模块
 layui.define(['form','buffetLoreDOM'],function(exports){
 	var $ = layui.jquery,form=layui.form,blDOM = layui.buffetLoreDOM;
@@ -549,6 +551,7 @@ layui.define(['form','buffetLoreDOM'],function(exports){
 				judgeStr = blDOM.judgeQueType(),
 				tkSelStr = blDOM.createTkSelDOM(),
 				tkTypeStr = blDOM.createTkTypeDOM(loreType);
+			var _this = this;
 			if(value != ''){
 				$('#tiganTypeInp').val(value);
 				$('#ansSelWrap_' + loreType).show();
@@ -577,6 +580,12 @@ layui.define(['form','buffetLoreDOM'],function(exports){
 						}else{
 							$('#answerSelectDiv_' + loreType).show().html(ansMulti);
 						}
+						if(isSwitchFlag_dx && isSwitchFlag_tk == false){//表示从多选题切换至填空选择题或还原至多选题
+							layui.lorePractice.initAnswerOption(layui.lorePractice.findAnserType(optFiled.answer1),optFiled.answer1,optFiled.answer2,optFiled.answer3,optFiled.answer4,optFiled.answer5,optFiled.answer6);
+							$('#maxChoiceNumSel').val(optFiled.queOptNum);
+							_this.initShowInpByMaxOptNum(optFiled.queOptNum, 'answerBox_multi');
+							form.render();
+						}
 					}
 				}else if(value == '填空题'){
 					$('.maxChoice').html('');
@@ -598,8 +607,19 @@ layui.define(['form','buffetLoreDOM'],function(exports){
 					}else{
 						$('#answerSelectDiv_' + loreType).show().html(tkSelStr);
 					}
-					this.addItemTk();
-					this.clearAllAnswer();
+					if(isSwitchFlag_tk && isSwitchFlag_dx == false){//表示从多选题切换至填空选择题 或从还原至填空选择题时
+						layui.lorePractice.initAnswerOption(layui.lorePractice.findAnserType(optFiled.answer1),optFiled.answer1,optFiled.answer2,optFiled.answer3,optFiled.answer4,optFiled.answer5,optFiled.answer6);
+						$('#maxChoiceNumSel').val(optFiled.queOptNum);
+						$('#spaceNumInp').val(optFiled.answerNum);//初始化填空数量value
+						//匹配填空数量
+						$('#spaceNumSel').val(optFiled.answerNum);
+						_this.initShowInpByMaxOptNum(optFiled.queOptNum, 'ansBox_multiTk');
+						form.render();
+					}
+					if(globalOpts == 'add'){//添加填空选择题时调用
+						this.addItemTk();
+						this.clearAllAnswer();
+					}
 				}else if(value == '问答题'){
 					$('.maxChoice').html('');
 					$('.spaceBox').html('');
@@ -741,6 +761,65 @@ layui.define(['form','buffetLoreDOM'],function(exports){
 						$('.loreNav li').eq(i).addClass('active');
 					}
 				}
+			});
+		},
+		//多选题和填空选择题之间的切换
+		switchDxAndTkxzFun : function(lqType){
+			var _this = this;
+			var otherTypeTxt = lqType == '多选题' ? '填空选择题' : '多选题';
+			$('.switchTiganBtn_dxTk').on('click',function(){
+				layer.confirm('确定要将' + lqType + '切换至' + otherTypeTxt + '?', {
+				  title:'切换至'+ otherTypeTxt +'题型提示',
+				  skin: 'layui-layer-molv',
+				  btn: ['确定','取消'] //按钮
+				},function(index){
+					$('#tiganTypeTxt').html(otherTypeTxt);
+					//var swtichToDxFlag = false,swithToTkFlag = false;
+					if(otherTypeTxt == '填空选择题'){
+						$('.spaceBox').show();
+						swithToTkFlag = true;
+						isSwitchFlag_tk = true;
+						isSwitchFlag_dx = false;
+					}else{
+						swtichToDxFlag = true;
+						isSwitchFlag_tk = false;
+						isSwitchFlag_dx = true;
+						$('.spaceBox').hide();
+					}
+					$('.resetBtn_dxtk').show();
+					$('.switchTiganBtn_dxTk').hide();
+					_this.swithTiGanType(otherTypeTxt);
+					layer.close(index);
+				});
+    		});
+		},
+		//还原至多选题或填空选择题
+		resetTgDxAndTkFun : function(lqType){
+			var _this = this;
+			var otherTypeTxt = lqType == '多选题' ? '填空选择题' : '多选题';
+			$('.resetBtn_dxtk').on('click',function(){
+				layer.confirm('确定要将' + otherTypeTxt + '还原至' + lqType + '?', {
+				  title:'还原至'+ lqType +'题型提示',
+				  skin: 'layui-layer-molv',
+				  btn: ['确定','取消'] //按钮
+				},function(index){
+					$('#tiganTypeTxt').html(lqType);
+					if(lqType == '填空选择题'){
+						$('.spaceBox ').show();
+						swithToTkFlag = false;
+						isSwitchFlag_tk = true;
+						isSwitchFlag_dx = false;
+					}else{
+						swtichToDxFlag = false;
+						isSwitchFlag_tk = false;
+						isSwitchFlag_dx = true;
+						$('.spaceBox ').hide();
+					}
+					$('.resetBtn_dxtk').hide();
+					$('.switchTiganBtn_dxTk').show();
+					_this.swithTiGanType(lqType);
+					layer.close(index);
+				});
 			});
 		},
 		//填空题 问答题 切换题型(单选 多选 判断 填空选择题)方法

@@ -1,0 +1,10 @@
+/** 清除内外边距 **/
+body,ul,ol,li,p,h1,h2,h3,h4,h5,h6,form,fieldset,table,td,img,dl,dt,dd,input,select,textarea,label,input{margin:0;padding:0;}
+
+/** 设置默认字体 **/
+body{font-family:Helvetica;-webkit-user-select: none !important;-webkit-text-size-adjust: 100% !important;--webkit-overflow-scrolling:touch !important;}
+
+/** 重置图片元素 **/
+img{border:none;vertical-align:top;display:block;max-width:100%;}
+.clearfix{zoom:1;}
+.clearfix:after{content:"";display:block;clear:both;}

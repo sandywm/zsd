@@ -217,13 +217,14 @@ layui.define(['form','buffetLoreMet'],function(exports){
     			for(var i = 0 ; i < realAnswerArray.length; i++){
     				for(var j = 0 ; j < options.length; j++){
     					if(questionType == "多选题"){
-    						if(realAnswerArray[i] == options[j].value && options[j].value != ''){
-    							result_answer += options[j].id + ',';
-    							//result_answer_text += options[j].value + ",";
-    							options[j].checked = true;
-    							break;
+    						if(!swtichToDxFlag){
+    							if(realAnswerArray[i] == options[j].value && options[j].value != ''){
+        							result_answer += options[j].id + ',';
+        							//result_answer_text += options[j].value + ",";
+        							options[j].checked = true;
+        							break;
+        						}
     						}
-    						
     					}else if(questionType == "填空选择题"){
     						if(realAnswerArray[i] == options[j].alt && options[j].alt != ""){
     							result_answer_text += options[j].alt + ",";
@@ -233,14 +234,26 @@ layui.define(['form','buffetLoreMet'],function(exports){
     					}
     				}
     			}
-    			
     			if(questionType == "多选题"){
-    				var newRealAns = result_answer.substring(0,result_answer.length - 1);
-    				//一进来先不去除最后的逗号
-        			$('#result_answer_new').html(newRealAns).removeClass('noSel').addClass('hasSel');
+    				if(swtichToDxFlag){//填空选择->多选
+    					$('#result_answer_new').html('暂未选择答案').removeClass('hasSel').addClass('noSel');
+    				}else{
+    					var newRealAns = result_answer.substring(0,result_answer.length - 1);
+    					//一进来先不去除最后的逗号
+            			$('#result_answer_new').html(newRealAns).removeClass('noSel').addClass('hasSel');
+    				}
+        			//$('#result_answer_new').html('暂未选择答案').removeClass('hasSel').addClass('noSel');
     			}else if(questionType == "填空选择题"){
-    				var newRealAns = result_answer.substring(0,result_answer.length - 1);
-    				$('#result_answer_new_tk').html(newRealAns).removeClass('noSel').addClass('hasSel');
+    				if(swithToTkFlag){//从多选->填空选择
+    					result_answer = '';
+    					result_answer_text = '';
+    					$('#result_answer_new_tk').html('暂未选择答案').removeClass('hasSel').addClass('noSel')
+    				}else{//正常编辑
+    					var newRealAns = result_answer.substring(0,result_answer.length - 1);
+    					$('#result_answer_new_tk').html(newRealAns).removeClass('noSel').addClass('hasSel');
+    				}
+    				//$('#result_answer_new_tk').html(newRealAns).removeClass('noSel').addClass('hasSel');
+    				//$('#result_answer_new_tk').html('暂未选择答案').removeClass('hasSel').addClass('noSel');
         			//重新选择几个空的时候是否有必要将当前的已选择的选项答案清空，假如起初是四个空的答案，当选择的是两个空的时候，是否要清空？
         			blMet.addItemTk();
         			blMet.clearAllAnswer();
