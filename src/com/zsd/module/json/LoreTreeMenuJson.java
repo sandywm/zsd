@@ -290,43 +290,50 @@ public class LoreTreeMenuJson {
 	 * @author wm
 	 * @date 2019-5-30 上午10:40:02
 	 * @param path
+	 * @param type(onlineStudy,buffet,hw)
 	 * @return
 	 * @throws Exception 
 	 */
-	public String[] getStudyPath(String path,String pathChi) throws Exception{
+	public String[] getStudyPath(String path,String pathChi,String type) throws Exception{
 		StringBuffer studyPath = new StringBuffer();
 		StringBuffer studyChiPath = new StringBuffer();
 		LoreInfoManager lm = (LoreInfoManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
-		BuffetQueInfoManager bqm = (BuffetQueInfoManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_QUE_INFO);
 		String[] studyPathArr = new String[2];
-		Integer buffetId = 0;
+		Integer firstId = 0;
+		String firstName = "";
 		String loreIdStr = "";
 		String loreNameStr = "";
 		if(!path.equals("")){
 //			新版本--将诊断path全部降序升序
 			path = path.replaceAll(":", ",").replaceAll("\\|", ",");
-			for(int i = 0 ; i < path.split(",").length ; i++){
-				if(i > 0){
+			pathChi = pathChi.replaceAll(":", ",").replaceAll("\\|", ",");
+			if(type.equals("onlineStudy")){
+				for(int i = 0 ; i < path.split(",").length ; i++){
 					studyPath.append(path.split(",")[i]).append(",");
-				}else{//第一个是自助餐编号
-					buffetId = Integer.parseInt(path.split(",")[i]);
+				}
+			}else{
+				for(int i = 0 ; i < path.split(",").length ; i++){
+					if(i > 0){
+						studyPath.append(path.split(",")[i]).append(",");
+					}else{//第一个是自助餐编号
+						firstId = Integer.parseInt(path.split(",")[i]);//自助餐编号或者家庭作业编号
+						firstName = pathChi.split(",")[i];//自助餐标题或者家庭作业标题
+					}
 				}
 			}
 			if(studyPath.length() > 0){
 				studyPath = studyPath.delete(studyPath.length() - 1, studyPath.length());
 				List<LoreInfo> loreList = lm.listInfoInLoreId(studyPath.toString(),"asc");
-				BuffetQueInfo bq = bqm.getEntityById(buffetId);
 				for(LoreInfo lore : loreList){
 					loreIdStr += lore.getId() + ":";
 					loreNameStr += lore.getLoreName() + ":";
 				}
-				if(bq != null){
-					loreIdStr += bq.getId();
-					loreNameStr += bq.getTitle();
-				}else{
-					loreIdStr = loreIdStr.substring(0, loreIdStr.length() - 1);
-					loreNameStr = loreNameStr.substring(0, loreNameStr.length() - 1);
+				if(!type.equals("onlineStudy")){
+					loreIdStr += firstId + ":";
+					loreNameStr += firstName + ":";
 				}
+				loreIdStr = loreIdStr.substring(0, loreIdStr.length() - 1);
+				loreNameStr = loreNameStr.substring(0, loreNameStr.length() - 1);
 				studyPathArr[0] = loreIdStr;
 				studyPathArr[1] = loreNameStr;
 			}
@@ -355,6 +362,7 @@ public class LoreTreeMenuJson {
 //				studyPath = studyPath.delete(studyPath.length() - 1, studyPath.length());
 //				studyChiPath = studyChiPath.delete(studyChiPath.length() - 1, studyChiPath.length());
 //			}
+//			之前版本
 		}
 //		studyPathArr[0] = studyPath.toString();
 //		studyPathArr[1] = studyChiPath.toString();

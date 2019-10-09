@@ -827,7 +827,7 @@ public class OnlineStudyAction extends DispatchAction {
 						stepCount = path.split(":").length;//多少级
 						loreCount = ltmj.getLoreNum(path);//多少个知识点
 					}
-					String[] studyPathArr =  ltmj.getStudyPath(path,pathChi);
+					String[] studyPathArr =  ltmj.getStudyPath(path,pathChi,"onlineStudy");
 					studyPath = studyPathArr[0];
 					studyPathChi = studyPathArr[1];
 					StudyLogInfo sl = null;
@@ -1346,7 +1346,7 @@ public class OnlineStudyAction extends DispatchAction {
 								}else if(step == 2){//表示关联知识点诊断完成/或者是某一级的关联知识点全部正确，需要进入学习阶段
 									LoreTreeMenuJson ltmj = new LoreTreeMenuJson();
 //									studyPath = ltmj.getStudyPath(path);
-									String[] studyPathArr = ltmj.getStudyPath(path,pathChi);
+									String[] studyPathArr = ltmj.getStudyPath(path,pathChi,"onlineStudy");
 									studyPath = studyPathArr[0];
 									studyPathChi = studyPathArr[1];
 									//根据当前currentLoreId截取studyPath
@@ -1372,7 +1372,7 @@ public class OnlineStudyAction extends DispatchAction {
 								}else if(step ==3){//关联知识点学习
 									LoreTreeMenuJson ltmj = new LoreTreeMenuJson();
 //									studyPath = ltmj.getStudyPath(path);
-									String[] studyPathArr = ltmj.getStudyPath(path,pathChi);
+									String[] studyPathArr = ltmj.getStudyPath(path,pathChi,"onlineStudy");
 									studyPath = studyPathArr[0];
 									studyPathChi = studyPathArr[1];
 									option = 2;
@@ -1388,7 +1388,7 @@ public class OnlineStudyAction extends DispatchAction {
 										nextLoreIdArray = String.valueOf(currentLoreId);
 										LoreTreeMenuJson ltmj = new LoreTreeMenuJson();
 //										studyPath = ltmj.getStudyPath(path);
-										String[] studyPathArr = ltmj.getStudyPath(path,pathChi);
+										String[] studyPathArr = ltmj.getStudyPath(path,pathChi,"onlineStudy");
 										studyPath = studyPathArr[0];
 										studyPathChi = studyPathArr[1];
 										Integer stepNumber = CommonTools.getCurrentStep(path.split(":"), currentLoreId);
@@ -1404,7 +1404,7 @@ public class OnlineStudyAction extends DispatchAction {
 										nextLoreIdArray = String.valueOf(currentLoreId);
 										LoreTreeMenuJson ltmj = new LoreTreeMenuJson();
 //										studyPath = ltmj.getStudyPath(path);
-										String[] studyPathArr = ltmj.getStudyPath(path,pathChi);
+										String[] studyPathArr = ltmj.getStudyPath(path,pathChi,"onlineStudy");
 										studyPath = studyPathArr[0];
 										studyPathChi = studyPathArr[1];
 										Integer stepNumber = CommonTools.getCurrentStep(path.split(":"), currentLoreId);
@@ -1420,7 +1420,7 @@ public class OnlineStudyAction extends DispatchAction {
 										nextLoreIdArray = String.valueOf(currentLoreId);
 										LoreTreeMenuJson ltmj = new LoreTreeMenuJson();
 //										studyPath = ltmj.getStudyPath(path);
-										String[] studyPathArr = ltmj.getStudyPath(path,pathChi);
+										String[] studyPathArr = ltmj.getStudyPath(path,pathChi,"onlineStudy");
 										studyPath = studyPathArr[0];
 										studyPathChi = studyPathArr[1];
 										Integer stepNumber = CommonTools.getCurrentStep(path.split(":"), currentLoreId);
@@ -1436,7 +1436,7 @@ public class OnlineStudyAction extends DispatchAction {
 										nextLoreIdArray = String.valueOf(currentLoreId);
 										LoreTreeMenuJson ltmj = new LoreTreeMenuJson();
 //										studyPath = ltmj.getStudyPath(path);
-										String[] studyPathArr = ltmj.getStudyPath(path,pathChi);
+										String[] studyPathArr = ltmj.getStudyPath(path,pathChi,"onlineStudy");
 										studyPath = studyPathArr[0];
 										studyPathChi = studyPathArr[1];
 										//根据当前currentLoreId截取studyPath
@@ -1454,7 +1454,7 @@ public class OnlineStudyAction extends DispatchAction {
 									}else if(access == 1){//题做完，全部正确（需要定位到下一个知识点）
 										LoreTreeMenuJson ltmj = new LoreTreeMenuJson();
 //										studyPath = ltmj.getStudyPath(path);
-										String[] studyPathArr = ltmj.getStudyPath(path,pathChi);
+										String[] studyPathArr = ltmj.getStudyPath(path,pathChi,"onlineStudy");
 										studyPath = studyPathArr[0];
 										studyPathChi = studyPathArr[1];
 										String studyPath_new = CommonTools.getCurrentStudyPath_new(studyPath, currentLoreId);
@@ -1470,7 +1470,7 @@ public class OnlineStudyAction extends DispatchAction {
 									}else if(access == 0){//表示已经做了再次诊断题，但是没做完（将已做的题和未做的列出来）
 										LoreTreeMenuJson ltmj = new LoreTreeMenuJson();
 //										studyPath = ltmj.getStudyPath(path);
-										String[] studyPathArr = ltmj.getStudyPath(path,pathChi);
+										String[] studyPathArr = ltmj.getStudyPath(path,pathChi,"onlineStudy");
 										studyPath = studyPathArr[0];
 										studyPathChi = studyPathArr[1];
 										//根据当前currentLoreId截取studyPath
@@ -1492,7 +1492,7 @@ public class OnlineStudyAction extends DispatchAction {
 										nextLoreIdArray = String.valueOf(loreId);
 										LoreTreeMenuJson ltmj = new LoreTreeMenuJson();
 //										studyPath = ltmj.getStudyPath(path);
-										String[] studyPathArr = ltmj.getStudyPath(path,pathChi);
+										String[] studyPathArr = ltmj.getStudyPath(path,pathChi,"onlineStudy");
 										studyPath = studyPathArr[0];
 										studyPathChi = studyPathArr[1];
 										successStep = "本知识点的诊断题";
@@ -1506,7 +1506,7 @@ public class OnlineStudyAction extends DispatchAction {
 										nextLoreIdArray = String.valueOf(loreId);
 										LoreTreeMenuJson ltmj = new LoreTreeMenuJson();
 //										studyPath = ltmj.getStudyPath(path);
-										String[] studyPathArr = ltmj.getStudyPath(path,pathChi);
+										String[] studyPathArr = ltmj.getStudyPath(path,pathChi,"onlineStudy");
 										studyPath = studyPathArr[0];
 										studyPathChi = studyPathArr[1];
 									}else if(access == 3){//之前没把再次诊断全部做对（列出做错的再次诊断题）
@@ -1515,7 +1515,7 @@ public class OnlineStudyAction extends DispatchAction {
 										nextLoreIdArray = String.valueOf(loreId);
 										LoreTreeMenuJson ltmj = new LoreTreeMenuJson();
 //										studyPath = ltmj.getStudyPath(path);
-										String[] studyPathArr = ltmj.getStudyPath(path,pathChi);
+										String[] studyPathArr = ltmj.getStudyPath(path,pathChi,"onlineStudy");
 										studyPath = studyPathArr[0];
 										studyPathChi = studyPathArr[1];
 										successStep = "本知识点的诊断题";
@@ -1530,7 +1530,7 @@ public class OnlineStudyAction extends DispatchAction {
 										nextLoreIdArray = String.valueOf(loreId);
 										LoreTreeMenuJson ltmj = new LoreTreeMenuJson();
 //										studyPath = ltmj.getStudyPath(path);
-										String[] studyPathArr = ltmj.getStudyPath(path,pathChi);
+										String[] studyPathArr = ltmj.getStudyPath(path,pathChi,"onlineStudy");
 										studyPath = studyPathArr[0];
 										studyPathChi = studyPathArr[1];
 										successStep = "本知识点的诊断题";
@@ -1542,7 +1542,7 @@ public class OnlineStudyAction extends DispatchAction {
 									}else if(access == 2){
 										LoreTreeMenuJson ltmj = new LoreTreeMenuJson();
 //										studyPath = ltmj.getStudyPath(path);
-										String[] studyPathArr = ltmj.getStudyPath(path,pathChi);
+										String[] studyPathArr = ltmj.getStudyPath(path,pathChi,"onlineStudy");
 										studyPath = studyPathArr[0];
 										studyPathChi = studyPathArr[1];
 										option = 2;
@@ -1551,7 +1551,7 @@ public class OnlineStudyAction extends DispatchAction {
 									}else if(access == 0){
 										LoreTreeMenuJson ltmj = new LoreTreeMenuJson();
 //										studyPath = ltmj.getStudyPath(path);
-										String[] studyPathArr = ltmj.getStudyPath(path,pathChi);
+										String[] studyPathArr = ltmj.getStudyPath(path,pathChi,"onlineStudy");
 										studyPath = studyPathArr[0];
 										studyPathChi = studyPathArr[1];
 										option = 2;
@@ -1620,7 +1620,7 @@ public class OnlineStudyAction extends DispatchAction {
 							totalMoney = stList_new.get(0).getCoin();
 							LoreTreeMenuJson ltmj = new LoreTreeMenuJson();
 //							studyPath = ltmj.getStudyPath(path);
-							String[] studyPathArr = ltmj.getStudyPath(path,pathChi);
+							String[] studyPathArr = ltmj.getStudyPath(path,pathChi,"onlineStudy");
 							studyPath = studyPathArr[0];
 							studyPathChi = studyPathArr[1];
 							option = 2;
@@ -1658,7 +1658,7 @@ public class OnlineStudyAction extends DispatchAction {
 									pathChi = pathArr[1];
 //									path = CommonTools.getLorePath(loreId, "diagnosis");
 									LoreTreeMenuJson ltmj = new LoreTreeMenuJson();
-									String[] studyPathArr = ltmj.getStudyPath(path,pathChi);
+									String[] studyPathArr = ltmj.getStudyPath(path,pathChi,"onlineStudy");
 									studyPath = studyPathArr[0];
 									studyPathChi = studyPathArr[1];
 									option = 2;
@@ -2356,6 +2356,9 @@ public class OnlineStudyAction extends DispatchAction {
 							StudyLogInfo sl = slm.getEntityById(studyLogId);
 							logType = sl.getLogType();
 							subjectId = sl.getSubject().getId();
+							if(sl.getIsFinish().equals(2)){
+								studyLogId = 0;
+							}
 //							flag = sdm.checkSuccCompleteFlag(studyLogId, lqId, currDate);
 //							if(!flag){//当当前题错误或者没做时
 //								//判断上次答题时间（正常答题不会出现，防止URL提交）
@@ -2436,7 +2439,9 @@ public class OnlineStudyAction extends DispatchAction {
 							if(studyLogId.equals(0)){//新开的题
 								List<StudyLogInfo> slList = slm.listLastStudyInfoByOpt(stuId, loreId, logType);
 								if(slList.size() > 0){
-									studyLogId = slList.get(0).getId();
+									if(!slList.get(0).getIsFinish().equals(2)){
+										studyLogId = slList.get(0).getId();
+									}
 								}
 							}
 							if(studyLogId.equals(0)){//新开的题
@@ -2779,7 +2784,7 @@ public class OnlineStudyAction extends DispatchAction {
 						RelationZdResult rzr = rzrm.getEntityByOpt(studyLogId, currentLoreId);
 						if(rzr != null){//表示不是第一次五步学习（五步学习完成并studyTimes+1）
 							//-1为不更新
-							rzrm.updateEntity(rzr.getId(), -1, -1, -1, rzr.getStudyTimes() + 1, -1);
+							rzrm.updateEntity(rzr.getId(), -1, 1, -1, rzr.getStudyTimes() + 1, -1);
 						}else{//表示第一次五步学习
 							rzrm.addRZR(studyLogId, currentLoreId, -1, 1, -1, 1, 0);
 						}

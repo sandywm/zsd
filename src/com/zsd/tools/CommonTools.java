@@ -724,9 +724,8 @@ public class CommonTools {
 			String loreIdStr = "";
 			String loreNameStr = "";
 			path = path.replaceAll(":", ",").replaceAll("\\|", ",");
-			//去掉第一个--自助餐编号
-			Integer length = path.indexOf(",");
-			path = path.substring(length+1);
+//			Integer length = path.indexOf(",");
+//			path = path.substring(length+1);
 			List<LoreInfo> loreList = lm.listInfoInLoreId(path,"desc");
 			if(loreList.size() > 0){
 				for(LoreInfo lore : loreList){
@@ -741,7 +740,7 @@ public class CommonTools {
 			return pathArr;
 			//新版本--end
 		}else{//学习
-			return ltmj.getStudyPath(path,pathChi);
+			return ltmj.getStudyPath(path,pathChi,"onlineStudy");
 		}
 	}
 	
@@ -796,7 +795,7 @@ public class CommonTools {
 			pathArr[1] = loreNameStr;
 			return pathArr;
 		}else{//学习
-			return ltmj.getStudyPath(path,pathChi);
+			return ltmj.getStudyPath(path,pathChi,"buffet");
 		}
 	}
 	

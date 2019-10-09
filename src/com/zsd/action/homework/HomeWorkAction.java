@@ -3567,7 +3567,7 @@ public class HomeWorkAction extends DispatchAction {
 									pathType = "study";
 									loreTypeName = "再次诊断";
 									String[] pathArray = path.split(":");
-									String[] studyPathArr = ltmj.getStudyPath(path, pathChi);
+									String[] studyPathArr = ltmj.getStudyPath(path, pathChi,"hw");
 									studyPath = studyPathArr[0];
 									String studyPath_new = CommonTools.getCurrentStudyPath_new(studyPath, currentLoreId);//获取当前知识点以后的知识点
 									if(studyPath_new.split(":").length == 1){
@@ -3651,7 +3651,7 @@ public class HomeWorkAction extends DispatchAction {
 								//1：当前题全部做对，直接进入第三步-当前知识典的上一级关联知识典的学习
 								//2：关联性诊断题全部做完，需要进入到第三步--关联知识典的学习
 								if(access.equals(1)){//当前题全部正确
-									String[] studyPathArr = ltmj.getStudyPath(path, pathChi);
+									String[] studyPathArr = ltmj.getStudyPath(path, pathChi,"hw");
 									String[] studyPath_new_arr = CommonTools.getStudyPath_new(studyPathArr[0],studyPathArr[1], currentLoreId);
 									studyPath = studyPath_new_arr[0];
 									if(studyPath.split(":").length == 2){//表示一级关联知识点全部正确，表示溯源已完成
@@ -3666,7 +3666,7 @@ public class HomeWorkAction extends DispatchAction {
 										loreTaskName = stepNumber+"级关联知识点("+currentLoreName+")学习";
 									}
 								}else{//关联性诊断题全部做完(诊断的最后一级)
-									String[] studyPathArr = ltmj.getStudyPath(path, pathChi);
+									String[] studyPathArr = ltmj.getStudyPath(path, pathChi,"hw");
 									studyPath = studyPathArr[0];
 									String[] pathArray = studyPath.split(":");
 									Integer stepNumber = pathArray.length  - 1;
@@ -3820,7 +3820,7 @@ public class HomeWorkAction extends DispatchAction {
 										success = 1;
 									}
 								}else if(step.equals(2)){//表示关联知识点诊断完成/或者是某一级的关联知识点全部正确，需要进入学习阶段
-									String[] studyPathArr = ltmj.getStudyPath(path,pathChi);
+									String[] studyPathArr = ltmj.getStudyPath(path,pathChi,"hw");
 									studyPath = studyPathArr[0];
 									studyPathChi = studyPathArr[1];
 									String[] studyPath_new_arr = CommonTools.getStudyPath_new(studyPath,studyPathChi, currentLoreId);
@@ -3847,14 +3847,14 @@ public class HomeWorkAction extends DispatchAction {
 									option = 2;
 									success = 5;
 									nextLoreIdArray = String.valueOf(basicLoreId);
-									String[] studyPathArr = ltmj.getStudyPath(path,pathChi);
+									String[] studyPathArr = ltmj.getStudyPath(path,pathChi,"hw");
 									studyPath = studyPathArr[0];
 									studyPathChi = studyPathArr[1];
 								}
 							}else{//本阶段答题完成，但本知识点所有的关联性诊断未完成
 								//不会存在access=1的情况，1表示当前题全部正确，如果是全部正确的话，那么stepComplete>0
 								if(step == 3){//
-									String[] studyPathArr = ltmj.getStudyPath(path,pathChi);
+									String[] studyPathArr = ltmj.getStudyPath(path,pathChi,"hw");
 									studyPath = studyPathArr[0];
 									studyPathChi = studyPathArr[1];
 									if(access.equals(4)){//第一次进入再次诊断（列出再次诊断全部题）
@@ -3935,7 +3935,7 @@ public class HomeWorkAction extends DispatchAction {
 										option = 2;
 										nextLoreIdArray = String.valueOf(tjId);
 										success = 6;//进入家庭作业题库列表
-										String[] studyPathArr = ltmj.getStudyPath(path,pathChi);
+										String[] studyPathArr = ltmj.getStudyPath(path,pathChi,"hw");
 										studyPath = studyPathArr[0];
 										studyPathChi = studyPathArr[1];
 									}
@@ -3999,7 +3999,7 @@ public class HomeWorkAction extends DispatchAction {
 								nextLoreIdArray = String.valueOf(0);
 								successStep = "本知识点的诊断题";
 								success = 6;//全部完成
-								String[] studyPathArr = ltmj.getStudyPath(path,pathChi);
+								String[] studyPathArr = ltmj.getStudyPath(path,pathChi,"hw");
 								studyPath = studyPathArr[0];
 								studyPathChi = studyPathArr[1];
 							}
