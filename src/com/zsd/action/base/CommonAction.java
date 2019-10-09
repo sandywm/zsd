@@ -1253,4 +1253,21 @@ public class CommonAction extends DispatchAction {
 		return null;
 	}
 	
+	/**
+	 * 导向登录后首页--超级管理员和知识点管理员用
+	 * @author  Administrator
+	 * @ModifiedBy  
+	 * @date  2019-10-9 下午08:50:54
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward  goWeclomePage(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+		return mapping.findForward("welcomePage");
+	}
 }
