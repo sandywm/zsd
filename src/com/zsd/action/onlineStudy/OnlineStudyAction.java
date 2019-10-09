@@ -625,10 +625,10 @@ public class OnlineStudyAction extends DispatchAction {
 		if(studyLogId > 0){
 			sl = slm.getEntityById(studyLogId);
 		}else{
-			List<StudyLogInfo> slList = slm.listLastStudyInfoByOpt(CommonTools.getLoginUserId(request), loreId, logType);
-			if(slList.size() > 0){
-				sl = slList.get(0);
-			}
+//			List<StudyLogInfo> slList = slm.listLastStudyInfoByOpt(CommonTools.getLoginUserId(request), loreId, logType);
+//			if(slList.size() > 0){
+//				sl = slList.get(0);
+//			}
 		}
 		if(sl != null){//表示已经有记录
 			//获取任务描述列表
@@ -842,8 +842,12 @@ public class OnlineStudyAction extends DispatchAction {
 					}else{//之前有记录
 						sl = slm.getEntityById(studyLogId);
 						if(sl.getIsFinish().equals(2)){
-							studyLogId = 0;
-							sl = null;
+							if(sl.getAddTime().substring(0, 10).equals(CurrentTime.getStringDate())){//当天完成
+								
+							}else{//之前完成
+								studyLogId = 0;
+								sl = null;
+							}
 						}
 					}
 					if(sl != null){//表示存在记录
@@ -1644,7 +1648,8 @@ public class OnlineStudyAction extends DispatchAction {
 					LoreInfo lore = lm.getEntityById(loreId);
 					if(lore != null){
 						msg = "success";
-						List<StudyLogInfo> slList = slm.listLastStudyInfoByOpt(stuId, loreId, logType);
+//						List<StudyLogInfo> slList = slm.listLastStudyInfoByOpt(stuId, loreId, logType);
+						List<StudyLogInfo> slList = new ArrayList<StudyLogInfo>();
 						if(slList.size() > 0){
 							if(slList.get(0).getIsFinish() == 2){
 								if(slList.get(0).getStep() == 1){
