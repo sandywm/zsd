@@ -76,10 +76,8 @@ public class UserAction extends DispatchAction {
 		if(roleId > 0){
 			RoleInfo role = rm.getEntityById(roleId);
 			roleName = role.getRoleName();
-			if(roleName.equals("超级管理员")){
+			if(roleName.equals("超级管理员") || roleName.equals("知识点管理员")){
 				urlPage = "managerPage";
-			}else if(roleName.equals("知识点管理员")){
-				urlPage = "zsdPage";
 			}else{
 				urlPage = "welcomePage";
 			}

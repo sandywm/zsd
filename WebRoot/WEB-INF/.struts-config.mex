@@ -95,8 +95,12 @@
   </StrutsTransition>
   <StrutsTransition id="/user.do,zsdPage,/index.jsp,1" routingType="0">
     <AutomaticBendpoints>
-      <AbsolutePoint location="461,102" />
-      <AbsolutePoint location="94,1476" />
+      <AbsolutePoint location="431,50" />
+      <AbsolutePoint location="431,-100" />
+      <AbsolutePoint location="-160,-100" />
+      <AbsolutePoint location="-160,1578" />
+      <AbsolutePoint location="94,1578" />
+      <AbsolutePoint location="94,1503" />
     </AutomaticBendpoints>
   </StrutsTransition>
   <StrutsTransition id="/user.do,managerPage,/index.jsp,1" routingType="0">
@@ -142,6 +146,16 @@
       <AbsolutePoint location="2073,1608" />
       <AbsolutePoint location="2073,2276" />
       <AbsolutePoint location="1862,2276" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/user.do,zPage,/index.jsp,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="431,50" />
+      <AbsolutePoint location="431,-100" />
+      <AbsolutePoint location="-160,-100" />
+      <AbsolutePoint location="-160,1578" />
+      <AbsolutePoint location="94,1578" />
+      <AbsolutePoint location="94,1503" />
     </AutomaticBendpoints>
   </StrutsTransition>
   <StrutsTransition id="/lore.do,lorePage,/Module/loreCatalogManager/jsp/loreCatalogManager.jsp,1" routingType="0">

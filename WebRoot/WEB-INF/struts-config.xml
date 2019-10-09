@@ -13,8 +13,7 @@
     </action>
     <!-- 用户管理 -->
     <action path="/user" parameter="action" scope="request" type="com.zsd.action.user.UserAction">
-      <forward name="managerPage" path="/index.jsp"></forward><!--超级管理员登录后欢迎界面 -->
-      <forward name="zsdPage" path="/index.jsp"></forward><!-- 知识点管理员登录后欢迎界面 -->
+      <forward name="managerPage" path="/index.jsp"></forward><!-- 知识点/超级管理员登录后欢迎界面 -->
       <forward name="welcomePage" path="/Module/welcome/jsp/welcome.jsp"></forward><!-- 普通用户登录后欢迎界面 -->
       <forward name="userPage" path="/Module/userManager/jsp/userManager.jsp"></forward><!-- 用户管理界面 -->
     </action>

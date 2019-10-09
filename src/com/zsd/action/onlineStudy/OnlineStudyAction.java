@@ -835,10 +835,16 @@ public class OnlineStudyAction extends DispatchAction {
 						List<StudyLogInfo> slList = slm.listLastStudyInfoByOpt(stuId, loreId, logType);
 						if(slList.size() > 0){
 							sl = slList.get(0);
-							studyLogId = sl.getId();
+							if(!sl.getIsFinish().equals(2)){
+								studyLogId = sl.getId();
+							}
 						}
 					}else{//之前有记录
 						sl = slm.getEntityById(studyLogId);
+						if(sl.getIsFinish().equals(2)){
+							studyLogId = 0;
+							sl = null;
+						}
 					}
 					if(sl != null){//表示存在记录
 						List<LoreQuestion> lqList = new ArrayList<LoreQuestion>();
