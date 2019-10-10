@@ -445,5 +445,27 @@ public class UserManagerImpl implements UserManager {
 		}
 	}
 
+	@Override
+	public boolean updateRealName(Integer id, String realName)
+			throws WEBException {
+		try {
+			userDao = (UserDao) DaoFactory.instance(null).getDao(Constants.DAO_USER_INFO);
+			Session sess  = HibernateUtil.currentSession();
+			tran = sess.beginTransaction();
+			User user = userDao.get(sess, id);
+			if(user != null){
+				user.setRealName(realName);
+				tran.commit();
+				return true;
+			}
+			return false;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("修改指定用户真实姓名时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
 
 }

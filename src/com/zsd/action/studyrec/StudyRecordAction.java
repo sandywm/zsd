@@ -569,7 +569,7 @@ public class StudyRecordAction extends DispatchAction {
 						eDate = CurrentTime.getStringDate();
 					}
 				}
-			    diffDay = CurrentTime.compareDate(sDate,eDate);
+			    diffDay = CurrentTime.compareDate(sDate,eDate)+1;
 			    //获取该到时下所有有过绑定关系的学生的所有记录
 				List<StudyLogInfo> slList =  slManager.listStuLogByOption(0,subId,stuIdStr, sDate, eDate);
 				for (Iterator<StudyLogInfo> itr = slList.iterator(); itr.hasNext();) {
@@ -609,7 +609,7 @@ public class StudyRecordAction extends DispatchAction {
 								map_d.put("bs_sendTime", bs.getSendTime());
 								map_d.put("bs_result", bs.getStudyResult());
 								BuffetSendNum++;
-								if(bs.getStudyResult().equals(1)){
+								if(bs.getStudyResult().equals(2)){
 									comBuffetNum++;
 								}
 								list_d.add(map_d);
@@ -624,7 +624,7 @@ public class StudyRecordAction extends DispatchAction {
 									map_d.put("bs_sendTime", bs.getSendTime());
 									map_d.put("bs_result", bs.getStudyResult());
 									BuffetSendNum++;
-									if(bs.getStudyResult().equals(1)){
+									if(bs.getStudyResult().equals(2)){
 										comBuffetNum++;
 									}
 								}
@@ -1117,7 +1117,7 @@ public class StudyRecordAction extends DispatchAction {
 		BuffetStudyDetailManager bsdManager = (BuffetStudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_STUDY_DETAIL_INFO);
 		Integer bsId = CommonTools.getFinalInteger("bsId",request);
 		Map<String,Object> map = new HashMap<String,Object>();
-		List<BuffetStudyDetailInfo> bsdlist = bsdManager.listBsdInfoByBsdId(bsId);
+		List<BuffetStudyDetailInfo> bsdlist = bsdManager.listInfoByBsId(bsId);//listBsdInfoByBsdId(bsId);
 		int total =bsdlist.size();
 		int rightNum =0;
 		int errorNum=0;
@@ -1126,10 +1126,11 @@ public class StudyRecordAction extends DispatchAction {
 			for (Iterator<BuffetStudyDetailInfo> itr = bsdlist.iterator(); itr.hasNext();) {
 				BuffetStudyDetailInfo bsdInfo = (BuffetStudyDetailInfo) itr.next();
 				if(bsdInfo.getResult().equals(1)){
-					rightNum+=1;
+					rightNum++;
+				}else if(bsdInfo.getResult().equals(0)){
+					errorNum++;
 				}
 			}
-			errorNum = total-rightNum;
 			DecimalFormat df  = new DecimalFormat("######0.00");
 			rate  = df.format(((double)rightNum / (double)total) * 100);
 		}

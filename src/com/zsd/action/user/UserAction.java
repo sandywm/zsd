@@ -747,4 +747,30 @@ public class UserAction extends DispatchAction {
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
+	/**
+	 * 更新指定用户的真实姓名
+	 * @author zdf
+	 * 2019-10-10 下午03:37:22
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward updateRealName(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		UserManager uManager = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
+		Integer userId=CommonTools.getLoginUserId(request);
+		String realName=Transcode.unescape_new1("realName", request);
+		Map<String,String> map = new HashMap<String,String>();
+		String msg = "fail";
+		boolean uflag = uManager.updateRealName(userId, realName);
+		if(uflag){
+			msg ="success";
+		}
+		map.put("msg", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
 }

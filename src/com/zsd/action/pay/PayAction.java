@@ -445,7 +445,7 @@ public class PayAction extends DispatchAction {
 										}
 										if(currUserGradeNumber_new <= gradeNumber){
 											//不涉及升学
-											List<SysFeeInfo> sfList = sfm.listInfoByopt(feeType, 1, 1);
+											List<SysFeeInfo> sfList = sfm.listInfoByopt(feeType, schoolType, 1);
 											if(sfList.size() > 0){
 												//可以购买--获取费用
 												map.put("ntId", ntId);

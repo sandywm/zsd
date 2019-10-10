@@ -266,14 +266,15 @@ public class ReportCenterAction  extends DispatchAction{
 				if(stuId.equals(0)){//当选择的是班级时--一年级一班和一年级所有班级的平均值对比
 					if(classId > 0){
 						schoolId = um.listEntityById(userId).get(0).getSchoolId();
-						tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, "", "", "", "", 0, schoolId, gradeName, 0);//获取指定学校指定年级的统计信息
+						//获取班内老师所在的年级
 						List<ClassInfo> cList = cm.listClassInfoById(classId);
 						if(cList.size() > 0){
 							gradeName = Convert.dateConvertGradeName(cList.get(0).getBuildeClassDate());
+							tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, "", "", "", "", 0, schoolId, gradeName, 0);//获取指定学校指定年级的统计信息
 							axisName1 = gradeName+cList.get(0).getClassName()+"的统计";
 							axisName2 = gradeName+"的统计";
-//							allNum = tjm.getDistinctCountByOpt(0, subId, sDate, eDate, "", "", "", "", 0, schoolId, gradeName, 0);
 						}
+//							allNum = tjm.getDistinctCountByOpt(0, subId, sDate, eDate, "", "", "", "", 0, schoolId, gradeName, 0);
 					}
 				}else{//当选择的是班级列表下的学生时--学生和当前班级的平均统计信息进行对比
 					if(classId > 0){

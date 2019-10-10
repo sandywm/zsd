@@ -244,6 +244,16 @@ public interface UserManager {
 	 */
 	boolean updateUserByHead(Integer id ,String portrait) throws WEBException;
 	/**
+	 * 更新用户真实姓名
+	 * @author zdf
+	 * 2019-10-10 下午03:31:47
+	 * @param id 用户编号
+	 * @param realName 真实姓名
+	 * @return
+	 * @throws WEBException
+	 */
+	boolean updateRealName(Integer id, String realName) throws WEBException;
+	/**
 	 * 判断手机号码是否存在
 	 * @author zong
 	 * 2019-6-10下午03:25:37
