@@ -181,7 +181,7 @@ public class CommonTools {
 	 */
 	public static Integer getFinalInteger(String inputData,HttpServletRequest request){
 		inputData = String.valueOf(request.getParameter(inputData));
-		if(inputData.equals("") || inputData.equals("null")){
+		if(inputData.equals("") || inputData.equals("null")  || inputData.equals("undefined")){
 			return 0;
 		}else{
 			return Integer.parseInt(inputData);
@@ -197,7 +197,7 @@ public class CommonTools {
 	 */
 	public static Float getFinalFloat(String inputData,HttpServletRequest request){
 		inputData = String.valueOf(request.getParameter(inputData));
-		if(inputData.equals("") || inputData.equals("null")){
+		if(inputData.equals("") || inputData.equals("null")  || inputData.equals("undefined")){
 			return 0f;
 		}else{
 			return Float.parseFloat(inputData);
@@ -214,7 +214,7 @@ public class CommonTools {
 	 */
 	public static Double getFinalDouble(String inputData,HttpServletRequest request){
 		inputData = String.valueOf(request.getParameter(inputData));
-		if(inputData.equals("") || inputData.equals("null")){
+		if(inputData.equals("") || inputData.equals("null")  || inputData.equals("undefined")){
 			return 0.0;
 		}else{
 			return Double.parseDouble(inputData);

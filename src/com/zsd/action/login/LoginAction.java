@@ -115,7 +115,7 @@ public class LoginAction extends DispatchAction {
 		return mapping.findForward("signPage");
 	}
 	/**
-	 * 用户登录
+	 * 用户登录（移动端登录只限学生，家长，班内老师，导师）
 	 * @author zong
 	 * @date  2019-4-29 下午04:21:29
 	 * @param mapping
@@ -178,7 +178,7 @@ public class LoginAction extends DispatchAction {
 			List<RoleUserInfo> ruList = ruManager.listUserRoleInfoByuserId(uid);
 			Integer roleId =0;
 			if(!ruList.isEmpty()){
-				if(clientInfo.equals("pc")){
+				if(clientInfo.equals("pc") || clientInfo.indexOf("Web") > 0){
 					List<Object> list_d = new ArrayList<Object>();
 					for(RoleUserInfo ru : ruList){
 						Map<String,Object> map_d = new HashMap<String,Object>();
@@ -203,48 +203,52 @@ public class LoginAction extends DispatchAction {
 						portrait="Module/commonJs/ueditor/jsp/head/defaultHead.jpg";
 					}
 					msg = "success";
-					if(clientInfo.equals("pc")){
+					if(clientInfo.equals("pc") || clientInfo.indexOf("Web") > 0){
 						session.setAttribute(Constants.LOGIN_USER_ID, uid);
 						session.setAttribute(Constants.LOGIN_ACCOUNT, userAcc);
 						session.setAttribute(Constants.LOGIN_STATUS, loginStatus);
 					}else{
-						map.put("loginStatus", loginStatus);
-						map.put("roleId", roleId);
-						map.put("userAcc", userAcc);
-						map.put("password", pwd);
-						map.put("portrait", portrait);
-						map.put("userId", uid);
-						if(roleId.equals(Constants.TEA_ROLE_ID)){//班内老师
-							List<UserClassInfo> ucList = ucm.listTeaInfoByOpt(uid, roleId);
-							if(ucList.size() > 0){
-								map.put("subName",ucList.get(0).getSubjectName());
-							}else{
-								map.put("subName","暂无");
-							}
-						}else if(roleId.equals(Constants.NET_TEA_ROLE_ID)){//网络导师
-							InviteCodeInfoManager icManager = (InviteCodeInfoManager) AppFactory.instance(null).getApp(Constants.WEB_INVITE_CODE_INFO);
-							List<InviteCodeInfo> icList =icManager.listIcInfoByOption(uid, "导师邀请码");
-							List<NetTeacherInfo> ntList = ntm.listntInfoByuserId(uid);
-							if(ntList.size() > 0){
-								map.put("subName",ntList.get(0).getSubject().getSubName());
-								Integer schoolType_nt = ntList.get(0).getSchoolType();
-								String schoolTypeChi = "";
-								if(schoolType_nt.equals(1)){
-									schoolTypeChi = "小学";
-								}else if(schoolType_nt.equals(2)){
-									schoolTypeChi = "初中";
-								}else if(schoolType_nt.equals(3)){
-									schoolTypeChi = "高中";
+						if(roleId.equals(Constants.STU_ROLE_ID) || roleId.equals(Constants.PATENT_ROLE_ID) || roleId.equals(Constants.TEA_ROLE_ID) || roleId.equals(Constants.NET_TEA_ROLE_ID)){
+							map.put("loginStatus", loginStatus);
+							map.put("roleId", roleId);
+							map.put("userAcc", userAcc);
+							map.put("password", pwd);
+							map.put("portrait", portrait);
+							map.put("userId", uid);
+							if(roleId.equals(Constants.TEA_ROLE_ID)){//班内老师
+								List<UserClassInfo> ucList = ucm.listTeaInfoByOpt(uid, roleId);
+								if(ucList.size() > 0){
+									map.put("subName",ucList.get(0).getSubjectName());
+								}else{
+									map.put("subName","暂无");
 								}
-								map.put("subName",schoolTypeChi+ntList.get(0).getSubject().getSubName());
-							}else{
-								map.put("subName","暂无");
+							}else if(roleId.equals(Constants.NET_TEA_ROLE_ID)){//网络导师
+								InviteCodeInfoManager icManager = (InviteCodeInfoManager) AppFactory.instance(null).getApp(Constants.WEB_INVITE_CODE_INFO);
+								List<InviteCodeInfo> icList =icManager.listIcInfoByOption(uid, "导师邀请码");
+								List<NetTeacherInfo> ntList = ntm.listntInfoByuserId(uid);
+								if(ntList.size() > 0){
+									map.put("subName",ntList.get(0).getSubject().getSubName());
+									Integer schoolType_nt = ntList.get(0).getSchoolType();
+									String schoolTypeChi = "";
+									if(schoolType_nt.equals(1)){
+										schoolTypeChi = "小学";
+									}else if(schoolType_nt.equals(2)){
+										schoolTypeChi = "初中";
+									}else if(schoolType_nt.equals(3)){
+										schoolTypeChi = "高中";
+									}
+									map.put("subName",schoolTypeChi+ntList.get(0).getSubject().getSubName());
+								}else{
+									map.put("subName","暂无");
+								}
+								if(icList.size()>0){
+									map.put("ntInviteCode", icList.get(0).getInviteCode());
+								}else{
+									map.put("ntInviteCode", "暂无");
+								}
 							}
-							if(icList.size()>0){
-								map.put("ntInviteCode", icList.get(0).getInviteCode());
-							}else{
-								map.put("ntInviteCode", "暂无");
-							}
+						}else{
+							msg = "fail";//用户名密码不匹配
 						}
 					}
 				}else{//账号无效

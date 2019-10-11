@@ -103,8 +103,8 @@ public class ApplyClassAction extends DispatchAction {
 			eDate = CurrentTime.getStringDate();
 			sDate = CurrentTime.getFinalDate(eDate, -2);
 		}
-		Integer sendUserId = 0;
-		Integer toUserId = 0;
+		Integer sendUserId = 0;//申请人
+		Integer toUserId = 0;//被申请人
 		if(opt.equals(1)){//我的主动申请
 			sendUserId = currUserId;
 		}else if(opt.equals(2)){//别人对我的申请
@@ -125,7 +125,7 @@ public class ApplyClassAction extends DispatchAction {
 				String appDetail = "";
 				String checkStatusChi = "";
 				String applyOptChi = ac.getApplyOpt().equals(1) ? "临时接管" : "永久接管";
-				String realName = ac.getUser().getRealName();
+				String realName = ac.getUser().getRealName();//申请人
 				if(checkStatus_db.equals(0)){
 					checkStatusChi = "未处理";
 				}else if(checkStatus_db.equals(1)){
@@ -136,7 +136,7 @@ public class ApplyClassAction extends DispatchAction {
 				String checkRemark = "";
 				if(checkStatus_db.equals(0)){//未处理
 					if(opt.equals(1)){//我的主动申请
-						toUserId = ac.getUser().getId();
+						toUserId = ac.getToUserId();
 						if(toUserId > 0){
 							List<User> uList = um.listEntityById(toUserId);
 							if(uList.size() > 0){

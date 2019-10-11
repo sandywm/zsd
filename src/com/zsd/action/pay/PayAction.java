@@ -350,6 +350,7 @@ public class PayAction extends DispatchAction {
 		Integer feeType = 1;//费用类型(1:导师费,2:会员费)
 		Integer fee = 0;//购买所需费用
 		String buyDate = "";//获取指定购买月份后的日期
+		Integer bindStatus = 1;//-1[免费试用],1[付费绑定],2[免费绑定]
 		String currDate = CurrentTime.getStringDate();
 //		Integer currUserGradeNumber_curr = 0;//当前所在年级
 		Integer currUserGradeNumber_new = 0;//选取购买月份后所在年级
@@ -399,7 +400,14 @@ public class PayAction extends DispatchAction {
 						Integer checkStatus = nt.getCheckStatus();
 						if(stuSchoolType.equals(schoolType)){//导师学段要和学生学段相同才能绑定
 							if(checkStatus.equals(2)){//该导师必须为审核通过的导师才能进行绑定
-								NetTeacherStudent nts = ntsm.getValidInfoByOpt(userId, subId);//该科有没有正在绑定的导师
+								//获取该学生为免费试用还是付费绑定
+								NetTeacherStudent nts = null;
+								if(ntsm.listAllInfoByOpt(userId, subId).size() > 0){
+									bindStatus = 1;//付费绑定
+									nts = ntsm.getValidInfoByOpt(userId, subId);//该科有没有正在绑定的导师
+								}else{
+									bindStatus = -1;//免费试用
+								}
 								if(nts == null){//没有，可以进行绑定
 									String schoolTypeChi = "";
 									if(schoolType.equals(1)){
@@ -486,6 +494,7 @@ public class PayAction extends DispatchAction {
 			map.put("selMonth", selMonth);//购买月数
 			map.put("fee", fee);//费用
 			map.put("zkRate", zkRate * 100 + "%");
+			map.put("bindStatus", bindStatus);//-1[免费试用],1[付费绑定]
 		}
 		CommonTools.getJsonPkg(map, response);
 		return null;

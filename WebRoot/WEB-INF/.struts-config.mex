@@ -49,6 +49,7 @@
   <StrutsActivity path="/###.jsp" location="650,2250" dimension="81,53" />
   <StrutsActivity path="/Module/teaHwManager/jsp/teaHwManager.jsp" location="950,2250" dimension="312,53" />
   <StrutsActivity path="/Module/sysHwManager/jsp/sysHwManager.jsp" location="1550,2250" dimension="312,53" />
+  <StrutsActivity path="/ntsBind.do" />
   <StrutsTransition id="/login.do,loginOut,/login.jsp,1" routingType="0">
     <AutomaticBendpoints>
       <AbsolutePoint location="50,102" />
@@ -85,12 +86,12 @@
   </StrutsTransition>
   <StrutsTransition id="/reportCenter.do,nlPage,/###.jsp,1" routingType="0">
     <AutomaticBendpoints>
-      <AbsolutePoint location="488,954" />
-      <AbsolutePoint location="488,1229" />
-      <AbsolutePoint location="2013,1229" />
-      <AbsolutePoint location="2013,2178" />
-      <AbsolutePoint location="720,2178" />
-      <AbsolutePoint location="720,2250" />
+      <AbsolutePoint location="499,850" />
+      <AbsolutePoint location="499,599" />
+      <AbsolutePoint location="-160,599" />
+      <AbsolutePoint location="-160,2178" />
+      <AbsolutePoint location="690,2178" />
+      <AbsolutePoint location="690,2250" />
     </AutomaticBendpoints>
   </StrutsTransition>
   <StrutsTransition id="/user.do,managerPage,/index.jsp,1" routingType="0">
@@ -180,12 +181,12 @@
   </StrutsTransition>
   <StrutsTransition id="/studyRecord.do,stuRecPage,/###.jsp,1" routingType="0">
     <AutomaticBendpoints>
-      <AbsolutePoint location="1093,954" />
-      <AbsolutePoint location="1093,1169" />
-      <AbsolutePoint location="1953,1169" />
-      <AbsolutePoint location="1953,2118" />
-      <AbsolutePoint location="690,2118" />
-      <AbsolutePoint location="690,2250" />
+      <AbsolutePoint location="1096,850" />
+      <AbsolutePoint location="1096,829" />
+      <AbsolutePoint location="-220,829" />
+      <AbsolutePoint location="-220,2118" />
+      <AbsolutePoint location="720,2118" />
+      <AbsolutePoint location="720,2250" />
     </AutomaticBendpoints>
   </StrutsTransition>
   <StrutsTransition id="/lex.do,lexPage,/Module/lexManager/jsp/lexManager.jsp,1" routingType="0">
@@ -212,10 +213,8 @@
   <StrutsTransition id="/loreRelate.do,lrPage,/Module/loreRelateManager/jsp/loreRelateManager.jsp,1" routingType="0">
     <AutomaticBendpoints>
       <AbsolutePoint location="1541,302" />
-      <AbsolutePoint location="1732,302" />
-      <AbsolutePoint location="1732,518" />
-      <AbsolutePoint location="2111,518" />
-      <AbsolutePoint location="2111,1876" />
+      <AbsolutePoint location="2455,302" />
+      <AbsolutePoint location="2455,1876" />
       <AbsolutePoint location="1908,1876" />
     </AutomaticBendpoints>
   </StrutsTransition>

@@ -2528,9 +2528,15 @@ public class OnlineStudyAction extends DispatchAction {
 								boolean liaojieSuccFlag = false;
 								boolean lijieSuccFlag = false;
 								boolean yySuccFlag = false;
-								boolean liaojieSuccFlag_all = false;
-								boolean lijieSuccFlag_all = false;
-								boolean yySuccFlag_all = false;
+								if(result.equals(1)){
+									if(queType2.equals("了解")){
+										liaojieSuccFlag = true;
+									}else if(queType2.equals("理解")){
+										lijieSuccFlag = true;
+									}else if(queType2.equals("应用")){
+										yySuccFlag = true;
+									}
+								}
 								List<StudyStuTjInfo> sstList = ssm.listInfoByOption(stuId, subjectId, currDate);
 								if(sstList.size() > 0){//已存在
 									ssm.updateSSTById(sstList.get(0).getId(), queType2, liaojieSuccFlag, lijieSuccFlag, yySuccFlag);
@@ -2541,7 +2547,7 @@ public class OnlineStudyAction extends DispatchAction {
 								//B:统计全平台学习情况---------------------
 								List<StudyAllTjInfo> satList = sam.listInfoByOption(currDate, subjectId);
 								if(satList.size() > 0){//已存在
-									sam.updateSATById(satList.get(0).getId(), queType2, liaojieSuccFlag_all, lijieSuccFlag_all, yySuccFlag_all);
+									sam.updateSATById(satList.get(0).getId(), queType2, liaojieSuccFlag, lijieSuccFlag, yySuccFlag);
 								}else{//不存在
 									sam.addSAT(currDate, subjectId, queType2, result);
 								}
@@ -2551,17 +2557,6 @@ public class OnlineStudyAction extends DispatchAction {
 								Integer coin = 0;
 								Integer experience = Constants.EXPERIENCE;
 								if(result.equals(1)){
-									if(queType2.equals("了解")){
-										liaojieSuccFlag = true;
-										liaojieSuccFlag_all = true;
-									}else if(queType2.equals("理解")){
-										lijieSuccFlag = true;
-										lijieSuccFlag_all = true;
-									}else if(queType2.equals("应用")){
-										yySuccFlag = true;
-										yySuccFlag_all = true;
-									}
-									
 									if(loreType.equals("巩固训练")){//巩固训练不计分
 										coin = 0;
 										experience = 0;

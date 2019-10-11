@@ -125,6 +125,10 @@
     <action path="/order" parameter="action" scope="request"  type="com.zsd.action.order.OrderAction">
       <set-property property="cancellable" value="true" />
     </action>
+    <!-- 学生绑定网络导师 -->
+    <action path="/ntsBind" parameter="action" scope="request"  type="com.zsd.action.ntBind.NtStuBindAction">
+      <set-property property="cancellable" value="true" />
+    </action>
   </action-mappings>
 
   <message-resources parameter="com.yourcompany.struts.ApplicationResources" />

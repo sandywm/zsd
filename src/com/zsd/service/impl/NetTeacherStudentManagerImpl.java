@@ -345,4 +345,20 @@ public class NetTeacherStudentManagerImpl implements NetTeacherStudentManager {
 			HibernateUtil.closeSession();
 		}
 	}
+
+	@Override
+	public List<NetTeacherStudent> listAllInfoByOpt(Integer stuId, Integer subId)
+			throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			ntsDao = (NetTeacherStudentDao) DaoFactory.instance(null).getDao(Constants.DAO_NET_TEACHER_STUDENT);
+			Session sess  = HibernateUtil.currentSession();
+			return ntsDao.listAllInfoByOpt(sess, stuId, subId);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("获取指定学生指定科目有无绑定记录列表信息时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
 }

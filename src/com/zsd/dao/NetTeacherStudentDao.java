@@ -204,6 +204,17 @@ public interface NetTeacherStudentDao {
 	 * @return
 	 */
 	NetTeacherStudent getEntityInfoByOpt(Session sess,Integer userId,Integer stuId);
+	
+	/**
+	 * 获取指定学生指定科目有无绑定记录列表
+	 * @author wm
+	 * @date 2019-10-11 上午09:03:15
+	 * @param sess
+	 * @param stuId 学生编号
+	 * @param subId 科目编号
+	 * @return
+	 */
+	List<NetTeacherStudent> listAllInfoByOpt(Session sess,Integer stuId,Integer subId);
 		
 		
 }

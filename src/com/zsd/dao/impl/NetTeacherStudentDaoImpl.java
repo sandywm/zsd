@@ -272,4 +272,12 @@ public class NetTeacherStudentDaoImpl implements NetTeacherStudentDao {
 		}
 		return null;
 	}
+
+	@Override
+	public List<NetTeacherStudent> listAllInfoByOpt(Session sess,
+			Integer stuId, Integer subId) {
+		// TODO Auto-generated method stub
+		String hql = " from NetTeacherStudent as nts where nts.user.id = "+stuId+ " and nts.netTeacherInfo.subject.id = "+subId;
+		return sess.createQuery(hql).list();
+	}
 }

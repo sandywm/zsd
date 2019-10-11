@@ -457,19 +457,21 @@ public class UserAction extends DispatchAction {
 		Map<String,Object> map = new HashMap<String,Object>();
 		Integer userId=CommonTools.getLoginUserId(request);
 		List<User> uList = uManager.listEntityById(userId);
-		User user = uList.get(0);
-		map.put("account", user.getUserAccount());
-		map.put("nickName", user.getNickName());
-		map.put("realName", user.getRealName());
-		map.put("birthDay", user.getBirthday());
-		String sex="女";
-		if(user.getSex().equals("m")){
-			sex="男";
+		if(uList.size() > 0){
+			User user = uList.get(0);
+			map.put("account", user.getUserAccount());
+			map.put("nickName", user.getNickName());
+			map.put("realName", user.getRealName());
+			map.put("birthDay", user.getBirthday());
+			String sex="女";
+			if(user.getSex().equals("m")){
+				sex="男";
+			}
+			map.put("sex", sex);
+			map.put("email",user.getEmail());
+			map.put("mobile", user.getMobile());
+			map.put("portrait", user.getPortrait());
 		}
-		map.put("sex", sex);
-		map.put("email",user.getEmail());
-		map.put("mobile", user.getMobile());
-		map.put("portrait", user.getPortrait());
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}

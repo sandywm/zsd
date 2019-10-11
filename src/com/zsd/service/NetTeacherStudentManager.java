@@ -216,4 +216,15 @@ public interface NetTeacherStudentManager {
 	  * @throws WEBException
 	  */
 	 boolean updateInfoById(Integer id,String bindDate,Integer bindStatus,String endDate,Integer payStatus)throws WEBException;
+	 
+	 /**
+	  * 获取指定学生指定科目有无绑定记录列表
+	  * @author wm
+	  * @date 2019-10-11 上午09:01:44
+	  * @param stuId 学生编号
+	  * @param subId 科目编号
+	  * @return
+	  * @throws WEBException
+	  */
+	 List<NetTeacherStudent> listAllInfoByOpt(Integer stuId,Integer subId)throws WEBException;
 }
