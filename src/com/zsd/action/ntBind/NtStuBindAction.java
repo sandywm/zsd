@@ -224,6 +224,7 @@ public class NtStuBindAction extends DispatchAction {
 		Integer roleId = CommonTools.getLoginRoleId(request);
 		Integer ntsId = CommonTools.getFinalInteger("ntsId", request);
 		String bindDate = CommonTools.getFinalStr("bindDate", request);
+		roleId = 7;
 		Map<String,String> map = new HashMap<String,String>();
 		String msg = "error";
 		if(currUserId > 0 && ntsId > 0 && roleId.equals(Constants.SUPER_ROLE_ID)){
