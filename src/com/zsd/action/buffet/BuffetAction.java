@@ -330,7 +330,7 @@ public class BuffetAction extends DispatchAction {
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "success";
 		List<Object> list_d = new ArrayList<Object>();
-		if(currLoreId > 0 && cptId.equals(0)){
+		if(currLoreId > 0){
 			LoreInfo lore = lm.getEntityById(currLoreId);
 			if(lore != null){
 				cptId = lore.getChapter().getId();
