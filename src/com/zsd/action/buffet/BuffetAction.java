@@ -327,11 +327,17 @@ public class BuffetAction extends DispatchAction {
 		BuffetQueInfoManager bm = (BuffetQueInfoManager) AppFactory.instance(null).getApp(Constants.WEB_BUFFET_QUE_INFO);
 		Integer currLoreId = CommonTools.getFinalInteger("loreId", request);
 		Integer cptId = CommonTools.getFinalInteger("cptId", request);
-		JoinLoreRelation jlr = jlrm.getInfoByLoreId(currLoreId);
-		List<LoreInfo> lList = lm.listInfoByCptId(cptId);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "success";
 		List<Object> list_d = new ArrayList<Object>();
+		if(currLoreId > 0 && cptId.equals(0)){
+			LoreInfo lore = lm.getEntityById(currLoreId);
+			if(lore != null){
+				cptId = lore.getChapter().getId();
+			}
+		}
+		JoinLoreRelation jlr = jlrm.getInfoByLoreId(currLoreId);
+		List<LoreInfo> lList = lm.listInfoByCptId(cptId);
 		for(Iterator<LoreInfo> it = lList.iterator() ; it.hasNext();){
 			LoreInfo lore = it.next();
 			Integer jlrId = 0;
