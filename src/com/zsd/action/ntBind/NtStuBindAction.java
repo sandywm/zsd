@@ -4,6 +4,7 @@
  */
 package com.zsd.action.ntBind;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,11 +16,13 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
 
+import com.zsd.action.base.Transcode;
 import com.zsd.factory.AppFactory;
 import com.zsd.module.NetTeacherInfo;
 import com.zsd.module.NetTeacherStudent;
 import com.zsd.module.School;
 import com.zsd.module.User;
+import com.zsd.page.PageConst;
 import com.zsd.service.NetTeacherInfoManager;
 import com.zsd.service.NetTeacherStudentManager;
 import com.zsd.service.SchoolManager;
@@ -36,6 +39,113 @@ import com.zsd.util.Constants;
  * @struts.action validate="true"
  */
 public class NtStuBindAction extends DispatchAction {
+	
+	/**
+	 * 导向学生导师绑定列表
+	 * @author wm
+	 * @date 2019-10-12 上午08:28:41
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward goNtsPage(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		return mapping.findForward("ntsPage");
+	}
+	
+	/**
+	 * 分页获取学生导师绑定列表
+	 * @author wm
+	 * @date 2019-10-12 上午08:31:30
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getNtsBindData(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		NetTeacherStudentManager ntsm = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT);
+		String stuAccount = CommonTools.getFinalStr("stuAccount", request);//学生账号
+		String stuRealName = Transcode.unescape_new1("stuRealName", request);//学生真实姓名
+		String ntAccount = CommonTools.getFinalStr("ntAccount", request);//网络导师账号
+		String ntRealName = Transcode.unescape_new1("ntRealName", request);//网络真实姓名
+		Integer subId = CommonTools.getFinalInteger("subId", request);//（0表示全部）
+		Integer schoolType = CommonTools.getFinalInteger("schoolType", request);//（0表示全部）
+		Integer bindStatus = CommonTools.getFinalInteger("bindStatus", request);//（-2：表示全部，-1：免费试用，1：付费绑定，2：免费绑定）
+		Integer pageSize = PageConst.getPageSize(String.valueOf(request.getParameter("limit")), 10);//等同于pageSize
+		Integer pageNo = CommonTools.getFinalInteger("page", request);//等同于pageNo
+		String bindSdate = CommonTools.getFinalStr("bindSdate", request);
+		String bindEdate = CommonTools.getFinalStr("bindEdate", request);
+		String currDate = CurrentTime.getStringDate();
+		String  msg = "暂无记录";
+		Map<String, Object> map = new HashMap<String, Object>();
+		Integer count = ntsm.getCountByOpt(stuAccount, stuRealName, ntAccount, ntRealName, subId, schoolType, bindStatus, bindSdate, bindEdate);
+		if(count > 0){
+			msg = "success";
+			List<NetTeacherStudent> ntsList = ntsm.listAllPageInfoByOpt(stuAccount, stuRealName, ntAccount, ntRealName, subId, schoolType, bindStatus, bindSdate, bindEdate, pageNo, pageSize);
+			List<Object> list_d = new ArrayList<Object>();
+			for(NetTeacherStudent nts : ntsList){
+				Map<String, Object> map_d = new HashMap<String, Object>();
+				map_d.put("ntsId",nts.getId());
+				map_d.put("stuAccount",nts.getUser().getUserAccount());
+				map_d.put("stuRealName",nts.getUser().getRealName());
+				NetTeacherInfo nt = nts.getNetTeacherInfo();
+				map_d.put("ntAccount",nt.getUser().getUserAccount());
+				map_d.put("ntRealName",nt.getUser().getRealName());
+				Integer schoolType_tmp = nt.getSchoolType();
+				String schoolTypeChi = "";
+				if(schoolType_tmp.equals(1)){
+					schoolTypeChi = "小学";
+				}else if(schoolType_tmp.equals(2)){
+					schoolTypeChi = "初中";
+				}else if(schoolType_tmp.equals(3)){
+					schoolTypeChi = "高中";
+				}
+				map_d.put("ntSubName", schoolTypeChi+nt.getSubject().getSubName());
+				Integer bindStatus_tm = nts.getBindStatus();
+				String bindStatusChi = "";
+				String clearDate = nts.getClearDate();
+				String endDate = nts.getEndDate();
+				String validInfo = "";
+				if(bindStatus_tm.equals(-1)){
+					bindStatusChi = "免费试用";
+				}else if(bindStatus_tm.equals(0)){
+					bindStatusChi = "取消绑定";
+				}else if(bindStatus_tm.equals(1)){
+					bindStatusChi = "付费绑定";
+				}else if(bindStatus_tm.equals(2)){
+					bindStatusChi = "免费绑定";
+				}
+				if(clearDate.equals("")){
+					if(CurrentTime.compareDate(currDate, endDate) > 0){
+						validInfo = "未到期";
+					}else{
+						validInfo = "已到期";
+					}
+				}else{//升学取消
+					validInfo = "升学清除";
+				}
+				map_d.put("bindStatus", bindStatusChi);
+				map_d.put("validInfo", validInfo);
+				map_d.put("bindDate", nts.getBindDate());
+				map_d.put("endDate", endDate);
+				list_d.add(map_d);
+			}
+			map.put("data", list_d);
+			map.put("count", count);
+			map.put("code", 0);
+		}
+		map.put("msg", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
 	
 	/**
 	 * 免费试用绑定网络导师

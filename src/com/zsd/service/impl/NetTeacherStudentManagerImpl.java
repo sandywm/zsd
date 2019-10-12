@@ -361,4 +361,39 @@ public class NetTeacherStudentManagerImpl implements NetTeacherStudentManager {
 			HibernateUtil.closeSession();
 		}
 	}
+
+	@Override
+	public List<NetTeacherStudent> listAllPageInfoByOpt(String stuAccount,
+			String stuRealName, String ntAccount, String ntRealName,
+			Integer subId, Integer schoolType, Integer bindStatus,String bindSdate,String bindEdate,
+			Integer pageNo, Integer pageSize) throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			ntsDao = (NetTeacherStudentDao) DaoFactory.instance(null).getDao(Constants.DAO_NET_TEACHER_STUDENT);
+			Session sess  = HibernateUtil.currentSession();
+			return ntsDao.findAllPageInfoByOpt(sess, stuAccount, stuRealName, ntAccount, ntRealName, subId, schoolType, bindStatus, bindSdate, bindEdate, pageNo, pageSize);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("通过条件分页获取学生导师绑定信息时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public Integer getCountByOpt(String stuAccount, String stuRealName,
+			String ntAccount, String ntRealName, Integer subId,
+			Integer schoolType, Integer bindStatus,String bindSdate,String bindEdate) throws WEBException  {
+		// TODO Auto-generated method stub
+		try {
+			ntsDao = (NetTeacherStudentDao) DaoFactory.instance(null).getDao(Constants.DAO_NET_TEACHER_STUDENT);
+			Session sess  = HibernateUtil.currentSession();
+			return ntsDao.getCountByOpt(sess, stuAccount, stuRealName, ntAccount, ntRealName, subId, schoolType, bindStatus, bindSdate, bindEdate);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("通过条件获取学生导师绑定记录条数时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
 }

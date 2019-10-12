@@ -2,6 +2,7 @@ package com.zsd.service;
 
 import java.util.List;
 
+
 import com.zsd.exception.WEBException;
 import com.zsd.module.NetTeacherStudent;
 
@@ -227,4 +228,39 @@ public interface NetTeacherStudentManager {
 	  * @throws WEBException
 	  */
 	 List<NetTeacherStudent> listAllInfoByOpt(Integer stuId,Integer subId)throws WEBException;
+	 
+	 /**
+	  * 通过条件分页获取学生导师绑定信息
+	  * @author wm
+	  * @date 2019-10-12 上午09:02:54
+	  * @param stuAccount 学生账号（""表示全部）
+	  * @param stuRealName 学生真实姓名（""表示全部）
+	  * @param ntAccount 导师账号（""表示全部）
+	  * @param ntRealName 导师姓名（""表示全部）
+	  * @param subId 学科编号（0表示全部）
+	  * @param schoolType 学段（0表示全部）
+	  * @param bindStatus 绑定状态（-2：表示全部，-1：免费试用，0：取消，1：付费绑定，2：免费绑定）
+	  * @param pageNo
+	  * @param pageSize
+	  * @return
+	  * @throws WEBException
+	  */
+	 List<NetTeacherStudent> listAllPageInfoByOpt(String stuAccount,String stuRealName,String ntAccount,String ntRealName,
+				Integer subId,Integer schoolType,Integer bindStatus,String bindSdate,String bindEdate,Integer pageNo,Integer pageSize)throws WEBException;
+	 
+	 /**
+	  * 通过条件获取学生导师绑定记录条数
+	  * @author wm
+	  * @date 2019-10-12 上午09:03:07
+	  * @param stuAccount 学生账号（""表示全部）
+	  * @param stuRealName 学生真实姓名（""表示全部）
+	  * @param ntAccount 导师账号（""表示全部）
+	  * @param ntRealName 导师姓名（""表示全部）
+	  * @param subId 学科编号（0表示全部）
+	  * @param schoolType 学段（0表示全部）
+	  * @param bindStatus 绑定状态（-2：表示全部，-1：免费试用，0：取消，1：付费绑定，2：免费绑定）
+	  * @return
+	  */
+	 Integer getCountByOpt(String stuAccount,String stuRealName,String ntAccount,String ntRealName,
+				Integer subId,Integer schoolType,Integer bindStatus,String bindSdate,String bindEdate) throws WEBException ;
 }

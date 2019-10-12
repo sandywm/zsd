@@ -215,6 +215,44 @@ public interface NetTeacherStudentDao {
 	 * @return
 	 */
 	List<NetTeacherStudent> listAllInfoByOpt(Session sess,Integer stuId,Integer subId);
-		
-		
+	
+	/**
+	 * 通过条件分页获取学生导师绑定信息
+	 * @author wm
+	 * @date 2019-10-12 上午08:48:30
+	 * @param sess
+	 * @param stuAccount 学生账号（""表示全部）
+	 * @param stuRealName 学生真实姓名（""表示全部）
+	 * @param ntAccount 导师账号（""表示全部）
+	 * @param ntRealName 导师姓名（""表示全部）
+	 * @param subId 学科编号（0表示全部）
+	 * @param schoolType 学段（0表示全部）
+	 * @param bindStatus 绑定状态（-2：表示全部，-1：免费试用，0：取消，1：付费绑定，2：免费绑定）
+	 * @param bindSdate 开始时间
+	 * @param bindEdate 结束时间
+	 * @param pageNo
+	 * @param pageSize
+	 * @return
+	 */
+	List<NetTeacherStudent> findAllPageInfoByOpt(Session sess,String stuAccount,String stuRealName,String ntAccount,String ntRealName,
+			Integer subId,Integer schoolType,Integer bindStatus,String bindSdate,String bindEdate,Integer pageNo,Integer pageSize);
+	
+	/**
+	 * 通过条件获取学生导师绑定记录条数
+	 * @author wm
+	 * @date 2019-10-12 上午08:51:52
+	 * @param sess
+	 * @param stuAccount 学生账号（""表示全部）
+	 * @param stuRealName 学生真实姓名（""表示全部）
+	 * @param ntAccount 导师账号（""表示全部）
+	 * @param ntRealName 导师姓名（""表示全部）
+	 * @param subId 学科编号（0表示全部）
+	 * @param schoolType 学段（0表示全部）
+	 * @param bindStatus 绑定状态（-2：表示全部，-1：免费试用，0：取消，1：付费绑定，2：免费绑定）
+	 * @param bindSdate 开始时间
+	 * @param bindEdate 结束时间
+	 * @return
+	 */
+	Integer getCountByOpt(Session sess,String stuAccount,String stuRealName,String ntAccount,String ntRealName,
+			Integer subId,Integer schoolType,Integer bindStatus,String bindSdate,String bindEdate);
 }

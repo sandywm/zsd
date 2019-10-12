@@ -280,4 +280,76 @@ public class NetTeacherStudentDaoImpl implements NetTeacherStudentDao {
 		String hql = " from NetTeacherStudent as nts where nts.user.id = "+stuId+ " and nts.netTeacherInfo.subject.id = "+subId;
 		return sess.createQuery(hql).list();
 	}
+
+	@Override
+	public List<NetTeacherStudent> findAllPageInfoByOpt(Session sess,
+			String stuAccount, String stuRealName, String ntAccount,
+			String ntRealName, Integer subId, Integer schoolType,
+			Integer bindStatus,String bindSdate,String bindEdate, Integer pageNo, Integer pageSize) {
+		// TODO Auto-generated method stub
+		String hql = " from NetTeacherStudent as nts where 1 = 1";
+		if(!stuAccount.equals("")){
+			hql += " and nts.user.userAccount like '%"+stuAccount+"%'";
+		}
+		if(!stuRealName.equals("")){
+			hql += " and nts.user.realName like '%"+stuRealName+"%'";	
+		}
+		if(!ntAccount.equals("")){
+			hql += " and nts.netTeacherInfo.user.userAccount like '%"+ntAccount+"%'";
+		}
+		if(!ntRealName.equals("")){
+			hql += " and nts.netTeacherInfo.user.realName like '%"+ntRealName+"%'";
+		}
+		if(schoolType > 0){
+			hql += " and nts.netTeacherInfo.schoolType = "+schoolType;
+		}
+		if(subId > 0){
+			hql += " and nts.netTeacherInfo.subject.id = "+subId;
+		}
+		if(bindStatus > -2){
+			hql += " and nts.bindStatus = "+bindStatus;
+		}
+		if(!bindSdate.equals("") || !bindEdate.equals("")){
+			hql += " and substring(nts.bindDate,1,7) >= '"+bindSdate+"' and substring(spo.addDate,1,7) <= '"+bindEdate+"'";
+		}
+		int offset = (pageNo - 1) * pageSize;
+		if (offset < 0) {
+			offset = 0;
+		}
+		return sess.createQuery(hql).setFirstResult(offset).setMaxResults(pageSize).list();
+	}
+
+	@Override
+	public Integer getCountByOpt(Session sess, String stuAccount,
+			String stuRealName, String ntAccount, String ntRealName,
+			Integer subId, Integer schoolType, Integer bindStatus,String bindSdate,String bindEdate) {
+		// TODO Auto-generated method stub
+		String hql = "select count(nts.id) from NetTeacherStudent as nts where 1 = 1";
+		if(!stuAccount.equals("")){
+			hql += " and nts.user.userAccount like '%"+stuAccount+"%'";
+		}
+		if(!stuRealName.equals("")){
+			hql += " and nts.user.realName like '%"+stuRealName+"%'";	
+		}
+		if(!ntAccount.equals("")){
+			hql += " and nts.netTeacherInfo.user.userAccount like '%"+ntAccount+"%'";
+		}
+		if(!ntRealName.equals("")){
+			hql += " and nts.netTeacherInfo.user.realName like '%"+ntRealName+"%'";
+		}
+		if(schoolType > 0){
+			hql += " and nts.netTeacherInfo.schoolType = "+schoolType;
+		}
+		if(subId > 0){
+			hql += " and nts.netTeacherInfo.subject.id = "+subId;
+		}
+		if(bindStatus > -2){
+			hql += " and nts.bindStatus = "+bindStatus;
+		}
+		if(!bindSdate.equals("") || !bindEdate.equals("")){
+			hql += " and substring(nts.bindDate,1,7) >= '"+bindSdate+"' and substring(spo.addDate,1,7) <= '"+bindEdate+"'";
+		}
+		Object countObj = sess.createQuery(hql).uniqueResult();
+	    return CommonTools.longToInt(countObj);
+	}
 }
