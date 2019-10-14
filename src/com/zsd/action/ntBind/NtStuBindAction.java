@@ -165,7 +165,7 @@ public class NtStuBindAction extends DispatchAction {
 		NetTeacherInfoManager ntm = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
 		UserManager um = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
 		SchoolManager sm = (SchoolManager) AppFactory.instance(null).getApp(Constants.WEB_SCHOOL_INFO);
-		Integer stuId = CommonTools.getLoginRoleId(request);
+		Integer stuId = CommonTools.getLoginUserId(request);
 		Integer roleId = CommonTools.getLoginRoleId(request);
 		Integer ntId = CommonTools.getFinalInteger("ntId", request);
 		String currDate = CurrentTime.getStringDate();
