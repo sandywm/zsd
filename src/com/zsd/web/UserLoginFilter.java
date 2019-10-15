@@ -90,6 +90,7 @@ public class UserLoginFilter implements Filter{
 			if(userId.equals(0)){
 				if(!requesturi.endsWith("/login.do") 
 						&& !requesturi.endsWith("/baseInfo.do")
+						&& !requesturi.endsWith("/common.do")
 						&& !requesturi.endsWith("/authImg")
 						&& !requesturi.endsWith("jsp")
 						&& !requesturi.endsWith("css") 
@@ -100,6 +101,7 @@ public class UserLoginFilter implements Filter{
 						&& !requesturi.endsWith("jpeg")
 						&& !requesturi.endsWith("ico")
 						&& !requesturi.endsWith("ttf")
+						&& !requesturi.endsWith("woff")
 						&& !requesturi.endsWith("json")
 						&& !requesturi.endsWith("html")
 						&& !requesturi.endsWith("apk")
