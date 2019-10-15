@@ -132,7 +132,8 @@ public class NtStuBindAction extends DispatchAction {
 				}else{//升学取消
 					validInfo = "升学清除";
 				}
-				map_d.put("bindStatus", bindStatusChi);
+				map_d.put("bindStatus", bindStatus_tm);
+				map_d.put("bindStatusChi", bindStatusChi);
 				map_d.put("validInfo", validInfo);
 				map_d.put("bindDate", nts.getBindDate());
 				map_d.put("endDate", endDate);
