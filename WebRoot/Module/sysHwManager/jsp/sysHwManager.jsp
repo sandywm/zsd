@@ -458,6 +458,7 @@
 					$('.addEditBack').on('click',function(){
 						$('.loreQuesList').hide();
 						$('.loreList').show();
+						$('.layui-table-fixed').removeClass('layui-hide');
 						relate.comBackFun();
 						$('#currLoc').html('');
 					});

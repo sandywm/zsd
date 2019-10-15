@@ -616,7 +616,7 @@ layui.define(['form','buffetLoreDOM'],function(exports){
 						_this.initShowInpByMaxOptNum(optFiled.queOptNum, 'ansBox_multiTk');
 						form.render();
 					}
-					if(globalOpts == 'add'){//添加填空选择题时调用
+					if(globalOpts == 'add' || _this.data.isSwitchFlag){//添加填空选择题时调用
 						this.addItemTk();
 						this.clearAllAnswer();
 					}

@@ -1,0 +1,116 @@
+.aboutUsWrap{
+	height:650px;
+	background:#4d47f1;
+	position:relative;
+	margin-bottom:150px;
+}
+.aboutUsDec{
+	width:100%;
+	height:350px;
+	position:absolute;
+	left:0;
+	bottom:0px;
+	background:url(../images/aboutUsDec.jpg) no-repeat;
+	background-size:100% 100%;
+	z-index:1;
+}
+.aboutUsWrap .leftCon{
+	width:320px;
+	height:300px;
+	float:left;
+	margin-left:20px;
+	margin-top:80px;
+	position:relative;
+	z-index:2;
+}
+.aboutUsWrap .mainTit{
+	font-size:32px;
+	color:#fff;
+	display:block;
+}
+.aboutUsWrap p.desCon{
+	font-size:14px;
+	color:#fff;
+	line-height:26px;
+	margin-top:20px;
+}
+.aboutUsWrap a.experiBtn{
+	width:100%;
+	height:50px;
+	background:#fff;
+	border-radius:4px;
+	display:block;
+	text-align:center;
+	margin-top:50px;
+}
+.aboutUsWrap a.experiBtn img{
+	width:160px;
+	display:inline-block;
+	margin-top:14px;
+}
+.aboutUsWrap a.experiBtn:hover{
+	opacity:.9;
+}
+.aboutUsImg{
+	float:left;
+	position:relative;
+	z-index:2;
+	margin-top:40px;
+	margin-left:200px;
+}
+.aboutUsImg img{
+	width:500px;
+	height:634px;
+}
+.innerDec{
+	height:350px;
+	position:relative;
+}
+.innerDec strong{
+	font-size:24px;
+	color:#192437;
+	position:absolute;
+	bottom:-20px;
+	left:20px;
+}
+.innerDec p{
+	font-size:14px;
+	color:#324c7e;
+	position:absolute;
+	left:20px;
+	bottom:-50px;
+}
+.comItem{
+	margin-bottom:80px;
+}
+.imgItem{
+	width:500px;
+	height:260px;
+	background:#4d47f1;
+	margin-left:50px;
+}
+.conItem{
+	width:320px;
+	margin-left:100px;
+}
+.conItem strong{
+	font-size:24px;
+	color:#192437;
+	display:block;
+	margin-bottom:15px;
+}
+.conItem p{
+	font-size:14px;
+	color:#324c7e;
+	line-height:25px;
+}
+.contractUs strong.titStrong{
+	width:100%;
+	height:80px;
+	line-height:80px;
+	background:#f7f7f7;
+	display:block;
+	font-size:30px;
+	color:#192437;
+	text-align:center;
+}

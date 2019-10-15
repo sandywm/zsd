@@ -18,10 +18,10 @@
 		sessionStorage.setItem("roleName", roleName);
 	</script>
 	<style>
-		.layui-layer-molv .layui-layer-title{background:#4d47f1 !important;}
+		/*.layui-layer-molv .layui-layer-title{background:#4d47f1 !important;}
 		.layui-layer-molv .layui-layer-btn a{background:#4d47f1 !important;border-color:#4d47f1 !important; }
 		.layui-layer-molv .layui-layer-btn .layui-layer-btn1{background:none !important;border-color:#ccc !important;}
-		.layui-form-radio>i:hover, .layui-form-radioed>i{color:#4d47f1 !important;}
+		.layui-form-radio>i:hover, .layui-form-radioed>i{color:#4d47f1 !important;}*/
 	</style>
   </head>
   
@@ -70,7 +70,9 @@
   			<div class="layui-side-scroll">
   				<!-- 左侧导航区域（可配合layui已有的垂直导航） -->
   				<ul id="leftSideNav" class="layui-nav layui-nav-tree" lay-fliter="leftSideNav">
-  					<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="school.do?action=goSchoolPage" tab-id="1">学校信息管理</a></li>
+  					<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="ntsBind.do?action=goNtsPage" tab-id="16">学生导师管理</a></li>
+  					<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="user.do?action=goUserPage" tab-id="15">用户管理</a></li>
+  					<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="school.do?action=goSchoolPage" tab-id="1">学校管理</a></li>
   					<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="common.do?action=goEditionPage" tab-id="2">出版社管理</a></li>
   					<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="common.do?action=goSubjectPage" tab-id="3">学科管理</a></li>
   					<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="common.do?action=goEducationPage" tab-id="4">教材管理</a></li>
@@ -97,7 +99,8 @@
 	            </ul>
 	            <div class="layui-tab-content">
 	                <div class="layui-tab-item layui-show">
-	               		<iframe id="mainIframe" src="netTeacherReview.do?action=goNtReviewPage" frameborder="0" scrolling="yes" width="100%" height="100%"></iframe>
+	                <!-- baseInfo.do?action=downApp common.do?action=goWeclomePage  lore.do?action=goLoreQuePage -->
+	               		<iframe id="mainIframe" src="common.do?action=goWeclomePage" frameborder="0" scrolling="yes" width="100%" height="100%"></iframe>
 	                	<!--  iframe id="mainIframe" src="hw.do?action=goHwPage" frameborder="0" scrolling="yes" width="100%" height="100%"></iframe-->
 	                	<!-- iframe id="mainIframe" src="buffet.do?action=goBuffetPage" frameborder="0" scrolling="yes" width="100%" height="100%"></iframe>
 	                	<iframe id="mainIframe" src="user.do?action=goWelcomePage" frameborder="0" scrolling="yes" width="100%" height="100%"></iframe -->
@@ -178,17 +181,6 @@
 	        	$("#leftSideNav").html(liItem);
 	        	element.init(); 
 	        }
-	        $(function(){
-	        	/**renderModuleList();
-	        	if(loginType == 'appUser' || loginType == 'cpyUser'){
-	        		$('#mailNavLi').css('visibility','visible');
-	        		getNoReadStatusNum();
-	        	}else{
-	        		$('#mailNavLi').remove();
-	        	}
-	        	common.getUserBasicInfo('mine');
-	        	createSetInfoLayer();    **/    	
-	        });
 	        function createSetInfoLayer(){
 	        	var setInfoTxt = '',fullLayer = '<div class="indexLayer"></div>';
 	        	var isComFlag = checkCpyInitInfoSet();

@@ -74,6 +74,19 @@ layui.define(["form","jquery"],function(exports){
                 $('#countyCode').val('');
                 $('#townInp').val('');
                 $('#townCode').val('');
+                //注册时候清空对应值
+                $('#schoolIdInp').val('');
+				$('#schNameTxt').html('请选择学校').addClass('noSel');
+				$('#schListUl').html('');
+				
+				$('#gradeNum').val('');
+				$('#gradeNameTxt').html('请选择年级').addClass('noSel');
+				$('#gradeListUl').html('');
+				
+				$('#classNum').val('');
+				$('#classNameTxt').html('请选择班级').addClass('noSel');
+				$('#classListUl').html('');
+				
                 $("select[name=town]").html('<option value="">请选择乡/镇</option>').attr("disabled", "disabled");
                 if (value != '') {
                 	that.citys(data[$(this).index() - 1].children);
@@ -103,6 +116,19 @@ layui.define(["form","jquery"],function(exports){
             $('#countyCode').val('');
             $('#townInp').val('');
             $('#townCode').val('');
+            //注册时候清空对应值
+            $('#schoolIdInp').val('');
+			$('#schNameTxt').html('请选择学校').addClass('noSel');
+			$('#schListUl').html('');
+			
+			$('#gradeNum').val('');
+			$('#gradeNameTxt').html('请选择年级').addClass('noSel');
+			$('#gradeListUl').html('');
+			
+			$('#classNum').val('');
+			$('#classNameTxt').html('请选择班级').addClass('noSel');
+			$('#classListUl').html('');
+			
             $("select[name=town]").html('<option value="">请选择乡/镇</option>').attr("disabled", "disabled");
             if (value != '') {
             	that.areas(citys[$(this).index() - 1].children);
@@ -130,6 +156,19 @@ layui.define(["form","jquery"],function(exports){
 		    $('#countyCode').val(value);
 		    $('#townInp').val('');
             $('#townCode').val('');
+            //注册时候清空对应值
+            $('#schoolIdInp').val('');
+			$('#schNameTxt').html('请选择学校').addClass('noSel');
+			$('#schListUl').html('');
+			
+			$('#gradeNum').val('');
+			$('#gradeNameTxt').html('请选择年级').addClass('noSel');
+			$('#gradeListUl').html('');
+			
+			$('#classNum').val('');
+			$('#classNameTxt').html('请选择班级').addClass('noSel');
+			$('#classListUl').html('');
+			
 			layer.load('1');
 			_this.getTownData(value,'selTown');
 		});
@@ -140,6 +179,18 @@ layui.define(["form","jquery"],function(exports){
 			var townVal = data.value.split('-')[1];
 			$('#townCode').val(value);
 			$('#townInp').val(townVal);
+			//注册时候清空对应值
+            $('#schoolIdInp').val('');
+			$('#schNameTxt').html('请选择学校').addClass('noSel');
+			$('#schListUl').html('');
+			
+			$('#gradeNum').val('');
+			$('#gradeNameTxt').html('请选择年级').addClass('noSel');
+			$('#gradeListUl').html('');
+			
+			$('#classNum').val('');
+			$('#classNameTxt').html('请选择班级').addClass('noSel');
+			$('#classListUl').html('');
 		});
     };
     //加载乡镇数据根据countyCode

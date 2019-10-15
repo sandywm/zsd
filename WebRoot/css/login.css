@@ -1,67 +1,59 @@
 body{
-	
+	background:#ebf1f7;
 }
-.loginBg{
-	position:absolute;
-	left:0;
-	right:0;
-	top:0;
-	bottom:0;
-	z-index:1;
-	background: -webkit-linear-gradient(left top, #7368ed , #256bff); /* Safari 5.1 - 6.0 */
-    background: -o-linear-gradient(bottom right, #7368ed, #256bff); /* Opera 11.1 - 12.0 */
-    background: -moz-linear-gradient(bottom right, #7368ed, #256bff); /* Firefox 3.6 - 15 */
-    background: linear-gradient(to bottom right, #7368ed , #256bff); /* 标准的语法 */
+.header.hasPadd{
+	padding-bottom:10px;
+	margin-bottom:0;
+}
+.w1200{
+	width:1200px;
+	margin:0 auto;
 }
 .loginWrap{
 	width: 1000px;
-	height: 400px;
+	height: 500px;
 	background: #fff;
 	position: absolute;
 	left: 50%;
 	top: 50%;
 	margin-top: -200px;
 	margin-left:-500px ;
-	border-radius: 4px;
-	box-shadow: 0 0 15px rgba(0,0,0,.3);
 	z-index:5;
 }
-.innerWrap{
-	position: absolute;
-	left: 100px;
-	right: 50px;
-	top: 50px;
-	bottom: 20px;
-}
-.innerWrap .leftLoginDec{
+.leftLoginDec{
 	height: 100%;
 	float: left;
 }
-.innerWrap .leftLoginDec img{
-	height: 320px;
+.leftLoginDec img{
+	width:406px;
+	height:500px;
 }
 .rightLoginForm{
-	width: 300px;
-	height: 320px;
-	float: right;
+	width: 500px;
+	height: 500px;
+	float: left;
+	margin-left:50px;
 }
 .rightLoginForm strong{
 	width: 100%;
 	height: 40px;
 	line-height: 40px;
-	font-size: 20px;
+	font-size: 26px;
 	color: #333;
 	text-align: center;
 	display: block;
 	margin-bottom: 20px;
+	padding:20px 0;
+	font-weight:normal;
+	margin-top:40px;
 }
 .formBox{
-	width: 100%;
+	width: 360px;
 	height: 40px;
 	line-height: 40px;
 	border:1px solid #ccc;
 	border-radius: 4px;
-	margin-bottom: 20px;
+	margin:0 auto 20px;
 }
 .formBox input{
 	width:80%;
@@ -70,6 +62,7 @@ body{
 	background: transparent;
 	float: left;
 	padding-left:5%;
+	font-weight:bold;
 }
 .formBox input::-webkit-input-placeholder{
 	font-weight: normal;
@@ -89,7 +82,6 @@ body{
 }
 .formBox.vercodeBox span.iconBox{
 	width: 35%;
-	margin-right: 5%;
 	cursor: pointer;
 }
 .formBox.vercodeBox span.iconBox img{
@@ -104,6 +96,7 @@ body{
 	position: relative;
 	font-size: 14px;
 	color: #666;
+	margin-left:70px;
 }
 .loginBtnWrap label input{
 	width: 100%;
@@ -154,14 +147,17 @@ body{
 	color: #fff;
 	font-size: 15px;
 	border-radius: 4px;
+	margin-right:70px;
 }
 .findPassWrap{
 	height: 20px;
 	line-height: 20px;
 	margin-top: 5px;
+	margin-right:70px;
 }
 .findPassWrap a{
 	float: right;
 	color: #666;
 	font-size: 13px;
+	margin-top:10px;
 }

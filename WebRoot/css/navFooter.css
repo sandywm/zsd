@@ -1,0 +1,80 @@
+.header{
+	background:#fff;
+	height: 80px;
+	margin-bottom: 10px;
+}
+.header img{
+	width: 180px;
+	float: left;
+	margin-top: 20px;
+}
+.nav,
+.loginNav{
+	float: right;
+}
+.loginNav{
+	margin-left: 15px;
+}
+.nav li,
+.loginNav li{
+	width: 100px;
+	height: 80px;
+	line-height: 80px;
+	text-align: center;
+	float: left;
+	font-size: 18px;
+	margin-left: 15px;
+}
+.loginNav li{
+	margin-left: 0;
+}
+.nav li a,
+.loginNav li a{
+	width: 100%;
+	height: 100%;
+	color: #333;
+	position: relative;
+	display: block;
+}
+.loginNav li a.loginBg{
+	background:#4d47f1 ;
+	color: #fff;
+}
+.nav li a.active,
+.loginNav li a.regTxt{
+	color: #4d47f1;
+}
+.nav li a span.lineSpan{
+	width: 100%;
+	height: 5px;
+	background:#4d47f1 ;
+	position: absolute;
+	left: 0;
+	top:0;
+	display: none;
+}
+.nav li a.active span.lineSpan{
+	display: block;
+}
+
+/* footer */
+.footerWrap{
+	width:100%;
+	height:150px;
+	background:#333;
+	margin-top:50px;
+	position:relative;
+	padding-top: 50px;
+}
+.foot{
+	height:150px;
+	color: #fff;
+}
+.foot p{
+	font-size: 14px;
+	text-align: center;
+	line-height: 30px;
+}
+.foot p a{
+	color: #fff;
+}

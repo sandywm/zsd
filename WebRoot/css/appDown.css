@@ -1,0 +1,42 @@
+body{
+	background:#f2f2f2;
+}
+.appDownWrap{
+	background:#fff;
+	margin-bottom:-50px;
+	padding:100px 0;
+}
+.appDownWrap img.iphoneBg{
+	width:431px;
+	height:574px;
+}
+.appDownWrap .appDownCon{
+	width:669px;
+	height:540px;
+	margin-left:100px;
+}
+.appDownCon strong{
+	font-size:50px;
+	color:#333;
+	display:block;
+	font-weight:200;
+}
+.appDownCon .simpleTxt{
+	font-size:26px;
+	color:#666;
+	margin-top:100px;
+}
+.codeImg{
+	margin-top:100px;
+}
+.codeImg .ios{
+	margin-left:50px;
+}
+.codeImg div{
+	text-align:center;
+}
+.codeImg div p{
+	margin-top:10px;
+	font-size:14px;
+	color:#666;
+}

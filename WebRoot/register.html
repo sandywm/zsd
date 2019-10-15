@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<link href="/plugins/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+		<link rel="stylesheet" type="text/css" href="/css/navFooter.css"/>
+		<link rel="stylesheet" type="text/css" href="/css/register.css"/>
+		<link rel="stylesheet" type="text/css" href="/plugins/layui/css/modules/layui-icon-extend/iconfont.css" />
+		<link href="/plugins/pace/pace-theme-flash.min.css" rel="stylesheet" type="text/css"/>
+		<script src="/plugins/pace/pace.min.js"></script>
+		<title>知识典注册</title>
+		<script>
+			function goLogin(){ 
+				window.location.href = "login.do?action=login";
+			}
+		</script>
+	</head>
+	<body>
+		<!-- header -->
+		<div class="header hasPadd">
+			<div class="innerHeader w1200">
+				<img src="images/logoPc.png" alt="知识典"/>
+				<!-- 登录注册 -->
+				<div class="loginNav">
+					<ul>
+						<li>
+							<a class="loginBg" href="javascript:void(0)" onclick="goLogin();">
+								<span>登录</span>
+							</a>
+						</li>
+						<li>
+							<a class="regTxt" href="javascript:void(0)">
+								<span class="lineSpan"></span>
+								<span>注册</span>
+							</a>
+						</li>
+					</ul>
+				</div>
+				<div class="nav">
+					<ul>
+						<li>
+							<a href="index.html">
+								<span class="lineSpan"></span>
+								<span>首页</span>
+							</a>
+						</li>
+						<li>
+							<a href="aboutUs.html">
+								<span class="lineSpan"></span>
+								<span>关于我们</span>
+							</a>
+						</li>
+						<li>
+							<a href="appDown.html">
+								<span class="lineSpan"></span>
+								<span>APP下载</span>
+							</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<!-- 注册层 -->
+		<div class="regsiterWrap">
+			<div class="leftLoginDec">
+				<img class="fristImg" src="images/registerFirst.png" alt="知识典注册"/>
+				<img class="regImgSt" src="images/register_st.png" alt="知识典学生注册"/>
+			</div>
+			<div class="rightLoginForm">
+				<!-- 选择角色 -->
+				<div class="regForm selRole" style="display:block;">
+					<strong id="regTit" class="titStrong hasAlign bigHei">选择身份</strong>
+					<input type="hidden" id="roleNameInp" value="学生"/>
+					<div class="selRoleList">
+						<label>
+							<img src="images/roleSt.png" alt="学生"/>
+							<input type="radio" name="roleInp" class="roleInp" value="学生" />
+							<span class="roleNameTxt">我是学生</span>
+							<span class="radSp"><i class="layui-icon layui-icon-ok"></i></span>
+						</label>
+					</div>
+					<div class="selRoleList">
+						<label>
+							<img src="images/rolePar.png" alt="家长"/>
+							<input type="radio" name="roleInp" class="roleInp" value="家长" />
+							<span class="roleNameTxt">我是家长</span>
+							<span class="radSp"><i class="layui-icon layui-icon-ok"></i></span>
+						</label>
+					</div>
+					
+					<div class="selRoleList">
+						<label>
+							<img src="images/roleNt.png" alt="网络导师"/>
+							<input type="radio" name="roleInp" class="roleInp" value="网络导师" />
+							<span class="roleNameTxt">我是网络导师</span>
+							<span class="radSp"><i class="layui-icon layui-icon-ok"></i></span>
+						</label>
+					</div>
+					<span class="nextBtn firstStep">下一步</span>
+				</div>
+				
+				<!-- 注册字段 -->
+				<!-- 第二步 -->
+				<div class="regForm fieldForm">
+					<strong id="roleTxtTit" class="titStrong bigHei"></strong>
+					<div class="formWrap">
+						<div class="formItem stuPart">
+							<span class="iconBox">
+								<i class="iconfont layui-extend-yaoqing"></i>
+							</span>
+							<input id="yaoqingInp" type="text" placeholder="请输入 网络导师邀请码"  name="basicInp"  autocomplete="off" maxlength="16"/>
+							<em id="teaInfoBtn" class="teaInfoBtn"><i class="iconfont layui-extend-laoshiInfo"></i></em>
+						</div>
+						<div class="formItem">
+							<span class="iconBox">
+								<i class="iconfont layui-extend-zhanghao"></i>
+							</span>
+							<input id="accInp" value="huanglifeng" type="text" placeholder="请输入账号"  name="basicInp"  autocomplete="off" maxlength="16"/>
+							<span class="mustTxt">*</span>
+						</div>
+						<div class="formItem">
+							<span class="iconBox">
+								<i class="iconfont layui-extend-mima1"></i>
+							</span>
+							<input id="passInp" value="123456" type="password" placeholder="请输入密码"  name="basicInp"  autocomplete="off" maxlength="16"/>
+							<span class="mustTxt">*</span>
+						</div>
+						<div class="formItem">
+							<span class="iconBox">
+								<i class="iconfont layui-extend-mima1"></i>
+							</span>
+							<input id="confirmInp" value="123456" type="password" placeholder="请输入确认密码"  name="basicInp"  autocomplete="off" maxlength="16"/>
+							<span class="mustTxt">*</span>
+						</div>
+						<div class="formItem">
+							<span class="iconBox">
+								<i class="iconfont layui-extend-shoujihao"></i>
+							</span>
+							<input id="phoneInp" value="13567890890" type="text" placeholder="请输入手机号码"  name="basicInp"  autocomplete="off" maxlength="11"/>
+							<span class="mustTxt">*</span>
+						</div>
+						<div class="formItem">
+							<span class="iconBox">
+								<i class="iconfont layui-extend-zhanghao"></i>
+							</span>
+							<input id="realNameInp" value="黄利峰" type="text" placeholder="请输入真实姓名"  name="basicInp"  autocomplete="off" maxlength="6"/>
+							<span class="mustTxt">*</span>
+						</div>
+						<!-- 家长身份下 -->
+						<div class="formItem jzPart">
+							<span class="iconBox">
+								<i class="iconfont layui-extend-duozhanghao"></i>
+							</span>
+							<input id="accInp_child" type="text" placeholder="请输入孩子账号"  name="basicInp"  autocomplete="off" maxlength="16"/>
+							<span class="mustTxt">*</span>
+						</div>
+						<div class="formItem jzPart">
+							<span class="iconBox">
+								<i class="iconfont layui-extend-duozhanghao"></i>
+							</span>
+							<input id="realNameInp_child" type="text" placeholder="请输入孩子姓名"  name="basicInp"  autocomplete="off" maxlength="6"/>
+							<span class="mustTxt">*</span>
+						</div>
+						<div class="formItem jzPart">
+							<span class="iconBox">
+								<i class="iconfont layui-extend-duozhanghao"></i>
+							</span>
+							<input id="passInp_child" type="password" placeholder="请输入孩子登录密码"  name="basicInp"  autocomplete="off" maxlength="16"/>
+							<span class="mustTxt">*</span>
+						</div>
+						
+						
+						<!-- 网络导师部分 -->
+						<input type="hidden" id="schTypeInp_nt" />
+						<input type="hidden" id="subjectInp" />
+						<div class="formItem ntPart layui-form">
+							<span class="iconBox">
+								<i class="iconfont layui-extend-xueduan"></i>
+							</span>
+							<div class="fl layui-input-inline ntPartInline">
+								<select name="shTypeSel" lay-filter="shTypeSel">
+							       	<option value="">请选择学段</option>
+							       	<option value="1">小学</option>
+							       	<option value="2">初中</option>
+							       	<option value="3">高中</option>
+							    </select>
+							</div>
+							<span class="mustTxt">*</span>
+						</div>
+						
+						<div class="formItem ntPart layui-form">
+							<span class="iconBox">
+								<i class="iconfont layui-extend-xuekelaoshi"></i>
+							</span>
+							<div class="layui-input-inline ntPartInline">
+								<select id="subjectSel" lay-filter="subjectSel">
+							       	<option value="">请选择学科</option>
+							    </select>
+							</div>
+							<span class="mustTxt">*</span>
+						</div>
+						
+						
+						<p class="noteTxt">* 为必填项<p>
+						<div class="btnGroup">
+							<span class="prevBtn fieldPrevBtn">上一步</span>
+							<span class="nextBtn secondStep">下一步</span>
+							<span class="compBtn notStRegBtn">注册完成</span>
+						</div>
+					</div>
+				</div>
+				
+				<!-- 第三步 学生下选择乡镇 -->
+				<div class="regForm selDistrict">
+					<strong id="roleTxtTit" class="titStrong bigHei">学生注册</strong>
+					<div class="selDisWrap"> 
+						<div class="disItem">
+							<input type="hidden" id="provInp"/>
+							<div class="innerItem layui-form">
+								<span class="mustTxt">*</span>
+								<div class="layui-input-inline">
+									<select class="province" name="province" lay-filter="province" class="province">
+								       	<option value="">请选择省份</option>
+								     </select>
+								</div>
+							</div>
+							<div class="innerItem fr">
+								<input type="hidden" id="cityInp"/>
+								<div class="innerItem layui-form">
+									<span class="mustTxt">*</span>
+									<div class="layui-input-inline">
+										<select class="city" name="city" lay-filter="city" disabled>
+									       	<option value="">请选择城市</option>
+									     </select>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="disItem">
+							<input type="hidden" id="countyInp"/>
+							<div class="innerItem layui-form">
+								<span class="mustTxt">*</span>
+								<div class="layui-input-inline">
+									<select class="country" name="area" lay-filter="area" disabled>
+								       	<option value="">请选择县/区</option>
+								     </select>
+								</div>
+							</div>
+							<div class="innerItem fr">
+								<input type="hidden" id="townInp"/>
+								<div class="innerItem layui-form">
+									<span class="mustTxt">*</span>
+									<div class="layui-input-inline">
+										<select class="town" name="town" lay-filter="town" disabled>
+									       	<option value="">请选择乡/镇</option>
+									     </select>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+						<div class="disItem hasBor layui-form">
+							<input type="hidden" id="schTypeInp_st"/>
+							<input type="hidden" id="yearSysInp"/>
+							<span class="mustTxt">*</span>
+							<div class="layui-input-inline">
+								<select id="schTypeSel" lay-filter="schTypeSel">
+									<option value=''>请选择学段</option>
+									<option value='1,5'>小学(五年制)</option>
+									<option value='1,6'>小学(六年制)</option>
+									<option value='2,3'>初中(三年制)</option>
+									<option value='2,4'>初中(四年制)</option>
+									<option value='3,3'>高中</option>
+								</select>
+							</div>
+						</div>
+						
+						<div class="disItem hasBor layui-form">
+							<input type="hidden" id="schoolIdInp"/>
+							<span class="mustTxt">*</span>
+							<div id="selSchWrap" class="layui-input-inline selSchWrap">
+								<p id="schNameTxt" class="noSel">请选择学校</p>
+								<i class="layui-icon layui-icon-triangle-d triSch triSch_sch"></i>
+								<ul id="schListUl" class="schListUl layui-anim layui-anim-upbit"></ul>
+							</div>
+						</div>
+						
+						<div class="disItem hasBor layui-form">
+							<input type="hidden" id="gradeNum" />
+							<span class="mustTxt">*</span>
+							<div id="selGradeWrap" class="layui-input-inline selSchWrap">
+								<p id="gradeNameTxt" class="noSel">请选择年级</p>
+								<i class="layui-icon layui-icon-triangle-d triSch triSch_grad"></i>
+								<ul id="gradeListUl" class="schListUl layui-anim layui-anim-upbit"></ul>
+							</div>
+						</div>
+						
+						<div class="disItem hasBor layui-form">
+							<input type="hidden" id="classNum" />
+							<span class="mustTxt">*</span>
+							<div id="selClassWrap" class="layui-input-inline selSchWrap">
+								<p id="classNameTxt" class="noSel">请选择班级</p>
+								<i class="layui-icon layui-icon-triangle-d triSch triSch_class"></i>
+								<ul id="classListUl" class="schListUl layui-anim layui-anim-upbit"></ul>
+							</div>
+						</div>
+						
+						
+						<p class="noteTxt">* 为必填项<p>
+						<div class="btnGroup">
+							<span class="prevBtn prevSecondBtn">上一步</span>
+							<span id="stJzComBtn" class="compBtn">注册完成</span>
+						</div>
+					</div>
+				</div>
+				
+			</div>
+		</div>
+		
+		<script src="/plugins/jquery/jquery.min.js"></script>
+   		<script src="/plugins/layui/layui.js"></script>
+   		<script type="text/javascript">
+   			var field = null,currSchId = 0,currGradId = 0,currClsId = 0,str_schType = '',str_yearSys = '';
+   			var gradeFive = [],gradeSix = [],gradeMidThree = [],gradeMidFour=[],gradeHigh=[],classList=[];
+   			layui.config({
+				base: '/plugins/frame/js/'
+			}).use(['form','layer','address'],function(){
+   				var form = layui.form,layer = layui.layer;
+   				//选择学段 学生
+   				form.on('select(schTypeSel)', function(data){
+   					if(data.value == ''){
+   						$('#schTypeInp_st').val('');
+   						$('#yearSysInp').val('');
+   					}else{
+   						$('#schTypeInp_st').val(data.value);
+   						$('#schoolIdInp').val('');
+   						$('#schNameTxt').html('请选择学校').addClass('noSel');
+   						$('#schListUl').html('');
+   						
+   						$('#gradeNum').val('');
+   						$('#gradeNameTxt').html('请选择年级').addClass('noSel');
+   						$('#gradeListUl').html('');
+   						
+   						$('#classNum').val('');
+   						$('#classNameTxt').html('请选择班级').addClass('noSel');
+   						$('#classListUl').html('');
+   						
+   						currSchId = 0;
+   						currGradId = 0;
+   						currClsId = 0;
+   					}
+				});
+   				//选择学段 网络导师
+   				form.on('select(shTypeSel)', function(data){
+   					if(data.value == ''){
+   						$('#schTypeInp_st').val('');
+   					}else{
+   						$('#schTypeInp_nt').val(data.value);
+   						layer.load('1');
+   						$.ajax({ 
+   							url : '/common.do?action=getSubjectDataBySchType',
+   							dataType:'json',
+   							data:{schType:data.value},
+   							type:'post',
+   							timeout:10000,  
+   							success:function(json){  
+   								layer.closeAll('loading');
+   								if(json.result == 'success'){
+   									var str = '<option value="">请选择学科</option>';
+   									for(var i=0;i<json.subList.length;i++){
+   										str += '<option value="'+ json.subList[i].subId +'">'+ json.subList[i].subName +'</option>';
+   									}
+   									$('#subjectSel').html(str);
+   									form.render();
+   								}else if(json.result == 'noInfo'){
+   									layer.msg('暂无科目信息');
+   								}
+   							},  
+   							error:function(xhr,type,errorThrown){  
+   								console.log(type);  
+   							}  
+   						});
+   					}
+				});
+   				//选择学科 网络导师
+   				form.on('select(subjectSel)', function(data){
+   					data.value == '' ? $('#subjectInp').val('') : $('#subjectInp').val(data.value); 
+   				});
+   				var page = {
+   					init : function(){
+   						this.bindEvent();
+   						$('body').click(function(){
+   							$('#schListUl').hide();
+   							$('.triSch').removeClass('rotate');
+   							
+   							$('#gradeListUl').hide();
+   							$('.triSch_grad').removeClass('rotate');
+   							
+   							$('#classListUl').hide();
+   							$('.triSch_class').removeClass('rotate');
+   						});
+   					},
+   					switchNumToCHN : function(num){
+   						var currCHN = '';
+   						if(num == 1){
+   							currCHN = '一年级';
+   						}else if(num == 2){
+   							currCHN = '二年级';
+   						}else if(num == 3){
+   							currCHN = '三年级';
+   						}else if(num == 4){
+   							currCHN = '四年级';
+   						}else if(num == 5){
+   							currCHN = '五年级';
+   						}else if(num == 6){
+   							currCHN = '六年级';
+   						}else if(num == 7){
+   							currCHN = '七年级';
+   						}else if(num == 8){
+   							currCHN = '八年级';
+   						}else if(num == 9){
+   							currCHN = '九年级';
+   						}else if(num == 10){
+   							currCHN = '高一';
+   						}else if(num == 11){
+   							currCHN = '高二';
+   						}else if(num == 12){
+   							currCHN = '高三';
+   						}
+   						return currCHN;
+   					},
+   					getGradeClassList : function(stNum,endNum,pushObj,type){
+   						for(var i=stNum;i<=endNum;i++){
+   							var gradeObj = {};
+   							gradeObj.value = i;
+   							if(type=='grade'){
+   								gradeObj.name = this.switchNumToCHN(i);
+   							}else{
+   								gradeObj.name = i + '班';
+   							}
+   							pushObj.push(gradeObj);
+   						}
+   					},
+   					checkExistUserName : function(userName){
+   						var flag = false;
+						$.ajax({
+							url : '/login.do?action=checkUserName',
+							dataType:'json',
+							data:{userAccount:userName},
+							async:false,
+							type:'post',//HTTP请求类型  
+							timeout:10000,//超时时间设置为10秒；  
+							success:function(json){ 
+								if(json.msg == true){//不存在 过
+									flag = true;
+								}else if(json.msg == false){//存在
+									flag = false;
+								}
+							},  
+							error:function(xhr,type,errorThrown){  
+								console.log(type);  
+							}  
+						});
+						return flag;
+   					},
+   					focuBlurFun : function(obj){
+   						for(var i=0;i<obj.length;i++){
+   							obj[i].onfocus = function(){
+   								this.parentNode.classList.add('hasFocus');
+   							};
+   							obj[i].onblur = function(){
+   								if(this.value == ''){
+   									this.parentNode.classList.remove('hasFocus');
+   								}
+   							};
+   						}
+   					},
+   					checkExistPhone : function(phoneNum){
+   						var flag = false;
+						$.ajax({   
+							url :'/login.do?action=checkMobile',
+							dataType:'json',
+							data:{mobile:phoneNum},
+							async:false,
+							type:'get',
+							success:function(json){   
+								if(json.msg == true){
+									flag = true;
+								}else if(json.msg == false){
+									flag = false;
+								}
+							},  
+							error:function(xhr,type,errorThrown){  
+								console.log(type);  
+							}  
+						});
+						return flag;
+   					},
+   					validateBasicForm : function(){
+   						var yaoqingInp = $('#yaoqingInp').val(),
+							roleInp = $('#roleNameInp').val(),
+							accInp = $.trim( $('#accInp').val() ),
+							passInp = $.trim( $('#passInp').val() ),
+							confirmInp = $.trim( $('#confirmInp').val() ),
+							phoneInp = $.trim( $('#phoneInp').val() ),
+							realNameInp = $.trim( $('#realNameInp').val() ),
+							accInp_childInp = $.trim( $('#accInp_child').val() ),
+							realNameInp_child = $.trim( $('#realNameInp_child').val() ),
+							passInp_child = $.trim( $('#passInp_child').val() ),
+							schTypeInp_nt = $('#schTypeInp_nt').val(),
+							subInp = $('#subjectInp').val(),
+							regCHN = /[\u4e00-\u9fa5]+/,
+							regSpec = /^[a-zA-z0-9\u4E00-\u9FA5]*$/,
+							regPhone = /^1[3|4|5|7|8][0-9]\d{4,8}$/,
+							regRealName = /^[a-zA-Z\u4e00-\u9fa5]+$/;
+						if(accInp == ''){
+							layer.msg('请输入账号');
+						}else if(!this.checkExistUserName(accInp)){
+							layer.msg('当前用户名已存在');
+						}else if(regCHN.test(accInp)){
+							layer.msg('注册账号不能为中文');
+						}else if(!regSpec.test(accInp)){
+							layer.msg('注册账号不能有特殊字符、标点、或空格');
+						}else if(accInp.length < 4 || accInp.length > 16){
+						layer.msg('注册账号长度不能小于4个字符或不能大于16个字符');
+						}else if(passInp == ''){
+							layer.msg('请输入密码');
+						}else if(passInp.length < 6){
+							layer.msg('密码长度不能小于6位');
+						}else if(passInp.length > 16){
+							layer.msg('密码长度不能大于16位');
+						}else if(confirmInp == ''){
+							layer.msg('请输入确认密码');
+						}else if(confirmInp != passInp){
+							layer.msg('密码和确认密码不相同，请重新输入');
+						}else if(phoneInp == ''){
+							layer.msg('请输入手机号码');
+						}else if(phoneInp.length != 11){
+							layer.msg('手机号码格式不正确');
+						}else if(!regPhone.test(phoneInp)){
+							layer.msg('手机号码格式不正确');
+						}else if(!this.checkExistPhone(phoneInp)){
+							layer.msg('该手机号码已被注册');
+						}else if(realNameInp == ''){
+							layer.msg('请输入真实姓名');
+						}else if(!regRealName.test(realNameInp)){
+							layer.msg('真实姓名应由汉字或英文字母组成');
+						}else if(roleInp == '家长' && accInp_childInp == ''){
+							layer.msg('请输入孩子账号');
+						}else if(roleInp == '家长' && accInp == accInp_childInp){
+							layer.msg('孩子账号不能和家长账号相同');
+						}else if(roleInp == '家长' && regCHN.test(accInp_childInp)){
+							layer.msg('孩子账号不能为中文');
+						}else if(roleInp == '家长' && !this.checkExistUserName(accInp_childInp)){
+							layer.msg('当前孩子账号已存在'); 
+						}else if(roleInp == '家长' && realNameInp_child == ''){
+							layer.msg('请输入孩子姓名');
+						}else if(roleInp == '家长' && realNameInp_child == realNameInp){
+							layer.msg('孩子姓名不能和家长家长姓名相同');
+						}else if(roleInp == '家长' && !regRealName.test(realNameInp_child)){
+							layer.msg('孩子姓名应由汉字或英文字母组成');
+						}else if(roleInp == '家长' && passInp_child == ''){
+							layer.msg('请输入孩子登录密码');
+						}else if(roleInp == '家长' && passInp_child.length < 6){
+							layer.msg('孩子登录密码长度不能小于6位');
+						}else if(roleInp == '家长' && passInp_child.length > 16){
+							layer.msg('孩子登录密码长度不能大于16位');
+						}else if(roleInp == '网络导师' && schTypeInp_nt == ''){
+							layer.msg('请选择学段');
+						}else if(roleInp == '网络导师' && subInp == ''){
+							layer.msg('请选择学科');
+						}else{
+							if(roleInp == '学生' || roleInp == '家长'){
+								$('.fieldForm').hide();
+								$('.selDistrict').show();
+								layui.address();
+								//生成1-5年级 (小学五年制)
+								this.getGradeClassList(1,5,gradeFive,'grade');
+								//生成1-6年级 (小学六年制)
+								this.getGradeClassList(1,6,gradeSix,'grade');
+								//生成7-9年级 (初中三年制)
+								this.getGradeClassList(7,9,gradeMidThree,'grade');
+								//生成6-9年级 (初中四年制)
+								this.getGradeClassList(6,9,gradeMidFour,'grade');
+								//生成高一-高三
+								this.getGradeClassList(10,12,gradeHigh,'grade'); 
+								//生成班级
+								this.getGradeClassList(1,20,classList,'class'); 
+							}else{
+								field = {userAccount:accInp,roleName:escape(roleInp),realName:escape(realNameInp),password:escape(passInp),mobile:phoneInp,schoolType:schTypeInp_nt,subId:subInp};
+								this.goRegister();
+							}
+						}
+   					},
+   					goRegister : function(){
+   						console.log(field)
+   						layer.load('1');
+   						$.ajax({
+   							url : '/login.do?action=regUserInfo',
+							data:field,
+							dataType:'json',//服务器返回json格式数据
+							type:'post',//HTTP请求类型
+							timeout:10000,//超时时间设置为10秒；
+							success:function(json){
+								layer.closeAll('loading');
+								if(json.result == 'success'){
+									layer.msg('注册成功',{icon:1,time:1200},function(){
+										window.location.href = "user.do?action=goPage&roleId=" + json.roleId;
+	   				        		});
+								}else if(json.result == 'fail'){
+									layer.msg("注册失败!");
+								}else if(json.result == 'exist'){
+									layer.msg("当前账号已被注册,请更账号");
+								}else if(json.result == 'identical'){
+									layer.msg("孩子和家长账号不能一致");
+								}else if(json.result == 'xs_exist'){
+									layer.msg("当前孩子账号已存在");
+								}else if(json.result == 'jz_exist'){
+									layer.msg("当前家长账号已存在");
+								}else if(json.result == 'paraDiff'){
+									layer.msg("学生选择学段和导师所在学段不一致");
+								}else if(json.result == 'checkFail'){
+									layer.msg("该网络导师未审核通过");
+								}else if(json.result == 'noInfo'){
+									layer.msg("暂无此网络导师信息");
+								}
+							},
+							error:function(xhr,type,errorThrown){
+								layer.closeAll('loading');
+								layer.msg('服务器连接失败');
+							} 
+						});
+   					},
+   					renderSchList : function(list){
+   						var str = '';
+   						for(var i=0;i<list.length;i++){
+   							if(currSchId == list[i].schoolId){
+   								str += '<li class="active" currSchId="'+ list[i].schoolId +'">'+ list[i].schoolName +'</li>';	
+   	   						}else{
+   	   							str += '<li currSchId="'+ list[i].schoolId +'">'+ list[i].schoolName +'</li>';
+   	   						}
+   							
+   						}
+   						$('#schListUl').html(str);
+   						this.selSchEvent();
+   					},
+   					selSchEvent : function(){
+   						$('#schListUl li').on('click',function(event){
+   							currSchId = $(this).attr('currSchId');
+   							$('#schoolIdInp').val($(this).attr('currSchId'));
+   							$('#schListUl li').removeClass('active');
+   							$(this).addClass('active');
+   							$('#schListUl').hide();
+   							$('.triSch_sch').removeClass('rotate');
+   							$('#schNameTxt').removeClass('noSel').html($(this).html());
+   							
+   							$('#gradeNum').val('');
+   	   						$('#gradeNameTxt').html('请选择年级').addClass('noSel');
+   	   						$('#gradeListUl').html('');
+   	   						
+   	   						$('#classNum').val('');
+   	   						$('#classNameTxt').html('请选择班级').addClass('noSel');
+   	   						$('#classListUl').html('');
+   	   						
+   	   						currGradId = 0;
+   	   						currClsId = 0;
+   							
+   							
+   							event.stopPropagation();
+   						});
+   					},
+   					selGradEvent : function(){
+   						$('#gradeListUl li').on('click',function(event){
+   							currGradId = $(this).attr('currGraId');
+   							$('#gradeNum').val($(this).attr('currGraId'));
+   							$('#gradeListUl li').removeClass('active');
+   							$(this).addClass('active');
+   							$('#gradeListUl').hide();
+   							$('.triSch_grad').removeClass('rotate');
+   							$('#gradeNameTxt').removeClass('noSel').html($(this).html());
+   							
+   							$('#classNum').val('');
+   	   						$('#classNameTxt').html('请选择班级').addClass('noSel');
+   	   						$('#classListUl').html('');
+   	   						currClsId = 0;
+   							
+   							event.stopPropagation();
+   						});
+   					},
+   					selClsEvent : function(){
+   						$('#classListUl li').on('click',function(event){
+   							currClsId = $(this).attr('currClsId');
+   							$('#classNum').val($(this).attr('currClsId'));
+   							$('#classListUl li').removeClass('active');
+   							$(this).addClass('active');
+   							$('#classListUl').hide();
+   							$('.triSch_class').removeClass('rotate');
+   							$('#classNameTxt').removeClass('noSel').html($(this).html());
+   							event.stopPropagation();
+   						});
+   					},
+   					//生成年级列表
+   					renderGradeList : function(list){
+   						var str = '';
+   						for(var i=0;i<list.length;i++){
+   							if(currGradId == list[i].value){
+   								str += '<li class="active" currGraId="'+ list[i].value +'">'+ list[i].name +'</li>';
+   							}else{
+   								str += '<li currGraId="'+ list[i].value +'">'+ list[i].name +'</li>';
+   							}
+   						}
+   						$('#gradeListUl').html(str);
+   						this.selGradEvent();
+   					},
+   					//生成班级列表
+   					renderClassList : function(list){
+   						var str = '';
+   						for(var i=0;i<list.length;i++){
+   							if(currClsId == list[i].name){
+   								str += '<li class="active" currClsId="'+ list[i].name +'">'+ list[i].name +'</li>';
+   							}else{
+   								str += '<li currClsId="'+ list[i].name +'">'+ list[i].name +'</li>';
+   							}
+   						}
+   						$('#classListUl').html(str);
+   						this.selClsEvent();
+   					},
+   					bindEvent : function(){
+   						var _this = this;
+   						//选择班级
+   						$('#selClassWrap').on('click',function(event){
+   							var gradeNum = $('#gradeNum').val();
+   							if(gradeNum == ''){
+   								layer.msg('请选择年级');
+   								return;
+   							}
+   							$('#classListUl').show();
+   							$('.triSch_class').addClass('rotate');
+   							_this.renderClassList(classList);
+   							event.stopPropagation();
+   						});
+   						//选择年级
+   						$('#selGradeWrap').on('click',function(event){
+   							var schoolIdInp = $('#schoolIdInp').val();
+   							if(schoolIdInp == ''){
+   								layer.msg('请选择学校');
+   								return;
+   							}
+   							$('#gradeListUl').show();
+   							$('.triSch_grad').addClass('rotate');
+   							if(str_schType == 1){//小学
+   								if(str_yearSys == 5){//五年制
+   									_this.renderGradeList(gradeFive);
+   								}else if(str_yearSys == 6){//六年制
+   									_this.renderGradeList(gradeSix);
+   								}
+   							}else if(str_schType == 2){//初中
+   								if(str_yearSys == 4){//四年制
+   									_this.renderGradeList(gradeMidFour);
+   								}else if(str_yearSys == 3){//三年制
+   									_this.renderGradeList(gradeMidThree);
+   								}
+   							}else if(str_schType == 3){//高中
+   								if(str_yearSys == 3){
+   									_this.renderGradeList(gradeHigh);
+   								}
+   							}
+   							event.stopPropagation();
+   						});
+   						$('#selSchWrap').on('click',function(event){
+   							var provInp = $('#provInp').val(),
+	   							cityInp = $('#cityInp').val(),
+	   							countyInp = $('#countyInp').val(), 
+	   							townInp = $('#townInp').val(),
+	   							schTypeInp_st = $('#schTypeInp_st').val();
+	   						if(provInp == ''){
+	   							layer.msg('请选择省份');
+	   						}else if(cityInp == ''){
+	   							layer.msg('请选择城市');
+	   						}else if(countyInp == ''){
+	   							layer.msg('请选择县/区');
+	   						}else if(townInp == ''){
+	   							layer.msg('请选择乡/镇');
+	   						}else if(schTypeInp_st == ''){
+	   							layer.msg('请选择学段');
+	   						}else{
+	   							str_schType = schTypeInp_st.split(',')[0],
+	   							str_yearSys = schTypeInp_st.split(',')[1];
+	   							var currField = { prov:escape(provInp),city:escape(cityInp),county:escape(countyInp),town:escape( townInp ),schoolType:str_schType,yearSystem:str_yearSys };
+	   							layer.load('1');
+	   							$.ajax({ 
+	   								url : '/baseInfo.do?action=getSchoolData',
+	   								dataType:'json',//服务器返回json格式数据  
+	   								data:currField,
+	   								type:'post',//HTTP请求类型  
+	   								timeout:10000,//超时时间设置为10秒；  
+	   								success:function(json){   
+	   									layer.closeAll('loading');
+	   									if(json.result == 'success'){
+	   										$('#schListUl').show();
+	   			   							$('.triSch_sch').addClass('rotate');
+	   										_this.renderSchList(json.schList);
+	   									}else if(json.result == 'noInfo'){
+	   										layer.msg('该地区下暂无学校');
+	   									}
+	   								},  
+	   								error:function(xhr,type,errorThrown){ 
+	   									console.log(type);  
+	   								}  
+	   							});
+	   							
+	   							event.stopPropagation();
+	   						}
+   							
+   						});
+   						//提交注册
+   						$('#stJzComBtn').on('click',function(){
+   							var yaoqingInp = $('#yaoqingInp').val(),
+								roleInp = $('#roleNameInp').val(),
+								accInp = $.trim( $('#accInp').val() ),
+								passInp = $.trim( $('#passInp').val() ),
+								confirmInp = $.trim( $('#confirmInp').val() ),
+								phoneInp = $.trim( $('#phoneInp').val() ),
+								realNameInp = $.trim( $('#realNameInp').val() ),
+								accInp_childInp = $.trim( $('#accInp_child').val() ),
+								realNameInp_child = $.trim( $('#realNameInp_child').val() ),
+								passInp_child = $.trim( $('#passInp_child').val() ),
+								provInp = $('#provInp').val(),
+								cityInp = $('#cityInp').val(),
+								countyInp = $('#countyInp').val(),
+								townInp = $('#townInp').val(),
+								schTypeInp_st = $('#schTypeInp_st').val(),
+								schoolIdInp = $('#schoolIdInp').val(),
+								gradeNum = $('#gradeNum').val(),
+								classNum = $('#classNum').val();
+   							if(provInp == ''){
+   								layer.msg('请选择省份');
+   							}else if(cityInp == ''){
+   								layer.msg('请选择城市');
+   							}else if(countyInp == ''){
+   								layer.msg('请选择县/区');
+   							}else if(townInp == ''){
+   								layer.msg('请选择乡/镇');
+   							}else if(schTypeInp_st == ''){
+   								layer.msg('请选择学段');
+   							}else if(schoolIdInp == ''){
+   								layer.msg('请选择学校');
+   							}else if(gradeNum == ''){
+   								layer.msg('请选择年级');
+   							}else if(classNum == ''){
+   								layer.msg('请选择班级');
+   							}else{
+   								field = {userAccount:accInp,roleName:escape(roleInp),realName:escape(realNameInp),
+   										password:escape(passInp),mobile:phoneInp,inviteCode:yaoqingInp,schoolId:schoolIdInp,gradeNo:gradeNum,className:escape(classNum)};
+   								if(roleInp == '家长'){
+   									var jzField = {xsAccount:accInp_childInp,stuName:escape( realNameInp_child ),xspassword:passInp_child};
+									Object.assign(field,jzField);
+   								}
+   								_this.goRegister();
+   							}
+   							
+   						});
+						$('.secondStep').on('click',function(){
+							_this.validateBasicForm();
+   						});
+						$('.notStRegBtn').on('click',function(){
+							_this.validateBasicForm();
+   						});
+   						//角色赋值
+   						$('.roleInp').on('click',function(){
+   							$('#roleNameInp').val( $(this).val() );
+   							$('.selRoleList').find('label').removeClass('active');
+   							$(this).parent().addClass('active');
+   						});
+   						//选择身份下一步
+   						$('.firstStep').on('click',function(){
+   							var roleNameInp = $('#roleNameInp').val();
+   							//var basicInp = document.getElementsByName('basicInp');
+   							if(roleNameInp == ''){
+   								layer.msg('请选择角色');
+   								return;
+   							}
+   							//_this.focuBlurFun(basicInp);
+   							$('.selRole').hide();
+   							$('.fieldForm').show();
+   							//hasMargTop_st
+   							$('.fristImg').hide();
+   							if(roleNameInp == '学生'){
+   								$('#roleTxtTit').html('学生注册');
+   								$('.stuPart').show();
+   								$('.jzPart').hide();
+   								$('.ntPart').hide();
+   								$('.formWrap').addClass('hasMargTop_st');
+   								$('.regImgSt').show();
+   								$('.notStRegBtn').hide();
+   								$('.secondStep').show();
+   							}else if(roleNameInp == '家长'){
+   								$('#roleTxtTit').html('家长注册');
+   								$('.jzPart').show();
+   								$('.stuPart').hide();
+   								$('.ntPart').hide();
+   								$('.notStRegBtn').hide();
+   								$('.secondStep').show();
+   							}else if(roleNameInp == '网络导师'){
+   								$('#roleTxtTit').html('网络导师注册');
+   								$('.ntPart').show();
+   								$('.stuPart').hide();
+   								$('.jzPart').hide();
+   								$('.formWrap').addClass('hasMargTop_nt');
+   								$('.notStRegBtn').show();
+   								$('.secondStep').hide();
+   							}
+   						});
+   						//填写表单 返回上一步
+   						$('.fieldPrevBtn').on('click',function(){
+   							$('.selRole').show();
+   							$('.fieldForm').hide();
+   							$('.fristImg').show();
+   							$('.regImgSt').hide();
+   							$('.formWrap').removeClass('hasMargTop_st hasMargTop_nt');
+   						});
+   						//选择地区返回上一步
+   						$('.prevSecondBtn').on('click',function(){
+   							$('.fieldForm').show();
+   							$('.selDistrict').hide();
+   						});
+   					}
+   				};
+   				page.init();
+   			});
+   		</script>
+		
+	</body>
+</html>

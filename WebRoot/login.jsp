@@ -6,6 +6,7 @@
 	<link href="/plugins/layui/css/layui.css" rel="stylesheet" type="text/css"/>
 	<link href="/plugins/layui/css/modules/layui-icon-extend/iconfont.css" rel="stylesheet" type="text/css"/>
 	<link href="/plugins/pace/pace-theme-flash.min.css" rel="stylesheet" type="text/css"/>
+	<link rel="stylesheet" type="text/css" href="/css/navFooter.css"/>
 	<link href="/css/login.css" rel="stylesheet" type="text/css"/>
 	<script src="/plugins/pace/pace.min.js"></script>
 	<style>
@@ -17,11 +18,54 @@
   </head>
   
   <body>   
-  	<div class="loginBg"></div>
+ 	<!-- header -->
+	<div class="header hasPadd">
+		<div class="innerHeader w1200">
+			<img src="images/logoPc.png" alt="知识典"/>
+			<!-- 登录注册 -->
+			<div class="loginNav">
+				<ul>
+					<li>
+						<a class="loginBg" href="javascript:void(0)" onclick="goLogin();">
+							<span>登录</span>
+						</a>
+					</li>
+					<li>
+						<a class="regTxt" href="register.html">
+							<span class="lineSpan"></span>
+							<span>注册</span>
+						</a>
+					</li>
+				</ul>
+			</div>
+			<div class="nav">
+				<ul>
+					<li>
+						<a href="index.html">
+							<span class="lineSpan"></span>
+							<span>首页</span>
+						</a>
+					</li>
+					<li>
+						<a href="aboutUs.html">
+							<span class="lineSpan"></span>
+							<span>关于我们</span>
+						</a>
+					</li>
+					<li>
+						<a href="appDown.html">
+							<span class="lineSpan"></span>
+							<span>APP下载</span>
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<!-- 登录层  -->
   	<div class="loginWrap">
-		<div class="innerWrap">
 			<div class="leftLoginDec">
-				<img src="images/loginBg.jpg" alt="知识典登录"/>
+				<img src="images/login.png" alt="知识典登录"/>
 			</div>
 			<div class="rightLoginForm">
 				<strong>知识典登录</strong>
@@ -48,12 +92,11 @@
 						</label>
 						<a id="loginBtn" href="javascript:void(0)">立即登录</a>
 					</div>
-					<div class="findPassWrap">
+					<!-- div class="findPassWrap">
 						<a href="javascript:void(0)">忘记密码?</a>
-					</div>
+					</div -->
 				</div>
 			</div>
-		</div>
 	</div>
 	<input id="roleIdInp" type="hidden"/>
 	<script src="/plugins/jquery/jquery.min.js"></script>
@@ -132,7 +175,6 @@
 				    			    }
 				        		}
 				        		var roleList = json["roleList"];
-				        		console.log(roleList);
 				        		if(roleList.length == 1){//一种身份
 				        			window.location.href = "user.do?action=goPage&roleId=" + roleList[0].roleId;
 				        		}else if(roleList.length > 1){//多种身份

@@ -827,7 +827,6 @@
 					if(listInfo.length > 0){
 						currNumLen = listInfo.length;
 						for(var i=0;i<listInfo.length;i++){
-							var maxTkNum = listInfo[i].queType == '填空选择题' ? listInfo[i].answerNum : listInfo[i].lqAnswer.split(',').length;
 							currNum = i;
 							loreTypeZHN = listInfo[i].lqType;
 							if(listInfo[i].lqType == '主题' || listInfo[i].lqType == '重点' || listInfo[i].lqType == '难点' || listInfo[i].lqType == '关键点' || listInfo[i].lqType == '易混点'){
@@ -911,6 +910,7 @@
 									loreDOM.initUeditorContent('conAns_jtsf_' + currNum,listInfo[i].lqAnswer);//答案
 									loreDOM.initUeditorContent('conAnaly_jtsf_' + currNum,listInfo[i].lqResolution);//解析
 								}else if(listInfo[i].lqType == '巩固训练' || listInfo[i].lqType == '针对性诊断' || listInfo[i].lqType == '再次诊断'){
+									var maxTkNum = listInfo[i].queType == '填空选择题' ? listInfo[i].answerNum : listInfo[i].lqAnswer.split(',').length;
 									var tiganType = blDOM.tiganTypeTxt(listInfo[i].queType);
 									$('#tiganTypeInp').val(listInfo[i].queType);
 									blMet.data.originTypeTxt = listInfo[i].queType;//用于填空题切换其它题型时做个原来题型的存储
@@ -1016,10 +1016,10 @@
 										$('.maxChoice').html('');
 										$('#wendaTypeWrap_'+loreType).hide().html('');
 										$('#answerSelectDiv_' + loreType).hide().html('');
-										$('.spaceBox').show();
-										$('#spaceNumInp').val(listInfo[i].answerNum);//初始化填空数量value
+										//$('.spaceBox').show();
+										//$('#spaceNumInp').val(listInfo[i].answerNum);//初始化填空数量value
 										//匹配填空数量
-										$('#spaceNumSel').val(listInfo[i].answerNum);
+										//$('#spaceNumSel').val(listInfo[i].answerNum);
 										$('#nowTxt_'+loreType).html('答案：');
 										$('#tkTypeWrap_' + loreType).show().html(tkTypeStr);
 										$('#tkInp_' + loreType).val(listInfo[i].lqAnswer);

@@ -329,6 +329,8 @@ layui.define(['table','form','scrollBar'],function(exports){
 			}
 			if(currPage == 'lorePage'){
 				loreSetWid = '375';
+			}if(currPage == 'buffetPage'){
+				loreSetWid = '300';
 			}else if(currPage == 'teaHwPage'){
 				if(roleName == '老师'){
 					loreSetWid = '220';
@@ -375,13 +377,16 @@ layui.define(['table','form','scrollBar'],function(exports){
 		        					}},
 		        					{field : '', title: '操作',fixed:'right',  width:loreSetWid,align:'center',templet : function(d){
 		        						var fixStr = '';
-		        						if(currPage == 'lorePage' ||currPage == 'sysHwPage'){
+		        						if(currPage == 'lorePage' ||currPage == 'sysHwPage' ||currPage == 'buffetPage'){
 		        							fixStr += '<a class="layui-btn layui-btn-xs addTikuBtn" opts="add" lay-event="addFun" loreName="'+ d.loreName +'" loreId="'+ d.loreId +'"><i class="layui-icon layui-icon-add-circle"></i>添加</a>';
 		        							fixStr += '<a class="layui-btn layui-btn-xs layui-btn-primary editBtn" opts="edit" lay-event="editFun" loreName="'+ d.loreName +'" loreId="'+ d.loreId +'"><i class="layui-icon layui-icon-edit"></i>编辑</a>';
 		        							fixStr += '<a class="layui-btn layui-btn-xs layui-btn-normal viewBtn" opts="view" lay-event="viewFun" loreName="'+ d.loreName +'" loreId="'+ d.loreId +'"><i class="layui-icon layui-icon-search"></i>浏览</a>';
 		        							if(currPage == 'lorePage'){
 		        								fixStr += '<a class="layui-btn layui-btn-xs layui-btn-primary viewBtn" lay-event="relateLore" loreName="'+ d.loreName +'" loreId="'+ d.loreId +'"><i class="iconfont layui-extend-guanlian"></i>关联知识点</a>';
 				        						fixStr += '<a class="layui-btn layui-btn-xs viewBtn" lay-event="viewLoreTree" loreName="'+ d.loreName +'" loreId="'+ d.loreId +'"><i class="iconfont layui-extend-tree"></i>知识树</a>';
+		        							}
+		        							if(currPage == 'buffetPage'){
+		        								fixStr += '<a class="layui-btn layui-btn-xs" opts="merge" lay-event="mergeLoreFun" loreName="'+ d.loreName +'" loreId="'+ d.loreId +'"><i class="iconfont layui-extend-hebing"></i>合并知识点</a>';
 		        							}
 		        							
 		        						}else if(currPage == 'teaHwPage'){
