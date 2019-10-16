@@ -115,6 +115,19 @@
 					//重置
 					$('.resetBtn').on('click',function(){
 						$('#schNameInp').val('');
+						$('#schTypeInp').val(0);
+						$('#schTypeSel').val('');
+						$('#yearSysInp').val('');
+						$('#yearSysSel').val('');
+						/*$('#provInp').val('');
+						$('.province').val('');
+						$('#cityInp').val('');
+						$('.city').val('');
+						$('.countyInp').val('');
+						$('.country').val('');
+						$('.townInp').val('');
+						$('.town').val('');*/
+						form.render();
 						_this.loadSchoolInfo();
 					});
 				},
@@ -124,9 +137,10 @@
 						provInpVal = $('#provInp').val(),
 						cityInpVal = $('#cityInp').val(),
 						countyInpVal = $('#countyInp').val(),
-						townInpVal = $('#townInp').val();
+						townInpVal = $('#townInp').val(),
+						yearSysInp = $('#yearSysInp').val();
 					var field = {prov:provInpVal,city:cityInpVal,county:countyInpVal,town:townInpVal,
-									schoolType:schTypeInpVal,schoolName:schNameInpVal};
+									schoolType:schTypeInpVal,yearSystem:yearSysInp,schoolName:schNameInpVal};
 					table.render({
 						elem: '#schoolTable',
 						height: 'full-120',

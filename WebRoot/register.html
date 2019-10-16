@@ -70,7 +70,7 @@
 				<!-- 选择角色 -->
 				<div class="regForm selRole" style="display:block;">
 					<strong id="regTit" class="titStrong hasAlign bigHei">选择身份</strong>
-					<input type="hidden" id="roleNameInp" value="学生"/>
+					<input type="hidden" id="roleNameInp"/>
 					<div class="selRoleList">
 						<label>
 							<img src="images/roleSt.png" alt="学生"/>
@@ -108,42 +108,42 @@
 							<span class="iconBox">
 								<i class="iconfont layui-extend-yaoqing"></i>
 							</span>
-							<input id="yaoqingInp" type="text" placeholder="请输入 网络导师邀请码"  name="basicInp"  autocomplete="off" maxlength="16"/>
+							<input id="yaoqingInp" type="text" placeholder="请输入网络导师邀请码"  name="basicInp"  autocomplete="off" maxlength="16"/>
 							<em id="teaInfoBtn" class="teaInfoBtn"><i class="iconfont layui-extend-laoshiInfo"></i></em>
 						</div>
 						<div class="formItem">
 							<span class="iconBox">
 								<i class="iconfont layui-extend-zhanghao"></i>
 							</span>
-							<input id="accInp" value="huanglifeng" type="text" placeholder="请输入账号"  name="basicInp"  autocomplete="off" maxlength="16"/>
+							<input id="accInp" type="text" placeholder="请输入账号"  name="basicInp"  autocomplete="off" maxlength="16"/>
 							<span class="mustTxt">*</span>
 						</div>
 						<div class="formItem">
 							<span class="iconBox">
 								<i class="iconfont layui-extend-mima1"></i>
 							</span>
-							<input id="passInp" value="123456" type="password" placeholder="请输入密码"  name="basicInp"  autocomplete="off" maxlength="16"/>
+							<input id="passInp" type="password" placeholder="请输入密码"  name="basicInp"  autocomplete="off" maxlength="16"/>
 							<span class="mustTxt">*</span>
 						</div>
 						<div class="formItem">
 							<span class="iconBox">
 								<i class="iconfont layui-extend-mima1"></i>
 							</span>
-							<input id="confirmInp" value="123456" type="password" placeholder="请输入确认密码"  name="basicInp"  autocomplete="off" maxlength="16"/>
+							<input id="confirmInp" type="password" placeholder="请输入确认密码"  name="basicInp"  autocomplete="off" maxlength="16"/>
 							<span class="mustTxt">*</span>
 						</div>
 						<div class="formItem">
 							<span class="iconBox">
 								<i class="iconfont layui-extend-shoujihao"></i>
 							</span>
-							<input id="phoneInp" value="13567890890" type="text" placeholder="请输入手机号码"  name="basicInp"  autocomplete="off" maxlength="11"/>
+							<input id="phoneInp" type="text" placeholder="请输入手机号码"  name="basicInp"  autocomplete="off" maxlength="11"/>
 							<span class="mustTxt">*</span>
 						</div>
 						<div class="formItem">
 							<span class="iconBox">
 								<i class="iconfont layui-extend-zhanghao"></i>
 							</span>
-							<input id="realNameInp" value="黄利峰" type="text" placeholder="请输入真实姓名"  name="basicInp"  autocomplete="off" maxlength="6"/>
+							<input id="realNameInp" type="text" placeholder="请输入真实姓名"  name="basicInp"  autocomplete="off" maxlength="6"/>
 							<span class="mustTxt">*</span>
 						</div>
 						<!-- 家长身份下 -->
@@ -322,6 +322,7 @@
    		<script type="text/javascript">
    			var field = null,currSchId = 0,currGradId = 0,currClsId = 0,str_schType = '',str_yearSys = '';
    			var gradeFive = [],gradeSix = [],gradeMidThree = [],gradeMidFour=[],gradeHigh=[],classList=[];
+   			var isZhixingFlag = true;
    			layui.config({
 				base: '/plugins/frame/js/'
 			}).use(['form','layer','address'],function(){
@@ -573,19 +574,22 @@
 							if(roleInp == '学生' || roleInp == '家长'){
 								$('.fieldForm').hide();
 								$('.selDistrict').show();
-								layui.address();
-								//生成1-5年级 (小学五年制)
-								this.getGradeClassList(1,5,gradeFive,'grade');
-								//生成1-6年级 (小学六年制)
-								this.getGradeClassList(1,6,gradeSix,'grade');
-								//生成7-9年级 (初中三年制)
-								this.getGradeClassList(7,9,gradeMidThree,'grade');
-								//生成6-9年级 (初中四年制)
-								this.getGradeClassList(6,9,gradeMidFour,'grade');
-								//生成高一-高三
-								this.getGradeClassList(10,12,gradeHigh,'grade'); 
-								//生成班级
-								this.getGradeClassList(1,20,classList,'class'); 
+								if(isZhixingFlag){
+									layui.address();
+									//生成1-5年级 (小学五年制)
+									this.getGradeClassList(1,5,gradeFive,'grade');
+									//生成1-6年级 (小学六年制)
+									this.getGradeClassList(1,6,gradeSix,'grade');
+									//生成7-9年级 (初中三年制)
+									this.getGradeClassList(7,9,gradeMidThree,'grade');
+									//生成6-9年级 (初中四年制)
+									this.getGradeClassList(6,9,gradeMidFour,'grade');
+									//生成高一-高三
+									this.getGradeClassList(10,12,gradeHigh,'grade'); 
+									//生成班级
+									this.getGradeClassList(1,20,classList,'class'); 
+								}
+								isZhixingFlag = false;
 							}else{
 								field = {userAccount:accInp,roleName:escape(roleInp),realName:escape(realNameInp),password:escape(passInp),mobile:phoneInp,schoolType:schTypeInp_nt,subId:subInp};
 								this.goRegister();

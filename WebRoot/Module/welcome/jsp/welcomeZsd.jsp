@@ -70,7 +70,7 @@
 		var roleName = "${sessionScope.login_user_role_name}";
 		if(roleName == '知识点管理员'){
 			$('.zsdWelcome').show();
-		}else if(roleName == '管理员'){
+		}else if(roleName == '超级管理员'){
 			$('.spWelcome').show();
 		}
 	</script>

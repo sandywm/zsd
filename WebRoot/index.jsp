@@ -15,7 +15,7 @@
 	<script src="/plugins/pace/pace.min.js"></script>
 	<script type="text/javascript">
 		var roleName = "${sessionScope.login_user_role_name}";
-		sessionStorage.setItem("roleName", roleName);
+		var realName = "${sessionScope.login_real_name}";
 	</script>
 	<style>
 		/*.layui-layer-molv .layui-layer-title{background:#4d47f1 !important;}
@@ -52,7 +52,7 @@
 	            <li class="layui-nav-item">
 	                <a href="javascript:;">
 	                	<i class="layui-icon layui-icon-username headsmIcon"></i>
-	                   	<span id="userName">黄利峰</span><span class="layui-nav-more"></span>
+	                   	<span id="userName"></span><span class="layui-nav-more"></span>
 	                </a>
 	                <!-- dl class="layui-nav-child">
 	                    <dd class="navLi"><a href="javascript:void(0)" tab-id="1" path="user.do?action=goUserDetailPage">基本资料</a></dd>
@@ -69,25 +69,7 @@
   		<div class="layui-side layui-bg-black layui-side-menu">
   			<div class="layui-side-scroll">
   				<!-- 左侧导航区域（可配合layui已有的垂直导航） -->
-  				<ul id="leftSideNav" class="layui-nav layui-nav-tree" lay-fliter="leftSideNav">
-  					<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="ntsBind.do?action=goNtsPage" tab-id="16">学生导师管理</a></li>
-  					<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="user.do?action=goUserPage" tab-id="15">用户管理</a></li>
-  					<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="school.do?action=goSchoolPage" tab-id="1">学校管理</a></li>
-  					<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="common.do?action=goEditionPage" tab-id="2">出版社管理</a></li>
-  					<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="common.do?action=goSubjectPage" tab-id="3">学科管理</a></li>
-  					<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="common.do?action=goEducationPage" tab-id="4">教材管理</a></li>
-  					<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="common.do?action=goGSubjectPage" tab-id="5">年级科目管理</a></li>
-  					<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="chapter.do?action=goChapterPage" tab-id="6">章节管理</a></li>
-  					<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="lore.do?action=goLoreCatalogPage" tab-id="7">知识点目录管理</a></li>
-  					<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="lore.do?action=goLoreQuePage" tab-id="8">知识点管理</a></li>
-  					<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="netTeacherReview.do?action=goNtReviewPage" tab-id="15">网络导师审核管理</a></li>
-  					<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="loreRelate.do?action=goLoreRelatePage" tab-id="9">关联知识点</a></li>
-  					<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="lex.do?action=goLexPage" tab-id="10">词库管理</a></li>
-  					<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="buffet.do?action=goBuffetPage" tab-id="11">自助餐管理</a></li>
-  					<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="lqe.do?action=goLqePage" tab-id="12">错题管理</a></li>
-  					<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="hw.do?action=goHwPage" tab-id="13">系统家庭作业管理</a></li>
-  					<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="hw.do?action=goTeaQuePage" tab-id="14">老师家庭作业管理</a></li>
-  				</ul>
+  				<ul id="leftSideNav" class="layui-nav layui-nav-tree" lay-fliter="leftSideNav"></ul>
   			</div>
   		</div>
   		<!-- iframe -->
@@ -99,11 +81,7 @@
 	            </ul>
 	            <div class="layui-tab-content">
 	                <div class="layui-tab-item layui-show">
-	                <!-- baseInfo.do?action=downApp common.do?action=goWeclomePage  lore.do?action=goLoreQuePage -->
 	               		<iframe id="mainIframe" src="common.do?action=goWeclomePage" frameborder="0" scrolling="yes" width="100%" height="100%"></iframe>
-	                	<!--  iframe id="mainIframe" src="hw.do?action=goHwPage" frameborder="0" scrolling="yes" width="100%" height="100%"></iframe-->
-	                	<!-- iframe id="mainIframe" src="buffet.do?action=goBuffetPage" frameborder="0" scrolling="yes" width="100%" height="100%"></iframe>
-	                	<iframe id="mainIframe" src="user.do?action=goWelcomePage" frameborder="0" scrolling="yes" width="100%" height="100%"></iframe -->
 	                </div>
 	            </div>
 	        </div>
@@ -122,62 +100,29 @@
 	        	layer = layui.layer,
 	        	$ = layui.jquery,
 	        	i = 0;
-	        
+	        $('#userName').html(realName);
 	        function renderModuleList(){
 	        	var liItem = '';
-	        	if(loginType == 'cpyUser'){//代理机构管理员
-	        		if(roleName == '管理员'){
-	        			liItem += '<li class="layui-nav-item navLi goSetCpy"><a href="javascript:void(0)" path="cpyManager.do?action=goCpyDetailPage" tab-id="3"><i class="iconfont layui-extend-xiugai"></i><cite>代理机构信息管理</cite></a></li>';
-		        		liItem += '<li class="layui-nav-item"><a href="javascript:void(0)"><i class="iconfont layui-extend-guanli"></i>代理机构管理</a>';
-		        		liItem += '<dl class="layui-nav-child">';
-		        		liItem += '<dd class="navLi"><a href="javascript:void(0)" path="role.do?action=goRolePage" tab-id="5">代理机构角色管理</a></dd>';
-		        		liItem += '<dd class="navLi"><a href="javascript:void(0)" path="user.do?action=goUserPage" tab-id="4">代理机构员工管理</a></dd>';
-		        		liItem += '<dd class="navLi"><a href="javascript:void(0)" path="modM.do?action=goModulePage" tab-id="7">代理机构角色权限管理</a></dd>';
-		        		liItem += '<dd class="navLi"><a href="javascript:void(0)" path="jfm.do?action=goJfPage" tab-id="6">技术领域管理</a></dd>';
-		        		liItem += '<dd class="navLi"><a href="javascript:void(0)" path="cpyManager.do?action=goSubParCpyPage" tab-id="8">代理机构主/子公司</a></dd></dl></li>';
-		        		liItem += '<li class="layui-nav-item"><a href="javascript:void(0)"><i class="layui-icon layui-icon-form" style="font-size:16px;margin-right:5px;"></i>专利任务管理</a>';
-		        		liItem += '<dl class="layui-nav-child"><dd class="navLi"><a href="javascript:void(0)" path="pubZl.do?action=goPubZlPage" tab-id="10">专利任务领取</a></dd>';
-		        		liItem += '</dl></li>';
-		        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" tab-id="14" path="zlm.do?action=goZlPage"><i class="layui-icon layui-icon-form" style="font-size:16px;margin-right:5px;"></i>专利管理</a></li>';
-		        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" tab-id="13" path="fee.do?action=goFeePage"><i class="iconfont layui-extend-fee" style="font-size:14px;margin-right:5px;"></i>费用管理</a></li>';
-		        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" tab-id="15" path="fee.do?action=goBackFeePage"><i class="iconfont layui-extend-huikuan" style="margin-right:5px;"></i>客户汇款管理</a></li>';
-		        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" tab-id="12" path="customer.do?action=goCusPage"><i class="layui-icon layui-icon-user" style="margin-right:5px;"></i>客户管理</a></li>';
-			        	liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" tab-id="9"><i class="iconfont layui-extend-goumai"></i>会员续费/购买</a></li>';
-	        		}else{
-	        			liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="cpyManager.do?action=goCpyDetailPage" tab-id="3"></i><cite>我的代理机构</cite></a></li>';
-	        			//代理机构下除管理员外其他身份登录动态加载对应模块
-	        			$.ajax({
-	       					type:"post",
-	       			        async:false,
-	       			        dataType:"json",
-	       			        url:"modM.do?action=getSelfModule",
-	       			        success:function (json){
-	       			        	var modInfo = json.modInfo;
-	       			        	if(modInfo != undefined){
-									for(var i=0;i<modInfo.length;i++){
-										if(modInfo[i].useFlag){
-											liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="'+ modInfo[i].modUrl +'" tab-id="'+ modInfo[i].modId +'_'+ i +'"><cite>'+ modInfo[i].modName +'</cite></a></li>';
-										}else{
-											liItem += '<li class="layui-nav-item outDateLi"><a href="javascript:void(0)"><cite>'+ modInfo[i].modName +'</cite></a></li>';
-										}
-									}	
-	       			        	}
-	       			        }
-	       				});
-	        		}
-	        	}else if(roleName == '申请人/公司' && loginType == 'appUser'){//申请人/公司
-	        		liItem += '<li class="layui-nav-item"><a href="javascript:void(0)">任务</a>';
-	        		liItem += '<dl class="layui-nav-child"><dd class="navLi"><a href="javascript:void(0)" path="pubZl.do?action=goPubZlPage" tab-id="3">专利任务发布</a></dd>';
-	        		liItem += '<dd class="navLi"><a href="javascript:void(0)" tab-id="4">查看任务进度</a></dd></dl></li>';
-	        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="cpyManager.do?action=goCpyPage" tab-id="5">查看代理机构</a></li>';
-	        	}else{ //平台用户（超管 财务、总经理）
-	        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="modM.do?action=goModulePage" tab-id="3"><i class="iconfont layui-extend-mokuai"></i>模块权限管理</a></li>';
-	        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="cpyManager.do?action=goCpyPage" tab-id="4"><i class="iconfont layui-extend-jigou"></i>代理机构管理</a></li>'; 		
-	        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="pubZl.do?action=goPubZlPage" tab-id="7"><i class="layui-icon layui-icon-search"></i>查看专利任务</a></li>';
-	        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" tab-id="5"><i class="iconfont layui-extend-chakan"></i>查看专利申请(人/公司)</a></li>';
-	        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" tab-id="6"><i class="iconfont layui-extend-feiyong"></i>费用列表</a></li>';
-	        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" tab-id="8" path="zlyq.do?action=goZlyqPage"><i class="layui-icon layui-icon-tree" style="font-size:18px;margin-right:5px;"></i>专利额外要求管理</a></li>';
-	        	}
+	        	if(roleName == '知识点管理员'){
+	        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="chapter.do?action=goChapterPage" tab-id="6">章节管理</a></li>';
+	        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="lore.do?action=goLoreCatalogPage" tab-id="7">知识点目录管理</a></li>';
+	        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="lore.do?action=goLoreQuePage" tab-id="8">知识点管理</a></li>';
+	        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="netTeacherReview.do?action=goNtReviewPage" tab-id="15">网络导师审核管理</a></li>';
+	        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="loreRelate.do?action=goLoreRelatePage" tab-id="9">关联知识点</a></li>';
+	        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="lex.do?action=goLexPage" tab-id="10">词库管理</a></li>';
+	        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="buffet.do?action=goBuffetPage" tab-id="11">自助餐管理</a></li>';
+	        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="lqe.do?action=goLqePage" tab-id="12">错题管理</a></li>';
+	        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="hw.do?action=goHwPage" tab-id="13">系统家庭作业管理</a></li>';
+	        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="hw.do?action=goTeaQuePage" tab-id="14">老师家庭作业管理</a></li>';
+        		}else if(roleName == '超级管理员'){
+        			liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="ntsBind.do?action=goNtsPage" tab-id="16">学生导师管理</a></li>';
+	        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="user.do?action=goUserPage" tab-id="15">用户管理</a></li>';
+	        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="school.do?action=goSchoolPage" tab-id="1">学校管理</a></li>';
+	        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="common.do?action=goEditionPage" tab-id="2">出版社管理</a></li>';
+	        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="common.do?action=goSubjectPage" tab-id="3">学科管理</a></li>';
+	        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="common.do?action=goEducationPage" tab-id="4">教材管理</a></li>';
+	        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="common.do?action=goGSubjectPage" tab-id="5">年级科目管理</a></li>';
+        		}
 	        	$("#leftSideNav").html(liItem);
 	        	element.init(); 
 	        }
@@ -192,6 +137,7 @@
 	        		goSetCpyInfo();
 	      		}
 	        }
+	        renderModuleList();
 	        $(".navLi").click(function () {
 	        	var title = $(this).text();
 		        var path = $(this).children('a').attr('path');

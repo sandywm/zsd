@@ -168,11 +168,23 @@
 					this.loadUserList();
 					this.bindEvent();
 				},
+				enterPress : function(){
+					var e = e || window.event;
+					if(e.keyCode == 13){
+						this.loadUserList();
+					}
+				},
 				bindEvent : function(){
 					//查询
 					var _this = this;
 					$('#queryBtn').on('click',function(){
 						_this.loadUserList();
+					});
+					$('#accInp').on('keypress',function(){
+						_this.enterPress(event);
+					});
+					$('#userNameInp').on('keypress',function(){
+						_this.enterPress(event);
 					});
 					//重置
 					$('.resetBtn').on('click',function(){
@@ -180,6 +192,8 @@
 						$('#userNameInp').val('');
 						$('#schoolIdInp').val(0);
 						$('#schNameTxt').html('请选择学校').addClass('notSel');
+						$('#roleInp').val(0);
+						$('#roleSel').val('');
 						form.render();
 						_this.loadUserList();
 					});
@@ -232,6 +246,7 @@
 							{field : 'realName', title: '真实姓名', width:'100', align:'center'},
 							{field : 'nickName', title: '昵称', width:'150', align:'center'},
 							{field : 'roleName', title: '角色身份', width:'100',align:'center'},
+							{field : 'subName', title: '担任科目', width:'100',align:'center'},
 							{field : 'sex', title: '性别', align:'center'},
 							{field : 'accStatus', title: '账号状态', width:'90', align:'center',templet:function(d){
 								if(d.accStatus == '1'){

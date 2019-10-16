@@ -99,12 +99,24 @@
 				        UE.getEditor(obj).setContent(content,null);
 					});
 		    	},
+		    	enterPress : function(){
+					var e = e || window.event;
+					if(e.keyCode == 13){
+						this.loadLexList();
+					}
+				},
 				bindEvent : function(){
 					var _this = this;
 					$('.resetBtn').on('click',function(){
 						$('#lexTitInp_py').val('');
 						$('#lexTitInp_txt').val('');
 						_this.loadLexList('queryLoad');
+					});
+					$('#lexTitInp_py').on('keypress',function(){
+						_this.enterPress(event);
+					});
+					$('#lexTitInp_txt').on('keypress',function(){
+						_this.enterPress(event);
 					});
 					$('#queryBtn').on('click',function(){
 						_this.loadLexList('queryLoad');

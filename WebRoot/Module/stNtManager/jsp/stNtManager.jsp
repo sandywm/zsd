@@ -18,7 +18,9 @@
 		.ingDate{color:#1E9FFF;}
 		.resetBtn{margin-top:6px;float:left;}
 		.resetBtn:hover{color:#F47837;}
-		.editDateInp{width:60%;display:block;margin:10px auto;}
+		.dateItem{width:90%;margin:10px auto 0;height:40px;line-height:40px;color:#333;}
+		.dateItem span,.dateItem p{float:left;}
+		.editDateInp{width:60%;float:left;}
 		.saveBtn{width:120px;height:35px;line-height:35px;display:block;margin:0 auto;background:#009f95;color:#fff;cursor:pointer;border-radius:4px;text-align:center;}
 		.saveBtn:hover{opacity:.8;}
 	</style>	
@@ -64,7 +66,7 @@
 								<div class="itemDivs" style="width:130px;">
 									<div class="layui-input-inline">
 										<input type="hidden" id="schTypeInp" value="0"/>
-										<select name="shTypeSel" lay-filter="shTypeSel">
+										<select id="shTypeSel" lay-filter="shTypeSel">
 									       	<option value="">请选择学段</option>
 									       	<option value="1">小学</option>
 									       	<option value="2">初中</option>
@@ -121,7 +123,7 @@
 	<script src="/plugins/jquery/jquery.min.js"></script>
    	<script src="/plugins/layui/layui.js"></script>
 	<script type="text/javascript">
-		var globalDate = '',ntsId = 0,isUpFlag = false,globalIndex = 0;
+		var globalDate = '',ntsId = 0,isUpFlag = false,globalIndex = 0,globNtName = '';
 		layui.use(['layer','table','form','laydate'], function() {
 			var layer = layui.layer,
 				table = layui.table,form=layui.form,laydate=layui.laydate;
@@ -149,6 +151,9 @@
 			form.on('select(shTypeSel)',function(data){
 				if(data.value == ''){
 					$('#schTypeInp').val(0);
+					$('#subjectInp').val(0);
+					$('#subjectSel').html('<option value="">请选择学科</option>');
+					form.render();
 				}else{
 					$('#schTypeInp').val(data.value);
 					page.renderSubList(data.value);
@@ -173,10 +178,28 @@
 					this.bindEvent();
 					this.loadStNtList();
 				},
+				enterPress : function(){
+					var e = e || window.event;
+					if(e.keyCode == 13){
+						this.loadStNtList();
+					}
+				},
 				bindEvent : function(){
 					var _this = this;
 					$('#queryBtn').on('click',function(){
 						_this.loadStNtList();
+					});
+					$('#stuAccInp').on('keypress',function(){
+						_this.enterPress(event);
+					});
+					$('#stuNameInp').on('keypress',function(){
+						_this.enterPress(event);
+					});
+					$('#ntAccInp').on('keypress',function(){
+						_this.enterPress(event);
+					});
+					$('#ntNameInp').on('keypress',function(){
+						_this.enterPress(event);
 					});
 					$('.resetBtn').on('click',function(){
 						$('#stuAccInp').val('');
@@ -185,7 +208,15 @@
 						$('#ntNameInp').val('');
 						$('#stDate').val('');
 						$('#edDate').val('');
+						$('#shTypeSel').val('');
+						$('#schTypeInp').val(0);
+						$('#subjectInp').val(0);
+						$('#subjectSel').val('');
+						$('#bindStaInp').val(-2);
+						$('#bindStaSel').val('');
 						_this.loadStNtList();
+						form.render();
+						
 					});
 				},
 				renderSubList : function(schType){
@@ -278,14 +309,18 @@
 							}},
 						]],
 						done : function(res, curr, count){
-							console.log(res)
 							layer.closeAll('loading');
 						}
 					});
 				},
-				createDateDOM : function(){
+				createDateDOM : function(stuName,globNtName){
 					var str = '';
-					str += '<input type="text" id="editEDate" class="layui-input editDateInp" placeholder="请选择到期日期" readonly/>';
+					str += '<div class="dateItem"><span>到期期限：</span>';
+					str += '<input type="text" id="editEDate" class="layui-input editDateInp" placeholder="请选择到期日期" readonly/></div>';
+					str += '<div class="dateItem"><span>学生姓名：</span>';
+					str += '<p>'+ stuName +'</p></div>';
+					str += '<div class="dateItem"><span>导师姓名：</span>';
+					str += '<p>'+ globNtName +'</p></div>';
 					str += '<span class="saveBtn">保存</span>';
 					return str;
 				},
@@ -337,13 +372,13 @@
 				if(obj.event == 'editFun'){
 					var bindSta = $(this).attr('bindSta'),
 						stuName = $(this).attr('stuName'),
-						ntName = $(this).attr('ntName');
 					globalDate = $(this).attr('endDate');
 					ntsId = $(this).attr('ntsId');
+					globNtName = $(this).attr('ntName');
 					isUpFlag = false;
-					var editDateDOM = page.createDateDOM();
+					var editDateDOM = page.createDateDOM(stuName,globNtName);
 					globalIndex = layer.open({
-						title:'编辑学生['+ stuName +']绑定导师['+ ntName +']的绑定到期日期',
+						title:'编辑学生['+ stuName +']绑定期限',
 						type: 1,
 					  	area: ['350px', '260px'],
 					  	fixed: true, //不固定

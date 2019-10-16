@@ -68,17 +68,30 @@
 			form.on('select(checkStaSel)',function(data){
 				var value = data.value == '' ? -1 : data.value;
 				$('#checkStaInp').val(value);
+				page.loadNtList();
 			});
 			var page = {
 				init:function(){
 					this.loadNtList();
 					this.bindEvent();
 				},
+				enterPress : function(){
+					var e = e || window.event;
+					if(e.keyCode == 13){
+						this.loadNtList();
+					}
+				},
 				bindEvent : function(){
 					//查询
 					var _this = this;
 					$('#queryBtn').on('click',function(){
 						_this.loadNtList();
+					});
+					$('#accInp').on('keypress',function(){
+						_this.enterPress(event);
+					});
+					$('#userNameInp').on('keypress',function(){
+						_this.enterPress(event);
 					});
 				},
 				loadNtList : function(){
@@ -96,7 +109,6 @@
 						even : true,
 						limit : 10,
 						limits:[10,20,30,40],
-						cellMinWidth:180,
 						text: {none : '暂无相关数据'},
 						cols : [[
 							{field : '', title: '序号', type:'numbers' , align:'center'},
