@@ -389,6 +389,20 @@
    				});
    				var page = {
    					init : function(){
+   						
+   						
+   						$.ajax({   
+							url :'/baseInfo.do?action=getAreaJson',
+							dataType:'json',
+							type:'get',
+							success:function(json){   
+								console.log( json )
+							},  
+							error:function(xhr,type,errorThrown){  
+								console.log(type);  
+							}  
+						});
+   						
    						this.bindEvent();
    						$('body').click(function(){
    							$('#schListUl').hide();
