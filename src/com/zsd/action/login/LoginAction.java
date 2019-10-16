@@ -207,6 +207,7 @@ public class LoginAction extends DispatchAction {
 						session.setAttribute(Constants.LOGIN_USER_ID, uid);
 						session.setAttribute(Constants.LOGIN_ACCOUNT, userAcc);
 						session.setAttribute(Constants.LOGIN_STATUS, loginStatus);
+						session.setAttribute(Constants.LOGIN_REAL_NAME, uList.get(0).getRealName());
 					}else{
 						if(roleId.equals(Constants.STU_ROLE_ID) || roleId.equals(Constants.PATENT_ROLE_ID) || roleId.equals(Constants.TEA_ROLE_ID) || roleId.equals(Constants.NET_TEA_ROLE_ID)){
 							map.put("loginStatus", loginStatus);
