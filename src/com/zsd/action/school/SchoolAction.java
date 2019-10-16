@@ -83,13 +83,15 @@ public class SchoolAction extends DispatchAction {
 		String county = Transcode.unescape_new("county", request);
 		String town = Transcode.unescape_new("town", request);
 		Integer schoolType = CommonTools.getFinalInteger("schoolType", request);
-		Integer count = sm.getCountByOpt(schoolName, prov, city, county, town, schoolType, -1);
+		Integer yearSystem = CommonTools.getFinalInteger("yearSystem", request);
+		
+		Integer count = sm.getCountByOpt(schoolName, prov, city, county, town, schoolType, -1,yearSystem);
 		String msg = "暂无记录";
 		Map<String,Object> map = new HashMap<String,Object>();
 		if(count > 0){
 			Integer pageSize = PageConst.getPageSize(String.valueOf(request.getParameter("limit")), 10);//等同于pageSize
 			Integer pageNo = CommonTools.getFinalInteger("page", request);//等同于pageNo
-			List<School> sList = sm.listPageInfoByOpt(schoolName, prov, city, county, town, schoolType, -1, pageNo, pageSize);
+			List<School> sList = sm.listPageInfoByOpt(schoolName, prov, city, county, town, schoolType, -1, yearSystem,pageNo, pageSize);
 			List<Object> list_d = new ArrayList<Object>();
 			for(Iterator<School> it = sList.iterator() ; it.hasNext();){
 				School sch = it.next();

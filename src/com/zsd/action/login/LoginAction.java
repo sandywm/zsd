@@ -258,7 +258,9 @@ public class LoginAction extends DispatchAction {
 				msg = "roleErr";//无身份
 			}
 		}else{
-			msg = "fail";//用户名密码不匹配
+			if(!msg.equals("vercodeFail")){
+				msg = "fail";//用户名密码不匹配
+			}
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);

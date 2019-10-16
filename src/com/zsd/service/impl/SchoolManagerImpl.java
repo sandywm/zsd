@@ -82,13 +82,13 @@ public class SchoolManagerImpl implements SchoolManager{
 	@Override
 	public List<School> listPageInfoByOpt(String schoolName, String prov,
 			String city, String county, String town, Integer schoolType,
-			Integer showStatus, Integer pageNo, Integer pageSize)
+			Integer showStatus,Integer yearSystem, Integer pageNo, Integer pageSize)
 			throws WEBException {
 		// TODO Auto-generated method stub
 		try {
 			sDao = (SchoolDao) DaoFactory.instance(null).getDao(Constants.DAO_SCHOOL_INFO);
 			Session sess  = HibernateUtil.currentSession();
-			return sDao.findPageInfoByOpt(sess, schoolName, prov, city, county, town, schoolType, showStatus, pageNo, pageSize);
+			return sDao.findPageInfoByOpt(sess, schoolName, prov, city, county, town, schoolType, showStatus, yearSystem, pageNo, pageSize);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -100,13 +100,13 @@ public class SchoolManagerImpl implements SchoolManager{
 
 	@Override
 	public Integer getCountByOpt(String schoolName, String prov, String city,
-			String county, String town, Integer schoolType, Integer showStatus)
+			String county, String town, Integer schoolType, Integer showStatus,Integer yearSystem)
 			throws WEBException {
 		// TODO Auto-generated method stub
 		try {
 			sDao = (SchoolDao) DaoFactory.instance(null).getDao(Constants.DAO_SCHOOL_INFO);
 			Session sess  = HibernateUtil.currentSession();
-			return sDao.getCountByOpt(sess, schoolName, prov, city, county, town, schoolType, showStatus);
+			return sDao.getCountByOpt(sess, schoolName, prov, city, county, town, schoolType, showStatus,yearSystem);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

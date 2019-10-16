@@ -64,13 +64,14 @@ public interface SchoolManager {
 	 * @param town 乡(""表示全部)
 	 * @param schoolType 学段[全部[0],小学(1),初中(2),高中(3)]
 	 * @param showStatus 显示状态（-1:全部,0：显示，1：隐藏）
+	 * @param yearSystem 学年制（0表示全部）
 	 * @param pageNo
 	 * @param pageSize
 	 * @return
 	 * @throws WEBException
 	 */
 	List<School> listPageInfoByOpt(String schoolName,String prov,String city,String county,
-			String town,Integer schoolType,Integer showStatus,Integer pageNo,Integer pageSize)throws WEBException;
+			String town,Integer schoolType,Integer showStatus,Integer yearSystem,Integer pageNo,Integer pageSize)throws WEBException;
 	
 	/**
 	 * 根据条件获取学校记录
@@ -83,11 +84,12 @@ public interface SchoolManager {
 	 * @param town 乡(""表示全部)
 	 * @param schoolType 学段[全部[0],小学(1),初中(2),高中(3)]
 	 * @param showStatus 显示状态（-1:全部,0：显示，1：隐藏）
+	 * @param yearSystem 学年制（0表示全部）
 	 * @return
 	 * @throws WEBException
 	 */
 	Integer getCountByOpt(String schoolName,String prov,String city,String county,
-			String town,Integer schoolType,Integer showStatus)throws WEBException;
+			String town,Integer schoolType,Integer showStatus,Integer yearSystem)throws WEBException;
 	
 	/**
 	 * 根据学校编号获取学校详细信息

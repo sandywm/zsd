@@ -44,7 +44,7 @@ public class SchoolDaoImpl implements SchoolDao{
 	@Override
 	public List<School> findPageInfoByOpt(Session sess, String schoolName,
 			String prov, String city, String county, String town,
-			Integer schoolType, Integer showStatus, Integer pageNo,
+			Integer schoolType, Integer showStatus,Integer yearSystem, Integer pageNo,
 			Integer pageSize) {
 		// TODO Auto-generated method stub
 		String hql = " from School as sch where 1=1";
@@ -69,6 +69,9 @@ public class SchoolDaoImpl implements SchoolDao{
 		if(showStatus >= 0){
 			hql += " and sch.showStatus = "+showStatus;
 		}
+		if(yearSystem > 0){
+			hql += " and sch.yearSystem = "+yearSystem;
+		}
 		int offset = (pageNo - 1) * pageSize;
 		if (offset < 0) {
 			offset = 0;
@@ -79,7 +82,7 @@ public class SchoolDaoImpl implements SchoolDao{
 	@Override
 	public Integer getCountByOpt(Session sess, String schoolName, String prov,
 			String city, String county, String town, Integer schoolType,
-			Integer showStatus) {
+			Integer showStatus,Integer yearSystem) {
 		// TODO Auto-generated method stub
 		String hql = "select count(sch.id) from School as sch where 1=1";
 		if(!schoolName.equals("")){
@@ -102,6 +105,9 @@ public class SchoolDaoImpl implements SchoolDao{
 		}
 		if(showStatus >= 0){
 			hql += " and sch.showStatus = "+showStatus;
+		}
+		if(yearSystem > 0){
+			hql += " and sch.yearSystem = "+yearSystem;
 		}
 		Object countObj = sess.createQuery(hql).uniqueResult();
 		return CommonTools.longToInt(countObj);

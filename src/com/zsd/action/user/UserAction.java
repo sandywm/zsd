@@ -22,6 +22,7 @@ import org.apache.struts.actions.DispatchAction;
 import com.zsd.action.base.Transcode;
 import com.zsd.factory.AppFactory;
 import com.zsd.module.ClassInfo;
+import com.zsd.module.NetTeacherInfo;
 import com.zsd.module.NetTeacherStudent;
 import com.zsd.module.RoleInfo;
 import com.zsd.module.RoleUserInfo;
@@ -31,6 +32,7 @@ import com.zsd.module.UserClassInfo;
 import com.zsd.page.PageConst;
 import com.zsd.service.ClassInfoManager;
 import com.zsd.service.EmailManager;
+import com.zsd.service.NetTeacherInfoManager;
 import com.zsd.service.NetTeacherStudentManager;
 import com.zsd.service.RoleInfoManager;
 import com.zsd.service.RoleUserInfoManager;
@@ -121,6 +123,8 @@ public class UserAction extends DispatchAction {
 		RoleUserInfoManager ruManager = (RoleUserInfoManager) AppFactory.instance(null).getApp(Constants.WEB_ROLE_USER_INFO);
 		SchoolManager schManager = (SchoolManager) AppFactory.instance(null).getApp(Constants.WEB_SCHOOL_INFO);
 		ClassInfoManager  cManager= (ClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_CLASS_INFO);
+		NetTeacherInfoManager ntm = (NetTeacherInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_INFO);
+		UserClassInfoManager  ucm = (UserClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
 		String accName =CommonTools.getFinalStr("accName",request);//默认""
 		Integer roleId =CommonTools.getFinalInteger("roleId",request);//默认0
 		String realName=Transcode.unescape_new1("realName",request);//默认""
@@ -190,7 +194,15 @@ public class UserAction extends DispatchAction {
 				}else{
 					map_u.put("className", "");
 				}
-				
+				String subName = "";
+				if(ruInfo.getRoleInfo().getRoleName().equals("网络导师")){
+					List<NetTeacherInfo> ntList = ntm.listntInfoByuserId(user.getId());
+					if(ntList.size() > 0){
+						subName = ntList.get(0).getSubject().getSubName();
+					}
+				}else if(ruInfo.getRoleInfo().getRoleName().equals("老师")){
+					
+				}
 				list.add(map_u);
 			}
 			map.put("data", list);

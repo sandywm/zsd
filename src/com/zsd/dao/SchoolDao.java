@@ -71,12 +71,13 @@ public interface SchoolDao {
 	 * @param town 乡(""表示全部)
 	 * @param schoolType 学段（0表示全部）
 	 * @param showStatus 显示状态（-1：全部，0：显示，1：隐藏）
+	 * @param yearSystem 学年制（0表示全部）
 	 * @param pageNo
 	 * @param pageSize
 	 * @return
 	 */
 	List<School> findPageInfoByOpt(Session sess,String schoolName,String prov,String city,String county,
-			String town,Integer schoolType,Integer showStatus,Integer pageNo,Integer pageSize);
+			String town,Integer schoolType,Integer showStatus,Integer yearSystem,Integer pageNo,Integer pageSize);
 	
 	/**
 	 * 根据条件获取学校记录条数
@@ -90,10 +91,11 @@ public interface SchoolDao {
 	 * @param town 乡(""表示全部)
 	 * @param schoolType 学段（0表示全部）
 	 * @param showStatus 显示状态（-1：全部，0：显示，1：隐藏）
+	 * @param yearSystem 学年制（0表示全部）
 	 * @return
 	 */
 	Integer getCountByOpt(Session sess,String schoolName,String prov,String city,String county,
-			String town,Integer schoolType,Integer showStatus);
+			String town,Integer schoolType,Integer showStatus,Integer yearSystem);
 	
 	/**
 	 * 根据学校编号获取学校详细信息

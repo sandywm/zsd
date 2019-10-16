@@ -68,7 +68,7 @@ public class UserDaoImpl implements UserDao {
 		}
 		String hql = " from  User as u where 1=1";
 		if(!accName.equals("")){
-			hql+=" and u.userAccount = '%"+accName+"%'";
+			hql+=" and u.userAccount like '%"+accName+"%'";
 		}
 		if(!realName.equals("")){
 			hql+=" and u.realName like '%"+realName+"%'";
@@ -112,7 +112,7 @@ public class UserDaoImpl implements UserDao {
 			Integer classId) {
 		String hql ="select count(u.id) from  User as u where 1=1";
 		if(!accName.equals("")){
-			hql+=" and u.userAccount = '%"+accName+"%'";
+			hql+=" and u.userAccount like '%"+accName+"%'";
 		}
 		if(!realName.equals("")){
 			hql+=" and u.realName like '%"+realName+"%'";
