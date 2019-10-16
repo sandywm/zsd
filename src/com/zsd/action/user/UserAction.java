@@ -181,19 +181,27 @@ public class UserAction extends DispatchAction {
 					schTypeStr = "高中";
 				}
 				map_u.put("schoolType", schTypeStr);
-				List<School> schList = schManager.listInfoById(ruInfo.getSchoolId());
-				if(schList.size() > 0){
-					map_u.put("schoolName", schList.get(0).getSchoolName());
-				}else{
-					map_u.put("schoolName", "");
+				String schoolName_tmp = "";
+				String gradeName_tmp = "";
+				String className_tmp = "";
+				if(ruInfo.getSchoolId() > 0){
+					List<School> schList = schManager.listInfoById(ruInfo.getSchoolId());
+					if(schList.size() > 0){
+						schoolName_tmp = schList.get(0).getSchoolName();
+					}
 				}
-				map_u.put("gradeName", Convert.NunberConvertChinese(ruInfo.getGradeNo()));
-				List<ClassInfo> cInfo = cManager.listClassInfoById(ruInfo.getClassId());
-				if(cInfo.size() > 0){
-					map_u.put("className", cInfo.get(0).getClassName());
-				}else{
-					map_u.put("className", "");
+				map_u.put("schoolName", schoolName_tmp);
+				if(ruInfo.getGradeNo() > 0){
+					gradeName_tmp = Convert.NunberConvertChinese(ruInfo.getGradeNo());
 				}
+				map_u.put("gradeName", gradeName_tmp);
+				if(ruInfo.getClassId() > 0){
+					List<ClassInfo> cInfo = cManager.listClassInfoById(ruInfo.getClassId());
+					if(cInfo.size() > 0){
+						className_tmp = cInfo.get(0).getClassName();
+					}
+				}
+				map_u.put("className", className_tmp);
 				String subName = "";
 				if(ruInfo.getRoleInfo().getRoleName().equals("网络导师")){
 					List<NetTeacherInfo> ntList = ntm.listntInfoByuserId(user.getId());
@@ -201,8 +209,12 @@ public class UserAction extends DispatchAction {
 						subName = ntList.get(0).getSubject().getSubName();
 					}
 				}else if(ruInfo.getRoleInfo().getRoleName().equals("老师")){
-					
+					UserClassInfo uc = ucm.getEntityByOpt(user.getId(), ruInfo.getClassId(), ruInfo.getRoleInfo().getId());
+					if(uc != null){
+						subName = uc.getSubjectName();
+					}
 				}
+				map_u.put("subName", subName);
 				list.add(map_u);
 			}
 			map.put("data", list);

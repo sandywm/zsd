@@ -639,6 +639,13 @@ public class LoginAction extends DispatchAction {
 					}
 					//修改用户的登录IP、登录时间、登录次数
 					uManager.updateUserLogin(uid, currdate, CommonTools.getIpAddress(request), uLists.get(0).getLoginTimes() + 1, loginStatus);
+					String clientInfo = CommonTools.getCilentInfo_new(request);
+					if(clientInfo.equals("pc") || clientInfo.indexOf("Web") > 0){//电脑端需要匹配验证码
+						HttpSession session = request.getSession(true);
+						session.setAttribute(Constants.LOGIN_USER_ID, uid);
+						session.setAttribute(Constants.LOGIN_ACCOUNT, userAcc);
+						session.setAttribute(Constants.LOGIN_STATUS, loginStatus);
+					}
 					map.put("roleId", roleId);
 					map.put("loginStatus", loginStatus);
 					map.put("userAcc", userAcc);
