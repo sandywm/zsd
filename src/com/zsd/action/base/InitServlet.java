@@ -53,5 +53,7 @@ public class InitServlet extends HttpServlet
         WebUrl.DATA_UPLOAD_IMG_CACHE_URL = getServletContext().getRealPath("/Module/uploadFile/cacheFile");
         
         WebUrl.NEW_DATA_UPLOAD_IMG_CACHE_URL = "/Module/uploadFile/cacheFile/";
+        
+        WebUrl.APP_VERSION = getServletContext().getRealPath("/Module/appVersion/appVersion.json");
     }
 }

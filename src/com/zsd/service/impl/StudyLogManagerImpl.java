@@ -300,4 +300,20 @@ public class StudyLogManagerImpl implements StudyLogManager{
 			HibernateUtil.closeSession();
 		}
 	}
+
+	@Override
+	public List<StudyLogInfo> listLimitUnComInfoByStuId(Integer stuId,
+			Integer limitNumber) throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			slDao = (StudyLogDao) DaoFactory.instance(null).getDao(Constants.DAO_STUDY_LOG_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return slDao.findLimitUnComInfoByStuId(sess, stuId, limitNumber);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("获取指定学生最近未完成的指定数量的记录列表时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
 }

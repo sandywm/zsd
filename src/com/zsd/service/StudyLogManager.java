@@ -172,4 +172,15 @@ public interface StudyLogManager {
 	 * @throws WEBException
 	 */
 	List<StudyLogInfo> listStuLogByStu(Integer teaId,Integer stuId,Integer guideSta,String sDate, String eDate)throws WEBException;
+	
+	/**
+	 * 获取指定学生最近未完成的指定数量的记录列表
+	 * @author wm
+	 * @date 2019-10-18 上午09:52:19
+	 * @param stuId 学生编号
+	 * @param limitNumber 限制条数
+	 * @return
+	 * @throws WEBException
+	 */
+	List<StudyLogInfo> listLimitUnComInfoByStuId(Integer stuId,Integer limitNumber)throws WEBException;
 }

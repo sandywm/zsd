@@ -99,8 +99,15 @@ public class BuffetStudyAction extends DispatchAction {
 		Integer pageNo = CommonTools.getFinalInteger("pageNo", request);//默认为1
 		Integer pageSize = CommonTools.getFinalInteger("pageSize", request);//默认为10
 		Integer teaId = 0;
-		Integer loginStatus_local = CommonTools.getFinalInteger("loginStatus", request);
-		String checkLoginStatus = CommonTools.checkUserLoginStatus(request,userId,loginStatus_local);
+		String checkLoginStatus = "";
+		//客户端信息
+		String clientInfo = CommonTools.getCilentInfo_new(request);
+		if(clientInfo.equals("pc") || clientInfo.indexOf("Web") > 0){//电脑端或者手机浏览器端
+			checkLoginStatus = "success";
+		}else{
+			Integer loginStatus_local = CommonTools.getFinalInteger("loginStatus", request);
+			checkLoginStatus = CommonTools.checkUserLoginStatus(request,userId,loginStatus_local);
+		}
 		String msg = "error";
 		Map<String,Object> map = new HashMap<String,Object>();
 		if(checkLoginStatus.equals("success")){

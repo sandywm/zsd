@@ -39,18 +39,22 @@ import com.zsd.module.InviteCodeInfo;
 import com.zsd.module.NetTeacherInfo;
 import com.zsd.module.NetTeacherStudent;
 import com.zsd.module.RoleInfo;
+import com.zsd.module.StudyLogInfo;
 import com.zsd.module.Subject;
 import com.zsd.module.User;
 import com.zsd.module.UserClassInfo;
 import com.zsd.page.PageConst;
+import com.zsd.service.BuffetSendInfoManager;
 import com.zsd.service.EditionManager;
 import com.zsd.service.EducationManager;
 import com.zsd.service.EmailManager;
 import com.zsd.service.GradeSubjectManager;
+import com.zsd.service.HwStudyTjManager;
 import com.zsd.service.InviteCodeInfoManager;
 import com.zsd.service.NetTeacherInfoManager;
 import com.zsd.service.NetTeacherStudentManager;
 import com.zsd.service.RoleInfoManager;
+import com.zsd.service.StudyLogManager;
 import com.zsd.service.SubjectManager;
 import com.zsd.service.UserClassInfoManager;
 import com.zsd.tools.CommonTools;
@@ -1269,5 +1273,85 @@ public class CommonAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		return mapping.findForward("welcomePage");
+	}
+	
+	/**
+	 * 获取首页数据信息（我的作业，在线学习，我的导师，消息条数）
+	 * @author wm
+	 * @date 2019-10-18 上午08:47:55
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getIndexData(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		HwStudyTjManager tjm = (HwStudyTjManager) AppFactory.instance(null).getApp(Constants.WEB_HW_STUDY_TJ_INFO);
+		StudyLogManager slm = (StudyLogManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_LOG_INFO);
+		NetTeacherStudentManager ntsm = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT);
+		EmailManager em = (EmailManager) AppFactory.instance(null).getApp(Constants.WEB_EMAIL_INFO);
+		BuffetSendInfoManager bsm = (BuffetSendInfoManager)AppFactory.instance(null).getApp(Constants.WEB_BUFFET_SEND_INFO);
+		Integer limitNumber_study = CommonTools.getFinalInteger("limitNumber_study", request);//在线学习限制条数
+		Integer limitNumber_nt = CommonTools.getFinalInteger("limitNumber_nt", request);//我的导师限制条数
+		Integer roleId = CommonTools.getLoginRoleId(request);
+		Integer userId = CommonTools.getLoginUserId(request);
+		roleId = 2;
+		userId = 1;
+		Map<String,Object> map = new HashMap<String,Object>();
+		String currDate = CurrentTime.getStringDate();
+		String msg = "error";
+		if(userId > 0){
+			msg = "success";
+			if(roleId.equals(Constants.STU_ROLE_ID)){
+				limitNumber_study = limitNumber_study > 0 ? limitNumber_study : 3;
+				List<StudyLogInfo> slList = slm.listLimitUnComInfoByStuId(userId, limitNumber_study);
+				List<Object> list_study = new ArrayList<Object>();
+				for(StudyLogInfo sl : slList){
+					Map<String,Object> map_d = new HashMap<String,Object>();
+					map_d.put("studyLogId", sl.getId());
+					map_d.put("subName", sl.getSubject().getSubName());
+					map_d.put("loreName", sl.getLoreInfo().getLoreName());
+					map_d.put("studyDate", sl.getAddTime().substring(0,10));
+					list_study.add(map_d);
+				}
+				map.put("studyList", list_study);
+				List<Object> list_nt = new ArrayList<Object>();
+				List<NetTeacherStudent> ntsList = ntsm.listValidInfoByOpt(userId);
+				Integer count = 0;
+				for(NetTeacherStudent nts : ntsList){
+					if(count <= limitNumber_nt){
+						Map<String,Object> map_d = new HashMap<String,Object>();
+						map_d.put("ntsId", nts.getId());
+						map_d.put("portrait", nts.getNetTeacherInfo().getUser().getPortrait());
+						map_d.put("realName", nts.getNetTeacherInfo().getUser().getRealName());
+						map_d.put("subName", nts.getNetTeacherInfo().getSubject().getSubName());
+						Integer bindStatus = nts.getBindStatus();
+						String bindStatusChi = "";
+						if(bindStatus.equals(-1)){
+							bindStatusChi = "免费试用";
+						}else if(bindStatus.equals(1)){
+							bindStatusChi = "付费绑定";
+						}else if(bindStatus.equals(2)){
+							bindStatusChi = "免费绑定";
+						}
+						map_d.put("bindInfo", bindStatusChi);
+						map_d.put("bindStatus", bindStatus);
+						list_nt.add(map_d);
+					}else{
+						break;
+					}
+					count++;
+				}
+				map.put("ntList", list_nt);
+				map.put("hwCount", tjm.getCountByOpt_1(0, 0, userId, 0, currDate, currDate));
+				map.put("buffetCount", bsm.listBsInfoByOption(userId, 0, 1, currDate, currDate).size());
+				map.put("emailCount", em.getUnReadCount(userId));
+			}
+		}
+		map.put("msg", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
 	}
 }

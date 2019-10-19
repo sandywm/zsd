@@ -930,7 +930,7 @@ public class CommonTools {
 	}
 	
 	public static void main(String[] args) throws Exception, FileNotFoundException{
-		System.out.println(System.currentTimeMillis());
+//		System.out.println(System.currentTimeMillis());
 //		Integer items[] = {1,2,3,4,5,11,12,21};
 //		Integer[] need_del_items =  {2,11,4};
 //	    List<Integer> list1=Arrays.asList(items);
@@ -940,7 +940,7 @@ public class CommonTools {
 //	        arrList.remove(b);
 //	    }
 //	    arrList.toArray();
-//	    System.out.println(arrList);
+	    System.out.println(CurrentTime.getCurrentTime().substring(0,10));
 	    
 //	    String bb = "7389:7392:7394|7396|7390|7393:7397|7405:7406|7407:7431|7432:7433:7436|7446:7448";
 //	    System.out.println(CommonTools.getCurrentStudyPath_new(bb, 7397));

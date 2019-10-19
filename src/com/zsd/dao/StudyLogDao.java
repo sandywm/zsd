@@ -108,4 +108,15 @@ public interface StudyLogDao {
 	 * @return
 	 */
 	List<StudyLogInfo> findStuLogByStu(Session sess,Integer teaId,Integer stuId,/*Integer subId,*/Integer guideSta,String sDate, String eDate);
+	
+	/**
+	 * 获取指定学生最近未完成的指定数量的记录列表
+	 * @author wm
+	 * @date 2019-10-18 上午09:46:49
+	 * @param sess
+	 * @param stuId 学生编号
+	 * @param limitNumber 限制条数
+	 * @return
+	 */
+	List<StudyLogInfo> findLimitUnComInfoByStuId(Session sess,Integer stuId,Integer limitNumber);
 }

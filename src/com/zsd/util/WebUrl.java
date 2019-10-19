@@ -51,4 +51,7 @@ public class WebUrl {
     //上传图片缓存相对路径
     public static String NEW_DATA_UPLOAD_IMG_CACHE_URL;
     
+    //APP版本绝对路径
+    public static String APP_VERSION;
+    
 }

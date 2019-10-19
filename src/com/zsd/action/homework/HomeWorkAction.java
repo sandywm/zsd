@@ -2704,8 +2704,15 @@ public class HomeWorkAction extends DispatchAction {
 		Integer roleId = CommonTools.getLoginRoleId(request);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "error";
-		Integer loginStatus_local = CommonTools.getFinalInteger("loginStatus", request);
-		String checkLoginStatus = CommonTools.checkUserLoginStatus(request,currUserId,loginStatus_local);
+		String checkLoginStatus = "";
+		//客户端信息
+		String clientInfo = CommonTools.getCilentInfo_new(request);
+		if(clientInfo.equals("pc") || clientInfo.indexOf("Web") > 0){//电脑端或者手机浏览器端
+			checkLoginStatus = "success";
+		}else{
+			Integer loginStatus_local = CommonTools.getFinalInteger("loginStatus", request);
+			checkLoginStatus = CommonTools.checkUserLoginStatus(request,currUserId,loginStatus_local);
+		}
 		String currDate = CurrentTime.getStringDate();
 		if(checkLoginStatus.equals("success")){
 			if(currUserId > 0){

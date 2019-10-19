@@ -159,8 +159,15 @@ public class OnlineStudyAction extends DispatchAction {
 		StuSubjectEduManager ssem = (StuSubjectEduManager)  AppFactory.instance(null).getApp(Constants.WEB_STU_SUB_EDU_INFO);
 		Integer userId = CommonTools.getLoginUserId(request);
 		Integer roleId = CommonTools.getLoginRoleId(request);
-		Integer loginStatus_local = CommonTools.getFinalInteger("loginStatus", request);
-		String checkLoginStatus = CommonTools.checkUserLoginStatus(request,userId,loginStatus_local);
+		String checkLoginStatus = "";
+		//客户端信息
+		String clientInfo = CommonTools.getCilentInfo_new(request);
+		if(clientInfo.equals("pc") || clientInfo.indexOf("Web") > 0){//电脑端或者手机浏览器端
+			checkLoginStatus = "success";
+		}else{
+			Integer loginStatus_local = CommonTools.getFinalInteger("loginStatus", request);
+			checkLoginStatus = CommonTools.checkUserLoginStatus(request,userId,loginStatus_local);
+		}
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "error";
 		if(checkLoginStatus.equals("success")){

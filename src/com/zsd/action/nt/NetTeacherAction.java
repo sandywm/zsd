@@ -64,8 +64,15 @@ public class NetTeacherAction extends DispatchAction {
 		NtCertificateInfoManager ntcm = (NtCertificateInfoManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_CERTIFICATE_INFO);
 		Integer userId = CommonTools.getLoginUserId(request);
 		Integer roleId = CommonTools.getLoginRoleId(request);
-		Integer loginStatus_local = CommonTools.getFinalInteger("loginStatus", request);
-		String checkLoginStatus = CommonTools.checkUserLoginStatus(request,userId,loginStatus_local);
+		String checkLoginStatus = "";
+		//客户端信息
+		String clientInfo = CommonTools.getCilentInfo_new(request);
+		if(clientInfo.equals("pc") || clientInfo.indexOf("Web") > 0){//电脑端或者手机浏览器端
+			checkLoginStatus = "success";
+		}else{
+			Integer loginStatus_local = CommonTools.getFinalInteger("loginStatus", request);
+			checkLoginStatus = CommonTools.checkUserLoginStatus(request,userId,loginStatus_local);
+		}
 		String iCardStatus = "";
 		String zgzStatus = "";
 		String xlzStatus = "";
@@ -197,8 +204,15 @@ public class NetTeacherAction extends DispatchAction {
 		Integer roleId = CommonTools.getLoginRoleId(request);
 		Map<String, String> map = new HashMap<String, String>();
 		String msg = "error";
-		Integer loginStatus_local = CommonTools.getFinalInteger("loginStatus", request);
-		String checkLoginStatus = CommonTools.checkUserLoginStatus(request,userId,loginStatus_local);
+		String checkLoginStatus = "";
+		//客户端信息
+		String clientInfo = CommonTools.getCilentInfo_new(request);
+		if(clientInfo.equals("pc") || clientInfo.indexOf("Web") > 0){//电脑端或者手机浏览器端
+			checkLoginStatus = "success";
+		}else{
+			Integer loginStatus_local = CommonTools.getFinalInteger("loginStatus", request);
+			checkLoginStatus = CommonTools.checkUserLoginStatus(request,userId,loginStatus_local);
+		}
 		if(checkLoginStatus.equals("success")){
 			if(userId > 0 && roleId.equals(Constants.NET_TEA_ROLE_ID)){
 				List<User> uList = um.listEntityById(userId);
@@ -294,10 +308,17 @@ public class NetTeacherAction extends DispatchAction {
 	public ActionForward saveICard(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
-		Integer loginStatus_local = CommonTools.getFinalInteger("loginStatus", request);
 		Integer userId = CommonTools.getLoginUserId(request);
 		Integer roleId = CommonTools.getLoginRoleId(request);
-		String checkLoginStatus = CommonTools.checkUserLoginStatus(request,userId,loginStatus_local);
+		String checkLoginStatus = "";
+		//客户端信息
+		String clientInfo = CommonTools.getCilentInfo_new(request);
+		if(clientInfo.equals("pc") || clientInfo.indexOf("Web") > 0){//电脑端或者手机浏览器端
+			checkLoginStatus = "success";
+		}else{
+			Integer loginStatus_local = CommonTools.getFinalInteger("loginStatus", request);
+			checkLoginStatus = CommonTools.checkUserLoginStatus(request,userId,loginStatus_local);
+		}
 		Map<String, String> map = new HashMap<String, String>();
 		String msg = "error";
 		if(checkLoginStatus.equals("success")){
@@ -378,8 +399,15 @@ public class NetTeacherAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response)throws Exception {
 		Integer userId = CommonTools.getLoginUserId(request);
 		Integer roleId = CommonTools.getLoginRoleId(request);
-		Integer loginStatus_local = CommonTools.getFinalInteger("loginStatus", request);
-		String checkLoginStatus = CommonTools.checkUserLoginStatus(request,userId,loginStatus_local);
+		String checkLoginStatus = "";
+		//客户端信息
+		String clientInfo = CommonTools.getCilentInfo_new(request);
+		if(clientInfo.equals("pc") || clientInfo.indexOf("Web") > 0){//电脑端或者手机浏览器端
+			checkLoginStatus = "success";
+		}else{
+			Integer loginStatus_local = CommonTools.getFinalInteger("loginStatus", request);
+			checkLoginStatus = CommonTools.checkUserLoginStatus(request,userId,loginStatus_local);
+		}
 		Map<String, String> map = new HashMap<String, String>();
 		String msg = "error";
 		if(checkLoginStatus.equals("success")){
@@ -446,8 +474,15 @@ public class NetTeacherAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response)throws Exception {
 		Integer userId = CommonTools.getLoginUserId(request);
 		Integer roleId = CommonTools.getLoginRoleId(request);
-		Integer loginStatus_local = CommonTools.getFinalInteger("loginStatus", request);
-		String checkLoginStatus = CommonTools.checkUserLoginStatus(request,userId,loginStatus_local);
+		String checkLoginStatus = "";
+		//客户端信息
+		String clientInfo = CommonTools.getCilentInfo_new(request);
+		if(clientInfo.equals("pc") || clientInfo.indexOf("Web") > 0){//电脑端或者手机浏览器端
+			checkLoginStatus = "success";
+		}else{
+			Integer loginStatus_local = CommonTools.getFinalInteger("loginStatus", request);
+			checkLoginStatus = CommonTools.checkUserLoginStatus(request,userId,loginStatus_local);
+		}
 		String msg = "error";
 		Map<String, String> map = new HashMap<String, String>();
 		if(checkLoginStatus.equals("success")){

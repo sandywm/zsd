@@ -43,6 +43,7 @@ import com.zsd.tools.CommonTools;
 import com.zsd.tools.Convert;
 import com.zsd.tools.CurrentTime;
 import com.zsd.util.Constants;
+import com.zsd.util.WebUrl;
 
 /** 
  * MyEclipse Struts
@@ -440,7 +441,7 @@ public class BaseInfoAction extends DispatchAction {
 		String s = null;
 		Map<String,Object> map = new HashMap<String,Object>();
         String msg = "error";
-		File file = new File("E:/appVersion.json");
+		File file = new File(WebUrl.APP_VERSION);
 		if(file.exists()){
 			InputStreamReader br = new InputStreamReader(new FileInputStream(file),"utf-8");//读取文件,同时指定编码
 			String opt = CommonTools.getFinalStr("opt", request);//new或者不传时为获取最新版本，all时表示获取全部版本

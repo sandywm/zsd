@@ -117,4 +117,12 @@ public class StudyLogDaoImpl implements StudyLogDao{
 			return sess.createQuery(hql).list();
 	}
 
+	@Override
+	public List<StudyLogInfo> findLimitUnComInfoByStuId(Session sess,
+			Integer stuId, Integer limitNumber) {
+		// TODO Auto-generated method stub
+		String hql = " from StudyLogInfo as sl where sl.user.id = "+stuId + " and sl.isFinish = 1 order by sl.addTime desc";
+		return sess.createQuery(hql).setFirstResult(0).setMaxResults(limitNumber).list();
+	}
+
 }
