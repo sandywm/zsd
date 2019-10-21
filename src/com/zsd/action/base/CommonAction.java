@@ -1357,7 +1357,6 @@ public class CommonAction extends DispatchAction {
 				map.put("ntList", list_nt);
 				map.put("hwCount", tjm.getCountByOpt_1(0, 0, userId, 0, currDate, currDate));
 				map.put("buffetCount", bsm.listBsInfoByOption(userId, 0, 1, currDate, currDate).size());
-				map.put("emailCount", em.getUnReadCount(userId));
 			}
 		}
 		map.put("msg", msg);

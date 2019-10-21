@@ -228,6 +228,9 @@ public class ReportCenterAction  extends DispatchAction{
 					if(subList.size() > 0){
 						subName = subList.get(0).getSubName();
 					}
+				}else{
+					subId = Constants.MATH_ID;
+					subName = "数学";
 				}
 			}
 			contentInfo = "最近"+diffDays+"天"+subName+"的统计";

@@ -2512,9 +2512,9 @@ public class OnlineStudyAction extends DispatchAction {
 											//当currentLoreId和知识点的loreId(本知识点)
 											if(currentLoreId.equals(loreId)){
 												//表示是本知识点的学习（巩固训练）
-												updateFlag = slm.updateStudyLog(studyLogId, 4, 0, -1, -1, 31, "");
+												updateFlag = slm.updateStudyLog(studyLogId, 4, 0, -1, -1, 31, currTime);
 											}else{
-												updateFlag = slm.updateStudyLog(studyLogId, 3, 0, -1, -1, 31, "");
+												updateFlag = slm.updateStudyLog(studyLogId, 3, 0, -1, -1, 31, currTime);
 											}
 										}else{
 											updateFlag = slm.updateStudyLog(studyLogId, step, stepComplete, isFinish, oldStepMoney, 0, currTime);

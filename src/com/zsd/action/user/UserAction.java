@@ -146,12 +146,22 @@ public class UserAction extends DispatchAction {
 			List<Object> list = new ArrayList<Object>();
 			for(Iterator<User> it = uList.iterator() ; it.hasNext();){
 				User user = it.next();
+				boolean showFlag = true;
+				List<RoleUserInfo> ruList  = ruManager.listUserRoleInfoByuserId(user.getId());
+				for(RoleUserInfo ru : ruList){
+					if(ru.getRoleInfo().getId().equals(Constants.SUPER_ROLE_ID)){
+						showFlag = false;
+						break;
+					}
+				}
+				if(!showFlag){
+					continue;
+				}
 				Map<String,Object> map_u = new HashMap<String,Object>();
 				map_u.put("id", user.getId());
 				map_u.put("accName", user.getUserAccount());
 				map_u.put("realName", user.getRealName());
 				map_u.put("nickName", user.getNickName());
-				List<RoleUserInfo> ruList  = ruManager.listUserRoleInfoByuserId(user.getId());
 				RoleUserInfo ruInfo = ruList.get(0);
 				map_u.put("roleName", ruInfo.getRoleInfo().getRoleName());
 				String sexStr = user.getSex();
