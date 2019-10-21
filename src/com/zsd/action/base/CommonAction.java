@@ -1297,8 +1297,6 @@ public class CommonAction extends DispatchAction {
 		Integer limitNumber_nt = CommonTools.getFinalInteger("limitNumber_nt", request);//我的导师限制条数
 		Integer roleId = CommonTools.getLoginRoleId(request);
 		Integer userId = CommonTools.getLoginUserId(request);
-		roleId = 2;
-		userId = 1;
 		Map<String,Object> map = new HashMap<String,Object>();
 		String currDate = CurrentTime.getStringDate();
 		String msg = "error";
