@@ -1322,9 +1322,20 @@ public class CommonAction extends DispatchAction {
 					if(count <= limitNumber_nt){
 						Map<String,Object> map_d = new HashMap<String,Object>();
 						map_d.put("ntsId", nts.getId());
-						map_d.put("portrait", nts.getNetTeacherInfo().getUser().getPortrait());
-						map_d.put("realName", nts.getNetTeacherInfo().getUser().getRealName());
-						map_d.put("subName", nts.getNetTeacherInfo().getSubject().getSubName());
+						NetTeacherInfo nt = nts.getNetTeacherInfo();
+						map_d.put("portrait", nt.getUser().getPortrait());
+						map_d.put("realName", nt.getUser().getRealName());
+						Integer schoolType = nt.getSchoolType();
+						String schoolTypeChi = "";
+						if(schoolType.equals(-1)){
+							schoolTypeChi = "小学";
+						}else if(schoolType.equals(1)){
+							schoolTypeChi = "初中";
+						}else if(schoolType.equals(2)){
+							schoolTypeChi = "高中";
+						}
+						map_d.put("schoolType", schoolTypeChi);
+						map_d.put("subName", nt.getSubject().getSubName());
 						Integer bindStatus = nts.getBindStatus();
 						String bindStatusChi = "";
 						if(bindStatus.equals(-1)){
@@ -1336,6 +1347,7 @@ public class CommonAction extends DispatchAction {
 						}
 						map_d.put("bindInfo", bindStatusChi);
 						map_d.put("bindStatus", bindStatus);
+						map_d.put("diffDays", CurrentTime.compareDate(nts.getBindDate(), CurrentTime.getStringDate()));
 						list_nt.add(map_d);
 					}else{
 						break;
