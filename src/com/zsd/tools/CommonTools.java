@@ -20,6 +20,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.net.ssl.HttpsURLConnection;
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -459,6 +460,8 @@ public class CommonTools {
 						cilentQuip = "iphoneApp";
 					}
 				}
+			}else if(clientInfo.indexOf("Lavf") >= 0){//手机端播放视频时
+				cilentQuip = "commonApp";////手机app封装html页面
 			}else{
 				cilentQuip = "pc";//PC端
 			}
@@ -927,6 +930,14 @@ public class CommonTools {
 			result = "success";
 		}
 		return result;
+	}
+	
+	public static String getWebAddress(ServletRequest request){
+		String xyType = request.getScheme();
+		String ym = request.getServerName();
+		Integer dkh = request.getServerPort();
+		String dkhChi = dkh.equals(80) ? "" : ":" + dkh;
+		return xyType + "://" +  ym + dkhChi;
 	}
 	
 	public static void main(String[] args) throws Exception, FileNotFoundException{

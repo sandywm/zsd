@@ -55,7 +55,7 @@ public class ReportCenterAction  extends DispatchAction{
 	 */
 	public ActionForward showNLPage(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
-		
+		request.setAttribute("optPage", "nlTag");
 		return mapping.findForward("nlPage");
 	}
 	/**

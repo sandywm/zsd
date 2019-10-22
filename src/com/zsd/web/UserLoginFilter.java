@@ -67,6 +67,8 @@ public class UserLoginFilter implements Filter{
 		//攻击检测增加代码---end
 		//客户端信息
 		String clientInfo = CommonTools.getCilentInfo_new(httpServletRequest);
+		System.out.println(clientInfo);
+		System.out.println(requestUrl[0]);
 		if(!clientInfo.equals("pc") || clientInfo.indexOf("Web") > 0){//手机端不检验
 			chain.doFilter(request, response);
 		}else{
@@ -106,7 +108,8 @@ public class UserLoginFilter implements Filter{
 						&& !requesturi.endsWith("html")
 						&& !requesturi.endsWith("apk")
 						&& !requesturi.endsWith(httpServletRequest.getContextPath()+ "/")){
-	                String url = "window.top.location.href='login.do?action=loginOut'";
+					String url = "window.top.location.href = '"+CommonTools.getWebAddress(request)+"/login.do?action=loginOut'";
+//	                String url = "window.top.location.href='http://192.168.1.196:8080/login.do?action=loginOut'";
 					String authorizeScript = "由于您60分钟内没上线，系统已强制您下线，请重新登录！";
 					Ability.PrintAuthorizeScript(url,authorizeScript, httpServletResponse);
 	                return;
@@ -125,12 +128,12 @@ public class UserLoginFilter implements Filter{
 				}
 				if(!loginFlag.equals(loginFlag_dataBase)){
 					session.invalidate();
-					String url = "window.top.location.href='login.do?action=loginOut'";
+					String url = "window.top.location.href = '"+CommonTools.getWebAddress(request)+"/login.do?action=loginOut'";
 					String authorizeScript = "该账号已经在别处登录，系统已强制您下线，请重新登录！";
 					Ability.PrintAuthorizeScript(url,authorizeScript, httpServletResponse);
 				}else if(accountStatus.equals(0)){
 					session.invalidate();
-					String url = "window.top.location.href='login.do?action=loginOut'";
+					String url = "window.top.location.href = '"+CommonTools.getWebAddress(request)+"/login.do?action=loginOut'";
 					String authorizeScript = "该账号状态为无效，系统已强制您下线，请重新登录！";
 					Ability.PrintAuthorizeScript(url,authorizeScript, httpServletResponse);
 				}else{
