@@ -3,7 +3,7 @@
 <html>
   <head>
     <title>知识典--用户登录</title>
-	<link href="/plugins/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="/plugins/layui/css/layui.css" rel="stylesheet" type="text/css"/>
 	<link href="/plugins/layui/css/modules/layui-icon-extend/iconfont.css" rel="stylesheet" type="text/css"/>
 	<link href="/plugins/pace/pace-theme-flash.min.css" rel="stylesheet" type="text/css"/>
 	<link rel="stylesheet" type="text/css" href="/css/navFooter.css"/>

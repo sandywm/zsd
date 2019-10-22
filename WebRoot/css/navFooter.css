@@ -78,3 +78,31 @@
 .foot p a{
 	color: #fff;
 }
+.sideBar{
+	width:50px;
+	height:100px;
+	position:fixed;
+	right:0;
+	bottom:50px;
+	z-index:20;
+}
+.sideBar a{
+	width:50px;
+	height:50px;
+	background:#666;
+	display:block;
+	text-align:center;
+	line-height:50px;
+	margin-bottom:10px;
+	border-radius:4px;
+}
+.sideBar a i{
+	color:#fff;
+	font-size:30px;
+}
+.sideBar a:hover{
+	background:#fb4aaf;
+}
+.sideBar a i.layui-extend-fanhuidingbu{
+	font-size:26px;
+}

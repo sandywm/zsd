@@ -65,6 +65,8 @@
 			<div class="leftLoginDec">
 				<img class="fristImg" src="images/registerFirst.png" alt="知识典注册"/>
 				<img class="regImgSt" src="images/register_st.png" alt="知识典学生注册"/>
+				<img class="regImgPar" src="images/parReg.png" alt="知识典家长注册"/>
+				<img class="regImgNt" src="images/ntReg.png" alt="知识典网络导师注册"/>
 			</div>
 			<div class="rightLoginForm">
 				<!-- 选择角色 -->
@@ -919,6 +921,7 @@
    								$('.ntPart').hide();
    								$('.notStRegBtn').hide();
    								$('.secondStep').show();
+   								$('.regImgPar').show();
    							}else if(roleNameInp == '网络导师'){
    								$('#roleTxtTit').html('网络导师注册');
    								$('.ntPart').show();
@@ -927,6 +930,7 @@
    								$('.formWrap').addClass('hasMargTop_nt');
    								$('.notStRegBtn').show();
    								$('.secondStep').hide();
+   								$('.regImgNt').show();
    							}
    						});
    						//填写表单 返回上一步
@@ -935,6 +939,8 @@
    							$('.fieldForm').hide();
    							$('.fristImg').show();
    							$('.regImgSt').hide();
+   							$('.regImgPar').hide();
+   							$('.regImgNt').hide();
    							$('.formWrap').removeClass('hasMargTop_st hasMargTop_nt');
    						});
    						//选择地区返回上一步

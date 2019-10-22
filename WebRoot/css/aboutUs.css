@@ -86,8 +86,13 @@
 .imgItem{
 	width:500px;
 	height:260px;
-	background:#4d47f1;
 	margin-left:50px;
+	text-align:center;
+}
+.imgItem img{
+	width:350px;
+	display:inline-block;
+	margin-top:-20px;
 }
 .conItem{
 	width:320px;
@@ -113,4 +118,7 @@
 	font-size:30px;
 	color:#192437;
 	text-align:center;
+}
+.contractUs{
+	padding-top:20px;
 }

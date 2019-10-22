@@ -38,6 +38,26 @@ body{
 	left:0;
 	display:none;
 }
+.leftLoginDec img.regImgPar{
+	width:280px;
+	height:410px;
+	position:absolute;
+	top:50%;
+	margin-top:-205px;
+	left:50%;
+	margin-left:-140px;
+	display:none;
+}
+.leftLoginDec img.regImgNt{
+	width:309px;
+	height:410px;
+	position:absolute;
+	top:50%;
+	margin-top:-205px;
+	left:50%;
+	margin-left:-140px;
+	display:none;
+}
 .leftLoginDec img.fristImg{
 	width:406px;
 	height:424px;

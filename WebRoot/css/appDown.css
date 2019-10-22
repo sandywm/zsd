@@ -1,6 +1,9 @@
 body{
 	background:#f2f2f2;
 }
+.header.hasPadd{
+	padding-bottom:10px;
+}
 .appDownWrap{
 	background:#fff;
 	margin-bottom:-50px;

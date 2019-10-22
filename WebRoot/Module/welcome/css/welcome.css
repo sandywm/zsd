@@ -1,0 +1,202 @@
+.topMainPart{
+	height:432px;
+	margin-bottom:20px;
+}
+.leftMainPart{
+	width:420px;
+	float:left;
+	margin-right:20px;
+}
+.myHwBuffetMsg{
+	height:142px;
+	background:#fff;
+	margin-bottom:20px;
+}
+.modTit{
+	height:40px;
+	line-height:40px;
+}
+.modTit strong{
+	font-weight:700;
+	color:#333;
+	font-size:18px;
+	float:left;
+	margin-left:15px;
+}
+.modTit a{
+	float:right;
+	width:15%;
+	height:100%;
+	text-align:center;
+	font-size:14px;
+}
+.modTit a.moreSpecPos{
+	text-align:right;
+	padding-right:15px;
+}
+.modTit a:hover{
+	color:#4d47f1;
+}
+.currHwbfMsg a,
+.currHwbfMsg .noNewMsg{
+	height:50px;
+	line-height:50px;
+	border-bottom:1px solid #e6e6f0;
+	display:none;
+}
+.currHwbfMsg.noBor a,
+.currHwbfMsg.noBor .noNewMsg{
+	border-bottom:none;
+}
+.currHwbfMsg a span.currMsgTxt{
+	font-size:15px;
+	float:left;
+	margin-left:15px;
+	color:#333;
+}
+.currHwbfMsg a:hover span.currMsgTxt{
+	color:#4d47f1;	
+}
+.currHwbfMsg .noNewMsg{
+	font-size:15px;
+	text-indent:15px;
+	color:#999;
+}
+.currHwbfMsg a span.newMsgNum{
+	float:right;
+	margin:16px 15px 0 0;
+	height:18px;
+	line-height:18px;
+	padding: 0 6px;
+    font-size: 12px;
+    text-align: center;
+    background: #fb4aaf;
+    color: #fff;
+    border-radius: 2px;
+}
+/* onlineStudy */
+.studyRec{
+	background:#fff;
+}
+.studyList{
+	height:230px;
+	position:relative;
+}
+.studyList li a{
+	width:100%;
+	height:45px;
+	line-height:45px;
+	border-bottom:1px solid #f2f2f2;
+	display:block;
+	font-size:15px;
+}
+.studyList li a span.subName{
+	float:left;
+	margin:0 5px 0 15px;
+}
+.studyList li a span.loreName{
+	float:left;
+	width:54%;
+	text-overflow:ellipsis;
+	overflow:hidden;
+	white-space:nowrap;
+}
+.studyList li a span.studyTime{
+	float:right;
+	margin-right:15px;
+	color:#666;
+	font-size:13px;
+}
+.studyList li a:hover span{
+	color:#4d47f1;
+}
+/*myNtTea*/
+.myNtTea{
+	width:340px;
+	height:100%;
+	background:#fff;
+	float:left;
+	position:relative;
+	overflow:hidden;
+}
+.myNtList{
+	position:absolute;
+	left:0;
+	right:0;
+	top:40px;
+	bottom:0;
+}
+.myNtList li{
+	border-bottom:1px solid #f2f2f2;
+	padding:17px 0;
+}
+.myNtList img.ntPic{
+	width:60px;
+	height:60px;
+	float:left;
+	border-radius:50%;
+	margin:2px 10px 0 15px;
+}
+.myNtInfo{
+	width:75%;
+	float:left;
+	color:#333;
+	position:relative;
+}
+.myNtInfo strong{
+	font-size:15px;
+	font-weight:720;
+	display:block;
+	margin-bottom:5px;
+}
+.myNtInfo p{
+	color:#666;
+	font-size:12px;
+}
+.myNtInfo span{
+	height:24px;
+	line-height:22px;
+	color:#4d47f1;
+	padding:0 10px;
+	position:absolute;
+	right:10px;
+	top:20px;
+	font-weight:bold;
+	font-size:14px;
+}
+/* tongjiRec */
+.tongjiPart{
+	background:#fff;
+	height:450px;
+	margin-bottom:20px;
+	position:relative;
+}
+.tongjiPart.smHei{
+	height:350px;
+}
+.tongjiPart.bigHei{
+	height:450px;
+}
+.tongjiData{
+	position:absolute;
+	left:15px;
+	top:40px;
+	bottom:60px;
+	right:15px;
+}
+.rateWrap{
+	width:100%;
+	height:60px;
+	position:absolute;
+	left:15px;
+	right:15px;
+	bottom:0;
+}
+.rateWrap p{
+	width:50%;
+	line-height:60px;
+	float:left;
+	font-size:14px;
+	color:#4d47f1;
+	font-weight:700;
+}

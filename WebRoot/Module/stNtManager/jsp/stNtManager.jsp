@@ -16,7 +16,7 @@
 		#stuNameInp,#ntNameInp{display:none;}
 		.hasOverDate{color:#FF5722;}
 		.ingDate{color:#1E9FFF;}
-		.resetBtn{margin-top:6px;float:left;}
+		.resetBtn{margin-top:15px;float:left;}
 		.resetBtn:hover{color:#F47837;}
 		.dateItem{width:90%;margin:10px auto 0;height:40px;line-height:40px;color:#333;}
 		.dateItem span,.dateItem p{float:left;}
@@ -30,9 +30,6 @@
 			<div class="layui-row">
 				<div class="layui-col-md12 layui-col-lg12">
 					<div class="layui-card">
-						<div class="layui-card-header posRel">
-	  						<span>学生导师管理</span>
-	  					</div>
 	  					<div class="layui-card-body" pad15>
 	  						<div class="layui-form">
 	  							<div class="itemDivs" style="width:100px;">
@@ -95,7 +92,7 @@
 									</div>
 								</div>
 								
-								<div class="itemDivs">
+								<div class="itemDivs" style="margin-top:10px;">
 									<div class="layui-input-inline" style="width:150px;">
 										 <input id="stDate" type="text" placeholder="请选择绑定起始日期" readonly class="layui-input"/>
 									</div>
@@ -104,7 +101,7 @@
 										 <input id="edDate" type="text" placeholder="请选择绑定结束日期" readonly class="layui-input"/>
 									</div>
 								</div>
-								<div class="itemDivs" style="margin-right:15px;">
+								<div class="itemDivs" style="margin-right:15px;margin-top:10px;">
 									<div class="layui-input-inline">
 										<button id="queryBtn" class="layui-btn"><i class="layui-icon layui-icon-search"></i></button>
 									</div>
