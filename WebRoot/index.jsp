@@ -107,7 +107,6 @@
 	        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="chapter.do?action=goChapterPage" tab-id="6">章节管理</a></li>';
 	        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="lore.do?action=goLoreCatalogPage" tab-id="7">知识点目录管理</a></li>';
 	        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="lore.do?action=goLoreQuePage" tab-id="8">知识点管理</a></li>';
-	        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="netTeacherReview.do?action=goNtReviewPage" tab-id="15">网络导师审核管理</a></li>';
 	        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="loreRelate.do?action=goLoreRelatePage" tab-id="9">关联知识点</a></li>';
 	        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="lex.do?action=goLexPage" tab-id="10">词库管理</a></li>';
 	        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="buffet.do?action=goBuffetPage" tab-id="11">自助餐管理</a></li>';
@@ -115,13 +114,14 @@
 	        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="hw.do?action=goHwPage" tab-id="13">系统家庭作业管理</a></li>';
 	        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="hw.do?action=goTeaQuePage" tab-id="14">老师家庭作业管理</a></li>';
         		}else if(roleName == '超级管理员'){
-        			liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="ntsBind.do?action=goNtsPage" tab-id="16">学生导师管理</a></li>';
 	        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="user.do?action=goUserPage" tab-id="15">用户管理</a></li>';
 	        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="school.do?action=goSchoolPage" tab-id="1">学校管理</a></li>';
 	        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="common.do?action=goEditionPage" tab-id="2">出版社管理</a></li>';
 	        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="common.do?action=goSubjectPage" tab-id="3">学科管理</a></li>';
 	        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="common.do?action=goEducationPage" tab-id="4">教材管理</a></li>';
 	        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="common.do?action=goGSubjectPage" tab-id="5">年级科目管理</a></li>';
+	        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="netTeacherReview.do?action=goNtReviewPage" tab-id="15">网络导师审核管理</a></li>';
+        			liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="ntsBind.do?action=goNtsPage" tab-id="16">学生导师管理</a></li>';
         		}
 	        	$("#leftSideNav").html(liItem);
 	        	element.init(); 

@@ -74,7 +74,7 @@
 					<strong class="mainTit">一个中心，四大系统，</strong>
 					<strong class="mainTit">八大功能</strong>
 					<p class="desCon">四大系统四维一体，解决学生“从哪里学？” “如何学”、“如何更好地学”以及“学得怎么样”。 从诊断到溯源，从学习到帮辅，真正实现学习的全方位精准打造</p>
-					<a class="experiBtn" href="javascript:void(0)">
+					<a id="experiBtn" class="experiBtn" href="javascript:void(0)">
 						<img src="images/experience.png"/>
 					</a>
 				</div>
@@ -169,6 +169,9 @@
 			}
 			initLoadMapAdd();
 			backTop('backTop');
+			document.getElementById('experiBtn').onclick = function(){
+				goLogin();
+			};
 		</script>
 	</body>
 </html>
