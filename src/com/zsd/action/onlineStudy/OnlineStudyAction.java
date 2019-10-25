@@ -2670,7 +2670,7 @@ public class OnlineStudyAction extends DispatchAction {
 					studyLogId = slLastList.get(0).getId();
 					subId = slLastList.get(0).getSubject().getId();
 					schoolId = slLastList.get(0).getUser().getSchoolId();
-					if(schoolId > 0){
+					if(schoolId != 0){
 						List<School> sList = sm.listInfoById(schoolId);
 						if(sList.size() > 0){
 							prov = sList.get(0).getProv();
@@ -2694,7 +2694,7 @@ public class OnlineStudyAction extends DispatchAction {
 				if(sl != null){
 					subId = sl.getSubject().getId();
 					schoolId = sl.getUser().getSchoolId();
-					if(schoolId > 0){
+					if(schoolId != 0){
 						List<School> sList = sm.listInfoById(schoolId);
 						if(sList.size() > 0){
 							prov = sList.get(0).getProv();
@@ -2903,7 +2903,7 @@ public class OnlineStudyAction extends DispatchAction {
 						}
 					}
 				}
-				if(schoolId > 0){//其他学校不参与统计
+				if(schoolId != 0){//其他学校不参与统计
 					//获取指定学生，指定科目，指定日期的勤奋报告统计信息
 					StudyStuQfTjInfo qftj = tjm.getEntityByOpt(stuId, subId, CurrentTime.getStringDate());
 					if(qftj != null){

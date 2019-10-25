@@ -76,12 +76,33 @@ public class BaseInfoAction extends DispatchAction {
 		String town = Transcode.unescape_new("town", request);
 		Integer schoolType = CommonTools.getFinalInteger("schoolType", request);
 		Integer yearSystem = CommonTools.getFinalInteger("yearSystem", request);
+		Integer opt = CommonTools.getFinalInteger("opt", request);//0:学生注册时加载学校列表用（其他学校）,1:不显示其他学校
 		List<School> sList = sm.listInfoByOpt(prov, city, county, town, schoolType,yearSystem);
 		Map<String,Object> map = new HashMap<String,Object>();
+		Map<String,Object> map_other = new HashMap<String,Object>();
 		String msg = "noInfo";
+		if(opt.equals(0)){
+			Integer schoolId = 0;
+			String schoolName = "其他学校";
+			if(schoolType.equals(1)){
+				schoolId = -1;
+				schoolName += "(小学)";
+			}else if(schoolType.equals(2)){
+				schoolId = -2;
+				schoolName += "(初中)";
+			}else if(schoolType.equals(3)){
+				schoolId = -3;
+				schoolName += "(高中)";
+			}
+			map_other.put("schoolId", schoolId);
+			map_other.put("schoolName", schoolName);
+		}
 		if(sList.size() > 0){
 			msg = "success";
 			List<Object> list_d = new ArrayList<Object>();
+			if(opt.equals(0)){
+				list_d.add(map_other);
+			}
 			for(Iterator<School> it = sList.iterator() ; it.hasNext();){
 				School sch = it.next();
 				Map<String,Object> map_d = new HashMap<String,Object>();
@@ -90,6 +111,13 @@ public class BaseInfoAction extends DispatchAction {
 				list_d.add(map_d);
 			}
 			map.put("schList", list_d);
+		}else{
+			if(opt.equals(0)){
+				msg = "success";
+				List<Object> list_d = new ArrayList<Object>();
+				list_d.add(map_other);
+				map.put("schList", list_d);
+			}
 		}
 		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);

@@ -194,7 +194,7 @@ public class UserAction extends DispatchAction {
 				String schoolName_tmp = "";
 				String gradeName_tmp = "";
 				String className_tmp = "";
-				if(ruInfo.getSchoolId() > 0){
+				if(ruInfo.getSchoolId() != 0){
 					List<School> schList = schManager.listInfoById(ruInfo.getSchoolId());
 					if(schList.size() > 0){
 						schoolName_tmp = schList.get(0).getSchoolName();

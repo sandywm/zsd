@@ -259,7 +259,7 @@ public class ReportCenterAction  extends DispatchAction{
 					}
 					//学生和家长身份时，只需要用到起始时间，学科，班级编号
 				}
-				if(schoolId_tmp > 0){//其他学校不参与统计
+				if(schoolId_tmp != 0){//其他学校不参与统计
 					tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, "", "", "", "", 0, 0, "", classId);//获取指定班级的统计信息
 				}
 			}else if(roleId.equals(Constants.TEA_ROLE_ID)){//老师(班内)
