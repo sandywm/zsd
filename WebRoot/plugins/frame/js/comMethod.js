@@ -1,3 +1,9 @@
+document.getElementById('appIcon').onmouseover = function(){
+	document.getElementById('appWrap').style.display = 'block';
+};
+document.getElementById('appIcon').onmouseout = function(){
+	document.getElementById('appWrap').style.display = 'none';
+};
 //返回顶部
 function backTop(obj){
 	var oBackTop=document.getElementById(obj);

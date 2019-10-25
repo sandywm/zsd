@@ -75,6 +75,9 @@
 	text-align: center;
 	line-height: 30px;
 }
+.foot p.marginTop{
+	padding-top:20px;
+}
 .foot p a{
 	color: #fff;
 }
@@ -105,4 +108,25 @@
 }
 .sideBar a i.layui-extend-fanhuidingbu{
 	font-size:26px;
+}
+.appWrap{
+	width: 136px;
+    height: 230px;
+    background: url(../images/appBg.png) no-repeat;
+    position: fixed;
+    right: 60px;
+    bottom: 100px;
+    z-index: 500;
+    text-align: center;
+    color: #666;
+    font-size: 14px;
+    display:none;
+}
+.appWrap p.oneP {
+    margin: 30px 0 0 0;
+}
+.appWrap img {
+	width:100px;
+	height:100px;
+    margin: 5px 0 0 0px;
 }
