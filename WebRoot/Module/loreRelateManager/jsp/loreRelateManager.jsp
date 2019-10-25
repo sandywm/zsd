@@ -17,7 +17,7 @@
 	<body>
 		<div class="layui-fluid" style="margin-top:15px;">
 			<div class="layui-row">
-				<div class="layui-col-md12 layui-col-lg12">
+				<div style="margin-top:45px;">
 					<div class="layui-card">
 						<div class="layui-card-header loreHeader">
 	  						<span style="float:left">关联知识点</span>

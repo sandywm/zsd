@@ -480,7 +480,7 @@ layui.define(['form','element','upLoadFiles','buffetLoreDOM','buffetLoreMet'],fu
 			var dbzdStr = '';
 			for(var i=0;i<dbzdList.length;i++){
 				if(i == 0){
-					dbzdStr += '<div class="smModPart zhutiPart"><strong class="dbzdSmTit"><img src="../images/lubiao.png"/>';
+					dbzdStr += '<div class="smModPart zhutiPart"><strong class="dbzdSmTit"><i class="iconfont layui-extend-star"></i>';
 					dbzdStr += '<span>'+ dbzdList[i].lqsType +'</span></strong>';
 					dbzdStr += '<div class="listLore"><strong class="smTit">标题：'+ dbzdList[i].lqsTitle.replace("<","&lt") +'</strong>';
 					dbzdStr += '<div class="con"><p class="titP">内容：</p><div>'+ dbzdList[i].lqsCon +'</div></div>';
@@ -490,7 +490,7 @@ layui.define(['form','element','upLoadFiles','buffetLoreDOM','buffetLoreMet'],fu
 						dbzdStr += '<div class="listLore"><strong class="smTit">标题：'+ dbzdList[i].lqsTitle.replace("<","&lt") +'</strong>';
 						dbzdStr += '<div class="con"><p class="titP">内容：</p><div>'+ dbzdList[i].lqsCon +'</div></div>';
 					}else{
-						dbzdStr += '<div class="smModPart zhutiPart"><strong class="dbzdSmTit"><img src="../images/lubiao.png"/>';
+						dbzdStr += '<div class="smModPart zhutiPart"><strong class="dbzdSmTit"><i class="iconfont layui-extend-star"></i>';
 						dbzdStr += '<span>'+ dbzdList[i].lqsType +'</span></strong>';
 						dbzdStr += '<div class="listLore"><strong class="smTit">标题：'+ dbzdList[i].lqsTitle.replace("<","&lt") +'</strong>';
 						dbzdStr += '<div class="con"><p class="titP">内容：</p><div>'+ dbzdList[i].lqsCon +'</div></div>';
