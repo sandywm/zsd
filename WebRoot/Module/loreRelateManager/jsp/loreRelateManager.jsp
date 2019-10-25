@@ -96,6 +96,7 @@
 				},
 				bindEvent : function(){
 					//onClick:function(node){showDetailView(node.attributes);}
+					var _this = this;
 					$('#queryBtn').on('click',function(){
 						var eduId = $('#eduColumeInp').val(),
 							ediId = $('#editInp').val();
@@ -103,43 +104,54 @@
 							layer.msg('请选择教材',{icon:5,anim:6,time:2200});
 		    				return;
 						}
-						layer.load('1');
-						$('#loreTree').tree({  
-							url: '/loreRelate.do?action=showLoreSimpleTree&eduId=' + eduId + '&ediId=' + ediId,
-							loadFilter: function(data){ 
-								layer.closeAll('loading');
-								if(data.length > 0){
-									$('.tipsTxt_rel').hide();
-									if (data.d){  
-										return data.d;  
-									} else {  
-										return data;  
-									}   
-								}else{
-									$('.tipsTxt_rel').show().html('暂无此教材的章节知识点信息');
-								}
-							},
-							onClick :function(node){
-								if(node.attributes != undefined){
-									loreBigId = node.attributes.loreId,
-									loreBigName = node.attributes.loreName;
-									layer.open({
-										title:'',
-										type: 2, 
-									  	area: ['1000px', '560px'],
-									  	fixed: true, //不固定
-									  	maxmin: false, 
-									  	shadeClose :false,
-									  	closeBtn:0,
-									  	content: '/Module/loreManager/jsp/loreRelate.html',
-									  	end : function(){
-									  		window.localStorage.removeItem("relateObj");
-									  	}
-									});	
-								}
-							}
-					 	});
+						_this.loadRelateTree(eduId,ediId);
 					});
+				},
+				loadRelateTree : function(eduId,ediId){
+					var _this = this;
+					layer.load('1');
+					$('#loreTree').tree({  
+						url: '/loreRelate.do?action=showLoreSimpleTree&eduId=' + eduId + '&ediId=' + ediId,
+						loadFilter: function(data){ 
+							layer.closeAll('loading');
+							if(data.length > 0){
+								$('.tipsTxt_rel').hide();
+								if (data.d){  
+									return data.d;  
+								} else {  
+									return data;  
+								}   
+							}else{
+								$('.tipsTxt_rel').show().html('暂无此教材的章节知识点信息');
+							}
+						},
+						onClick :function(node){
+							if(node.attributes != undefined){
+								loreBigId = node.attributes.loreId,
+								loreBigName = node.attributes.loreName;
+								_this.showLoreTree();
+							}
+						}
+				 	});
+				},
+				showLoreTree : function(){
+					var _this = this;
+					layer.open({
+						title:'',
+						type: 2, 
+					  	area: ['1000px', '560px'],
+					  	fixed: true, //不固定
+					  	maxmin: false, 
+					  	shadeClose :false,
+					  	closeBtn:0,
+					  	content: '/Module/loreManager/jsp/loreRelate.html',
+					  	end : function(){
+					  		var eduId = $('#eduColumeInp').val(),
+								ediId = $('#editInp').val();
+					  		_this.loadRelateTree(eduId,ediId);
+					  		window.localStorage.removeItem("relateObj");
+					  	}
+					});	
 				}
 			};
 			page.init();
