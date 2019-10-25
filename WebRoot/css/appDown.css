@@ -32,6 +32,17 @@ body{
 .codeImg{
 	margin-top:100px;
 }
+.codeImg img,
+.nextOpen{
+	width:120px;
+	height:120px;
+	line-height:120px;
+	text-align:center;
+}
+.nextOpen{
+	font-size:14px;
+	color:#666;
+}
 .codeImg .ios{
 	margin-left:50px;
 }
