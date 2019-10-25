@@ -583,6 +583,7 @@ layui.define(['form','buffetLoreDOM'],function(exports){
 						if(isSwitchFlag_dx && isSwitchFlag_tk == false){//表示从多选题切换至填空选择题或还原至多选题
 							layui.lorePractice.initAnswerOption(layui.lorePractice.findAnserType(optFiled.answer1),optFiled.answer1,optFiled.answer2,optFiled.answer3,optFiled.answer4,optFiled.answer5,optFiled.answer6);
 							$('#maxChoiceNumSel').val(optFiled.queOptNum);
+							$('#maxSelInpNum').val(optFiled.queOptNum);
 							_this.initShowInpByMaxOptNum(optFiled.queOptNum, 'answerBox_multi');
 							form.render();
 						}
@@ -610,6 +611,7 @@ layui.define(['form','buffetLoreDOM'],function(exports){
 					if(isSwitchFlag_tk && isSwitchFlag_dx == false){//表示从多选题切换至填空选择题 或从还原至填空选择题时
 						layui.lorePractice.initAnswerOption(layui.lorePractice.findAnserType(optFiled.answer1),optFiled.answer1,optFiled.answer2,optFiled.answer3,optFiled.answer4,optFiled.answer5,optFiled.answer6);
 						$('#maxChoiceNumSel').val(optFiled.queOptNum);
+						$('#maxSelInpNum').val(optFiled.queOptNum);
 						$('#spaceNumInp').val(optFiled.answerNum);//初始化填空数量value
 						//匹配填空数量
 						$('#spaceNumSel').val(optFiled.answerNum);
