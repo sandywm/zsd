@@ -63,15 +63,15 @@
 		<!-- banner --> 
 		<div class="banner">
 			<ul class="bannerBg">
-			    <li style="background: #4d47f1;"></li>
-			    <li style="background: #4d47f1;"></li>
-			    <li style="background: #4d47f1;"></li>
+			    <li style="background: #f2f2f2;"></li>
+			    <li style="background: #f2f2f2;"></li>
+			    <li style="background: #f2f2f2;"></li>
 			</ul>
 			<ul class="DB_imgSet">
 			    <li>
 			        <img class="DB_1_1" src="images/studyTxt.png" alt="在线学习" />
-			        <img class="DB_1_2" src="images/studyIntro.png" alt="" />
-					<img class="DB_1_3" src="images/bannerDec.png" alt="" />
+			        <img class="DB_1_2" src="images/studyIntro.png" alt="在线学习" />
+					<img class="DB_1_3" src="images/bannerDec.png" alt="在线学习" />
 			    </li>
 			    <li>
 					<img class="DB_2_1" src="images/jiatingzuoye.png" alt="家庭作业" />
@@ -227,19 +227,32 @@
 				<p class="marginTop">如有任何问题和建议，请&nbsp;<a href="mailto:sandy_wm@sohu.com">E-mail to me</a></p>
 				<p>建议您使用谷歌浏览器或急速浏览器浏览本站</p>
 				<p>版权所有 Copyright@2013 Sandy.wm All Rights Reserved.</p>
-				<p><a href="http://www.beian.miit.gov.cn">豫ICP备14023505号</a></p>
+				<!-- p><a href="http://www.beian.miit.gov.cn">豫ICP备14023505号</a></p-->
 			</div>
 		</div>
 		
 		<!-- sideBar -->
 		<div class="sideBar">
-			<a href="javascript:void(0)"><i class="iconfont layui-extend-shoujihao"></i></a>
+			<a href="javascript:void(0)" class="appIcon"><i class="iconfont layui-extend-shoujihao"></i></a>
 			<a id="backTop" href="javascript:void(0)"><i class="iconfont layui-extend-fanhuidingbu"></i></a>
 		</div>
+		<div class="appWrap">
+	    	<p class="oneP">扫码下载</p>
+	    	<p class="twoP">手机端在线学习</p>
+	    	<img src="../images/zsdCode.png" alt="知识典app下载">
+	    </div>
 		<script src="/plugins/jquery/jquery-1.8.3.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="/plugins/jquery/jquery.DB_tabMotionBanner.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="/plugins/frame/js/comMethod.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
+			$('.appIcon').hover(function(){
+				$('.appWrap').show();
+			},function(){
+				$('.appWrap').hide();
+			});
+			$('.DB_imgSet li').on('click',function(){
+				goLogin();
+			});
 			$('.banner').DB_tabMotionBanner({
 			    autoRollingTime: 6000,
 			    bgSpeed: 500,

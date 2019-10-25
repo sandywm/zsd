@@ -1,0 +1,60 @@
+<%@ page contentType="text/html; charset=UTF-8" language="java"%>
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" type="text/css" href="/css/header.css"/>
+	</head>
+	<body>
+		<div class="headerWrap">
+			<div class="innerHeader w1000">
+				<img src="images/logoPc.png" alt="知识典"/>
+				<div class="headNavItem">
+					<a href="javascript:void(0)">APP下载</a>
+					<a href="javascript:void(0)">
+						<span class="itemName">消息</span>
+						<span class="msgNum"></span>
+					</a>
+					<span class="logOutBtn">
+						<i class="iconfont layui-extend-tuichu"></i>
+					</span>
+				</div>
+			</div>
+		</div>
+		<script src="/plugins/layui/layui.js"></script>
+		<script type="text/javascript">
+			layui.use(['layer'],function(){
+				var layer = layui.layer;
+				$('.logOutBtn').on('click',function(){
+					layer.confirm('确认退出系统么？', {
+					  title:'退出系统提示',
+					  skin: 'layui-layer-molv',
+					  btn: ['确定','取消'] //按钮
+					},function(){
+						window.location.href = "login.do?action=loginOut";
+					});
+				});
+				function getUnReadConut(){
+					$.ajax({
+						url : '/email.do?action=getUnReadCount',
+						dataType:'json',
+						type:'post', 
+						timeout:10000,
+						success:function(json){
+							if(json.result == 'success'){
+								if(json.unReadeCount > 0){
+									$('.msgNum').show().html(json.unReadeCount);
+								}else{
+									$('.msgNum').hide().html('');
+								}
+							}else if(json.result == 'error'){
+								//mui.toast('服务器错误');
+							}
+						}
+					});
+				}
+				getUnReadConut();
+			});
+		</script>
+	</body>
+</html>

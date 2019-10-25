@@ -433,7 +433,7 @@ layui.define(['form','table','relate'],function(exports){
 			layer.load('1');
 			table.render({
 				elem: '#loreCataTable',
-				height: 'full-200',
+				height: 'full-150',
 				url :'/lore.do?action=getLoreCatalogData',
 				method : 'post',
 				where:{cptId:cptId},

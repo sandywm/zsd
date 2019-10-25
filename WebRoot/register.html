@@ -318,7 +318,6 @@
 				
 			</div>
 		</div>
-		
 		<script src="/plugins/jquery/jquery.min.js"></script>
    		<script src="/plugins/layui/layui.js"></script>
    		<script type="text/javascript">
@@ -391,20 +390,6 @@
    				});
    				var page = {
    					init : function(){
-   						
-   						
-   						$.ajax({   
-							url :'/baseInfo.do?action=getAreaJson',
-							dataType:'json',
-							type:'get',
-							success:function(json){   
-								console.log( json )
-							},  
-							error:function(xhr,type,errorThrown){  
-								console.log(type);  
-							}  
-						});
-   						
    						this.bindEvent();
    						$('body').click(function(){
    							$('#schListUl').hide();
@@ -416,6 +401,17 @@
    							$('#classListUl').hide();
    							$('.triSch_class').removeClass('rotate');
    						});
+   					},
+   					createNtInfo : function(json){
+   						var str = '';
+   						str += '<div class="ntInfoWrap">';
+   						str += '<img src="/'+ json.portrait +'"/>';
+   						str += '<div class="ntInfo">';
+   						str += '<p>姓名：<span>'+ json.realName +'</span></p>';
+   						str += '<p>学段：<span>'+ json.schoolType +'</span></p>';
+   						str += '<p>学科：<span>'+ json.subName +'</span></p>';
+   						str += '</div></div>';
+   						return str;
    					},
    					switchNumToCHN : function(num){
    						var currCHN = '';
@@ -613,7 +609,6 @@
 						}
    					},
    					goRegister : function(){
-   						console.log(field)
    						layer.load('1');
    						$.ajax({
    							url : '/login.do?action=regUserInfo',
@@ -747,6 +742,43 @@
    					},
    					bindEvent : function(){
    						var _this = this;
+   						$('#teaInfoBtn').on('click',function(){
+   							var yaoqingInp = $.trim($('#yaoqingInp').val());
+   							if(yaoqingInp == ''){
+   								layer.msg('请输入网络导师邀请码');
+   								return;
+   							}
+   							layer.load('1');
+   							$.ajax({
+   	   							url : '/common.do?action=getTeaInfoByCode',
+   								data:{inviteCode:yaoqingInp},
+   								dataType:'json',//服务器返回json格式数据
+   								type:'post',//HTTP请求类型
+   								timeout:10000,//超时时间设置为10秒；
+   								success:function(json){
+   									layer.closeAll('loading');
+   									if(json.msg == 'success'){
+   										var ntInfoDOM = _this.createNtInfo(json);
+   			   							layer.open({
+   			   								title:'',
+   			   								type: 1,
+   			   							  	area: ['360px', '180px'],
+   			   							  	fixed: true, //不固定
+   			   							  	maxmin: false,
+   			   							  	closeBtn : 0,
+   			   							  	shadeClose :true,
+   			   							  	content: ntInfoDOM
+   			   							});	
+									}else if(json.msg == 'noInfo'){
+										layer.msg('暂无该网络导师信息或该导师信息审核未通过');
+									}
+   								},
+   								error:function(xhr,type,errorThrown){
+   									layer.closeAll('loading');
+   									layer.msg('服务器连接失败');
+   								} 
+   							});
+   						});
    						//选择班级
    						$('#selClassWrap').on('click',function(event){
    							var gradeNum = $('#gradeNum').val();
@@ -906,7 +938,7 @@
    							//hasMargTop_st
    							$('.fristImg').hide();
    							if(roleNameInp == '学生'){
-   								$('#roleTxtTit').html('学生注册');
+   								$('#roleTxtTit').html('学生注册').addClass('bigHei').removeClass('smHei');
    								$('.stuPart').show();
    								$('.jzPart').hide();
    								$('.ntPart').hide();
@@ -915,15 +947,15 @@
    								$('.notStRegBtn').hide();
    								$('.secondStep').show();
    							}else if(roleNameInp == '家长'){
-   								$('#roleTxtTit').html('家长注册');
+   								$('#roleTxtTit').html('家长注册').addClass('smHei').removeClass('bigHei');
    								$('.jzPart').show();
-   								$('.stuPart').hide();
+   								$('.stuPart').show();
    								$('.ntPart').hide();
    								$('.notStRegBtn').hide();
    								$('.secondStep').show();
    								$('.regImgPar').show();
    							}else if(roleNameInp == '网络导师'){
-   								$('#roleTxtTit').html('网络导师注册');
+   								$('#roleTxtTit').html('网络导师注册').addClass('bigHei').removeClass('smHei');
    								$('.ntPart').show();
    								$('.stuPart').hide();
    								$('.jzPart').hide();
