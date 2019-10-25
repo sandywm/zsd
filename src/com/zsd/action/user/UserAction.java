@@ -462,8 +462,12 @@ public class UserAction extends DispatchAction {
 		boolean uflag = uManager.updateUserByHead(userId, portrait);
 		//删除更新前的原头像文件 
 	    if(portrait1!=""){
-	    	portrait1 = WebUrl.DATA_URL +"\\"+portrait1.replace("Module/commonJs/ueditor/jsp/head/", "");
-	    	FileOpration.deleteFile(portrait1);
+	    	if(portrait1.endsWith("defaultHead.jpg")){
+	    		//默认头像不删除
+	    	}else{
+	    		portrait1 = WebUrl.DATA_URL +"\\"+portrait1.replace("Module/commonJs/ueditor/jsp/head/", "");
+		    	FileOpration.deleteFile(portrait1);
+	    	}
 	    }
 		if(uflag){
 			msg ="success";
