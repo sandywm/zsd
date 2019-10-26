@@ -1842,6 +1842,12 @@ public class OnlineStudyAction extends DispatchAction {
 									LoreQuestion lq_use = sd.getLoreQuestion();
 									if(lqId_old.equals(lq_use.getId())){//做过
 										completeStatus = 1;
+										map_d.put("answerA", sd.getA());
+										map_d.put("answerB", sd.getB());
+										map_d.put("answerC", sd.getC());
+										map_d.put("answerD", sd.getD());
+										map_d.put("answerE", sd.getE());
+										map_d.put("answerF", sd.getF());
 										map_d.put("realAnswer", sd.getRealAnswer());
 										map_d.put("myAnswer", sd.getMyAnswer());
 										map_d.put("result", sd.getResult());//答案对错0:错，1:对
@@ -1858,14 +1864,14 @@ public class OnlineStudyAction extends DispatchAction {
 									}
 								}
 							}else{//在做错题是在旁边显示出提示信息
-								Integer lqsId = lq.getQueTips();
-								if(lqsId > 0){
-									LoreQuestionSubInfo lqs = lqm.getEntityByLqsId(lqsId);
-									if(lqs != null){
-										map_d.put("tipsTitle", lqs.getLqsTitle());
-										map_d.put("tipsContent", lqs.getLqsContent());
-									}
-								}
+//								Integer lqsId = lq.getQueTips();
+//								if(lqsId > 0){
+//									LoreQuestionSubInfo lqs = lqm.getEntityByLqsId(lqsId);
+//									if(lqs != null){
+//										map_d.put("tipsTitle", lqs.getLqsTitle());
+//										map_d.put("tipsContent", lqs.getLqsContent());
+//									}
+//								}
 							}
 							map_d.put("completeStatus", completeStatus);//做题状态(0:未做,1:已做)
 							if(completeStatus.equals(0)){
@@ -2028,6 +2034,12 @@ public class OnlineStudyAction extends DispatchAction {
 												StudyDetailInfo sd_new = sdList_new.get(k);
 												if(lqId_old.equals(sd_new.getLoreQuestion().getId())){
 													completeStatus = 1;
+													map_d.put("answerA", sd_new.getA());
+													map_d.put("answerB", sd_new.getB());
+													map_d.put("answerC", sd_new.getC());
+													map_d.put("answerD", sd_new.getD());
+													map_d.put("answerE", sd_new.getE());
+													map_d.put("answerF", sd_new.getF());
 													map_d.put("realAnswer", sd_new.getRealAnswer());
 													map_d.put("myAnswer", sd_new.getMyAnswer());
 													map_d.put("result", sd_new.getResult());//答案对错0:错，1:对
