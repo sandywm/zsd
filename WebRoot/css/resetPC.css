@@ -30,6 +30,13 @@ textarea{resize:none;}
 .fl{float:left;}
 .fr{float:right;}
 
+/* 多余文字...显示（单行） */
+.ellip{
+	overflow: hidden;
+	white-space:nowrap;
+	text-overflow: ellipsis;
+}
+
 /*清浮动*/
 .clearfix{zoom:1;}
 .clearfix:after{content:"";display:block;clear:both;}

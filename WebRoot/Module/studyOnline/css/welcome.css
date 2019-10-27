@@ -1,0 +1,180 @@
+/* selEdiWrap */
+.selEdiWrap{
+	height:50px;
+	line-height:50px;
+	background:#fff;
+	position:relative;
+	z-index:5;
+}
+.currEditTxt{
+	font-size:15px;
+	float:left;
+	margin-left:15px;
+	color:#333;
+}
+.currEditTxt span.noSel{
+	color:#999;
+}
+.ediSel{
+	float:right;
+	margin-right:15px;
+}
+.ediSel .choiceTxt{
+	color:#333333;
+	font-size:15px;
+	margin-right:10px;
+}
+.ediSel .ediName{
+	position:relative;
+	cursor:pointer;
+	padding-right:16px;
+}
+.ediSel .ediName p{
+	min-width:135px;
+	text-align:center;
+	font-size:15px;
+	color:#e10080;
+}
+.ediSel .ediName p.noSel{
+	color:#999;
+}
+.ediSel .ediName i.triIcon{
+	width:0;
+	height:0;
+	border-width:7px;
+	border-style:solid dashed dashed dashed;
+	border-color:#999999 transparent transparent transparent;
+	position:absolute;
+	right:0;
+	top:22px;
+}
+.ediSel .ediName ul{
+	width:100%;
+	background:#fff;
+	position:absolute;
+	left:0;
+	top:50px;
+	border:1px solid #e6e6e6;
+	max-height:240px;
+	overflow:hidden;
+	overflow-y:auto;
+	display:none;
+}
+.ediSel .ediName ul li{
+	width:100%;
+	height:35px;
+	line-height:35px;
+	text-align:center;
+	color:#333;
+	font-size:15px;
+	border-bottom:1px solid #e6e6e6;
+	overflow:hidden;
+	text-overflow:ellipsis;
+	white-space:nowrap;
+}
+.ediSel .ediName ul li:last-child{
+	border-bottom:none;
+}
+.ediSel .ediName ul li.active a, 
+.ediSel .ediName ul li a:hover{
+	color:#4d47f1;
+}
+/* volumeList */
+.volumeList{
+	margin-top:20px;
+	min-height:220px;
+	position:relative;
+}
+.volumeList li{
+	height:220px;
+	background:#fff;
+	margin-bottom:20px;
+}
+.volumeList li .subImg{
+	width:200px;
+	height:220px;
+	background:#e10080;
+	float:left;
+	text-align:center;
+}
+.volumeList li .subImg img{
+	width:180px;
+	height:180px;
+	display:inline-block;
+	margin-top:20px;
+}
+.bindNtInfo{
+	width:240px;
+	height:100%;
+	float:left;
+	background:pink;
+	margin-left:60px;
+}
+.volumeInfo {
+	margin-left:60px;
+	float:left;
+}
+.volumeInfo p{
+	font-size:16px;
+	line-height:40px;
+	margin-top:12px;
+	color:#333333;
+}
+.volumeInfo p span.oneBlank{
+	width:7px;
+	display:inline-block;
+}
+.volumeInfo p span.twoBlank{
+	width:30px;
+	display:inline-block;
+}
+.volumeInfo p em{
+	font-style:normal;
+}
+.volumeInfo p em.staCol{
+	color:#4d47f1;
+}
+.volumeInfo p em.overDate{
+	color:#e10080;
+}
+.goStudyBtn{
+	float:right;
+	width:48px;
+	height:151px;
+	background:url(../images/goStudyBtn.jpg) no-repeat;
+	margin:35px 40px 0 0px;
+}
+.goStudyBtn:hover{
+	opacity:.9;
+}
+.layui-anim {
+	-webkit-animation-duration:.3s;
+	animation-duration:.3s;
+	-webkit-animation-fill-mode:both;
+	animation-fill-mode:both
+}
+@-webkit-keyframes layui-upbit {
+	from {
+	-webkit-transform:translate3d(0,30px,0);
+	opacity:.3
+}
+to {
+	-webkit-transform:translate3d(0,0,0);
+	opacity:1
+}
+}
+@keyframes layui-upbit {
+	from {
+	transform:translate3d(0,30px,0);
+	opacity:.3
+}
+to {
+	transform:translate3d(0,0,0);
+	opacity:1
+}
+}
+.layui-anim-upbit {
+	-webkit-animation-name:layui-upbit;
+	animation-name:layui-upbit
+}
+
