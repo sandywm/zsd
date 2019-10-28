@@ -157,6 +157,8 @@ public class OnlineStudyAction extends DispatchAction {
 		EditionManager em = (EditionManager) AppFactory.instance(null).getApp(Constants.WEB_EDITION_INFO);
 		EducationManager edum = (EducationManager) AppFactory.instance(null).getApp(Constants.WEB_EDUCATION_INFO);
 		StuSubjectEduManager ssem = (StuSubjectEduManager)  AppFactory.instance(null).getApp(Constants.WEB_STU_SUB_EDU_INFO);
+		StudyLogManager slm = (StudyLogManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_LOG_INFO);
+		NetTeacherStudentManager ntsm = (NetTeacherStudentManager) AppFactory.instance(null).getApp(Constants.WEB_NET_TEACHER_STUDENT);
 		Integer userId = CommonTools.getLoginUserId(request);
 		Integer roleId = CommonTools.getLoginRoleId(request);
 		String checkLoginStatus = "";
@@ -174,8 +176,15 @@ public class OnlineStudyAction extends DispatchAction {
 			Integer subId = CommonTools.getFinalInteger("subId", request);//学科编号
 			Integer ediId = CommonTools.getFinalInteger("ediId", request);//出版社编号
 			Integer gradeNumber = CommonTools.getFinalInteger("gradeNumber", request);//高三初三复习时传递过来的年级编号
+			Integer studyLogId = CommonTools.getFinalInteger("studyLogId", request);//学习记录编号（从学习记录的继续学习进入时）
+			/**
+			 * 比如说从学习记录里面只传递studyLogId的继续学习时需要直接进入map页面，这时就需要加载上面的学科，年级，出版社数据和map数据
+			 * 从溯源路线图页面过来时只传递studyLogId
+			 * 首页时还需要加载学习上下册数据
+			 */
 			String opt = "manu";//手动选择
 			List<Object> list_edu = new ArrayList<Object>();
+			List<Object> list_nt = new ArrayList<Object>();
 			Integer gsId_curr = 0;
 			if(roleId.equals(2)){
 				msg = "success";
@@ -195,6 +204,15 @@ public class OnlineStudyAction extends DispatchAction {
 						if(realGradeNumber >= 12 || realGradeNumber.equals(9)){//初三或者高三的时候可以复习之前的
 							if(realGradeNumber > 12){
 								realGradeNumber = 12;
+							}
+							if(studyLogId > 0){//从学习记录过来时通过记录获取学科和出版社
+								gradeNumber = realGradeNumber;
+								StudyLogInfo sl = slm.getEntityById(studyLogId);
+								if(sl != null){
+									subId = sl.getSubject().getId();
+									ediId = sl.getLoreInfo().getChapter().getEducation().getEdition().getId();
+									opt = "noShow";
+								}
 							}
 							for(Integer i = 2 ; i >= 0 ; i--){
 								Map<String,Object> map_d = new HashMap<String,Object>();
@@ -216,6 +234,15 @@ public class OnlineStudyAction extends DispatchAction {
 								list_grade.add(map_d);
 							}
 						}else{//其他年级时只有一组
+							if(studyLogId > 0){//从学习记录过来时通过记录获取学科和出版社
+								gradeNumber = realGradeNumber;
+								StudyLogInfo sl = slm.getEntityById(studyLogId);
+								if(sl != null){
+									subId = sl.getSubject().getId();
+									ediId = sl.getLoreInfo().getChapter().getEducation().getEdition().getId();
+									opt = "noShow";
+								}
+							}
 							Map<String,Object> map_d = new HashMap<String,Object>();
 							map_d.put("gradeNumber", realGradeNumber);
 							map_d.put("gradeNanme", Convert.NunberConvertChinese(realGradeNumber));
@@ -330,6 +357,20 @@ public class OnlineStudyAction extends DispatchAction {
 									map.put("studyList", list_edu);
 								}else{
 									msg = "noInfo";
+								}
+							}
+							if(list_edu.size() > 0){//存在上下册学习内容
+								if(clientInfo.equals("pc") || clientInfo.indexOf("Web") > 0){//电脑端或者手机浏览器端
+									//获取指定学科正在绑定的网络导师信息
+									NetTeacherStudent nts = ntsm.getValidInfoByOpt(userId, subId);
+									if(nts != null){
+										Map<String,Object> map_d = new HashMap<String,Object>();
+										map_d.put("ntId", nts.getNetTeacherInfo().getId());
+										map_d.put("ntName", nts.getNetTeacherInfo().getUser().getRealName());
+										map_d.put("ntPortrait", nts.getNetTeacherInfo().getUser().getPortrait());
+										list_nt.add(map_d);
+									}
+									map.put("ntList", list_nt);
 								}
 							}
 							//获取出版社列表
