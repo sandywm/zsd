@@ -169,7 +169,7 @@ public class LoreAction extends DispatchAction {
 		map.put("msg", msg);
 		CommonTools.getJsonPkg(map, response);
 		return null;
-	}
+	}	
 	
 	/**
 	 * 检查指定章节下是否存在相同的知识点
@@ -506,6 +506,55 @@ public class LoreAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) {
 		// TODO Auto-generated method stub
 		return mapping.findForward("loreQuePage");
+	}
+	
+	/**
+	 * 根据章节获取有效知识点列表（关联知识点时用）
+	 * @author wm
+	 * @date 2019-10-30 下午04:36:14
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getValidLoreData(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		LoreInfoManager lm = (LoreInfoManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
+		Integer cptId = CommonTools.getFinalInteger("cptId", request);
+		Integer count = lm.getCountByCptId(cptId);
+		String msg = "noInfo";
+		Map<String,Object> map = new HashMap<String,Object>();
+		if(count > 0){
+			List<LoreInfo> loreList = lm.listInfoByCptId(cptId);
+			msg = "success";
+			List<Object> list_d = new ArrayList<Object>();
+			for(Iterator<LoreInfo> it = loreList.iterator() ; it.hasNext();){
+				LoreInfo lore = it.next();
+				Map<String,Object> map_d = new HashMap<String,Object>();
+				map_d.put("loreId", lore.getId());
+				map_d.put("loreName", lore.getLoreName());
+				map_d.put("inUse", lore.getInUse().equals(0) ? "有效" : "无效");
+				Chapter cpt = lore.getChapter();
+				String cptName = cpt.getChapterName();//章节名称
+				map_d.put("cptName",cptName);
+				Education edu = cpt.getEducation();
+				String eduVolume = edu.getEduVolume();//教材
+				map_d.put("eduVolume",eduVolume);
+				GradeSubject gs = edu.getGradeSubject();
+				String gradeName = gs.getGradeName();//年级
+				map_d.put("gradeName",gradeName);
+				String subName = gs.getSubject().getSubName();//学科
+				map_d.put("subName",subName);
+				list_d.add(map_d);
+			}
+			map.put("data", list_d);
+		}
+		map.put("msg", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
 	}
 	
 	/**

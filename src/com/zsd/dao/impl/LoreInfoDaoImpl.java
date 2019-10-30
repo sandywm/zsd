@@ -66,6 +66,7 @@ public class LoreInfoDaoImpl implements LoreInfoDao{
 	public List<LoreInfo> findInfoByCptId(Session sess, Integer cptId) {
 		// TODO Auto-generated method stub
 		String hql = " from LoreInfo as lore where lore.chapter.id = "+cptId + " and lore.inUse = 0";
+		hql += " order by lore.loreOrder";
 		return sess.createQuery(hql).list();
 	}
 

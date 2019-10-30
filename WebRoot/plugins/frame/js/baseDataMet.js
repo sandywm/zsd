@@ -358,13 +358,13 @@ layui.define(['form','table','relate'],function(exports){
     				type:'post',
     		        dataType:'json',
     		        data:{cptId:cptId},
-    		        url:'/lore.do?action=getPageLoreData',
+    		        url:'/lore.do?action=getValidLoreData',
     		        success:function (json){
     		        	layer.closeAll('loading');	
     		        	if(json.msg == 'success'){
     		        		var loreList = json.data;
     		        		relate.renderLoreSmList(loreList);
-    		        	}else if(json.msg == '暂无记录'){
+    		        	}else if(json.msg == 'noInfo'){
     		        		layer.msg('暂无记录',{icon:5,anim:6,time:2200});
     		        	}
     		        }
