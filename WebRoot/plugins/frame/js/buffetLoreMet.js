@@ -599,7 +599,7 @@ layui.define(['form','buffetLoreDOM'],function(exports){
 					
 				}else if(value == '填空选择题'){
 					$('.maxChoice').html(maxSelBox);
-					$('.spaceBox').html(spaceSelBox);
+					$('.spaceBox').show().html(spaceSelBox);
 					$('#wendaTypeWrap_'+loreType).hide();
 					$('#tkTypeWrap_' + loreType).hide().html('');
 					if(currPage == 'lorePage' || currPage == 'buffetPage'){
