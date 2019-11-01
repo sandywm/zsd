@@ -1454,6 +1454,7 @@ public class LoreAction extends DispatchAction {
 		String fileUrl = "";
 		String filename = "";
 		Map<String,Object> map = new HashMap<String,Object>();
+		request.setCharacterEncoding("UTF-8");
 		Integer loreId = CommonTools.getFinalInteger("loreId", request);//知识点编号
 		if(loreId > 0){
 			if (ServletFileUpload.isMultipartContent(request)){// 判断是否是上传文件
