@@ -16,6 +16,7 @@
 	<script type="text/javascript">
 		var roleName = "${sessionScope.login_user_role_name}";
 		var realName = "${sessionScope.login_real_name}";
+		sessionStorage.setItem("roleName", roleName);
 	</script>
 	<style>
 		/*.layui-layer-molv .layui-layer-title{background:#4d47f1 !important;}
