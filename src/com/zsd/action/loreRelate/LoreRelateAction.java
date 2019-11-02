@@ -19,8 +19,10 @@ import org.apache.struts.actions.DispatchAction;
 
 import com.zsd.factory.AppFactory;
 import com.zsd.service.LoreInfoManager;
+import com.zsd.service.LoreRelateLogManager;
 import com.zsd.service.LoreRelateManager;
 import com.zsd.util.Constants;
+import com.zsd.module.Edition;
 import com.zsd.module.Education;
 import com.zsd.module.LoreInfo;
 import com.zsd.module.LoreRelateInfo;
@@ -245,10 +247,12 @@ public class LoreRelateAction extends DispatchAction {
 		// TODO Auto-generated method stub
 		LoreRelateManager lrm = (LoreRelateManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_RELATE_INFO);
 		LoreInfoManager lm = (LoreInfoManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
+		LoreRelateLogManager lrlm = (LoreRelateLogManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_RELATE_LOG_INFO);
 		Integer loreId = CommonTools.getFinalInteger("loreId", request);
 		Integer rootLoreId = CommonTools.getFinalInteger("rootLoreId", request);
 		String msg = "error";
-		Map<String,String> map = new HashMap<String,String>();
+		List<String> list_result = new ArrayList<String>();
+		Map<String,Object> map = new HashMap<String,Object>();
 		if(loreId > 0 && rootLoreId > 0){
 			if(lrm.listRelateInfoByOpt(loreId, rootLoreId, -1,"").size() == 0){
 				lrm.addLoreRelate(loreId, rootLoreId,"manu");
@@ -274,8 +278,11 @@ public class LoreRelateAction extends DispatchAction {
 						if(num > 0 && num1 > 0){
 							for(Integer i = 0 ; i < num ; i++){
 								Integer mainLoreId_edi = lList_main.get(i).getId();
-								Integer mainLoreEdiId = lList_main.get(i).getChapter().getEducation().getEdition().getId();
+								Edition edi = lList_main.get(i).getChapter().getEducation().getEdition();
+								Integer mainLoreEdiId = edi.getId();
+								String mainLoreEdiName = edi.getEdiName();
 								Long mainLoreCode =  Long.parseLong(lList_main.get(i).getLoreCode().replace("-", ""));
+								boolean addFlag = false;
 								for(Integer j = 0 ; j < num1 ; j++){
 									Integer rootLoreId_edi = lList_root.get(j).getId();
 									Integer rootLoreEdiId = lList_root.get(j).getChapter().getEducation().getEdition().getId();
@@ -285,10 +292,18 @@ public class LoreRelateAction extends DispatchAction {
 											List<LoreRelateInfo>  lrList = lrm.listRelateInfoByOpt(mainLoreId_edi, rootLoreId_edi, -1, "");
 											if(lrList.size() == 0){
 												lrm.addLoreRelate(mainLoreId_edi, rootLoreId_edi,"auto");
+												addFlag = true;
 											}
 											break;
 										}
 									}
+								}
+								if(addFlag == false){//创建失败
+									list_result.add(mainLoreEdiName+"下["+lList_main.get(i).getLoreName()+"]知识点关联失败!");
+									//增加记录至关联结果日志表
+									lrlm.addLRL(mainLoreId_edi, "add", 0, mainLoreEdiName+"下["+lList_main.get(i).getLoreName()+"]知识点关联失败!", CommonTools.getLoginAccount(request));
+								}else{
+									list_result.add(mainLoreEdiName+"下["+lList_main.get(i).getLoreName()+"]知识点关联成功!");
 								}
 							}
 						}
@@ -302,6 +317,9 @@ public class LoreRelateAction extends DispatchAction {
 			}
 		}
 		map.put("result", msg);
+		if(msg.equals("success")){
+			map.put("relateList", list_result);
+		}
 		CommonTools.getJsonPkg(map, response);
 		return  null;
 	}

@@ -68,4 +68,5 @@
 	<dao id="sys_fee_Dao" class="com.zsd.dao.impl.SysFeeDaoImpl" />
 	<dao id="parent_club_Dao" class="com.zsd.dao.impl.ParentClubDaoImpl" />
 	<dao id="parent_club_relation_Dao" class="com.zsd.dao.impl.ParentClubRelationDaoImpl" />
+	<dao id="lore_relate_log_Dao" class="com.zsd.dao.impl.LoreRelateLogDaoImpl" />
 </daoContext>

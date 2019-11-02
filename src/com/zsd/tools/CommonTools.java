@@ -12,6 +12,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -952,6 +953,12 @@ public class CommonTools {
 //	    }
 //	    arrList.toArray();
 	    System.out.println(CurrentTime.getCurrentTime().substring(0,10));
+	    List<String> list = new ArrayList<String>();
+	    list.add("测试一");
+	    list.add("测试二");
+	    list.add("测试三");
+	    list.add("测试四");
+	    System.out.println(list);
 	    
 //	    String bb = "7389:7392:7394|7396|7390|7393:7397|7405:7406|7407:7431|7432:7433:7436|7446:7448";
 //	    System.out.println(CommonTools.getCurrentStudyPath_new(bb, 7397));

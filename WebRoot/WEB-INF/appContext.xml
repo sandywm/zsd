@@ -66,4 +66,5 @@
 	<app id="sys_fee_Web" class="com.zsd.service.impl.SysFeeManagerImpl"/>
 	<app id="parent_club_Web" class="com.zsd.service.impl.ParentClubManagerImpl"/>
 	<app id="parent_club_relation_Web" class="com.zsd.service.impl.ParentClubRelationManagerImpl"/>
+	<app id="lore_relate_log_Web" class="com.zsd.service.impl.LoreRelateLogManagerImpl"/>
 </appContext>
