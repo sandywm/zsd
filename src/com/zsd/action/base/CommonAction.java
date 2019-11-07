@@ -146,6 +146,7 @@ public class CommonAction extends DispatchAction {
 						map_d.put("showStatus", edi.getShowStatus());
 						list_d.add(map_d);
 						count = 1;
+						list_d.add(map_d);
 						break;
 					}
 				}else if(opt.equals(2)){//2：只显示除通用版以外的其他版本
@@ -159,6 +160,7 @@ public class CommonAction extends DispatchAction {
 							map_d.put("showStatusChi", "隐藏");
 						}
 						map_d.put("showStatus", edi.getShowStatus());
+						list_d.add(map_d);
 					}
 				}else{//全部时
 					map_d.put("id", edi.getId());
@@ -170,8 +172,8 @@ public class CommonAction extends DispatchAction {
 						map_d.put("showStatusChi", "隐藏");
 					}
 					map_d.put("showStatus", edi.getShowStatus());
+					list_d.add(map_d);
 				}
-				list_d.add(map_d);
 			}
 			map.put("data", list_d);
 			if(opt.equals(2)){
