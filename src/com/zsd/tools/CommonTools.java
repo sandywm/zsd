@@ -149,7 +149,24 @@ public class CommonTools {
 		response.setContentType("text/html;charset=UTF-8");
 	    response.setCharacterEncoding("UTF-8");
 		String json = JSON.toJSONString(obj);
+		/**
+		 * 过滤所有特殊控制符
+		 */
         PrintWriter pw = response.getWriter();  
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < json.length(); i++){
+            char c = json.toCharArray()[i];
+            switch (c) {
+                default:
+                    if ((c >= 0 && c <= 31) || c ==127){
+ 
+                    }else{
+                        sb.append(c);
+                    }
+                    break;
+            }
+        }
+        json = sb.toString();
         pw.write(json); 
         pw.flush();  
         pw.close();

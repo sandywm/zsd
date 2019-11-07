@@ -122,28 +122,62 @@ public class CommonAction extends DispatchAction {
 		// TODO Auto-generated method stub
 		EditionManager em = (EditionManager) AppFactory.instance(null).getApp(Constants.WEB_EDITION_INFO);
 		Integer showStatus = CommonTools.getFinalInteger("showStatus", request);//-1表示全部,0：显示，1：隐藏
+		Integer opt = CommonTools.getFinalInteger("opt", request);//显示内容0:全部，1：只显示通用版，2：只显示除通用版以外的其他版本
 		List<Edition> ediList = em.listInfoByShowStatus(0, showStatus);
 		Map<String,Object> map = new HashMap<String,Object>();
 		String msg = "error";
-		if(ediList.size() > 0){
+		Integer count = ediList.size();
+		if(count > 0){
 			msg = "success";
 			List<Object> list_d = new ArrayList<Object>();
 			for(Iterator<Edition> it = ediList.iterator() ; it.hasNext();){
 				Edition edi = it.next();
 				Map<String,Object> map_d = new HashMap<String,Object>();
-				map_d.put("id", edi.getId());
-				map_d.put("ediName", edi.getEdiName());
-				map_d.put("ediOrder", edi.getEdiOrder());
-				if(edi.getShowStatus().equals(0)){
-					map_d.put("showStatusChi", "显示");
-				}else{
-					map_d.put("showStatusChi", "隐藏");
+				if(opt.equals(1)){//1：只显示通用版
+					if(edi.getEdiName().equals("通用版")){
+						map_d.put("id", edi.getId());
+						map_d.put("ediName", edi.getEdiName());
+						map_d.put("ediOrder", edi.getEdiOrder());
+						if(edi.getShowStatus().equals(0)){
+							map_d.put("showStatusChi", "显示");
+						}else{
+							map_d.put("showStatusChi", "隐藏");
+						}
+						map_d.put("showStatus", edi.getShowStatus());
+						list_d.add(map_d);
+						count = 1;
+						break;
+					}
+				}else if(opt.equals(2)){//2：只显示除通用版以外的其他版本
+					if(!edi.getEdiName().equals("通用版")){
+						map_d.put("id", edi.getId());
+						map_d.put("ediName", edi.getEdiName());
+						map_d.put("ediOrder", edi.getEdiOrder());
+						if(edi.getShowStatus().equals(0)){
+							map_d.put("showStatusChi", "显示");
+						}else{
+							map_d.put("showStatusChi", "隐藏");
+						}
+						map_d.put("showStatus", edi.getShowStatus());
+					}
+				}else{//全部时
+					map_d.put("id", edi.getId());
+					map_d.put("ediName", edi.getEdiName());
+					map_d.put("ediOrder", edi.getEdiOrder());
+					if(edi.getShowStatus().equals(0)){
+						map_d.put("showStatusChi", "显示");
+					}else{
+						map_d.put("showStatusChi", "隐藏");
+					}
+					map_d.put("showStatus", edi.getShowStatus());
 				}
-				map_d.put("showStatus", edi.getShowStatus());
 				list_d.add(map_d);
 			}
 			map.put("data", list_d);
-			map.put("count", ediList.size());
+			if(opt.equals(2)){
+				count -= 1;
+			}
+			map.put("count", count);
 			map.put("code", 0);
 		}else{
 			msg = "暂无记录";
