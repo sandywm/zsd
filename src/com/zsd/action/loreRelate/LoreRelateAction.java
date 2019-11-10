@@ -304,6 +304,7 @@ public class LoreRelateAction extends DispatchAction {
 									lrlm.addLRL(mainLoreId_edi, "add", 0, mainLoreEdiName+"下["+lList_main.get(i).getLoreName()+"]知识点关联失败!", CommonTools.getLoginAccount(request));
 								}else{
 									list_result.add(mainLoreEdiName+"下["+lList_main.get(i).getLoreName()+"]知识点关联成功!");
+									lrlm.addLRL(mainLoreId_edi, "add", 1, mainLoreEdiName+"下["+lList_main.get(i).getLoreName()+"]知识点关联成功!", CommonTools.getLoginAccount(request));
 								}
 							}
 						}

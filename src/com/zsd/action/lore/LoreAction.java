@@ -47,6 +47,7 @@ import com.zsd.service.LexInfoManager;
 import com.zsd.service.LoreInfoManager;
 import com.zsd.service.LoreQuestionErrorManager;
 import com.zsd.service.LoreQuestionManager;
+import com.zsd.service.LoreRelateLogManager;
 import com.zsd.service.LoreRelateManager;
 import com.zsd.service.UserManager;
 import com.zsd.tools.CheckImage;
@@ -1676,6 +1677,7 @@ public class LoreAction extends DispatchAction {
 		LoreInfoManager lm = (LoreInfoManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
 		ChapterManager cm = (ChapterManager) AppFactory.instance(null).getApp(Constants.WEB_CHAPTER_INFO);
 		LoreRelateManager lrm = (LoreRelateManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_RELATE_INFO);
+		LoreRelateLogManager lrlm = (LoreRelateLogManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_RELATE_LOG_INFO);
 		Map<String,String> map = new HashMap<String,String>();
 		Integer cptId = CommonTools.getFinalInteger("cptId", request);
 		String loreCatalogNameStr = Transcode.unescape_new1("loreCatalogNameStr", request);//新版本的loreName,通用版的loreId并在页面通过arrayToJson封装
@@ -1687,8 +1689,9 @@ public class LoreAction extends DispatchAction {
 		String gradeName = "";
 		String gradeCode = "";
 		String eduVolume = "";
-		String loreCode = "";
+		String loreCode = "";//其他版本知识点编码
 		String loreOrderCode = "";//知识点顺序
+		String ediName = "";
 		if(cptId > 0 && !loreCatalogNameStr.equals("")){
 			Integer loreOrder = lm.getCurrentMaxOrderByCptId(cptId);
 			Chapter c = cm.getEntityById(cptId);
@@ -1697,6 +1700,7 @@ public class LoreAction extends DispatchAction {
 				cptOrder = c.getChapterOrder();
 				Education edu = c.getEducation();
 				ediId = edu.getEdition().getId();
+				ediName = edu.getEdition().getEdiName();
 				subId = edu.getGradeSubject().getSubject().getId();
 				gradeName = edu.getGradeSubject().getGradeName();
 				gradeCode = Convert.ChineseConvertNumber(gradeName);
@@ -1756,12 +1760,14 @@ public class LoreAction extends DispatchAction {
 							Integer roolLoreId_ty = lr.getRootLoreInfo().getId();//获取通用版的关联知识点
 							LoreInfo lore = lm.getLoreInfoByOpt(roolLoreId_ty, ediId);//根据通用版的关联知识点获取新版本下对应的知识点
 							if(lore != null){
-								Integer loreId_root_edi = lore.getId();
-								String loreCode_root_edi = lore.getLoreCode().replace("-", "");
+								Integer loreId_root_edi = lore.getId();//通用版知识点编号
+								String loreCode_root_edi = lore.getLoreCode().replace("-", "");//通用版知识点编码
 								if(Long.parseLong(newLoreCodeArr[j]) > Long.parseLong(loreCode_root_edi)){
 									//检查有无此条记录，没有就增加
 									if(lrm.listRelateInfoByOpt(newLoreIdArr[j], loreId_root_edi, -1, "").size() == 0){
 										lrm.addLoreRelate(newLoreIdArr[j], loreId_root_edi, "auto");
+//										list_result.add(mainLoreEdiName+"下["+lList_main.get(i).getLoreName()+"]知识点关联成功!");
+//										lrlm.addLRL(mainLoreId_edi, "add", 1, ediName+"下["+lList_main.get(i).getLoreName()+"]知识点关联成功!", CommonTools.getLoginAccount(request));
 									}
 								}
 							}
