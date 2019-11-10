@@ -383,4 +383,21 @@ public class LoreInfoManagerImpl implements LoreInfoManager{
 		}
 	}
 
+	@Override
+	public List<LoreInfo> listInfoInOpt(Integer commonLoreId, Integer cptId)
+			throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			lDao = (LoreInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_LORE_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return lDao.findInfoByOpt(sess, commonLoreId, cptId);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new WEBException("根据章节（其他版本章节编号）,知识点编号（通用版本）获取知识点信息时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
 }

@@ -117,6 +117,38 @@ public class LoreAction extends DispatchAction {
 	}
 	
 	/**
+	 * 检查指定章节下是否存在指定知识点（生成其他版本时左到右检查使用）
+	 * @author  Administrator
+	 * @ModifiedBy  
+	 * @date  2019-11-10 下午09:32:30
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward checkExistLoreCatalogData(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		LoreInfoManager lm = (LoreInfoManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
+		Integer cptId = CommonTools.getFinalInteger("cptId", request);//其他版本下的章节编号
+		Integer commonLoreId = CommonTools.getFinalInteger("loreId", request);//通用版知识点
+		String msg = "error";
+		Map<String,String> map = new HashMap<String,String>();
+		if(cptId > 0 && commonLoreId > 0){
+			List<LoreInfo> loreList = lm.listInfoInOpt(commonLoreId, cptId);
+			msg = "noInfo";
+			if(loreList.size() > 0){
+				msg = "existInfo";
+			}
+		}
+		map.put("result", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
 	 * 根据章节编号分页获取知识点目录列表
 	 * @author wm
 	 * @date 2019-5-4 下午10:55:52 

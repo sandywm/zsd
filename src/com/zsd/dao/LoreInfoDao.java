@@ -161,4 +161,16 @@ public interface LoreInfoDao {
 	 * @return
 	 */
 	List<LoreInfo> findInfoInLoreId(Session sess,String loreIdStr,String orderStr);
+	
+	/**
+	 * 根据章节（其他版本章节编号）,知识点编号（通用版本）获取知识点信息
+	 * @author  Administrator
+	 * @ModifiedBy  
+	 * @date  2019-11-10 下午09:35:38
+	 * @param sess
+	 * @param commonLoreId 通用版知识点编号
+	 * @param cptId 其他版本章节编号
+	 * @return
+	 */
+	List<LoreInfo> findInfoByOpt(Session sess,Integer commonLoreId,Integer cptId);
 }

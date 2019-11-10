@@ -140,4 +140,13 @@ public class LoreInfoDaoImpl implements LoreInfoDao{
 		return sess.createQuery(hql).list();
 	}
 
+	@Override
+	public List<LoreInfo> findInfoByOpt(Session sess, Integer commonLoreId,
+			Integer cptId) {
+		// TODO Auto-generated method stub
+		String hql =  " from LoreInfo as lore where  lore.mainLoreId = "+commonLoreId;
+		hql += " and lore.chapter.id = "+cptId;
+		return sess.createQuery(hql).list();
+	}
+
 }

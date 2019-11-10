@@ -173,4 +173,16 @@ public interface LoreInfoManager {
 	 * @throws WEBException
 	 */
 	List<LoreInfo> listInfoInLoreId(String loreIdStr,String orderStr)throws WEBException;
+	
+	/**
+	 * 根据章节（其他版本章节编号）,知识点编号（通用版本）获取知识点信息
+	 * @author  Administrator
+	 * @ModifiedBy  
+	 * @date  2019-11-10 下午09:38:46
+	 * @param commonLoreId 通用版知识点编号
+	 * @param cptId 其他版本章节编号
+	 * @return
+	 * @throws WEBException
+	 */
+	List<LoreInfo> listInfoInOpt(Integer commonLoreId,Integer cptId)throws WEBException;
 }
