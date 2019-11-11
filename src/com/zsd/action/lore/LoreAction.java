@@ -1678,7 +1678,7 @@ public class LoreAction extends DispatchAction {
 		ChapterManager cm = (ChapterManager) AppFactory.instance(null).getApp(Constants.WEB_CHAPTER_INFO);
 		LoreRelateManager lrm = (LoreRelateManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_RELATE_INFO);
 		LoreRelateLogManager lrlm = (LoreRelateLogManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_RELATE_LOG_INFO);
-		Map<String,String> map = new HashMap<String,String>();
+		Map<String,Object> map = new HashMap<String,Object>();
 		Integer cptId = CommonTools.getFinalInteger("cptId", request);
 		String loreCatalogNameStr = Transcode.unescape_new1("loreCatalogNameStr", request);//新版本的loreName,通用版的loreId并在页面通过arrayToJson封装
 		String msg = "error";
@@ -1781,17 +1781,23 @@ public class LoreAction extends DispatchAction {
 						}
 						if(addFlag){//成功
 							list_result.add(ediName+"下["+newLoreNameArr[j]+"]知识点关联成功!");
+							lrlm.addLRL(newLoreIdArr[j], "add", 1, ediName+"下["+newLoreNameArr[j]+"]知识点关联成功!", CommonTools.getLoginAccount(request));
 						}else{//失败
 							list_result.add(ediName+"下["+newLoreNameArr[j]+"]知识点关联失败!失败原因：子知识点编码大于主知识点编码");
+							lrlm.addLRL(newLoreIdArr[j], "add", 0, newLoreNameArr[j]+"]知识点关联失败!失败原因：子知识点编码大于主知识点编码", CommonTools.getLoginAccount(request));
 						}
 					}else{
 						//通用版没有关联知识点，无法进行当前出版社下的关联
 						list_result.add(ediName+"下["+newLoreNameArr[j]+"]知识点关联失败!失败原因：通用版知识点["+tyLoreNameArr[j]+"]未设置关联");
+						lrlm.addLRL(newLoreIdArr[j], "add", 0, ediName+"下["+newLoreNameArr[j]+"]知识点关联失败!失败原因：通用版知识点["+tyLoreNameArr[j]+"]未设置关联", CommonTools.getLoginAccount(request));
 					}
 				}
 			}
 		}
 		map.put("result", msg);
+		if(msg.equals("success")){
+			map.put("relateList", list_result);
+		}
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
