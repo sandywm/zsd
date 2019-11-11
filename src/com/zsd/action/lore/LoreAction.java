@@ -1692,6 +1692,7 @@ public class LoreAction extends DispatchAction {
 		String loreCode = "";//其他版本知识点编码
 		String loreOrderCode = "";//知识点顺序
 		String ediName = "";
+		List<String> list_result = new ArrayList<String>();
 		if(cptId > 0 && !loreCatalogNameStr.equals("")){
 			Integer loreOrder = lm.getCurrentMaxOrderByCptId(cptId);
 			Chapter c = cm.getEntityById(cptId);
@@ -1734,7 +1735,9 @@ public class LoreAction extends DispatchAction {
 				Integer size = loreCatalogArray.size();
 				//下面三个数组为一一对应
 				Integer[] newLoreIdArr = new Integer[size];//新版本知识点loreId数组
+				String[] newLoreNameArr = new String[size];//新版本知识点loreName数组
 				Integer[] tyLoreIdArr = new Integer[size];//新版本知识点对应的通用版loreId数组
+				String[] tyLoreNameArr = new String[size];//新版本知识点对应的通用版loreName数组
 				String[] newLoreCodeArr = new String[size];//新版本知识点知识点编码
 				for(int i = 0 ; i < size ; i++){
 					loreOrder += i;
@@ -1745,33 +1748,45 @@ public class LoreAction extends DispatchAction {
 					String[] newLoreCatalogNameArray = loreCatalogArray.get(i).toString().split(",");//格式loreName,loreId
 					String newLoreCatalogName = newLoreCatalogNameArray[0];
 					Integer quoteLoreId = Integer.parseInt(newLoreCatalogNameArray[1]);//通用版知识点
-					Integer traceStatus = lm.getEntityById(quoteLoreId).getTraceStatus();
+					LoreInfo lore_ty = lm.getEntityById(quoteLoreId);
+					Integer traceStatus = lore_ty.getTraceStatus();
 					//增加其他版本知识点目录
 					Integer newLoreId = lm.addLore(cptId, newLoreCatalogName, Convert.getFirstSpell(newLoreCatalogName), loreOrder, quoteLoreId, loreCode, traceStatus);
 					newLoreIdArr[i] = newLoreId;
 					tyLoreIdArr[i] = quoteLoreId;
+					tyLoreNameArr[i] = lore_ty.getLoreName();
 					newLoreCodeArr[i] = loreCode;
+					newLoreNameArr[i] = newLoreCatalogName;
 				}
 				for(Integer j = 0 ; j < newLoreIdArr.length ; j++){//循环新增加的新版本知识点
 					List<LoreRelateInfo> lrList = lrm.listRelateInfoByOpt(tyLoreIdArr[j], 0, -1,"");//获取通用版的关联
 					if(lrList.size() > 0){
+						boolean addFlag = false;
 						for(Iterator<LoreRelateInfo> it = lrList.iterator() ; it.hasNext();){
 							LoreRelateInfo lr = it.next();
 							Integer roolLoreId_ty = lr.getRootLoreInfo().getId();//获取通用版的关联知识点
 							LoreInfo lore = lm.getLoreInfoByOpt(roolLoreId_ty, ediId);//根据通用版的关联知识点获取新版本下对应的知识点
 							if(lore != null){
-								Integer loreId_root_edi = lore.getId();//通用版知识点编号
-								String loreCode_root_edi = lore.getLoreCode().replace("-", "");//通用版知识点编码
+								Integer loreId_root_edi = lore.getId();
+								String loreCode_root_edi = lore.getLoreCode().replace("-", "");
 								if(Long.parseLong(newLoreCodeArr[j]) > Long.parseLong(loreCode_root_edi)){
 									//检查有无此条记录，没有就增加
 									if(lrm.listRelateInfoByOpt(newLoreIdArr[j], loreId_root_edi, -1, "").size() == 0){
 										lrm.addLoreRelate(newLoreIdArr[j], loreId_root_edi, "auto");
-//										list_result.add(mainLoreEdiName+"下["+lList_main.get(i).getLoreName()+"]知识点关联成功!");
-//										lrlm.addLRL(mainLoreId_edi, "add", 1, ediName+"下["+lList_main.get(i).getLoreName()+"]知识点关联成功!", CommonTools.getLoginAccount(request));
+										addFlag = true;
+										break;
 									}
 								}
 							}
 						}
+						if(addFlag){//成功
+							list_result.add(ediName+"下["+newLoreNameArr[j]+"]知识点关联成功!");
+						}else{//失败
+							list_result.add(ediName+"下["+newLoreNameArr[j]+"]知识点关联失败!失败原因：子知识点编码大于主知识点编码");
+						}
+					}else{
+						//通用版没有关联知识点，无法进行当前出版社下的关联
+						list_result.add(ediName+"下["+newLoreNameArr[j]+"]知识点关联失败!失败原因：通用版知识点["+tyLoreNameArr[j]+"]未设置关联");
 					}
 				}
 			}

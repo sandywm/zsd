@@ -299,9 +299,9 @@ public class LoreRelateAction extends DispatchAction {
 									}
 								}
 								if(addFlag == false){//创建失败
-									list_result.add(mainLoreEdiName+"下["+lList_main.get(i).getLoreName()+"]知识点关联失败!");
+									list_result.add(mainLoreEdiName+"下["+lList_main.get(i).getLoreName()+"]知识点关联失败!失败原因：子知识点编码大于主知识点编码");
 									//增加记录至关联结果日志表
-									lrlm.addLRL(mainLoreId_edi, "add", 0, mainLoreEdiName+"下["+lList_main.get(i).getLoreName()+"]知识点关联失败!", CommonTools.getLoginAccount(request));
+									lrlm.addLRL(mainLoreId_edi, "add", 0, mainLoreEdiName+"下["+lList_main.get(i).getLoreName()+"]知识点关联失败!失败原因：子知识点编码大于主知识点编码", CommonTools.getLoginAccount(request));
 								}else{
 									list_result.add(mainLoreEdiName+"下["+lList_main.get(i).getLoreName()+"]知识点关联成功!");
 									lrlm.addLRL(mainLoreId_edi, "add", 1, mainLoreEdiName+"下["+lList_main.get(i).getLoreName()+"]知识点关联成功!", CommonTools.getLoginAccount(request));
