@@ -318,9 +318,7 @@ public class LoreRelateAction extends DispatchAction {
 			}
 		}
 		map.put("result", msg);
-		if(msg.equals("success")){
-			map.put("relateList", list_result);
-		}
+		map.put("relateList", list_result);
 		CommonTools.getJsonPkg(map, response);
 		return  null;
 	}
