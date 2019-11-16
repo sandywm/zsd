@@ -63,13 +63,13 @@ public class LoreRelateLogManagerImpl implements LoreRelateLogManager{
 
 	@Override
 	public List<LoreRelateLogInfo> listPageInfoByOpt(String lorePyCode,
-			String loreName, Integer ediId, Integer pageNo, Integer pageSize)
+			String loreName, Integer ediId, Integer relateStatus, Integer pageNo, Integer pageSize)
 			throws WEBException {
 		// TODO Auto-generated method stub
 		try {
 			lrlDao = (LoreRelateLogDao) DaoFactory.instance(null).getDao(Constants.DAO_LORE_RELATE_LOG_INFO);
 			Session sess = HibernateUtil.currentSession();
-			return lrlDao.findPageInfoByOpt(sess, lorePyCode, loreName, ediId, pageNo, pageSize);
+			return lrlDao.findPageInfoByOpt(sess, lorePyCode, loreName, ediId, relateStatus, pageNo, pageSize);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -81,12 +81,12 @@ public class LoreRelateLogManagerImpl implements LoreRelateLogManager{
 
 	@Override
 	public Integer getCountByOpt(String lorePyCode, String loreName,
-			Integer ediId) throws WEBException {
+			Integer ediId,Integer relateStatus) throws WEBException {
 		// TODO Auto-generated method stub
 		try {
 			lrlDao = (LoreRelateLogDao) DaoFactory.instance(null).getDao(Constants.DAO_LORE_RELATE_LOG_INFO);
 			Session sess = HibernateUtil.currentSession();
-			return lrlDao.getCountByOpt(sess, lorePyCode, loreName, ediId);
+			return lrlDao.getCountByOpt(sess, lorePyCode, loreName, ediId, relateStatus);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -54,6 +54,7 @@
   <StrutsActivity path="/Module/teaHwManager/jsp/teaHwManager.jsp" location="950,2250" dimension="312,53" />
   <StrutsActivity path="/Module/sysHwManager/jsp/sysHwManager.jsp" location="1550,2250" dimension="312,53" />
   <StrutsActivity path="/Module/stNtManager/jsp/stNtManager.jsp" location="50,2450" dimension="288,53" />
+  <StrutsActivity path="/lrLog.do" />
   <StrutsTransition id="/login.do,loginOut,/login.jsp,1" routingType="0">
     <AutomaticBendpoints>
       <AbsolutePoint location="50,102" />

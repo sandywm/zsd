@@ -67,19 +67,19 @@ public class LoreRelateLogAction extends DispatchAction {
 		LoreRelateLogManager lrlm = (LoreRelateLogManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_RELATE_LOG_INFO);
 		String lorePyCode = CommonTools.getFinalStr("lorePyCode", request);
 		String loreName = Transcode.unescape_new1("loreName", request);
-		Integer ediId = CommonTools.getFinalInteger("ediId", request);
+		Integer ediId = CommonTools.getFinalInteger("ediId", request);//0表示全部
+		Integer relateStatus = CommonTools.getFinalInteger("relateStatus", request);//关联状态(0:失败，1：成功，-1：表示全部)
 		String msg = "暂无记录";
 		Map<String,Object> map = new HashMap<String,Object>();
-		Integer count = lrlm.getCountByOpt(lorePyCode, loreName, ediId);;
+		Integer count = lrlm.getCountByOpt(lorePyCode, loreName, ediId,relateStatus);;
 		if(count>0){
 			Integer pageSize = PageConst.getPageSize(String.valueOf(request.getParameter("limit")), 10);//等同于pageSize
 			Integer pageNo = CommonTools.getFinalInteger("page", request);//等同于pageNo
-			List<LoreRelateLogInfo> lrlList = lrlm.listPageInfoByOpt(lorePyCode, loreName, ediId, pageNo, pageSize);
+			List<LoreRelateLogInfo> lrlList = lrlm.listPageInfoByOpt(lorePyCode, loreName, ediId, relateStatus,pageNo, pageSize);
 			List<Object> list_d = new ArrayList<Object>();
 			for(LoreRelateLogInfo lrl : lrlList){
 				Map<String,Object> map_d = new HashMap<String,Object>();
 				map_d.put("lrlId", lrl.getId());
-				map_d.put("loreId", lrl.getLoreInfo().getId());
 				map_d.put("loreName", lrl.getLoreInfo().getLoreName());
 				Education edu = lrl.getLoreInfo().getChapter().getEducation();
 				Integer schoolType = edu.getGradeSubject().getSchoolType();
@@ -97,7 +97,7 @@ public class LoreRelateLogAction extends DispatchAction {
 				map_d.put("ediName", edu.getEdition().getEdiName());//出版社
 				map_d.put("cptName", lrl.getLoreInfo().getChapter().getChapterName());//章节
 				map_d.put("eduVolume",edu.getEduVolume());//上下册
-				map_d.put("relateInfo", lrl.getRelateResult());
+				map_d.put("relateResult", lrl.getRelateResult());
 				map_d.put("relateStatus", lrl.getRelateStatus());
 				map_d.put("relateDate", lrl.getRelateTime());
 				map_d.put("relateUser", lrl.getRelateUser());

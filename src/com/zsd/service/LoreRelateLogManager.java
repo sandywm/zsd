@@ -32,28 +32,30 @@ public interface LoreRelateLogManager {
 	LoreRelateLogInfo getEntityById(Integer lrlId) throws WEBException;
 	
 	/**
-	 * 根据知识点拼音码,知识点名称,出版社编号分页获取日志列表
+	 * 根据知识点拼音码,知识点名称,出版社编号,关联状态分页获取日志列表
 	 * @author wm
 	 * @date 2019-11-2 上午11:39:56
 	 * @param lorePyCode 知识点拼音码(""时不查询)
 	 * @param loreName 知识点名称(""时不查询)
 	 * @param ediId 出版社编号(0时不查询)
+	 * @param relateStatus 关联结果（0：关联失败，1：关联成功）
 	 * @param pageNo
 	 * @param pageSize
 	 * @return
 	 * @throws WEBException
 	 */
-	List<LoreRelateLogInfo> listPageInfoByOpt(String lorePyCode,String loreName,Integer ediId,Integer pageNo,Integer pageSize)throws WEBException;
+	List<LoreRelateLogInfo> listPageInfoByOpt(String lorePyCode,String loreName,Integer ediId,Integer relateStatus,Integer pageNo,Integer pageSize)throws WEBException;
 	
 	/**
-	 * 根据知识点拼音码,知识点名称,出版社编号获取日志记录条数
+	 * 根据知识点拼音码,知识点名称,出版社编号,关联状态获取日志记录条数
 	 * @author wm
 	 * @date 2019-11-2 上午11:41:16
 	 * @param lorePyCode 知识点拼音码(""时不查询)
 	 * @param loreName 知识点名称(""时不查询)
 	 * @param ediId 出版社编号(0时不查询)
+	 * @param relateStatus 关联结果（0：关联失败，1：关联成功）
 	 * @return
 	 * @throws WEBException
 	 */
-	Integer getCountByOpt(String lorePyCode,String loreName,Integer ediId)throws WEBException;
+	Integer getCountByOpt(String lorePyCode,String loreName,Integer ediId,Integer relateStatus)throws WEBException;
 }

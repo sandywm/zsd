@@ -56,11 +56,12 @@ public interface LoreRelateLogDao {
 	 * @param lorePyCode 知识点拼音首字母
 	 * @param loreName 知识点名称
 	 * @param ediId 出版社编号
+	 * @param relateStatus 关联结果（0：关联失败，1：关联成功）
 	 * @param pageNo
 	 * @param pageSize
 	 * @return
 	 */
-	List<LoreRelateLogInfo> findPageInfoByOpt(Session sess,String lorePyCode,String loreName,Integer ediId,Integer pageNo,Integer pageSize);
+	List<LoreRelateLogInfo> findPageInfoByOpt(Session sess,String lorePyCode,String loreName,Integer ediId,Integer relateStatus,Integer pageNo,Integer pageSize);
 	
 	/**
 	 * 根据条件获取知识点关联日志信息记录条数
@@ -70,7 +71,8 @@ public interface LoreRelateLogDao {
 	 * @param lorePyCode 知识点拼音首字母
 	 * @param loreName 知识点名称
 	 * @param ediId 出版社编号
+	 * @param relateStatus 关联结果（0：关联失败，1：关联成功）
 	 * @return
 	 */
-	Integer getCountByOpt(Session sess,String lorePyCode,String loreName,Integer ediId);
+	Integer getCountByOpt(Session sess,String lorePyCode,String loreName,Integer ediId,Integer relateStatus);
 }

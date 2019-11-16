@@ -1780,15 +1780,15 @@ public class LoreAction extends DispatchAction {
 							}
 						}
 						if(addFlag){//成功
-							list_result.add(ediName+"下["+newLoreNameArr[j]+"]知识点关联成功!");
+							list_result.add("1&wmd&"+ediName+"下["+newLoreNameArr[j]+"]知识点关联成功!");
 							lrlm.addLRL(newLoreIdArr[j], "add", 1, ediName+"下["+newLoreNameArr[j]+"]知识点关联成功!", CommonTools.getLoginAccount(request));
 						}else{//失败
-							list_result.add(ediName+"下["+newLoreNameArr[j]+"]知识点关联失败!失败原因：子知识点编码大于主知识点编码");
+							list_result.add("0&wmd&"+ediName+"下["+newLoreNameArr[j]+"]知识点关联失败!失败原因：子知识点编码大于主知识点编码");
 							lrlm.addLRL(newLoreIdArr[j], "add", 0, newLoreNameArr[j]+"]知识点关联失败!失败原因：子知识点编码大于主知识点编码", CommonTools.getLoginAccount(request));
 						}
 					}else{
 						//通用版没有关联知识点，无法进行当前出版社下的关联
-						list_result.add(ediName+"下["+newLoreNameArr[j]+"]知识点关联失败!失败原因：通用版知识点["+tyLoreNameArr[j]+"]未设置关联");
+						list_result.add("0&wmd&"+ediName+"下["+newLoreNameArr[j]+"]知识点关联失败!失败原因：通用版知识点["+tyLoreNameArr[j]+"]未设置关联");
 						lrlm.addLRL(newLoreIdArr[j], "add", 0, ediName+"下["+newLoreNameArr[j]+"]知识点关联失败!失败原因：通用版知识点["+tyLoreNameArr[j]+"]未设置关联", CommonTools.getLoginAccount(request));
 					}
 				}

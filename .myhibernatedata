@@ -1,7 +1,7 @@
 #MyEclipse Hibernate Properties
-#Thu Oct 31 16:55:15 CST 2019
+#Tue Nov 12 09:34:56 CST 2019
 sessionFactoryName=
-genBasicCompId=false
+genBasicCompId=true
 profile=
 daoSFId=
 version=3.2
@@ -17,7 +17,7 @@ addLibs2Project=true
 genVersionTag=false
 sessionFactoryId=
 basePersistenceClass=
-genAnnotations=false
+genAnnotations=true
 reSettingsFile=
 configFile=/zsd/src/hibernate.cfg.xml
 createConfigFile=true

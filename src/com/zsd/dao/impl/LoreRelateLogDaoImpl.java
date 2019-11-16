@@ -42,7 +42,7 @@ public class LoreRelateLogDaoImpl implements LoreRelateLogDao{
 
 	@Override
 	public List<LoreRelateLogInfo> findPageInfoByOpt(Session sess,
-			String lorePyCode, String loreName, Integer ediId, Integer pageNo,
+			String lorePyCode, String loreName, Integer ediId, Integer relateStatus, Integer pageNo,
 			Integer pageSize) {
 		// TODO Auto-generated method stub
 		String hql = " from LoreRelateLogInfo as lrl where 1 = 1";
@@ -55,6 +55,9 @@ public class LoreRelateLogDaoImpl implements LoreRelateLogDao{
 		if(!loreName.equals("")){
 			hql += " and lrl.loreInfo.loreName like '%"+loreName+"%'";
 		}
+		if(relateStatus >= 0){
+			hql += " and lrl.relateStatus = "+relateStatus;
+		}
 		int offset = (pageNo - 1) * pageSize;
 		if (offset < 0) {
 			offset = 0;
@@ -64,7 +67,7 @@ public class LoreRelateLogDaoImpl implements LoreRelateLogDao{
 
 	@Override
 	public Integer getCountByOpt(Session sess, String lorePyCode,
-			String loreName, Integer ediId) {
+			String loreName, Integer ediId, Integer relateStatus) {
 		// TODO Auto-generated method stub
 		String hql = "select count(lrl.id) from LoreRelateLogInfo as lrl where 1 = 1";
 		if(ediId > 0){
@@ -75,6 +78,9 @@ public class LoreRelateLogDaoImpl implements LoreRelateLogDao{
 		}
 		if(!loreName.equals("")){
 			hql += " and lrl.loreInfo.loreName like '%"+loreName+"%'";
+		}
+		if(relateStatus >= 0){
+			hql += " and lrl.relateStatus = "+relateStatus;
 		}
 		Object countObj = sess.createQuery(hql).uniqueResult();
 		return CommonTools.longToInt(countObj);
