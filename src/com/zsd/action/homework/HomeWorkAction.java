@@ -3200,7 +3200,9 @@ public class HomeWorkAction extends DispatchAction {
 										String answerD = lq.getD();
 										String answerE = lq.getE();
 										String answerF = lq.getF();
-										String[] answerOptArr = {answerA , answerB , answerC , answerD , answerE , answerF};
+										String[] answerOptArr = {answerA.replaceAll("Module/commonJs/ueditor/jsp/lore/", ""), answerB.replaceAll("Module/commonJs/ueditor/jsp/lore/", "") , 
+												answerC.replaceAll("Module/commonJs/ueditor/jsp/lore/", "") , answerD.replaceAll("Module/commonJs/ueditor/jsp/lore/", "") , 
+												answerE.replaceAll("Module/commonJs/ueditor/jsp/lore/", "") , answerF.replaceAll("Module/commonJs/ueditor/jsp/lore/", "")};
 										String dataBaseAnswerChar = "";//转化成A-F的答案
 										String[] dataBaseAnswerArray = realAnswer.split(",");//数据库真实答案数组
 										for(int i = 0 ; i < dataBaseAnswerArray.length ; i++){
