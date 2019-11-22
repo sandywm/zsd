@@ -16,10 +16,11 @@ public interface LoreRelateLogManager {
 	 * @param relateStatus关联状态(0:失败，1：成功)
 	 * @param relateResult 关联结果
 	 * @param relateUser 关联人员
+	 * @param lrId 知识典关联编号
 	 * @return
 	 * @throws WEBException
 	 */
-	Integer addLRL(Integer loreId,String relateType,Integer relateStatus,String relateResult,String relateUser) throws WEBException;
+	Integer addLRL(Integer loreId,String relateType,Integer relateStatus,String relateResult,String relateUser,Integer lrId) throws WEBException;
 	
 	/**
 	 * 根据主键获取知识点关联日志实体
@@ -58,4 +59,23 @@ public interface LoreRelateLogManager {
 	 * @throws WEBException
 	 */
 	Integer getCountByOpt(String lorePyCode,String loreName,Integer ediId,Integer relateStatus)throws WEBException;
+	
+	/**
+	 * 根据知识典关联编号获取关联结果日子记录列表
+	 * @author wm
+	 * @date 2019-11-22 上午11:40:04
+	 * @param lrId 知识典关联编号
+	 * @return
+	 * @throws WEBException
+	 */
+	List<LoreRelateLogInfo> listInfoByLrId(Integer lrId)throws WEBException;
+	
+	/**
+	 * 根据主键删除关联日志
+	 * @author wm
+	 * @date 2019-11-22 上午11:47:28
+	 * @param lrlId
+	 * @throws WEBException
+	 */
+	void delLrlById(Integer lrlId)throws WEBException;
 }

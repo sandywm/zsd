@@ -22,7 +22,7 @@ public class LoreRelateLogManagerImpl implements LoreRelateLogManager{
 	Transaction tran = null;
 	@Override
 	public Integer addLRL(Integer loreId, String relateType,
-			Integer relateStatus, String relateResult, String relateUser)
+			Integer relateStatus, String relateResult, String relateUser,Integer lrId)
 			throws WEBException {
 		// TODO Auto-generated method stub
 		try {
@@ -32,7 +32,7 @@ public class LoreRelateLogManagerImpl implements LoreRelateLogManager{
 			tran = sess.beginTransaction();
 			LoreRelateLogInfo lrl = new LoreRelateLogInfo(lDao.getEntityById(sess, loreId), relateType,
 					relateStatus, relateResult, CurrentTime.getCurrentTime(),
-					relateUser);
+					relateUser,lrId);
 			lrlDao.save(sess, lrl);
 			tran.commit();
 			return lrl.getId();
@@ -91,6 +91,45 @@ public class LoreRelateLogManagerImpl implements LoreRelateLogManager{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			throw new WEBException("根据知识点拼音码,知识点名称,出版社编号获取日志记录条数时出现 异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public List<LoreRelateLogInfo> listInfoByLrId(Integer lrId)
+			throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			lrlDao = (LoreRelateLogDao) DaoFactory.instance(null).getDao(Constants.DAO_LORE_RELATE_LOG_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return lrlDao.findInfoByLrId(sess, lrId);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new WEBException("根据知识典关联编号获取关联结果日子记录列表时出现 异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public void delLrlById(Integer lrlId) throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			lrlDao = (LoreRelateLogDao) DaoFactory.instance(null).getDao(Constants.DAO_LORE_RELATE_LOG_INFO);
+			Session sess = HibernateUtil.currentSession();
+			tran = sess.beginTransaction();
+			if(lrlId > 0){
+				if(lrlDao.get(sess, lrlId) != null){
+					lrlDao.delete(sess, lrlId);
+					tran.commit();
+				}
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new WEBException("根据主键删除关联日志时出现 异常!");
 		} finally{
 			HibernateUtil.closeSession();
 		}

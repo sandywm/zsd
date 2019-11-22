@@ -26,6 +26,7 @@ import com.zsd.module.Edition;
 import com.zsd.module.Education;
 import com.zsd.module.LoreInfo;
 import com.zsd.module.LoreRelateInfo;
+import com.zsd.module.LoreRelateLogInfo;
 import com.zsd.module.json.LoreTreeMenuJson;
 import com.zsd.module.json.MyTreeNode;
 import com.zsd.tools.CommonTools;
@@ -181,6 +182,7 @@ public class LoreRelateAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
 		LoreRelateManager lrm = (LoreRelateManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_RELATE_INFO);
+		LoreRelateLogManager lrlm = (LoreRelateLogManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_RELATE_LOG_INFO);
 		LoreInfoManager lm = (LoreInfoManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
 		Integer lrId = CommonTools.getFinalInteger("lrId", request);
 		String msg = "noInfo";
@@ -219,6 +221,13 @@ public class LoreRelateAction extends DispatchAction {
 								}
 							}
 						}
+						//删除关联日志
+						List<LoreRelateLogInfo> lrlList = lrlm.listInfoByLrId(lrId);
+						if(lrlList.size() > 0){
+							for(Integer i = 0 ; i < lrlList.size() ; i++){
+								lrlm.delLrlById(lrlList.get(i).getId());
+							}
+						}
 					}
 					//如果是其他版本的话就不需要
 				}else{
@@ -251,11 +260,12 @@ public class LoreRelateAction extends DispatchAction {
 		Integer loreId = CommonTools.getFinalInteger("loreId", request);
 		Integer rootLoreId = CommonTools.getFinalInteger("rootLoreId", request);
 		String msg = "error";
-		List<String> list_result = new ArrayList<String>();
+		Integer resultStatus = 1;
 		Map<String,Object> map = new HashMap<String,Object>();
+		Integer lrId = 0;//通用知识典关联编号
 		if(loreId > 0 && rootLoreId > 0){
 			if(lrm.listRelateInfoByOpt(loreId, rootLoreId, -1,"").size() == 0){
-				lrm.addLoreRelate(loreId, rootLoreId,"manu");
+				lrId = lrm.addLoreRelate(loreId, rootLoreId,"manu");
 				LoreInfo lore = lm.getEntityById(loreId);
 				if(lore != null){
 					Integer ediId = lore.getChapter().getEducation().getEdition().getId();//出版社
@@ -299,12 +309,14 @@ public class LoreRelateAction extends DispatchAction {
 									}
 								}
 								if(addFlag == false){//创建失败
-									list_result.add("0&wmd&"+mainLoreEdiName+"下["+lList_main.get(i).getLoreName()+"]知识点关联失败!失败原因：子知识点编码大于主知识点编码");
+									resultStatus *= 0;
+//									list_result.add("0&wmd&"+mainLoreEdiName+"下["+lList_main.get(i).getLoreName()+"]知识点关联失败!失败原因：子知识点编码大于主知识点编码");
 									//增加记录至关联结果日志表
-									lrlm.addLRL(mainLoreId_edi, "add", 0, mainLoreEdiName+"下["+lList_main.get(i).getLoreName()+"]知识点关联失败!失败原因：子知识点编码大于主知识点编码", CommonTools.getLoginAccount(request));
+									lrlm.addLRL(mainLoreId_edi, "add", 0, mainLoreEdiName+"下["+lList_main.get(i).getLoreName()+"]知识点关联失败!失败原因：子知识点编码大于主知识点编码", CommonTools.getLoginAccount(request),lrId);
 								}else{
-									list_result.add("1&wmd&"+mainLoreEdiName+"下["+lList_main.get(i).getLoreName()+"]知识点关联成功!");
-									lrlm.addLRL(mainLoreId_edi, "add", 1, mainLoreEdiName+"下["+lList_main.get(i).getLoreName()+"]知识点关联成功!", CommonTools.getLoginAccount(request));
+									resultStatus *= 1;
+//									list_result.add("1&wmd&"+mainLoreEdiName+"下["+lList_main.get(i).getLoreName()+"]知识点关联成功!");
+									lrlm.addLRL(mainLoreId_edi, "add", 1, mainLoreEdiName+"下["+lList_main.get(i).getLoreName()+"]知识点关联成功!", CommonTools.getLoginAccount(request),lrId);
 								}
 							}
 						}
@@ -318,7 +330,11 @@ public class LoreRelateAction extends DispatchAction {
 			}
 		}
 		map.put("result", msg);
-		map.put("relateList", list_result);
+//		map.put("relateList", list_result);
+		if(msg.equals("success")){
+			map.put("lrId", lrId);
+			map.put("relateStatus", resultStatus);//0:异常,1:正常
+		}
 		CommonTools.getJsonPkg(map, response);
 		return  null;
 	}

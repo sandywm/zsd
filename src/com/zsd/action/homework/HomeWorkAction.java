@@ -2595,7 +2595,9 @@ public class HomeWorkAction extends DispatchAction {
 						String realAnswer = lq.getQueAnswer();
 						String queType = lq.getQueType();
 						if(queType.equals("单选题") || queType.equals("多选题") || queType.equals("填空选择题")){
-							String[] answerOptArr = {lq.getA() , lq.getB() , lq.getC() , lq.getD() , lq.getE() , lq.getF()};
+							String[] answerOptArr = {lq.getA().replaceAll("Module/commonJs/ueditor/jsp/lore/", "") , lq.getB().replaceAll("Module/commonJs/ueditor/jsp/lore/", "") ,
+									lq.getC().replaceAll("Module/commonJs/ueditor/jsp/lore/", "") , lq.getD().replaceAll("Module/commonJs/ueditor/jsp/lore/", "") , 
+									lq.getE().replaceAll("Module/commonJs/ueditor/jsp/lore/", "") , lq.getF().replaceAll("Module/commonJs/ueditor/jsp/lore/", "")};
 							String dataBaseAnswerChar = "";//转化成A-F的答案
 							String[] dataBaseAnswerArray = realAnswer.split(",");//数据库真实答案数组
 							for(int i = 0 ; i < dataBaseAnswerArray.length ; i++){
@@ -3007,7 +3009,9 @@ public class HomeWorkAction extends DispatchAction {
 						map_d.put("answerE", answerE);
 						map_d.put("answerF", answerF);
 						if(lqType.equals("单选题") || lqType.equals("多选题") || lqType.equals("填空选择题")){
-							String[] answerOptArr = {answerA , answerB , answerC , answerD , answerE , answerF};
+							String[] answerOptArr = {answerA.replaceAll("Module/commonJs/ueditor/jsp/lore/", "") , answerB.replaceAll("Module/commonJs/ueditor/jsp/lore/", "") ,
+									answerC.replaceAll("Module/commonJs/ueditor/jsp/lore/", "") , answerD.replaceAll("Module/commonJs/ueditor/jsp/lore/", "") , 
+									answerE.replaceAll("Module/commonJs/ueditor/jsp/lore/", "") , answerF.replaceAll("Module/commonJs/ueditor/jsp/lore/", "")};
 							String dataBaseAnswerChar = "";//转化成A-F的答案
 							String[] dataBaseAnswerArray = realAnswer.split(",");//数据库真实答案数组
 							for(int i = 0 ; i < dataBaseAnswerArray.length ; i++){

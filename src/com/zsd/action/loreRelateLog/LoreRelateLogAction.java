@@ -71,7 +71,7 @@ public class LoreRelateLogAction extends DispatchAction {
 		Integer relateStatus = CommonTools.getFinalInteger("relateStatus", request);//关联状态(0:失败，1：成功，-1：表示全部)
 		String msg = "暂无记录";
 		Map<String,Object> map = new HashMap<String,Object>();
-		Integer count = lrlm.getCountByOpt(lorePyCode, loreName, ediId,relateStatus);;
+		Integer count = lrlm.getCountByOpt(lorePyCode, loreName, ediId,relateStatus);
 		if(count>0){
 			Integer pageSize = PageConst.getPageSize(String.valueOf(request.getParameter("limit")), 10);//等同于pageSize
 			Integer pageNo = CommonTools.getFinalInteger("page", request);//等同于pageNo
@@ -109,6 +109,45 @@ public class LoreRelateLogAction extends DispatchAction {
 			msg = "success";
 		}
 		map.put("msg", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 根据通用版知识典关联编号获取其他版本关联信息
+	 * @author wm
+	 * @date 2019-11-22 下午01:35:55
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getSpecLRLData(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		LoreRelateLogManager lrlm = (LoreRelateLogManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_RELATE_LOG_INFO);
+		String msg = "error";
+		Map<String,Object> map = new HashMap<String,Object>();
+		Integer lrId = CommonTools.getFinalInteger("lrId", request);
+		if(lrId > 0){
+			List<LoreRelateLogInfo> lrlList = lrlm.listInfoByLrId(lrId);
+			if(lrlList.size() > 0){
+				msg = "success";
+				List<Object> list_d = new ArrayList<Object>();
+				for(LoreRelateLogInfo lrl : lrlList){
+					Map<String,Object> map_d = new HashMap<String,Object>();
+					map_d.put("resultStatus",lrl.getRelateStatus());
+					map_d.put("relateResult", lrl.getRelateResult());
+					list_d.add(map_d);
+				}
+				map.put("relateList", list_d);
+			}else{
+				msg = "noInfo";
+			}
+		}
+		map.put("result", msg);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}

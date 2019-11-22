@@ -86,4 +86,11 @@ public class LoreRelateLogDaoImpl implements LoreRelateLogDao{
 		return CommonTools.longToInt(countObj);
 	}
 
+	@Override
+	public List<LoreRelateLogInfo> findInfoByLrId(Session sess, Integer lrId) {
+		// TODO Auto-generated method stub
+		String hql = " from LoreRelateLogInfo as lrl where lrl.lrId = "+lrId;
+		return sess.createQuery(hql).list();
+	}
+
 }

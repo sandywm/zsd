@@ -75,4 +75,14 @@ public interface LoreRelateLogDao {
 	 * @return
 	 */
 	Integer getCountByOpt(Session sess,String lorePyCode,String loreName,Integer ediId,Integer relateStatus);
+	
+	/**
+	 * 根据知识典关联编号获取关联结果日子记录列表
+	 * @author wm
+	 * @date 2019-11-22 上午11:42:39
+	 * @param sess
+	 * @param lrId 知识典关联编号
+	 * @return
+	 */
+	List<LoreRelateLogInfo> findInfoByLrId(Session sess,Integer lrId);
 }

@@ -1760,10 +1760,12 @@ public class LoreAction extends DispatchAction {
 				}
 				for(Integer j = 0 ; j < newLoreIdArr.length ; j++){//循环新增加的新版本知识点
 					List<LoreRelateInfo> lrList = lrm.listRelateInfoByOpt(tyLoreIdArr[j], 0, -1,"");//获取通用版的关联
+					Integer lrId = 0;//通用知识典关联编号
 					if(lrList.size() > 0){
 						boolean addFlag = false;
 						for(Iterator<LoreRelateInfo> it = lrList.iterator() ; it.hasNext();){
 							LoreRelateInfo lr = it.next();
+							lrId = lr.getId();
 							Integer roolLoreId_ty = lr.getRootLoreInfo().getId();//获取通用版的关联知识点
 							LoreInfo lore = lm.getLoreInfoByOpt(roolLoreId_ty, ediId);//根据通用版的关联知识点获取新版本下对应的知识点
 							if(lore != null){
@@ -1781,15 +1783,15 @@ public class LoreAction extends DispatchAction {
 						}
 						if(addFlag){//成功
 							list_result.add("1&wmd&"+ediName+"下["+newLoreNameArr[j]+"]知识点关联成功!");
-							lrlm.addLRL(newLoreIdArr[j], "add", 1, ediName+"下["+newLoreNameArr[j]+"]知识点关联成功!", CommonTools.getLoginAccount(request));
+							lrlm.addLRL(newLoreIdArr[j], "add", 1, ediName+"下["+newLoreNameArr[j]+"]知识点关联成功!", CommonTools.getLoginAccount(request),lrId);
 						}else{//失败
 							list_result.add("0&wmd&"+ediName+"下["+newLoreNameArr[j]+"]知识点关联失败!失败原因：子知识点编码大于主知识点编码");
-							lrlm.addLRL(newLoreIdArr[j], "add", 0, newLoreNameArr[j]+"]知识点关联失败!失败原因：子知识点编码大于主知识点编码", CommonTools.getLoginAccount(request));
+							lrlm.addLRL(newLoreIdArr[j], "add", 0, newLoreNameArr[j]+"]知识点关联失败!失败原因：子知识点编码大于主知识点编码", CommonTools.getLoginAccount(request),lrId);
 						}
 					}else{
 						//通用版没有关联知识点，无法进行当前出版社下的关联
 						list_result.add("0&wmd&"+ediName+"下["+newLoreNameArr[j]+"]知识点关联失败!失败原因：通用版知识点["+tyLoreNameArr[j]+"]未设置关联");
-						lrlm.addLRL(newLoreIdArr[j], "add", 0, ediName+"下["+newLoreNameArr[j]+"]知识点关联失败!失败原因：通用版知识点["+tyLoreNameArr[j]+"]未设置关联", CommonTools.getLoginAccount(request));
+						lrlm.addLRL(newLoreIdArr[j], "add", 0, ediName+"下["+newLoreNameArr[j]+"]知识点关联失败!失败原因：通用版知识点["+tyLoreNameArr[j]+"]未设置关联", CommonTools.getLoginAccount(request),lrId);
 					}
 				}
 			}

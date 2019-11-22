@@ -40,5 +40,10 @@
             	<comment>关联人</comment>
             </column>
         </property>
+        <property name="lrId" type="java.lang.Integer">
+            <column name="lr_id">
+                <comment>关联编号（通用版关联的主键）</comment>
+            </column>
+        </property>
     </class>
 </hibernate-mapping>

@@ -19,6 +19,7 @@ public class LoreRelateLogInfo implements java.io.Serializable {
 	private String relateResult;
 	private String relateTime;
 	private String relateUser;
+	private Integer lrId;
 
 	// Constructors
 
@@ -37,13 +38,14 @@ public class LoreRelateLogInfo implements java.io.Serializable {
 	/** full constructor */
 	public LoreRelateLogInfo(LoreInfo loreInfo, String relateType,
 			Integer relateStatus, String relateResult, String relateTime,
-			String relateUser) {
+			String relateUser,Integer lrId) {
 		this.loreInfo = loreInfo;
 		this.relateType = relateType;
 		this.relateStatus = relateStatus;
 		this.relateResult = relateResult;
 		this.relateTime = relateTime;
 		this.relateUser = relateUser;
+		this.lrId = lrId;
 	}
 
 	// Property accessors
@@ -102,6 +104,14 @@ public class LoreRelateLogInfo implements java.io.Serializable {
 
 	public void setRelateUser(String relateUser) {
 		this.relateUser = relateUser;
+	}
+
+	public Integer getLrId() {
+		return lrId;
+	}
+
+	public void setLrId(Integer lrId) {
+		this.lrId = lrId;
 	}
 
 }
