@@ -3194,15 +3194,13 @@ public class HomeWorkAction extends DispatchAction {
 										}
 									}else{
 										//获取真实答案对应的A-F的选项
-										String answerA = lq.getA();
-										String answerB = lq.getB();
-										String answerC = lq.getC();
-										String answerD = lq.getD();
-										String answerE = lq.getE();
-										String answerF = lq.getF();
-										String[] answerOptArr = {answerA.replaceAll("Module/commonJs/ueditor/jsp/lore/", ""), answerB.replaceAll("Module/commonJs/ueditor/jsp/lore/", "") , 
-												answerC.replaceAll("Module/commonJs/ueditor/jsp/lore/", "") , answerD.replaceAll("Module/commonJs/ueditor/jsp/lore/", "") , 
-												answerE.replaceAll("Module/commonJs/ueditor/jsp/lore/", "") , answerF.replaceAll("Module/commonJs/ueditor/jsp/lore/", "")};
+										String answerA = lq.getA().replaceAll("Module/commonJs/ueditor/jsp/lore/", "");
+										String answerB = lq.getB().replaceAll("Module/commonJs/ueditor/jsp/lore/", "");
+										String answerC = lq.getC().replaceAll("Module/commonJs/ueditor/jsp/lore/", "");
+										String answerD = lq.getD().replaceAll("Module/commonJs/ueditor/jsp/lore/", "");
+										String answerE = lq.getE().replaceAll("Module/commonJs/ueditor/jsp/lore/", "");
+										String answerF = lq.getF().replaceAll("Module/commonJs/ueditor/jsp/lore/", "");
+										String[] answerOptArr = {answerA, answerB , answerC , answerD, answerE, answerF};
 										String dataBaseAnswerChar = "";//转化成A-F的答案
 										String[] dataBaseAnswerArray = realAnswer.split(",");//数据库真实答案数组
 										for(int i = 0 ; i < dataBaseAnswerArray.length ; i++){
