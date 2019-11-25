@@ -132,6 +132,7 @@ public class LoreRelateAction extends DispatchAction {
 		LoreInfoManager lm = (LoreInfoManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
 		Integer loreId = CommonTools.getFinalInteger("loreId", request);
 		String orderOpt = CommonTools.getFinalStr("orderOpt", request);//asc,desc--其他版本需要降序排列，通用版不用排序
+		LoreRelateLogManager lrlm = (LoreRelateLogManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_RELATE_LOG_INFO);
 		String msg = "noInfo";
 		Map<String,Object> map = new HashMap<String,Object>();
 		LoreInfo lore = lm.getEntityById(loreId);
@@ -149,6 +150,18 @@ public class LoreRelateAction extends DispatchAction {
 					if(rootLore != null){
 						map_d.put("lrId", lr.getId());
 						map_d.put("rootLoreName", rootLore.getLoreName());
+						List<LoreRelateLogInfo> lrlList = lrlm.listInfoByLrId(lr.getId());
+						Integer resultStatus = 1;
+						if(lrlList.size() > 0){
+							for(LoreRelateLogInfo lrl : lrlList){
+								if(lrl.getRelateStatus().equals(0)){//失败
+									resultStatus *= 0;
+								}
+							}
+						}else{
+							resultStatus = -1;//无关联日志
+						}
+						map_d.put("relateStatus", resultStatus);//0:异常,1:正常
 						list_d.add(map_d);
 					}
 				}
