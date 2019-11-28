@@ -1,7 +1,8 @@
 .newEdiWrap{
+	width:970px;
 	position:absolute;
-	left:100px;
-	right:100px;
+	left:50%;
+	margin-left:-485px;
 	top:15px;
 	bottom:15px;
 	background:#fff;
