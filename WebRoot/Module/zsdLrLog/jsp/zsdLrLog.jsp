@@ -29,7 +29,7 @@
 								</div>
 								<div class="itemDivs" style="width:180px;">
 									<div class="layui-input-inline">
-										<input type="hidden" id="relateStaInp" value="-1"/>
+										<input type="hidden" id="relateStaInp" value="0"/>
 										<select id="relateStaSel" lay-filter="relateStaSel">
 											<option value=''>请选择关联状态(全部)</option>
 											<option value='1'>成功</option>
@@ -126,7 +126,7 @@
   								{field : 'gradeName', title: '年级',width:120,align:'center'},
   								{field : 'subName', title: '科目',width:100,align:'center'},
   								{field : 'ediName', title: '出版社',align:'center'},
-  								{field : 'eduVolume', title: '上下册',width:100,align:'center'},
+  								{field : 'eduVolume', title: '卷册',width:100,align:'center'},
   								{field : 'relateStatus', title: '关联状态',width:100,align:'center',templet : function(d){
   									if(d.relateStatus == 0){
   										return '<span class="failTips">失败</span>';
