@@ -15,41 +15,39 @@
 	<body style="background:#f2f2f2;">
 		<div class="layui-fluid" style="margin-top:15px;">
 			<div class="layui-row">
-				<div class="layui-col-md12 layui-col-lg12">
-					<div class="layui-card">
-						<div class="layui-card-header posRel"">
-	  						<span>网络导师审核</span>
-	  					</div>
-	  					<div class="layui-card-body">
-	  						<!-- 查询条件 -->
-		  					<div class="layui-form searchForm layui-clear" style="float:right;">
-		  						<div class="itemDivs" style="width:180px;">
-		  							<input id="accInp" class="layui-input" placeholder="请输入账号" maxlength="30"/>
-		  						</div>
-		  						<div class="itemDivs" style="width:180px;">
-		  							<input id="userNameInp" class="layui-input" placeholder="请输入真实姓名" maxlength="30"/>
-		  						</div>
-		  						<div class="itemDivs" style="width:180px;">
-		  							<input type="hidden" id="checkStaInp" value="-1"/>
-									<select id="checkStaSel" lay-filter="checkStaSel">
-										<option value="">请选择审核状态(全部)</option>
-										<option value="0">未审核</option>
-										<option value="1">审核未通过</option>
-										<option value="2">审核通过</option>
-									</select>
-		  						</div>
-		  						<div class="itemDivs">
-		  							<div class="layui-input-inline">
-		  								<button id="queryBtn" class="layui-btn"><i class="layui-icon layui-icon-search"></i></button>
-		  							</div>
-		  						</div>
-		  						<!--  a class="resetBtn" href="javascript:void(0)"><i class="layui-icon layui-icon-refresh"></i>重置</a-->
-		  					</div>
-	  						<div>
-	  							<table id="ntListTab" class="layui-table" lay-filter="ntListTab"></table>
+				<div class="layui-card">
+					<div class="layui-card-header posRel"">
+  						<span>网络导师审核</span>
+  					</div>
+  					<div class="layui-card-body">
+  						<!-- 查询条件 -->
+	  					<div class="layui-form searchForm layui-clear" style="float:right;">
+	  						<div class="itemDivs" style="width:180px;">
+	  							<input id="accInp" class="layui-input" placeholder="请输入账号" maxlength="30"/>
 	  						</div>
+	  						<div class="itemDivs" style="width:180px;">
+	  							<input id="userNameInp" class="layui-input" placeholder="请输入真实姓名" maxlength="30"/>
+	  						</div>
+	  						<div class="itemDivs" style="width:180px;">
+	  							<input type="hidden" id="checkStaInp" value="-1"/>
+								<select id="checkStaSel" lay-filter="checkStaSel">
+									<option value="">请选择审核状态(全部)</option>
+									<option value="0">未审核</option>
+									<option value="1">审核未通过</option>
+									<option value="2">审核通过</option>
+								</select>
+	  						</div>
+	  						<div class="itemDivs">
+	  							<div class="layui-input-inline">
+	  								<button id="queryBtn" class="layui-btn"><i class="layui-icon layui-icon-search"></i></button>
+	  							</div>
+	  						</div>
+	  						<!--  a class="resetBtn" href="javascript:void(0)"><i class="layui-icon layui-icon-refresh"></i>重置</a-->
 	  					</div>
-					</div>
+  						<div>
+  							<table id="ntListTab" class="layui-table" lay-filter="ntListTab"></table>
+  						</div>
+  					</div>
 				</div>
 			</div>
 		</div>

@@ -76,7 +76,7 @@ body{
 	position:relative;
 }
 .leftSide{
-	width:200px;
+	width:235px;
 	position:fixed;
 	top:100px;
 	bottom:20px;
@@ -114,7 +114,7 @@ body{
 	font-size:16px;
 }
 .leftSideList{
-	width:220px;
+	width:255px;
 	position:absolute;
 	left:0;
 	top:101px;
@@ -123,7 +123,7 @@ body{
 	z-index:1;
 }
 .leftSideList li{
-	width:200px;
+	width:235px;
 	height:45px;
 	line-height:45px;
 	text-align:center;
@@ -140,8 +140,8 @@ body{
 	background:#3631b6;
 }
 .rightMainCon{
-	width:780px;
-	margin-left:220px;
+	width:745px;
+	margin-left:255px;
 }
 .noData {
 	width:140px;

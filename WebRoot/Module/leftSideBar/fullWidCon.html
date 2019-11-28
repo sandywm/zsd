@@ -1,11 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java"%>
-<!DOCTYPE html>
-<html>
-	<head>
 		<meta charset="UTF-8">
 		<link rel="stylesheet" type="text/css" href="/css/fullWidCon.css"/>
-	</head>
-	<body>
+		<link rel="stylesheet" type="text/css" href="/plugins/swiper/swiper.min.css"/>
 		<!-- 在线学习下全宽 -->
 		<!-- 头部 -->
 		<div class="subListWrap">
@@ -50,5 +46,398 @@
 				</div>
 			</div>
 		</div>
-	</body>
-</html>
+		<!-- 选择出版社 -->
+		<div class="selEdiWrap">
+			<p class="currEditTxt">当前教材版本：<span id="currEdiName" class="noSel"></span></p>
+			<div class="ediSel">
+				<p class="choiceTxt fl">选择出版社</p>
+				<div class="ediName fl">
+					<p id="ediNameTxt" class="noSel ellip">请选择出版社</p>
+					<i class="triIcon"></i>
+					<ul id="ediListUl" class="layui-anim layui-anim-upbit"></ul>
+				</div>
+			</div>
+		</div>
+		<input type="hidden" id="subjectInp" />
+		<input type="hidden" id="ediInp" />
+		<input type="hidden" id="gradeInp" />
+		
+		<script src="/plugins/jquery/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/plugins/swiper/swiper.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+		var currGradeName = '';
+		var page = {
+				init : function(){
+					this.loadStudyInitData();
+					this.bindEvent();
+				},
+				bindEvent : function(){
+					$('body').click(function(){
+						$('#ediListUl').hide();
+					});
+					$('.navBarBtn').click(function(){
+						var isOpen = $(this).attr('isOpen');
+						if(isOpen === 'off'){
+							$(this).addClass('is-active');
+							$(this).attr('isOpen','on');
+							$('.leftSideBarList').show();
+						}else{
+							$(this).removeClass('is-active');
+							$(this).attr('isOpen','off');
+							$('.leftSideBarList').hide();
+						}
+					});
+					$('.ediName').on('click',function(event){
+						$('#ediListUl').show();
+						event.stopPropagation();
+					});
+				},
+				getSubjectImg : function(subName,eduVolume){
+					var subNameStr = '';
+					if(subName == '语文'){
+						if(eduVolume == '上册'){
+							subNameStr = 'yuwenUp';
+						}else{
+							subNameStr = 'yuwenDown';
+						}
+					}else if(subName == '数学'){
+						if(eduVolume == '上册'){
+							subNameStr = 'shuxueUp';
+						}else{
+							subNameStr = 'shuxueDown';
+						}
+					}else if(subName == '英语'){
+						if(eduVolume == '上册'){
+							subNameStr = 'yingyuUp';
+						}else{
+							subNameStr = 'yingyuDown';
+						}
+					}else if(subName == '物理'){
+						if(eduVolume == '上册'){
+							subNameStr = 'wuliUp';
+						}else{
+							subNameStr = 'wuliDown';
+						}
+					}else if(subName == '化学'){
+						if(eduVolume == '上册'){
+							subNameStr = 'huaxueUp';
+						}else{
+							subNameStr = 'huaxueDown';
+						}
+					}else if(subName == '地理'){
+						if(eduVolume == '上册'){
+							subNameStr = 'diliUp';
+						}else{
+							subNameStr = 'diliDown';
+						}
+					}else if(subName == '生物'){
+						if(eduVolume == '上册'){
+							subNameStr = 'shengwuUp';
+						}else{
+							subNameStr = 'shengwuDown';
+						}
+					}else if(subName == '历史'){
+						if(eduVolume == '上册'){
+							subNameStr = 'lishiUp';
+						}else{
+							subNameStr = 'lishiDown';
+						}
+					}else if(subName == '生命科学'){
+						if(eduVolume == '上册'){
+							subNameStr = 'smkxUp';
+						}else{
+							subNameStr = 'smkxDown';
+						}
+					}else if(subName == '科学'){
+						if(eduVolume == '上册'){
+							subNameStr = 'kexueUp';
+						}else{
+							subNameStr = 'kexueDown';
+						}
+					}
+					return subNameStr;
+				},
+				loadStudyInitData : function(){
+					var _this = this,subId = $('#subjectInp').val(),
+						ediId = $('#ediInp').val(),
+						gradId = $('#gradeInp').val();
+					var field = {subId:subId,ediId:ediId,gradeNumber:gradId};
+					$('.loading').show();
+					$('.volumeList').show();
+					$('.chaptList').hide();
+					$('.leftChaptName').html('');
+					$('#listLoreUl').html('');
+					$('#currChaptName').html('');
+					$.ajax({
+						url : '/onlineStudy.do?action=getInitStudyData',
+						data:field, 
+						dataType:'json',
+						type:'post',
+						timeout:10000,
+						success:function(json){
+							$('.loading').hide();
+							console.log(json)
+							if(json.result == 'success'){
+								var studyList = json.studyList;
+								_this.renderSubjectHtml(studyList);
+							}else if(json.result == 'noInfo'){
+								$('.volumeList').html('<div class="noData_other"><img src="../images/noData.png"/><p class="noDataTxt">暂无教材，请选择学科或出版社<p></div>');
+							}else if(json.result == 'error'){
+								$('.volumeList').html('<div class="noData_other"><img src="../images/noData.png"/><p class="noDataTxt">获取教材信息失败<p></div>');
+							}
+							if(json.result == 'success' || json.result == 'noInfo' || json.result == 'error'){
+								var ediList = json.ediList,gradeList = json.gradeList,subList = json.subList;
+								_this.createGradeSel(gradeList);
+								_this.createSubSel(subList);
+								_this.createEdiSel(ediList);
+								
+								$('#ediListUl li').on('click',function(event){
+									var ediId = $(this).attr('ediId');
+									$('#ediInp').val(ediId);
+									$('#ediListUl').hide();
+									$('#ediNameTxt').html($(this).html());
+									event.stopPropagation();
+									_this.loadStudyInitData();
+								});
+								
+							}
+						},
+						error:function(xhr,type,errorThrown){
+							$('.loading').hide();
+						}
+					}); 
+				},
+				renderSubjectHtml : function(list){
+					var _this = this,str = '<ul>';
+					for(var i=0;i<list.length;i++){
+						str += '<li><div class="subImg"><img src="Module/studyOnline/images/subject/'+ _this.getSubjectImg(list[i].subName,list[i].eduVolume) +'.png"/></div>';
+						str += '<div class="bindNtInfo"></div>';
+						str += '<div class="volumeInfo">';
+						str += '<p><span>当前状态：</span><em class="staCol">'+ list[i].freeStatus +'</em></p>';
+						str += '<p><span>已<span class="oneBlank"></span>使<span class="oneBlank"></span>用：</span><em class="staCol">'+ list[i].studyDays +'天</em></p>';
+						if(list[i].remainDays > 0){
+							str += '<p><span>还<span class="twoBlank"></span>剩：</span><em class="overDate">'+ list[i].remainDays +'天</em></p>';	
+						}else{
+							var remainDaysStr = (list[i].remainDays).toString().replace('-','');
+							str += '<p><span>已<span class="oneBlank"></span>过<span class="oneBlank"></span>期：</span><em class="staCol">'+ remainDaysStr +'天</em></p>';
+						}
+						str += '<p><span>使用期限：</span>'+ list[i].date_range +'</p>';
+						str += '</div>';
+						str += '<a class="goStudyBtn" eduId="'+ list[i].eduId +'" eduVol="'+ list[i].eduVolume +'" subName="'+ list[i].subName +'" href="javascript:void(0)"></a>';
+						str += '</li>';
+					}
+					str += '</ul>';
+					$('.volumeList').html(str);
+					//加载章节列表
+					$('.goStudyBtn').on('click',function(){
+						var eduId = $(this).attr('eduId'),
+							eduVol = $(this).attr('eduVol'),
+							subName = $(this).attr('subName');
+						$('.volumeList').hide().html('');
+						$('#currEdiName').html(currGradeName + subName + '('+ eduVol +')');
+						_this.loadChaptList(eduId);
+					});
+				},
+				//加载章节列表
+				loadChaptList : function(eduId){
+					var _this = this;
+					$('.loading').show();
+					$('.chaptList').show();
+					$.ajax({
+						url : '/onlineStudy.do?action=getStudyCptData',
+						data:{eduId:eduId}, 
+						dataType:'json',
+						type:'post',
+						timeout:10000,
+						success:function(json){
+							$('.loading').hide();
+							if(json.result == 'success'){
+								var cptList = json.cptList;
+								_this.renderChapterHtml(cptList);
+							}else if(json.result == 'noInfo'){
+								$('.leftChaptName').html('<div class="noInfo_chapt"><i class="iconfont layui-extend-zanwujilu"></i><p>暂无章节</p></div>');
+								$('#listLoreUl').html('<div class="noInfo_lore"><i class="iconfont layui-extend-zanwujilu1"></i><p>暂无知识点</p></div>');
+							}
+						},
+						error:function(xhr,type,errorThrown){
+							$('.loading').hide();
+							//plus.nativeUI.toast('服务器异常');
+						}
+					}); 
+				},
+				//生成章节列表
+				renderChapterHtml : function(list){
+					var strLeft = '<ul>',strRight = '',_this = this;
+					for(var i=0;i<list.length;i++){
+						if(i == 0){
+							$('#currChaptName').html(list[0].cptName);
+							strLeft += '<li class="active" cptId="'+ list[i].cptId +'">';
+							for(var j=0;j<list[0].loreList.length;j++){
+								if(list[0].loreList[j].studyStatus == 0){//0:未学习 1未通过 2:已经掌握
+									strRight += '<li class="noLearnSta">';
+								}else if(list[0].loreList[j].studyStatus == 1){
+									strRight += '<li class="notGetSta">';
+								}else{
+									strRight += '<li class="hasGetSta">';
+								}
+								strRight += '<i class="iconfont layui-extend-zhangjie"></i>';
+								strRight += '<span>'+ list[0].loreList[j].loreName +'</span>';
+								strRight += '</li>';
+							}
+						}else{
+							strLeft += '<li cptId="'+ list[i].cptId +'">';
+						}
+						strLeft += list[i].cptName;
+						strLeft += '</li>';
+					}
+					strLeft += '</ul>';
+					$('.leftChaptName').html(strLeft);
+					$('#listLoreUl').html(strRight);
+					_this.getLoreList();
+				},
+				//生成知识点根据章节
+				getLoreList : function(){
+					var _this = this;
+					$('.leftChaptName li').on('click',function(){
+						var chaptId = $(this).attr('cptId');
+						$('.leftChaptName li').removeClass('active');
+						$(this).addClass('active');
+						$('.loading').show();
+						$('#currChaptName').html($(this).html());
+						$.ajax({
+							url : '/onlineStudy.do?action=getLoreData',
+							data:{cptId:chaptId}, 
+							dataType:'json',
+							type:'post',
+							timeout:10000,
+							success:function(json){
+								$('.loading').hide();
+								if(json.result == 'success'){
+									var loreList = json.loreList;
+									_this.renderLoreList(loreList);
+								}else if(json.result == 'noInfo'){
+									$('#listLoreUl').html('<div class="noInfo_lore"><i class="iconfont layui-extend-zanwujilu1"></i><p>暂无知识点</p></div>');
+								}
+							},
+							error:function(xhr,type,errorThrown){
+								$('.loading').hide();
+							}
+						}); 
+					});
+				},
+				renderLoreList : function(loreList){
+					var str = ''; 
+					for(var i=0;i<loreList.length;i++){
+						if(loreList[i].studyStatus == 0){//0:未学习 1未通过 2:已经掌握
+							str += '<li class="noLearnSta">';
+						}else if(loreList[i].studyStatus == 1){
+							str += '<li class="notGetSta">';
+						}else{
+							str += '<li class="hasGetSta">';
+						}
+						str += '<i class="iconfont layui-extend-zhangjie"></i>';
+						str += '<span>'+ loreList[i].loreName +'</span>';
+						str += '</li>';
+						/*str += '<li currCptId='+ cptId +' loreName="'+ list[i].loreName +'" studyStatus="'+ list[i].studyStatus +'" loreId="'+ list[i].loreId +'" studyLogId="'+ list[i].studyLogId +'">';
+						str += '<span class="loreName ellip">'+ list[i].loreName +'</span>';
+						if(list[i].studyStatus == 0){//0:未学习 1未通过 2:已经掌握
+							str += '<span class="currSta"><i class="iconfont icon-wujiaoxing noLearn"></i></span>';
+						}else if(list[i].studyStatus == 1){
+							str += '<span class="currSta"><i class="iconfont icon-wujiaoxing noZhangwo"></i></span>';
+						}else{
+							str += '<span class="currSta"><i class="iconfont icon-wujiaoxing hasZhangwo"></i></span>';
+						}
+						str += '</li>';*/
+					}
+					$('#listLoreUl').html(str);
+				},
+				//创建出版社
+				createEdiSel : function(list){
+					var _this = this,ediStr = '';
+					for(var i=0;i<list.length;i++){
+						if(list[i].selFlag){
+							$('#ediNameTxt').removeClass('noSel').html(list[i].ediName);
+							$('#currEdiName').removeClass('noSel').html(list[i].ediName);
+							$('#ediInp').val(list[i].ediId);
+							ediStr += '<li ediId="'+ list[i].ediId +'" class="active">';
+						}else{
+							ediStr += '<li ediId="'+ list[i].ediId +'">';
+						}
+						ediStr += '<a href="javascript:void(0)">'+ list[i].ediName +'</a></li>';
+					}
+					$('#ediListUl').html(ediStr);
+				},
+				//创建学科
+				createSubSel : function(list){
+					var _this = this,subStr = '';
+					if(list.length == 1){
+						$('#subjectInp').val(list[0].subId);
+						subStr += '<div subId="'+ list[0].subId +'" class="swiper-slide active"><a href="javascript:void(0)"><img src="Module/studyOnline/images/subject/shuxue.png"/></a></div>';
+						$('#subListBox').html(subStr);
+					}else if(list.length > 1){
+						for(var i=0;i<list.length;i++){
+							if(list[i].selFlag){
+								$('#subjectInp').val(list[i].subId);
+								subStr += '<div subId="'+ list[i].subId +'" class="swiper-slide active">';
+							}else{
+								subStr += '<div subId="'+ list[i].subId +'" class="swiper-slide">';
+							}
+							subStr += '<a href="javascript:void(0)"><img src="Module/studyOnline/images/subject/shuxue.png"/></a>';
+							subStr += '</div>';
+						}
+						$('#subListBox').html(subStr);
+					}
+					if(list.length > 5){
+						_this.loadSwiper();
+					}
+					$('.swiper-slide').on('click',function(){
+						var subId = $(this).attr('subId');
+						$('#subjectInp').val(subId);
+						_this.loadStudyInitData();
+					});
+				},
+				//创建年级
+				createGradeSel : function(list){
+					var _this = this,gradeStr = '';;
+					if(list.length == 1){
+						$('#gradeInp').val(list[0].gradeNumber);
+						currGradeName = list[0].gradeNanme;
+						gradeStr += '<li gradeNumber="'+ list[0].gradeNumber +'" class="active">'+ list[0].gradeNanme +'</li>';
+						$('#gradeListUl').html(gradeStr);
+					}else if(list.length > 1){
+						$('.tipInfoTxt').show();
+						for(var i=0;i<list.length;i++){
+							if(list[i].selFlag){
+								$('#gradeInp').val(list[i].gradeNumber);
+								currGradeName = list[i].gradeName;
+								$('.tipInfoTxt').html('您已进入'+ list[i].gradeName +'复习阶段，可切换年级进行复习!');
+								gradeStr += '<li gradeNumber="'+ list[i].gradeNumber +'" class="active">';
+							}else{
+								gradeStr += '<li gradeNumber="'+ list[i].gradeNumber +'">';
+							}
+							gradeStr += list[i].gradeName;
+							gradeStr += '</li>';
+						}
+						$('#gradeListUl').html(gradeStr);
+						$('#gradeListUl li').on('click',function(){
+							var gradeNumber = $(this).attr('gradeNumber');
+							$('#gradeInp').val(gradeNumber);
+							_this.loadStudyInitData();
+						});
+					}
+				},
+				loadSwiper : function(){
+					var swiper = new Swiper('.innerSubList', {
+						slidesPerView:5,
+						spaceBetween: 30,
+						pagination: {
+							el: '.swiper-pagination',
+							clickable: true
+						}
+					}); 
+					
+				}
+			};
+			page.init();
+		</script>
+		

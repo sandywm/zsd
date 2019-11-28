@@ -74,7 +74,7 @@ layui.define(['table','form','scrollBar'],function(exports){
 	    		        	layer.closeAll('loading');
 	    		        	if(json['result'] == 'success'){
 	    		        		//执行增加动作
-	    		        		_this.addRelateLoreAction(loreId, editInpVal);
+	    		        		_this.addRelateLoreAction(loreId,editInpVal);
 	    		        	}else if(json['result'] == 'existInfo'){
 	    		        		layer.msg('当前知识点已被关联，请重新选择',{icon:5,anim:6,time:2200});
 	    		        	}else if(json['result'] == 'error'){
@@ -201,7 +201,19 @@ layui.define(['table','form','scrollBar'],function(exports){
     			if(parent.currPage == 'lorePage' || parent.currPage == 'relateManager'){
     				for(var i=0;i<lrList.length;i++){
             			lrStr += '<li>';
-            			lrStr += '<p class="widOne ellip">'+ lrList[i].rootLoreName +'</p>';
+            			if(parent.currPage == 'relateManager'){//关联知识点下通用版关联生成关联其他版本结果
+            				if(lrList[i].relateStatus == -1){//暂无生成其他版本的关联知识点
+                				lrStr += '<p class="widOne ellip">'+ lrList[i].rootLoreName +'</p>';
+                			}else if(lrList[i].relateStatus == 0){//未全部正确关联
+                				lrStr += '<p class="widOne_spec ellip">'+ lrList[i].rootLoreName +'</p>';
+                				lrStr += '<p class="widTwo"><span title="未全部正确关联" lrId="'+ lrList[i].lrId +'" class="viewRelateRes wrongRes"></span></p>';
+                			}else{//全部正确关联 1
+                				lrStr += '<p class="widOne_spec ellip">'+ lrList[i].rootLoreName +'</p>';
+                				lrStr += '<p class="widTwo"><span title="已全部正确关联" lrId="'+ lrList[i].lrId +'" class="viewRelateRes succRes"></span></p>';
+                			}
+            			}else{
+            				lrStr += '<p class="widOne ellip">'+ lrList[i].rootLoreName +'</p>';
+            			}
             			lrStr += '<p class="widTwo"><i class="delRelLoreBtn layui-icon layui-icon-delete" lrId="'+ lrList[i].lrId +'"></i></p>';
             			lrStr += '</li>';
             		}
@@ -225,9 +237,60 @@ layui.define(['table','form','scrollBar'],function(exports){
         		$('#parScroll_2').remove();
         		this.actCalCreateScroll('hasAddRes', 'hasAddResUl',2);
         		this.delHasAddRelLore();//加载删除方法
+        		if(parent.currPage == 'relateManager'){
+        			this.showOtherRealteRes();
+        		}
     		}else{
     			$('#hasAddResUl').html('<p class="noDataTxt">暂无关联知识点</p>');
     		}
+    	},
+    	createRealteList : function(list){
+			var str = '';
+			str += '<div class="relateInfo"><ul>';
+			for(var i=0;i<list.length;i++){
+				if(list[i].resultStatus == 0){
+					str += '<li class="failTips">'+ list[i].relateResult +'</li>';
+				}else if(list[i].resultStatus == 1){
+					str += '<li class="succTips">'+ list[i].relateResult +'</li>';
+				}
+			}
+			str += '</ul></div>';
+			return str;
+		},
+    	//关联知识点模块下查看关联其他版结果
+    	showOtherRealteRes : function(){
+    		var _this = this;
+    		$('.viewRelateRes').on('click',function(){
+    			var lrId = $(this).attr('lrId');
+    			layer.load('1');
+    			$.ajax({
+					type:'post',
+			        dataType:'json',
+			        data:{lrId:lrId},
+			        url:'/lrLog.do?action=getSpecLRLData',
+			        success:function (json){
+			        	layer.closeAll('loading');
+			        	if(json['result'] == 'success'){
+			        		console.log(json.relateList)
+			        		var str = _this.createRealteList(json.relateList);
+			        		layer.open({
+								title:'[<span class="relateCptName">'+ loreName +'</span>]的关联结果',
+								type: 1,
+							  	area: ['600px', '350px'],
+							  	fixed: true, //不固定
+							  	maxmin: false,
+							  	shadeClose :true,
+							  	closeBtn : 1,
+							  	content: str
+							});
+			        	}else if(json['result'] == 'noInfo'){
+			        		layer.msg('暂未获取到当前关联其他版本知识点信息，请稍后重试',{icon:5,anim:6,time:1500});
+			        	}else if(json['result'] == 'error'){
+			        		layer.msg('获取失败',{icon:5,anim:6,time:1500});
+			        	}
+			        }
+				});
+    		});
     	},
     	//删除已添加的关联知识点
     	delHasAddRelLore : function(){

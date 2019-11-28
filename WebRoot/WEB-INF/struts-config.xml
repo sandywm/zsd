@@ -41,6 +41,7 @@
     <action path="/lore" parameter="action" scope="request" type="com.zsd.action.lore.LoreAction">
       <forward name="lorePage" path="/Module/loreCatalogManager/jsp/loreCatalogManager.jsp"></forward><!-- 知识点目录管理首页 -->
       <forward name="loreQuePage" path="/Module/loreManager/jsp/loreManager.jsp"></forward><!-- 知识点管理首页 -->
+      <forward name="newEdiLorePage" path="/Module/newEditionLore/jsp/newEditionLore.jsp"></forward>
     </action>
     <!-- 网络老师个人中心-->
     <action path="/netTeacher" parameter="action" scope="request" type="com.zsd.action.nt.NetTeacherAction">
@@ -132,7 +133,7 @@
     </action>
     <!-- 知识点关联日志 -->
     <action path="/lrLog" parameter="action" scope="request"  type="com.zsd.action.loreRelateLog.LoreRelateLogAction">
-      <!--forward name="" path="/Module/stNtManager/jsp/stNtManager.jsp"></forward--><!-- 知识点关联日志页面 -->
+      <forward name="lrlPage" path="/Module/zsdLrLog/jsp/zsdLrLog.jsp"></forward><!-- 知识点关联日志页面 -->
     </action>
   </action-mappings>
 

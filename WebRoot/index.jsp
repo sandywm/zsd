@@ -109,11 +109,13 @@
 	        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="lore.do?action=goLoreCatalogPage" tab-id="7">知识点目录管理</a></li>';
 	        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="lore.do?action=goLoreQuePage" tab-id="8">知识点管理</a></li>';
 	        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="loreRelate.do?action=goLoreRelatePage" tab-id="9">关联知识点</a></li>';
+	        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="lore.do?action=goNewEdiLorePage" tab-id="21">生成其他版本知识点</a></li>';
 	        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="lex.do?action=goLexPage" tab-id="10">词库管理</a></li>';
 	        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="buffet.do?action=goBuffetPage" tab-id="11">自助餐管理</a></li>';
 	        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="lqe.do?action=goLqePage" tab-id="12">错题管理</a></li>';
 	        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="hw.do?action=goHwPage" tab-id="13">系统家庭作业管理</a></li>';
 	        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="hw.do?action=goTeaQuePage" tab-id="14">老师家庭作业管理</a></li>';
+	        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="lrLog.do?action=goLRLPage" tab-id="20">知识典关联日志</a></li>';
         		}else if(roleName == '超级管理员'){
 	        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="user.do?action=goUserPage" tab-id="15">用户管理</a></li>';
 	        		liItem += '<li class="layui-nav-item navLi"><a href="javascript:void(0)" path="school.do?action=goSchoolPage" tab-id="1">学校管理</a></li>';
