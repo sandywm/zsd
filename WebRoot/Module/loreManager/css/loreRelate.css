@@ -204,6 +204,11 @@
 	text-align:left;
 	text-indent:10px;
 }
+#hasAddRes ul li p.widOne_spec{
+	width:80%;
+	text-align:left;
+	text-indent:10px;
+}
 #hasAddRes ul li p.widTwo{
 	width:10%;
 	height:100%;
@@ -234,4 +239,34 @@
 .innerRelSear{
 	float:left;
 	margin:62px 0 0 95px;
+}
+.viewRelateRes{
+	width:25px;
+	height:25px;
+	background:url(../images/relateRes.png) no-repeat;
+	float:left;
+	margin-top:5px;
+	margin-left:5px;
+	cursor:pointer
+}
+.viewRelateRes.wrongRes{
+	background-position:0 -25px;
+}
+.succRes{
+	background-position:0 0px;
+}
+.relateInfo li{
+	border-bottom:1px solid #ccc;
+	padding:10px 20px;
+	color:#333;
+	border-bottom:1px solid #ccc;
+}
+.relateCptName{
+	color:#1E9FFF;
+}
+.relateInfo li.failTips{
+	color:#f00;
+}
+.relateInfo li.succTips{
+	color:#1E9FFF;
 }

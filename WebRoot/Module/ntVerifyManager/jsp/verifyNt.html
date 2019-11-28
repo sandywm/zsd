@@ -97,7 +97,6 @@
 						}else if(zgzInp == ''){
 			        		layer.msg('请审核教师资格证', {time:2000});
 			        	}else{
-			        		alert(icardInp)
 			        		var field = {id:ntcId,checkICard:icardInp,checkXlz:degreeInp,checkZgz:zgzInp};
 			        		$.ajax({
 								type:'post',

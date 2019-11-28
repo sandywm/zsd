@@ -4,6 +4,7 @@
  */
 var noGradInfo = '',roleName='';//根据科目联动年级时用到 存在年级 清空 不存在有值 noGradInfo
 var currPage;//用于标识是否是当前页面
+var newEditType = 0;
 //自定义模块 
 layui.define(['form','table','relate'],function(exports){
 	var $ = layui.jquery,form=layui.form,table=layui.table,relate=layui.relate;
@@ -77,14 +78,15 @@ layui.define(['form','table','relate'],function(exports){
 			form.render();
     	},
 		//获取所有出版社列表
-		getEditionList : function(selObj){
+		getEditionList : function(selObj,opt){
 			layer.load('1');
 			var currIndex = 0;
+			opt == undefined ?  opt = 0 : opt = opt;
 			$.ajax({
 				type:'post',
 		        dataType:'json',
 		        url:'/common.do?action=getEditionData',
-		        data : {showStatus:0},
+		        data : {showStatus:0,opt:opt},
 		        success:function (json){
 		        	layer.closeAll("loading");
 		        	if(json['msg'] == 'success'){
@@ -110,6 +112,9 @@ layui.define(['form','table','relate'],function(exports){
 		    				nowEditName = json.data[0].ediName;//基础知识点必须在通用版下添加
 		    			}
 		    			$('#' + selObj).append(str_edit);
+		    			if(opt == 2){//生成其他版本模块
+		    				$('#editInp_new').val(2);
+		    			}
 		    			if(currPage == 'relatePage'){
 		    				$('#editionSel').attr('disabled',true).val(parent.editAll);
 		    			}else if(currPage == 'lexRelatePage' || currPage == 'sysHwPage'){
@@ -174,31 +179,50 @@ layui.define(['form','table','relate'],function(exports){
 		        		for(var i=0;i<json.gList.length;i++){
 		        			str_grad += '<option value="'+ json.gList[i].gsId +'">'+ json.gList[i].gName +'</option>';
 						}
-		        		$('#gradeSel').html(str_grad);
+		        		if(newEditType == 0){
+		        			$('#gradeSel').html(str_grad);
+		        		}else if(newEditType == 1){//生成其他版本模块中的其他版 生成年级列表
+		        			$('#gradeSel_new').html(str_grad);
+		        		}
 		        	}else if(json['result'] == 'noInfo'){
 		        		//layer.msg('暂无此科目对应的年级',{icon:5,anim:6,time:2000});
 		        		layer.msg('暂无此科目对应的年级',{time:1200});
 		        		noGradInfo = 'noGradInfo';
-		        		$('#gradeSel').html('');
+		        		if(newEditType == 0){
+		        			$('#gradeSel').html('');
+		        		}else if(newEditType == 1){//生成其他版本模块中的其他版 生成年级列表
+		        			$('#gradeSel_new').html('');
+		        		}
 		        	}
 		        	//当选择教材select存在时 选择学科需要重置教材select
-		        	if($('#eduColumeSel').length > 0 && $('#gradeInp').val() != ''){
-	        			$('#eduColumeInp').val('');
-						$('#eduColumeSel').html('<option value="">请选择教材</option>');
-						if(currPage == 'loreCataPage'){
-							//知识点目录管理 知识点管理里面清空章节信息
-							$('#chapterInp').val('');
-							$('#chapterSel').html('<option value="">请选择章节</option>');
-							_this.getLoreCataList('');
-						}else if(currPage == 'lorePage' || currPage == 'buffetPage' || currPage == 'sysHwPage' || currPage == 'teaHwPage'){
-							//加载根据章节获取知识点的列表
-							_this.getLoreList('');
-						}
-						if(currPage == 'chapterPage' || currPage == 'loreCataPage' || currPage == 'lorePage' || currPage == 'buffetPage' || currPage == 'relatePage' || currPage=='lexRelatePage' || currPage == 'sysHwPage' || currPage == 'teaHwPage'){
+		        	if(newEditType == 0){
+		        		if($('#eduColumeSel').length > 0 && $('#gradeInp').val() != ''){
+		        			$('#eduColumeInp').val('');
+							$('#eduColumeSel').html('<option value="">请选择教材</option>');
+							if(currPage == 'loreCataPage'){
+								//知识点目录管理 知识点管理里面清空章节信息
+								$('#chapterInp').val('');
+								$('#chapterSel').html('<option value="">请选择章节</option>');
+								_this.getLoreCataList('');
+							}else if(currPage == 'lorePage' || currPage == 'buffetPage' || currPage == 'sysHwPage' || currPage == 'teaHwPage'){
+								//加载根据章节获取知识点的列表
+								_this.getLoreList('');
+							}
+							if(currPage == 'chapterPage' || currPage == 'newEditPage' || currPage == 'loreCataPage' || currPage == 'lorePage' || currPage == 'buffetPage' || currPage == 'relatePage' || currPage=='lexRelatePage' || currPage == 'sysHwPage' || currPage == 'teaHwPage'){
+								_this.getChapterList('');
+							}
+		        		}
+			        	$('#gradeInp').val('');
+		        	}else if(newEditType == 1){
+		        		if($('#eduColumeSel_new').length > 0 && $('#gradeInp_new').val() != ''){
+		        			$('#eduColumeInp_new').val('');
+							$('#eduColumeSel_new').html('<option value="">请选择教材</option>');
+							
 							_this.getChapterList('');
-						}
-	        		}
-		        	$('#gradeInp').val('');
+		        		}
+			        	$('#gradeInp').val('');
+		        	}
+		        	
 		        	form.render();
 		        }
 			});
@@ -219,16 +243,26 @@ layui.define(['form','table','relate'],function(exports){
 						for(var i=0;i<json.eduList.length;i++){
 							strHtml += '<option value="'+ json.eduList[i].eduId +'">'+ json.eduList[i].eduColume +'</option>';
 						}
-						$('#eduColumeInp').val(json.eduList[0].eduId);//将教材第一个value赋给隐藏变量
-						$('#eduColumeSel').html(strHtml);
+						if(newEditType == 0){
+							$('#eduColumeInp').val(json.eduList[0].eduId);//将教材第一个value赋给隐藏变量
+							$('#eduColumeSel').html(strHtml);
+						}else if(newEditType == 1){
+							$('#eduColumeInp_new').val(json.eduList[0].eduId);//将教材第一个value赋给隐藏变量
+							$('#eduColumeSel_new').html(strHtml);
+						}
+						
 						form.render();
-						if(currPage == 'lorePage' || currPage == 'buffetPage' || currPage == 'loreCataPage' || currPage == 'chapterPage' || currPage == 'relatePage'||currPage=='lexRelatePage' || currPage == 'sysHwPage' || currPage == 'teaHwPage'){//不是关联知识点模块的统一加载章节列表
+						if(currPage == 'lorePage' || currPage == 'newEditPage' || currPage == 'buffetPage' || currPage == 'loreCataPage' || currPage == 'chapterPage' || currPage == 'relatePage'||currPage=='lexRelatePage' || currPage == 'sysHwPage' || currPage == 'teaHwPage'){//不是关联知识点模块的统一加载章节列表
 							if(currPage == 'relatePage'){
 								$('#eduColumeInp').val(_this.data.eduId);
 								$('#eduColumeSel').val(_this.data.eduId);
 								form.render();
 							}
-							_this.getChapterList($('#eduColumeInp').val());
+							if(newEditType == 0){
+								_this.getChapterList($('#eduColumeInp').val());
+							}else if(newEditType == 1){
+								_this.getChapterList($('#eduColumeInp_new').val());
+							}
 						}
 						if(currPage == 'chapterPage'){
 							$('.addBtnRt').show();
@@ -237,15 +271,21 @@ layui.define(['form','table','relate'],function(exports){
 							//每次选择你年级需要重新清空chaptId 因为教材信息已经清空
 							$('#chapterInp').val('');
 							_this.getLoreCataList('');
-						}else if(currPage == 'lorePage' || currPage == 'buffetPage' || currPage == 'sysHwPage' || currPage == 'teaHwPage'){
+						}else if(currPage == 'lorePage' || currPage == 'sysHwPage' || currPage == 'teaHwPage'){
 							$('.tipsTxt_lore').hide();
 							_this.getLoreList('');
 						}
 		        	}else if(json['result'] == 'noInfo'){
 		        		layer.msg('暂无教材信息',{time:1200});
-		        		$('#eduColumeInp').val('');
-						$('#eduColumeSel').html('<option value="">请选择教材</option>');
-						if(currPage == 'lorePage' || currPage == 'buffetPage' || currPage == 'loreCataPage' || currPage == 'chapterPage' || currPage == 'sysHwPage' || currPage == 'teaHwPage'){
+		        		if(newEditType == 0){
+		        			$('#eduColumeInp').val('');
+							$('#eduColumeSel').html('<option value="">请选择教材</option>');
+		        		}else if(newEditType == 1){
+		        			$('#eduColumeInp_new').val('');
+							$('#eduColumeSel_new').html('<option value="">请选择教材</option>');
+		        		}
+		        		
+						if(currPage == 'lorePage'|| currPage == 'newEditPage' ||  currPage == 'buffetPage' || currPage == 'loreCataPage' || currPage == 'chapterPage' || currPage == 'sysHwPage' || currPage == 'teaHwPage'){
 							_this.getChapterList('');
 						}
 						
@@ -371,6 +411,59 @@ layui.define(['form','table','relate'],function(exports){
     			});
     		}
     	},
+    	getLoreList_newEdit : function(cptId){
+    		var _this = this;
+    		$.ajax({
+				type:'post',
+		        dataType:'json',
+		        data:{cptId:cptId},
+		        url:'/lore.do?action=getPageLoreData',
+		        success:function (json){
+		        	layer.closeAll('loading');	
+		        	if(json.msg == 'success'){
+		        		var loreList = json.data;
+		        		_this.renderNewEditList(loreList);
+		        	}else if(json.msg == 'noInfo'){
+		        		$('#tyListData').html('暂无记录');
+		        	}
+		        }
+			});
+    	},
+    	//生成其它版本知识点对应章节列表
+    	renderNewEditList : function(list){
+    		var cptName = '';
+    		if(newEditType == 0){
+    			var str = '';
+    		}else if(newEditType == 1){
+    			var str = '<ul class="viewQtLoreUl">';
+    		}
+    		for(var i=0;i<list.length;i++){
+    			cptName = list[i].cptName;
+    			str += '<li id="leftLi'+ i +'">';
+    			if(newEditType == 0){
+    				str += '<span>'+ list[i].loreName +'</span>';
+        			str += '<a title="添加至其他版" onclick="addLore(this)" loreName="'+ list[i].loreName +'" loreId="'+ list[i].loreId +'" href="javascript:void(0)"></a>';
+    			}else if(newEditType == 1){
+    				str += '<span class="bigWid">'+ list[i].loreName +'</span>';
+    			}
+    			str += '</li>';
+    		}
+    		if(newEditType == 0){//通用版
+    			$('#tyListData').html(str);
+    		}else if(newEditType == 1){
+    			str += '</ul>';
+    			layer.open({
+					title:cptName,
+					type: 1,
+				  	area: ['550px', '450px'],
+				  	fixed: true, //不固定
+				  	maxmin: false,
+				  	shadeClose :true,
+				  	closeBtn : 1,
+				  	content: str
+				});
+    		}
+    	},
 		//获取章节列表 
 		getChapterList : function(eduId){
 			var url = '/chapter.do?action=getChapterData',
@@ -401,7 +494,7 @@ layui.define(['form','table','relate'],function(exports){
 						layer.closeAll('loading');
 					}
 				});
-			}else if(currPage == 'loreCataPage' || currPage == 'lorePage' || currPage == 'buffetPage' || currPage == 'relatePage' || currPage == 'lexRelatePage' || currPage == 'sysHwPage' || currPage == 'teaHwPage'){
+			}else if(currPage == 'loreCataPage' || currPage == 'newEditPage' || currPage == 'lorePage' || currPage == 'buffetPage' || currPage == 'relatePage' || currPage == 'lexRelatePage' || currPage == 'sysHwPage' || currPage == 'teaHwPage'){
 				var _this = this;
 				//知识点目录管理 01：生成章节select chapterSel
 				$.ajax({
@@ -416,12 +509,22 @@ layui.define(['form','table','relate'],function(exports){
 							for(var i=0;i<json.data.length;i++){
 								str_chapt += '<option value="'+ json.data[i].id +'">'+ json.data[i].cptName +'</option>';
 							}
-							$('#chapterSel').html(defOpt + str_chapt);
+							if(newEditType == 0){
+								$('#chapterSel').html(defOpt + str_chapt);
+							}else if(newEditType == 1){
+								$('#chapterSel_new').html(defOpt + str_chapt);
+							}
 							form.render();
 			        	}else if(json['msg'] == '暂无记录'){
 			        		//layer.msg('暂无教材信息');
-			        		$('#chapterInp').val('');
-							$('#chapterSel').html('<option value="">请选择章节</option>');
+			        		if(newEditType == 0){
+			        			$('#chapterInp').val('');
+								$('#chapterSel').html('<option value="">请选择章节</option>');
+			        		}else if(newEditType == 1){
+			        			$('#chapterInp_new').val('');
+								$('#chapterSel_new').html('<option value="">请选择章节</option>');
+			        		}
+			        		
 							form.render();
 			        	}
 			        }
@@ -535,6 +638,7 @@ layui.define(['form','table','relate'],function(exports){
 		var allValue = data.value,
 			value = data.value.split(':')[0],
 			currEditName = data.value.split(':')[1];
+		newEditType = 0;
 		/*value == '' ? $('#editInp').val('') : $('#editInp').val(value);*/
 		if(value == ''){//当前页面为教材管理
 			$('#editInp').val(0);
@@ -551,9 +655,23 @@ layui.define(['form','table','relate'],function(exports){
 			}
 		}
 	});
+    //其他版本模块中除去通用版
+    form.on('select(editionSel_new)', function(data){
+		var allValue = data.value,
+			value = data.value.split(':')[0],
+			currEditName = data.value.split(':')[1];
+		newEditType = 1;
+		$('#editInp_new').val(value);
+		if(infoByGsEdOpt == 'geteduC'){
+			var gsId = $('#gradeInp_new').val();
+			obj.getEduColumeByGsEdId(value, gsId);
+		}
+	});
+    
     //学科select事件
 	form.on('select(subjectSel)', function(data){
 		var value = data.value;
+		newEditType = 0;
 		//根据科目获取对应的年级信息
 		if(value != ''){
 			$('#subInp').val(value);
@@ -569,9 +687,29 @@ layui.define(['form','table','relate'],function(exports){
 			obj.getGradeBySubId(value);
 		}
 	});
+	//生成其他版本知识点 其他版本学科
+	form.on('select(subjectSel_new)', function(data){
+		var value = data.value;
+		newEditType = 1;
+		//根据科目获取对应的年级信息
+		if(value != ''){
+			$('#subInp_new').val(value);
+		}else{
+			$('#subInp_new').val('');
+		}
+		/*
+			infoBySubOpt:
+				notGet : 不需要获取年级信息(年级科目添加编辑)
+				getGradeOpt : 需要获取年级信息(教材添加编辑)
+		 */
+		if(infoBySubOpt == 'getGradeOpt'){
+			obj.getGradeBySubId(value);
+		}
+	});
 	//年级select事件
 	form.on('select(gradeSel)', function(data){
 		var value = data.value;
+		newEditType = 0;
 		if(value == ''){
 			if(currPage == 'chapterPage' || currPage == 'loreCataPage' || currPage == 'lorePage' || currPage == 'buffetPage' || currPage == 'relatePage' || currPage == 'lexRelatePage' || currPage == 'sysHwPage' || currPage == 'teaHwPage'){
 				if($('#gradeInp').val() != 0){
@@ -613,9 +751,36 @@ layui.define(['form','table','relate'],function(exports){
 		}
 		
 	});
+	//生成其他版本 模块
+	form.on('select(gradeSel_new)', function(data){
+		var value = data.value;
+		newEditType = 1;
+		if(value == ''){
+			if(infoByGsEdOpt == 'geteduC'){
+				$('#eduColumeInp_new').val('');
+				$('#eduColumeSel_new').html('<option value="">请选择教材</option>');
+				form.render();
+			}
+		}else{
+			$('#gradeInp_new').val(value);
+			//获取教材 
+			/*
+				infoByGsEdOpt:
+				 	geteduC:需要根据年级出版社获取教材信息(章节管理)
+				 	notGet ： 不需要(出版社编辑)
+			*/
+			if(infoByGsEdOpt == 'geteduC'){
+				var ediId = $('#editInp_new').val();
+				obj.getEduColumeByGsEdId(ediId, value);
+			}
+		}
+		
+	});
+	
 	//卷册select事件 切换教材
 	form.on('select(eduColumeSel)', function(data){
 		var value = data.value;
+		newEditType = 0;
 		if(value != ''){
 			$('#eduColumeInp').val(value);
 			if(currPage != 'relateManager'){
@@ -634,10 +799,22 @@ layui.define(['form','table','relate'],function(exports){
 			}
 		}
 	});
+	
+	//卷册select事件 切换教材 其他版本
+	form.on('select(eduColumeSel_new)', function(data){
+		var value = data.value;
+		newEditType = 1;
+		if(value != ''){
+			$('#eduColumeInp_new').val(value);
+			obj.getChapterList(value);
+		}
+	});
+	
 	//章节select 切换章节
 	form.on('select(chapterSel)', function(data){
 		var value = data.value;
 		$('.tipsTxt_lore').hide();
+		newEditType = 0;
 		if(value != ''){
 			$('#chapterInp').val(value);
 		}else{
@@ -645,14 +822,31 @@ layui.define(['form','table','relate'],function(exports){
 		}
 		if(currPage == 'loreCataPage'){
 			$('#addLoreCata').show();
-			//$('#zsdCodeBtn').show();
+			$('#zsdCodeBtn').show();
 			//加载章节对应知识点目录
 			obj.getLoreCataList(value);
 		}else if(currPage == 'lorePage' || currPage == 'buffetPage' || currPage == 'relatePage' || currPage == 'lexRelatePage' || currPage == 'sysHwPage' || currPage == 'teaHwPage'){
 			//加载根据章节获取知识点的列表
 			obj.getLoreList(value);
+		}else if(currPage == 'newEditPage'){
+			obj.getLoreList_newEdit(value);
 		}
+		//currPage == 'newEditPage'
 	});
+	//章节select 切换章节
+	form.on('select(chapterSel_new)', function(data){
+		var value = data.value;
+		newEditType = 1;
+		if(value != ''){
+			$('#chapterInp_new').val(value);
+		}else{
+			$('#chapterInp_new').val('');
+		}
+		//obj.getLoreList_newEdit(value);
+		//加载根据章节获取知识点的列表
+		//obj.getLoreList(value);
+	});
+	
 	//显示状态select
 	form.on('select(showStaSel)', function(data){
 		var value = data.value;

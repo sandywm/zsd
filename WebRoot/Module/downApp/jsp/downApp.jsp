@@ -80,7 +80,7 @@
 				},
 				bindEvent : function(){
 					var _this = this;
-					$('.downBtn').on('touchend',function(){
+					$('.downBtn').on('click',function(){
 						_this.checkUserAgent();
 					});
 				},
