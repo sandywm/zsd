@@ -144,6 +144,7 @@
 								layer.msg('请选择其他版章节');
 								return;
 							}
+							newEditType = 1;
 							baseDataMet.getLoreList_newEdit(chapterInp_newVal);
 						});
 						$('#save').on('click',function(){
