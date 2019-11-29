@@ -86,9 +86,9 @@ public class LoreRelateLogAction extends DispatchAction {
 				String schoolTypeChi = "";
 				if(schoolType.equals(1)){
 					schoolTypeChi = "小学";
-				}else if(schoolType.equals(1)){
+				}else if(schoolType.equals(2)){
 					schoolTypeChi = "初中";
-				}else if(schoolType.equals(1)){
+				}else if(schoolType.equals(3)){
 					schoolTypeChi = "高中";
 				}
 				map_d.put("schoolType", schoolTypeChi);//学段

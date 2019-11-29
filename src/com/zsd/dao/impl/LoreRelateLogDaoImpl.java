@@ -58,6 +58,7 @@ public class LoreRelateLogDaoImpl implements LoreRelateLogDao{
 		if(relateStatus >= 0){
 			hql += " and lrl.relateStatus = "+relateStatus;
 		}
+		hql += " order by lrl.id desc";
 		int offset = (pageNo - 1) * pageSize;
 		if (offset < 0) {
 			offset = 0;

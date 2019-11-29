@@ -1755,7 +1755,7 @@ public class LoreAction extends DispatchAction {
 					newLoreIdArr[i] = newLoreId;
 					tyLoreIdArr[i] = quoteLoreId;
 					tyLoreNameArr[i] = lore_ty.getLoreName();
-					newLoreCodeArr[i] = loreCode;
+					newLoreCodeArr[i] = loreCode.replace("-", "");
 					newLoreNameArr[i] = newLoreCatalogName;
 				}
 				for(Integer j = 0 ; j < newLoreIdArr.length ; j++){//循环新增加的新版本知识点
@@ -1790,8 +1790,8 @@ public class LoreAction extends DispatchAction {
 						}
 					}else{
 						//通用版没有关联知识点，无法进行当前出版社下的关联
-						list_result.add("0&wmd&"+ediName+"下["+newLoreNameArr[j]+"]知识点关联失败!失败原因：通用版知识点["+tyLoreNameArr[j]+"]未设置关联");
-						lrlm.addLRL(newLoreIdArr[j], "add", 0, ediName+"下["+newLoreNameArr[j]+"]知识点关联失败!失败原因：通用版知识点["+tyLoreNameArr[j]+"]未设置关联", CommonTools.getLoginAccount(request),lrId);
+						list_result.add("1&wmd&"+ediName+"下["+newLoreNameArr[j]+"]知识点关联异常!异常原因：通用版知识点["+tyLoreNameArr[j]+"]未设置关联");
+						lrlm.addLRL(newLoreIdArr[j], "add", 1, ediName+"下["+newLoreNameArr[j]+"]知识点关联异常!异常原因：通用版知识点["+tyLoreNameArr[j]+"]未设置关联", CommonTools.getLoginAccount(request),lrId);
 					}
 				}
 			}
