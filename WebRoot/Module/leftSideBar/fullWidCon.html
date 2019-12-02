@@ -48,7 +48,7 @@
 		</div>
 		<!-- 选择出版社 -->
 		<div class="selEdiWrap">
-			<p class="currEditTxt">当前教材版本：<span id="currEdiName" class="noSel"></span></p>
+			<p class="currEditTxt">当前教材版本：<span id="currEdiName" class="noSel"></span><span id="currLoreName"></span></p>
 			<div class="ediSel">
 				<p class="choiceTxt fl">选择出版社</p>
 				<div class="ediName fl">
@@ -176,7 +176,6 @@
 						timeout:10000,
 						success:function(json){
 							$('.loading').hide();
-							console.log(json)
 							if(json.result == 'success'){
 								var studyList = json.studyList;
 								_this.renderSubjectHtml(studyList);
@@ -274,11 +273,11 @@
 							strLeft += '<li class="active" cptId="'+ list[i].cptId +'">';
 							for(var j=0;j<list[0].loreList.length;j++){
 								if(list[0].loreList[j].studyStatus == 0){//0:未学习 1未通过 2:已经掌握
-									strRight += '<li class="noLearnSta">';
+									strRight += '<li class="noLearnSta" loreName="'+ list[0].loreList[j].loreName +'" studyStatus="'+ list[0].loreList[j].studyStatus +'" loreId="'+ list[0].loreList[j].loreId +'" studyLogId="'+ list[0].loreList[j].studyLogId +'">';
 								}else if(list[0].loreList[j].studyStatus == 1){
-									strRight += '<li class="notGetSta">';
+									strRight += '<li class="notGetSta" loreName="'+ list[0].loreList[j].loreName +'" studyStatus="'+ list[0].loreList[j].studyStatus +'" loreId="'+ list[0].loreList[j].loreId +'" studyLogId="'+ list[0].loreList[j].studyLogId +'">';
 								}else{
-									strRight += '<li class="hasGetSta">';
+									strRight += '<li class="hasGetSta" loreName="'+ list[0].loreList[j].loreName +'" studyStatus="'+ list[0].loreList[j].studyStatus +'" loreId="'+ list[0].loreList[j].loreId +'" studyLogId="'+ list[0].loreList[j].studyLogId +'">';
 								}
 								strRight += '<i class="iconfont layui-extend-zhangjie"></i>';
 								strRight += '<span>'+ list[0].loreList[j].loreName +'</span>';
@@ -294,6 +293,7 @@
 					$('.leftChaptName').html(strLeft);
 					$('#listLoreUl').html(strRight);
 					_this.getLoreList();
+					_this.goStudyMap();
 				},
 				//生成知识点根据章节
 				getLoreList : function(){
@@ -329,11 +329,11 @@
 					var str = ''; 
 					for(var i=0;i<loreList.length;i++){
 						if(loreList[i].studyStatus == 0){//0:未学习 1未通过 2:已经掌握
-							str += '<li class="noLearnSta">';
+							str += '<li class="noLearnSta" loreName="'+ loreList[i].loreName +'" studyStatus="'+ loreList[i].studyStatus +'" loreId="'+ loreList[i].loreId +'" studyLogId="'+ loreList[i].studyLogId +'">';
 						}else if(loreList[i].studyStatus == 1){
-							str += '<li class="notGetSta">';
+							str += '<li class="notGetSta" loreName="'+ loreList[i].loreName +'" studyStatus="'+ loreList[i].studyStatus +'" loreId="'+ loreList[i].loreId +'" studyLogId="'+ loreList[i].studyLogId +'">';
 						}else{
-							str += '<li class="hasGetSta">';
+							str += '<li class="hasGetSta" loreName="'+ loreList[i].loreName +'" studyStatus="'+ loreList[i].studyStatus +'" loreId="'+ loreList[i].loreId +'" studyLogId="'+ loreList[i].studyLogId +'">';
 						}
 						str += '<i class="iconfont layui-extend-zhangjie"></i>';
 						str += '<span>'+ loreList[i].loreName +'</span>';
@@ -350,6 +350,131 @@
 						str += '</li>';*/
 					}
 					$('#listLoreUl').html(str);
+					this.goStudyMap();
+				},
+				//检测知识点完成次数 一天只能完成一次
+				checkCurrentLore : function(studyLogId){
+					var flag = false;
+					$.ajax({
+						url : '/onlineStudy.do?action=checkCurrentLore',
+						data:{studyLogId:studyLogId}, 
+						dataType:'json',
+						type:'post',
+						async:false,
+						timeout:10000,
+						success:function(json){
+							if(json.studyFlag == true){
+								flag = true;
+							}else if(json.studyFlag == false){
+								flag = false;
+							}
+						},
+						error:function(xhr,type,errorThrown){
+							//plus.nativeUI.toast('服务器异常');
+						}
+					});
+					return flag;
+				},
+				//map页面加载奖励信息
+				loadTaskAwardInfo : function(loreId,studyLogId){
+					var _this = this;
+					$.ajax({
+						url : '/onlineStudy.do?action=getStudyTaskInfo',
+						data:{loreId:loreId,studyLogId:studyLogId,logType:1}, 
+						dataType:'json',
+						type:'post',
+						timeout:10000,
+						success:function(json){
+							console.log(json)
+							if(json.result == 'success'){ 
+								$('.noData_task').remove();
+								_this.renderTaskAwardList(json.taskList);
+							}else if(json.result == 'noInfo'){
+								$('#listTaskUl').html('');
+								$('.listTask').append('<div class="noData_task"><i class="iconfont layui-extend-zanwujilu"></i><p>暂无金币奖励记录</p></div>');
+							}
+						}
+					});
+				},
+				renderTaskAwardList : function(list){
+					var str = '';
+					for(var i=0;i<list.length;i++){
+						str += '<li>';
+						str += '<span class="taskName ellip">'+ list[i].taskName +'</span>';
+						str += '<span class="goldenNum">+'+ list[i].coin +'</span>';
+						str += '</li>';
+					}
+					$('#listTaskUl').html(str);
+				},
+				goStudyMap : function(){
+					var _this = this;
+					$('#listLoreUl li').on('click',function(){
+						var loreId = $(this).attr('loreId'),
+							loreName = $(this).attr('loreName'),
+							studyLogId = $(this).attr('studyLogId'),
+							studyStatus = $(this).attr('studyStatus'),flag = false;
+						if(studyStatus == 2){
+							if( !_this.checkCurrentLore(studyLogId) ){//当天已经完成，不能再做
+								alert('一个知识点一天只能完成一次');
+								//plus.nativeUI.toast('一个知识点一天只能完成一次');
+								flag = false;
+							}else{
+								flag = true;
+							}
+						}else{
+							flag = true;	
+						}
+						if(flag){
+							$('.loading').show();
+							$('.chaptList').hide();
+							$('.leftChaptName').html('');
+							$('#listLoreUl').html('');
+							$('#currChaptName').html('');
+							$('.studyMap').show();
+							$('#currLoreName').html('—' + loreName);
+							_this.loadTaskAwardInfo(loreId,studyLogId);
+							$.ajax({
+								url : '/onlineStudy.do?action=getStudyMapData',
+								data:{loreId:loreId,studyLogId:studyLogId,logType:1}, 
+								dataType:'json',
+								type:'post',
+								timeout:10000,
+								success:function(json){
+									console.log(json)
+									$('.loading').hide();
+									if(json.result == 'success'){ 
+										$('.currTaskTit').html('当前任务  <span>' + json.loreTaskName + '</span><em>(第'+ json.task +'个任务)</em>');
+										$('.golden').html(json.coin);
+										$('.totalLevel').html(json.stepCount);
+										$('.totalLevel').html(json.loreCount);
+										/*h('#currTaskName').html('任务' + json.task + '：' + json.loreTaskName);
+										h('#goldenNum').html(json.coin); 
+										h('#btnVal').html(json.buttonValue);
+										h('.loreName').html(json.loreName);
+										h('.totalLevel').html('共' + json.stepCount + '级');
+										h('.totalLoreNum').html('共' + json.loreCount + '个知识点');
+										_this.data.loreName = json.loreName;
+										_this.data.loreType = json.loreType;
+										_this.data.nextLoreId = json.nextLoreIdArray;
+										_this.data.loreTaskName = json.loreTaskName;
+										_this.data.loreId = json.loreId;
+										_this.data.studyLogId = json.studyLogId;
+										_this.data.isFinish = json.isFinish;
+										_this.data.pathType = json.pathType;*/
+									}else if(json.result == 'inUseError'){
+										//plus.nativeUI.toast('当前知识点无效,不能做题');
+									}else if(json.result == 'error'){
+										//plus.nativeUI.toast('获取当前任务信息失败');
+									}
+								},
+								error:function(xhr,type,errorThrown){
+									//app.showToast(2);
+									//plus.nativeUI.toast('服务器异常');
+								}
+							});
+							
+						}
+					});
 				},
 				//创建出版社
 				createEdiSel : function(list){
@@ -366,6 +491,7 @@
 						ediStr += '<a href="javascript:void(0)">'+ list[i].ediName +'</a></li>';
 					}
 					$('#ediListUl').html(ediStr);
+					$('#currLoreName').html('');
 				},
 				//创建学科
 				createSubSel : function(list){
