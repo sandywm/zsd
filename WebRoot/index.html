@@ -242,6 +242,12 @@
 		<script src="/plugins/jquery/jquery.DB_tabMotionBanner.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="/plugins/frame/js/comMethod.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
+			document.getElementById('appIcon').onmouseover = function(){
+				document.getElementById('appWrap').style.display = 'block';
+			};
+			document.getElementById('appIcon').onmouseout = function(){
+				document.getElementById('appWrap').style.display = 'none';
+			};
 			$('.DB_imgSet li').on('click',function(){
 				goLogin();
 			});

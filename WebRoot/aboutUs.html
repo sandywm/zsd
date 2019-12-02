@@ -148,6 +148,12 @@
 			var latitude = 34.825313;
 			var strTit = "<strong class='mapAddTit'>郑州乐恩网络科技有限公司</strong>";
 			var strCon = "<p class='mapAddCon'>地址：河南省郑州市高新区迎春路52号7号楼B座2206房</p>";
+			document.getElementById('appIcon').onmouseover = function(){
+				document.getElementById('appWrap').style.display = 'block';
+			};
+			document.getElementById('appIcon').onmouseout = function(){
+				document.getElementById('appWrap').style.display = 'none';
+			};
 			function initLoadMapAdd(){
 				var map = new BMap.Map("mapContainer");
 				  map.enableScrollWheelZoom();

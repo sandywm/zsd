@@ -1,0 +1,56 @@
+.layui-anim {
+	-webkit-animation-duration:.3s;
+	animation-duration:.3s;
+	-webkit-animation-fill-mode:both;
+	animation-fill-mode:both
+}
+@-webkit-keyframes layui-upbit {
+	from {
+	-webkit-transform:translate3d(0,30px,0);
+	opacity:.3
+}
+to {
+	-webkit-transform:translate3d(0,0,0);
+	opacity:1
+}
+}
+@keyframes layui-upbit {
+	from {
+	transform:translate3d(0,30px,0);
+	opacity:.3
+}
+to {
+	transform:translate3d(0,0,0);
+	opacity:1
+}
+}
+.layui-anim-upbit {
+	-webkit-animation-name:layui-upbit;
+	animation-name:layui-upbit
+}
+
+.layui-anim-scale {
+	-webkit-animation-name:layui-scale;
+	animation-name:layui-scale
+}
+@-webkit-keyframes layui-scale {
+	0% {
+		opacity:.3;
+		-webkit-transform:scale(.5)
+	}
+	100% {
+		opacity:1;
+		-webkit-transform:scale(1)
+	}
+	}@keyframes layui-scale {
+		0% {
+		opacity:.3;
+		-ms-transform:scale(.5);
+		transform:scale(.5)
+	}
+	100% {
+		opacity:1;
+		-ms-transform:scale(1);
+		transform:scale(1)
+	}
+}

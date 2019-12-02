@@ -71,6 +71,7 @@
     <action path="/onlineStudy" parameter="action" scope="request"  type="com.zsd.action.onlineStudy.OnlineStudyAction">
       <forward name="studyPage" path="/Module/studyOnline/jsp/studyOnline.jsp"></forward><!-- 在线学习 -->
       <forward name="cptPage" path="/Module/studyOnline/jsp/selChapterList.jsp"></forward><!-- 选择章节 -->
+      <forward name="studyMapPage" path="/Module/studyOnline/jsp/studyMap.jsp"></forward><!-- map页面 -->
     </action>
     <!-- 网络老师个人中心证件上传-->
     <action path="/uploadCert" parameter="action" scope="request" type="com.zsd.action.nt.UploadCert">

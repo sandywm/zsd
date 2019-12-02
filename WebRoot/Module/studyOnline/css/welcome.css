@@ -247,7 +247,6 @@
 .studyMap{
 	background:#fff;
 	margin:20px 0;
-	display:none;
 }
 .fourStep{
 	width:100%;
@@ -328,6 +327,7 @@
 	width:745px;
 	height:400px;
 	float:left;
+	position:relative;
 }
 .currTaskTit{
 	height:44px;
@@ -420,4 +420,115 @@
 }
 .studyBtn:hover{
 	opacity:.8;
+}
+.backBtn{
+	height:24px;
+	line-height:24px;
+	position:absolute;
+	right:10px;
+	top:14px;
+	color:#999;
+}
+.backBtn span{
+	float:left;
+}
+.backBtn i{
+	float:left;
+	font-size:18px;
+	margin-right:2px;
+}
+.backBtn:hover{
+	color:#4d47f1;
+}
+.popWin{
+	width:752px;
+	height:588px;
+	position:fixed;
+	left:50%;
+	margin-left:-376px;
+	top:50%;
+	margin-top:-294px;
+	z-index:1000;
+	display:none;
+}
+.popWinTop{
+	height:60px;
+	line-height:60px;
+	background:#fff;
+	position:relative;
+	box-shadow:0 3px 3px rgba(0,0,0,.1);
+	z-index:2;
+	position:relative;
+}
+.popWinTop h2,
+.popWinTop p{
+	float:left;
+}
+.popWinTop h2{
+	margin:0 20px;
+	font-size:22px;
+	color:#4d47f1;
+}
+.popWinTop p{
+	font-size:15px;
+	color:#666;
+}
+.popWinTop a{
+	width:60px;
+	height:60px;
+	float:right;
+	background:#e6e6e6;
+	text-align:center;
+	color:#fff;
+}
+.popWinTop a i{
+	font-size:24px;
+	font-weight:620;
+}
+.popWinTop a:hover{
+	color:#e10080;
+}
+.popWinCon{
+	position:absolute;
+	left:0;
+	right:0;
+	bottom:0;
+	top:60px;
+	display:none;
+	overflow:hidden;
+	background:#f2f2f2;
+}
+#popWinCon_dbzd,
+#popWinCon_zsqd,
+#popWinCon_jtsf{
+	padding:10px 20px;
+	overflow-y:auto;
+}
+.dbzdSmTit{
+	margin-bottom: 5px;
+    display: block;
+    color: #4d47f1;
+    font-size: 15px
+}
+.dbzdSmTit i{
+	font-size:14px;
+	margin-right:2px;
+}
+.listLoreStep{
+	padding: 10px;
+    margin-bottom: 10px;
+    background: #fff;
+}
+.listLoreStep strong.smTit {
+    font-size: 14px;
+    color: #333;
+    display: block;
+    margin-bottom: 5px;
+}
+.listLoreStep .con {
+    font-size: 14px;
+    color:#333;
+}
+.hasMargBot{
+	margin-bottom:10px;
 }
