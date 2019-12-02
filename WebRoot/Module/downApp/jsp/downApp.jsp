@@ -89,10 +89,11 @@
 					if(mobileInfo == "andriodWeb"){
 						window.location.href = "/Module/appDown/zsd.apk";
 					}else if(mobileInfo == "iphoneWeb"){
-						alert("暂未发布,请等待!");
+						alert("暂未发布,请等待1!");
 						//window.location.href = "https://itunes.apple.com/cn";
 					}else{
-						alert("暂未发布,请等待!");
+						//alert("暂未发布,请等待!");
+						window.location.href = "/Module/appDown/zsd.apk";
 					}
 				},
 				getSelfMobileInfo : function(){
