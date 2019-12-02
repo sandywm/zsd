@@ -154,8 +154,14 @@ public class BaseInfoAction extends DispatchAction {
 //		map.put("cityNo", cityNo);
 		String address = CommonTools.getSelfArea(CommonTools.getIpAddress(request));
 		
-		map.put("provName", address.split(":")[0]);
-		map.put("cityName", address.split(":")[1]);
+		String prov = "";
+		String city = "";
+		if(address.split(":").length == 2){
+			prov = address.split(":")[0];
+			city = address.split(":")[1];
+		}
+		map.put("provName", prov);
+		map.put("cityName", city);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}

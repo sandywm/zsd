@@ -283,8 +283,12 @@ public class LoginAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String lastLoginIp = CommonTools.getIpAddress(request); //最后登录Ip
 		String area = CommonTools.getSelfArea(lastLoginIp);
-		String prov = area.split(":")[0];
-		String city = area.split(":")[1];
+		String prov = "";
+		String city = "";
+		if(area.split(":").length == 2){
+			prov = area.split(":")[0];
+			city = area.split(":")[1];
+		}
 		UserManager uManager = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
 		SchoolManager scManager = (SchoolManager) AppFactory.instance(null).getApp(Constants.WEB_SCHOOL_INFO);
 		RoleUserInfoManager ruManager = (RoleUserInfoManager) AppFactory.instance(null).getApp(Constants.WEB_ROLE_USER_INFO);
