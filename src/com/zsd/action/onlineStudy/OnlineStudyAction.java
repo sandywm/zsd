@@ -1796,7 +1796,7 @@ public class OnlineStudyAction extends DispatchAction {
 		request.setAttribute("nextLoreIdArray", nextLoreIdArray);
 		String page = "";
 		if(pathType.equals("study")){
-			page = "studyPage";
+			page = "stepStudyPage";
 		}else{
 			page = "questionPage";
 		}
