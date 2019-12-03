@@ -428,7 +428,9 @@ public class OnlineStudyAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
 		Integer eduId = CommonTools.getFinalInteger("eduId", request);//教材编号
+		Integer cptId = CommonTools.getFinalInteger("cptId", request);//章节编号
 		request.setAttribute("eduId", eduId);
+		request.setAttribute("cptId", cptId);
 		return mapping.findForward("cptPage");
 	}
 	
