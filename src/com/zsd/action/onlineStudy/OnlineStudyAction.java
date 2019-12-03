@@ -759,7 +759,11 @@ public class OnlineStudyAction extends DispatchAction {
 						//其他都能打开
 					}
 				}else{
-					smm.addSM(stuId, loreId, 1);
+					if(loreTypeName.equals("知识讲解")){
+						smm.addSM(stuId, loreId, 1);
+					}else{
+						msg = "zsjjNotStart";
+					}
 				}
 				if(msg.equals("success")){
 					if(loreTypeName.equals("知识讲解")){
