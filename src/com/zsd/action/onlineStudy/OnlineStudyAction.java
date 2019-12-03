@@ -1267,6 +1267,7 @@ public class OnlineStudyAction extends DispatchAction {
 				map.put("access", access);
 				map.put("isFinish", isFinish);
 				map.put("eduId", lore.getChapter().getEducation().getId());
+				map.put("cptId", lore.getChapter().getId());
 			}
 		}
 		map.put("result", msg);
