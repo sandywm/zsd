@@ -4,6 +4,8 @@
 	<head>
 		<meta charset="UTF-8">
 		<link rel="stylesheet" type="text/css" href="/css/header.css"/>
+		<link href="/plugins/pace/pace-theme-flash.min.css" rel="stylesheet" type="text/css"/>
+		<script src="/plugins/pace/pace.min.js" type="text/javascript"></script>	
 	</head>
 	<body>
 		<div class="headerWrap">
@@ -21,9 +23,23 @@
 				</div>
 			</div>
 		</div>
-		<script src="/plugins/layui/layui.js"></script>
+		<div class="layer"></div>
+		<div class="logOutPopWin layui-anim layui-anim-scale">
+			<div class="topPopWin">
+				<p>退出系统提示</p>
+				<a class="closeLogOut" href="javascript:void(0)">
+					<i class="iconfont layui-extend-guanbi"></i>
+				</a>
+			</div>
+			<div class="midPopWin">确认退出系统么？</div>
+			<div class="botPopWin clearfix">
+				<a class="cancel" href="javascript:void(0)">取消</a>
+				<a class="sureLogOut" href="javascript:void(0)">确定</a>
+			</div>
+		</div>
+		<script src="/plugins/jquery/jquery.min.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
-			layui.use(['layer'],function(){
+			/*layui.use(['layer'],function(){
 				var layer = layui.layer;
 				$('.logOutBtn').on('click',function(){
 					layer.confirm('确认退出系统么？', {
@@ -34,27 +50,45 @@
 						window.location.href = "login.do?action=loginOut";
 					});
 				});
-				function getUnReadConut(){
-					$.ajax({
-						url : '/email.do?action=getUnReadCount',
-						dataType:'json',
-						type:'post', 
-						timeout:10000,
-						success:function(json){
-							if(json.result == 'success'){
-								if(json.unReadeCount > 0){
-									$('.msgNum').show().html(json.unReadeCount);
-								}else{
-									$('.msgNum').hide().html('');
-								}
-							}else if(json.result == 'error'){
-								//mui.toast('服务器错误');
-							}
-						}
-					});
-				}
-				getUnReadConut();
+				
+			});*/
+			$('.logOutBtn').on('click',function(){
+				$('.layer').show();
+				$('.logOutPopWin').show();
 			});
+			$('.sureLogOut').on('click',function(){
+				window.location.href = 'login.do?action=loginOut';
+			});
+			$('.cancel').on('click',function(){
+				cancelLogOut();
+			});
+			$('.closeLogOut').on('click',function(){
+				cancelLogOut();
+			});
+			function cancelLogOut(){
+				$('.layer').hide();
+				$('.logOutPopWin').hide();
+			}
+			function getUnReadConut(){
+				$.ajax({						
+					url : '/email.do?action=getUnReadCount',
+					dataType:'json',
+					type:'post', 
+					timeout:10000,
+					success:function(json){
+						if(json.result == 'success'){
+							if(json.unReadeCount > 0){
+								$('.msgNum').show().html(json.unReadeCount);
+							}else{
+								$('.msgNum').hide().html('');
+							}
+						}else if(json.result == 'error'){
+							//mui.toast('服务器错误');
+						}
+					}
+				});
+			}
+			getUnReadConut();
 		</script>
 	</body>
 </html>

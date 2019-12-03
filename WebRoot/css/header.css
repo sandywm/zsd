@@ -181,6 +181,83 @@ body{
 	width:160px;
 	margin-bottom:5px;
 }
+/* logOutPopWin */
+.logOutPopWin{
+	width:260px;
+	height:152px;
+	background:#fff;
+	position:fixed;
+	left:50%;
+	margin-left:-130px;
+	top:50%;
+	margin-top:-76px;
+	z-index:1000;
+	display:none;
+}
+.topPopWin{
+	height:42px;
+	line-height:42px;
+	position:relative;
+	background:#4d47f1;
+	color:#fff;
+}
+.topPopWin p{
+	float:left;
+	margin-left:20px;
+	font-size:15px;
+}
+.topPopWin a{
+	width:42px;
+	height:42px;
+	position:absolute;
+	right:0;
+	top:0;
+	text-align:center;
+}
+.topPopWin a i{
+	color:#fff;
+}
+.topPopWin a:hover{
+	background:#e10080;
+}
+.midPopWin{
+	position: relative;
+    padding: 20px;
+    line-height: 24px;
+    word-break: break-all;
+    overflow: hidden;
+    font-size: 14px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+.botPopWin{
+	padding: 0 15px 12px;
+}
+.botPopWin a{
+	height: 28px;
+    line-height: 28px;
+    margin: 5px 5px 0;
+    padding: 0 15px;
+    border: 1px solid #dedede;
+    background-color: #fff;
+    color: #333;
+    border-radius: 2px;
+    cursor: pointer;
+    text-decoration: none;
+    display:block;
+    float:right;
+}
+.botPopWin a.sureLogOut{
+	background:#4d47f1;
+	border:1px solid #4d47f1;
+	color:#fff;
+}
+
+
+
+
+
+
 .layui-layer-molv .layui-layer-title{background:#4d47f1 !important;}
 .layui-layer-molv .layui-layer-btn a{background:#4d47f1 !important;border-color:#4d47f1 !important; }
 .layui-layer-molv .layui-layer-btn .layui-layer-btn1{background:none !important;border-color:#ccc !important;}

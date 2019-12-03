@@ -7,10 +7,6 @@
 	<meta http-equiv="cache-control" content="no-cache"> 
 	<meta http-equiv="keywords" content="知识典在线学习">
 	<meta http-equiv="description" content="知识典在线学习">
-	<link rel="stylesheet" type="text/css" href="/css/resetPC.css"/>
-	<link rel="stylesheet" type="text/css" href="/Module/studyOnline/css/welcome.css"/>
-	<link href="/plugins/pace/pace-theme-flash.min.css" rel="stylesheet" type="text/css"/>
-	<script src="/plugins/pace/pace.min.js" type="text/javascript"></script>	
 	</head>
 	<body>
 		<%@include file="/Module/leftSideBar/loading.html"%>
