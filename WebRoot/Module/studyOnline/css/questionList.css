@@ -71,7 +71,8 @@ body{
 .sideQueCard{
 	width:130px;
 	position:absolute;
-	left:-131px;
+	/*left:-131px;*/
+	left:0;
 	top:30px;
 	bottom:0;
 	right:0;
@@ -153,6 +154,7 @@ body{
 	font-size:14px;
 	text-align:center;
 	font-weight:bold;
+	display:none;
 }
 .packUpBtn{
 	width:24px;
@@ -162,7 +164,6 @@ body{
 	right:-24px;
 	top:50%;
 	margin-top:-43px;
-	display:none;
 }
 .queList{
 	position:absolute;
@@ -170,8 +171,13 @@ body{
 	right:0;
 	top:0;
 	bottom:0;
-	background:pink;
 	padding:30px;
+	overflow:auto;
+}
+.queList li{
+	display:none;
+	opacity:0;
+	filter:alpha(opacity=0);
 }
 .queNumType{
 	height:40px;
@@ -182,11 +188,253 @@ body{
 }
 .queNumType span.queNumSpan{
 	margin-right:2px;
+	font-weight:bold;
 }
 .queSub{
-	font-size:15px;
+	font-size:16px;
 	color:#333;
+	margin-bottom:20px;
+	padding:0 10px;
 }
 .queSub p{
 	margin-bottom:10px;
 }
+.queOpt{
+	margin-bottom:15px;
+	font-size:15px;
+	color:#333;
+	padding:0 10px;
+}
+.queSub img,
+.queOpt img{
+	max-width:100%;
+}
+.queAnsOptWrap{
+	margin-top:20px;
+}
+.queAnsOpt{
+	padding:0 10px;
+	font-size:15px;
+	color:#333;
+	height:35px;
+	line-height:35px;
+	margin-bottom:10px;
+}
+.queAnsOpt em,
+.tkAndWdOpt em{
+	font-style:normal;
+	float:left;
+	font-size:16px;
+}
+.tkAndWdOpt em{
+	font-size:15px;
+}
+.queAnsOpt span.queAnsTit,
+.tkAndWdOpt span.queAnsTit,
+.queAnsOpt label,
+.tkAndWdOpt label{
+	float:left;
+}
+.queAnsOpt label,
+.tkAndWdOpt label{
+	height:100%;
+	padding:0 5px;
+	position:relative;
+	margin-right:10px;
+}
+.queAnsOpt label input,
+.tkAndWdOpt label input{
+	width:100%;
+	height:100%;
+	position:absolute;
+	left:0;
+	top:0;
+	opacity:0;
+	filter:alpha(opacity=0);
+	cursor:pointer;
+	z-index:2;
+}
+.queAnsOpt label span,
+.tkAndWdOpt label span{
+	width:16px;
+	height:16px;
+	border:2px solid #ccc;
+	display:block;
+	margin:6px 0 0 6px;
+	position:relative;
+	z-index:1;
+	float:left;
+}
+.queAnsOpt label span.radiusSpan,
+.tkAndWdOpt label span.radiusSpan{
+	width:18px;
+	height:18px;
+	border-radius:50%;
+}
+.queAnsOpt label span i,
+.tkAndWdOpt label span i{
+	position:absolute;
+	left:1px;
+	top:-8px;
+	font-weight:bold;
+	color:#fff;
+}
+.queAnsOpt label span.squareSpa{
+	margin:8px 0 0 6px;
+}
+.queAnsOpt label span.squareSpa i{
+	left:0px;
+	top:-9px;
+}
+.queAnsOpt label.active em,
+.tkAndWdOpt label.active em{
+	font-weight:bold;
+}
+.queAnsOpt label.active span,
+.tkAndWdOpt label.active span{
+	border:2px solid #4d47f1;
+	background:#4d47f1;
+}
+.myAnsWrap{
+	margin-top:20px;
+	padding:0 10px;
+	height:35px;
+	line-height:35px;
+	font-size:15px;
+	color:#333;
+	display:none;
+}
+.myAnsWrap span,
+.myAnsWrap p,
+.myAnsWrap i,
+.tkAndWdInfo i,
+.tkAndWdInfo p{
+	float:left;
+}
+.myAnsWrap p{
+	font-size:16px;
+	font-weight:bold;
+	margin-right:5px;
+}
+.myAnsWrap p.rightAns,
+.myAnsWrap i.rightAnsIcon{
+	color:#28c8c6;
+}
+.myAnsWrap p.errAns,
+.myAnsWrap i.errAnsIcon{
+	color:#e10080;
+}
+.myAnsWrap i{
+	font-size:18px;
+	font-weight:bold;
+}
+.myAnsWrap i.layui-extend-guanbi{
+	font-size:14px;
+	margin-top:1px;
+}
+.tkAndWdQue{
+	padding:0 10px;
+	margin-top:20px;
+}
+.tkAndWdInfo{
+	height:35px;
+	line-height:35px;
+	font-size:14px;
+	color:#fb4aaf;
+	display:none;
+}
+.tkAndWdInfo i{
+	font-size:15px;
+}
+.tkAndWdOpt{
+	font-size:15px;
+	color:#333;
+	height:35px;
+	line-height:35px;
+	display:none;
+}
+.noticeTxt{
+	float:left;
+	font-size:14px;
+	color:#fb4aaf;
+}
+.noticeTxt i{
+	font-size:14px;
+}
+.queBtnWrap{
+	height:45px;
+	margin-top:60px;
+	padding:0 10px;
+}
+.queBtnWrap a{
+	width:160px;
+	height:100%;
+	line-height:45px;
+	float:right;
+	background:#4d47f1;
+	text-align:center;
+	font-size:18px;
+	color:#fff;
+}
+.queBtnWrap a:hover{
+	opacity:.8;
+	filter:alpha(opacity=80);
+}
+.rightErrTip{
+	width:360px;
+	height:100px;
+	background:#f2f2f2;
+	position:fixed;
+	left:50%;
+	margin-left:-180px;
+	top:50%;
+	margin-top:-50px;
+	box-shadow:0 0 5px rgba(0,0,0,.5);
+	border-radius:6px;
+	display:none;
+	opacity:0;
+	fliter:alpha(opacity=0);
+}
+.rightErrImg{
+	width:74px;
+	height:80px;
+	float:left;
+	margin:10px 30px 0 10px;
+}
+.rightErrImg img{
+	width:100%;
+	height:100%;
+}
+.rightErrTxt{
+	width:225px;
+	float:left;
+}
+.rightErrTxt p.infoTit{
+	width:100%;
+	font-size:16px;
+	float:left;
+	margin:20px 0 5px 0;
+}
+.rightErrTxt p.infoTit i,
+.rightErrTxt p.infoTit span{
+	float:left;
+}
+.rightErrTxt p.infoTit i{
+	margin:0px 5px 0 0;
+	font-size:18px;
+	font-weight:bold;
+}
+.rightErrTxt p.infoTit.rightInfoTit{
+	color:#28c8c6;
+}
+.rightErrTxt p.infoTit.errInfoTit{
+	color:#e10080;
+}
+.infoCon{
+	width:100%;
+	display:block;
+	font-size:14px;
+	color:#666;
+	float:left;
+}
+
