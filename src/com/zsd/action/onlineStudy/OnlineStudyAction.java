@@ -1790,10 +1790,12 @@ public class OnlineStudyAction extends DispatchAction {
 		String pathType = CommonTools.getFinalStr("pathType", request);//路径类型(diagnosis,study)
 		String loreType = Transcode.unescape_new1("loreType", request);
 		String nextLoreIdArray = CommonTools.getFinalStr("nextLoreIdArray",request);
+		String loreTaskName = Transcode.unescape_new1("loreTaskName", request);
 		request.setAttribute("loreId", loreId);
 		request.setAttribute("studyLogId", studyLogId);
 		request.setAttribute("loreType", loreType);
 		request.setAttribute("nextLoreIdArray", nextLoreIdArray);
+		request.setAttribute("loreTaskName", loreTaskName);
 		String page = "";
 		if(pathType.equals("study")){
 			page = "stepStudyPage";
