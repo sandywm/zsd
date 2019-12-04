@@ -109,9 +109,6 @@ public class Transcode {
     	if(src.equals("null")){
     		return "";
     	}else{
-    		if(CommonTools.getCilentInfo_new(request).equals("pc")){
-    			return Transcode.MyTranscodeUTF(src);//任务名称
-    		}
     		Integer inputStrLength = src.length();
     		StringBuffer tmp = new StringBuffer();  
             tmp.ensureCapacity(inputStrLength);  

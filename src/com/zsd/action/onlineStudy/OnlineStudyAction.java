@@ -1788,9 +1788,9 @@ public class OnlineStudyAction extends DispatchAction {
 		Integer loreId = CommonTools.getFinalInteger("loreId", request);
 		Integer studyLogId = CommonTools.getFinalInteger("studyLogId", request);
 		String pathType = CommonTools.getFinalStr("pathType", request);//路径类型(diagnosis,study)
-		String loreType = Transcode.unescape_new1("loreType", request);
+		String loreType = Transcode.MyTranscodeUTF(request.getParameter("loreType"));
 		String nextLoreIdArray = CommonTools.getFinalStr("nextLoreIdArray",request);
-		String loreTaskName =  Transcode.unescape_new1("loreTaskName",request);//任务名称
+		String loreTaskName =  Transcode.MyTranscodeUTF(request.getParameter("loreTaskName"));//任务名称
 		request.setAttribute("loreId", loreId);
 		request.setAttribute("studyLogId", studyLogId);
 		request.setAttribute("loreType", loreType);
