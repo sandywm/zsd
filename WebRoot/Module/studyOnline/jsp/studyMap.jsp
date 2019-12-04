@@ -118,7 +118,7 @@
 							_this.data.pathType = json.pathType;
 							_this.data.nextLoreId = json.nextLoreIdArray;
 							_this.data.studyLogId = json.studyLogId;
-							_this.data.loreType = escape( json.loreType );
+							_this.data.loreType = encodeURIComponent( json.loreType );
 							_this.data.loreTaskName = encodeURIComponent( json.loreTaskName );
 							$('#currLoreName').html('&gt;' + json.loreName);
 							/*h('#currTaskName').html('任务' + json.task + '：' + json.loreTaskName);
@@ -188,7 +188,6 @@
 				var _this = this;
 				$('#btnVal').on('click',function(){
 					window.location.href = 'onlineStudy.do?action=goQuestionPage&loreId=' + loreId + '&studyLogId=' + _this.data.studyLogId + '&pathType=' + _this.data.pathType + '&loreType=' + _this.data.loreType + '&nextLoreIdArray=' + _this.data.nextLoreId + '&loreTaskName=' + _this.data.loreTaskName;
-					alert('onlineStudy.do?action=goQuestionPage&loreId=' + loreId + '&studyLogId=' + _this.data.studyLogId + '&pathType=' + _this.data.pathType + '&loreType=' + _this.data.loreType + '&nextLoreIdArray=' + _this.data.nextLoreId + '&loreTaskName=' + _this.data.loreTaskName);
 				});
 				$('.closeStepBtn').on('click',function(){
 					$('.layer').hide();
