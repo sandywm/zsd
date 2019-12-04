@@ -107,7 +107,6 @@
 					success:function(json){
 						$('.loading').hide();
 						if(json.result == 'success'){ 
-							console.log( json )
 							$('.currTaskTit').html('当前任务  <span>' + json.loreTaskName + '</span><em>(第'+ json.task +'个任务)</em>');
 							$('.golden').html(json.coin);
 							$('.totalLevel').html(json.stepCount);
@@ -184,10 +183,34 @@
 				}
 				$('#listTaskUl').html(str);
 			},
+			getStudyMapInfo : function(){
+				var currStep = 0;
+				$.ajax({
+					url : '/onlineStudy.do?action=getStudyMapInfo',
+					async : false,
+					data:{loreId:loreId}, 
+					dataType:'json',
+					type:'post',
+					timeout:10000,
+					success:function(json){
+						//视频讲解(0)，点拨指导(1),知识清单(2),解题示范(3),溯源路线图/在线学习(4)
+						currStep = json.currStep;
+					},
+					error:function(xhr,type,errorThrown){
+						zsd_toast('服务器异常',1500);
+					}
+				});
+				return currStep;
+			},
 			bindEvent : function(){
 				var _this = this;
 				$('#btnVal').on('click',function(){
-					window.location.href = 'onlineStudy.do?action=goQuestionPage&loreId=' + loreId + '&studyLogId=' + _this.data.studyLogId + '&pathType=' + _this.data.pathType + '&loreType=' + _this.data.loreType + '&nextLoreIdArray=' + _this.data.nextLoreId + '&loreTaskName=' + _this.data.loreTaskName;
+					var currStep = _this.getStudyMapInfo();
+					if(currStep >= 4){
+						window.location.href = 'onlineStudy.do?action=goQuestionPage&loreId=' + loreId + '&studyLogId=' + _this.data.studyLogId + '&pathType=' + _this.data.pathType + '&loreType=' + _this.data.loreType + '&nextLoreIdArray=' + _this.data.nextLoreId + '&loreTaskName=' + _this.data.loreTaskName;
+					}else{
+						zsd_toast('请详细观看解题示范',1500);
+					}
 				});
 				$('.closeStepBtn').on('click',function(){
 					$('.layer').hide();
