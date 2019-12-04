@@ -8,14 +8,21 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.zsd.tools.CommonTools;
+
 
 public class Transcode {
 
-	public static String MyTranscodeUTF(String name) throws Exception{
+	public static String MyTranscodeUTF(String name){
 		if(name.equals("") || name.equals("null")){
 			
 		}else{
-			return new String(name.getBytes("iso-8859-1"),"UTF-8");
+			try {
+				return new String(name.getBytes("iso-8859-1"),"UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return "";
 	}
@@ -102,6 +109,9 @@ public class Transcode {
     	if(src.equals("null")){
     		return "";
     	}else{
+    		if(CommonTools.getCilentInfo_new(request).equals("pc")){
+    			return Transcode.MyTranscodeUTF(src);//任务名称
+    		}
     		Integer inputStrLength = src.length();
     		StringBuffer tmp = new StringBuffer();  
             tmp.ensureCapacity(inputStrLength);  

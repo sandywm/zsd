@@ -119,7 +119,7 @@
 							_this.data.nextLoreId = json.nextLoreIdArray;
 							_this.data.studyLogId = json.studyLogId;
 							_this.data.loreType = escape( json.loreType );
-							_this.data.loreTaskName = encodeURI( json.loreTaskName );
+							_this.data.loreTaskName = encodeURIComponent( json.loreTaskName );
 							$('#currLoreName').html('&gt;' + json.loreName);
 							/*h('#currTaskName').html('任务' + json.task + '：' + json.loreTaskName);
 							h('#goldenNum').html(json.coin); 
