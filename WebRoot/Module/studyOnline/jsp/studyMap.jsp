@@ -7,12 +7,6 @@
 	<meta http-equiv="cache-control" content="no-cache"> 
 	<meta http-equiv="keywords" content="知识典在线学习">
 	<meta http-equiv="description" content="知识典在线学习 学习地图">
-	<link rel="stylesheet" type="text/css" href="/css/resetPC.css"/>
-	<link rel="stylesheet" type="text/css" href="/css/layuiAnim.css"/>
-	<link rel="stylesheet" type="text/css" href="/css/fullWidCon.css"/>
-	<link rel="stylesheet" type="text/css" href="/Module/studyOnline/css/welcome.css"/>
-	<link href="/plugins/pace/pace-theme-flash.min.css" rel="stylesheet" type="text/css"/>
-	<script src="/plugins/pace/pace.min.js" type="text/javascript"></script>	
 	</head>
 	<body>
 		<%@include file="/Module/leftSideBar/loading.html"%>
@@ -60,14 +54,13 @@
 								<p class="levelTxt"><span class="totalLevel"></span>个知识点</p>
 								<a class="viewTracBtn" href="javascript:void(0)">点击查看&gt;&gt;</a>
 								<p class="taskInfo">学习了<span class="loreName">命题</span>这个知识点，掌握的怎么样呢？ 检测一下吧,找出没有掌握的根源！</p>
-								<a id="btnVal" class="studyBtn" href="user.do?action=goPage&roleId=2"></a>
+								<a id="btnVal" class="studyBtn" href="javascript:void(0)"></a>
 							</div>
 						</div>
 					</div>
 				</div>				
 			</div>
 		</div>
-		<div class="layer"></div>
 		<!-- 知识讲解 -->
 		<div class="popWin layui-anim layui-anim-scale">
 			<div class="popWinTop">
@@ -85,13 +78,25 @@
 	<script type="text/javascript">
 		var loreId = ${ requestScope.loreId };
 		var	studyLogId = ${ requestScope.studyLogId };
+		var eduId = 0;
+		var cptId = 0;
+		var strBack = '<a href="javascript:void(0)" class="backBtn"><i class="iconfont layui-extend-fanhui"></i><span>返回章节列表</span></a>';
 		var mapPage = {
+			data : {
+				pathType : '',
+				nextLoreId : 0,
+				studyLogId : 0,
+				loreType : ''
+			},
 			init : function(){
 				this.bindEvent();
 				this.initStudyMapData();
 				this.loadTaskAwardInfo(loreId,studyLogId);
+				$('.selEdiWrap').append(strBack);
+				this.backChapList();
 			},
 			initStudyMapData : function(){
+				var _this = this;
 				$.ajax({
 					url : '/onlineStudy.do?action=getStudyMapData',
 					data:{loreId:loreId,studyLogId:studyLogId,logType:1}, 
@@ -101,11 +106,19 @@
 					success:function(json){
 						$('.loading').hide();
 						if(json.result == 'success'){ 
+							//console.log( json )
 							$('.currTaskTit').html('当前任务  <span>' + json.loreTaskName + '</span><em>(第'+ json.task +'个任务)</em>');
 							$('.golden').html(json.coin);
 							$('.totalLevel').html(json.stepCount);
 							$('.totalLevel').html(json.loreCount);
 							$('#btnVal').html(json.buttonValue);
+							eduId = json.eduId;
+							cptId = json.cptId;
+							_this.data.pathType = json.pathType;
+							_this.data.nextLoreId = json.nextLoreIdArray;
+							_this.data.studyLogId = json.studyLogId;
+							_this.data.loreType = escape( json.loreType );
+							$('#currLoreName').html('&gt;' + json.loreName);
 							/*h('#currTaskName').html('任务' + json.task + '：' + json.loreTaskName);
 							h('#goldenNum').html(json.coin); 
 							h('#btnVal').html(json.buttonValue);
@@ -130,6 +143,13 @@
 						$('.loading').hide();
 						zsd_toast('服务器异常',1500);
 					}
+				});
+			},
+			backChapList : function(){
+				var _this = this;
+				//返回章节列表
+				$('.backBtn').on('click',function(){
+					window.location.href = 'onlineStudy.do?action=goChaptePage&eduId=' + eduId + '&cptId=' + cptId;
 				});
 			},
 			//map页面加载奖励信息
@@ -164,6 +184,9 @@
 			},
 			bindEvent : function(){
 				var _this = this;
+				$('#btnVal').on('click',function(){
+					window.location.href = 'onlineStudy.do?action=goQuestionPage&loreId=' + loreId + '&studyLogId=' + _this.data.studyLogId + '&pathType=' + _this.data.pathType + '&loreType=' + _this.data.loreType + '&nextLoreIdArray=' + _this.data.nextLoreId;
+				});
 				$('.closeStepBtn').on('click',function(){
 					$('.layer').hide();
 					$('.popWin').hide();
@@ -183,6 +206,7 @@
 						timeout:10000,
 						success:function(json){
 							$('.loading').hide();
+							console.log( json );
 							if(json.result == 'success'){
 								$('.layer').show();
 								$('.popWin').show();
@@ -199,7 +223,7 @@
 											}
 										});
 									}else{
-										alert('暂不支持该视频格式播放');
+										zsd_toast('暂不支持该视频格式播放',1500);
 									}
 								}else if(currType == '点拨指导'){
 									$('#popWinCon_dbzd').show();
@@ -226,6 +250,12 @@
 								}else if(currType == '解题示范'){
 									$('#popWinCon_jtsf').show().html(strNoData);
 								}
+							}else if(json.result == 'zsjjNotStart'){
+								zsd_toast('请先观看视频讲解',1500);
+							}else if(json.result == 'dbzdNotStart'){
+								zsd_toast('请先观看点拨指导',1500);
+							}else if(json.result == 'zsqdNotStart'){
+								zsd_toast('请详细观看知识清单',1500);
 							}
 						},
 						error:function(xhr,type,errorThrown){

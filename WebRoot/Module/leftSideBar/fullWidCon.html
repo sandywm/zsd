@@ -1,9 +1,10 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java"%>
 		<meta charset="UTF-8">
+		<link rel="stylesheet" type="text/css" href="/css/resetPC.css"/>
 		<link rel="stylesheet" type="text/css" href="/css/layuiAnim.css"/>
 		<link rel="stylesheet" type="text/css" href="/css/fullWidCon.css"/>
+		<link rel="stylesheet" type="text/css" href="/Module/studyOnline/css/welcome.css"/>
 		<link rel="stylesheet" type="text/css" href="/plugins/swiper/swiper.min.css"/>
-		<!-- 在线学习下全宽 -->
 		<!-- 头部 -->
 		<div class="subListWrap">
 			<div class="leftPerInfo">
@@ -63,7 +64,6 @@
 		<input type="hidden" id="ediInp" />
 		<input type="hidden" id="gradeInp" />
 		<script src="/plugins/frame/js/comMethod.js" type="text/javascript" charset="utf-8"></script>
-		<script src="/plugins/jquery/jquery.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="/plugins/swiper/swiper.min.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
 		var currGradeName = '';
@@ -164,10 +164,7 @@
 						gradId = $('#gradeInp').val();
 					var field = {subId:subId,ediId:ediId,gradeNumber:gradId};
 					$('.loading').show();
-					$('.backBtn').remove();
 					$('.volumeList').show();
-					$('#currChaptName').html('');
-					$('#currLoreName').html('');
 					$.ajax({
 						url : '/onlineStudy.do?action=getInitStudyData',
 						data:field, 
@@ -253,7 +250,6 @@
 						ediStr += '<a href="javascript:void(0)">'+ list[i].ediName +'</a></li>';
 					}
 					$('#ediListUl').html(ediStr);
-					$('#currLoreName').html('');
 				},
 				//创建学科
 				createSubSel : function(list){
@@ -279,9 +275,10 @@
 						_this.loadSwiper();
 					}
 					$('.swiper-slide').on('click',function(){
-						var subId = $(this).attr('subId');
+						/*var subId = $(this).attr('subId');
 						$('#subjectInp').val(subId);
-						_this.loadStudyInitData();
+						_this.loadStudyInitData();*/
+						window.location.href = 'onlineStudy.do?action=goStudyPage';
 					});
 				},
 				//创建年级
@@ -323,7 +320,6 @@
 							clickable: true
 						}
 					}); 
-					
 				}
 			};
 			page.init();
