@@ -22,6 +22,9 @@ body{
 	text-align:center;
 	color:#333;
 }
+.jiucuoBtn{
+	display:none;
+}
 .loreNameWrap a i.layui-extend-tiwen{
 	font-size:24px;
 }
@@ -94,15 +97,17 @@ body{
 	position:absolute;
 	left:0;
 	right:0;
-	top:60px;
+	top:40px;
 	bottom:0;
 	overflow:hidden;
+	overflow-y:auto;
 }
 .sideQueCard .cardList ul{
 	width:100%;
 	position:absolute;
 	left:0;
 	top:0;
+	padding:20px 0;
 }
 .sideQueCard li{
 	height:40px;
@@ -131,12 +136,14 @@ body{
 .sideQueCard li:last-child{
 	margin-bottom:0;
 }
-.sideQueCard li.rightAns span{
+.sideQueCard li.rightAns span,
+.sideQueCard li.rightAns.active span{
 	border:1px solid #29c7c6;
 	color:#29c7c6;
 	font-weight:bold;
 }
-.sideQueCard li.errAns span{
+.sideQueCard li.errAns span,
+.sideQueCard li.errAns.active span{
 	border:1px solid #fb4aaf;
 	color:#fb4aaf; 
 	font-weight:bold;
@@ -346,12 +353,43 @@ body{
 .tkAndWdInfo i{
 	font-size:15px;
 }
+.tkAndWdRealAns{
+	color:#333;
+	font-size:14px;
+	border-bottom:1px solid #e6e6e6;
+	padding-bottom:10px;
+	display:none;
+}
+.tkAndWdRealAns span{
+	display:block;
+	color:#28c8c6;
+	font-weight:bold;
+	font-size:15px;
+	margin-bottom:5px;
+}
 .tkAndWdOpt{
 	font-size:15px;
 	color:#333;
 	height:35px;
 	line-height:35px;
 	display:none;
+	margin-top:10px;
+}
+.tkAndWdMyAns{
+	font-size:15px;
+	margin-top:10px;
+	color:#333;
+	display:none;
+}
+.tkAndWdMyAns span,
+.tkAndWdMyAns p{
+	float:left;
+}
+.tkAndWdMyAns p.tkWdSucc{
+	color:#28c8c6;
+}
+.tkAndWdMyAns p.tkWdErr{
+	color:#e10080;
 }
 .noticeTxt{
 	float:left;
@@ -405,6 +443,7 @@ body{
 .rightErrImg img{
 	width:100%;
 	height:100%;
+	display:none;
 }
 .rightErrTxt{
 	width:225px;
@@ -415,6 +454,10 @@ body{
 	font-size:16px;
 	float:left;
 	margin:20px 0 5px 0;
+	display:none;
+}
+.infoCon{
+	display:none;
 }
 .rightErrTxt p.infoTit i,
 .rightErrTxt p.infoTit span{

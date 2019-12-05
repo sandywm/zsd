@@ -92,7 +92,6 @@
 			init : function(){
 				this.bindEvent();
 				this.initStudyMapData();
-				this.loadTaskAwardInfo(loreId,studyLogId);
 				$('.selEdiWrap').append(strBack);
 				this.backChapList();
 			},
@@ -120,6 +119,7 @@
 							_this.data.loreType = encodeURIComponent( json.loreType );
 							_this.data.loreTaskName = encodeURIComponent( json.loreTaskName );
 							$('#currLoreName').html('&gt;' + json.loreName);
+							_this.loadTaskAwardInfo(loreId,_this.data.studyLogId);
 							/*h('#currTaskName').html('任务' + json.task + '：' + json.loreTaskName);
 							h('#goldenNum').html(json.coin); 
 							h('#btnVal').html(json.buttonValue);
@@ -212,6 +212,14 @@
 						zsd_toast('请详细观看解题示范',1500);
 					}
 				});
+				$('.viewTracBtn').on('click',function(){
+					var currStep = _this.getStudyMapInfo();
+					if(currStep >= 4){
+						window.location.href = 'onlineStudy.do?action=goTracebackPage&loreId=' + loreId + '&studyLogId=' + _this.data.studyLogId;
+					}else{
+						zsd_toast('请详细观看解题示范',1500);
+					}
+				});
 				$('.closeStepBtn').on('click',function(){
 					$('.layer').hide();
 					$('.popWin').hide();
@@ -231,7 +239,6 @@
 						timeout:10000,
 						success:function(json){
 							$('.loading').hide();
-							console.log( json );
 							if(json.result == 'success'){
 								$('.layer').show();
 								$('.popWin').show();

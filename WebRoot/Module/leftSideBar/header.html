@@ -39,19 +39,6 @@
 		</div>
 		<script src="/plugins/jquery/jquery.min.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
-			/*layui.use(['layer'],function(){
-				var layer = layui.layer;
-				$('.logOutBtn').on('click',function(){
-					layer.confirm('确认退出系统么？', {
-					  title:'退出系统提示',
-					  skin: 'layui-layer-molv',
-					  btn: ['确定','取消'] //按钮
-					},function(){
-						window.location.href = "login.do?action=loginOut";
-					});
-				});
-				
-			});*/
 			$('.logOutBtn').on('click',function(){
 				$('.layer').show();
 				$('.logOutPopWin').show();
@@ -83,6 +70,7 @@
 								$('.msgNum').hide().html('');
 							}
 						}else if(json.result == 'error'){
+							zsd_toast('服务器错误');
 							//mui.toast('服务器错误');
 						}
 					}

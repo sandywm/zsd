@@ -625,10 +625,12 @@ public class CommonTools {
 				Integer ediId = lore_bb.getChapter().getEducation().getEdition().getId();//学习知识点所属出版社
 				List<LoreInfo> loreList = lm.listInfoByMainLoreId(quoteLoreId);
 				for(LoreInfo lore : loreList){
-					if(lore.getChapter().getEducation().getEdition().getId().equals(ediId)){
-						loreInfoArr[0] = lore.getId().toString();
-						loreInfoArr[1] = lore.getLoreName();
-						break;
+					if(lore.getInUse().equals(0)){
+						if(lore.getChapter().getEducation().getEdition().getId().equals(ediId)){
+							loreInfoArr[0] = lore.getId().toString();
+							loreInfoArr[1] = lore.getLoreName();
+							break;
+						}
 					}
 				}
 			}

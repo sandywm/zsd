@@ -37,7 +37,7 @@ function zsd_toast(msg,duration){
     var m = document.createElement('div');
     m.className = 'layui-anim layui-anim-scale';
     m.innerHTML = msg;
-    m.style.cssText="max-width:60%;min-width: 150px;padding:0 14px;height: 45px;color: rgb(255, 255, 255);line-height: 45px;text-align: center;border-radius: 4px;position: fixed;top: 50%;left: 42%;transform: translate(-50%, -50%);z-index: 999999;background: rgba(0, 0, 0,.7);font-size: 14px;";
+    m.style.cssText="max-width:60%;min-width: 120px;padding:0 14px;height: 45px;color: rgb(255, 255, 255);line-height: 45px;text-align: center;border-radius: 4px;position: fixed;top: 50%;left: 42%;transform: translate(-50%, -50%);z-index: 999999;background: rgba(0, 0, 0,.7);font-size: 14px;";
     document.body.appendChild(m);
     setTimeout(function() {
       var d = 0.5;
