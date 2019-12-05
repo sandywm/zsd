@@ -648,7 +648,14 @@ layui.define(['form','table','relate'],function(exports){
 				var gsId = $('#gradeInp').val();
 				obj.getEduColumeByGsEdId(value, gsId);
 				if(currPage == 'loreCataPage'){
-					currEditName == '通用版' ? $('#addLoreCata').show() : $('#addLoreCata').hide();
+					if(currEditName == '通用版'){
+						$('#addLoreCata').show();
+						$('#zsdCodeBtn').hide();
+					}else{
+						$('#addLoreCata').hide();
+						$('#zsdCodeBtn').show();
+					}
+					nowEditName = currEditName;
 				}else if(currPage == 'lorePage' || currPage == 'buffetPage' || currPage == 'sysHwPage' || currPage == 'relateManager' || currPage == 'teaHwPage'){
 					editAll = allValue;//用于知识点管理下关联知识点匹配当前关联知识点所在的出版社
 				}
@@ -821,8 +828,12 @@ layui.define(['form','table','relate'],function(exports){
 			$('#chapterInp').val('');
 		}
 		if(currPage == 'loreCataPage'){
-			$('#addLoreCata').show();
-			$('#zsdCodeBtn').show();
+			if(nowEditName == '通用版'){
+				$('#addLoreCata').show();
+				$('#zsdCodeBtn').hide();
+			}else{
+				$('#zsdCodeBtn').show();
+			}
 			//加载章节对应知识点目录
 			obj.getLoreCataList(value);
 		}else if(currPage == 'lorePage' || currPage == 'buffetPage' || currPage == 'relatePage' || currPage == 'lexRelatePage' || currPage == 'sysHwPage' || currPage == 'teaHwPage'){

@@ -137,32 +137,36 @@
 					});
 					//批量生成知识点编码
 					$('#zsdCodeBtn').on('click',function(){
-						cptId = $('#chapterInp').val();//获取章节Id
-						if(cptId != ''){
-							var codeRes = baseDataMet.createLoreCode(cptId);
-							layer.open({
-								title:'',
-								type: 1,
-							  	area: ['400px', '300px'],
-							  	fixed: true, //不固定
-							  	maxmin: false,
-							  	shadeClose :true,
-							  	closeBtn : 0,
-							  	content: codeRes,
-							  	end : function(){
-							  		_this.loadLoreCataLogList();
-							  	}
-							});
-			        		$('#codeResCon li:odd').addClass('oddColor');
-			        		
-			        		if($('#codeResCon').height() < $('#codeResConUl').height()){
-			    				var oScroll = '<div id="scrollParent" class="parentScroll"><div id="scrollSon" class="scrollBar"></div></div>';
-			    				//创建动态模拟滚动条
-			    				$('#codeResCon').append(oScroll);
-			    				scrollBar.scrollBar('codeResCon','codeResConUl','scrollParent','scrollSon',20);
-			    			}
+						var cptId = $('#chapterInp').val();//获取章节Id
+						if(nowEditName != '通用版'){
+							if(cptId != ''){
+								var codeRes = baseDataMet.createLoreCode(cptId);
+								layer.open({
+									title:'',
+									type: 1,
+								  	area: ['400px', '300px'],
+								  	fixed: true, //不固定
+								  	maxmin: false,
+								  	shadeClose :true,
+								  	closeBtn : 0,
+								  	content: codeRes,
+								  	end : function(){
+								  		_this.loadLoreCataLogList();
+								  	}
+								});
+				        		$('#codeResCon li:odd').addClass('oddColor');
+				        		
+				        		if($('#codeResCon').height() < $('#codeResConUl').height()){
+				    				var oScroll = '<div id="scrollParent" class="parentScroll"><div id="scrollSon" class="scrollBar"></div></div>';
+				    				//创建动态模拟滚动条
+				    				$('#codeResCon').append(oScroll);
+				    				scrollBar.scrollBar('codeResCon','codeResConUl','scrollParent','scrollSon',20);
+				    			}
+							}else{
+								layer.msg('请选择章节',{icon:5,anim:6,time:2000});
+							}
 						}else{
-							layer.msg('请选择章节',{icon:5,anim:6,time:2000});
+							layer.msg('批量修改知识点编码必须在非通用版下修改',{icon:5,anim:6,time:2200});
 						}
 					});
 				},
