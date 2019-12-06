@@ -2507,156 +2507,156 @@ public class OnlineStudyAction extends DispatchAction {
 							for(int i = 0 ; i < answerOptionArray.size() ; i++){
 								answerOptionStr[i] = answerOptionArray.get(i).toString();
 							}
-							boolean updateFlag = false;
-							/**
-							 * step1:向log表中插入一条数据
-							 * 插入数据前需要先查询有无该记录。
-							 * 如果没有，执行插入
-							 * 如果有：分为两步
-							 * 1:如果stepComplete为1（做完该阶段所有题，者修改step、stepComplete、isFinish的值）
-							 * 2:如果stepComplete为0（未做完该阶段所有题）
-							 * 2.1：如果这是access为1，表示需要进入下一级关联知识点（修改access的值为1）
-							 */
-							if(studyLogId.equals(0)){//新开的题
-								List<StudyLogInfo> slList = slm.listLastStudyInfoByOpt(stuId, loreId, logType);
-								if(slList.size() > 0){
-									if(!slList.get(0).getIsFinish().equals(2)){
-										studyLogId = slList.get(0).getId();
-									}
+						}
+						boolean updateFlag = false;
+						/**
+						 * step1:向log表中插入一条数据
+						 * 插入数据前需要先查询有无该记录。
+						 * 如果没有，执行插入
+						 * 如果有：分为两步
+						 * 1:如果stepComplete为1（做完该阶段所有题，者修改step、stepComplete、isFinish的值）
+						 * 2:如果stepComplete为0（未做完该阶段所有题）
+						 * 2.1：如果这是access为1，表示需要进入下一级关联知识点（修改access的值为1）
+						 */
+						if(studyLogId.equals(0)){//新开的题
+							List<StudyLogInfo> slList = slm.listLastStudyInfoByOpt(stuId, loreId, logType);
+							if(slList.size() > 0){
+								if(!slList.get(0).getIsFinish().equals(2)){
+									studyLogId = slList.get(0).getId();
 								}
 							}
-							if(studyLogId.equals(0)){//新开的题
-								if(result.equals(1)){//题做对了
-									oldStepMoney++;
-								}
-								//获取当前学生正在绑定的指定学科的导师
-								Integer ntId = 0;
-								Integer subId = lq.getLoreInfo().getChapter().getEducation().getGradeSubject().getSubject().getId();
-								NetTeacherStudent nts = ntsm.getValidInfoByOpt(stuId, subId);
-								if(nts != null){
-									ntId = nts.getNetTeacherInfo().getId();
-								}
-								studyLogId = slm.addStudyLog(stuId, ntId, loreId, subjectId, step, stepComplete, isFinish, "", oldStepMoney, access, currTime, 1, logType);
-								if(studyLogId > 0){
-									updateFlag = true;
-								}
-							}else{//表示是继续之前的未做完的题（修改log里面的记录）
-								StudyLogInfo  sl = slm.getEntityById(studyLogId);
-								if(sl != null){
-									//获取该记录里面最后一道题
-									if(sdm.listLastInfoByLogId(studyLogId, 0, "").get(0).getLoreQuestion().getId().equals(lqId)){
-										updateFlag = false;
+						}
+						if(studyLogId.equals(0)){//新开的题
+							if(result.equals(1)){//题做对了
+								oldStepMoney++;
+							}
+							//获取当前学生正在绑定的指定学科的导师
+							Integer ntId = 0;
+							Integer subId = lq.getLoreInfo().getChapter().getEducation().getGradeSubject().getSubject().getId();
+							NetTeacherStudent nts = ntsm.getValidInfoByOpt(stuId, subId);
+							if(nts != null){
+								ntId = nts.getNetTeacherInfo().getId();
+							}
+							studyLogId = slm.addStudyLog(stuId, ntId, loreId, subjectId, step, stepComplete, isFinish, "", oldStepMoney, access, currTime, 1, logType);
+							if(studyLogId > 0){
+								updateFlag = true;
+							}
+						}else{//表示是继续之前的未做完的题（修改log里面的记录）
+							StudyLogInfo  sl = slm.getEntityById(studyLogId);
+							if(sl != null){
+								//获取该记录里面最后一道题
+								if(sdm.listLastInfoByLogId(studyLogId, 0, "").get(0).getLoreQuestion().getId().equals(lqId)){
+									updateFlag = false;
 //										System.out.println("不能重复提交");
-										msg = "reSubmit";//不能重复提交
-									}else{
-										updateFlag = true;
-										step = sl.getStep();
-										oldStepMoney = sl.getCurrentGold();
-										isFinish = sl.getIsFinish();
-										access = sl.getAccess();
-										if(result == 1){
-											oldStepMoney++;
-										}
-										stepComplete = sl.getStepComplete();
-										if(isFinish == 1){//表示本知识点还未完成
-											if(stepComplete == 1){//表示该阶段已经完成
-												//将step增加1，stepComplete重新清0
-												step++;
-												stepComplete = 0;
-												oldStepMoney = 0;
-											}else{//当前级关联知识点已经完成access的值为1
-												if(access == 1){//表示该阶段知识点已经完成，需要进入下一级关联知识点学习
-													
-												}
+									msg = "reSubmit";//不能重复提交
+								}else{
+									updateFlag = true;
+									step = sl.getStep();
+									oldStepMoney = sl.getCurrentGold();
+									isFinish = sl.getIsFinish();
+									access = sl.getAccess();
+									if(result == 1){
+										oldStepMoney++;
+									}
+									stepComplete = sl.getStepComplete();
+									if(isFinish == 1){//表示本知识点还未完成
+										if(stepComplete == 1){//表示该阶段已经完成
+											//将step增加1，stepComplete重新清0
+											step++;
+											stepComplete = 0;
+											oldStepMoney = 0;
+										}else{//当前级关联知识点已经完成access的值为1
+											if(access == 1){//表示该阶段知识点已经完成，需要进入下一级关联知识点学习
+												
 											}
 										}
-										if(loreType.equals("巩固训练")){//巩固训练不检查
-											//巩固训练只修改access状态为31，只要不是最后的提交，下次还会继续停留在学习当前知识点的状态
-											//当currentLoreId和知识点的loreId(本知识点)
-											if(currentLoreId.equals(loreId)){
-												//表示是本知识点的学习（巩固训练）
-												updateFlag = slm.updateStudyLog(studyLogId, 4, 0, -1, -1, 31, currTime);
-											}else{
-												updateFlag = slm.updateStudyLog(studyLogId, 3, 0, -1, -1, 31, currTime);
-											}
+									}
+									if(loreType.equals("巩固训练")){//巩固训练不检查
+										//巩固训练只修改access状态为31，只要不是最后的提交，下次还会继续停留在学习当前知识点的状态
+										//当currentLoreId和知识点的loreId(本知识点)
+										if(currentLoreId.equals(loreId)){
+											//表示是本知识点的学习（巩固训练）
+											updateFlag = slm.updateStudyLog(studyLogId, 4, 0, -1, -1, 31, currTime);
 										}else{
-											updateFlag = slm.updateStudyLog(studyLogId, step, stepComplete, isFinish, oldStepMoney, 0, currTime);
+											updateFlag = slm.updateStudyLog(studyLogId, 3, 0, -1, -1, 31, currTime);
 										}
+									}else{
+										updateFlag = slm.updateStudyLog(studyLogId, step, stepComplete, isFinish, oldStepMoney, 0, currTime);
 									}
 								}
 							}
-							if(studyLogId > 0 && updateFlag == true){
-								//step2:向detail表中插入一条记录并查看该studyLogId+loreQuestionId有没有记录
-								List<StudyDetailInfo> sdList = sdm.listInfoByOpt(studyLogId, lqId);
-								Integer questionNumber_curr = sdList.size() + 1;
-								sdm.addStudyDetail(stuId, studyLogId, currentLoreId, lqId, questionStep, dataBaseAnswerChar, 
-										result, currTime, myAnswer, answerOptionStr[0], answerOptionStr[1], answerOptionStr[2]
-										,answerOptionStr[3], answerOptionStr[4], answerOptionStr[5], questionNumber_curr);
-								//此处增加学生学习、全平台统计---------------------start
-								//A：统计学生学习情况---------------------
-								//根据学习时间、学生编号、学科编号获取学生学习统计信息
-								boolean liaojieSuccFlag = false;
-								boolean lijieSuccFlag = false;
-								boolean yySuccFlag = false;
-								if(result.equals(1)){
-									if(queType2.equals("了解")){
-										liaojieSuccFlag = true;
-									}else if(queType2.equals("理解")){
-										lijieSuccFlag = true;
-									}else if(queType2.equals("应用")){
-										yySuccFlag = true;
-									}
+						}
+						if(studyLogId > 0 && updateFlag == true){
+							//step2:向detail表中插入一条记录并查看该studyLogId+loreQuestionId有没有记录
+							List<StudyDetailInfo> sdList = sdm.listInfoByOpt(studyLogId, lqId);
+							Integer questionNumber_curr = sdList.size() + 1;
+							sdm.addStudyDetail(stuId, studyLogId, currentLoreId, lqId, questionStep, dataBaseAnswerChar, 
+									result, currTime, myAnswer, answerOptionStr[0], answerOptionStr[1], answerOptionStr[2]
+									,answerOptionStr[3], answerOptionStr[4], answerOptionStr[5], questionNumber_curr);
+							//此处增加学生学习、全平台统计---------------------start
+							//A：统计学生学习情况---------------------
+							//根据学习时间、学生编号、学科编号获取学生学习统计信息
+							boolean liaojieSuccFlag = false;
+							boolean lijieSuccFlag = false;
+							boolean yySuccFlag = false;
+							if(result.equals(1)){
+								if(queType2.equals("了解")){
+									liaojieSuccFlag = true;
+								}else if(queType2.equals("理解")){
+									lijieSuccFlag = true;
+								}else if(queType2.equals("应用")){
+									yySuccFlag = true;
 								}
-								List<StudyStuTjInfo> sstList = ssm.listInfoByOption(stuId, subjectId, currDate);
-								if(sstList.size() > 0){//已存在
-									ssm.updateSSTById(sstList.get(0).getId(), queType2, liaojieSuccFlag, lijieSuccFlag, yySuccFlag);
-								}else{//不存在
-									ssm.addSST(currDate, stuId ,subjectId, queType2, result);
+							}
+							List<StudyStuTjInfo> sstList = ssm.listInfoByOption(stuId, subjectId, currDate);
+							if(sstList.size() > 0){//已存在
+								ssm.updateSSTById(sstList.get(0).getId(), queType2, liaojieSuccFlag, lijieSuccFlag, yySuccFlag);
+							}else{//不存在
+								ssm.addSST(currDate, stuId ,subjectId, queType2, result);
+							}
+							
+							//B:统计全平台学习情况---------------------
+							List<StudyAllTjInfo> satList = sam.listInfoByOption(currDate, subjectId);
+							if(satList.size() > 0){//已存在
+								sam.updateSATById(satList.get(0).getId(), queType2, liaojieSuccFlag, lijieSuccFlag, yySuccFlag);
+							}else{//不存在
+								sam.addSAT(currDate, subjectId, queType2, result);
+							}
+							//---------------------end
+							
+							//修改用户中的经验和金币数（答一题增加1经验，答对一题再增加1经验）
+							Integer coin = 0;
+							Integer experience = Constants.EXPERIENCE;
+							if(result.equals(1)){
+								if(loreType.equals("巩固训练")){//巩固训练不计分
+									coin = 0;
+									experience = 0;
+								}else{
+									coin = Constants.COIN;
+									experience += Constants.EXPERIENCE;
 								}
-								
-								//B:统计全平台学习情况---------------------
-								List<StudyAllTjInfo> satList = sam.listInfoByOption(currDate, subjectId);
-								if(satList.size() > 0){//已存在
-									sam.updateSATById(satList.get(0).getId(), queType2, liaojieSuccFlag, lijieSuccFlag, yySuccFlag);
-								}else{//不存在
-									sam.addSAT(currDate, subjectId, queType2, result);
-								}
-								//---------------------end
-								
-								//修改用户中的经验和金币数（答一题增加1经验，答对一题再增加1经验）
-								Integer coin = 0;
-								Integer experience = Constants.EXPERIENCE;
-								if(result.equals(1)){
-									if(loreType.equals("巩固训练")){//巩固训练不计分
-										coin = 0;
-										experience = 0;
-									}else{
-										coin = Constants.COIN;
-										experience += Constants.EXPERIENCE;
-									}
-								}
-								
-								//插入数据到studyTask表中
-								//获取指定学习记录的学习任务描述
-								if(!loreType.equals("巩固训练")){//巩固训练不增加至studyTask
-									List<StudyTaskInfo>  stList = stm.listTaskInfoByOpt(studyLogId, "");
-									Integer number = 0;
-									if(stList.size() == 0){//第一次做题
-										number = 1;
+							}
+							
+							//插入数据到studyTask表中
+							//获取指定学习记录的学习任务描述
+							if(!loreType.equals("巩固训练")){//巩固训练不增加至studyTask
+								List<StudyTaskInfo>  stList = stm.listTaskInfoByOpt(studyLogId, "");
+								Integer number = 0;
+								if(stList.size() == 0){//第一次做题
+									number = 1;
+									stm.addSTask(number, studyLogId, loreTaskName, coin);
+								}else{//表示已经有该题的答题记录了
+									List<StudyTaskInfo>  stList_1 = stm.listTaskInfoByOpt(studyLogId, loreTaskName);
+									if(stList_1.size() > 0){
+										//修改指定studyLogId的记录的金币和时间
+										Integer stId = stList_1.get(0).getId();
+										stm.updateCoinInfoById(stId, coin);
+									}else{//新一级知识点的题（需要新增答题学习任务）
+										number = stList.get(0).getTaskNum() + 1;
 										stm.addSTask(number, studyLogId, loreTaskName, coin);
-									}else{//表示已经有该题的答题记录了
-										List<StudyTaskInfo>  stList_1 = stm.listTaskInfoByOpt(studyLogId, loreTaskName);
-										if(stList_1.size() > 0){
-											//修改指定studyLogId的记录的金币和时间
-											Integer stId = stList_1.get(0).getId();
-											stm.updateCoinInfoById(stId, coin);
-										}else{//新一级知识点的题（需要新增答题学习任务）
-											number = stList.get(0).getTaskNum() + 1;
-											stm.addSTask(number, studyLogId, loreTaskName, coin);
-										}
 									}
-									um.updateUser(stuId, coin, experience, 0, 0);
 								}
+								um.updateUser(stuId, coin, experience, 0, 0);
 							}
 						}
 					}else{
