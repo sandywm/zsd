@@ -90,6 +90,7 @@ public class Constants {
 	public static final String WEB_PARENT_CLUB = "parent_club_Web";
 	public static final String WEB_PARENT_CLUB_RELATION = "parent_club_relation_Web";
 	public static final String WEB_LORE_RELATE_LOG_INFO = "lore_relate_log_Web";
+	public static final String WEB_TODAY_TASK_INFO = "today_task_Web";
 	
 	//-------------------DAO-------------------------//
 	public static final String DAO_EDITION_INFO = "edition_Dao";
@@ -160,5 +161,6 @@ public class Constants {
 	public static final String DAO_PARENT_CLUB = "parent_club_Dao";
 	public static final String DAO_PARENT_CLUB_RELATION = "parent_club_relation_Dao";
 	public static final String DAO_LORE_RELATE_LOG_INFO = "lore_relate_log_Dao";
+	public static final String DAO_TODAY_TASK_INFO = "today_task_Dao";
 }
 

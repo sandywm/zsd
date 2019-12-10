@@ -69,4 +69,5 @@
 	<dao id="parent_club_Dao" class="com.zsd.dao.impl.ParentClubDaoImpl" />
 	<dao id="parent_club_relation_Dao" class="com.zsd.dao.impl.ParentClubRelationDaoImpl" />
 	<dao id="lore_relate_log_Dao" class="com.zsd.dao.impl.LoreRelateLogDaoImpl" />
+	<dao id="today_task_Dao" class="com.zsd.dao.impl.TodayTaskDaoImpl" />
 </daoContext>

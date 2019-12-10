@@ -16,7 +16,7 @@
 			jdbc:mysql://localhost:3306/zsd?useUnicode=true&amp;characterEncoding=utf-8
 		</property>
 		<property name="connection.username">root</property>
-		<property name="connection.password">123456</property>
+		<property name="connection.password">32011823wm</property>
 		<!-- C3P0 connection pool  -->
 		<property name="hibernate.connection.provider_class">
 			org.hibernate.connection.C3P0ConnectionProvider
@@ -136,6 +136,7 @@
 		<mapping resource="com/zsd/xml/ParentClubInfo.hbm.xml" />
 		<mapping resource="com/zsd/xml/ParentClubRelationInfo.hbm.xml" />
 		<mapping resource="com/zsd/xml/LoreRelateLogInfo.hbm.xml" />
+		<mapping resource="com/zsd/xml/TodayTask.hbm.xml" />
 	</session-factory>
 
 </hibernate-configuration>

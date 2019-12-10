@@ -1,5 +1,5 @@
 #MyEclipse Hibernate Properties
-#Tue Nov 12 09:34:56 CST 2019
+#Tue Dec 10 21:25:09 CST 2019
 sessionFactoryName=
 genBasicCompId=true
 profile=
@@ -14,10 +14,10 @@ useJavaTypes=true
 keyGenerator=native
 libInstallFolder=<no jars/zips in selected libraries>
 addLibs2Project=true
-genVersionTag=false
+genVersionTag=true
 sessionFactoryId=
 basePersistenceClass=
-genAnnotations=true
+genAnnotations=false
 reSettingsFile=
 configFile=/zsd/src/hibernate.cfg.xml
 createConfigFile=true
