@@ -171,12 +171,12 @@ public class UserDaoImpl implements UserDao {
 			hql += " and u.id = "+userId;
 		}else if(classId > 0){//指定班级
 			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.classId = "+classId+")";
-		}else if(gradeNo > 0){//指定年级
-			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.gradeNo = "+gradeNo+")";
-		}else if(schoolId > 0){//指定学校
-			hql += " abd u.schoolId ="+schoolId;
-		}else if(schoolType > 0){//指定学段
-			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.schoolType = "+schoolType+")";
+		}else if(gradeNo > 0){//指定年级--附带着学校
+			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.gradeNo = "+gradeNo+" and ru.schoolId = "+schoolId+")";
+		}else if(schoolId > 0){
+			hql += " and u.schoolId = "+schoolId;
+		}else if(schoolType > 0){//指定学段--附带上乡镇
+			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.schoolType = "+schoolType+" and ru.town = '"+town+"')";
 		}else if(!town.equals("")){//指定镇
 			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.town = '"+town+"')";
 		}else if(!county.equals("")){//指定县
@@ -205,12 +205,12 @@ public class UserDaoImpl implements UserDao {
 			hql += " and u.id = "+userId;
 		}else if(classId > 0){//指定班级
 			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.classId = "+classId+")";
-		}else if(gradeNo > 0){//指定年级
-			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.gradeNo = "+gradeNo+")";
-		}else if(schoolId > 0){//指定学校
-			hql += " abd u.schoolId ="+schoolId;
-		}else if(schoolType > 0){//指定学段
-			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.schoolType = "+schoolType+")";
+		}else if(gradeNo > 0){//指定年级--附带着学校
+			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.gradeNo = "+gradeNo+" and ru.schoolId = "+schoolId+")";
+		}else if(schoolId > 0){
+			hql += " and u.schoolId = "+schoolId;
+		}else if(schoolType > 0){//指定学段--附带上乡镇
+			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.schoolType = "+schoolType+" and ru.town = '"+town+"')";
 		}else if(!town.equals("")){//指定镇
 			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.town = '"+town+"')";
 		}else if(!county.equals("")){//指定县
