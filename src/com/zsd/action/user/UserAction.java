@@ -861,6 +861,15 @@ public class UserAction extends DispatchAction {
 								map.put("schoolType", ru.getSchoolType());
 								if(ru.getSchoolId().equals(0)){
 									roleName = "schoolType";
+									List<School> sList = sm.listInfoByOpt(ru.getProv(), ru.getCity(), ru.getCounty(), ru.getTown(), ru.getSchoolType(), -1);
+									if(sList.size() > 0){
+										for(School sch : sList){
+											Map<String,Object> map_d = new HashMap<String,Object>();
+											map_d.put("schoolId", sch.getId());
+											map_d.put("schoolName", sch.getSchoolName());
+											map_d.put("yearSystem", sch.getYearSystem());
+										}
+									}
 								}else{
 									map.put("schoolId", ru.getSchoolId());
 									map.put("schoolName", sm.listInfoById(ru.getSchoolId()).get(0).getSchoolName());
