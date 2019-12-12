@@ -3,6 +3,7 @@ package com.zsd.service;
 import java.util.List;
 
 import com.zsd.exception.WEBException;
+import com.zsd.module.StudyLogInfo;
 import com.zsd.module.User;
 
 public interface UserManager {
@@ -285,4 +286,47 @@ public interface UserManager {
 	 * @throws WEBException
 	 */
 	boolean updateStuDateFlagById(Integer userId,String dateFlag) throws WEBException;
+	
+	/**
+	 * 根据条件分页获取学生列表
+	 * @author wm
+	 * @date 2019-12-12 下午03:06:54
+	 * @param stuName 学生姓名
+	 * @param prov 省
+	 * @param city 市
+	 * @param county 县
+	 * @param town 镇
+	 * @param schoolType 学段 
+	 * @param schoolId 学校编号
+	 * @param gradeNo 年级号
+	 * @param classId 班级编号
+	 * @param userId 学生编号
+	 * @param pageNo 页码
+	 * @param pageSize 每页记录条数
+	 * @return
+	 * @throws WEBException
+	 */
+	List<User> listPageStuLogByOption(String stuName,String prov,String city,String county,String town,Integer schoolType,
+			Integer schoolId,Integer gradeNo,Integer classId,Integer userId,Integer pageNo,Integer pageSize)throws WEBException;
+	
+	/**
+	 * 根据条件获取学生记录条数
+	 * @author wm
+	 * @date 2019-12-12 下午04:17:05
+	 * @param stuName 学生姓名
+	 * @param prov 省
+	 * @param city 市
+	 * @param county 县
+	 * @param town 镇
+	 * @param schoolType 学段 
+	 * @param schoolId 学校编号
+	 * @param gradeNo 年级号
+	 * @param classId 班级编号
+	 * @param userId 学生编号
+	 * @return
+	 * @throws WEBException
+	 */
+	Integer getCountByOpt(String stuName,String prov,String city,String county,String town,Integer schoolType,
+			Integer schoolId,Integer gradeNo,Integer classId,Integer userId)throws WEBException;
+	
 }

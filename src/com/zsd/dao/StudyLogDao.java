@@ -119,4 +119,5 @@ public interface StudyLogDao {
 	 * @return
 	 */
 	List<StudyLogInfo> findLimitUnComInfoByStuId(Session sess,Integer stuId,Integer limitNumber);
+	
 }

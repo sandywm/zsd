@@ -335,7 +335,7 @@ public class SchoolAction extends DispatchAction {
 					//生成学段管理员账户
 					Integer sctMid=uManager.addUser(Convert.getFirstSpell(city)+Convert.getFirstSpell(county)+"0"+schoolType, "", new MD5().calcMD5("123456"), "",currTime, lastLoginIp, currTime, scId, "", yearSystem, prov, city);
 					//绑定学段管理员角色
-					ruManager.addRoleUserInfo(sctMid, mRId, prov, city, county, "", schoolType, 0, 0, 0);
+					ruManager.addRoleUserInfo(sctMid, mRId, prov, city, county, town, schoolType, 0, 0, 0);
 				}
 			}
 			if(prov!=""&&city !=""&&county!=""&&town!=""&&schoolType!=0 && scId !=0){

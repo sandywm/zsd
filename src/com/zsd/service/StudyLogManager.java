@@ -183,4 +183,5 @@ public interface StudyLogManager {
 	 * @throws WEBException
 	 */
 	List<StudyLogInfo> listLimitUnComInfoByStuId(Integer stuId,Integer limitNumber)throws WEBException;
+	
 }

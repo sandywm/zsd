@@ -123,4 +123,44 @@ public interface UserDao {
 	 * @return
 	 */
 	List<User> checkUserMobile(Session sess,String mobile);
+	
+	/**
+	 * 根据条件获取学生记录列表
+	 * @author wm
+	 * @date 2019-12-12 下午03:57:36
+	 * @param sess
+	 * @param prov 省
+	 * @param city 市
+	 * @param county 县
+	 * @param town 镇
+	 * @param schoolType 学段 
+	 * @param schoolId 学校编号
+	 * @param gradeNo 年级号
+	 * @param classId 班级编号
+	 * @param userId 学生编号
+	 * @return
+	 */
+	List<User> findPageInfoByOpt(Session sess,String stuName, String prov,
+			String city, String county, String town, Integer schoolType,
+			Integer schoolId, Integer gradeNo, Integer classId, Integer userId,Integer pageNo,Integer pageSize);
+	
+	/**
+	 * 根据条件获取学生记录条数
+	 * @author wm
+	 * @date 2019-12-12 下午04:03:51
+	 * @param sess
+	 * @param prov 省
+	 * @param city 市
+	 * @param county 县
+	 * @param town 镇
+	 * @param schoolType 学段 
+	 * @param schoolId 学校编号
+	 * @param gradeNo 年级号
+	 * @param classId 班级编号
+	 * @param userId 学生编号
+	 * @return
+	 */
+	Integer getCountByOpt(Session sess,String stuName, String prov,
+			String city, String county, String town, Integer schoolType,
+			Integer schoolId, Integer gradeNo, Integer classId, Integer userId);
 }

@@ -467,5 +467,41 @@ public class UserManagerImpl implements UserManager {
 		}
 	}
 
+	@Override
+	public List<User> listPageStuLogByOption(String stuName, String prov,
+			String city, String county, String town, Integer schoolType,
+			Integer schoolId, Integer gradeNo, Integer classId, Integer userId,
+			Integer pageNo, Integer pageSize) throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			userDao = (UserDao) DaoFactory.instance(null).getDao(Constants.DAO_USER_INFO);
+			Session sess  = HibernateUtil.currentSession();
+			return userDao.findPageInfoByOpt(sess, stuName, prov, city, county, town, schoolType, schoolId, gradeNo, classId, userId, pageNo, pageSize);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("根据条件获取学生记录列表时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public Integer getCountByOpt(String stuName, String prov, String city,
+			String county, String town, Integer schoolType, Integer schoolId,
+			Integer gradeNo, Integer classId, Integer userId)
+			throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			userDao = (UserDao) DaoFactory.instance(null).getDao(Constants.DAO_USER_INFO);
+			Session sess  = HibernateUtil.currentSession();
+			return userDao.getCountByOpt(sess, stuName, prov, city, county, town, schoolType, schoolId, gradeNo, classId, userId);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("根据条件获取学生记录条数时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
 
 }

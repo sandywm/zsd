@@ -28,27 +28,36 @@ import com.zsd.module.BuffetMindRelationInfo;
 import com.zsd.module.BuffetQueInfo;
 import com.zsd.module.BuffetSendInfo;
 import com.zsd.module.BuffetStudyDetailInfo;
+import com.zsd.module.ClassInfo;
 import com.zsd.module.JoinLoreRelation;
 import com.zsd.module.NetTeacherStudent;
+import com.zsd.module.RoleUserInfo;
+import com.zsd.module.School;
 import com.zsd.module.StudentParentInfo;
 import com.zsd.module.StudyDetailInfo;
 import com.zsd.module.StudyLogInfo;
 import com.zsd.module.Subject;
+import com.zsd.module.User;
 import com.zsd.module.json.LoreTreeMenuJson;
 import com.zsd.module.json.MyTreeNode;
+import com.zsd.page.PageConst;
 import com.zsd.service.BuffetAbilityRelationInfoManager;
 import com.zsd.service.BuffetMindRelationInfoManager;
 import com.zsd.service.BuffetQueInfoManager;
 import com.zsd.service.BuffetSendInfoManager;
 import com.zsd.service.BuffetStudyDetailManager;
+import com.zsd.service.ClassInfoManager;
 import com.zsd.service.JoinLoreRelationManager;
 import com.zsd.service.NetTeacherStudentManager;
+import com.zsd.service.RoleUserInfoManager;
+import com.zsd.service.SchoolManager;
 import com.zsd.service.StudentParentInfoManager;
 import com.zsd.service.StudyDetailManager;
 import com.zsd.service.StudyLogManager;
 import com.zsd.service.SubjectManager;
 import com.zsd.service.UserManager;
 import com.zsd.tools.CommonTools;
+import com.zsd.tools.Convert;
 import com.zsd.tools.CurrentTime;
 import com.zsd.util.Constants;
 
@@ -1309,5 +1318,99 @@ public class StudyRecordAction extends DispatchAction {
 			map.put("unbindNT", list_b);
 			CommonTools.getJsonPkg(map, response);
 			return null;
+	}
+	
+	/**
+	 * 导向知识典学习统计页面
+	 * @author wm
+	 * @date 2019-12-12 下午02:32:05
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward  goStuStudyLogPage(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		return mapping.findForward("stuStudyLogPage");
+	}
+	
+	/**
+	 * 获取知识典学习统计数据
+	 * @author wm
+	 * @date 2019-12-12 下午02:31:24
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward  getStuStudyLog(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		StudyLogManager slm = (StudyLogManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_LOG_INFO);
+		UserManager um = (UserManager)AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
+		SchoolManager sm = (SchoolManager)AppFactory.instance(null).getApp(Constants.WEB_SCHOOL_INFO);
+		RoleUserInfoManager rum = (RoleUserInfoManager)AppFactory.instance(null).getApp(Constants.WEB_ROLE_USER_INFO);
+		ClassInfoManager cm = (ClassInfoManager)AppFactory.instance(null).getApp(Constants.WEB_CLASS_INFO);
+		String stuName = Transcode.unescape_new1("stuName", request);
+		String province = Transcode.unescape_new1("province", request);
+		String city = Transcode.unescape_new1("city", request);
+		String county = Transcode.unescape_new1("county", request);
+		String town =  Transcode.unescape_new1("town", request);
+		Integer schoolType = CommonTools.getFinalInteger("schoolType", request);
+		Integer schoolId = CommonTools.getFinalInteger("schoolId", request);
+		Integer gradeNo = CommonTools.getFinalInteger("gradeNo", request);
+		Integer classId = CommonTools.getFinalInteger("classId", request);
+		Integer stuId = CommonTools.getFinalInteger("stuId", request);
+		String sDate = request.getParameter("sDate");//没选开始时间初始为""
+		String eDate = request.getParameter("eDate");//没选结束时间初始为""
+		Integer subId = CommonTools.getFinalInteger("subId", request);//科目编号可为-1
+		
+		Integer count = um.getCountByOpt(stuName, province, city, county, town, schoolType, schoolId, gradeNo, classId, stuId);
+		if(count > 0){
+			Integer pageSize = PageConst.getPageSize(String.valueOf(request.getParameter("limit")), 10);//等同于pageSize
+			Integer pageNo = CommonTools.getFinalInteger("page", request);//等同于pageNo
+			List<User> uList = um.listPageStuLogByOption(stuName, province, city, county, town, schoolType, schoolId, gradeNo, classId, stuId, pageNo, pageSize);
+			for(User user : uList){
+				Map<String,Object> map_d = new HashMap<String,Object>();
+				Integer userId = user.getId();
+				 map_d.put("stuName", user.getRealName());
+				 map_d.put("stuSex", user.getSex());
+				 List<School> sList = sm.listInfoById(user.getSchoolId());
+				 if(sList.size() > 0){
+					 School school = sList.get(0);
+					 Integer schoolType_db = school.getSchoolType();
+					 String schoolTypeChi = "";
+					 if(schoolType_db.equals(1)){
+						 schoolTypeChi = "小学";
+					 }else if(schoolType_db.equals(2)){
+						 schoolTypeChi = "初中";
+					 }else if(schoolType_db.equals(3)){
+						 schoolTypeChi = "高中";
+					 }
+					 map_d.put("schoolTypeChi", schoolTypeChi);
+					 map_d.put("schoolName", school.getSchoolName());
+					 map_d.put("prov", school.getProv());
+					 map_d.put("city", school.getCity());
+					 map_d.put("county", school.getCounty());
+					 map_d.put("town", school.getTown());
+					 List<RoleUserInfo> ruList = rum.listUserRoleInfoByuserId(userId);
+					 if(ruList.size() > 0){
+						 Integer gradeNo_db = ruList.get(0).getGradeNo();
+						 map_d.put("gradeName", Convert.NunberConvertChinese(gradeNo_db));
+						 Integer classId_db = ruList.get(0).getClassId();
+						 List<ClassInfo> cList = cm.listClassInfoById(classId_db);
+						 if(cList.size() > 0){
+							 map_d.put("className", cList.get(0).getClassName());
+						 }
+					 }
+				 }
+				 //获取该学生的学习统计
+//				 slm.listStuLogByOption(userId, subId, stuIdStr, sDate, eDate)
+			}
+		}
+		return null;
 	}
 }
