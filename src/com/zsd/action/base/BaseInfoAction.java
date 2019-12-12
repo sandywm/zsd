@@ -108,6 +108,7 @@ public class BaseInfoAction extends DispatchAction {
 				Map<String,Object> map_d = new HashMap<String,Object>();
 				map_d.put("schoolId", sch.getId());
 				map_d.put("schoolName", sch.getSchoolName());
+				map_d.put("yearSystem", sch.getYearSystem());
 				list_d.add(map_d);
 			}
 			map.put("schList", list_d);
