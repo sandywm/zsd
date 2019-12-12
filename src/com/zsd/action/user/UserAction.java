@@ -846,10 +846,18 @@ public class UserAction extends DispatchAction {
 				map.put("county", ru.getCounty());
 				map.put("schoolType", ru.getSchoolType());
 				map.put("schoolId", ru.getSchoolId());
-				map.put("schoolName", sm.listInfoById(ru.getSchoolId()).get(0).getSchoolName());
+				if(ru.getSchoolId() > 0){
+					map.put("schoolName", sm.listInfoById(ru.getSchoolId()).get(0).getSchoolName());
+				}else{
+					map.put("schoolName", "");
+				}
 				map.put("gradeNo", ru.getGradeNo());
 				map.put("classId", ru.getClassId());
-				map.put("className", cm.listClassInfoById(ru.getClassId()));
+				if(ru.getClassId() > 0){
+					map.put("className", cm.listClassInfoById(ru.getClassId()));
+				}else{
+					map.put("className", "");
+				}
 			}else{
 				msg = "noInfo";
 			}
