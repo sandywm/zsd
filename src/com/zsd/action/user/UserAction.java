@@ -832,7 +832,7 @@ public class UserAction extends DispatchAction {
 		RoleUserInfoManager rum = (RoleUserInfoManager) AppFactory.instance(null).getApp(Constants.WEB_ROLE_USER_INFO);
 		SchoolManager sm = (SchoolManager) AppFactory.instance(null).getApp(Constants.WEB_SCHOOL_INFO);
 		ClassInfoManager cm = (ClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_CLASS_INFO);
-		Integer userId = CommonTools.getFinalInteger("userId", request);
+		Integer userId = CommonTools.getLoginUserId(request);
 		String msg = "error";
 		Map<String,Object> map = new HashMap<String,Object>();
 		if(userId > 0){
