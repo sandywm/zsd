@@ -136,7 +136,7 @@
 		<mapping resource="com/zsd/xml/ParentClubInfo.hbm.xml" />
 		<mapping resource="com/zsd/xml/ParentClubRelationInfo.hbm.xml" />
 		<mapping resource="com/zsd/xml/LoreRelateLogInfo.hbm.xml" />
-		<mapping resource="com/zsd/xml/TodayTask.hbm.xml" />
+		<!--mapping resource="com/zsd/xml/TodayTask.hbm.xml" /-->
 	</session-factory>
 
 </hibernate-configuration>

@@ -164,27 +164,27 @@ public class UserDaoImpl implements UserDao {
 			Integer schoolType, Integer schoolId, Integer gradeNo,
 			Integer classId, Integer userId,Integer pageNo,Integer pageSize) {
 		// TODO Auto-generated method stub
-		String hql = " from User as u where u.id in(select ru.id from RoleUser as ru where ru.role.id = 2)";
+		String hql = " from User as u where u.id in(select ru.user.id from RoleUserInfo as ru where ru.roleInfo.id = 2)";
 		if(!stuName.equals("")){
 			hql += " and u.realName = '"+stuName+"'";
 		}else if(userId > 0){//指定学生
 			hql += " and u.id = "+userId;
 		}else if(classId > 0){//指定班级
-			hql += " and u.id in(select ru.user.id from RoleUser as ru where ru.classes.id = "+classId+")";
+			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.classId = "+classId+")";
 		}else if(gradeNo > 0){//指定年级
-			hql += " and u.id in(select ru.user.id from RoleUser as ru where ru.gradeNo = "+gradeNo+")";
+			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.gradeNo = "+gradeNo+")";
 		}else if(schoolId > 0){//指定学校
 			hql += " abd u.schoolId ="+schoolId;
 		}else if(schoolType > 0){//指定学段
-			hql += " and u.id in(select ru.user.id from RoleUser as ru where ru.schoolType = "+schoolType+")";
+			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.schoolType = "+schoolType+")";
 		}else if(!town.equals("")){//指定镇
-			hql += " and u.id in(select ru.user.id from RoleUser as ru where ru.town = '"+town+"')";
+			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.town = '"+town+"')";
 		}else if(!county.equals("")){//指定县
-			hql += " and u.in(select ru.user.id from RoleUser as ru where ru.county = '"+county+"')";
+			hql += " and u.in(select ru.user.id from RoleUserInfo as ru where ru.county = '"+county+"')";
 		}else if(!city.equals("")){//指定市
-			hql += " and u.id in(select ru.user.id from RoleUser as ru where ru.city = '"+city+"')";
+			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.city = '"+city+"')";
 		}else if(!prov.equals("")){//指定省
-			hql += " and u.id in(select ru.user.id from RoleUser as ru where ru.prov = '"+prov+"')";
+			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.prov = '"+prov+"')";
 		}
 		int offset = (pageNo - 1) * pageSize;
 		if (offset < 0) {
@@ -198,27 +198,27 @@ public class UserDaoImpl implements UserDao {
 			String city, String county, String town, Integer schoolType,
 			Integer schoolId, Integer gradeNo, Integer classId, Integer userId) {
 		// TODO Auto-generated method stub
-		String hql = "select count(u.id) from User as u where u.id in(select ru.id from RoleUser as ru where ru.role.id = 2)";
+		String hql = "select count(u.id) from User as u where u.id in(select ru.user.id from RoleUserInfo as ru where ru.roleInfo.id = 2)";
 		if(!stuName.equals("")){
 			hql += " and u.realName = '"+stuName+"'";
 		}else if(userId > 0){//指定学生
 			hql += " and u.id = "+userId;
 		}else if(classId > 0){//指定班级
-			hql += " and u.id in(select ru.user.id from RoleUser as ru where ru.classes.id = "+classId+")";
+			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.classId = "+classId+")";
 		}else if(gradeNo > 0){//指定年级
-			hql += " and u.id in(select ru.user.id from RoleUser as ru where ru.gradeNo = "+gradeNo+")";
+			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.gradeNo = "+gradeNo+")";
 		}else if(schoolId > 0){//指定学校
 			hql += " abd u.schoolId ="+schoolId;
 		}else if(schoolType > 0){//指定学段
-			hql += " and u.id in(select ru.user.id from RoleUser as ru where ru.schoolType = "+schoolType+")";
+			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.schoolType = "+schoolType+")";
 		}else if(!town.equals("")){//指定镇
-			hql += " and u.id in(select ru.user.id from RoleUser as ru where ru.town = '"+town+"')";
+			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.town = '"+town+"')";
 		}else if(!county.equals("")){//指定县
-			hql += " and u.in(select ru.user.id from RoleUser as ru where ru.county = '"+county+"')";
+			hql += " and u.in(select ru.user.id from RoleUserInfo as ru where ru.county = '"+county+"')";
 		}else if(!city.equals("")){//指定市
-			hql += " and u.id in(select ru.user.id from RoleUser as ru where ru.city = '"+city+"')";
+			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.city = '"+city+"')";
 		}else if(!prov.equals("")){//指定省
-			hql += " and u.id in(select ru.user.id from RoleUser as ru where ru.prov = '"+prov+"')";
+			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.prov = '"+prov+"')";
 		}
 		Object countObj = sess.createQuery(hql).uniqueResult();
 		return CommonTools.longToInt(countObj);

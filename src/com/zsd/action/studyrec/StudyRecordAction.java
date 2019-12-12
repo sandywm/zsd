@@ -1364,10 +1364,12 @@ public class StudyRecordAction extends DispatchAction {
 		Integer gradeNo = CommonTools.getFinalInteger("gradeNo", request);
 		Integer classId = CommonTools.getFinalInteger("classId", request);
 		Integer stuId = CommonTools.getFinalInteger("stuId", request);
-		String sDate = request.getParameter("sDate");//没选开始时间初始为""
-		String eDate = request.getParameter("eDate");//没选结束时间初始为""
+		String sDate = CommonTools.getFinalStr("sDate", request);//没选开始时间初始为""
+		String eDate = CommonTools.getFinalStr("eDate", request);;//没选结束时间初始为""
 		Integer subId = CommonTools.getFinalInteger("subId", request);//科目编号可为-1
-		
+		String msg = "noInfo";
+		Map<String,Object> map = new HashMap<String,Object>();
+		List<Object> list_d = new ArrayList<Object>();
 		Integer count = um.getCountByOpt(stuName, province, city, county, town, schoolType, schoolId, gradeNo, classId, stuId);
 		if(count > 0){
 			Integer pageSize = PageConst.getPageSize(String.valueOf(request.getParameter("limit")), 10);//等同于pageSize
@@ -1408,9 +1410,24 @@ public class StudyRecordAction extends DispatchAction {
 					 }
 				 }
 				 //获取该学生的学习统计
-//				 slm.listStuLogByOption(userId, subId, stuIdStr, sDate, eDate)
+				 Integer succStudyNumber = 0;
+				 String completeRate = "0.00%";
+				 Integer allStudyNumber = slm.listSlInfoByopt(userId, subId, 0, 0, sDate, eDate).size();
+				 if(allStudyNumber > 0){
+					 //获取完成的记录
+					 succStudyNumber = slm.listSlInfoByopt(userId, subId, 2, 0, sDate, eDate).size();
+					 completeRate = String.format("%.2f", (double)succStudyNumber * 100 / allStudyNumber) + "%";//完成率
+				 }
+				 map_d.put("allStudyNumber", allStudyNumber);
+				 map_d.put("succStudyNumber", succStudyNumber);
+				 map_d.put("noSuccStudyNumber", allStudyNumber - succStudyNumber);
+				 map_d.put("completeRate", completeRate);
+				 list_d.add(map_d);
 			}
 		}
+		map.put("msg", msg);
+		map.put("stuList", list_d);
+		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
 }
