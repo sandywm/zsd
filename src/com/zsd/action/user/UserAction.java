@@ -839,25 +839,48 @@ public class UserAction extends DispatchAction {
 			List<RoleUserInfo> ruList = rum.listUserRoleInfoByuserId(userId);
 			if(ruList.size() > 0){
 				RoleUserInfo ru = ruList.get(0);
+				String roleName = "";
 				msg = "success";
 				map.put("userId", userId);
 				map.put("prov", ru.getProv());
-				map.put("city", ru.getCity());
-				map.put("county", ru.getCounty());
-				map.put("schoolType", ru.getSchoolType());
-				map.put("schoolId", ru.getSchoolId());
-				if(ru.getSchoolId() > 0){
-					map.put("schoolName", sm.listInfoById(ru.getSchoolId()).get(0).getSchoolName());
+				if(ru.getCity().equals("")){
+					roleName = "prov";
 				}else{
-					map.put("schoolName", "");
+					map.put("city", ru.getCity());
+					if(ru.getCounty().equals("")){
+						roleName = "city";
+					}else{
+						map.put("county", ru.getCounty());
+						if(ru.getTown().equals("")){
+							roleName = "county";
+						}else{
+							map.put("town", ru.getTown());
+							if(ru.getSchoolType().equals(0)){
+								roleName = "town";
+							}else{
+								map.put("schoolType", ru.getSchoolType());
+								if(ru.getSchoolId().equals(0)){
+									roleName = "schoolType";
+								}else{
+									map.put("schoolId", ru.getSchoolId());
+									map.put("schoolName", sm.listInfoById(ru.getSchoolId()).get(0).getSchoolName());
+									if(ru.getGradeNo().equals(0)){
+										roleName = "school";
+									}else{
+										map.put("gradeNo", ru.getGradeNo());
+										if(ru.getClassId().equals(0)){
+											roleName = "grade";
+										}else{
+											map.put("classId", ru.getClassId());
+											map.put("className", cm.listClassInfoById(ru.getClassId()));
+										}
+									}
+								}
+							}
+						}
+					}
 				}
-				map.put("gradeNo", ru.getGradeNo());
-				map.put("classId", ru.getClassId());
-				if(ru.getClassId() > 0){
-					map.put("className", cm.listClassInfoById(ru.getClassId()));
-				}else{
-					map.put("className", "");
-				}
+				map.put("roleName", roleName);
 			}else{
 				msg = "noInfo";
 			}
