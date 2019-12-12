@@ -27,12 +27,14 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.zsd.factory.AppFactory;
+import com.zsd.module.ClassInfo;
 import com.zsd.module.GradeSubject;
 import com.zsd.module.School;
 import com.zsd.module.StudentParentInfo;
 import com.zsd.module.TownInfo;
 import com.zsd.module.User;
 import com.zsd.module.UserClassInfo;
+import com.zsd.service.ClassInfoManager;
 import com.zsd.service.GradeSubjectManager;
 import com.zsd.service.SchoolManager;
 import com.zsd.service.StudentParentInfoManager;
@@ -537,6 +539,51 @@ public class BaseInfoAction extends DispatchAction {
 		String cilentInfo = CommonTools.getCilentInfo_new(request);
 		Map<String,String> map = new HashMap<String,String>();
 		map.put("result", cilentInfo);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 获取指定指定学校、年级下有效的班级列表
+	 * @author wm
+	 * @date 2019-12-12 下午07:56:08
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getValidClassData(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		SchoolManager sm = (SchoolManager) AppFactory.instance(null).getApp(Constants.WEB_SCHOOL_INFO);
+		ClassInfoManager cm = (ClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_CLASS_INFO);
+		Integer schoolId = CommonTools.getFinalInteger("schoolId", request);
+		Integer gradeNo = CommonTools.getFinalInteger("gradeNo", request);
+		String msg = "noInfo";
+		Map<String,Object> map = new HashMap<String,Object>();
+		List<Object> list_d = new ArrayList<Object>();
+		if(schoolId > 0 && gradeNo > 0){
+			List<School> sList = sm.listInfoById(schoolId);
+			if(sList.size() > 0){
+//				Integer yearSystem = sList.get(0).getYearSystem();
+//				Integer schoolType = sList.get(0).getSchoolType();
+//				String buildeClassDate = Convert.gradeNoToBuildeClassDate(gradeNo);
+				List<ClassInfo> cList = cm.listClassInfoByOption(gradeNo, CurrentTime.getStringDate(), schoolId, "");
+				if(cList.size() > 0){
+					msg = "success";
+					for(ClassInfo c : cList){
+						Map<String,Object> map_d = new HashMap<String,Object>();
+						map_d.put("classId", c.getId());
+						map_d.put("className", c.getClassName());
+						list_d.add(map_d);
+					}
+				}
+			}
+		}
+		map.put("msg", msg);
+		map.put("classList", list_d);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}

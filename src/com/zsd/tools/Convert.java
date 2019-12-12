@@ -144,6 +144,19 @@ public class Convert {
 	
 
 	/**
+	 * 根据年级号获取年级下班级的创建日期
+	 * @author wm
+	 * @date 2019-12-12 下午08:12:59
+	 * @param gradeNo
+	 * @return
+	 */
+	public static String numberConvertBuildClassDate(Integer gradeNo){
+		String currentDate = CurrentTime.getStringDate();
+		Integer year = Integer.parseInt(currentDate.substring(0,4));
+		return (year+gradeNo-1)+"-09-01";
+	}
+	
+	/**
 	 * 班级创建日期转换成年级名称
 	 * @author wm
 	 * @date 2019-5-6 上午08:38:23
@@ -466,6 +479,15 @@ public class Convert {
 	
 	public static void main(String[] args) throws IOException, FileNotFoundException{
 		
+		
+		String currentDate = CurrentTime.getStringDate();
+		String year = currentDate.substring(0,4);
+		String month = currentDate.substring(5, 7);
+		for(int i = 1 ; i <= 12 ; i++){
+			System.out.println((Integer.parseInt(year)+i-1)+"-09-01");
+		}
+		System.out.println(year);
+		System.out.println(month);
 //		String aa = "1233:11|12:12";
 //		String[] array = aa.split(":");
 //		String[] array_1 = array[1].split("\\|");
