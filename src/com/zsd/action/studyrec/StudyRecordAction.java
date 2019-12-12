@@ -1361,7 +1361,8 @@ public class StudyRecordAction extends DispatchAction {
 		String town =  Transcode.unescape_new1("town", request);
 		Integer schoolType = CommonTools.getFinalInteger("schoolType", request);
 		Integer schoolId = CommonTools.getFinalInteger("schoolId", request);
-		Integer gradeNo = CommonTools.getFinalInteger("gradeNo", request);
+		String gradeName = Transcode.unescape_new1("gradeName", request);
+		Integer gradeNo = Integer.parseInt(Convert.ChineseConvertNumber(gradeName));
 		Integer classId = CommonTools.getFinalInteger("classId", request);
 		Integer stuId = CommonTools.getFinalInteger("stuId", request);
 		String sDate = CommonTools.getFinalStr("sDate", request);//没选开始时间初始为""
