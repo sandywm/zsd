@@ -80,6 +80,8 @@ public class UserAction extends DispatchAction {
 			roleName = role.getRoleName();
 			if(roleName.equals("超级管理员") || roleName.equals("知识点管理员")){
 				urlPage = "managerPage";
+			}else if(roleName.equals("管理员")){
+				urlPage = "";
 			}else{
 				urlPage = "welcomePage";
 			}
@@ -808,6 +810,49 @@ public class UserAction extends DispatchAction {
 		boolean uflag = uManager.updateRealName(userId, realName);
 		if(uflag){
 			msg ="success";
+		}
+		map.put("msg", msg);
+		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 获取各级管理员信息
+	 * @author wm
+	 * @date 2019-12-12 下午01:46:03
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward getManagerDetail(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		RoleUserInfoManager rum = (RoleUserInfoManager) AppFactory.instance(null).getApp(Constants.WEB_ROLE_USER_INFO);
+		SchoolManager sm = (SchoolManager) AppFactory.instance(null).getApp(Constants.WEB_SCHOOL_INFO);
+		ClassInfoManager cm = (ClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_CLASS_INFO);
+		Integer userId = CommonTools.getFinalInteger("userId", request);
+		String msg = "error";
+		Map<String,Object> map = new HashMap<String,Object>();
+		if(userId > 0){
+			List<RoleUserInfo> ruList = rum.listUserRoleInfoByuserId(userId);
+			if(ruList.size() > 0){
+				RoleUserInfo ru = ruList.get(0);
+				msg = "success";
+				map.put("userId", userId);
+				map.put("prov", ru.getProv());
+				map.put("city", ru.getCity());
+				map.put("county", ru.getCounty());
+				map.put("schoolType", ru.getSchoolType());
+				map.put("schoolId", ru.getSchoolId());
+				map.put("schoolName", sm.listInfoById(ru.getSchoolId()).get(0).getSchoolName());
+				map.put("gradeNo", ru.getGradeNo());
+				map.put("classId", ru.getClassId());
+				map.put("className", cm.listClassInfoById(ru.getClassId()));
+			}else{
+				msg = "noInfo";
+			}
 		}
 		map.put("msg", msg);
 		CommonTools.getJsonPkg(map, response);

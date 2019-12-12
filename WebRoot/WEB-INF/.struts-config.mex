@@ -61,7 +61,6 @@
   <StrutsActivity path="/Module/sysHwManager/jsp/sysHwManager.jsp" location="1550,2250" dimension="312,53" />
   <StrutsActivity path="/Module/stNtManager/jsp/stNtManager.jsp" location="50,2450" dimension="288,53" />
   <StrutsActivity path="/Module/zsdLrLog/jsp/zsdLrLog.jsp" location="1550,2950" dimension="240,53" />
-  <StrutsActivity path="/todayTask.do" location="1250,2450" dimension="293,104" />
   <StrutsTransition id="/login.do,loginOut,/login.jsp,1" routingType="0">
     <AutomaticBendpoints>
       <AbsolutePoint location="50,102" />

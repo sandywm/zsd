@@ -41,7 +41,7 @@ import com.zsd.module.StudyStuQfTjInfo;
 import com.zsd.module.StudyStuTjInfo;
 import com.zsd.module.StudyTaskInfo;
 import com.zsd.module.Subject;
-import com.zsd.module.TodayTask;
+//import com.zsd.module.TodayTask;
 import com.zsd.module.User;
 import com.zsd.module.UserClassInfo;
 import com.zsd.module.json.LoreTreeMenuJson;
@@ -62,7 +62,7 @@ import com.zsd.service.StudyMapManager;
 import com.zsd.service.StudyStuQfTjManager;
 import com.zsd.service.StudyStuTjInfoManager;
 import com.zsd.service.StudyTaskManager;
-import com.zsd.service.TodayTaskManager;
+//import com.zsd.service.TodayTaskManager;
 import com.zsd.service.UserClassInfoManager;
 import com.zsd.service.UserManager;
 import com.zsd.tools.CommonTools;
@@ -2692,7 +2692,7 @@ public class OnlineStudyAction extends DispatchAction {
 		LoreQuestionManager lqm = (LoreQuestionManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_QUESTION_INFO);
 		StudyDetailManager sdm = (StudyDetailManager) AppFactory.instance(null).getApp(Constants.WEB_STUDY_DETAIL_INFO);
 		RelationZdResultManager rzrm = (RelationZdResultManager)AppFactory.instance(null).getApp(Constants.WEB_RELATION_ZD_RESULT_INFO);
-		TodayTaskManager ttm = (TodayTaskManager)AppFactory.instance(null).getApp(Constants.WEB_TODAY_TASK_INFO);
+//		TodayTaskManager ttm = (TodayTaskManager)AppFactory.instance(null).getApp(Constants.WEB_TODAY_TASK_INFO);
 		StudyStuQfTjManager tjm = (StudyStuQfTjManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_STU_QFTJ_INFO);
 		UserClassInfoManager ucm = (UserClassInfoManager)AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
 		Integer stuId = CommonTools.getLoginUserId(request);
@@ -2869,12 +2869,12 @@ public class OnlineStudyAction extends DispatchAction {
 						}
 						
 						//增加今日任务
-						List<TodayTask> ttList = ttm.listInfoByOpt(stuId, currentLoreId, CurrentTime.getStringDate(), 1, 1);
-						if(ttList.size() > 0){
-							ttm.updateEntityById(ttList.get(0).getId(), -1, -1, -1, ttList.get(0).getStudyTimes() + 1, -1);
-						}else{
-							ttm.addTTask(stuId, currentLoreId, -1, -1, -1, 1, 0);
-						}
+//						List<TodayTask> ttList = ttm.listInfoByOpt(stuId, currentLoreId, CurrentTime.getStringDate(), 1, 1);
+//						if(ttList.size() > 0){
+//							ttm.updateEntityById(ttList.get(0).getId(), -1, -1, -1, ttList.get(0).getStudyTimes() + 1, -1);
+//						}else{
+//							ttm.addTTask(stuId, currentLoreId, -1, -1, -1, 1, 0);
+//						}
 					}
 				}else{//关联知识点的针对性诊断和再次诊断
 					if(step_curr.equals(2)){//表示在针对性诊断
@@ -2890,12 +2890,12 @@ public class OnlineStudyAction extends DispatchAction {
 							rzrm.addRZR(studyLogId, loreId_curr, zdxzd_flag, -1, -1, 0, 0);
 							
 							//增加今日任务
-							List<TodayTask> ttList = ttm.listInfoByOpt(stuId, loreId_curr, CurrentTime.getStringDate(), 1, 1);
-							if(ttList.size() > 0){
-								ttm.updateEntityById(ttList.get(0).getId(), -1, -1, -1, 0, -1);
-							}else{
-								ttm.addTTask(stuId, loreId_curr, -1, -1, -1, 0, 0);
-							}
+//							List<TodayTask> ttList = ttm.listInfoByOpt(stuId, loreId_curr, CurrentTime.getStringDate(), 1, 1);
+//							if(ttList.size() > 0){
+//								ttm.updateEntityById(ttList.get(0).getId(), -1, -1, -1, 0, -1);
+//							}else{
+//								ttm.addTTask(stuId, loreId_curr, -1, -1, -1, 0, 0);
+//							}
 						}
 						if(currentStepLoreArray.length > 0){//其他学校不参与
 							if(access_final.equals(1)){//当前关联知识点的针对性诊断全部正确
@@ -2920,12 +2920,12 @@ public class OnlineStudyAction extends DispatchAction {
 							rzrm.addRZR(studyLogId, currentLoreId, -1, -1, zczd_flag, -1, 1);
 						}
 						//增加今日任务
-						List<TodayTask> ttList = ttm.listInfoByOpt(stuId, Integer.parseInt(currentStepLoreArray[0]), CurrentTime.getStringDate(), 1, 1);
-						if(ttList.size() > 0){
-							ttm.updateEntityById(ttList.get(0).getId(), -1, -1, -1, -1, ttList.get(0).getZczdTimes() + 1);
-						}else{
-							ttm.addTTask(stuId, Integer.parseInt(currentStepLoreArray[0]), -1, -1, -1, -1, 1);
-						}
+//						List<TodayTask> ttList = ttm.listInfoByOpt(stuId, Integer.parseInt(currentStepLoreArray[0]), CurrentTime.getStringDate(), 1, 1);
+//						if(ttList.size() > 0){
+//							ttm.updateEntityById(ttList.get(0).getId(), -1, -1, -1, -1, ttList.get(0).getZczdTimes() + 1);
+//						}else{
+//							ttm.addTTask(stuId, Integer.parseInt(currentStepLoreArray[0]), -1, -1, -1, -1, 1);
+//						}
 					}else if(step_curr.equals(4)){//最后一个关联知识点再次诊断完全正确后step会变成4
 						Integer current_lore_id = Integer.parseInt(currentStepLoreArray[0]);
 						if(!current_lore_id.equals(loreId)){
@@ -2938,12 +2938,12 @@ public class OnlineStudyAction extends DispatchAction {
 							relateXxSuccNum = 1;//关联学习通过+1
 							relateXxFailNum = 0;//关联学习未通过不加
 							//增加今日任务
-							List<TodayTask> ttList = ttm.listInfoByOpt(stuId, current_lore_id, CurrentTime.getStringDate(), 1, 1);
-							if(ttList.size() > 0){
-								ttm.updateEntityById(ttList.get(0).getId(), -1, -1, -1, -1, ttList.get(0).getZczdTimes() + 1);
-							}else{
-								ttm.addTTask(stuId, current_lore_id, -1, -1, -1, -1, 1);
-							}
+//							List<TodayTask> ttList = ttm.listInfoByOpt(stuId, current_lore_id, CurrentTime.getStringDate(), 1, 1);
+//							if(ttList.size() > 0){
+//								ttm.updateEntityById(ttList.get(0).getId(), -1, -1, -1, -1, ttList.get(0).getZczdTimes() + 1);
+//							}else{
+//								ttm.addTTask(stuId, current_lore_id, -1, -1, -1, -1, 1);
+//							}
 						}
 						
 					}

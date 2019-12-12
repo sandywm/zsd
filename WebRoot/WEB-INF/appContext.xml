@@ -67,5 +67,5 @@
 	<app id="parent_club_Web" class="com.zsd.service.impl.ParentClubManagerImpl"/>
 	<app id="parent_club_relation_Web" class="com.zsd.service.impl.ParentClubRelationManagerImpl"/>
 	<app id="lore_relate_log_Web" class="com.zsd.service.impl.LoreRelateLogManagerImpl"/>
-	<app id="today_task_Web" class="com.zsd.service.impl.TodayTaskManagerImpl"/>
+	<!--app id="today_task_Web" class="com.zsd.service.impl.TodayTaskManagerImpl"/-->
 </appContext>
