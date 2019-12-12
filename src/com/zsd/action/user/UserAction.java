@@ -864,6 +864,7 @@ public class UserAction extends DispatchAction {
 								}else{
 									map.put("schoolId", ru.getSchoolId());
 									map.put("schoolName", sm.listInfoById(ru.getSchoolId()).get(0).getSchoolName());
+									map.put("yearSystem", sm.listInfoById(ru.getSchoolId()).get(0).getYearSystem());
 									if(ru.getGradeNo().equals(0)){
 										roleName = "school";
 									}else{
