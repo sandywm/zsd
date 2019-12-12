@@ -16,6 +16,7 @@
       <forward name="managerPage" path="/index.jsp"></forward><!-- 知识点/超级管理员登录后欢迎界面 -->
       <forward name="welcomePage" path="/Module/welcome/jsp/welcome.jsp"></forward><!-- 普通用户登录后欢迎界面 -->
       <forward name="userPage" path="/Module/userManager/jsp/userManager.jsp"></forward><!-- 用户管理界面 -->
+      <forward name="adminPage" path="/Module/adminManager/jsp/welcome.jsp"></forward><!-- 省市县乡学段学校年级班级管理员-->
     </action>
     <!-- 基础数据 -->
     <action path="/baseInfo" parameter="action" scope="request" type="com.zsd.action.base.BaseInfoAction">
