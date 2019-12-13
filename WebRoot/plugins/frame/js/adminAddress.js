@@ -253,32 +253,6 @@ layui.define(["form","jquery"],function(exports){
 				console.log(type);  
 			}  
 		});
-		//学校form
-		form.on('select(schSel)', function(data){
-			if(data.value != ''){
-				if(schTypeVal == 0){//全部学校
-					var yearSys = data.value.split('-')[1].split(',')[0];
-					var currSchType = data.value.split('-')[1].split(',')[1];
-					adminAddress.createGradeData(currSchType,yearSys);
-				}else{
-					var yearSys = data.value.split('-')[1];
-					adminAddress.createGradeData(schTypeVal,yearSys);
-				}
-				$('#schInp').val(data.value.split('-')[0]);
-			}else{
-				$('#schInp').val(0);
-				$('#gradeSel').val('').html('<option value="">请选择年级</option>');
-				$('#classSel').val('').html('<option value="">请选择班级</option>');
-				$('#stuSel').val('').html('<option value="">请选择学生</option>');
-				$('#gradeInp').val('');
-				$('#classInp').val(0);
-				$('#stuInp').val(0);
-				form.render();
-			}
-			if(currPage == 'qfRepPage'){
-	    		adminAddress.loadQfData();
-	    	}
-		});
 	};
     
     //生成年级
@@ -314,6 +288,33 @@ layui.define(["form","jquery"],function(exports){
 			}
 		}
 		$('#schSel').html(str);
+		
+		//学校form
+		form.on('select(schSel)', function(data){
+			if(data.value != ''){
+				if(schTypeVal == 0){//全部学校
+					var yearSys = data.value.split('-')[1].split(',')[0];
+					var currSchType = data.value.split('-')[1].split(',')[1];
+					adminAddress.createGradeData(currSchType,yearSys);
+				}else{
+					var yearSys = data.value.split('-')[1];
+					adminAddress.createGradeData(schTypeVal,yearSys);
+				}
+				$('#schInp').val(data.value.split('-')[0]);
+			}else{
+				$('#schInp').val(0);
+				$('#gradeSel').val('').html('<option value="">请选择年级</option>');
+				$('#classSel').val('').html('<option value="">请选择班级</option>');
+				$('#stuSel').val('').html('<option value="">请选择学生</option>');
+				$('#gradeInp').val('');
+				$('#classInp').val(0);
+				$('#stuInp').val(0);
+				form.render();
+			}
+			if(currPage == 'qfRepPage'){
+	    		adminAddress.loadQfData();
+	    	}
+		});
 	};
 	Address.prototype.switchNumToCHN = function(num){
 		var currCHN = '';
@@ -358,6 +359,7 @@ layui.define(["form","jquery"],function(exports){
 		layer.load('1');
 		var field = {schoolId:$('#schInp').val(),gradeName:escape($('#gradeInp').val())};
 		$('#classInp').val(0);
+		console.log(field)
 		$.ajax({
 			url : '/baseInfo.do?action=getValidClassData',
 			dataType:'json',//服务器返回json格式数据  
