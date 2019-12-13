@@ -387,8 +387,8 @@ public class ReportCenterAction  extends DispatchAction{
 								//需要和该省下所有市的平均值进行对比(濮阳市和河南省所有市平均值进行对比)
 								tjList = tjm.listInfoByOpt(0, subId, sDate, eDate, prov, "", "", "", 0, 0, "", 0);//河南省所有市的记录
 //								allNum = tjm.getDistinctCountByOpt(0, subId, sDate, eDate, prov, "", "", "", 0, 0, "", 0);
-								axisName1 = prov+city+county+"的统计";
-								axisName2 = prov+city+"的统计";
+								axisName1 = prov+city+"的统计";
+								axisName2 = prov+"的统计";
 							}
 						}
 					}else{//当市为空的时候
