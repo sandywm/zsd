@@ -1392,6 +1392,7 @@ public class StudyRecordAction extends DispatchAction {
 		List<Object> list_d = new ArrayList<Object>();
 		Integer count = um.getCountByOpt(stuName, province, city, county, town, schoolType, schoolId, gradeNo, classId, stuId);
 		if(count > 0){
+			msg = "success";
 			Integer pageSize = PageConst.getPageSize(String.valueOf(request.getParameter("limit")), 10);//等同于pageSize
 			Integer pageNo = CommonTools.getFinalInteger("page", request);//等同于pageNo
 			List<User> uList = um.listPageStuLogByOption(stuName, province, city, county, town, schoolType, schoolId, gradeNo, classId, stuId, pageNo, pageSize);

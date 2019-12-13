@@ -2719,6 +2719,7 @@ public class OnlineStudyAction extends DispatchAction {
 		String prov = "";
 		String city = "";
 		String county = "";
+		String town = "";
 		Integer schoolType = 0;
 		String gradeName = "";
 		Integer classId = 0;
@@ -2742,6 +2743,7 @@ public class OnlineStudyAction extends DispatchAction {
 							prov = sList.get(0).getProv();
 							city = sList.get(0).getCity();
 							county = sList.get(0).getCounty();
+							town = sList.get(0).getTown();
 							schoolType = sList.get(0).getSchoolType();
 							List<UserClassInfo> ucList = ucm.listInfoByOpt_1(stuId, Constants.STU_ROLE_ID);
 							if(ucList.size() > 0){
@@ -2766,6 +2768,7 @@ public class OnlineStudyAction extends DispatchAction {
 							prov = sList.get(0).getProv();
 							city = sList.get(0).getCity();
 							county = sList.get(0).getCounty();
+							town = sList.get(0).getTown();
 							schoolType = sList.get(0).getSchoolType();
 							List<UserClassInfo> ucList = ucm.listInfoByOpt_1(stuId, Constants.STU_ROLE_ID);
 							if(ucList.size() > 0){
@@ -3017,7 +3020,7 @@ public class OnlineStudyAction extends DispatchAction {
 						if(fmNum > 0 && againXxSuccNum_real > 0){
 							rate = Convert.convertInputNumber_1(againXxSuccNum_real * 100.0  / fmNum) + "%";//转换率
 						}
-						tjm.addQFTJ(stuId, subId, oneZdSuccNum, oneZdFailNum, againXxSuccNum, againXxFailNum, noRelateNum, relateZdFailNum, relateXxSuccNum, relateXxFailNum, rate, prov, city, county, schoolType, schoolId, gradeName, classId);
+						tjm.addQFTJ(stuId, subId, oneZdSuccNum, oneZdFailNum, againXxSuccNum, againXxFailNum, noRelateNum, relateZdFailNum, relateXxSuccNum, relateXxFailNum, rate, prov, city, county, town,schoolType, schoolId, gradeName, classId);
 					}
 				}
 				if(flag){

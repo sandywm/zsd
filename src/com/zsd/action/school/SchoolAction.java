@@ -345,7 +345,7 @@ public class SchoolAction extends DispatchAction {
 					//生成学校管理员账户
 					Integer schMid=uManager.addUser("sch"+scId, "", new MD5().calcMD5("123456"), "",currTime, lastLoginIp, currTime, scId, "", yearSystem, prov, city);
 					//绑定学校管理员角色
-					ruManager.addRoleUserInfo(schMid, mRId, prov, city, county, "", schoolType, scId, 0, 0);
+					ruManager.addRoleUserInfo(schMid, mRId, prov, city, county, town, schoolType, scId, 0, 0);
 				}
 			}
 			if(schoolType==1){
@@ -378,7 +378,7 @@ public class SchoolAction extends DispatchAction {
 						//生成年级管理员账户
 						Integer gMid=uManager.addUser("g"+scId+g, "", new MD5().calcMD5("123456"), "",currTime, lastLoginIp, currTime, scId, "", yearSystem, prov, city);
 						//绑定年级管理员角色
-						ruManager.addRoleUserInfo(gMid, mRId, prov, city, county, "", schoolType, scId, g, 0);
+						ruManager.addRoleUserInfo(gMid, mRId, prov, city, county, town, schoolType, scId, g, 0);
 					}
 					//getGenRela(ruManager,uManager,rManager,prov, city, yearSystem, lastLoginIp, currTime,scId, g,county,schoolType,mRId);//生成班内老师
 				}
@@ -419,7 +419,7 @@ public class SchoolAction extends DispatchAction {
 			//生成年级管理员账户
 			Integer gMid=uManager.addUser("g"+scId+"0"+g, "", new MD5().calcMD5("123456"), "",currTime, lastLoginIp, currTime, scId, "", yearSystem, prov, city);
 			//绑定年级管理员角色
-			ruManager.addRoleUserInfo(gMid, mRId, prov, city, county, "", schoolType, scId, g, 0);
+			ruManager.addRoleUserInfo(gMid, mRId, prov, city, county, town, schoolType, scId, g, 0);
 		}
 	}
 	/**

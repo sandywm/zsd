@@ -27,6 +27,7 @@ public interface StudyStuQfTjManager {
 	 * @param prov 省
 	 * @param city 市
 	 * @param county 县
+	 * @param town 镇
 	 * @param schoolType 学段
 	 * @param schoolId 学校编号
 	 * @param gradeName 年级名称
@@ -37,7 +38,7 @@ public interface StudyStuQfTjManager {
 	Integer addQFTJ(Integer userId,Integer subId,  
 			Integer oneZdSuccNum,Integer oneZdFailNum,Integer againXxSuccNum, Integer againXxFailNum,
 			Integer noRelateNum, Integer relateZdFailNum,Integer relateXxSuccNum, Integer relateXxFailNum, String rate,
-			String prov,String city, String county, Integer schoolType, Integer schoolId,String gradeName, Integer classId) throws WEBException;
+			String prov,String city, String county, String town,Integer schoolType, Integer schoolId,String gradeName, Integer classId) throws WEBException;
 	/**
 	 * 根据主键获取统计实体信息
 	 * @author wm

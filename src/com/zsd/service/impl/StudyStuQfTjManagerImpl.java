@@ -32,7 +32,7 @@ public class StudyStuQfTjManagerImpl implements StudyStuQfTjManager{
 			Integer againXxFailNum, Integer noRelateNum,
 			Integer relateZdFailNum, Integer relateXxSuccNum,
 			Integer relateXxFailNum, String rate, String prov, String city,
-			String county, Integer schoolType, Integer schoolId,
+			String county, String town,Integer schoolType, Integer schoolId,
 			String gradeName, Integer classId) throws WEBException {
 		// TODO Auto-generated method stub
 		try {
