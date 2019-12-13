@@ -24,7 +24,7 @@
 					<i class="iconfont layui-extend-tuichu"></i>
 					退出
 				</span>
-			</div>
+			</div> 
 			<p id="welcomeTxt"></p>
 		</div>
 		<div class="layer"></div>

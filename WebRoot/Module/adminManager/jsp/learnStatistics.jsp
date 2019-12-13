@@ -283,7 +283,7 @@
 						    		$('.filter').addClass('hasMargBot');
 						    		$('.cityItem').hide().remove();
 						    		$('.countyItem').hide().remove();
-						    		$('.townItem').hide().remove();
+						    		$('.townItem').hide().remove(); 
 						    		$('.schTypeItem').hide().remove();
 						    		$('.schSelItem').hide().remove();
 						    		$('#cityInp').val(json.city);
