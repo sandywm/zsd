@@ -81,7 +81,7 @@ public class UserAction extends DispatchAction {
 			if(roleName.equals("超级管理员") || roleName.equals("知识点管理员")){
 				urlPage = "managerPage";
 			}else if(roleName.equals("管理员")){
-				urlPage = "";
+				urlPage = "adminPage";
 			}else{
 				urlPage = "welcomePage";
 			}
