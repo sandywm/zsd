@@ -470,7 +470,6 @@ public class ReportCenterAction  extends DispatchAction{
 												if(classId > 0){//无需判断学段
 													if(stuId > 0){//无需判断学段
 														if(qftj.getUser().getId().equals(stuId)){
-															System.out.println("测试");
 															flag = true;
 														}
 													}else{

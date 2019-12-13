@@ -186,6 +186,7 @@ public class UserDaoImpl implements UserDao {
 		}else if(!prov.equals("")){//指定省
 			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.prov = '"+prov+"')";
 		}
+		hql += "  and u.schoolId > 0";
 		int offset = (pageNo - 1) * pageSize;
 		if (offset < 0) {
 			offset = 0;
@@ -220,6 +221,7 @@ public class UserDaoImpl implements UserDao {
 		}else if(!prov.equals("")){//指定省
 			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.prov = '"+prov+"')";
 		}
+		hql += "  and u.schoolId > 0";
 		Object countObj = sess.createQuery(hql).uniqueResult();
 		return CommonTools.longToInt(countObj);
 	}
