@@ -261,7 +261,7 @@
 						    		$('.schTypeItem').hide().remove();
 						    		$('#cityInp').val(json.city);
 						    		$('#countyInp').val(json.county);
-						    		$('#townInp').val(json.county);
+						    		$('#townInp').val(json.town);
 						    		provVal = json.prov;
 						    		cityVal = json.city;
 						    		countyVal = json.county;
@@ -288,7 +288,7 @@
 						    		$('.schSelItem').hide().remove();
 						    		$('#cityInp').val(json.city);
 						    		$('#countyInp').val(json.county);
-						    		$('#townInp').val(json.county);
+						    		$('#townInp').val(json.town);
 						    		provVal = json.prov;
 						    		cityVal = json.city;
 						    		countyVal = json.county;
@@ -306,7 +306,7 @@
 						    		$('.gradeSelItem').hide().remove();
 						    		$('#cityInp').val(json.city);
 						    		$('#countyInp').val(json.county);
-						    		$('#townInp').val(json.county);
+						    		$('#townInp').val(json.town);
 						    		$('#schInp').val(json.schoolId);
 						    		$('#gradeInp').val(json.gradeName);
 						    		provVal = json.prov;
