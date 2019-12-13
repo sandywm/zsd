@@ -25,6 +25,7 @@
 					退出
 				</span>
 			</div>
+			<p id="welcomeTxt"></p>
 		</div>
 		<div class="logOutPopWin layui-anim layui-anim-scale">
 			<div class="topPopWin">

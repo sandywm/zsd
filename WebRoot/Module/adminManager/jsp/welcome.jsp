@@ -26,7 +26,6 @@
 				</span>
 			</div>
 			<p id="welcomeTxt"></p>
-			
 		</div>
 		<div class="layer"></div>
 		<div class="logOutPopWin layui-anim layui-anim-scale">
