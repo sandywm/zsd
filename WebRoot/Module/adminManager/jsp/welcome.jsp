@@ -25,6 +25,8 @@
 					退出
 				</span>
 			</div>
+			<p id="welcomeTxt"></p>
+			
 		</div>
 		<div class="layer"></div>
 		<div class="logOutPopWin layui-anim layui-anim-scale">
@@ -187,16 +189,18 @@
 					    dataType:"json",
 					    url:"/user.do?action=getManagerDetail",
 					    success:function (json){
-					    //	console.log(json)
+					    	console.log(json)
 					    	if(json.msg == 'success'){
 					    		currRoleName = json.roleName;
 					    		if(json.roleName == 'prov'){
 						    		provVal = json.prov;
+						    		$('#welcomeTxt').html('欢迎您，' + json.prov +' 管理员');
 						    	}else if(json.roleName == 'city'){
 						    		$('.cityItem').hide().remove();
 						    		provVal = json.prov;
 						    		cityVal = json.city;
 						    		$('#cityInp').val(json.city);
+						    		$('#welcomeTxt').html('欢迎您，' + json.prov + json.city + ' 管理员');
 						    	}else if(json.roleName == 'county'){
 						    		$('.cityItem').hide().remove();
 						    		$('.countyItem').hide().remove();
@@ -204,6 +208,7 @@
 						    		cityVal = json.city;
 						    		$('#cityInp').val(json.city);
 						    		countyVal = json.county;
+						    		$('#welcomeTxt').html('欢迎您，' + json.prov + json.city + json.county + '管理员');
 						    	}else if(json.roleName == 'town'){
 						    		$('.cityItem').hide().remove();
 						    		$('.countyItem').hide().remove();
@@ -215,6 +220,7 @@
 						    		cityVal = json.city;
 						    		countyVal = json.county;
 						    		townVal = json.town;
+						    		$('#welcomeTxt').html('欢迎您，' + json.prov + json.city + json.county + json.town + '管理员');
 						    	}else if(json.roleName == 'schoolType'){
 						    		$('.cityItem').hide().remove();
 						    		$('.countyItem').hide().remove();
@@ -228,6 +234,13 @@
 						    		countyVal = json.county;
 						    		townVal = json.town;
 						    		schTypeVal = json.schoolType;
+						    		if(json.schoolType == 1){
+						    			$('#welcomeTxt').html('欢迎您，' + json.prov + json.city + json.county + json.town + '-小学 管理员');
+						    		}else if(json.schoolType == 2){
+						    			$('#welcomeTxt').html('欢迎您，' + json.prov + json.city + json.county + json.town + '-初中  管理员');
+						    		}else if(json.schoolType == 3){
+						    			$('#welcomeTxt').html('欢迎您，' + json.prov + json.city + json.county + json.town + '-高中  管理员');
+						    		}
 						    		if(json.schooList.length > 0){
 						    			schoolList = json.schooList;
 						    		}else{
@@ -248,6 +261,7 @@
 						    		townVal = json.town;
 						    		schTypeVal = json.schoolType;
 						    		yearSystem = json.yearSystem;
+						    		$('#welcomeTxt').html('欢迎您，' + json.prov + json.city + json.county + json.town +'--'+ json.schoolName +' 管理员');
 						    	}else if(json.roleName == 'grade'){
 						    		$('.cityItem').hide().remove();
 						    		$('.countyItem').hide().remove();
@@ -266,6 +280,7 @@
 						    		townVal = json.town;
 						    		schTypeVal = json.schoolType;
 						    		yearSystem = json.yearSystem;
+						    		$('#welcomeTxt').html('欢迎您，' + json.prov + json.city + json.county + json.town +'--'+ json.schoolName + json.gradeName +' 管理员');
 						    	}else if(json.msg == 'noInfo'){
 							    	
 							    }

@@ -547,7 +547,7 @@ layui.define(["form","jquery","table"],function(exports){
 			type:'post',
 			timeout:10000,
 			success:function(json){
-				console.log(json)
+				//console.log(json)
 				layer.closeAll('loading');
 				$('#stDate').val(json.sDate);
 				$('#edDate').val(json.eDate);
