@@ -121,7 +121,7 @@
 					</div>
 					<div class="itemDivs" style="width:120px;">
 						<div class="layui-input-inline layui-form">
-							<input type="hidden" id="subIdInp" value="-1"/>
+							<input type="hidden" id="subIdInp" value="0"/>
 							<select id="subSel" lay-filter="subSel"></select>
 						</div>
 					</div>
