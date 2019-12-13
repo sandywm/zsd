@@ -26,7 +26,6 @@
 				</span>
 			</div>
 		</div>
-		<div class="layer"></div>
 		<div class="logOutPopWin layui-anim layui-anim-scale">
 			<div class="topPopWin">
 				<p>退出系统提示</p>
@@ -44,7 +43,7 @@
 			<div class="leftNav">
 				<ul>
 					<li class="leftNavItem">
-						<a href="javascript:void(0)">勤奋报告</a>
+						<a href="reportCenter.do?action=goQfbgPage">勤奋报告</a>
 					</li>
 					<li class="leftNavItem active">
 						<a href="javascript:void(0)">知识典学习统计</a>
@@ -125,7 +124,7 @@
 							<select id="subSel" lay-filter="subSel"></select>
 						</div>
 					</div>
-					<div class="itemDivs_spec" style="float:left;margin-right:15px;">
+					<div class="itemDivs_spec" style="float:left;margin-right:15px;margin-bottom:15px;">
 						<div class="layui-input-inline" style="width:120px;">
 							 <input id="stDate" type="text" placeholder="请选择起始时间" readonly class="layui-input"/>
 						</div>
@@ -217,8 +216,6 @@
 							form.append(input1);   //将查询参数控件提交到表单上
 						  	form.submit();
 							layer.closeAll('loading');
-
-						
 					});
 				},
 				loadQfRepInfo : function(){
@@ -239,6 +236,7 @@
 						    		cityVal = json.city;
 						    		$('#cityInp').val(json.city);
 						    	}else if(json.roleName == 'county'){
+						    		$('.filter').addClass('hasMargBot');
 						    		$('.cityItem').hide().remove();
 						    		$('.countyItem').hide().remove();
 						    		provVal = json.prov;
@@ -246,6 +244,7 @@
 						    		$('#cityInp').val(json.city);
 						    		countyVal = json.county;
 						    	}else if(json.roleName == 'town'){
+						    		$('.filter').addClass('hasMargBot');
 						    		$('.cityItem').hide().remove();
 						    		$('.countyItem').hide().remove();
 						    		$('.townItem').hide().remove();
@@ -257,6 +256,7 @@
 						    		countyVal = json.county;
 						    		townVal = json.town;
 						    	}else if(json.roleName == 'schoolType'){
+						    		$('.filter').addClass('hasMargBot');
 						    		$('.cityItem').hide().remove();
 						    		$('.countyItem').hide().remove();
 						    		$('.townItem').hide().remove();
@@ -275,6 +275,7 @@
 						    			layer.msg('暂无学校');
 						    		}
 						    	}else if(json.roleName == 'school'){
+						    		$('.filter').addClass('hasMargBot');
 						    		$('.cityItem').hide().remove();
 						    		$('.countyItem').hide().remove();
 						    		$('.townItem').hide().remove();
@@ -290,6 +291,7 @@
 						    		schTypeVal = json.schoolType;
 						    		yearSystem = json.yearSystem;
 						    	}else if(json.roleName == 'grade'){
+						    		$('.filter').addClass('hasMargBot');
 						    		$('.cityItem').hide().remove();
 						    		$('.countyItem').hide().remove();
 						    		$('.townItem').hide().remove();

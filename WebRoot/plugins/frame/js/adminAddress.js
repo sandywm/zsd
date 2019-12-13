@@ -760,12 +760,9 @@ layui.define(["form","jquery","table"],function(exports){
 			subIdInp = $('#subIdInp').val(),
 			stuNameInp = $('#stuNameInp').val();
 		//prov,city,county,town,schoolType,schoolId,gradeName,classId,stuId(可不传),subId,sDate,eDate,userId,roleId
-		var currField = {province:provVal,city:cityInp,county:countyInp,town:townInp,schoolType:schTypeVal,
-				schoolId:schInp,gradeName:gradeInp,classId:classInp,subId:subIdInp,stuId:stuIdInp,sDate:stDate,eDate:edDate,stuName:stuNameInp};
 		var field = {province:escape(provVal),city:escape(cityInp),county:escape(countyInp),town:escape(townInp),schoolType:schTypeVal,
 					schoolId:schInp,gradeName:gradeInp,classId:classInp,subId:subIdInp,stuId:stuIdInp,sDate:stDate,eDate:edDate,stuName:escape(stuNameInp)};
-		console.log(currField)
-		console.log(field)
+		//console.log(field)
 		table.render({
 			elem: '#xxTjTable',
 			height: 'full-260',
@@ -801,7 +798,8 @@ layui.define(["form","jquery","table"],function(exports){
 				
 			]],
 			done : function(res, curr, count){
-			//	console.log(res)
+				$('#stDate').val(res.sDate);
+				$('#edDate').val(res.eDate);
 				layer.closeAll('loading');
 			}
 		});
