@@ -46,7 +46,7 @@ public class StudyStuQfTjManagerImpl implements StudyStuQfTjManager{
 			StudyStuQfTjInfo qftj = new StudyStuQfTjInfo(subDao.get(sess, subId), schDao.get(sess, schoolId), uDao.get(sess, userId),
 					CurrentTime.getStringDate(), oneZdSuccNum, oneZdFailNum,againXxSuccNum, againXxFailNum,
 					noRelateNum, relateZdFailNum,relateXxSuccNum, relateXxFailNum, rate,
-					prov, city, county, "",schoolType, gradeName, cDao.get(sess, classId));
+					prov, city, county, town,schoolType, gradeName, cDao.get(sess, classId));
 			tjDao.save(sess, qftj);
 			tran.commit();
 			return qftj.getId();
