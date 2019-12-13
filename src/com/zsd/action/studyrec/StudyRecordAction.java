@@ -1450,10 +1450,10 @@ public class StudyRecordAction extends DispatchAction {
 				 map_d.put("noSuccStudyNumber", allStudyNumber - succStudyNumber);
 				 map_d.put("completeRate", completeRate);
 				 list_d.add(map_d);
-				 map.put("data", list_d);
-				 map.put("count", count);
-				 map.put("code", 0);
 			}
+			map.put("data", list_d);
+			map.put("count", count);
+			map.put("code", 0);
 		}
 		map.put("msg", msg);
 		CommonTools.getJsonPkg(map, response);
