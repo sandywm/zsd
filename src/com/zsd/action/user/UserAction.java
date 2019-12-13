@@ -880,7 +880,7 @@ public class UserAction extends DispatchAction {
 									if(ru.getGradeNo().equals(0)){
 										roleName = "school";
 									}else{
-										map.put("gradeNo", ru.getGradeNo());
+										map.put("gradeName", Convert.NunberConvertChinese(ru.getGradeNo()));
 										if(ru.getClassId().equals(0)){
 											roleName = "grade";
 										}else{
