@@ -4,6 +4,14 @@
  */
 package com.zsd.action.studyrec;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,11 +24,18 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
 
+import com.zsd.tools.FileOpration;
+import com.zsd.util.WebUrl;
 import com.zsd.action.base.Transcode;
 import com.zsd.factory.AppFactory;
 import com.zsd.module.BuffetAbilityRelationInfo;
@@ -1361,7 +1376,12 @@ public class StudyRecordAction extends DispatchAction {
 		String town =  Transcode.unescape_new1("town", request);
 		Integer schoolType = CommonTools.getFinalInteger("schoolType", request);
 		Integer schoolId = CommonTools.getFinalInteger("schoolId", request);
-		Integer gradeNo = CommonTools.getFinalInteger("gradeNo", request);
+		String gradeName = Transcode.unescape_new1("gradeName", request);
+		String gradeNoStr = Convert.ChineseConvertNumber(gradeName);
+		Integer gradeNo = 0;
+		if(!gradeNoStr.equals("")){
+			gradeNo = Integer.parseInt(gradeNoStr);
+		}
 		Integer classId = CommonTools.getFinalInteger("classId", request);
 		Integer stuId = CommonTools.getFinalInteger("stuId", request);
 		String sDate = CommonTools.getFinalStr("sDate", request);//没选开始时间初始为""
@@ -1379,7 +1399,13 @@ public class StudyRecordAction extends DispatchAction {
 				Map<String,Object> map_d = new HashMap<String,Object>();
 				Integer userId = user.getId();
 				 map_d.put("stuName", user.getRealName());
-				 map_d.put("stuSex", user.getSex());
+				 String sex = user.getSex();
+				 if(sex.equals("m")){
+					 sex = "男";
+				 }else if(sex.equals("f")){
+					 sex = "女";
+				 }
+				 map_d.put("stuSex", sex);
 				 List<School> sList = sm.listInfoById(user.getSchoolId());
 				 if(sList.size() > 0){
 					 School school = sList.get(0);
@@ -1428,6 +1454,239 @@ public class StudyRecordAction extends DispatchAction {
 		map.put("msg", msg);
 		map.put("stuList", list_d);
 		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 导出学习统计文件到excel
+	 * @author wm
+	 * @date 2019-12-12 下午09:53:55 
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward exportLogInfoToExcel(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		StudyLogManager slm = (StudyLogManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_LOG_INFO);
+		UserManager um = (UserManager)AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
+		SchoolManager sm = (SchoolManager)AppFactory.instance(null).getApp(Constants.WEB_SCHOOL_INFO);
+		RoleUserInfoManager rum = (RoleUserInfoManager)AppFactory.instance(null).getApp(Constants.WEB_ROLE_USER_INFO);
+		ClassInfoManager cm = (ClassInfoManager)AppFactory.instance(null).getApp(Constants.WEB_CLASS_INFO);
+		String stuName = Transcode.unescape_new1("stuName", request);
+		String province = Transcode.unescape_new1("province", request);
+		String city = Transcode.unescape_new1("city", request);
+		String county = Transcode.unescape_new1("county", request);
+		String town =  Transcode.unescape_new1("town", request);
+		Integer schoolType = CommonTools.getFinalInteger("schoolType", request);
+		Integer schoolId = CommonTools.getFinalInteger("schoolId", request);
+		String gradeName = Transcode.unescape_new1("gradeName", request);
+		String gradeNoStr = Convert.ChineseConvertNumber(gradeName);
+		Integer gradeNo = 0;
+		if(!gradeNoStr.equals("")){
+			gradeNo = Integer.parseInt(gradeNoStr);
+		}
+		Integer classId = CommonTools.getFinalInteger("classId", request);
+		Integer stuId = CommonTools.getFinalInteger("stuId", request);
+		String sDate = CommonTools.getFinalStr("sDate", request);//没选开始时间初始为""
+		String eDate = CommonTools.getFinalStr("eDate", request);;//没选结束时间初始为""
+		Integer subId = CommonTools.getFinalInteger("subId", request);//科目编号可为-1
+		List<User> uList = um.listPageStuLogByOption(stuName, province, city, county, town, schoolType, schoolId, gradeNo, classId, stuId, 1, 10000000);
+		if(uList.size() > 0){
+			// 第一步，创建一个webbook，对应一个Excel文件  
+	        HSSFWorkbook wb = new HSSFWorkbook();  
+	        // 第二步，在webbook中添加一个sheet,对应Excel文件中的sheet  
+	        HSSFSheet sheet = wb.createSheet("学生学习记录统计");  
+	        // 第三步，在sheet中添加表头第0行,注意老版本poi对Excel的行数列数有限制short  
+	        HSSFRow row = sheet.createRow(0);  
+	        // 第四步，创建单元格，并设置值表头 设置表头居中  
+	        HSSFCellStyle style = wb.createCellStyle();  
+	        style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式  
+	        HSSFCell cell = row.createCell(0);  
+	        cell.setCellStyle(style);  
+	        cell.setCellValue("学生姓名");  
+	        cell = row.createCell(1);  
+	        cell.setCellStyle(style);  
+	        cell.setCellValue("性别");  
+	        cell = row.createCell(2);  
+	        cell.setCellStyle(style);  
+	        cell.setCellValue("省");  
+	        cell = row.createCell(3);  
+	        cell.setCellStyle(style);  
+	        cell.setCellValue("市");  
+	        cell = row.createCell(4);  
+	        cell.setCellStyle(style);  
+	        cell.setCellValue("县");  
+	        cell = row.createCell(5);  
+	        cell.setCellStyle(style);  
+	        cell.setCellValue("乡");  
+	        cell = row.createCell(6);  
+	        cell.setCellStyle(style);  
+	        cell.setCellValue("学段");  
+	        cell = row.createCell(7);  
+	        cell.setCellStyle(style);  
+	        cell.setCellValue("学校"); 
+	        cell = row.createCell(8);  
+	        cell.setCellStyle(style);  
+	        cell.setCellValue("年级");
+	        cell = row.createCell(9);  
+	        cell.setCellStyle(style);  
+	        cell.setCellValue("班级");
+	        cell = row.createCell(10);  
+	        cell.setCellStyle(style);  
+	        cell.setCellValue("已完成知识点");
+	        cell = row.createCell(11);  
+	        cell.setCellStyle(style);  
+	        cell.setCellValue("未完成知识点");
+	        cell = row.createCell(12);  
+	        cell.setCellStyle(style);  
+	        cell.setCellValue("完成率");
+			for(Integer i = 0; i < uList.size() ; i++){
+				User user = uList.get(i);
+				row = sheet.createRow((int) i + 1);
+	        	// 第四步，创建单元格，并设置值  
+	        	HSSFCell cell_data = row.createCell(0); 
+	        	cell_data.setCellStyle(style);
+	        	cell_data.setCellValue(user.getRealName());
+	        	
+	        	String sex = user.getSex();
+				 if(sex.equals("m")){
+					 sex = "男";
+				 }else if(sex.equals("f")){
+					 sex = "女";
+				 }
+	        	cell_data = row.createCell(1); 
+	        	cell_data.setCellStyle(style);
+	        	cell_data.setCellValue(sex);
+	        	
+				 List<School> sList = sm.listInfoById(user.getSchoolId());
+				 if(sList.size() > 0){
+					 School school = sList.get(0);
+					 Integer schoolType_db = school.getSchoolType();
+					 String schoolTypeChi = "";
+					 if(schoolType_db.equals(1)){
+						 schoolTypeChi = "小学";
+					 }else if(schoolType_db.equals(2)){
+						 schoolTypeChi = "初中";
+					 }else if(schoolType_db.equals(3)){
+						 schoolTypeChi = "高中";
+					 }
+					 String gradeName_tmp = "";
+					 String className_tmp = "";
+					 List<RoleUserInfo> ruList = rum.listUserRoleInfoByuserId(user.getId());
+					 if(ruList.size() > 0){
+						 Integer gradeNo_db = ruList.get(0).getGradeNo();
+						 gradeName_tmp = Convert.NunberConvertChinese(gradeNo_db);
+						 Integer classId_db = ruList.get(0).getClassId();
+						 List<ClassInfo> cList = cm.listClassInfoById(classId_db);
+						 if(cList.size() > 0){
+							 className_tmp = cList.get(0).getClassName();
+						 }
+					 }
+					cell_data = row.createCell(2);
+		        	cell_data.setCellStyle(style);
+		        	cell_data.setCellValue(school.getProv());
+		        	
+		        	cell_data = row.createCell(3);
+		        	cell_data.setCellStyle(style);
+		        	cell_data.setCellValue(school.getCity());
+		        	
+		        	cell_data = row.createCell(4);
+		        	cell_data.setCellStyle(style);
+		        	cell_data.setCellValue(school.getCounty());
+		        	
+		        	cell_data = row.createCell(5);
+		        	cell_data.setCellStyle(style);
+		        	cell_data.setCellValue(school.getTown());
+		        	
+		        	cell_data = row.createCell(6);
+		        	cell_data.setCellStyle(style);
+		        	cell_data.setCellValue(schoolTypeChi);
+		        	
+		        	cell_data = row.createCell(7);
+		        	cell_data.setCellStyle(style);
+		        	cell_data.setCellValue(school.getSchoolName());
+		        	
+		        	cell_data = row.createCell(8);
+		        	cell_data.setCellStyle(style);
+		        	cell_data.setCellValue(gradeName_tmp);
+		        	
+		        	cell_data = row.createCell(9);
+		        	cell_data.setCellStyle(style);
+		        	cell_data.setCellValue(className_tmp);
+		        	
+		        	//获取该学生的学习统计
+					 Integer succStudyNumber = 0;
+					 String completeRate = "0.00%";
+					 Integer allStudyNumber = slm.listSlInfoByopt(user.getId(), subId, 0, 0, sDate, eDate).size();
+					 if(allStudyNumber > 0){
+						 //获取完成的记录
+						 succStudyNumber = slm.listSlInfoByopt(user.getId(), subId, 2, 0, sDate, eDate).size();
+						 completeRate = String.format("%.2f", (double)succStudyNumber * 100 / allStudyNumber) + "%";//完成率
+					 }
+					 
+					cell_data = row.createCell(10);
+		        	cell_data.setCellStyle(style);
+		        	cell_data.setCellValue(allStudyNumber - succStudyNumber);
+		        	
+		        	cell_data = row.createCell(11);
+		        	cell_data.setCellStyle(style);
+		        	cell_data.setCellValue(succStudyNumber);
+		        	
+		        	cell_data = row.createCell(12);
+		        	cell_data.setCellStyle(style);
+		        	cell_data.setCellValue(completeRate);
+				 }
+			}
+			// 第六步，将文件存到指定位置
+	        String absoFilePath = "";//绝对地址
+	        try  {  
+//	        	String subFolder = CurrentTime.getStringTime() + "_temp";
+	        	String fileName = "stuStudy_"+CurrentTime.getStringTime()+".xls";
+	        	String folder = WebUrl.DATA_URL_PRO + "Module\\excelTemp\\";
+//	        	fileFoder_temp = folder+subFolder;
+	        	absoFilePath = folder +fileName;
+	        	File file = new File(folder);
+				if(!file.exists()){
+					file.mkdirs();
+				}
+	            FileOutputStream fout = new FileOutputStream(absoFilePath);  
+	            wb.write(fout);  
+	            fout.close();  
+		        //第七步 下载文件到客户端
+		        OutputStream fos = null;
+		        BufferedOutputStream bos = null;
+		        InputStream fis = null;
+		        BufferedInputStream bis = null;
+		        fis = new FileInputStream(new File(absoFilePath));
+				bis = new BufferedInputStream(fis);
+				fos = response.getOutputStream();
+				bos = new BufferedOutputStream(fos);
+				//这个就就是弹出下载对话框的关键代码
+				response.setHeader("Pragma", "No-cache");
+				response.setHeader("Cache-Control", "No-cache");
+				response.setDateHeader("Expires", 0); 
+		        response.setHeader("Content-disposition","attachment;filename=" +fileName);
+		        response.setContentType("application/x-download");
+		        int bytesRead = 0;
+		        byte[] buffer = new byte[8192];
+		        while ((bytesRead = bis.read(buffer,0,8192)) != -1) {
+		        	fos.write(buffer, 0, bytesRead);
+		        }
+		        fos.flush();
+		        fis.close();
+		        bis.close();
+		        fos.close();
+		        bos.close();
+	        }  
+	        catch (IOException e){  
+	            //e.printStackTrace();  
+	        }
+	        //第七步 删除临时上传的文件
+	        FileOpration.deleteFile(absoFilePath);
+		}
 		return null;
 	}
 }
