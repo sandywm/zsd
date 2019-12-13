@@ -561,7 +561,10 @@ public class BaseInfoAction extends DispatchAction {
 		ClassInfoManager cm = (ClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_CLASS_INFO);
 		Integer schoolId = CommonTools.getFinalInteger("schoolId", request);
 		String gradeName = Transcode.unescape_new1("gradeName", request);
-		Integer gradeNo = Integer.parseInt(Convert.ChineseConvertNumber(gradeName));
+		Integer gradeNo = 0;
+		if(!gradeName.equals("")){
+			gradeNo = Integer.parseInt(Convert.ChineseConvertNumber(gradeName));
+		}
 		String msg = "noInfo";
 		Map<String,Object> map = new HashMap<String,Object>();
 		List<Object> list_d = new ArrayList<Object>();

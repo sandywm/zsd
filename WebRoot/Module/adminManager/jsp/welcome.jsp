@@ -56,7 +56,7 @@
 				<input type="hidden" id="countyInp"/>
 				<input type="hidden" id="townInp"/>
 				<input type="hidden" id="schInp" value="0"/>
-				<input type="hidden" id="gradeInp" value="0"/>
+				<input type="hidden" id="gradeInp" value=""/>
 				<input type="hidden" id="classInp" value="0"/>
 				<div class="filter layui-clear">
 					<div class="cityItem itemDivs">
@@ -119,6 +119,12 @@
 							</select>
 						</div>
 					</div>
+					<div class="itemDivs" style="width:120px;">
+						<div class="layui-input-inline layui-form">
+							<input type="hidden" id="subIdInp" value="-1"/>
+							<select id="subSel" lay-filter="subSel"></select>
+						</div>
+					</div>
 					<div class="itemDivs_spec" style="float:left;margin-right:15px;">
 						<div class="layui-input-inline" style="width:120px;">
 							 <input id="stDate" type="text" placeholder="请选择起始时间" readonly class="layui-input"/>
@@ -128,14 +134,7 @@
 							 <input id="edDate" type="text" placeholder="请选择结束时间" readonly class="layui-input"/>
 						</div>
 					</div>
-					<div class="itemDivs">
-						<div class="layui-input-inline layui-form">
-							<input type="hidden" id="subId" value="0"/>
-							<select id="stuSel" lay-filter="stuSel">
-								<option value=''>请选择学科</option>
-							</select>
-						</div>
-					</div>
+					
 					<div style="float:left;">
 						<div class="layui-input-inline">
 							<button id="queryBtn" class="layui-btn" style="background:#4d47f1;"><i class="layui-icon layui-icon-search"></i></button>
@@ -143,11 +142,12 @@
 					</div>
 					
 				</div>
-				
-				<div class="echartWrap">
-					122
+				<div id="qinfenDataBox" class="echartWrap"></div>
+				<div class="rateWrap">
+					<p id="rateTxt"></p>
+					<p id="rateAllTxt"></p>
 				</div>
-				
+				<div class="noDataImg"><img src="Module/adminManager/images/noData.png" alt="暂无勤奋报告记录"/><p>暂无勤奋报告记录</p></div>
 			</div>
 		</div>
 	</body>
@@ -155,7 +155,7 @@
 	<script src="/plugins/layui/layui.js"></script>
 	<script src="/plugins/echart/echarts.min.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript">
-		var currRoleName = '',schTypeVal = 0,schoolList = [],yearSystem = 0;
+		var currRoleName = '',schTypeVal = 0,schoolList = [],yearSystem = 0,currPage = 'qfRepPage';
 		layui.config({
 			base : "/plugins/frame/js/"
 		}).use(['layer','adminAddress','form','laydate'],function(){
@@ -177,24 +177,6 @@
 						},function(){
 							window.location.href = "login.do?action=loginOut";
 						});
-					});
-					$('#queryBtn').on('click',function(){
-						var stDate = $('#stDate').val(),
-							edDate = $('#edDate').val();
-						if(stDate == '' && edDate != ''){
-							layer.msg('请选择开始时间');
-							return;
-						}
-						if(edDate == '' && stDate != ''){
-							layer.msg('请选择结束时间');
-							return;
-						}
-						if(stDate != '' && edDate != ''){
-							if(stDate > edDate){
-								layer.msg('开始时间不能大于结束时间');
-								return;
-							}
-						}
 					});
 				},
 				loadQfData : function(){
@@ -320,6 +302,8 @@
 						    		$('#cityInp').val(json.city);
 						    		$('#countyInp').val(json.county);
 						    		$('#townInp').val(json.county);
+						    		$('#schInp').val(json.schoolId);
+						    		$('#gradeInp').val(json.gradeName);
 						    		provVal = json.prov;
 						    		cityVal = json.city;
 						    		countyVal = json.county;

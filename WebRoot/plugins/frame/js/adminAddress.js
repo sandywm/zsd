@@ -68,8 +68,6 @@ layui.define(["form","jquery"],function(exports){
             	that.getTownData(currTownVal,'loadTown');
             	$("select[name=town]").attr('disabled',false);
             }
-            
-            
             //form.render();
             form.on('select(province)', function (proData) {
                 $("select[name=area]").html('<option value="">请选择县/区</option>');
@@ -105,8 +103,7 @@ layui.define(["form","jquery"],function(exports){
                 }
                 form.render();
             });
-        })
-        
+        });
         //学段form select
 		form.on('select(schTypeSel)', function(data){
 			if(data.value == ''){
@@ -117,10 +114,15 @@ layui.define(["form","jquery"],function(exports){
 			$('#schSel').html('<option value="">请选择学校</option>').val('');
 			$('#gradeSel').val('').html('<option value="">请选择年级</option>');
 			$('#classSel').val('').html('<option value="">请选择班级</option>');
+			$('#stuSel').val('').html('<option value="">请选择学生</option>');
 			$('#schInp').val(0);
-			$('#gradeInp').val(0);
+			$('#gradeInp').val('');
 			$('#classInp').val(0);
+			$('#stuInp').val(0);
 			adminAddress.getSchoolData();
+			if(currPage == 'qfRepPage'){
+	    		adminAddress.loadQfData();
+	    	}
 			form.render();
 		});
         
@@ -132,14 +134,36 @@ layui.define(["form","jquery"],function(exports){
         		$('#classInp').val(data.value);
         	}
         	var gradeInp = $('#gradeInp').val();
-        	if(gradeInp == '0'){
+        	if(gradeInp == ''){
         		layer.msg('请选择年级');
         		return;
         	}
 		});
+        
+        $('#queryBtn').on('click',function(){
+			var stDate = $('#stDate').val(),
+				edDate = $('#edDate').val();
+			if(stDate == '' && edDate != ''){
+				layer.msg('请选择开始时间');
+				return;
+			}
+			if(edDate == '' && stDate != ''){
+				layer.msg('请选择结束时间');
+				return;
+			}
+			if(stDate != '' && edDate != ''){
+				if(stDate > edDate){
+					layer.msg('开始时间不能大于结束时间');
+					return;
+				}
+			}
+			if(currPage == 'qfRepPage'){
+	    		adminAddress.loadQfData();
+	    	}
+		});
+       
     };
     Address.prototype.createClasses  = function(list){
-    	console.log(list)
     	var str = '<option value="">请选择班级</option>';
 		for(var i=0;i<list.length;i++){
 			str += '<option value="'+ list[i].classId +'">'+ list[i].className +'</option>';
@@ -150,11 +174,19 @@ layui.define(["form","jquery"],function(exports){
     //年级form
     form.on('select(gradeSel)', function(data){
     	if(data.value == ''){
-    		$('#gradeInp').val(0);
+    		$('#gradeInp').val('');
     	}else{
     		$('#gradeInp').val(data.value);
     	}
+    	$('#classSel').val('').html('<option value="">请选择班级</option>');
+		$('#stuSel').val('').html('<option value="">请选择学生</option>');
+		$('#classInp').val(0);
+		$('#stuInp').val(0);
+		
     	adminAddress.createClassData();
+    	if(currPage == 'qfRepPage'){
+			adminAddress.loadQfData();
+		}
 	});
    //加载市数据
     Address.prototype.citys = function(citys) {
@@ -186,9 +218,14 @@ layui.define(["form","jquery"],function(exports){
 			$('#classSel').val('').html('<option value="">请选择班级</option>');
 			$('#stuSel').val('').html('<option value="">请选择学生</option>');
 			$('#schInp').val(0);
-			$('#gradeInp').val(0);
+			$('#gradeInp').val('');
 			$('#classInp').val(0);
 			$('#stuInp').val(0);
+			
+			if(currPage == 'qfRepPage'){
+	    		adminAddress.loadQfData();
+	    	}
+			
             form.render();
         });
     };
@@ -233,17 +270,20 @@ layui.define(["form","jquery"],function(exports){
 				$('#gradeSel').val('').html('<option value="">请选择年级</option>');
 				$('#classSel').val('').html('<option value="">请选择班级</option>');
 				$('#stuSel').val('').html('<option value="">请选择学生</option>');
-				$('#gradeInp').val(0);
+				$('#gradeInp').val('');
 				$('#classInp').val(0);
 				$('#stuInp').val(0);
 				form.render();
 			}
+			if(currPage == 'qfRepPage'){
+	    		adminAddress.loadQfData();
+	    	}
 		});
 	};
     
     //生成年级
     Address.prototype.createGradeData = function(schTypeVal,yearSystem){
-    	$('#gradeInp').val(0);
+    	$('#gradeInp').val('');
     	$('#classInp').val(0);
     	if(schTypeVal == 1){
     		if(yearSystem == 5){
@@ -313,6 +353,7 @@ layui.define(["form","jquery"],function(exports){
 		$('#gradeSel').html(str);
 		form.render();
 	};
+	//根据年级动态创建班级数据
 	Address.prototype.createClassData = function(){
 		layer.load('1');
 		var field = {schoolId:$('#schInp').val(),gradeName:escape($('#gradeInp').val())};
@@ -330,13 +371,265 @@ layui.define(["form","jquery"],function(exports){
 				}else if(json.msg == 'noInfo'){
 					$('#classSel').val('').html('<option value="">请选择班级</option>');
 					form.render();
-					layer.msg('暂无班级');
+					layer.msg('该年级下暂无班级');
 				}
 			},  
 			error:function(xhr,type,errorThrown){ 
 				console.log(type);  
 			}  
 		});
+		
+		//班级form
+		form.on('select(classSel)', function(data){
+			if(data.value == ''){
+				$('#classInp').val(0);
+				$('#stuInp').val(0);
+				$('#stuSel').val('').html('<option value="">请选择学生</option>');
+				form.render();
+			}else{
+				$('#classInp').val(data.value);
+				adminAddress.createStuData();
+			}
+			if(currPage == 'qfRepPage'){
+	    		adminAddress.loadQfData();
+	    	}
+		});
+		
+	};
+	
+	//根据班级classId动态加载学生
+	Address.prototype.createStuData = function(){
+		layer.load('1');
+		var field = {classId:$('#classInp').val()};
+		$('#stuInp').val(0);
+		$.ajax({
+			url : '/common.do?action=getSpecClassStuData',
+			dataType:'json',//服务器返回json格式数据  
+			data:field,
+			type:'post',//HTTP请求类型  
+			timeout:10000,//超时时间设置为10秒；  
+			success:function(json){   
+				layer.closeAll('loading');
+				if(json.result == 'success'){
+					adminAddress.createStuHtml(json.userList);
+				}else if(json.result == 'noInfo'){
+					$('#stuSel').val('').html('<option value="">请选择学生</option>');
+					form.render();
+					layer.msg('该班级下暂无学生');
+				}else if(json.result == 'error'){
+					$('#stuSel').val('').html('<option value="">请选择学生</option>');
+					form.render();
+					layer.msg('服务器异常');
+				}
+			},  
+			error:function(xhr,type,errorThrown){ 
+				console.log(type);  
+			}  
+		});
+	};
+	//创建学生数据结构
+	Address.prototype.createStuHtml = function(list){
+		var str = '<option value="">请选择学生</option>';
+		for(var i=0;i<list.length;i++){
+			str += '<option value="'+ list[i].userId +'">'+ list[i].userName +'</option>';
+		}
+		$('#stuSel').html(str);
+		form.render();
+		
+		//学生form
+		form.on('select(stuSel)', function(data){
+			if(data.value == ''){
+				$('#stuInp').val(0);
+			}else{
+				$('#stuInp').val(data.value);
+			}
+			if(currPage == 'qfRepPage'){
+	    		adminAddress.loadQfData();
+	    	}
+		});
+	};
+	
+	//获取学科数据
+	Address.prototype.createSubData = function(){
+		var field = {showStatus:$('#subIdInp').val()};
+		$.ajax({
+			url : '/common.do?action=getSubjectData',
+			dataType:'json',//服务器返回json格式数据  
+			data:field,
+			type:'post',//HTTP请求类型  
+			timeout:10000,//超时时间设置为10秒；  
+			success:function(json){  
+				if(json.msg == 'success'){
+					adminAddress.createSubHtml(json.data);
+				}else if(json.msg == 'noInfo'){
+					$('#subSel').val('').html('<option value="">请选择学科</option>');
+					form.render();
+					layer.msg('暂无学科');
+				}
+			},  
+			error:function(xhr,type,errorThrown){ 
+				console.log(type);  
+			}  
+		});
+	};
+	//生成学科Html
+	Address.prototype.createSubHtml = function(list){
+		var str = '<option value="-1">全部学科</option>';
+		for(var i=0;i<list.length;i++){
+			str += '<option value="'+ list[i].id +'">'+ list[i].subName +'</option>';
+		}
+		$('#subSel').html(str);
+		form.render();
+		
+		
+		//学科form
+		form.on('select(subSel)', function(data){
+			if(data.value == ''){
+				$('#subIdInp').val(0);
+				$('#subSel').val('').html('<option value="">请选择学科</option>');
+				form.render();
+			}else{
+				$('#subIdInp').val(data.value);
+				if(currPage == 'qfRepPage'){
+					adminAddress.loadQfData();
+				}
+			}
+		});
+	};
+	
+	//加载勤奋echartData
+	Address.prototype.loadQfData = function(){
+		layer.load('1');
+		var stDate = $('#stDate').val(),
+			edDate = $('#edDate').val(),
+			cityInp = $('#cityInp').val(),
+			countyInp = $('#countyInp').val(),
+			townInp = $('#townInp').val(),
+			schInp = $('#schInp').val(),
+			gradeInp = $('#gradeInp').val(),
+			classInp = $('#classInp').val(),
+			stuIdInp = $('#stuInp').val(),
+			subIdInp = $('#subIdInp').val();
+		//prov,city,county,town,schoolType,schoolId,gradeName,classId,stuId(可不传),subId,sDate,eDate,userId,roleId
+		var field = {prov:escape(provVal),city:escape(cityInp),county:escape(countyInp),town:escape(townInp),schoolType:schTypeVal,
+					schoolId:schInp,gradeName:gradeInp,classId:classInp,subId:subIdInp,stuId:stuIdInp,sDate:stDate,eDate:edDate};
+		//console.log(field)
+		$.ajax({
+			url : '/reportCenter.do?action=getQfTjData',
+			data:field, 
+			dataType:'json', 
+			type:'post',
+			timeout:10000,
+			success:function(json){
+				//console.log(json)
+				layer.closeAll('loading');
+				$('#stDate').val(json.sDate);
+				$('#edDate').val(json.eDate);
+				if(json.result == 'success'){
+					Address.prototype.loadChart(json,json.axisName1,json.axisName2);
+					$('#rateTxt').html('<span>' + json.axisName1 + '转化率为：</span>' + json.rate);
+					$('#rateAllTxt').html('<span>' + json.axisName2 + '转化率为：</span>' + json.rateAll);
+				}else if(json.result == 'noInfo'){
+					//$('#qinfenDataBox').html('暂无记录');
+					$('#qinfenDataBox').hide();
+					$('.noDataImg').show(); 
+					//app.getId('totalTxt').innerHTML = '<p style="color:#999;font-size:.4rem;">暂无勤奋报告</p>';
+					//app.getId('qinfenDataBox').style.display = 'none';
+					//app.getId('noData').style.display = 'block';
+					$('#rateTxt').html('');
+					$('#rateAllTxt').html('');
+				}
+			},
+			error:function(xhr,type,errorThrown){
+				//app.showToast(2);
+				//plus.nativeUI.toast('服务器连接超时');
+			}
+		}); 
+	}
+	
+	Address.prototype.loadChart = function(json,axisName1,axisName2){
+		$('.noDataImg').hide();
+		$('#qinfenDataBox').show();
+		var axisName = [axisName1,axisName2];
+		var myChart = echarts.init(document.getElementById('qinfenDataBox')),
+			singleData = [json.oneZdSuccNum,json.oneZdFailNum,json.againXxSuccNum,json.againXxFailNum,json.noRelateNum,json.relateZdFailNum,json.relateXxSuccNum,json.relateXxFailNum],
+			totalData = [json.oneZdSuccNumAll,json.oneZdFailNumAll,json.againXxSuccNumAll,json.againXxFailNumAll,json.noRelateNumAll,json.relateZdFailNumAll,json.relateXxSuccNumAll,json.relateXxFailNumAll];
+		 // 指定图表的配置项和数据
+		var option = {
+			title: {
+				text: ''
+			},
+			tooltip: {trigger: 'axis'},
+			legend: {
+				data: axisName,
+				x : 15
+			},
+			grid: {
+				x: 50,
+				x2: 50,
+				y: 50,
+				y2: 50
+			},
+			toolbox: {
+				y : -5,
+				feature : {
+					dataView : {show: true, readOnly: true},
+					magicType : {show: true, type: ['line', 'bar']},
+					restore : {show: true}
+					//saveAsImage : {show: true}
+				}
+			},
+			calculable: false,
+			xAxis: {
+				type: 'category',
+				data: ['一次性通过总数', '一次性未通过总数', '再次诊断(学习)通过', '再次诊断(学习)未通过', '未溯源个数', '关联诊断未通过', '关联学习通过', '关联未学习通过'],
+				axisLabel: {
+					interval:0//横轴信息全部显示
+				}
+			},
+			yAxis : [
+				{
+					type : 'value'
+				}
+			],
+			series: [{
+				name: axisName[0],
+				type: 'bar',
+				barWidth:20,
+				data: singleData,
+				itemStyle : {
+					 normal: {
+			            color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [{
+			                offset: 0,
+			                color: "#f74848" // 0% 处的颜色
+			            }, {
+			                offset: 1,
+			                color: "#ffc74c" // 100% 处的颜色
+			            }], false)
+					 }
+					
+				}
+			},{
+				name: axisName[1],
+				type: 'bar',
+				barWidth:20,
+				data: totalData,
+				itemStyle : {
+					 normal: {
+			            color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [{
+			                offset: 0,
+			                color: "#3167e1" // 0% 处的颜色
+			            }, {
+			                offset: 1,
+			                color: "#1ee8e0" // 100% 处的颜色
+			            }], false)
+					 }
+					
+				}
+			}]
+		};
+		// 使用刚指定的配置项和数据显示图表。
+		myChart.setOption(option);
 	};
     //加载县/区数据
     Address.prototype.areas = function(areas) {
@@ -354,19 +647,24 @@ layui.define(["form","jquery"],function(exports){
 		    $('#countyInp').val(name);
 		    $('#countyCode').val(value);
 		    $('#townInp').val('');
-            $('#townCode').val('');
 			
 			layer.load('1');
 			_this.getTownData(value,'selTown');
-			
+			$('.town').html('<option value="">请选择乡/镇</option>').val('');
 			$('#schSel').html('<option value="">请选择学校</option>').val('');
 			$('#gradeSel').val('').html('<option value="">请选择年级</option>');
 			$('#classSel').val('').html('<option value="">请选择班级</option>');
 			$('#stuSel').val('').html('<option value="">请选择学生</option>');
 			$('#schInp').val(0);
-			$('#gradeInp').val(0);
+			$('#gradeInp').val('');
 			$('#classInp').val(0);
 			$('#stuInp').val(0);
+			
+			form.render();
+			
+			if(currPage == 'qfRepPage'){
+				adminAddress.loadQfData();
+			}
 		});
 		
 		//选择乡镇
@@ -382,10 +680,13 @@ layui.define(["form","jquery"],function(exports){
 			$('#classSel').val('').html('<option value="">请选择班级</option>');
 			$('#stuSel').val('').html('<option value="">请选择学生</option>');
 			$('#schInp').val(0);
-			$('#gradeInp').val(0);
+			$('#gradeInp').val('');
 			$('#classInp').val(0);
 			$('#stuInp').val(0);
 			adminAddress.getSchoolData();
+			if(currPage == 'qfRepPage'){
+				adminAddress.loadQfData();
+			}
 			form.render();
 		});
     };
@@ -414,7 +715,7 @@ layui.define(["form","jquery"],function(exports){
 					$("select[name=town]").html(townHtml).removeAttr("disabled");
 					form.render();
 				}else if(json.result == 'noInfo'){
-					layer.msg('暂无乡/镇',{icon:5,anim:6,time:2000});
+					layer.msg('暂无乡/镇');
 				}
 				
 			}
@@ -424,6 +725,10 @@ layui.define(["form","jquery"],function(exports){
     var adminAddress = new Address();
     exports("adminAddress",function(){
     	adminAddress.provinces();
+    	if(currPage == 'qfRepPage'){
+    		adminAddress.loadQfData();
+    	}
+    	adminAddress.createSubData();
     	if(currRoleName == 'town'){//默认进来学段为0 加载当前镇上的全部学段的全部学校
     		adminAddress.getSchoolData();
     	}else if(currRoleName == 'schoolType'){
@@ -432,6 +737,7 @@ layui.define(["form","jquery"],function(exports){
     	}else if(currRoleName == 'school'){
     		adminAddress.createGradeHtml(schTypeVal,yearSystem);
     	}else if(currRoleName == 'grade'){
+    		adminAddress.createClassData();
     		//adminAddress.createClasses();
     	}
     	
