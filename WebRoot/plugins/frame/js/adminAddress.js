@@ -547,15 +547,17 @@ layui.define(["form","jquery","table"],function(exports){
 			type:'post',
 			timeout:10000,
 			success:function(json){
-				//console.log(json)
+				console.log(json)
 				layer.closeAll('loading');
 				$('#stDate').val(json.sDate);
 				$('#edDate').val(json.eDate);
 				if(json.result == 'success'){
+					$('#echartTit').html(json.contentInfo);
 					Address.prototype.loadChart(json,json.axisName1,json.axisName2);
 					$('#rateTxt').html('<span>' + json.axisName1 + '转化率为：</span>' + json.rate);
 					$('#rateAllTxt').html('<span>' + json.axisName2 + '转化率为：</span>' + json.rateAll);
 				}else if(json.result == 'noInfo'){
+					$('#echartTit').html('');
 					$('#qinfenDataBox').hide();
 					$('.noDataImg').show(); 
 					$('#rateTxt').html('');

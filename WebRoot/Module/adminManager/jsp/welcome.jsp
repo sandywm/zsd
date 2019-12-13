@@ -142,6 +142,7 @@
 					</div>
 					
 				</div>
+				<h3 id="echartTit"></h3>
 				<div id="qinfenDataBox" class="echartWrap"></div>
 				<div class="rateWrap">
 					<p id="rateTxt"></p>

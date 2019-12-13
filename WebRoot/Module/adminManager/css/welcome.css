@@ -60,21 +60,18 @@
 }
 .echartWrap{
 	min-height:400px;
-	margin-top:50px;
 	display:none;
 }
 .rateWrap{
 	padding-bottom:50px;
 }
 .rateWrap p{
-	float:left;
+	width:100%;
 	font-size:20px;
 	font-weight:bold;
 	color:#121212;
-}
-.rateWrap p#rateTxt{
-	margin-left:50px;
-	margin-right:100px;
+	text-indent:50px;
+	margin-bottom:20px;
 }
 .noDataImg{
 	width:500px;
@@ -127,4 +124,11 @@
 }
 .hasMargBot{
 	margin-bottom:50px;
+}
+#echartTit{
+	text-align:center;
+	font-size:22px;
+	color:#333;
+	padding-top:20px;
+	font-weight:bold;
 }
