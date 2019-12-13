@@ -1,7 +1,7 @@
 var provVal = '',cityVal='',countyVal='',townVal='',provIndex=0,cityIndex=0,currTownVal=0;//用于编辑时匹配当前省市index索引
-layui.define(["form","jquery"],function(exports){
+layui.define(["form","jquery","table"],function(exports){
     var form = layui.form,
-    $ = layui.jquery,
+    $ = layui.jquery,table=layui.table,
     Address = function(){};
     
     Address.prototype.provinces = function() {
@@ -122,6 +122,8 @@ layui.define(["form","jquery"],function(exports){
 			adminAddress.getSchoolData();
 			if(currPage == 'qfRepPage'){
 	    		adminAddress.loadQfData();
+	    	}else if(currPage == 'xxTjPage'){
+	    		adminAddress.loadXxTjData();
 	    	}
 			form.render();
 		});
@@ -159,8 +161,18 @@ layui.define(["form","jquery"],function(exports){
 			}
 			if(currPage == 'qfRepPage'){
 	    		adminAddress.loadQfData();
+	    	}else if(currPage == 'xxTjPage'){
+	    		adminAddress.loadXxTjData();
 	    	}
 		});
+        if(currPage == 'xxTjPage'){
+        	 $('.clearBtn').on('click',function(){
+        		 if($('#stuNameInp').val() != ''){
+        			 $('#stuNameInp').val('');
+        			 adminAddress.loadXxTjData();
+        		 }
+             });
+        }
        
     };
     Address.prototype.createClasses  = function(list){
@@ -186,7 +198,9 @@ layui.define(["form","jquery"],function(exports){
     	adminAddress.createClassData();
     	if(currPage == 'qfRepPage'){
 			adminAddress.loadQfData();
-		}
+		}else if(currPage == 'xxTjPage'){
+    		adminAddress.loadXxTjData();
+    	}
 	});
    //加载市数据
     Address.prototype.citys = function(citys) {
@@ -224,6 +238,8 @@ layui.define(["form","jquery"],function(exports){
 			
 			if(currPage == 'qfRepPage'){
 	    		adminAddress.loadQfData();
+	    	}else if(currPage == 'xxTjPage'){
+	    		adminAddress.loadXxTjData();
 	    	}
 			
             form.render();
@@ -313,6 +329,8 @@ layui.define(["form","jquery"],function(exports){
 			}
 			if(currPage == 'qfRepPage'){
 	    		adminAddress.loadQfData();
+	    	}else if(currPage == 'xxTjPage'){
+	    		adminAddress.loadXxTjData();
 	    	}
 		});
 	};
@@ -394,6 +412,8 @@ layui.define(["form","jquery"],function(exports){
 			}
 			if(currPage == 'qfRepPage'){
 	    		adminAddress.loadQfData();
+	    	}else if(currPage == 'xxTjPage'){
+	    		adminAddress.loadXxTjData();
 	    	}
 		});
 		
@@ -447,6 +467,8 @@ layui.define(["form","jquery"],function(exports){
 			}
 			if(currPage == 'qfRepPage'){
 	    		adminAddress.loadQfData();
+	    	}else if(currPage == 'xxTjPage'){
+	    		adminAddress.loadXxTjData();
 	    	}
 		});
 	};
@@ -494,7 +516,9 @@ layui.define(["form","jquery"],function(exports){
 				$('#subIdInp').val(data.value);
 				if(currPage == 'qfRepPage'){
 					adminAddress.loadQfData();
-				}
+				}else if(currPage == 'xxTjPage'){
+		    		adminAddress.loadXxTjData();
+		    	}
 			}
 		});
 	};
@@ -532,22 +556,16 @@ layui.define(["form","jquery"],function(exports){
 					$('#rateTxt').html('<span>' + json.axisName1 + '转化率为：</span>' + json.rate);
 					$('#rateAllTxt').html('<span>' + json.axisName2 + '转化率为：</span>' + json.rateAll);
 				}else if(json.result == 'noInfo'){
-					//$('#qinfenDataBox').html('暂无记录');
 					$('#qinfenDataBox').hide();
 					$('.noDataImg').show(); 
-					//app.getId('totalTxt').innerHTML = '<p style="color:#999;font-size:.4rem;">暂无勤奋报告</p>';
-					//app.getId('qinfenDataBox').style.display = 'none';
-					//app.getId('noData').style.display = 'block';
 					$('#rateTxt').html('');
 					$('#rateAllTxt').html('');
 				}
 			},
 			error:function(xhr,type,errorThrown){
-				//app.showToast(2);
-				//plus.nativeUI.toast('服务器连接超时');
 			}
 		}); 
-	}
+	};
 	
 	Address.prototype.loadChart = function(json,axisName1,axisName2){
 		$('.noDataImg').hide();
@@ -666,7 +684,9 @@ layui.define(["form","jquery"],function(exports){
 			
 			if(currPage == 'qfRepPage'){
 				adminAddress.loadQfData();
-			}
+			}else if(currPage == 'xxTjPage'){
+	    		adminAddress.loadXxTjData();
+	    	}
 		});
 		
 		//选择乡镇
@@ -688,7 +708,9 @@ layui.define(["form","jquery"],function(exports){
 			adminAddress.getSchoolData();
 			if(currPage == 'qfRepPage'){
 				adminAddress.loadQfData();
-			}
+			}else if(currPage == 'xxTjPage'){
+	    		adminAddress.loadXxTjData();
+	    	}
 			form.render();
 		});
     };
@@ -719,16 +741,80 @@ layui.define(["form","jquery"],function(exports){
 				}else if(json.result == 'noInfo'){
 					layer.msg('暂无乡/镇');
 				}
-				
 			}
 		});
     };
+    
+    //加载学生学习统计
+	Address.prototype.loadXxTjData = function(){
+		layer.load('1');
+		var stDate = $('#stDate').val(),
+			edDate = $('#edDate').val(),
+			cityInp = $('#cityInp').val(),
+			countyInp = $('#countyInp').val(),
+			townInp = $('#townInp').val(),
+			schInp = $('#schInp').val(),
+			gradeInp = $('#gradeInp').val(),
+			classInp = $('#classInp').val(),
+			stuIdInp = $('#stuInp').val(),
+			subIdInp = $('#subIdInp').val(),
+			stuNameInp = $('#stuNameInp').val();
+		//prov,city,county,town,schoolType,schoolId,gradeName,classId,stuId(可不传),subId,sDate,eDate,userId,roleId
+		var currField = {province:provVal,city:cityInp,county:countyInp,town:townInp,schoolType:schTypeVal,
+				schoolId:schInp,gradeName:gradeInp,classId:classInp,subId:subIdInp,stuId:stuIdInp,sDate:stDate,eDate:edDate,stuName:stuNameInp};
+		var field = {province:escape(provVal),city:escape(cityInp),county:escape(countyInp),town:escape(townInp),schoolType:schTypeVal,
+					schoolId:schInp,gradeName:gradeInp,classId:classInp,subId:subIdInp,stuId:stuIdInp,sDate:stDate,eDate:edDate,stuName:escape(stuNameInp)};
+		console.log(currField)
+		console.log(field)
+		table.render({
+			elem: '#xxTjTable',
+			height: 'full-260',
+			url :'/studyRecord.do?action=getStuStudyLog',
+			method : 'post',
+			where:field,
+			page : true,
+			even : true,
+			limit : 20,
+			limits:[10,20,30,40],
+			text: {none : '暂无相关数据'},
+			cols : [[
+				{field : '', fixed:'left', title: '序号', type:'numbers', align:'center'},
+				{field : 'stuName',fixed:'left', title: '学生', width:'100', align:'center' },
+				{field : 'stuSex', title: '性别',width:'80',align:'center',templet:function(d){
+					if(d.stuSex == '男'){
+						return '<span class="maleCol">男</span>';
+					}else{
+						return '<span class="femaleCol">女</span>';
+					}
+				}},
+				{field : 'schoolTypeChi', title: '学段',width:'80',align:'center'},
+				{field : 'schoolName', title: '学校名称',width:'200',align:'center'},
+				{field : 'gradeName', title: '年级',width:'100',align:'center'},
+				{field : 'className', title: '班级',width:'80',align:'center'},
+				{field : 'allStudyNumber', title: '共学习知识点(个)',width:'150',align:'center'},
+				{field : 'noSuccStudyNumber', title: '未完成知识点(个)',width:'150',align:'center'},
+				{field : 'completeRate', title: '完成率',width:'100',align:'center'},
+				{field : 'prov', title: '省',width:'150',align:'center'},
+				{field : 'city', title: '市',width:'150',align:'center'},
+				{field : 'county', title: '县/区',width:'150',align:'center'},
+				{field : 'town', title: '乡/镇',width:'150',align:'center'}
+				
+			]],
+			done : function(res, curr, count){
+			//	console.log(res)
+				layer.closeAll('loading');
+			}
+		});
+	}
+    
     
     var adminAddress = new Address();
     exports("adminAddress",function(){
     	adminAddress.provinces();
     	if(currPage == 'qfRepPage'){
     		adminAddress.loadQfData();
+    	}else if(currPage == 'xxTjPage'){
+    		adminAddress.loadXxTjData();
     	}
     	adminAddress.createSubData();
     	if(currRoleName == 'town'){//默认进来学段为0 加载当前镇上的全部学段的全部学校

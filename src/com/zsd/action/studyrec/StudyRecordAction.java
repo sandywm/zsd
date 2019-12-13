@@ -1478,6 +1478,7 @@ public class StudyRecordAction extends DispatchAction {
 		SchoolManager sm = (SchoolManager)AppFactory.instance(null).getApp(Constants.WEB_SCHOOL_INFO);
 		RoleUserInfoManager rum = (RoleUserInfoManager)AppFactory.instance(null).getApp(Constants.WEB_ROLE_USER_INFO);
 		ClassInfoManager cm = (ClassInfoManager)AppFactory.instance(null).getApp(Constants.WEB_CLASS_INFO);
+		String field = Transcode.unescape_new1("field", request);
 		String stuName = Transcode.unescape_new1("stuName", request);
 		String province = Transcode.unescape_new1("province", request);
 		String city = Transcode.unescape_new1("city", request);

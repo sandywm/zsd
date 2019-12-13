@@ -100,6 +100,7 @@
     <!-- 学习记录-->
     <action path="/studyRecord" parameter="action" scope="request" type="com.zsd.action.studyrec.StudyRecordAction">
       <forward name="stuRecPage" path="/###.jsp"></forward><!-- 学生记录页面 -->
+      <forward name="stuStudyLogPage" path="/Module/adminManager/jsp/learnStatistics.jsp"></forward><!-- 系统家庭作业 -->
     </action>
     <!-- 自助餐在线学习 -->
     <action path="/buffetStudy" parameter="action" scope="request" type="com.zsd.action.buffet.BuffetStudyAction">

@@ -22,7 +22,7 @@
 	height:100%;
 	display:block;
 	color:#121212;
-	font-size:14px;
+	font-size:15px;
 	text-align:center;
 }
 .leftNav li:hover,
@@ -90,4 +90,38 @@
 	margin-top:20px;
 	color:#999;
 	font-size:16px;
+}
+#xxTjWrap{
+	position:relative;
+}
+.clearBtn{
+	width:30px;
+	height:100%;
+	line-height:41px;
+	position:absolute;
+	right:0;
+	top:0;
+}
+.clearBtn i{
+	font-size:14px;
+	color:#333;
+	font-weight:bold;
+}
+.clearBtn:hover i{
+	color:#fb4aaf;
+}
+.femaleCol{
+	color:#F581B1;
+}
+.maleCol{
+	color:#01AAED;
+}
+.layui-laypage .layui-laypage-curr .layui-laypage-em{
+	background:#4d47f1;
+}
+#exportBtn{
+	background:#4d47f1;
+	position:absolute;
+	right:0;
+	top:-38px;
 }

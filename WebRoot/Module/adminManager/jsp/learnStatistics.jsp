@@ -43,11 +43,11 @@
 		<div class="mainWrap">
 			<div class="leftNav">
 				<ul>
-					<li class="leftNavItem active">
+					<li class="leftNavItem">
 						<a href="javascript:void(0)">勤奋报告</a>
 					</li>
-					<li class="leftNavItem">
-						<a href="studyRecord.do?action=goStuStudyLogPage">知识典学习统计</a>
+					<li class="leftNavItem active">
+						<a href="javascript:void(0)">知识典学习统计</a>
 					</li>
 				</ul>
 			</div>
@@ -135,6 +135,13 @@
 						</div>
 					</div>
 					
+					<div class="itemDivs">
+						<div class="layui-input-inline layui-form">
+							<input type="text" id="stuNameInp" placeholder="请输入学生姓名" class="layui-input"/>
+							<a class="clearBtn" title="清空" href="javascript:void(0)"><i class="iconfont layui-extend-guanbi"></i></a>
+						</div>
+					</div>
+					
 					<div style="float:left;">
 						<div class="layui-input-inline">
 							<button id="queryBtn" class="layui-btn" style="background:#4d47f1;"><i class="layui-icon layui-icon-search"></i></button>
@@ -142,24 +149,21 @@
 					</div>
 					
 				</div>
-				<div id="qinfenDataBox" class="echartWrap"></div>
-				<div class="rateWrap">
-					<p id="rateTxt"></p>
-					<p id="rateAllTxt"></p>
+				<div id="xxTjWrap">
+					<button id="exportBtn" class="layui-btn"><i class="iconfont layui-extend-daochuexcel"></i>导出excel</button>
+					<table id="xxTjTable" class="layui-table" lay-filter="xxTjTable"></table>
 				</div>
-				<div class="noDataImg"><img src="Module/adminManager/images/noData.png" alt="暂无勤奋报告记录"/><p>暂无勤奋报告记录</p></div>
 			</div>
 		</div>
 	</body>
 	<script src="/plugins/jquery/jquery.min.js" type="text/javascript" charset="utf-8"></script>
 	<script src="/plugins/layui/layui.js"></script>
-	<script src="/plugins/echart/echarts.min.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript">
-		var currRoleName = '',schTypeVal = 0,schoolList = [],yearSystem = 0,currPage = 'qfRepPage';
+		var currRoleName = '',schTypeVal = 0,schoolList = [],yearSystem = 0,currPage = 'xxTjPage';
 		layui.config({
 			base : "/plugins/frame/js/"
-		}).use(['layer','adminAddress','form','laydate'],function(){
-			var layer = layui.layer,address = layui.adminAddress,form = layui.form,laydate=layui.laydate;
+		}).use(['layer','adminAddress','form','laydate','table'],function(){
+			var layer = layui.layer,address = layui.adminAddress,form = layui.form,laydate=layui.laydate,table=layui.table;
 			laydate.render({'elem':'#stDate',theme: '#4d47f1'});
 			laydate.render({'elem':'#edDate',theme: '#4d47f1'});
 			var page = {
@@ -178,6 +182,44 @@
 							window.location.href = "login.do?action=loginOut";
 						});
 					});
+					$('#exportBtn').on('click',function(){
+						layer.load('1');
+						var stDate = $('#stDate').val(),
+							edDate = $('#edDate').val(),
+							cityInp = $('#cityInp').val(),
+							countyInp = $('#countyInp').val(),
+							townInp = $('#townInp').val(),
+							schInp = $('#schInp').val(),
+							gradeInp = $('#gradeInp').val(),
+							classInp = $('#classInp').val(),
+							stuIdInp = $('#stuInp').val(),
+							subIdInp = $('#subIdInp').val(),
+							stuNameInp = $('#stuNameInp').val();
+						//prov,city,county,town,schoolType,schoolId,gradeName,classId,stuId(可不传),subId,sDate,eDate,userId,roleId
+						var field = JSON.stringify({province:escape(provVal),city:escape(cityInp),county:escape(countyInp),town:escape(townInp),schoolType:schTypeVal,
+							schoolId:schInp,gradeName:gradeInp,classId:classInp,subId:subIdInp,stuId:stuIdInp,sDate:stDate,eDate:edDate,stuName:escape(stuNameInp)});
+						
+						//var fieldStr = 'escape(provVal),escape(cityInp),escape(countyInp),escape(townInp),schTypeVal,schInp,gradeInp,classInp,subIdInp,stuIdInp,stDate,edDate,escape(stuNameInp)';
+						
+						
+						//var newUrl = '&province=' + encodeURIComponent(provVal) + '&city=' + encodeURIComponent(cityInp) + '&county=' + encodeURIComponent(countyInp) + '&town=' + encodeURIComponent
+						
+						 var form = $("<form>");   //定义一个form表单
+							form.attr('style', 'display:none;'); //在form表单中添加查询参数
+							form.attr('target', '');
+							form.attr('method', 'post');
+							form.attr('action', '/studyRecord.do?action=exportLogInfoToExcel');
+							var input1 = $('<input>');
+							input1.attr('type', 'text');
+							input1.attr('name', 'field');
+							input1.attr('value', field);
+							$('body').append(form);  //将表单放置在web中 
+							form.append(input1);   //将查询参数控件提交到表单上
+						  	form.submit();
+							layer.closeAll('loading');
+
+						
+					});
 				},
 				loadQfRepInfo : function(){
 					var _this = this;
@@ -186,7 +228,7 @@
 					    dataType:"json",
 					    url:"/user.do?action=getManagerDetail",
 					    success:function (json){
-					    //	console.log(json)
+					    	//console.log(json)
 					    	if(json.msg == 'success'){
 					    		currRoleName = json.roleName;
 					    		if(json.roleName == 'prov'){
@@ -221,7 +263,7 @@
 						    		$('.schTypeItem').hide().remove();
 						    		$('#cityInp').val(json.city);
 						    		$('#countyInp').val(json.county);
-						    		$('#townInp').val(json.town);
+						    		$('#townInp').val(json.county);
 						    		provVal = json.prov;
 						    		cityVal = json.city;
 						    		countyVal = json.county;
@@ -240,7 +282,7 @@
 						    		$('.schSelItem').hide().remove();
 						    		$('#cityInp').val(json.city);
 						    		$('#countyInp').val(json.county);
-						    		$('#townInp').val(json.town);
+						    		$('#townInp').val(json.county);
 						    		provVal = json.prov;
 						    		cityVal = json.city;
 						    		countyVal = json.county;
@@ -256,7 +298,7 @@
 						    		$('.gradeSelItem').hide().remove();
 						    		$('#cityInp').val(json.city);
 						    		$('#countyInp').val(json.county);
-						    		$('#townInp').val(json.town);
+						    		$('#townInp').val(json.county);
 						    		$('#schInp').val(json.schoolId);
 						    		$('#gradeInp').val(json.gradeName);
 						    		provVal = json.prov;
