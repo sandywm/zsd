@@ -226,11 +226,19 @@ public class ReportCenterAction  extends DispatchAction{
 		Integer allNum = 1;
 		Map<String,Object> map = new HashMap<String,Object>();
 		if(roleId > 0){
-			if(sDate.equals("") && eDate.equals("")){
-				eDate = CurrentTime.getStringDate();
-				sDate = CurrentTime.getFinalDate(-2);
-			}else{
+			if(CommonTools.getCilentInfo_new(request).equals("pc")){
+				if(sDate.equals("") && eDate.equals("")){
+					eDate = CurrentTime.getStringDate();
+					sDate = eDate.substring(0, 4) + "-01-01";
+				}
 				diffDays = CurrentTime.compareDate(sDate, eDate) + 1;
+			}else{
+				if(sDate.equals("") && eDate.equals("")){
+					eDate = CurrentTime.getStringDate();
+					sDate = CurrentTime.getFinalDate(-2);
+				}else{
+					diffDays = CurrentTime.compareDate(sDate, eDate) + 1;
+				}
 			}
 			if(roleId.equals(Constants.TEA_ROLE_ID)){
 				List<UserClassInfo> ucList = ucm.listTeaInfoByOpt(userId, roleId);

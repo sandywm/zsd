@@ -1390,8 +1390,16 @@ public class StudyRecordAction extends DispatchAction {
 		String eDate = CommonTools.getFinalStr("eDate", request);;//没选结束时间初始为""
 		Integer subId = CommonTools.getFinalInteger("subId", request);//科目编号可为-1
 		if(sDate.equals("") && eDate.equals("")){
-			eDate = CurrentTime.getStringDate();
-			sDate = CurrentTime.getFinalDate(-2);
+			if(CommonTools.getCilentInfo_new(request).equals("pc")){
+				eDate = CurrentTime.getStringDate();
+				sDate = eDate.substring(0, 4) + "-01-01";
+			}else{
+				eDate = CurrentTime.getStringDate();
+				sDate = CurrentTime.getFinalDate(-2);
+			}
+		}
+		if(subId.equals(0)){
+			subId = Constants.MATH_ID;
 		}
 		String msg = "暂无记录";
 		Map<String,Object> map = new HashMap<String,Object>();
