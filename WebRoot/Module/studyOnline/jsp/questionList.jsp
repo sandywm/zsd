@@ -133,7 +133,6 @@
 		};
 		quesPage.init();
 		function renderQuesList(list){
-			console.log(list)
 			if(list != null){
 				questionLength = list.length;
 				for(var i=0;i<questionLength;i++){
@@ -553,6 +552,7 @@
 			if(flag){
 				selectAnserValue_result = delLastSeparator(selectAnserValue_result);
 				selectAnserLableValue_result = delLastSeparator(selectAnserLableValue_result);	
+				console.log( selectAnserLableValue_result )
 				var field = {loreId:loreId,studyLogId:studyLogId,currentLoreId:currentLoreId,
 						answerOptionArray:answerOptionArray,questionStep:value,
 						myAnswer:escape(selectAnserLableValue_result),lqId:lqId,loreTaskName:escape( loreTaskName ),logType:1};
@@ -569,10 +569,10 @@
 							console.log( json )
 							//json.studyStatus 0错 1对
 							renderNowStudyInfo(json.studyResult,lqType,selectAnserLableValue_result,value);
-							$('#subQuesBtn_'+value).hide();//隐藏提交按钮div
+							$('#subQuesBtn_'+value).hide().remove();//隐藏提交按钮div
 							if(value == questionLength){//表示最后一题
 								$('#doneBtn').show().css('display','block'); //显示最后提交按钮div
-								$('#goNextBtn_'+value).hide(); //隐藏下一题按钮div
+								$('#goNextBtn_'+value).hide().remove(); //隐藏下一题按钮div
 							}else{
 								$('#goNextBtn_'+value).show().css('display','block'); //显示下一题按钮div
 							}
@@ -600,9 +600,10 @@
 			if(studyResult == 0){//错
 				if(lqType == '单选题' || lqType == '多选题' || lqType == '判断题' || lqType == '填空选择题'){
 					var strMyAns = '<span>我的解答：</span><p class="errAns">'+ myAnswer +'</p><i class="iconfont layui-extend-guanbi errAnsIcon"></i>';
-					$('#queAnsOptWrap_' + questionStep).hide();
+					$('#queAnsOptWrap_' + questionStep).hide().remove();
 					$('#myAnsWrap_' + questionStep).show().html(strMyAns);
-				}else if(questionType_temp == '问答题' || questionType_temp == '填空题'){
+				}else if(lqType == '问答题' || lqType == '填空题'){
+					$('#tkAndWdOpt_' + questionStep).hide().remove();
 					var strMyAnsTkWd = '<span class="queAnsTit">我的解答：</span><p class="tkWdErr">回答错误</p>';
 					$('#tkAndWdMyAns_' + questionStep).show().html(strMyAnsTkWd);
 				}
@@ -612,9 +613,10 @@
 			}else if(studyResult == 1){//对
 				if(lqType == '单选题' || lqType == '多选题' || lqType == '判断题' || lqType == '填空选择题'){
 					var strMyAns = '<span>我的解答：</span><p class="rightAns">'+ myAnswer +'</p><i class="iconfont layui-extend-duihao rightAnsIcon"></i>';
-					$('#queAnsOptWrap_' + questionStep).hide();
+					$('#queAnsOptWrap_' + questionStep).hide().remove();
 					$('#myAnsWrap_' + questionStep).show().html(strMyAns);
 				}else if(lqType == '问答题' || lqType == '填空题'){
+					$('#tkAndWdOpt_' + questionStep).hide().remove();
 					var strMyAnsTkWd = '<span class="queAnsTit">我的解答：</span><p class="tkWdSucc">回答正确</p>';
 					$('#tkAndWdMyAns_' + questionStep).show().html(strMyAnsTkWd);;
 				}

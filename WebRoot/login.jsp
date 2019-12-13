@@ -161,7 +161,6 @@
 				        url:"login.do?action=userLogin",
 				        data:{account:account,password:password,vercode:vCode},
 				        success:function (json){
-				        	console.log(json)
 				        	layer.closeAll('loading');
 				        	if(json.result == 'success'){
 				        		if(checkStatus){
