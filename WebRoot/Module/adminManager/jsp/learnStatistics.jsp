@@ -194,15 +194,8 @@
 							stuIdInp = $('#stuInp').val(),
 							subIdInp = $('#subIdInp').val(),
 							stuNameInp = $('#stuNameInp').val();
-						//prov,city,county,town,schoolType,schoolId,gradeName,classId,stuId(可不传),subId,sDate,eDate,userId,roleId
 						var field = JSON.stringify({province:escape(provVal),city:escape(cityInp),county:escape(countyInp),town:escape(townInp),schoolType:schTypeVal,
 							schoolId:schInp,gradeName:gradeInp,classId:classInp,subId:subIdInp,stuId:stuIdInp,sDate:stDate,eDate:edDate,stuName:escape(stuNameInp)});
-						
-						//var fieldStr = 'escape(provVal),escape(cityInp),escape(countyInp),escape(townInp),schTypeVal,schInp,gradeInp,classInp,subIdInp,stuIdInp,stDate,edDate,escape(stuNameInp)';
-						
-						
-						//var newUrl = '&province=' + encodeURIComponent(provVal) + '&city=' + encodeURIComponent(cityInp) + '&county=' + encodeURIComponent(countyInp) + '&town=' + encodeURIComponent
-						
 						 var form = $("<form>");   //定义一个form表单
 							form.attr('style', 'display:none;'); //在form表单中添加查询参数
 							form.attr('target', '');
@@ -230,11 +223,13 @@
 					    		currRoleName = json.roleName;
 					    		if(json.roleName == 'prov'){
 						    		provVal = json.prov;
+						    		$('#welcomeTxt').html('欢迎您，' + json.prov +' 管理员');
 						    	}else if(json.roleName == 'city'){
 						    		$('.cityItem').hide().remove();
 						    		provVal = json.prov;
 						    		cityVal = json.city;
 						    		$('#cityInp').val(json.city);
+						    		$('#welcomeTxt').html('欢迎您，' + json.prov + json.city + ' 管理员');
 						    	}else if(json.roleName == 'county'){
 						    		$('.filter').addClass('hasMargBot');
 						    		$('.cityItem').hide().remove();
@@ -243,6 +238,7 @@
 						    		cityVal = json.city;
 						    		$('#cityInp').val(json.city);
 						    		countyVal = json.county;
+						    		$('#welcomeTxt').html('欢迎您，' + json.prov + json.city + json.county + '管理员');
 						    	}else if(json.roleName == 'town'){
 						    		$('.filter').addClass('hasMargBot');
 						    		$('.cityItem').hide().remove();
@@ -255,6 +251,7 @@
 						    		cityVal = json.city;
 						    		countyVal = json.county;
 						    		townVal = json.town;
+						    		$('#welcomeTxt').html('欢迎您，' + json.prov + json.city + json.county + json.town + '管理员');
 						    	}else if(json.roleName == 'schoolType'){
 						    		$('.filter').addClass('hasMargBot');
 						    		$('.cityItem').hide().remove();
@@ -269,6 +266,13 @@
 						    		countyVal = json.county;
 						    		townVal = json.town;
 						    		schTypeVal = json.schoolType;
+						    		if(json.schoolType == 1){
+						    			$('#welcomeTxt').html('欢迎您，' + json.prov + json.city + json.county + json.town + '-小学 管理员');
+						    		}else if(json.schoolType == 2){
+						    			$('#welcomeTxt').html('欢迎您，' + json.prov + json.city + json.county + json.town + '-初中  管理员');
+						    		}else if(json.schoolType == 3){
+						    			$('#welcomeTxt').html('欢迎您，' + json.prov + json.city + json.county + json.town + '-高中  管理员');
+						    		}
 						    		if(json.schooList.length > 0){
 						    			schoolList = json.schooList;
 						    		}else{
@@ -290,6 +294,7 @@
 						    		townVal = json.town;
 						    		schTypeVal = json.schoolType;
 						    		yearSystem = json.yearSystem;
+						    		$('#welcomeTxt').html('欢迎您，' + json.prov + json.city + json.county + json.town +'--'+ json.schoolName +' 管理员');
 						    	}else if(json.roleName == 'grade'){
 						    		$('.filter').addClass('hasMargBot');
 						    		$('.cityItem').hide().remove();
@@ -309,6 +314,7 @@
 						    		townVal = json.town;
 						    		schTypeVal = json.schoolType;
 						    		yearSystem = json.yearSystem;
+						    		$('#welcomeTxt').html('欢迎您，' + json.prov + json.city + json.county + json.town +'--'+ json.schoolName + json.gradeName +' 管理员');
 						    	}else if(json.msg == 'noInfo'){
 							    	
 							    }
