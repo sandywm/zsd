@@ -254,6 +254,7 @@
 						    		$('#cityInp').val(json.city);
 						    		$('#countyInp').val(json.county);
 						    		$('#townInp').val(json.town);
+									$('#schInp').val(json.schoolId);
 						    		provVal = json.prov;
 						    		cityVal = json.city;
 						    		countyVal = json.county;
