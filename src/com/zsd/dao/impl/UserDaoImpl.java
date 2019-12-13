@@ -180,7 +180,7 @@ public class UserDaoImpl implements UserDao {
 		}else if(!town.equals("")){//指定镇
 			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.town = '"+town+"')";
 		}else if(!county.equals("")){//指定县
-			hql += " and u.in(select ru.user.id from RoleUserInfo as ru where ru.county = '"+county+"')";
+			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.county = '"+county+"')";
 		}else if(!city.equals("")){//指定市
 			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.city = '"+city+"')";
 		}else if(!prov.equals("")){//指定省
@@ -215,7 +215,7 @@ public class UserDaoImpl implements UserDao {
 		}else if(!town.equals("")){//指定镇
 			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.town = '"+town+"')";
 		}else if(!county.equals("")){//指定县
-			hql += " and u.in(select ru.user.id from RoleUserInfo as ru where ru.county = '"+county+"')";
+			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.county = '"+county+"')";
 		}else if(!city.equals("")){//指定市
 			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.city = '"+city+"')";
 		}else if(!prov.equals("")){//指定省

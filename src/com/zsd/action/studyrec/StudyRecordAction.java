@@ -34,6 +34,8 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.zsd.tools.FileOpration;
 import com.zsd.util.WebUrl;
 import com.zsd.action.base.Transcode;
@@ -1387,6 +1389,10 @@ public class StudyRecordAction extends DispatchAction {
 		String sDate = CommonTools.getFinalStr("sDate", request);//没选开始时间初始为""
 		String eDate = CommonTools.getFinalStr("eDate", request);;//没选结束时间初始为""
 		Integer subId = CommonTools.getFinalInteger("subId", request);//科目编号可为-1
+		if(sDate.equals("") && eDate.equals("")){
+			eDate = CurrentTime.getStringDate();
+			sDate = CurrentTime.getFinalDate(-2);
+		}
 		String msg = "暂无记录";
 		Map<String,Object> map = new HashMap<String,Object>();
 		List<Object> list_d = new ArrayList<Object>();
@@ -1456,6 +1462,8 @@ public class StudyRecordAction extends DispatchAction {
 			map.put("code", 0);
 		}
 		map.put("msg", msg);
+		map.put("sDate", sDate);
+		map.put("eDate", eDate);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
@@ -1479,24 +1487,30 @@ public class StudyRecordAction extends DispatchAction {
 		RoleUserInfoManager rum = (RoleUserInfoManager)AppFactory.instance(null).getApp(Constants.WEB_ROLE_USER_INFO);
 		ClassInfoManager cm = (ClassInfoManager)AppFactory.instance(null).getApp(Constants.WEB_CLASS_INFO);
 		String field = Transcode.unescape_new1("field", request);
-		String stuName = Transcode.unescape_new1("stuName", request);
-		String province = Transcode.unescape_new1("province", request);
-		String city = Transcode.unescape_new1("city", request);
-		String county = Transcode.unescape_new1("county", request);
-		String town =  Transcode.unescape_new1("town", request);
-		Integer schoolType = CommonTools.getFinalInteger("schoolType", request);
-		Integer schoolId = CommonTools.getFinalInteger("schoolId", request);
-		String gradeName = Transcode.unescape_new1("gradeName", request);
+		JSONObject json = JSON.parseObject(field);
+		
+		String stuName = json.getString("stuName");
+		String province = json.getString("province");
+		String city = json.getString("city");
+		String county = json.getString("county");
+		String town =  json.getString("town");
+		Integer schoolType = json.getInteger("schoolType");
+		Integer schoolId = json.getInteger("schoolId");
+		String gradeName = json.getString("gradeName");
 		String gradeNoStr = Convert.ChineseConvertNumber(gradeName);
 		Integer gradeNo = 0;
 		if(!gradeNoStr.equals("")){
 			gradeNo = Integer.parseInt(gradeNoStr);
 		}
-		Integer classId = CommonTools.getFinalInteger("classId", request);
-		Integer stuId = CommonTools.getFinalInteger("stuId", request);
-		String sDate = CommonTools.getFinalStr("sDate", request);//没选开始时间初始为""
-		String eDate = CommonTools.getFinalStr("eDate", request);;//没选结束时间初始为""
-		Integer subId = CommonTools.getFinalInteger("subId", request);//科目编号可为-1
+		Integer classId = json.getInteger("classId");
+		Integer stuId = json.getInteger("stuId");
+		String sDate =json.getString("sDate");//没选开始时间初始为""
+		String eDate = json.getString("eDate");;//没选结束时间初始为""
+		Integer subId = json.getInteger("subId");//科目编号可为-1
+		if(sDate.equals("") && eDate.equals("")){
+			eDate = CurrentTime.getStringDate();
+			sDate = CurrentTime.getFinalDate(-2);
+		}
 		List<User> uList = um.listPageStuLogByOption(stuName, province, city, county, town, schoolType, schoolId, gradeNo, classId, stuId, 1, 10000000);
 		if(uList.size() > 0){
 			// 第一步，创建一个webbook，对应一个Excel文件  

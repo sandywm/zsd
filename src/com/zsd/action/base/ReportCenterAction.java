@@ -135,6 +135,22 @@ public class ReportCenterAction  extends DispatchAction{
 	}
 
 	/**
+	 * 跳转到勤奋报告页面
+	 * @author wm
+	 * @date 2019-12-13 下午03:12:33
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward goQfbgPage(ActionMapping mapping ,ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		return mapping.findForward("qfbgPage");
+	}
+	
+	/**
 	 * 获取勤奋统计报告数据
 	 * @author wm
 	 * @date 2019-6-20 上午11:03:53

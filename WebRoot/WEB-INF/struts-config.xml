@@ -96,6 +96,7 @@
   	 <!--  报告中心 -->
     <action path="/reportCenter"  parameter="action" scope="request" type="com.zsd.action.base.ReportCenterAction">
       <forward name="nlPage" path="/###.jsp"></forward><!-- 学生能力报告页面 -->
+      <forward name="qfbgPage" path="/Module/adminManager/jsp/welcome.jsp"></forward><!-- 学生情分报告页面 -->
     </action>
     <!-- 学习记录-->
     <action path="/studyRecord" parameter="action" scope="request" type="com.zsd.action.studyrec.StudyRecordAction">
