@@ -1387,7 +1387,7 @@ public class StudyRecordAction extends DispatchAction {
 		String sDate = CommonTools.getFinalStr("sDate", request);//没选开始时间初始为""
 		String eDate = CommonTools.getFinalStr("eDate", request);;//没选结束时间初始为""
 		Integer subId = CommonTools.getFinalInteger("subId", request);//科目编号可为-1
-		String msg = "noInfo";
+		String msg = "暂无记录";
 		Map<String,Object> map = new HashMap<String,Object>();
 		List<Object> list_d = new ArrayList<Object>();
 		Integer count = um.getCountByOpt(stuName, province, city, county, town, schoolType, schoolId, gradeNo, classId, stuId);
@@ -1450,10 +1450,12 @@ public class StudyRecordAction extends DispatchAction {
 				 map_d.put("noSuccStudyNumber", allStudyNumber - succStudyNumber);
 				 map_d.put("completeRate", completeRate);
 				 list_d.add(map_d);
+				 map.put("data", list_d);
+				 map.put("count", count);
+				 map.put("code", 0);
 			}
 		}
 		map.put("msg", msg);
-		map.put("stuList", list_d);
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}
