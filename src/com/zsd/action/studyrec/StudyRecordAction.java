@@ -1208,7 +1208,7 @@ public class StudyRecordAction extends DispatchAction {
 				}
 			}
 		    diffDay = CurrentTime.compareDate(sDate,eDate) + 1;
-		    if(userType.equals(0)){
+		    if(userType.equals(0)){//网络导师
 		    	NetTeacherStudent nts = ntsm.getEntityInfoByOpt(userId, stuId);
 				if(nts != null){//存在绑定记录
 					Integer clearStatus = nts.getClearStatus();
@@ -1231,7 +1231,7 @@ public class StudyRecordAction extends DispatchAction {
 						list_d.add(map_d);
 					}
 				}
-		    }else if(userType.equals(1)){
+		    }else if(userType.equals(1)){//班内老师
 		    	List<StudyLogInfo> slList =  slManager.listStuLogByStu(0, stuId, guideSta, sDate, eDate);
 				allStudyLog += slList.size();
 				for (Iterator<StudyLogInfo> itr = slList.iterator(); itr.hasNext();) {
