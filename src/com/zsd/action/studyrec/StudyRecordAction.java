@@ -1577,11 +1577,14 @@ public class StudyRecordAction extends DispatchAction {
 	        cell.setCellValue("班级");
 	        cell = row.createCell(10);  
 	        cell.setCellStyle(style);  
-	        cell.setCellValue("已完成知识点");
+	        cell.setCellValue("共学习知识点");
 	        cell = row.createCell(11);  
 	        cell.setCellStyle(style);  
-	        cell.setCellValue("未完成知识点");
+	        cell.setCellValue("已完成知识点");
 	        cell = row.createCell(12);  
+	        cell.setCellStyle(style);  
+	        cell.setCellValue("未完成知识点");
+	        cell = row.createCell(13);  
 	        cell.setCellStyle(style);  
 	        cell.setCellValue("完成率");
 			for(Integer i = 0; i < uList.size() ; i++){
@@ -1670,13 +1673,17 @@ public class StudyRecordAction extends DispatchAction {
 					 
 					cell_data = row.createCell(10);
 		        	cell_data.setCellStyle(style);
-		        	cell_data.setCellValue(allStudyNumber - succStudyNumber);
+		        	cell_data.setCellValue(allStudyNumber);
 		        	
 		        	cell_data = row.createCell(11);
 		        	cell_data.setCellStyle(style);
 		        	cell_data.setCellValue(succStudyNumber);
 		        	
 		        	cell_data = row.createCell(12);
+		        	cell_data.setCellStyle(style);
+		        	cell_data.setCellValue(allStudyNumber - succStudyNumber);
+		        	
+		        	cell_data = row.createCell(13);
 		        	cell_data.setCellStyle(style);
 		        	cell_data.setCellValue(completeRate);
 				 }
