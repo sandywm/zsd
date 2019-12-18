@@ -5,12 +5,9 @@
 package com.zsd.action.base;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -22,14 +19,24 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import jxl.Cell;
+import jxl.Sheet;
+import jxl.Workbook;
+import jxl.WorkbookSettings;
+import jxl.read.biff.BiffException;
+
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.zsd.factory.AppFactory;
 import com.zsd.module.ClassInfo;
 import com.zsd.module.Edition;
@@ -39,12 +46,14 @@ import com.zsd.module.InviteCodeInfo;
 import com.zsd.module.NetTeacherInfo;
 import com.zsd.module.NetTeacherStudent;
 import com.zsd.module.RoleInfo;
+import com.zsd.module.School;
 import com.zsd.module.StudyLogInfo;
 import com.zsd.module.Subject;
 import com.zsd.module.User;
 import com.zsd.module.UserClassInfo;
 import com.zsd.page.PageConst;
 import com.zsd.service.BuffetSendInfoManager;
+import com.zsd.service.ClassInfoManager;
 import com.zsd.service.EditionManager;
 import com.zsd.service.EducationManager;
 import com.zsd.service.EmailManager;
@@ -53,13 +62,19 @@ import com.zsd.service.HwStudyTjManager;
 import com.zsd.service.InviteCodeInfoManager;
 import com.zsd.service.NetTeacherInfoManager;
 import com.zsd.service.NetTeacherStudentManager;
+import com.zsd.service.ParentClubManager;
 import com.zsd.service.RoleInfoManager;
+import com.zsd.service.RoleUserInfoManager;
+import com.zsd.service.SchoolManager;
+import com.zsd.service.StudentParentInfoManager;
 import com.zsd.service.StudyLogManager;
 import com.zsd.service.SubjectManager;
 import com.zsd.service.UserClassInfoManager;
+import com.zsd.service.UserManager;
 import com.zsd.tools.CommonTools;
 import com.zsd.tools.Convert;
 import com.zsd.tools.CurrentTime;
+import com.zsd.tools.InviteCode;
 import com.zsd.util.Constants;
 
 /** 
@@ -1397,6 +1412,261 @@ public class CommonAction extends DispatchAction {
 		}
 		map.put("msg", msg);
 		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	/**
+	 * 封装添加单元格数据内容方法
+	 * @description
+	 * @author Administrator
+	 * @date 2018-11-28 上午09:40:37
+	 * @param column0
+	 * @param column1
+	 * @param column2
+	 * @param column3
+	 * @param column4
+	 * @param column5
+	 * @param row
+	 * @param style
+	 */
+	private static void addCellData(String column0,String column1,String column2,String column3,String column4,HSSFRow row,HSSFCellStyle style){
+		HSSFCell cell = row.createCell(0); 
+		cell = row.createCell(0); 
+        cell.setCellStyle(style);  
+        cell.setCellValue(column0); 
+        cell = row.createCell(1);  
+        cell.setCellStyle(style);  
+        cell.setCellValue(column1);  
+        cell = row.createCell(2);  
+        cell.setCellStyle(style);  
+        cell.setCellValue(column2);  
+        cell = row.createCell(3);  
+        cell.setCellStyle(style);  
+        cell.setCellValue(column3);  
+        cell = row.createCell(4);  
+        cell.setCellStyle(style);  
+        cell.setCellValue(column4);  
+	}
+	
+	/**
+	 * 批量导入免费学生
+	 * @author wm
+	 * @date 2019-12-18 上午08:05:50
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward addBatchFreeStu(ActionMapping mapping,ActionForm form,
+			HttpServletRequest request,HttpServletResponse response) throws Exception{
+		String filePath = CommonTools.getFinalStr("filePath", request);
+		String currDate = CurrentTime.getStringDate();
+		SchoolManager sm = (SchoolManager) AppFactory.instance(null).getApp(Constants.WEB_SCHOOL_INFO);
+		RoleInfoManager rm =(RoleInfoManager) AppFactory.instance(null).getApp(Constants.WEB_ROLE_INFO);
+		UserManager um =(UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
+		ClassInfoManager cm = (ClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_CLASS_INFO);
+		UserClassInfoManager ucm = (UserClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
+		RoleUserInfoManager rum = (RoleUserInfoManager) AppFactory.instance(null).getApp(Constants.WEB_ROLE_USER_INFO);
+		StudentParentInfoManager spm = (StudentParentInfoManager) AppFactory.instance(null).getApp(Constants.WEB_STUDENT_PARENT_INFO);
+		ParentClubManager pcm = (ParentClubManager) AppFactory.instance(null).getApp(Constants.WEB_PARENT_CLUB);
+		GradeSubjectManager gsm = (GradeSubjectManager) AppFactory.instance(null).getApp(Constants.WEB_GRADE_SUBJECT_INFO);
+		String msg = "";
+		String schoolName_1 = "";
+		String password = "e10adc3949ba59abbe56e057f20f883e";
+		if(filePath.endsWith(".xls")){
+			String classInfo = filePath.substring(filePath.lastIndexOf("\\")+1,filePath.lastIndexOf("."));
+			int i;  
+	        Sheet sheet;  
+	        Workbook book;  
+	        Cell cell1;
+	        HSSFWorkbook wb;
+	        Integer roleId_stu = 0;
+	        Integer roleId_par = 0;
+	        WorkbookSettings wbs = new WorkbookSettings();
+	        wbs.setEncoding("GBK"); // 解决中文乱码
+	        wbs.setSuppressWarnings(true); 
+	        try {
+				book= Workbook.getWorkbook(new File(filePath),wbs);
+				//获得第一个工作表对象(ecxel中sheet的编号从0开始,0,1,2,3,....)  
+				sheet=book.getSheet(0);   
+	            i = 1;
+	            Integer maxRow = sheet.getRows();
+	            Integer schoolId = 0;
+	            String prov = "";
+	            String city = "";
+	            String county = "";
+	            String town = "";
+	            Integer schoolType = 0;
+	            Integer yearSystem = 1;//1:6+3+3,2:5+4+3
+	            
+	         // 第一步，创建一个webbook，对应一个Excel文件  
+		        wb = new HSSFWorkbook();  
+		        // 第二步，在webbook中添加一个sheet,对应Excel文件中的sheet  
+		        HSSFSheet sheet1 = wb.createSheet("学生账号清单");  
+		        //设置横向打印
+		        sheet1.getPrintSetup().setLandscape(true);
+		        // 第三步，在sheet中添加表头第0行,注意老版本poi对Excel的行数列数有限制short  
+		        HSSFRow row = sheet1.createRow(0);  
+		        // 第四步，创建单元格，并设置值表头 设置表头居中  
+		        HSSFCellStyle style = wb.createCellStyle();  
+		        style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式  
+	            style.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);  
+	            
+	            HSSFFont font = wb.createFont();    
+	            font.setColor(HSSFColor.RED.index); //注册失败的用红色
+	            
+	            HSSFCellStyle style_error = wb.createCellStyle(); //注册失败的样式
+	            style_error.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式  
+	            style_error.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);  
+	            style_error.setFont(font);
+	            
+	            
+	            row = sheet1.createRow(0);
+	            CommonAction.addCellData("学生姓名", "注册账号", "所在年级班级", "注册是否成功", "注册详情",row, style);  
+	            
+	            while(i < maxRow){
+	            	//获取每一行的单元格   
+	                cell1=sheet.getCell(0,i);//（列，行）  
+	                if("".equals(cell1.getContents())==true)    //如果读取的数据为空  
+	                    break;   
+	                String stuName = sheet.getCell(0,i).getContents().replace(" ", "").replace("\t", "");//学生姓名
+	                String phoneNo = sheet.getCell(1,i).getContents().replace(" ", "").replace("\t", "");//学生手机号
+	                String schoolName = sheet.getCell(2,i).getContents().replace(" ", "").replace("\t", "");//学校名称
+	                String gradeName = sheet.getCell(3,i).getContents().replace(" ", "").replace("\t", "");//年级数字（1-12）
+	                String className = sheet.getCell(4,i).getContents().replace(" ", "").replace("\t", "");//班级数字（1班-20班）
+	                schoolName_1 = schoolName;
+	                row = sheet1.createRow(i);
+	                String logInfo = "";
+	              //首先获取学校必须审核通过
+	                if(schoolId.equals(0)){//下列参数只循环一次
+	                	List<School> schList = sm.listInfoBySName(schoolName);
+	                	if(schList.size() > 0){
+	                		School sch = schList.get(0);
+	                		schoolId = sch.getId();
+	                		prov = sch.getProv();
+	                		city = sch.getCity();
+	                		county = sch.getCounty();
+	                		town = sch.getTown();
+	                		schoolType = sch.getSchoolType();
+	                		yearSystem = sch.getYearSystem();
+	                		List<RoleInfo>  roleList = rm.listRoleInfo("学生");
+	                		roleId_stu = roleList.get(0).getId();
+	                		List<RoleInfo>  roleList_p = rm.listRoleInfo("家长");
+	                		roleId_par = roleList_p.get(0).getId();
+	                	}else{
+	                		logInfo = i + "   "+stuName + " 注册失败。原因是查无该校信息或者该校信息尚未审核通过";
+	                		CommonAction.addCellData(stuName, "",gradeName+"年级"+className, "注册失败", "查无该校信息或者该校信息尚未审核通过", row, style_error);
+	                	}
+	                }
+	                if(schoolId > 0){
+                		//先查询数据库是否存在指定的电话号码信息（未使用）--以前添加了学生没有使用该手机号码注册，后来换号后其他学生用了这手机号且免费
+    	                if(!phoneNo.equals("")){//手机号码为空的不添加
+    	                	String userName = phoneNo + schoolId;
+		                	//检查是否存在该学生
+		    				List<User> userList = um.listInfoByAccount(userName);
+		    				if(userList.size() == 0){
+		    					Integer currentYear = Integer.parseInt(CurrentTime.getYear());
+								Integer currentMonth = Integer.parseInt(CurrentTime.getMonth());
+								String buildeClassDate = "";
+								Integer gradeNo = Integer.parseInt(gradeName);
+								if(currentMonth >= 9){
+									buildeClassDate = (currentYear - gradeNo + 1) + "-09-01";
+								}else{
+									buildeClassDate = currentYear - gradeNo + "-09-01";
+								}
+								Integer classId = 0;
+								List<ClassInfo> cList = cm.listClassInfoByOption(schoolId, className, buildeClassDate);
+								if(cList.size() > 0){
+									classId = cList.get(0).getId();
+								}else{
+									classId = cm.addClassInfo(schoolId, className, buildeClassDate);//创建班级
+									//创建班级管理员账号
+									Integer cMid=um.addUser("c"+classId, "", password, "",currDate, "", currDate, schoolId, "", yearSystem, prov, city);
+									List<RoleInfo> mRList = rm.listRoleInfo("管理员");
+									if(mRList.size()>0){
+									    rum.addRoleUserInfo(cMid, mRList.get(0).getId(), prov, city, county, town, schoolType, schoolId, gradeNo, classId);
+									}
+									String gName = Convert.NunberConvertChinese(gradeNo);//年级名
+									List<GradeSubject> gslist = gsm.listSpecInfoByGname(gName);//根据年级名获取学科列表
+									for (Iterator<GradeSubject> itr = gslist.iterator(); itr.hasNext();) {
+										GradeSubject gs = (GradeSubject) itr.next();
+										Integer sId = gs.getSubject().getId();//学科编号
+										String subName = gs.getSubject().getSubName(); //学科名称
+										//生成班内老师账户
+										Integer teaId=um.addUser("t"+schoolId+sId+classId, "", password, "","", "", currDate, schoolId, currDate, yearSystem, prov, city);
+										//老师绑定角色
+										List<RoleInfo> rlist = rm.listRoleInfo("老师");
+										if(rlist.size() > 0){
+											Integer teaRoId = rlist.get(0).getId();
+											rum.addRoleUserInfo(teaId, teaRoId, prov, city, county, town, schoolType, schoolId, gradeNo, classId);
+											ucm.addUcInfo(teaId, classId, teaRoId,sId,subName); //绑定班级
+										}
+									}
+								}
+								if(yearSystem.equals(1)){//6+3+3
+									yearSystem = 0;
+								}else{//5+4+3
+									if(gradeNo >= 1 && gradeNo <= 5){
+										yearSystem = 5;
+									}else if(gradeNo >= 6 && gradeNo <= 9){
+										yearSystem = 4;
+									}else if(gradeNo >= 10 && gradeNo <= 12){
+										yearSystem = 3;
+									}
+								}
+								Integer userId = um.addUser(userName, stuName, password, phoneNo, "", "", 
+										currDate, schoolId, CurrentTime.getFinalDate_2(currDate, 1), yearSystem, "", "");
+								if(userId > 0){
+		    						//step2:增加用户角色
+									rum.addRoleUserInfo(userId, roleId_stu, prov, city, county, town, schoolType, schoolId, gradeNo, classId);
+									//step3:绑定班级
+									ucm.addUcInfo(userId, classId, roleId_stu);
+									//5 生成家长账户
+									Integer upId = um.addUser(userName+"_jz", "", password, phoneNo, "", "", currDate, schoolId, 
+											"", yearSystem, "", "");
+									rum.addRoleUserInfo(upId, roleId_par, prov, city, county, town, schoolType, schoolId, gradeNo, classId);
+									spm.addSpInfo(upId, userId);
+									pcm.addParentClub(upId, userName+"_jz"+"的家长群", InviteCode.getRandomAllStr(6), 100, "");
+									logInfo = i + "   "+stuName + " 注册成功["+gradeName+"年级"+className+"]";
+									CommonAction.addCellData(stuName, userName,gradeName+"年级"+className,"注册成功", "注册成功", row, style);
+								}
+		    				}else{
+		    					logInfo = i + "   "+stuName + " 注册失败。原因是该学生的账号["+userName+"]已被"+userList.get(0).getRealName()+"注册。";
+		    					CommonAction.addCellData(stuName,"",gradeName+"年级"+className, "注册失败","该学生的账号["+userName+"]已被"+userList.get(0).getRealName()+"注册",row, style_error);
+		    				}
+    	                }else{
+    	                	logInfo = i + "   "+stuName + " 注册失败。原因是手机号码为空";
+    	                	CommonAction.addCellData(stuName, "",gradeName+"年级"+className, "注册失败", "原因是手机号码为空", row, style_error);
+    	                }
+	                }
+	                msg += logInfo + "----" +CurrentTime.getCurrentTime() + "<br>";
+	                i++;
+	            }
+	            // 第六步，将文件存到指定位置
+		    	String absoFilePath = "";//绝对地址
+		    	String fileName = schoolName_1+classInfo+"_"+CommonTools.getRadom()+".xls";
+	        	String folder = "d:\\免费学生名单\\";
+	        	absoFilePath = folder +fileName;
+	        	File file = new File(folder);
+				if(!file.exists()){
+					file.mkdirs();
+				}
+	            FileOutputStream fout = new FileOutputStream(absoFilePath);  
+	            wb.write(fout);  
+	            fout.close();  
+	        }catch (BiffException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
+		}else{
+			msg = "suffix is fail";
+		}
+		CommonTools.getJsonPkg(msg, response);
 		return null;
 	}
 }

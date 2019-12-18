@@ -86,5 +86,18 @@ public interface ClassInfoDao {
 	 * @return 班级实体
 	 */
 	List<ClassInfo> findClassInfoById(Session sess, Integer cId);
+	
+	/**
+	 * 根据学校编号，班级名称，创建班级时间获取该班级信息
+	 * @author sandy
+	 * @date 2019-12-18 上午08:26:02
+	 * @param sess
+	 * @param schoolId 学校编号
+	 * @param className 班级名称
+	 * @param buildClassDate 班级创建时间
+	 * @return
+	 */
+	List<ClassInfo> findClassInfoByOption(Session sess, Integer schoolId,
+			String className, String buildClassDate);
 
 }

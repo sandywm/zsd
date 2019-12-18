@@ -41,4 +41,16 @@ public interface ClassInfoManager {
 	 * @throws WEBException
 	 */
 	List<ClassInfo> listClassInfoById( Integer cId)throws WEBException;
+	
+	/**
+	 * 根据学校编号，班级名称，创建班级时间获取该班级信息
+	 * @author sandy
+	 * @date 2019-12-18 上午08:50:23
+	 * @param schoolId 学校编号
+	 * @param className 班级名称
+	 * @param buildClassDate 班级创建时间
+	 * @return
+	 * @throws WEBException
+	 */
+	List<ClassInfo> listClassInfoByOption(Integer schoolId, String className, String buildClassDate)throws WEBException;
 }

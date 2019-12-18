@@ -65,4 +65,14 @@ public class ClassInfoDaoImpl implements ClassInfoDao {
 		return sess.createQuery(hql).list();
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ClassInfo> findClassInfoByOption(Session sess,
+			Integer schoolId, String className, String buildClassDate) {
+		// TODO Auto-generated method stub
+		String hql = " from ClassInfo as c where c.school.id = "+schoolId + " and c.className = '"+className+"' and c.buildeClassDate = '"+buildClassDate+"'";
+		List<ClassInfo> l = sess.createQuery(hql).list();
+		return l;
+	}
+
 }

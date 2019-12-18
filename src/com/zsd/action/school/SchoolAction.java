@@ -306,7 +306,7 @@ public class SchoolAction extends DispatchAction {
 					ruManager.addRoleUserInfo(cityMid, mRId, prov, city, "", "", 0, 0, 0, 0);
 				}
 			}
-			if(prov!=""&&city !=""&&county!=""){
+			if(prov!=""&&city !=""&&county!="" || town.equals("县直属")){//县直属归类到县级
 				List<RoleUserInfo> cnyRu = ruManager.listUserRoleInfoByPosition(prov, city, county,"", 0, 0, 0, 0);
 				//创建县管理员
 				if(cnyRu.isEmpty()){
@@ -317,7 +317,7 @@ public class SchoolAction extends DispatchAction {
 				}
 			}
 			
-			if(prov!=""&&city !=""&&county!=""&& town!=""){
+			if(prov!=""&&city !=""&&county!=""&& town!="" && !town.equals("县直属")){//不是县直属
 				List<RoleUserInfo> townRu = ruManager.listUserRoleInfoByPosition(prov, city, county,town, 0, 0, 0, 0);
 				//创建乡镇街道管理员
 				if(townRu.isEmpty()){

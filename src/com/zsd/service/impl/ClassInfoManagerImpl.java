@@ -68,5 +68,20 @@ public class ClassInfoManagerImpl implements ClassInfoManager {
 			HibernateUtil.closeSession();
 		}
 	}
+	@Override
+	public List<ClassInfo> listClassInfoByOption(Integer schoolId,
+			String className, String buildClassDate) throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			ciDao = (ClassInfoDao) DaoFactory.instance(null).getDao(Constants.DAO_CLASS_INFO);
+			Session sess  = HibernateUtil.currentSession();
+			return ciDao.findClassInfoByOption(sess, schoolId, className, buildClassDate);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WEBException("根据学校编号，班级名称，创建班级时间获取该班级信息时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
 
 }

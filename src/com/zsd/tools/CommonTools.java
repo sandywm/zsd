@@ -191,6 +191,19 @@ public class CommonTools {
 	}
 	
 	/**
+	 * 获取六位随机数
+	 * @description
+	 * @author wm
+	 * @date 2016-9-17 上午10:00:34
+	 * @return
+	 */
+	 public static String getRadom(){
+    	Integer radom = (int) (Math.random()*(999999-100000)+100000);
+		String radomStr = String.valueOf(radom);
+		return radomStr;
+    }
+	
+	/**
 	 * 输入的数字类型转换成数据类型
 	 * @description
 	 * @author wm
