@@ -239,6 +239,7 @@
 						    		cityVal = json.city;
 						    		$('#cityInp').val(json.city);
 						    		countyVal = json.county;
+						    		$('#countyInp').val(json.county);
 						    		$('#welcomeTxt').html('欢迎您，' + json.prov + json.city + json.county + '管理员');
 						    	}else if(json.roleName == 'town'){
 						    		$('.filter').addClass('hasMargBot');
