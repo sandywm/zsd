@@ -1700,9 +1700,9 @@ public class OnlineStudyAction extends DispatchAction {
 				}
 			}
 		}else{//第一次
-			List<StudyMapInfo> smList = smm.listInfoByOpt(stuId, loreId);
-			if(smList.size() > 0){//存在学习记录
-				if(smList.get(0).getCurrStep().equals(4)){
+//			List<StudyMapInfo> smList = smm.listInfoByOpt(stuId, loreId);
+//			if(smList.size() > 0){//存在学习记录
+//				if(smList.get(0).getCurrStep().equals(4)){
 					LoreInfo lore = lm.getEntityById(loreId);
 					if(lore != null){
 						msg = "success";
@@ -1744,12 +1744,12 @@ public class OnlineStudyAction extends DispatchAction {
 							nextLoreIdArray = String.valueOf(loreId);
 						}
 					}
-				}else{
-					msg = "jtsfNotStart";//解题示范未学习
-				}
-			}else{
-				msg = "jtsfNotStart";//解题示范未学习
-			}
+//				}else{
+//					msg = "jtsfNotStart";//解题示范未学习
+//				}
+//			}else{
+//				msg = "jtsfNotStart";//解题示范未学习
+//			}
 		}
 		if(msg.equals("success")){
 			map.put("option", option);
@@ -2140,9 +2140,9 @@ public class OnlineStudyAction extends DispatchAction {
 			}
 		}else{//表示是新挑战
 			if(loreId > 0){
-				List<StudyMapInfo> smList = smm.listInfoByOpt(stuId, loreId);
-				if(smList.size() > 0){//存在学习记录
-					if(smList.get(0).getCurrStep().equals(4)){
+//				List<StudyMapInfo> smList = smm.listInfoByOpt(stuId, loreId);
+//				if(smList.size() > 0){//存在学习记录
+//					if(smList.get(0).getCurrStep().equals(4)){
 						List<Object> list_d = new ArrayList<Object>();
 						Integer quoteLoreId = CommonTools.getQuoteLoreId(loreId);
 						if(quoteLoreId > 0){
@@ -2186,12 +2186,12 @@ public class OnlineStudyAction extends DispatchAction {
 							}
 						}
 						map.put("lqList", list_d);
-					}else{
-						msg = "jtsfNotStart";//解题示范未学习
-					}
-				}else{
-					msg = "jtsfNotStart";//解题示范未学习
-				}
+//					}else{
+//						msg = "jtsfNotStart";//解题示范未学习
+//					}
+//				}else{
+//					msg = "jtsfNotStart";//解题示范未学习
+//				}
 			}
 		}
 		map.put("result", msg);
