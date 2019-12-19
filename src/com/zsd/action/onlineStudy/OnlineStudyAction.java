@@ -2525,6 +2525,10 @@ public class OnlineStudyAction extends DispatchAction {
 							if(slList.size() > 0){
 								if(!slList.get(0).getIsFinish().equals(2)){
 									studyLogId = slList.get(0).getId();
+								}else{//控制第一版学生重复做知识典的异常
+									studyLogId = -1;
+									updateFlag = false;
+									msg = "reSubmit";//不能重复提交
 								}
 							}
 						}
@@ -2543,7 +2547,7 @@ public class OnlineStudyAction extends DispatchAction {
 							if(studyLogId > 0){
 								updateFlag = true;
 							}
-						}else{//表示是继续之前的未做完的题（修改log里面的记录）
+						}else if(studyLogId > 0){//表示是继续之前的未做完的题（修改log里面的记录）
 							StudyLogInfo  sl = slm.getEntityById(studyLogId);
 							if(sl != null){
 								//获取该记录里面最后一道题
