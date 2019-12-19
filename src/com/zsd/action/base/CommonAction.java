@@ -1602,6 +1602,7 @@ public class CommonAction extends DispatchAction {
 											Integer teaRoId = rlist.get(0).getId();
 											rum.addRoleUserInfo(teaId, teaRoId, prov, city, county, town, schoolType, schoolId, gradeNo, classId);
 											ucm.addUcInfo(teaId, classId, teaRoId,sId,subName); //绑定班级
+											//帮老师生成学生使用账号
 										}
 									}
 								}

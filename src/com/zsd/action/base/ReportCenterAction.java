@@ -486,11 +486,18 @@ public class ReportCenterAction  extends DispatchAction{
 					}else if(roleId.equals(5)){//各级管理员
 						boolean flag = false;
 						if(!prov.equals("")){
+							//获取全国省份数量
 							if(!city.equals("")){
+								//获取指定省份下市的数量
 								if(!county.equals("")){
+									//获取全国指定市下面县的数量
 									if(!town.equals("")){
+										//获取全国指定县下面乡数量
 										if(schoolId > 0){
+											//获取全部指定乡下面指定学段的学校数量
+											allNum = schm.getCountByOpt("", "", "", "", town, schoolType, 0, 0);
 											if(!gradeName.equals("")){//无需判断学段
+												//获取全国指定乡下面指定学段指定年级的数量
 												if(classId > 0){//无需判断学段
 													if(stuId > 0){//无需判断学段
 														if(qftj.getUser().getId().equals(stuId)){
@@ -583,6 +590,7 @@ public class ReportCenterAction  extends DispatchAction{
 				Double relateXxSuccNum_1 = 0.0;
 				Double relateXxFailNum_1 = 0.0;
 				if(specNum > 0){
+					specNum = 1;
 					oneZdFailNum_new = Convert.convertInputNumber_2(oneZdFailNum * 1.0 / specNum);
 					relateZdFailNum_new = Convert.convertInputNumber_2(relateZdFailNum * 1.0 / specNum);
 					againXxSuccNum_real = Convert.convertInputNumber_2(againXxSuccNum * 1.0 / specNum);//再次诊断学习通过次数
