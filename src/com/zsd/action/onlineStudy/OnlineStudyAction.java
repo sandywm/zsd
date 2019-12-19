@@ -564,6 +564,8 @@ public class OnlineStudyAction extends DispatchAction {
 		// TODO Auto-generated method stub
 		StudyLogManager slm = (StudyLogManager) AppFactory.instance(null).getApp(Constants.WEB_STUDY_LOG_INFO);
 		Integer studyLogId = CommonTools.getFinalInteger("studyLogId", request);
+		Integer userId = CommonTools.getLoginUserId(request);
+		Integer loreId = CommonTools.getFinalInteger("loreId", request);
 		boolean studyFlag = false;
 		Map<String,Boolean> map = new HashMap<String,Boolean>();
 		//自学的知识点一天只能完成一次，家庭作业只要状态是完成就不能再做(家庭不用在这判断)
@@ -571,8 +573,10 @@ public class OnlineStudyAction extends DispatchAction {
 		if(studyLogId > 0){
 			slList.add(slm.getEntityById(studyLogId));
 		}else{
-//			slList = slm.listLastStudyInfoByOpt(stuId, loreId, 1);
-//			studyLogId等于0表示没有学习记录
+			if(userId > 0 && loreId > 0){
+				slList = slm.listLastStudyInfoByOpt(userId, loreId, 1);
+//				studyLogId等于0表示没有学习记录
+			}
 		}
 		if(slList.size() == 0){
 			studyFlag = true;
