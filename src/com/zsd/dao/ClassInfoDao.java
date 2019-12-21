@@ -99,5 +99,17 @@ public interface ClassInfoDao {
 	 */
 	List<ClassInfo> findClassInfoByOption(Session sess, Integer schoolId,
 			String className, String buildClassDate);
+	
+	/**
+	 * 根据创建班级时间，乡镇,学校编号获取班级列表
+	 * @author wm
+	 * @date 2019-12-21 上午10:26:17
+	 * @param sess
+	 * @param buildClassDate 班级创建日期
+	 * @param town 乡镇（""时不传）
+	 * @param schoolId 学校编号(0时不传)
+	 * @return
+	 */
+	List<ClassInfo> findClassInfoByOpt(Session sess,String buildClassDate,String town,Integer schoolId);
 
 }

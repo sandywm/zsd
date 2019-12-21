@@ -498,7 +498,30 @@ public class ReportCenterAction  extends DispatchAction{
 											allNum = schm.getCountByOpt("", "", "", "", town, schoolType, 0, 0);
 											if(!gradeName.equals("")){//无需判断学段
 												//获取全国指定乡下面指定学段指定年级的数量
+												Integer gradeNo = Integer.parseInt(Convert.ChineseConvertNumber(gradeName));
+												String buildClassDate = Convert.numberConvertBuildClassDate(gradeNo);
+												List<ClassInfo> cList = cm.listClassInfoByOpt(buildClassDate, town,0);
+												List<ClassInfo> list_d = new ArrayList<ClassInfo>();
+												for(Integer i = 0; i <  cList.size() ; i++){
+													if(i.equals(0)){
+														list_d.add(cList.get(i));
+													}else{
+														boolean existFlag = false;
+														for(ClassInfo c : list_d){
+															if(c.getSchool().getId().equals(cList.get(i).getSchool().getId())){
+																existFlag = true;
+																break;
+															}
+														}
+														if(!existFlag){
+															list_d.add(cList.get(i));
+														}
+													}
+												}
+												allNum = list_d.size();
 												if(classId > 0){//无需判断学段
+													//获取当前班级所在年级下班级的数量
+													allNum = cm.listClassInfoByOpt(buildClassDate, "",schoolId).size();
 													if(stuId > 0){//无需判断学段
 														if(qftj.getUser().getId().equals(stuId)){
 															flag = true;
@@ -590,7 +613,9 @@ public class ReportCenterAction  extends DispatchAction{
 				Double relateXxSuccNum_1 = 0.0;
 				Double relateXxFailNum_1 = 0.0;
 				if(specNum > 0){
-					specNum = 1;
+					if(schoolId > 0 || !gradeName.equals("") || classId > 0){
+						specNum = 1;
+					}
 					oneZdFailNum_new = Convert.convertInputNumber_2(oneZdFailNum * 1.0 / specNum);
 					relateZdFailNum_new = Convert.convertInputNumber_2(relateZdFailNum * 1.0 / specNum);
 					againXxSuccNum_real = Convert.convertInputNumber_2(againXxSuccNum * 1.0 / specNum);//再次诊断学习通过次数

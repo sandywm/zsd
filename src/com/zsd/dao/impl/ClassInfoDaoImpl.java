@@ -7,6 +7,7 @@ import org.hibernate.Session;
 import com.zsd.dao.ClassInfoDao;
 import com.zsd.module.ClassInfo;
 
+@SuppressWarnings("unchecked")
 public class ClassInfoDaoImpl implements ClassInfoDao {
 
 	@Override
@@ -37,14 +38,12 @@ public class ClassInfoDaoImpl implements ClassInfoDao {
 
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<ClassInfo> findClassInfo(Session sess) {
 		String hql = " from ClassInfo as ci";
 		return sess.createQuery(hql).list();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<ClassInfo> findClassInfoByOption(Session sess, Integer gradeId,
 			String currentTime, Integer schoolId, String className) {
@@ -58,19 +57,32 @@ public class ClassInfoDaoImpl implements ClassInfoDao {
 		return sess.createQuery(hql).list();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<ClassInfo> findClassInfoById(Session sess, Integer cId) {
 		String hql = "from ClassInfo as ci where ci.id = "+cId;
 		return sess.createQuery(hql).list();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<ClassInfo> findClassInfoByOption(Session sess,
 			Integer schoolId, String className, String buildClassDate) {
 		// TODO Auto-generated method stub
 		String hql = " from ClassInfo as c where c.school.id = "+schoolId + " and c.className = '"+className+"' and c.buildeClassDate = '"+buildClassDate+"'";
+		List<ClassInfo> l = sess.createQuery(hql).list();
+		return l;
+	}
+
+	@Override
+	public List<ClassInfo> findClassInfoByOpt(Session sess,
+			String buildClassDate, String town,Integer schoolId) {
+		// TODO Auto-generated method stub
+		String hql = " from ClassInfo as c where  c.buildeClassDate = '"+buildClassDate+"'";
+		if(!town.equals("")){
+			hql += " and c.school.town = '"+town+"'";
+		}
+		if(schoolId > 0){
+			hql += " and c.school.id = "+schoolId;
+		}
 		List<ClassInfo> l = sess.createQuery(hql).list();
 		return l;
 	}

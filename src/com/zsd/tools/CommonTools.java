@@ -2,6 +2,7 @@ package com.zsd.tools;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -25,7 +26,12 @@ import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+//import org.json.JSONArray;
+//import org.json.JSONObject;
+
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.zsd.factory.AppFactory;
 import com.zsd.module.BuffetQueInfo;
 import com.zsd.module.LoreInfo;
@@ -323,6 +329,47 @@ public class CommonTools {
 	    }    
 		return ipAddress;
 	}
+	
+//	public static String getSpecProvJson(String prov,String city) throws Exception, FileNotFoundException{
+//		String s = null;
+//		String result = "";
+//		InputStreamReader br = new InputStreamReader(new FileInputStream(new File("d:/area.json")),"utf-8");//读取文件,同时指定编码
+//		StringBuffer sb = new StringBuffer();
+//        char[] ch = new char[128];  //一次读取128个字符
+//        int len = 0;
+//        while((len = br.read(ch,0, ch.length)) != -1){
+//            sb.append(ch, 0, len);
+//        }
+//        s = sb.toString();
+//        JSONArray jsonArray = new JSONArray(s);
+//        for(int i = 0 ; i < jsonArray.length() ; i++){
+//        	JSONObject provObject = jsonArray .getJSONObject(i);
+//        	String prov_code = provObject.getString("value");
+//        	String prov_tmp = provObject.getString("name");
+//        	if(prov.equals("")){//全国省份
+//        		result += prov_code + "," + prov_tmp + ":";
+//        	}else if(prov_tmp.equals(prov)){
+//        		JSONArray cityJson = provObject.getJSONArray("children");
+//        		for(int j = 0 ; j < cityJson.length() ; j++){
+//        			JSONObject cityObject = cityJson .getJSONObject(j);
+//        			String city_code = cityObject.getString("value");
+//        			String city_tmp = cityObject.getString("name");
+//        			if(city_tmp.equals(city)){
+//        				JSONArray countyJson = cityObject.getJSONArray("children");
+//                		for(int k = 0 ; k < countyJson.length() ; k++){
+//                			JSONObject countyObject = countyJson .getJSONObject(k);
+//                			String county_tmp = countyObject.getString("name");
+//                			System.out.println(county_tmp);
+//                		}
+//                		break;
+//        			}
+//        		}
+//        		break;
+//        	}else{
+//        		
+//        	}
+//        }
+//	}
 	
 	/**
 	 * 根据IP地址获取当前省、市
@@ -974,6 +1021,7 @@ public class CommonTools {
 	}
 	
 	public static void main(String[] args) throws Exception, FileNotFoundException{
+//		CommonTools.getSpecProvJson("河北省","沧州市");
 //		System.out.println(System.currentTimeMillis());
 //		Integer items[] = {1,2,3,4,5,11,12,21};
 //		Integer[] need_del_items =  {2,11,4};
@@ -984,13 +1032,13 @@ public class CommonTools {
 //	        arrList.remove(b);
 //	    }
 //	    arrList.toArray();
-	    System.out.println(CurrentTime.getCurrentTime().substring(0,10));
-	    List<String> list = new ArrayList<String>();
-	    list.add("测试一");
-	    list.add("测试二");
-	    list.add("测试三");
-	    list.add("测试四");
-	    System.out.println(list);
+//	    System.out.println(CurrentTime.getCurrentTime().substring(0,10));
+//	    List<String> list = new ArrayList<String>();
+//	    list.add("测试一");
+//	    list.add("测试二");
+//	    list.add("测试三");
+//	    list.add("测试四");
+//	    System.out.println(list);
 	    
 //	    String bb = "7389:7392:7394|7396|7390|7393:7397|7405:7406|7407:7431|7432:7433:7436|7446:7448";
 //	    System.out.println(CommonTools.getCurrentStudyPath_new(bb, 7397));
