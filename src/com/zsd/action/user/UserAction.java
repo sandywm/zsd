@@ -4,6 +4,14 @@
  */
 package com.zsd.action.user;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -14,6 +22,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -41,6 +54,7 @@ import com.zsd.service.UserClassInfoManager;
 import com.zsd.service.UserManager;
 import com.zsd.tools.CommonTools;
 import com.zsd.tools.Convert;
+import com.zsd.tools.CurrentTime;
 import com.zsd.tools.FileOpration;
 import com.zsd.tools.MD5;
 import com.zsd.util.Constants;
@@ -236,6 +250,157 @@ public class UserAction extends DispatchAction {
 		}
 		map.put("msg", msg);
 		CommonTools.getJsonPkg(map, response);
+		return null;
+	}
+	
+	
+	public ActionForward exportExcel (ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		UserManager uManager = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
+		RoleUserInfoManager ruManager = (RoleUserInfoManager) AppFactory.instance(null).getApp(Constants.WEB_ROLE_USER_INFO);
+		SchoolManager schManager = (SchoolManager) AppFactory.instance(null).getApp(Constants.WEB_SCHOOL_INFO);
+		ClassInfoManager  cManager= (ClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_CLASS_INFO);
+		UserClassInfoManager  ucm = (UserClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_USER_CLASS_INFO);
+		String accName =CommonTools.getFinalStr("accName",request);//默认""
+		Integer roleId =CommonTools.getFinalInteger("roleId",request);//默认0
+		String realName=Transcode.unescape_new1("realName",request);//默认""
+		Integer schoolId=CommonTools.getFinalInteger("schoolId",request);//默认0
+		String prov=Transcode.unescape_new1("prov",request);//默认""
+		String city=Transcode.unescape_new1("city",request);//默认""
+		String county=Transcode.unescape_new1("county",request);//默认""
+		String town = Transcode.unescape_new1("town", request);//默认""
+		Integer schoolType=CommonTools.getFinalInteger("schoolType", request);//默认0
+		Integer gradeNo=CommonTools.getFinalInteger("gradeNo", request);//默认0
+		Integer classId=CommonTools.getFinalInteger("classId", request);//默认0
+		String schoolName = "";
+		List<User> uList = uManager.listUserInfoByoption(accName, realName, schoolId, roleId, prov, city, county, town, schoolType, gradeNo, classId, 1, 10000);
+		if(uList.size() > 0){
+			// 第一步，创建一个webbook，对应一个Excel文件  
+	        HSSFWorkbook wb = new HSSFWorkbook();  
+	        // 第二步，在webbook中添加一个sheet,对应Excel文件中的sheet  
+	        HSSFSheet sheet = wb.createSheet("学生学习记录统计");  
+	        // 第三步，在sheet中添加表头第0行,注意老版本poi对Excel的行数列数有限制short  
+	        HSSFRow row = sheet.createRow(0);  
+	        // 第四步，创建单元格，并设置值表头 设置表头居中  
+	        HSSFCellStyle style = wb.createCellStyle();  
+	        style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式  
+	        HSSFCell cell = row.createCell(0);  
+	        cell.setCellStyle(style);  
+	        cell.setCellValue("账号");  
+	        cell = row.createCell(1);  
+	        cell.setCellStyle(style);  
+	        cell.setCellValue("年级");  
+	        cell = row.createCell(2);  
+	        cell.setCellStyle(style);  
+	        cell.setCellValue("班级");  
+	        cell = row.createCell(3);  
+	        cell.setCellStyle(style);  
+	        cell.setCellValue("学科");
+	        cell = row.createCell(4);  
+	        cell.setCellStyle(style);  
+	        cell.setCellValue("身份");
+			for(int i = 0 ; i < uList.size() ; i++){
+				User user = uList.get(i);
+				boolean showFlag = true;
+				List<RoleUserInfo> ruList  = ruManager.listUserRoleInfoByuserId(user.getId());
+				for(RoleUserInfo ru : ruList){
+					if(ru.getRoleInfo().getId().equals(Constants.SUPER_ROLE_ID)){
+						showFlag = false;
+						break;
+					}
+				}
+				if(!showFlag){
+					continue;
+				}
+				row = sheet.createRow((int) i + 1);
+	        	// 第四步，创建单元格，并设置值  
+	        	HSSFCell cell_data = row.createCell(0); 
+	        	cell_data.setCellStyle(style);
+	        	cell_data.setCellValue(user.getUserAccount());			
+	        	
+	        	RoleUserInfo ruInfo = ruList.get(0);
+	        	String gradeName_tmp = "";
+	        	String className_tmp = "";
+	        	String subName = "";
+	        	String roleName = ruInfo.getRoleInfo().getRoleName();
+	        	if(ruInfo.getGradeNo() > 0){
+					gradeName_tmp = Convert.NunberConvertChinese(ruInfo.getGradeNo());
+				}
+	        	cell_data = row.createCell(1); 
+	        	cell_data.setCellStyle(style);
+	        	cell_data.setCellValue(gradeName_tmp);	
+	        	
+	        	if(ruInfo.getClassId() > 0){
+					List<ClassInfo> cInfo = cManager.listClassInfoById(ruInfo.getClassId());
+					if(cInfo.size() > 0){
+						className_tmp = cInfo.get(0).getClassName();
+					}
+				}
+	        	cell_data = row.createCell(2); 
+	        	cell_data.setCellStyle(style);
+	        	cell_data.setCellValue(className_tmp);	
+	        	
+	        	if(roleName.equals("老师")){
+					UserClassInfo uc = ucm.getEntityByOpt(user.getId(), ruInfo.getClassId(), ruInfo.getRoleInfo().getId());
+					if(uc != null){
+						subName = uc.getSubjectName();
+					}
+	        	}
+	        	cell_data = row.createCell(3); 
+	        	cell_data.setCellStyle(style);
+	        	cell_data.setCellValue(subName);	
+	        	
+	        	cell_data = row.createCell(4); 
+	        	cell_data.setCellStyle(style);
+	        	cell_data.setCellValue(roleName);	
+			}
+			
+			// 第六步，将文件存到指定位置
+	        String absoFilePath = "";//绝对地址
+	        try  {  
+	        	String fileName = "tea_"+schoolName+"_"+CurrentTime.getStringTime()+".xls";
+	        	String folder = WebUrl.DATA_URL_PRO + "Module\\excelTemp\\";
+	        	absoFilePath = folder +fileName;
+	        	File file = new File(folder);
+				if(!file.exists()){
+					file.mkdirs();
+				}
+	            FileOutputStream fout = new FileOutputStream(absoFilePath);  
+	            wb.write(fout);  
+	            fout.close();  
+		        //第七步 下载文件到客户端
+		        OutputStream fos = null;
+		        BufferedOutputStream bos = null;
+		        InputStream fis = null;
+		        BufferedInputStream bis = null;
+		        fis = new FileInputStream(new File(absoFilePath));
+				bis = new BufferedInputStream(fis);
+				fos = response.getOutputStream();
+				bos = new BufferedOutputStream(fos);
+				//这个就就是弹出下载对话框的关键代码
+				response.setHeader("Pragma", "No-cache");
+				response.setHeader("Cache-Control", "No-cache");
+				response.setDateHeader("Expires", 0); 
+		        response.setHeader("Content-disposition","attachment;filename=" +fileName);
+		        response.setContentType("application/x-download");
+		        int bytesRead = 0;
+		        byte[] buffer = new byte[8192];
+		        while ((bytesRead = bis.read(buffer,0,8192)) != -1) {
+		        	fos.write(buffer, 0, bytesRead);
+		        }
+		        fos.flush();
+		        fis.close();
+		        bis.close();
+		        fos.close();
+		        bos.close();
+	        }  
+	        catch (IOException e){  
+	            //e.printStackTrace();  
+	        }
+	        //第七步 删除临时上传的文件
+	        FileOpration.deleteFile(absoFilePath);
+		}
+		
 		return null;
 	}
 	
