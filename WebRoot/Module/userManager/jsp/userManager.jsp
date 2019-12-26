@@ -14,11 +14,6 @@
 	<style>
 		.itemDivs{width:150px;}
 	</style>
-	<script type="text/javascript">
-		function addBatchFreeStu(){
-			window.location.href = "common.do?action=addBatchFreeStu&filePath=";
-		}
-	</script>
     </head>
 	<body style="background:#f2f2f2;">
 		<div class="layui-fluid" style="margin-top:15px;">
@@ -105,7 +100,8 @@
 		  							</div>
 		  						</div>
 								<a class="resetBtn" style="margin-left:20px;" href="javascript:void(0)">重置<i class="layui-icon layui-icon-refresh"></i></a>
-								<input type="button" onclick="addBatchFreeStu();" value="批量导入免费学生"/>
+								<a class="" style="margin-left:20px;" href="javascript:void(0)" onclick="addBatchFreeStu();">批量导入免费学生</a>
+								<a class="" style="margin-left:20px;" href="javascript:void(0)" onclick="exportExcel();">下载</a>
 		  					</div>
 	  						<div class="userList">
 	  							<table id="userListTab" class="layui-table" lay-filter="userListTab"></table>
@@ -314,5 +310,14 @@
 			});
 			page.init();
 		});
+		function addBatchFreeStu(){
+			window.location.href = "common.do?action=addBatchFreeStu&filePath=";
+		}
+		function exportExcel(){
+			var roleInp = $('#roleInp').val(),
+						schoolIdInp = $('#schoolIdInp').val();
+						
+			window.location.href = "user.do?action=exportExcel&roleId="+roleInp+"&schoolId="+schoolIdInp;
+		}
 	</script>
 </html>
