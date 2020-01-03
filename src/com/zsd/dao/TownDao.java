@@ -26,4 +26,14 @@ public interface TownDao {
 	 * @param town
 	 */
 	void save(Session sess, TownInfo town);
+	
+	/**
+	 * 根据县名称获取镇列表
+	 * @author wm
+	 * @date 2020-1-3 下午03:31:02
+	 * @param sess
+	 * @param countyName 县名称
+	 * @return
+	 */
+	List<TownInfo> findInfoByCountyName(Session sess,String countyName);
 }

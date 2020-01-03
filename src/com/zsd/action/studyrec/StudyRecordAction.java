@@ -29,6 +29,7 @@ import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -1535,7 +1536,11 @@ public class StudyRecordAction extends DispatchAction {
 			sDate = CurrentTime.getFinalDate(-2);
 		}
 		List<User> uList = um.listPageStuLogByOption(stuName, province, city, county, town, schoolType, schoolId, gradeNo, classId, stuId, 1, 10000000);
-		if(uList.size() > 0){
+		Integer uLen = uList.size();
+		if(uLen > 0){
+			Integer studyNum = 0;
+			Integer comNum = 0;
+			Integer unComNum = 0;
 			// 第一步，创建一个webbook，对应一个Excel文件  
 	        HSSFWorkbook wb = new HSSFWorkbook();  
 	        // 第二步，在webbook中添加一个sheet,对应Excel文件中的sheet  
@@ -1543,51 +1548,63 @@ public class StudyRecordAction extends DispatchAction {
 	        // 第三步，在sheet中添加表头第0行,注意老版本poi对Excel的行数列数有限制short  
 	        HSSFRow row = sheet.createRow(0);  
 	        // 第四步，创建单元格，并设置值表头 设置表头居中  
+	        
+	        HSSFCellStyle style_head = wb.createCellStyle();  
+            style_head.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式  
+            style_head.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);  
+            style_head.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);//设置单元格填充样式，SOLID_FOREGROUND纯色使用前景颜色填充
+            style_head.setFillForegroundColor(HSSFColor.LIGHT_TURQUOISE.index);//设置背景颜色
+            style_head.setBorderBottom(HSSFCellStyle.BORDER_THIN); //下边框    
+            style_head.setBorderLeft(HSSFCellStyle.BORDER_THIN);//左边框    
+            style_head.setBorderTop(HSSFCellStyle.BORDER_THIN);//上边框    
+            style_head.setBorderRight(HSSFCellStyle.BORDER_THIN);//右边框 
+            
+	        
 	        HSSFCellStyle style = wb.createCellStyle();  
 	        style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式  
 	        HSSFCell cell = row.createCell(0);  
-	        cell.setCellStyle(style);  
+	        cell.setCellStyle(style_head);  
 	        cell.setCellValue("学生姓名");  
 	        cell = row.createCell(1);  
-	        cell.setCellStyle(style);  
+	        cell.setCellStyle(style_head);  
 	        cell.setCellValue("性别");  
 	        cell = row.createCell(2);  
-	        cell.setCellStyle(style);  
+	        cell.setCellStyle(style_head);  
 	        cell.setCellValue("省");  
 	        cell = row.createCell(3);  
-	        cell.setCellStyle(style);  
+	        cell.setCellStyle(style_head);  
 	        cell.setCellValue("市");  
 	        cell = row.createCell(4);  
-	        cell.setCellStyle(style);  
+	        cell.setCellStyle(style_head);  
 	        cell.setCellValue("县");  
 	        cell = row.createCell(5);  
-	        cell.setCellStyle(style);  
+	        cell.setCellStyle(style_head);  
 	        cell.setCellValue("乡");  
 	        cell = row.createCell(6);  
-	        cell.setCellStyle(style);  
+	        cell.setCellStyle(style_head);  
 	        cell.setCellValue("学段");  
 	        cell = row.createCell(7);  
-	        cell.setCellStyle(style);  
+	        cell.setCellStyle(style_head);  
 	        cell.setCellValue("学校"); 
 	        cell = row.createCell(8);  
-	        cell.setCellStyle(style);  
+	        cell.setCellStyle(style_head);  
 	        cell.setCellValue("年级");
 	        cell = row.createCell(9);  
-	        cell.setCellStyle(style);  
+	        cell.setCellStyle(style_head);  
 	        cell.setCellValue("班级");
 	        cell = row.createCell(10);  
-	        cell.setCellStyle(style);  
+	        cell.setCellStyle(style_head);  
 	        cell.setCellValue("共学习知识点");
 	        cell = row.createCell(11);  
-	        cell.setCellStyle(style);  
+	        cell.setCellStyle(style_head);  
 	        cell.setCellValue("已完成知识点");
 	        cell = row.createCell(12);  
-	        cell.setCellStyle(style);  
+	        cell.setCellStyle(style_head);  
 	        cell.setCellValue("未完成知识点");
 	        cell = row.createCell(13);  
-	        cell.setCellStyle(style);  
+	        cell.setCellStyle(style_head);  
 	        cell.setCellValue("完成率");
-			for(Integer i = 0; i < uList.size() ; i++){
+			for(Integer i = 0; i < uLen ; i++){
 				User user = uList.get(i);
 				row = sheet.createRow((int) i + 1);
 	        	// 第四步，创建单元格，并设置值  
@@ -1670,6 +1687,9 @@ public class StudyRecordAction extends DispatchAction {
 						 succStudyNumber = slm.listSlInfoByopt(user.getId(), subId, 2, 0, sDate, eDate).size();
 						 completeRate = String.format("%.2f", (double)succStudyNumber * 100 / allStudyNumber) + "%";//完成率
 					 }
+					 studyNum += allStudyNumber;
+					 comNum += succStudyNumber;
+					 unComNum += (allStudyNumber - succStudyNumber);
 					 
 					cell_data = row.createCell(10);
 		        	cell_data.setCellStyle(style);
@@ -1688,6 +1708,35 @@ public class StudyRecordAction extends DispatchAction {
 		        	cell_data.setCellValue(completeRate);
 				 }
 			}
+			
+			//统计栏
+			row = sheet.createRow(uLen + 2);
+        	// 第四步，创建单元格，并设置值  
+        	HSSFCell cell_data = row.createCell(0); 
+        	cell_data.setCellStyle(style);
+        	cell_data.setCellValue(uLen+"人");
+        	
+        	cell_data = row.createCell(10); 
+        	cell_data.setCellStyle(style);
+        	cell_data.setCellValue(studyNum);
+			
+        	cell_data = row.createCell(11); 
+        	cell_data.setCellStyle(style);
+        	cell_data.setCellValue(comNum);
+        	
+        	cell_data = row.createCell(12); 
+        	cell_data.setCellStyle(style);
+        	cell_data.setCellValue(unComNum);
+        	
+        	String allComRate = "0.00%";
+        	if(comNum > 0 && studyNum > 0){
+        		allComRate = String.format("%.2f", (double)comNum * 100 / studyNum) + "%";
+        	}
+        	
+        	cell_data = row.createCell(13); 
+        	cell_data.setCellStyle(style);
+        	cell_data.setCellValue(allComRate);
+        	
 			// 第六步，将文件存到指定位置
 	        String absoFilePath = "";//绝对地址
 	        try  {  

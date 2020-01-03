@@ -1,8 +1,5 @@
 package com.zsd.module;
 
-import java.util.HashSet;
-import java.util.Set;
-
 /**
  * ClassInfo entity. @author MyEclipse Persistence Tools
  */
@@ -19,6 +16,7 @@ public class ClassInfo implements java.io.Serializable {
 	private School school;
 	private String className;
 	private String buildeClassDate;
+	private Integer classNum;
 
 	// Constructors
 
@@ -27,10 +25,11 @@ public class ClassInfo implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public ClassInfo(School school, String className, String buildeClassDate) {
+	public ClassInfo(School school, String className, String buildeClassDate,Integer classNum) {
 		this.school = school;
 		this.className = className;
 		this.buildeClassDate = buildeClassDate;
+		this.classNum = classNum;
 	}
 
 	// Property accessors
@@ -65,6 +64,14 @@ public class ClassInfo implements java.io.Serializable {
 
 	public void setBuildeClassDate(String buildeClassDate) {
 		this.buildeClassDate = buildeClassDate;
+	}
+
+	public Integer getClassNum() {
+		return classNum;
+	}
+
+	public void setClassNum(Integer classNum) {
+		this.classNum = classNum;
 	}
 
 }

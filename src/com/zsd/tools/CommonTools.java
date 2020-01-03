@@ -26,12 +26,12 @@ import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-//import org.json.JSONArray;
-//import org.json.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+//import com.alibaba.fastjson.JSONArray;
+//import com.alibaba.fastjson.JSONObject;
 import com.zsd.factory.AppFactory;
 import com.zsd.module.BuffetQueInfo;
 import com.zsd.module.LoreInfo;
@@ -330,46 +330,53 @@ public class CommonTools {
 		return ipAddress;
 	}
 	
-//	public static String getSpecProvJson(String prov,String city) throws Exception, FileNotFoundException{
-//		String s = null;
-//		String result = "";
-//		InputStreamReader br = new InputStreamReader(new FileInputStream(new File("d:/area.json")),"utf-8");//读取文件,同时指定编码
-//		StringBuffer sb = new StringBuffer();
-//        char[] ch = new char[128];  //一次读取128个字符
-//        int len = 0;
-//        while((len = br.read(ch,0, ch.length)) != -1){
-//            sb.append(ch, 0, len);
-//        }
-//        s = sb.toString();
-//        JSONArray jsonArray = new JSONArray(s);
-//        for(int i = 0 ; i < jsonArray.length() ; i++){
-//        	JSONObject provObject = jsonArray .getJSONObject(i);
-//        	String prov_code = provObject.getString("value");
-//        	String prov_tmp = provObject.getString("name");
-//        	if(prov.equals("")){//全国省份
-//        		result += prov_code + "," + prov_tmp + ":";
-//        	}else if(prov_tmp.equals(prov)){
-//        		JSONArray cityJson = provObject.getJSONArray("children");
-//        		for(int j = 0 ; j < cityJson.length() ; j++){
-//        			JSONObject cityObject = cityJson .getJSONObject(j);
-//        			String city_code = cityObject.getString("value");
-//        			String city_tmp = cityObject.getString("name");
-//        			if(city_tmp.equals(city)){
-//        				JSONArray countyJson = cityObject.getJSONArray("children");
-//                		for(int k = 0 ; k < countyJson.length() ; k++){
-//                			JSONObject countyObject = countyJson .getJSONObject(k);
-//                			String county_tmp = countyObject.getString("name");
-//                			System.out.println(county_tmp);
-//                		}
-//                		break;
-//        			}
-//        		}
-//        		break;
-//        	}else{
-//        		
-//        	}
-//        }
-//	}
+	public static String getSpecProvJson(String prov,String city) throws Exception, FileNotFoundException{
+		String s = null;
+		String result = "";
+		InputStreamReader br = new InputStreamReader(new FileInputStream(new File("d:/area.json")),"utf-8");//读取文件,同时指定编码
+		StringBuffer sb = new StringBuffer();
+        char[] ch = new char[128];  //一次读取128个字符
+        int len = 0;
+        while((len = br.read(ch,0, ch.length)) != -1){
+            sb.append(ch, 0, len);
+        }
+        s = sb.toString();
+        JSONArray jsonArray = new JSONArray(s);
+        for(int i = 0 ; i < jsonArray.length() ; i++){
+        	JSONObject provObject = jsonArray .getJSONObject(i);
+        	String prov_code = provObject.getString("value");
+        	String prov_tmp = provObject.getString("name");
+        	if(prov.equals("")){//全国省份
+        		result += prov_code + "," + prov_tmp + ":";
+        	}else if(prov_tmp.equals(prov)){
+        		JSONArray cityJson = provObject.getJSONArray("children");
+        		for(int j = 0 ; j < cityJson.length() ; j++){
+        			JSONObject cityObject = cityJson .getJSONObject(j);
+        			String city_code = cityObject.getString("value");
+        			String city_tmp = cityObject.getString("name");
+        			result += city_tmp + ",";
+        			if(!city.equals("") && city_tmp.equals(city)){
+        				result = "";
+        				JSONArray countyJson = cityObject.getJSONArray("children");
+                		for(int k = 0 ; k < countyJson.length() ; k++){
+                			JSONObject countyObject = countyJson .getJSONObject(k);
+                			String county_code = countyObject.getString("value");
+                			String county_tmp = countyObject.getString("name");
+                			System.out.print(county_tmp + ",");
+                			result += county_tmp + ",";
+                		}
+                		break;
+        			}
+        		}
+        		break;
+        	}
+        }
+        if(!result.equals("")){
+        	result = result.substring(0, result.length() - 1);
+        }
+        System.out.print(result);
+        return result;
+	}
 	
 	/**
 	 * 根据IP地址获取当前省、市
@@ -1021,7 +1028,7 @@ public class CommonTools {
 	}
 	
 	public static void main(String[] args) throws Exception, FileNotFoundException{
-//		CommonTools.getSpecProvJson("河北省","沧州市");
+		CommonTools.getSpecProvJson("河北省","廊坊市");
 //		System.out.println(System.currentTimeMillis());
 //		Integer items[] = {1,2,3,4,5,11,12,21};
 //		Integer[] need_del_items =  {2,11,4};

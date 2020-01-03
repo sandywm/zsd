@@ -29,4 +29,14 @@ public interface TownManager {
 	 * @throws WEBException
 	 */
 	List<TownInfo> listInfoByCountyCode(String countyCode) throws WEBException;
+	
+	/**
+	 * 根据县名称获取乡镇列表
+	 * @author wm
+	 * @date 2020-1-3 下午03:29:53
+	 * @param countyName 县名称
+	 * @return
+	 * @throws WEBException
+	 */
+	List<TownInfo> listInfoByCountyName(String countyName) throws WEBException;
 }

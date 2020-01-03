@@ -25,6 +25,11 @@
                 <comment>创建班级时间</comment>
             </column>
         </property>
+        <property name="classNum" type="java.lang.Integer">
+            <column name="class_num" not-null="true" default="0">
+                <comment>创建班级时间</comment>
+            </column>
+        </property>
         <!--set name="applyClassInfos" inverse="true">
             <key>
                 <column name="class_id" not-null="true">

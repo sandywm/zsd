@@ -30,6 +30,7 @@ import com.zsd.service.StudyAllTjInfoManager;
 import com.zsd.service.StudyStuQfTjManager;
 import com.zsd.service.StudyStuTjInfoManager;
 import com.zsd.service.SubjectManager;
+import com.zsd.service.TownManager;
 import com.zsd.service.UserClassInfoManager;
 import com.zsd.service.UserManager;
 import com.zsd.tools.CommonTools;
@@ -170,6 +171,7 @@ public class ReportCenterAction  extends DispatchAction{
 		SchoolManager schm = (SchoolManager) AppFactory.instance(null).getApp(Constants.WEB_SCHOOL_INFO);
  		UserManager um = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
 		ClassInfoManager cm = (ClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_CLASS_INFO);
+		TownManager tm = (TownManager) AppFactory.instance(null).getApp(Constants.WEB_TOWN_INFO); 
 		Integer userId = CommonTools.getLoginUserId(request);//必须传
 		Integer roleId = CommonTools.getLoginRoleId(request);//必须传
 //		userId = 1;
@@ -320,11 +322,12 @@ public class ReportCenterAction  extends DispatchAction{
 				//2：当为省时，需要和全国所有省份平均值进行对比(河南省和全国省份平均值对比)
 				//3：当为省和市时，需要和该省下所有市的平均值进行对比(濮阳市和河南省所有市平均值进行对比)
 				//4：当为省市县时，需要和该市下所有县的平均值进行对比(范县和濮阳市下所有县平均值进行对比)
-				//5：当为省市县学段(小学)时，需要和该市下所有县所有指定学段的平均值进行对比(濮阳市范县所有小学和濮阳市所有县的小学对比)
-				//6：当为省市县学段(小学)学校时，需要和该县下所有指定学段(小学)所有学校的平均值进行对比(范县小学油田八小和范县所有小学进行对比)
-				//7：当为省市县学段(小学)学校年级时，需要和该县下所有指定学段的指定年级平均值进行对比(范县小学油田八小一年级和范县所有小学一年级平均值进行对比)
-				//8：当为省市县学段(小学)学校年级班级时，需要当前学校指定班级所在的年级平均值进行对比(油田八小一年级一班和油田八小一年级平均值进行对比)
-				//9：当为省市县学段(小学)学校年级班级学生时，需要学生和学生所在的班级平均值进行对比(油田八小一年级一班某某学生和油田八小一年级一班的平均值进行对比)
+				//5：当为省市县乡时，需要和该县下所有乡的平均值进行对比（濮城镇和范县下所有乡的平均值进行对比）
+				//5：当为省市县乡学段(小学)时，需要和该市下所有县所有指定学段的平均值进行对比(濮阳市范县濮城镇所有小学和濮阳市范县下所有乡镇的小学对比)
+				//6：当为省市县乡学段(小学)学校时，需要和该县下所有指定学段(小学)所有学校的平均值进行对比(范县濮城镇小学油田八小和濮城镇所有小学进行对比)
+				//7：当为省市县乡学段(小学)学校年级时，需要和该县下所有指定学段的指定年级平均值进行对比(范县小学油田八小一年级和范县所有小学一年级平均值进行对比)
+				//8：当为省市县乡学段(小学)学校年级班级时，需要当前学校指定班级所在的年级平均值进行对比(油田八小一年级一班和油田八小一年级平均值进行对比)
+				//9：当为省市县乡学段(小学)学校年级班级学生时，需要学生和学生所在的班级平均值进行对比(油田八小一年级一班某某学生和油田八小一年级一班的平均值进行对比)
 				if(!prov.equals("")){
 					String schoolTypeName = "";
 					if(schoolType.equals(1)){
@@ -495,33 +498,31 @@ public class ReportCenterAction  extends DispatchAction{
 										//获取全国指定县下面乡数量
 										if(schoolId > 0){
 											//获取全部指定乡下面指定学段的学校数量
-											allNum = schm.getCountByOpt("", "", "", "", town, schoolType, 0, 0);
+//											allNum = schm.getCountByOpt("", "", "", "", town, schoolType, 0, 0);
 											if(!gradeName.equals("")){//无需判断学段
 												//获取全国指定乡下面指定学段指定年级的数量
-												Integer gradeNo = Integer.parseInt(Convert.ChineseConvertNumber(gradeName));
-												String buildClassDate = Convert.numberConvertBuildClassDate(gradeNo);
-												List<ClassInfo> cList = cm.listClassInfoByOpt(buildClassDate, town,0);
-												List<ClassInfo> list_d = new ArrayList<ClassInfo>();
-												for(Integer i = 0; i <  cList.size() ; i++){
-													if(i.equals(0)){
-														list_d.add(cList.get(i));
-													}else{
-														boolean existFlag = false;
-														for(ClassInfo c : list_d){
-															if(c.getSchool().getId().equals(cList.get(i).getSchool().getId())){
-																existFlag = true;
-																break;
-															}
-														}
-														if(!existFlag){
-															list_d.add(cList.get(i));
-														}
-													}
-												}
-												allNum = list_d.size();
+//												Integer gradeNo = Integer.parseInt(Convert.ChineseConvertNumber(gradeName));
+//												String buildClassDate = Convert.numberConvertBuildClassDate(gradeNo);
+//												List<ClassInfo> cList = cm.listClassInfoByOpt(buildClassDate, town,0);
+//												List<ClassInfo> list_d = new ArrayList<ClassInfo>();
+//												for(Integer i = 0; i <  cList.size() ; i++){
+//													if(i.equals(0)){
+//														list_d.add(cList.get(i));
+//													}else{
+//														boolean existFlag = false;
+//														for(ClassInfo c : list_d){
+//															if(c.getSchool().getId().equals(cList.get(i).getSchool().getId())){
+//																existFlag = true;
+//																break;
+//															}
+//														}
+//														if(!existFlag){
+//															list_d.add(cList.get(i));
+//														}
+//													}
+//												}
+//												allNum = list_d.size();
 												if(classId > 0){//无需判断学段
-													//获取当前班级所在年级下班级的数量
-													allNum = cm.listClassInfoByOpt(buildClassDate, "",schoolId).size();
 													if(stuId > 0){//无需判断学段
 														if(qftj.getUser().getId().equals(stuId)){
 															flag = true;
@@ -613,9 +614,10 @@ public class ReportCenterAction  extends DispatchAction{
 				Double relateXxSuccNum_1 = 0.0;
 				Double relateXxFailNum_1 = 0.0;
 				if(specNum > 0){
-					if(schoolId > 0 || !gradeName.equals("") || classId > 0){
-						specNum = 1;
-					}
+					specNum = 1;
+//					if(schoolId > 0 || !gradeName.equals("") || classId > 0){
+//						specNum = 1;
+//					}
 					oneZdFailNum_new = Convert.convertInputNumber_2(oneZdFailNum * 1.0 / specNum);
 					relateZdFailNum_new = Convert.convertInputNumber_2(relateZdFailNum * 1.0 / specNum);
 					againXxSuccNum_real = Convert.convertInputNumber_2(againXxSuccNum * 1.0 / specNum);//再次诊断学习通过次数
@@ -639,6 +641,50 @@ public class ReportCenterAction  extends DispatchAction{
 				Double relateXxSuccNum_all_1 = 0.0;
 				Double relateXxFailNum_all_1 = 0.0;
 				if(allNum > 0){
+					if(stuId > 0){//指定学生时
+						//获取该同学全部的学生数量
+						allNum = um.getCountByOpt("", "", "", "", "", 0, schoolId, 0, classId, 0);
+					}else if(classId > 0){//班级时
+						//获取当前班级所在年级下班级的数量
+						Integer gradeNo = Integer.parseInt(Convert.ChineseConvertNumber(gradeName));
+						String buildClassDate = Convert.numberConvertBuildClassDate(gradeNo);
+						allNum = cm.listClassInfoByOpt(buildClassDate, "",schoolId).size();
+					}else if(!gradeName.equals("")){//指定年级时
+						//获取指定乡镇下的指定年级数量
+						Integer gradeNo = Integer.parseInt(Convert.ChineseConvertNumber(gradeName));
+						String buildClassDate = Convert.numberConvertBuildClassDate(gradeNo);
+						List<ClassInfo> cList = cm.listClassInfoByOpt(buildClassDate, town,0);
+						List<ClassInfo> list_d = new ArrayList<ClassInfo>();
+						for(Integer i = 0; i <  cList.size() ; i++){
+							if(i.equals(0)){
+								list_d.add(cList.get(i));
+							}else{
+								boolean existFlag = false;
+								for(ClassInfo c : list_d){
+									if(c.getSchool().getId().equals(cList.get(i).getSchool().getId())){
+										existFlag = true;
+										break;
+									}
+								}
+								if(!existFlag){
+									list_d.add(cList.get(i));
+								}
+							}
+						}
+						allNum = list_d.size();
+					}else if(schoolId > 0){//指定学校时
+						//获取指定乡镇下指定学段的学校数量
+						allNum = schm.getCountByOpt("", prov, city, county, town, schoolType, 0, 0);
+					}else if(!town.equals("")){//指定乡镇时
+						//获取指定该镇说在县下所有乡镇的数量
+						allNum = tm.listInfoByCountyName(county).size();
+					}else if(!county.equals("")){//指定县时
+						//获取指定该县所在市下所有县的数量
+						allNum = CommonTools.getSpecProvJson(prov,city).split(",").length;
+					}else if(!city.equals("")){//指定市时
+						//获取指定市和该市所在省下所有市的数量
+						allNum = CommonTools.getSpecProvJson(prov,"").split(",").length;
+					}
 					oneZdFailNumAll_new = Convert.convertInputNumber_2(oneZdFailNumAll * 1.0 / allNum);
 					relateZdFailNumAll_new = Convert.convertInputNumber_2(relateZdFailNumAll * 1.0 / allNum);
 					againXxSuccNum_real_all = Convert.convertInputNumber_2(againXxSuccNumAll * 1.0 / allNum);//再次诊断学习通过次数

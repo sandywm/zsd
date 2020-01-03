@@ -55,4 +55,21 @@ public class TownManagerImpl implements TownManager{
 		}
 	}
 
+	@Override
+	public List<TownInfo> listInfoByCountyName(String countyName)
+			throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			tDao = (TownDao) DaoFactory.instance(null).getDao(Constants.DAO_TOWN_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return tDao.findInfoByCountyName(sess, countyName);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new WEBException("根据县名称获取乡镇信息时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
 }

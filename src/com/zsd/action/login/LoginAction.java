@@ -514,7 +514,7 @@ public class LoginAction extends DispatchAction {
 								//2学生 绑定角色
 								ruManager.addRoleUserInfo(userId, roleId, prov_tmp, city_tmp, county_tmp, town_tmp, schoolType_tmp, schoolId, gradeNo, classId);
 								//5 生成家长账户
-								Integer upId = uManager.addUser(userAccount+"_jz", "", password_base, "", lastLoginDate, lastLoginIp, signDate, schoolId, CurrentTime.getFinalDate(30), yearSystem, prov, city);
+								Integer upId = uManager.addUser(userAccount+"jz", "", password_base, "", lastLoginDate, lastLoginIp, signDate, schoolId, CurrentTime.getFinalDate(30), yearSystem, prov, city);
 								//6 家长绑定角色
 								List<RoleInfo> jzlist = rManager.listRoleInfo("家长");
 								if(jzlist.size() > 0){
@@ -523,7 +523,7 @@ public class LoginAction extends DispatchAction {
 								}
 								// 7 学生家长绑定
 								spManager.addSpInfo(upId, userId);
-								pcManager.addParentClub(upId, userAccount+"_jz"+"的家长群", InviteCode.getRandomAllStr(6), 100, "");
+								pcManager.addParentClub(upId, userAccount+"jz"+"的家长群", InviteCode.getRandomAllStr(6), 100, "");
 								msg = "success";//注册用户成功
 							}
 						}

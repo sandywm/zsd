@@ -44,7 +44,7 @@ public class ClassInfoManagerImpl implements ClassInfoManager {
 			Session sess  = HibernateUtil.currentSession();
 			tran = sess.beginTransaction();
 			School school = sDao.get(sess, scId);
-			ClassInfo cInfo =  new ClassInfo(school, className, buildeClassDate);
+			ClassInfo cInfo =  new ClassInfo(school, className, buildeClassDate,Integer.parseInt(className.replace("班", "")));
 			ciDao.save(sess, cInfo);
 			tran.commit();
 			return cInfo.getId();

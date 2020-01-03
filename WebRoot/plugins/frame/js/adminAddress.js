@@ -791,6 +791,7 @@ layui.define(["form","jquery","table"],function(exports){
 				{field : 'gradeName', title: '年级',width:'100',align:'center'},
 				{field : 'className', title: '班级',width:'80',align:'center'},
 				{field : 'allStudyNumber', title: '共学习知识点(个)',width:'150',align:'center'},
+				{field : 'succStudyNumber', title: '已完成知识点(个)',width:'150',align:'center'},
 				{field : 'noSuccStudyNumber', title: '未完成知识点(个)',width:'150',align:'center'},
 				{field : 'completeRate', title: '完成率',width:'100',align:'center'},
 				{field : 'prov', title: '省',width:'150',align:'center'},

@@ -164,29 +164,54 @@ public class UserDaoImpl implements UserDao {
 			Integer schoolType, Integer schoolId, Integer gradeNo,
 			Integer classId, Integer userId,Integer pageNo,Integer pageSize) {
 		// TODO Auto-generated method stub
-		String hql = " from User as u where u.id in(select ru.user.id from RoleUserInfo as ru where ru.roleInfo.id = 2)";
+		
+		String hql = "select ru.user from RoleUserInfo as ru where ru.roleInfo.id = 2";
 		if(!stuName.equals("")){
-			hql += " and u.realName = '"+stuName+"'";
+			hql += " and ru.user.realName = '"+stuName+"'";
 		}else if(userId > 0){//指定学生
-			hql += " and u.id = "+userId;
+			hql += " and ru.user.id = "+userId;
 		}else if(classId > 0){//指定班级
-			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.classId = "+classId+")";
+			hql += " and ru.classId = "+classId;
 		}else if(gradeNo > 0){//指定年级--附带着学校
-			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.gradeNo = "+gradeNo+" and ru.schoolId = "+schoolId+")";
+			hql += " and ru.gradeNo = "+gradeNo+" and ru.schoolId = "+schoolId;
 		}else if(schoolId > 0){
-			hql += " and u.schoolId = "+schoolId;
+			hql += " and ru.schoolId = "+schoolId;
 		}else if(schoolType > 0){//指定学段--附带上乡镇
-			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.schoolType = "+schoolType+" and ru.town = '"+town+"')";
+			hql += " and ru.schoolType = "+schoolType+" and ru.town = '"+town+"'";
 		}else if(!town.equals("")){//指定镇
-			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.town = '"+town+"')";
+			hql += " and ru.town = '"+town+"'";
 		}else if(!county.equals("")){//指定县
-			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.county = '"+county+"')";
+			hql += " and ru.county = '"+county+"'";
 		}else if(!city.equals("")){//指定市
-			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.city = '"+city+"')";
+			hql += " and ru.city = '"+city+"'";
 		}else if(!prov.equals("")){//指定省
-			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.prov = '"+prov+"')";
+			hql += " and ru.prov = '"+prov+"'";
 		}
-		hql += "  and u.schoolId > 0";
+		hql += " and ru.schoolId > 0 order by ru.gradeNo asc";
+		
+//		String hql = " from User as u where u.id in(select ru.user.id from RoleUserInfo as ru where ru.roleInfo.id = 2)";
+//		if(!stuName.equals("")){
+//			hql += " and u.realName = '"+stuName+"'";
+//		}else if(userId > 0){//指定学生
+//			hql += " and u.id = "+userId;
+//		}else if(classId > 0){//指定班级
+//			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.classId = "+classId+")";
+//		}else if(gradeNo > 0){//指定年级--附带着学校
+//			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.gradeNo = "+gradeNo+" and ru.schoolId = "+schoolId+")";
+//		}else if(schoolId > 0){
+//			hql += " and u.schoolId = "+schoolId;
+//		}else if(schoolType > 0){//指定学段--附带上乡镇
+//			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.schoolType = "+schoolType+" and ru.town = '"+town+"' order by ru.gradeNo asc)";
+//		}else if(!town.equals("")){//指定镇
+//			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.town = '"+town+"')";
+//		}else if(!county.equals("")){//指定县
+//			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.county = '"+county+"')";
+//		}else if(!city.equals("")){//指定市
+//			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.city = '"+city+"')";
+//		}else if(!prov.equals("")){//指定省
+//			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.prov = '"+prov+"')";
+//		}
+//		hql += "  and u.schoolId > 0";
 		int offset = (pageNo - 1) * pageSize;
 		if (offset < 0) {
 			offset = 0;
@@ -199,29 +224,54 @@ public class UserDaoImpl implements UserDao {
 			String city, String county, String town, Integer schoolType,
 			Integer schoolId, Integer gradeNo, Integer classId, Integer userId) {
 		// TODO Auto-generated method stub
-		String hql = "select count(u.id) from User as u where u.id in(select ru.user.id from RoleUserInfo as ru where ru.roleInfo.id = 2)";
+		
+		String hql = "select count(ru.id) from RoleUserInfo as ru where ru.roleInfo.id = 2";
 		if(!stuName.equals("")){
-			hql += " and u.realName = '"+stuName+"'";
+			hql += " and ru.user.realName = '"+stuName+"'";
 		}else if(userId > 0){//指定学生
-			hql += " and u.id = "+userId;
+			hql += " and ru.user.id = "+userId;
 		}else if(classId > 0){//指定班级
-			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.classId = "+classId+")";
+			hql += " and ru.classId = "+classId;
 		}else if(gradeNo > 0){//指定年级--附带着学校
-			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.gradeNo = "+gradeNo+" and ru.schoolId = "+schoolId+")";
+			hql += " and ru.gradeNo = "+gradeNo+" and ru.schoolId = "+schoolId;
 		}else if(schoolId > 0){
-			hql += " and u.schoolId = "+schoolId;
+			hql += " and ru.schoolId = "+schoolId;
 		}else if(schoolType > 0){//指定学段--附带上乡镇
-			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.schoolType = "+schoolType+" and ru.town = '"+town+"')";
+			hql += " and ru.schoolType = "+schoolType+" and ru.town = '"+town+"'";
 		}else if(!town.equals("")){//指定镇
-			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.town = '"+town+"')";
+			hql += " and ru.town = '"+town+"'";
 		}else if(!county.equals("")){//指定县
-			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.county = '"+county+"')";
+			hql += " and ru.county = '"+county+"'";
 		}else if(!city.equals("")){//指定市
-			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.city = '"+city+"')";
+			hql += " and ru.city = '"+city+"'";
 		}else if(!prov.equals("")){//指定省
-			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.prov = '"+prov+"')";
+			hql += " and ru.prov = '"+prov+"'";
 		}
-		hql += "  and u.schoolId > 0";
+		hql += " and ru.schoolId > 0";
+		
+//		String hql = "select count(u.id) from User as u where u.id in(select ru.user.id from RoleUserInfo as ru where ru.roleInfo.id = 2)";
+//		if(!stuName.equals("")){
+//			hql += " and u.realName = '"+stuName+"'";
+//		}else if(userId > 0){//指定学生
+//			hql += " and u.id = "+userId;
+//		}else if(classId > 0){//指定班级
+//			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.classId = "+classId+")";
+//		}else if(gradeNo > 0){//指定年级--附带着学校
+//			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.gradeNo = "+gradeNo+" and ru.schoolId = "+schoolId+")";
+//		}else if(schoolId > 0){
+//			hql += " and u.schoolId = "+schoolId;
+//		}else if(schoolType > 0){//指定学段--附带上乡镇
+//			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.schoolType = "+schoolType+" and ru.town = '"+town+"')";
+//		}else if(!town.equals("")){//指定镇
+//			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.town = '"+town+"')";
+//		}else if(!county.equals("")){//指定县
+//			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.county = '"+county+"')";
+//		}else if(!city.equals("")){//指定市
+//			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.city = '"+city+"')";
+//		}else if(!prov.equals("")){//指定省
+//			hql += " and u.id in(select ru.user.id from RoleUserInfo as ru where ru.prov = '"+prov+"')";
+//		}
+//		hql += "  and u.schoolId > 0";
 		Object countObj = sess.createQuery(hql).uniqueResult();
 		return CommonTools.longToInt(countObj);
 	}

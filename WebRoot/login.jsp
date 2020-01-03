@@ -176,7 +176,11 @@
 				        		}
 				        		var roleList = json["roleList"];
 				        		if(roleList.length == 1){//一种身份
-				        			window.location.href = "user.do?action=goPage&roleId=" + roleList[0].roleId;
+				        			if(roleList[0].roleId == 1 || roleList[0].roleId == 5 || roleList[0].roleId == 7){//暂时开放知识典管理员，管理员和超级管理员
+				        				window.location.href = "user.do?action=goPage&roleId=" + roleList[0].roleId;
+				        			}else{
+				        				layer.msg("平台更新中.....请使用app登录!");
+				        			}
 				        		}else if(roleList.length > 1){//多种身份
 				        			listRole(roleList);				        			
 				        		}

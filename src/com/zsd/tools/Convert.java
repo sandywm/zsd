@@ -152,8 +152,13 @@ public class Convert {
 	 */
 	public static String numberConvertBuildClassDate(Integer gradeNo){
 		String currentDate = CurrentTime.getStringDate();
+		Integer month =  Integer.parseInt(currentDate.substring(5,6));
 		Integer year = Integer.parseInt(currentDate.substring(0,4));
-		return (year+gradeNo-1)+"-09-01";
+		if(month >= 9){
+			return (year-gradeNo+1)+"-09-01";
+		}else{
+			return (year-gradeNo)+"-09-01";
+		}
 	}
 	
 	/**

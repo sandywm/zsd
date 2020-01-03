@@ -1563,7 +1563,8 @@ public class CommonAction extends DispatchAction {
 	                if(schoolId > 0){
                 		//先查询数据库是否存在指定的电话号码信息（未使用）--以前添加了学生没有使用该手机号码注册，后来换号后其他学生用了这手机号且免费
     	                if(!phoneNo.equals("")){//手机号码为空的不添加
-    	                	String userName = phoneNo + schoolId;
+//    	                	String userName = phoneNo + schoolId;
+    	                	String userName = phoneNo;
 		                	//检查是否存在该学生
 		    				List<User> userList = um.listInfoByAccount(userName);
 		    				if(userList.size() == 0){
@@ -1625,11 +1626,11 @@ public class CommonAction extends DispatchAction {
 									//step3:绑定班级
 									ucm.addUcInfo(userId, classId, roleId_stu);
 									//5 生成家长账户
-									Integer upId = um.addUser(userName+"_jz", "", password, phoneNo, "", "", currDate, schoolId, 
+									Integer upId = um.addUser(userName+"jz", "", password, phoneNo, "", "", currDate, schoolId, 
 											"", yearSystem, "", "");
 									rum.addRoleUserInfo(upId, roleId_par, prov, city, county, town, schoolType, schoolId, gradeNo, classId);
 									spm.addSpInfo(upId, userId);
-									pcm.addParentClub(upId, userName+"_jz"+"的家长群", InviteCode.getRandomAllStr(6), 100, "");
+									pcm.addParentClub(upId, userName+"jz"+"的家长群", InviteCode.getRandomAllStr(6), 100, "");
 									logInfo = i + "   "+stuName + " 注册成功["+gradeName+"年级"+className+"]";
 									CommonAction.addCellData(stuName, userName,gradeName+"年级"+className,"注册成功", "注册成功", row, style);
 								}

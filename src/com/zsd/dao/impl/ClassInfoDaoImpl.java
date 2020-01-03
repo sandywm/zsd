@@ -52,7 +52,7 @@ public class ClassInfoDaoImpl implements ClassInfoDao {
 		if(!className.equals("")){
 			hql += " and ci.className = '"+ className +"'";
 		}else{
-			hql += " order by ci.className asc";
+			hql += " order by ci.classNum asc";
 		}
 		return sess.createQuery(hql).list();
 	}
