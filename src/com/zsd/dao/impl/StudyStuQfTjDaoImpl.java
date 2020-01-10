@@ -128,4 +128,15 @@ public class StudyStuQfTjDaoImpl implements StudyStuQfTjDao{
 		return l.size();
 	}
 
+	@Override
+	public StudyStuQfTjInfo getEntityByLogId(Session sess, Integer studyLogId) {
+		// TODO Auto-generated method stub
+		String hql = " from StudyStuQfTjInfo as qftj where qftj.studyLogId = "+studyLogId;
+		List<StudyStuQfTjInfo> list = sess.createQuery(hql).list();
+		if(list.size() > 0){
+			return list.get(0);
+		}
+		return null;
+	}
+
 }

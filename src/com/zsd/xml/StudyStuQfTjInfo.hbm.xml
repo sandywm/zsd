@@ -25,6 +25,11 @@
                 <comment>学生编号</comment>
             </column>
         </many-to-one>
+         <property name="studyLogId" type="java.lang.Integer">
+            <column name="studu_log_id" not-null="true">
+                <comment>学习记录编号</comment>
+            </column>
+        </property>
         <many-to-one name="classInfo" class="com.zsd.module.ClassInfo" lazy="false">
             <column name="class_id" not-null="true">
                 <comment>班级编号</comment>

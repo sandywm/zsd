@@ -49,6 +49,16 @@ public interface StudyStuQfTjDao {
 	StudyStuQfTjInfo getEntityByOpt(Session sess,Integer userId,Integer subId,String addDate);
 	
 	/**
+	 * 根据学习记录编号获取勤奋统计信息实体
+	 * @author wm
+	 * @date 2020-1-9 下午02:16:57
+	 * @param sess
+	 * @param studyLogId 学习记录编号
+	 * @return
+	 */
+	StudyStuQfTjInfo getEntityByLogId(Session sess,Integer studyLogId);
+	
+	/**
 	 * 根据条件获取勤奋信息(统计用)
 	 * @author wm
 	 * @date 2019-6-18 下午04:31:29

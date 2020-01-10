@@ -15,6 +15,7 @@ public interface StudyStuQfTjManager {
 	 * @date 2019-6-19 上午09:00:28
 	 * @param userId 学生编号
 	 * @param subId 科目编号
+	 * @param studyLogId 学习记录编号
 	 * @param oneZdSuccNum 一次性通过总数
 	 * @param oneZdFailNum 一次性未通过总数
 	 * @param againXxSuccNum 再次诊断(学习)通过
@@ -35,7 +36,7 @@ public interface StudyStuQfTjManager {
 	 * @return
 	 * @throws WEBException
 	 */
-	Integer addQFTJ(Integer userId,Integer subId,  
+	Integer addQFTJ(Integer userId,Integer subId,Integer studyLogId,  
 			Integer oneZdSuccNum,Integer oneZdFailNum,Integer againXxSuccNum, Integer againXxFailNum,
 			Integer noRelateNum, Integer relateZdFailNum,Integer relateXxSuccNum, Integer relateXxFailNum, String rate,
 			String prov,String city, String county, String town,Integer schoolType, Integer schoolId,String gradeName, Integer classId) throws WEBException;
@@ -124,4 +125,14 @@ public interface StudyStuQfTjManager {
 	 */
 	Integer getDistinctCountByOpt(Integer userId,Integer subId,String sDate,String eDate,
 			String prov,String city,String county,String town,Integer schoolType,Integer schoolId,String gradeName,Integer classId) throws WEBException;
+	
+	/**
+	 * 根据学习记录编号获取勤奋信息实体
+	 * @author wm
+	 * @date 2020-1-9 下午02:19:46
+	 * @param studyLogId 学习记录编号
+	 * @return
+	 * @throws WEBException
+	 */
+	StudyStuQfTjInfo getEntityByLogId(Integer studyLogId) throws WEBException;
 }

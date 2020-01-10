@@ -625,7 +625,11 @@ public class ReportCenterAction  extends DispatchAction{
 					againXxFailNum_1 = Convert.convertInputNumber_2(againXxFailNum * 1.0 / specNum);
 					noRelateNum_1 = Convert.convertInputNumber_2(noRelateNum * 1.0 / specNum);
 					relateXxSuccNum_1 = Convert.convertInputNumber_2(relateXxSuccNum * 1.0 / specNum);
-					relateXxFailNum_1 = Convert.convertInputNumber_2(relateXxFailNum * 1.0 / specNum);
+//					relateXxFailNum_1 = Convert.convertInputNumber_2(relateXxFailNum * 1.0 / specNum);
+					if(relateZdFailNum_new < relateXxSuccNum_1){
+						relateZdFailNum_new = relateXxSuccNum_1;
+					}
+					relateXxFailNum_1 = Convert.convertInputNumber_2(relateZdFailNum_new - relateXxSuccNum_1);
 				}
 				fmNum = Convert.convertInputNumber_2(oneZdFailNum_new + relateZdFailNum_new);//一次性通过总数+关联诊断未通过
 				if(fmNum > 0){
@@ -684,6 +688,8 @@ public class ReportCenterAction  extends DispatchAction{
 					}else if(!city.equals("")){//指定市时
 						//获取指定市和该市所在省下所有市的数量
 						allNum = CommonTools.getSpecProvJson(prov,"").split(",").length;
+					}else{
+						allNum = CommonTools.getSpecProvJson("","").split(",").length;
 					}
 					oneZdFailNumAll_new = Convert.convertInputNumber_2(oneZdFailNumAll * 1.0 / allNum);
 					relateZdFailNumAll_new = Convert.convertInputNumber_2(relateZdFailNumAll * 1.0 / allNum);
@@ -692,7 +698,11 @@ public class ReportCenterAction  extends DispatchAction{
 					againXxFailNum_all_1 = Convert.convertInputNumber_2(againXxFailNumAll * 1.0 / allNum);
 					noRelateNum_all_1 = Convert.convertInputNumber_2(noRelateNumAll * 1.0 / allNum);
 					relateXxSuccNum_all_1 = Convert.convertInputNumber_2(relateXxSuccNumAll * 1.0 / allNum);
-					relateXxFailNum_all_1 = Convert.convertInputNumber_2(relateXxFailNumAll * 1.0 / allNum);
+//					relateXxFailNum_all_1 = Convert.convertInputNumber_2(relateXxFailNumAll * 1.0 / allNum);
+					if(relateZdFailNumAll_new < relateXxSuccNum_all_1){
+						relateZdFailNumAll_new = relateXxSuccNum_all_1;
+					}
+					relateXxFailNum_all_1 = Convert.convertInputNumber_2(relateZdFailNumAll_new - relateXxSuccNum_all_1);
 				}
 				fmNumAll = Convert.convertInputNumber_2(oneZdFailNumAll_new + relateZdFailNumAll_new);//一次性未通过总数+关联诊断未通过
 				if(fmNumAll > 0){

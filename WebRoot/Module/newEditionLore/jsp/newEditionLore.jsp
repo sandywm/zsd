@@ -192,9 +192,13 @@
 										$('.newouterlore input').each(function(){
 											var newLoreName = $("#"+this.id).val(),
 												currLoreId = $("#" + this.id).attr('loreId');
-											if(checkExistLoreCatalogData(currLoreId,cptIdNew)){	
+											var checkInfo = checkExistLoreCatalogData(currLoreId,cptIdNew).toString();
+											if(checkInfo.split("-")[0] == "1"){
+												//layer.msg('当前章节下已存在相同的知识点名称');
 												existFlag = true;
-												layer.msg('当前章节下已存在相同的知识点名称');
+												layer.msg(checkInfo.split("-")[1]);
+											}else if(checkInfo.split("-")[0] == "2"){
+												layer.msg('服务器错误，请稍后重试');
 											}else{
 												loreCatalog[j] = newLoreName.replace(/^(\s|\u00A0)+/,'').replace(/(\s|\u00A0)+$/,'') + "," + (this.id).replace("newLoreName_","");
 												existFlag = false;
@@ -350,6 +354,8 @@
 			}
 			function checkExistLoreCatalogData(loreId,cptId){
 				var existFlag = false;
+				var existStatus = "0";
+				var existInfo = "";
 				layer.load('1');
 				$.ajax({
 					type:'post',
@@ -361,23 +367,30 @@
 			        	layer.closeAll('loading');	
 			        	if(json.result == 'existInfo'){
 			        		existFlag = true;
+			        		existStatus = "1";
+			        		existInfo = json.existInfo;
 			        	}else if(json.result == 'noInfo'){
 			        		existFlag = false;
+			        		existStatus = "0";
 			        	}else if(json.result == 'error'){
 			        		existFlag = false;
-			        		layer.msg('服务器错误，请稍后重试');
+			        		existStatus = "2";
 			        	}
 			        }
 				});
-				return existFlag;
+				return existStatus + "-" + existInfo;
 			}
 			function addLore(obj){
 				var loreId = $(obj).attr('loreId'),
 					loreName = $(obj).attr('loreName'),
 					cptIdNew = $('#chapterInp_new').val();
 				if(parseInt( cptIdNew ) > 0 ){
-					if(checkExistLoreCatalogData(loreId,cptIdNew)){
-						layer.msg('当前章节下已存在相同的知识点名称');
+					var checkInfo = checkExistLoreCatalogData(loreId,cptIdNew).toString();
+					if(checkInfo.split("-")[0] == "1"){
+						//layer.msg('当前章节下已存在相同的知识点名称');
+						layer.msg(checkInfo.split("-")[1]);
+					}else if(checkInfo.split("-")[0] == "2"){
+						layer.msg('服务器错误，请稍后重试');
 					}else{
 						var str = '';
 						for(var i=0;i<hasAddArray.length;i++){

@@ -27,7 +27,7 @@ public class StudyStuQfTjManagerImpl implements StudyStuQfTjManager{
 	StudyStuQfTjDao tjDao = null;
 	Transaction tran = null;
 	@Override
-	public Integer addQFTJ(Integer userId, Integer subId,
+	public Integer addQFTJ(Integer userId, Integer subId,Integer studyLogId,
 			Integer oneZdSuccNum, Integer oneZdFailNum, Integer againXxSuccNum,
 			Integer againXxFailNum, Integer noRelateNum,
 			Integer relateZdFailNum, Integer relateXxSuccNum,
@@ -44,7 +44,7 @@ public class StudyStuQfTjManagerImpl implements StudyStuQfTjManager{
 			Session sess = HibernateUtil.currentSession();
 			tran = sess.beginTransaction();
 			StudyStuQfTjInfo qftj = new StudyStuQfTjInfo(subDao.get(sess, subId), schDao.get(sess, schoolId), uDao.get(sess, userId),
-					CurrentTime.getStringDate(), oneZdSuccNum, oneZdFailNum,againXxSuccNum, againXxFailNum,
+					studyLogId,CurrentTime.getStringDate(), oneZdSuccNum, oneZdFailNum,againXxSuccNum, againXxFailNum,
 					noRelateNum, relateZdFailNum,relateXxSuccNum, relateXxFailNum, rate,
 					prov, city, county, town,schoolType, gradeName, cDao.get(sess, classId));
 			tjDao.save(sess, qftj);
@@ -179,6 +179,23 @@ public class StudyStuQfTjManagerImpl implements StudyStuQfTjManager{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			throw new WEBException("获取指定条件的勤奋信息记录（去除重复，按照学生编号分组）--只做统计个数使用时出现异常!");
+		} finally{
+			HibernateUtil.closeSession();
+		}
+	}
+
+	@Override
+	public StudyStuQfTjInfo getEntityByLogId(Integer studyLogId)
+			throws WEBException {
+		// TODO Auto-generated method stub
+		try {
+			tjDao = (StudyStuQfTjDao) DaoFactory.instance(null).getDao(Constants.DAO_STUDY_STU_QFTJ_INFO);
+			Session sess = HibernateUtil.currentSession();
+			return tjDao.getEntityByLogId(sess, studyLogId);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new WEBException("根据学习记录编号获取勤奋信息实体时出现异常!");
 		} finally{
 			HibernateUtil.closeSession();
 		}

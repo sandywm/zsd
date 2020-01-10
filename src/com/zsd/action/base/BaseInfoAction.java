@@ -184,7 +184,7 @@ public class BaseInfoAction extends DispatchAction {
 	 */
 	public ActionForward checkUserLoginStatus(ActionMapping mapping,ActionForm form,
 			HttpServletRequest request,HttpServletResponse response) throws Exception{
-		 long systime = new Date().getTime();//当前系统时间
+//		 long systime = new Date().getTime();//当前系统时间
 		UserManager um = (UserManager)AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
 		Integer login_status_dataBase = -1;
 		String result = "accountError";//用户账号状态--账号错误(默认)
@@ -216,8 +216,8 @@ public class BaseInfoAction extends DispatchAction {
 		Map<String,String> map = new HashMap<String,String>();
 		map.put("result", result);
 		CommonTools.getJsonPkg(map, response);
-		long oldtime = new Date().getTime();
-		System.out.println(oldtime - systime);
+//		long oldtime = new Date().getTime();
+//		System.out.println(oldtime - systime);
 		return null;
 	}
 	

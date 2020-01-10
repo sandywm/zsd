@@ -344,15 +344,15 @@ public class CommonTools {
         JSONArray jsonArray = new JSONArray(s);
         for(int i = 0 ; i < jsonArray.length() ; i++){
         	JSONObject provObject = jsonArray .getJSONObject(i);
-        	String prov_code = provObject.getString("value");
+//        	String prov_code = provObject.getString("value");
         	String prov_tmp = provObject.getString("name");
         	if(prov.equals("")){//全国省份
-        		result += prov_code + "," + prov_tmp + ":";
+        		result += prov_tmp + ",";
         	}else if(prov_tmp.equals(prov)){
         		JSONArray cityJson = provObject.getJSONArray("children");
         		for(int j = 0 ; j < cityJson.length() ; j++){
         			JSONObject cityObject = cityJson .getJSONObject(j);
-        			String city_code = cityObject.getString("value");
+//        			String city_code = cityObject.getString("value");
         			String city_tmp = cityObject.getString("name");
         			result += city_tmp + ",";
         			if(!city.equals("") && city_tmp.equals(city)){
@@ -360,9 +360,9 @@ public class CommonTools {
         				JSONArray countyJson = cityObject.getJSONArray("children");
                 		for(int k = 0 ; k < countyJson.length() ; k++){
                 			JSONObject countyObject = countyJson .getJSONObject(k);
-                			String county_code = countyObject.getString("value");
+//                			String county_code = countyObject.getString("value");
                 			String county_tmp = countyObject.getString("name");
-                			System.out.print(county_tmp + ",");
+//                			System.out.print(county_tmp + ",");
                 			result += county_tmp + ",";
                 		}
                 		break;
@@ -374,7 +374,8 @@ public class CommonTools {
         if(!result.equals("")){
         	result = result.substring(0, result.length() - 1);
         }
-        System.out.print(result);
+//        System.out.print(result);
+//        System.out.print(result.split(",").length);
         return result;
 	}
 	
@@ -686,6 +687,7 @@ public class CommonTools {
 	public static String[] getRealLoreInfo(Integer quoteLoreId,Integer loreId){
 		String[] loreInfoArr = new String[2];
 		try {
+			String[] pathArr = CommonTools.getLorePath(loreId, "diagnosis")[0].replace(":", ",").split(",");
 			LoreInfoManager lm = (LoreInfoManager)AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
 			LoreInfo lore_bb = lm.getEntityById(loreId);
 			if(lore_bb != null){
@@ -694,9 +696,15 @@ public class CommonTools {
 				for(LoreInfo lore : loreList){
 					if(lore.getInUse().equals(0)){
 						if(lore.getChapter().getEducation().getEdition().getId().equals(ediId)){
-							loreInfoArr[0] = lore.getId().toString();
-							loreInfoArr[1] = lore.getLoreName();
-							break;
+							String currLoreId = lore.getId().toString();
+							//目的是为了防止同一版本下知识典名称相同（比如说人教版4年级下册第一单元出现万以上的读法，第二单元又出现万以上的读法的知识典）
+							for(Integer i = 0 ; i < pathArr.length ; i++){
+								if(pathArr[i].equals(currLoreId)){
+									loreInfoArr[0] = currLoreId;
+									loreInfoArr[1] = lore.getLoreName();
+									break;
+								}
+							}
 						}
 					}
 				}
@@ -1028,7 +1036,9 @@ public class CommonTools {
 	}
 	
 	public static void main(String[] args) throws Exception, FileNotFoundException{
-		CommonTools.getSpecProvJson("河北省","廊坊市");
+//		CommonTools.getSpecProvJson("河北省","廊坊市");
+		String aa = "12,2,3:4:43,21:22,11,10";
+		System.out.println(aa.contains("1"));
 //		System.out.println(System.currentTimeMillis());
 //		Integer items[] = {1,2,3,4,5,11,12,21};
 //		Integer[] need_del_items =  {2,11,4};

@@ -16,6 +16,7 @@ public class StudyStuQfTjInfo implements java.io.Serializable {
 	private Subject subject;
 	private School school;
 	private User user;
+	private Integer studyLogId;
 	private ClassInfo classInfo;
 	private String studyDate;
 	private Integer oneZdSuccNum;
@@ -42,7 +43,7 @@ public class StudyStuQfTjInfo implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public StudyStuQfTjInfo(Subject subject, School school, User user,
+	public StudyStuQfTjInfo(Subject subject, School school, User user,Integer studyLogId,
 			String studyDate, Integer oneZdSuccNum, Integer oneZdFailNum,
 			Integer againXxSuccNum, Integer againXxFailNum,
 			Integer noRelateNum, Integer relateZdFailNum,
@@ -52,6 +53,7 @@ public class StudyStuQfTjInfo implements java.io.Serializable {
 		this.subject = subject;
 		this.school = school;
 		this.user = user;
+		this.studyLogId = studyLogId;
 		this.studyDate = studyDate;
 		this.oneZdSuccNum = oneZdSuccNum;
 		this.oneZdFailNum = oneZdFailNum;
@@ -239,6 +241,14 @@ public class StudyStuQfTjInfo implements java.io.Serializable {
 
 	public void setClassInfo(ClassInfo classInfo) {
 		this.classInfo = classInfo;
+	}
+
+	public Integer getStudyLogId() {
+		return studyLogId;
+	}
+
+	public void setStudyLogId(Integer studyLogId) {
+		this.studyLogId = studyLogId;
 	}
 
 

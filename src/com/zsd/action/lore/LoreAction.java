@@ -119,6 +119,7 @@ public class LoreAction extends DispatchAction {
 	
 	/**
 	 * 检查指定章节下是否存在指定知识点（生成其他版本时左到右检查使用）
+	 * 一个出版社下面只能添加一次相同引用知识典
 	 * @author  Administrator
 	 * @ModifiedBy  
 	 * @date  2019-11-10 下午09:32:30
@@ -133,18 +134,45 @@ public class LoreAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
 		LoreInfoManager lm = (LoreInfoManager) AppFactory.instance(null).getApp(Constants.WEB_LORE_INFO);
+		ChapterManager cm = (ChapterManager) AppFactory.instance(null).getApp(Constants.WEB_CHAPTER_INFO);
 		Integer cptId = CommonTools.getFinalInteger("cptId", request);//其他版本下的章节编号
 		Integer commonLoreId = CommonTools.getFinalInteger("loreId", request);//通用版知识点
 		String msg = "error";
+		String cptName = "";
+		String gradeName = "";
+		String eduName = "";
+		Integer ediId = 0;
+		String loreName = "";
 		Map<String,String> map = new HashMap<String,String>();
 		if(cptId > 0 && commonLoreId > 0){
-			List<LoreInfo> loreList = lm.listInfoInOpt(commonLoreId, cptId);
-			msg = "noInfo";
-			if(loreList.size() > 0){
-				msg = "existInfo";
+//			List<LoreInfo> loreList = lm.listInfoInOpt(commonLoreId, cptId);
+			Chapter cpt = cm.getEntityById(cptId);
+			if(cpt != null){
+				Education edu = cpt.getEducation();
+				if(edu != null){
+					ediId = edu.getEdition().getId();//该章节所在出版社
+				}
+			}
+			if(ediId > 0){
+				LoreInfo lore =  lm.getLoreInfoByOpt(commonLoreId, ediId);
+				msg = "noInfo";
+//				if(loreList.size() > 0){
+//					msg = "existInfo";
+//				}
+				if(lore != null){
+					msg = "existInfo";
+					loreName = lore.getLoreName();
+					Chapter cpt_exist = lore.getChapter();
+					cptName = cpt_exist.getChapterName();
+					eduName = cpt_exist.getEducation().getEduVolume();
+					gradeName = cpt_exist.getEducation().getGradeSubject().getGradeName();
+				}
 			}
 		}
 		map.put("result", msg);
+		if(msg.equals("existInfo")){
+			map.put("existInfo", "该知识典["+loreName+"]已在["+gradeName + eduName + cptName + "]章节下引用过，不能重复引用!");
+		}
 		CommonTools.getJsonPkg(map, response);
 		return null;
 	}

@@ -2920,7 +2920,11 @@ public class OnlineStudyAction extends DispatchAction {
 						if(access_final.equals(1)){//当前层全部正确
 							zczd_flag = 1;
 							relateXxSuccNum = 1;//关联学习通过+1
-							relateXxFailNum = 0;//关联学习未通过不加
+							if(tjm.getEntityByLogId(studyLogId) != null){
+								relateXxFailNum = -1;//存在记录--关联学习未通过-1
+							}else{
+								relateXxFailNum = 0;//关联学习未通过不加
+							}
 						}else{//未完全正确或全部错误
 							zczd_flag = 0;
 						}
@@ -2947,7 +2951,11 @@ public class OnlineStudyAction extends DispatchAction {
 								rzrm.updateEntity(rzr.getId(), -1, -1, zczd_flag, -1, rzr.getZczdTimes()+1);
 							}
 							relateXxSuccNum = 1;//关联学习通过+1
-							relateXxFailNum = 0;//关联学习未通过不加
+							if(tjm.getEntityByLogId(studyLogId) != null){
+								relateXxFailNum = -1;//存在记录--关联学习未通过-1
+							}else{
+								relateXxFailNum = 0;//关联学习未通过不加
+							}
 							//增加今日任务
 //							List<TodayTask> ttList = ttm.listInfoByOpt(stuId, current_lore_id, CurrentTime.getStringDate(), 1, 1);
 //							if(ttList.size() > 0){
@@ -3012,7 +3020,8 @@ public class OnlineStudyAction extends DispatchAction {
 				}
 				if(schoolId != 0){//其他学校不参与统计
 					//获取指定学生，指定科目，指定日期的勤奋报告统计信息
-					StudyStuQfTjInfo qftj = tjm.getEntityByOpt(stuId, subId, CurrentTime.getStringDate());
+//					StudyStuQfTjInfo qftj = tjm.getEntityByOpt(stuId, subId, CurrentTime.getStringDate());
+					StudyStuQfTjInfo qftj = tjm.getEntityByLogId(studyLogId);
 					if(qftj != null){
 						//修改
 						Integer fmNum = qftj.getOneZdFailNum() + oneZdFailNum + qftj.getRelateZdFailNum() + relateZdFailNum;//一次性未通过总数+关联诊断未通过
@@ -3028,7 +3037,7 @@ public class OnlineStudyAction extends DispatchAction {
 						if(fmNum > 0 && againXxSuccNum_real > 0){
 							rate = Convert.convertInputNumber_1(againXxSuccNum_real * 100.0  / fmNum) + "%";//转换率
 						}
-						tjm.addQFTJ(stuId, subId, oneZdSuccNum, oneZdFailNum, againXxSuccNum, againXxFailNum, noRelateNum, relateZdFailNum, relateXxSuccNum, relateXxFailNum, rate, prov, city, county, town,schoolType, schoolId, gradeName, classId);
+						tjm.addQFTJ(stuId, subId, studyLogId,oneZdSuccNum, oneZdFailNum, againXxSuccNum, againXxFailNum, noRelateNum, relateZdFailNum, relateXxSuccNum, relateXxFailNum, rate, prov, city, county, town,schoolType, schoolId, gradeName, classId);
 					}
 				}
 				if(flag){
