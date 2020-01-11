@@ -63,7 +63,10 @@ public class StudyLogDaoImpl implements StudyLogDao{
 	public List<StudyLogInfo> findStuLogByOption(Session sess, Integer userId,
 			Integer subId, Integer isfinish, Integer logType, String sDate,
 			String eDate) {
-		String hql = " from StudyLogInfo as sl where sl.user.id = "+userId;
+		String hql = " from StudyLogInfo as sl where 1=1";
+		if(!userId.equals(0)){
+			hql += " and sl.user.id = "+userId;
+		}
 		if(!subId.equals(0)){
 			hql += " and sl.subject.id = "+subId ;
 		}

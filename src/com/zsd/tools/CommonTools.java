@@ -375,7 +375,7 @@ public class CommonTools {
         	result = result.substring(0, result.length() - 1);
         }
 //        System.out.print(result);
-//        System.out.print(result.split(",").length);
+        System.out.print(result.split(",").length);
         return result;
 	}
 	

@@ -18,6 +18,7 @@ import com.zsd.module.ClassInfo;
 import com.zsd.module.GradeSubject;
 import com.zsd.module.StudentParentInfo;
 import com.zsd.module.StudyAllTjInfo;
+import com.zsd.module.StudyLogInfo;
 import com.zsd.module.StudyStuQfTjInfo;
 import com.zsd.module.StudyStuTjInfo;
 import com.zsd.module.Subject;
@@ -27,6 +28,7 @@ import com.zsd.service.GradeSubjectManager;
 import com.zsd.service.SchoolManager;
 import com.zsd.service.StudentParentInfoManager;
 import com.zsd.service.StudyAllTjInfoManager;
+import com.zsd.service.StudyLogManager;
 import com.zsd.service.StudyStuQfTjManager;
 import com.zsd.service.StudyStuTjInfoManager;
 import com.zsd.service.SubjectManager;
@@ -172,6 +174,7 @@ public class ReportCenterAction  extends DispatchAction{
  		UserManager um = (UserManager) AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
 		ClassInfoManager cm = (ClassInfoManager) AppFactory.instance(null).getApp(Constants.WEB_CLASS_INFO);
 		TownManager tm = (TownManager) AppFactory.instance(null).getApp(Constants.WEB_TOWN_INFO); 
+		StudyLogManager slm = (StudyLogManager) AppFactory.instance(null).getApp(Constants.WEB_STUDY_LOG_INFO);
 		Integer userId = CommonTools.getLoginUserId(request);//必须传
 		Integer roleId = CommonTools.getLoginRoleId(request);//必须传
 //		userId = 1;
@@ -622,14 +625,28 @@ public class ReportCenterAction  extends DispatchAction{
 					relateZdFailNum_new = Convert.convertInputNumber_2(relateZdFailNum * 1.0 / specNum);
 					againXxSuccNum_real = Convert.convertInputNumber_2(againXxSuccNum * 1.0 / specNum);//再次诊断学习通过次数
 					oneZdSuccNum_1 = Convert.convertInputNumber_2(oneZdSuccNum * 1.0 / specNum);
-					againXxFailNum_1 = Convert.convertInputNumber_2(againXxFailNum * 1.0 / specNum);
-					noRelateNum_1 = Convert.convertInputNumber_2(noRelateNum * 1.0 / specNum);
+//					againXxFailNum_1 = Convert.convertInputNumber_2(againXxFailNum * 1.0 / specNum);
+					againXxFailNum_1 = Convert.convertInputNumber_2(oneZdFailNum_new - againXxSuccNum_real);//再次诊断（学习）未通过等于一次性未通过总数-再次诊断（学习）通过
+//					noRelateNum_1 = Convert.convertInputNumber_2(noRelateNum * 1.0 / specNum);
+					List<StudyLogInfo>  sLog = slm.listSlInfoByopt(userId, subId, 0, 0, sDate, eDate);
+					Integer relateNum = 0;//已溯源个数
+					for(StudyLogInfo sl : sLog){
+						Integer step  = sl.getStep();
+						if(step >= 3){//溯源诊断已完成
+							relateNum++;
+						}
+					}
+					if(oneZdFailNum_new < relateNum){
+						noRelateNum_1 = 0.0;
+					}else{
+						noRelateNum_1 = Convert.convertInputNumber_2(oneZdFailNum_new - relateNum);
+					}
 					relateXxSuccNum_1 = Convert.convertInputNumber_2(relateXxSuccNum * 1.0 / specNum);
 //					relateXxFailNum_1 = Convert.convertInputNumber_2(relateXxFailNum * 1.0 / specNum);
 					if(relateZdFailNum_new < relateXxSuccNum_1){
 						relateZdFailNum_new = relateXxSuccNum_1;
 					}
-					relateXxFailNum_1 = Convert.convertInputNumber_2(relateZdFailNum_new - relateXxSuccNum_1);
+					relateXxFailNum_1 = Convert.convertInputNumber_2(relateZdFailNum_new - relateXxSuccNum_1);//关联学习未通过等于关联诊断未通过总数-关联学习通过
 				}
 				fmNum = Convert.convertInputNumber_2(oneZdFailNum_new + relateZdFailNum_new);//一次性通过总数+关联诊断未通过
 				if(fmNum > 0){
@@ -695,14 +712,28 @@ public class ReportCenterAction  extends DispatchAction{
 					relateZdFailNumAll_new = Convert.convertInputNumber_2(relateZdFailNumAll * 1.0 / allNum);
 					againXxSuccNum_real_all = Convert.convertInputNumber_2(againXxSuccNumAll * 1.0 / allNum);//再次诊断学习通过次数
 					oneZdSuccNum_all_1 = Convert.convertInputNumber_2(oneZdSuccNumAll * 1.0 / allNum);
-					againXxFailNum_all_1 = Convert.convertInputNumber_2(againXxFailNumAll * 1.0 / allNum);
-					noRelateNum_all_1 = Convert.convertInputNumber_2(noRelateNumAll * 1.0 / allNum);
-					relateXxSuccNum_all_1 = Convert.convertInputNumber_2(relateXxSuccNumAll * 1.0 / allNum);
+//					againXxFailNum_all_1 = Convert.convertInputNumber_2(againXxFailNumAll * 1.0 / allNum);
+					againXxFailNum_all_1 = Convert.convertInputNumber_2(oneZdFailNumAll_new - againXxSuccNum_real_all);//再次诊断（学习）未通过等于一次性未通过总数-再次诊断（学习）通过
+//					noRelateNum_all_1 = Convert.convertInputNumber_2(noRelateNumAll * 1.0 / allNum);
+					List<StudyLogInfo>  sLog = slm.listSlInfoByopt(0, subId, 0, 0, sDate, eDate);
+					Integer relateNumAll = 0;//已溯源个数
+					for(StudyLogInfo sl : sLog){
+						Integer step  = sl.getStep();
+						if(step >= 3){//溯源诊断已完成
+							relateNumAll++;
+						}
+					}
+					if(oneZdFailNum_new < relateNumAll){
+						noRelateNum_all_1 = 0.0;
+					}else{
+						noRelateNum_all_1 = Convert.convertInputNumber_2(oneZdFailNum_new - relateNumAll);
+					}
+					relateXxSuccNum_all_1 = Convert.convertInputNumber_2(relateXxSuccNumAll * 1.0 / allNum);//关联学习
 //					relateXxFailNum_all_1 = Convert.convertInputNumber_2(relateXxFailNumAll * 1.0 / allNum);
 					if(relateZdFailNumAll_new < relateXxSuccNum_all_1){
 						relateZdFailNumAll_new = relateXxSuccNum_all_1;
 					}
-					relateXxFailNum_all_1 = Convert.convertInputNumber_2(relateZdFailNumAll_new - relateXxSuccNum_all_1);
+					relateXxFailNum_all_1 = Convert.convertInputNumber_2(relateZdFailNumAll_new - relateXxSuccNum_all_1);//关联学习未通过等于关联诊断未通过总数-关联学习通过
 				}
 				fmNumAll = Convert.convertInputNumber_2(oneZdFailNumAll_new + relateZdFailNumAll_new);//一次性未通过总数+关联诊断未通过
 				if(fmNumAll > 0){
