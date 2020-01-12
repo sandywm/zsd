@@ -2530,9 +2530,11 @@ public class OnlineStudyAction extends DispatchAction {
 								if(!slList.get(0).getIsFinish().equals(2)){
 									studyLogId = slList.get(0).getId();
 								}else{//控制第一版学生重复做知识典的异常
-									studyLogId = -1;
-									updateFlag = false;
-									msg = "reSubmit";//不能重复提交
+									if(slList.get(0).getAddTime().substring(0, 10).equals(CurrentTime.getStringDate())){//同一天只能完成一次
+										studyLogId = -1;
+										updateFlag = false;
+										msg = "reSubmit";//不能重复提交
+									}
 								}
 							}
 						}
@@ -2865,7 +2867,11 @@ public class OnlineStudyAction extends DispatchAction {
 				if(sl != null){
 					step_curr = sl.getStep();
 					taskNumber = sl.getTaskNumber() + 1;
+//					if(step_curr.equals(1) && step.equals(2)){//当由针对性诊断第一次进入溯源诊断并提交，说明该知识典已开启溯源
+//						noRelateNum = -1;//未开启溯源次数减1
+//					}
 				}
+				
 				boolean flag = slm.updateLogStatus(studyLogId, step, stepComplete, isFinish, access, taskNumber);
 				//插入或者修改记录（relationZdResult表）
 				if(submitType.equals("study")){
@@ -2910,7 +2916,7 @@ public class OnlineStudyAction extends DispatchAction {
 						}
 						if(currentStepLoreArray.length > 0){//其他学校不参与
 							if(access_final.equals(1)){//当前关联知识点的针对性诊断全部正确
-								noRelateNum = 0;//关联诊断完成，未溯源个数不加
+//								noRelateNum = 0;//关联诊断完成，未溯源个数不加
 							}else{//未完全正确或全部错误
 								relateZdFailNum = currentStepLoreArray.length;//当前层有多少个知识点就有多少个关联知识点针对性诊断未通过次数
 								relateXxFailNum = currentStepLoreArray.length;
