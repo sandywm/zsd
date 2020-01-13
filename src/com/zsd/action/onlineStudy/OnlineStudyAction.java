@@ -2974,6 +2974,16 @@ public class OnlineStudyAction extends DispatchAction {
 					}
 				}
 				
+				//第一个关联知识典溯源诊断时，溯源个数-1
+				if(submitType.equals("zdxzd")){
+					String[] pathArr = CommonTools.getLorePath(loreId, "diagnosis")[0].split(":");
+					if(pathArr.length > 1){
+						Integer relateFirstLoreId = Integer.parseInt(pathArr[1]);
+						if(relateFirstLoreId.equals(currentLoreId)){
+							noRelateNum = -1;
+						}
+					}
+				}
 				if(isFinish.equals(2)){
 					//表示该知识点完成，更新result(系统评价)
 					//统计该知识点做了多少题
@@ -3012,7 +3022,10 @@ public class OnlineStudyAction extends DispatchAction {
 						//两种情况
 						if(submitType.equals("zdxzd")){//本知识点初次诊断时
 							oneZdFailNum = 1;
-							noRelateNum = 1;
+							String[] pathArr = CommonTools.getLorePath(loreId, "diagnosis")[0].split(":");
+							if(pathArr.length > 1){
+								noRelateNum = 1;
+							}
 						}else if(submitType.equals("againzd")){//本知识点再次诊断时
 							//获取本知识点已做过的再次诊断题
 							List<StudyDetailInfo> sdList = sdm.listInfoByOpt(studyLogId, currentLoreId, "再次诊断");

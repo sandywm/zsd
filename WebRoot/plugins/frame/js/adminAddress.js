@@ -782,6 +782,9 @@ layui.define(["form","jquery","table"],function(exports){
 				{field : 'allStudyNumber', title: '共学习知识点(个)',width:'150',align:'center'},
 				{field : 'succStudyNumber', title: '已完成知识点(个)',width:'150',align:'center'},
 				{field : 'noSuccStudyNumber', title: '未完成知识点(个)',width:'150',align:'center'},
+				{field : 'relateZdFailNum', title: '关联诊断未通过(个)',width:'150',align:'center'},
+				{field : 'relateXxSuccNum', title: '关联学习通过(个)',width:'150',align:'center'},
+				{field : 'relateXxFailNum', title: '关联未学习通过(个)',width:'160',align:'center'},
 				{field : 'completeRate', title: '完成率',width:'100',align:'center'},
 				{field : 'stuSex', title: '性别',width:'80',align:'center',templet:function(d){
 					if(d.stuSex == '男'){

@@ -54,6 +54,7 @@ import com.zsd.module.School;
 import com.zsd.module.StudentParentInfo;
 import com.zsd.module.StudyDetailInfo;
 import com.zsd.module.StudyLogInfo;
+import com.zsd.module.StudyStuQfTjInfo;
 import com.zsd.module.Subject;
 import com.zsd.module.User;
 import com.zsd.module.json.LoreTreeMenuJson;
@@ -72,6 +73,7 @@ import com.zsd.service.SchoolManager;
 import com.zsd.service.StudentParentInfoManager;
 import com.zsd.service.StudyDetailManager;
 import com.zsd.service.StudyLogManager;
+import com.zsd.service.StudyStuQfTjManager;
 import com.zsd.service.SubjectManager;
 import com.zsd.service.UserManager;
 import com.zsd.tools.CommonTools;
@@ -1382,6 +1384,7 @@ public class StudyRecordAction extends DispatchAction {
 	 */
 	public ActionForward  getStuStudyLog(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		StudyStuQfTjManager tjm = (StudyStuQfTjManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_STU_QFTJ_INFO);
 		StudyLogManager slm = (StudyLogManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_LOG_INFO);
 		UserManager um = (UserManager)AppFactory.instance(null).getApp(Constants.WEB_USER_INFO);
 		SchoolManager sm = (SchoolManager)AppFactory.instance(null).getApp(Constants.WEB_SCHOOL_INFO);
@@ -1479,6 +1482,33 @@ public class StudyRecordAction extends DispatchAction {
 				 map_d.put("succStudyNumber", succStudyNumber);
 				 map_d.put("noSuccStudyNumber", allStudyNumber - succStudyNumber);
 				 map_d.put("completeRate", completeRate);
+				 List<StudyStuQfTjInfo> qftjList = tjm.listInfoByOpt(userId, subId, sDate, eDate, "", "", "", "", 0, 0, "", 0);
+				//学生个人的统计信息
+				 Integer oneZdSuccNum = 0;//一次性通过总数
+				 Integer oneZdFailNum = 0;//一次性未通过总数
+				 Integer againXxSuccNum = 0;//再次诊断(学习)通过
+				 Integer againXxFailNum = 0;//再次诊断(学习)未通过
+				 Integer noRelateNum = 0;//未溯源个数
+				 Integer relateZdFailNum = 0;//关联诊断未通过
+				 Integer relateXxSuccNum = 0;//关联学习通过
+				 Integer relateXxFailNum = 0;//关联未学习通过
+				 for(StudyStuQfTjInfo qftj : qftjList){
+					oneZdSuccNum += qftj.getOneZdSuccNum();
+					oneZdFailNum += qftj.getOneZdFailNum();
+					againXxSuccNum += qftj.getAgainXxSuccNum();
+					noRelateNum += qftj.getNoRelateNum();
+					relateZdFailNum += qftj.getRelateZdFailNum();
+					relateXxSuccNum += qftj.getRelateXxSuccNum();
+				 }
+				 againXxFailNum = oneZdFailNum - againXxSuccNum;//再次诊断（学习）未通过等于一次性未通过总数-再次诊断（学习）通过
+				 if(relateZdFailNum < relateXxSuccNum){
+					relateZdFailNum = relateXxSuccNum;
+				 }
+				 relateXxFailNum = relateZdFailNum - relateXxSuccNum;//关联学习未通过等于关联诊断未通过总数-关联学习通过
+				 map_d.put("noRelateNum", noRelateNum);
+				 map_d.put("relateZdFailNum", relateZdFailNum);
+				 map_d.put("relateXxSuccNum", relateXxSuccNum);
+				 map_d.put("relateXxFailNum", relateXxFailNum);
 				 list_d.add(map_d);
 			}
 			map.put("data", list_d);
