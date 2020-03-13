@@ -115,6 +115,7 @@ public class StudyStuQfTjManagerImpl implements StudyStuQfTjManager{
 				if(!rate.equals("")){
 					qftj.setRate(rate);
 				}
+				qftj.setStudyDate(CurrentTime.getStringDate());
 				tjDao.update(sess, qftj);
 				tran.commit();
 				return true;

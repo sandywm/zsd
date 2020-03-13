@@ -1736,6 +1736,8 @@ public class LoreAction extends DispatchAction {
 				eduVolume = edu.getEduVolume();
 				if(subId < 10){
 					subIdCode = "0" + subId;
+				}else{
+					subIdCode = String.valueOf(subId);
 				}
 				String paraCode = "";//学段号
 				Integer gradeNum = Integer.parseInt(gradeCode);
@@ -1754,10 +1756,14 @@ public class LoreAction extends DispatchAction {
 				String ediIdCode = "";//出版社号
 				if(ediId < 10){
 					ediIdCode = "0" + ediId;
+				}else{
+					ediIdCode = String.valueOf(ediId);
 				}
 				String cptOrderCode = "";//章节号
 				if(cptOrder < 10){
 					cptOrderCode = "0" + cptOrder;
+				}else{
+					cptOrderCode = String.valueOf(cptOrder);
 				}
 				JSONArray loreCatalogArray = JSON.parseArray(loreCatalogNameStr);
 				Integer size = loreCatalogArray.size();
@@ -1771,6 +1777,8 @@ public class LoreAction extends DispatchAction {
 					loreOrder += i;
 					if(loreOrder < 10){
 						loreOrderCode = "0" + loreOrder;
+					}else{
+						loreOrderCode = String.valueOf(loreOrder);
 					}
 					loreCode = subIdCode + "-" + ediIdCode + "-" + paraCode + "-" + gradeCode + "-" + eduVolumeCode + "-"  + cptOrderCode + "-" + loreOrderCode;
 					String[] newLoreCatalogNameArray = loreCatalogArray.get(i).toString().split(",");//格式loreName,loreId

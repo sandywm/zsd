@@ -225,8 +225,10 @@ public class ReportCenterAction  extends DispatchAction{
 		Integer relateXxSuccNumAll = 0;//关联学习通过
 		Integer relateXxFailNumAll = 0;//关联未学习通过
 		
-		String rate = "0";//转化率
-		String rateAll = "0";
+		String rate = "0.00%";
+        String rate_1 = "0.00%";
+        String rateAll = "0.00%";
+        String rateAll_1 = "0.00%";
 		String msg = "error";
 		Integer allNum = 1;
 		Map<String,Object> map = new HashMap<String,Object>();
@@ -268,11 +270,13 @@ public class ReportCenterAction  extends DispatchAction{
 			if(roleId.equals(Constants.STU_ROLE_ID) || roleId.equals(Constants.PATENT_ROLE_ID)){//学生\家长
 				Integer schoolId_tmp = 0;
 				if(userId > 0){
+					stuId = userId;
 					axisName1 = "我的统计";
 					if(roleId.equals(Constants.PATENT_ROLE_ID)){//家长
 						StudentParentInfo sp = spm.getEntityByParId(userId);
 						if(sp != null){//获取自己孩子的id
 							userId = sp.getStu().getId();
+							stuId = userId;
 							axisName1 = sp.getStu().getRealName()+"的统计";
 						}
 					}
@@ -618,39 +622,32 @@ public class ReportCenterAction  extends DispatchAction{
 				Double relateXxFailNum_1 = 0.0;
 				if(specNum > 0){
 					specNum = 1;
-//					if(schoolId > 0 || !gradeName.equals("") || classId > 0){
-//						specNum = 1;
-//					}
-					oneZdFailNum_new = Convert.convertInputNumber_2(oneZdFailNum * 1.0 / specNum);
-					relateZdFailNum_new = Convert.convertInputNumber_2(relateZdFailNum * 1.0 / specNum);
+					oneZdFailNum_new = Convert.convertInputNumber_2(oneZdFailNum * 1.0 / specNum);//一次诊断未通过
+					relateZdFailNum_new = Convert.convertInputNumber_2(relateZdFailNum * 1.0 / specNum);//关联诊断未通过
 					againXxSuccNum_real = Convert.convertInputNumber_2(againXxSuccNum * 1.0 / specNum);//再次诊断学习通过次数
-					oneZdSuccNum_1 = Convert.convertInputNumber_2(oneZdSuccNum * 1.0 / specNum);
-//					againXxFailNum_1 = Convert.convertInputNumber_2(againXxFailNum * 1.0 / specNum);
+					oneZdSuccNum_1 = Convert.convertInputNumber_2(oneZdSuccNum * 1.0 / specNum);//一次诊断通过次数
 					againXxFailNum_1 = Convert.convertInputNumber_2(oneZdFailNum_new - againXxSuccNum_real);//再次诊断（学习）未通过等于一次性未通过总数-再次诊断（学习）通过
+					if(againXxFailNum_1 < 0){
+						againXxFailNum_1 = 0.0;
+					}
+					if(noRelateNum < 0){
+						noRelateNum = 0;
+					}
 					noRelateNum_1 = Convert.convertInputNumber_2(noRelateNum * 1.0 / specNum);
-//					List<StudyLogInfo>  sLog = slm.listSlInfoByopt(userId, subId, 0, 0, sDate, eDate);
-//					Integer relateNum = 0;//已溯源个数
-//					for(StudyLogInfo sl : sLog){
-//						Integer step  = sl.getStep();
-//						if(step >= 3){//溯源诊断已完成
-//							relateNum++;
-//						}
-//					}
-//					if(oneZdFailNum_new < relateNum){
-//						noRelateNum_1 = 0.0;
-//					}else{
-//						noRelateNum_1 = Convert.convertInputNumber_2(oneZdFailNum_new - relateNum);
-//					}
 					relateXxSuccNum_1 = Convert.convertInputNumber_2(relateXxSuccNum * 1.0 / specNum);
-//					relateXxFailNum_1 = Convert.convertInputNumber_2(relateXxFailNum * 1.0 / specNum);
 					if(relateZdFailNum_new < relateXxSuccNum_1){
 						relateZdFailNum_new = relateXxSuccNum_1;
 					}
 					relateXxFailNum_1 = Convert.convertInputNumber_2(relateZdFailNum_new - relateXxSuccNum_1);//关联学习未通过等于关联诊断未通过总数-关联学习通过
+					if(relateXxFailNum_1 < 0){
+						relateXxFailNum_1 = 0.0;
+					}
 				}
-				fmNum = Convert.convertInputNumber_2(oneZdFailNum_new + relateZdFailNum_new);//一次性通过总数+关联诊断未通过
-				if(fmNum > 0){
-					rate = Convert.convertInputNumber_1(againXxSuccNum_real * 100.0  / fmNum) + "%";//转换率
+				if(oneZdFailNum_new > 0){
+					//本知识点转换率=再次学习通过/一次性未通过
+					rate = Convert.convertInputNumber_1(againXxSuccNum_real * 100.0  / oneZdFailNum_new) + "%";//转换率
+					//关联知识点转换率=关联学习通过/关联诊断未通过
+					rate_1 = Convert.convertInputNumber_1(relateXxSuccNum_1 * 100.0  / relateZdFailNum_new) + "%";//转换率
 				}
 				Double oneZdFailNumAll_new = 0.0;
 				Double relateZdFailNumAll_new = 0.0;
@@ -662,7 +659,7 @@ public class ReportCenterAction  extends DispatchAction{
 				Double relateXxSuccNum_all_1 = 0.0;
 				Double relateXxFailNum_all_1 = 0.0;
 				if(allNum > 0){
-					if(stuId > 0){//指定学生时
+					if(stuId > 0){//管理员指定学生或者学生 自己 登录时
 						//获取该同学全部的学生数量
 						allNum = um.getCountByOpt("", "", "", "", "", 0, schoolId, 0, classId, 0);
 					}else if(classId > 0){//班级时
@@ -712,32 +709,22 @@ public class ReportCenterAction  extends DispatchAction{
 					relateZdFailNumAll_new = Convert.convertInputNumber_2(relateZdFailNumAll * 1.0 / allNum);
 					againXxSuccNum_real_all = Convert.convertInputNumber_2(againXxSuccNumAll * 1.0 / allNum);//再次诊断学习通过次数
 					oneZdSuccNum_all_1 = Convert.convertInputNumber_2(oneZdSuccNumAll * 1.0 / allNum);
-//					againXxFailNum_all_1 = Convert.convertInputNumber_2(againXxFailNumAll * 1.0 / allNum);
 					againXxFailNum_all_1 = Convert.convertInputNumber_2(oneZdFailNumAll_new - againXxSuccNum_real_all);//再次诊断（学习）未通过等于一次性未通过总数-再次诊断（学习）通过
+					if(noRelateNumAll < 0){
+						noRelateNumAll = 0;
+					}
 					noRelateNum_all_1 = Convert.convertInputNumber_2(noRelateNumAll * 1.0 / allNum);
-//					List<StudyLogInfo>  sLog = slm.listSlInfoByopt(0, subId, 0, 0, sDate, eDate);
-//					Integer relateNumAll = 0;//已溯源个数
-//					for(StudyLogInfo sl : sLog){
-//						Integer step  = sl.getStep();
-//						if(step >= 3){//溯源诊断已完成
-//							relateNumAll++;
-//						}
-//					}
-//					if(oneZdFailNum_new < relateNumAll){
-//						noRelateNum_all_1 = 0.0;
-//					}else{
-//						noRelateNum_all_1 = Convert.convertInputNumber_2(oneZdFailNum_new - relateNumAll);
-//					}
 					relateXxSuccNum_all_1 = Convert.convertInputNumber_2(relateXxSuccNumAll * 1.0 / allNum);//关联学习
-//					relateXxFailNum_all_1 = Convert.convertInputNumber_2(relateXxFailNumAll * 1.0 / allNum);
 					if(relateZdFailNumAll_new < relateXxSuccNum_all_1){
 						relateZdFailNumAll_new = relateXxSuccNum_all_1;
 					}
 					relateXxFailNum_all_1 = Convert.convertInputNumber_2(relateZdFailNumAll_new - relateXxSuccNum_all_1);//关联学习未通过等于关联诊断未通过总数-关联学习通过
 				}
-				fmNumAll = Convert.convertInputNumber_2(oneZdFailNumAll_new + relateZdFailNumAll_new);//一次性未通过总数+关联诊断未通过
-				if(fmNumAll > 0){
-					rateAll = Convert.convertInputNumber_1(againXxSuccNum_real_all * 100.0  / fmNumAll) + "%";//转换率
+				if(oneZdFailNum_new > 0){
+					//本知识点转换率=再次学习通过/一次性未通过
+					rateAll = Convert.convertInputNumber_1(againXxSuccNum_real_all * 100.0  / oneZdFailNumAll_new) + "%";//转换率
+					//关联知识点转换率=关联学习通过/关联诊断未通过
+					rateAll_1 = Convert.convertInputNumber_1(relateXxSuccNum_all_1 * 100.0  / relateZdFailNumAll_new) + "%";//转换率
 				}
 				map.put("oneZdSuccNum", oneZdSuccNum_1);
 				map.put("oneZdFailNum", oneZdFailNum_new);
@@ -748,6 +735,7 @@ public class ReportCenterAction  extends DispatchAction{
 				map.put("relateXxSuccNum", relateXxSuccNum_1);
 				map.put("relateXxFailNum", relateXxFailNum_1);
 				map.put("rate", rate);
+				map.put("rate_gl", rate_1);
 				map.put("axisName1", axisName1);
 				
 				map.put("oneZdSuccNumAll", oneZdSuccNum_all_1);
@@ -759,6 +747,7 @@ public class ReportCenterAction  extends DispatchAction{
 				map.put("relateXxSuccNumAll", relateXxSuccNum_all_1);
 				map.put("relateXxFailNumAll", relateXxFailNum_all_1);
 				map.put("rateAll", rateAll);
+				map.put("rateAll_gl", rateAll_1);
 				map.put("axisName2", axisName2);
 				map.put("contentInfo", contentInfo);
 			}else{

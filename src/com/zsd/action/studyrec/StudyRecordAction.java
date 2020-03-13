@@ -1540,6 +1540,7 @@ public class StudyRecordAction extends DispatchAction {
 		SchoolManager sm = (SchoolManager)AppFactory.instance(null).getApp(Constants.WEB_SCHOOL_INFO);
 		RoleUserInfoManager rum = (RoleUserInfoManager)AppFactory.instance(null).getApp(Constants.WEB_ROLE_USER_INFO);
 		ClassInfoManager cm = (ClassInfoManager)AppFactory.instance(null).getApp(Constants.WEB_CLASS_INFO);
+		StudyStuQfTjManager tjm = (StudyStuQfTjManager)AppFactory.instance(null).getApp(Constants.WEB_STUDY_STU_QFTJ_INFO);
 		String field = Transcode.unescape_new1("field", request);
 		JSONObject json = JSON.parseObject(field);
 		
@@ -1571,6 +1572,9 @@ public class StudyRecordAction extends DispatchAction {
 			Integer studyNum = 0;
 			Integer comNum = 0;
 			Integer unComNum = 0;
+			Integer relateZdFailNumAll = 0;//关联诊断未通过
+    		Integer relateXxSuccNumAll = 0;//关联学习通过
+    		Integer relateXxFailNumAll = 0;//关联未学习通过
 			// 第一步，创建一个webbook，对应一个Excel文件  
 	        HSSFWorkbook wb = new HSSFWorkbook();  
 	        // 第二步，在webbook中添加一个sheet,对应Excel文件中的sheet  
@@ -1634,6 +1638,15 @@ public class StudyRecordAction extends DispatchAction {
 	        cell = row.createCell(13);  
 	        cell.setCellStyle(style_head);  
 	        cell.setCellValue("完成率");
+	        cell = row.createCell(14);  
+	        cell.setCellStyle(style_head);  
+	        cell.setCellValue("关联诊断未通过");
+	        cell = row.createCell(15);  
+	        cell.setCellStyle(style_head);  
+	        cell.setCellValue("关联学习通过");
+	        cell = row.createCell(16);  
+	        cell.setCellStyle(style_head);  
+	        cell.setCellValue("关联未学习通过");
 			for(Integer i = 0; i < uLen ; i++){
 				User user = uList.get(i);
 				row = sheet.createRow((int) i + 1);
@@ -1736,6 +1749,36 @@ public class StudyRecordAction extends DispatchAction {
 		        	cell_data = row.createCell(13);
 		        	cell_data.setCellStyle(style);
 		        	cell_data.setCellValue(completeRate);
+		        	
+		        	//
+		        	List<StudyStuQfTjInfo> qfList = tjm.listInfoByOpt(user.getId(), subId, sDate, eDate, "", "", "", "", 0, 0, "", 0);
+		        	Integer relateZdFailNum = 0;//关联诊断未通过
+		    		Integer relateXxSuccNum = 0;//关联学习通过
+		    		Integer relateXxFailNum = 0;//关联未学习通过
+		        	for(StudyStuQfTjInfo qftj : qfList){
+		        		relateZdFailNum += qftj.getRelateZdFailNum();
+		        		relateXxSuccNum += qftj.getRelateXxSuccNum();
+		        		relateXxFailNum += qftj.getRelateXxFailNum();
+		        	}
+		        	//增加关联诊断未通过
+		        	
+		        	//增加关联学习通过 
+		        	
+		        	//增加未学习通过
+		        	cell_data = row.createCell(14);
+		        	cell_data.setCellStyle(style);
+		        	cell_data.setCellValue(relateZdFailNum);
+		        	
+		        	cell_data = row.createCell(15);
+		        	cell_data.setCellStyle(style);
+		        	cell_data.setCellValue(relateXxSuccNum);
+		        	
+		        	cell_data = row.createCell(16);
+		        	cell_data.setCellStyle(style);
+		        	cell_data.setCellValue(relateXxFailNum);
+		        	
+		        	relateZdFailNumAll += relateZdFailNum;
+		        	relateXxSuccNumAll += relateXxSuccNum;
 				 }
 			}
 			
@@ -1766,6 +1809,22 @@ public class StudyRecordAction extends DispatchAction {
         	cell_data = row.createCell(13); 
         	cell_data.setCellStyle(style);
         	cell_data.setCellValue(allComRate);
+        	
+        	cell_data = row.createCell(14);
+        	cell_data.setCellStyle(style);
+        	cell_data.setCellValue(relateZdFailNumAll);
+        	
+        	cell_data = row.createCell(15);
+        	cell_data.setCellStyle(style);
+        	cell_data.setCellValue(relateXxSuccNumAll);
+        	
+        	cell_data = row.createCell(16);
+        	cell_data.setCellStyle(style);
+        	relateXxFailNumAll = relateZdFailNumAll - relateXxSuccNumAll;
+        	if(relateXxFailNumAll < 0){
+        		relateXxFailNumAll = 0;
+        	}
+        	cell_data.setCellValue(relateXxFailNumAll);
         	
 			// 第六步，将文件存到指定位置
 	        String absoFilePath = "";//绝对地址

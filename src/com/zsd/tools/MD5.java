@@ -64,10 +64,37 @@ public class MD5{
 	  }
   }
   
+  //加密后解密
+  public static String JM(String inStr) {   
+	  char[] a = inStr.toCharArray();   
+	  for (int i = 0; i < a.length; i++) {   
+	   a[i] = (char) (a[i] ^ 't');   
+	  }   
+	  String k = new String(a);   
+	  return k;   
+  }   
+
+  //可逆的加密算法
+  public static String KL(String inStr) {   
+	  // String s = new String(inStr);   
+	  char[] a = inStr.toCharArray();   
+	  for (int i = 0; i < a.length; i++) {   
+	   a[i] = (char) (a[i] ^ 't');   
+	  }   
+	  String s = new String(a);   
+	  return s;   
+	 }
 
   public static void main(String args[]){
 	  MD5 md5 = new MD5();
-	  System.out.println(md5.calcMD5("519421"));
+	  String s = "32011823WM@123";
+//	  System.out.println(md5.calcMD5(s));
 	  //System.out.println(verifyPassword("123456wmk","E84C77D2584C289EA93175460D7DC1F6",0));
+//	  System.out.println(md5.JM(md5.calcMD5("519421")));
+	  
+	  System.out.println("原始：" + s);   
+	  System.out.println("MD5后：" + md5.calcMD5(s));   
+	  System.out.println("MD5后再加密：" + KL(md5.calcMD5(s)));   
+	  System.out.println("解密为MD5后的：" + JM(KL(md5.calcMD5(s))));   
   }
 }

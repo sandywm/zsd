@@ -86,8 +86,7 @@ public class HwStudyTjManagerImpl implements HwStudyTjManager{
 				}
 				if(succNum.equals(1)){
 					hwTj.setSuccNum(hwTj.getSuccNum() + 1);
-				}
-				if(errorNum.equals(1)){
+				}else if(errorNum.equals(1)){
 					hwTj.setErrorNum(hwTj.getErrorNum() + 1);
 				}
 				hstjDao.update(sess, hwTj);

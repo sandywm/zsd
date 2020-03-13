@@ -312,6 +312,8 @@ public class LoreInfoManagerImpl implements LoreInfoManager{
 				String subIdCode = "";
 				if(subId < 10){
 					subIdCode = "0" + subId;
+				}else{
+					subIdCode = String.valueOf(subId);
 				}
 				String paraCode = "";//学段号
 				Integer gradeNum = Integer.parseInt(gradeCode);

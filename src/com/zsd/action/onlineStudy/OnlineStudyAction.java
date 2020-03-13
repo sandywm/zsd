@@ -41,6 +41,7 @@ import com.zsd.module.StudyStuQfTjInfo;
 import com.zsd.module.StudyStuTjInfo;
 import com.zsd.module.StudyTaskInfo;
 import com.zsd.module.Subject;
+import com.zsd.module.TodayTask;
 //import com.zsd.module.TodayTask;
 import com.zsd.module.User;
 import com.zsd.module.UserClassInfo;
@@ -62,6 +63,7 @@ import com.zsd.service.StudyMapManager;
 import com.zsd.service.StudyStuQfTjManager;
 import com.zsd.service.StudyStuTjInfoManager;
 import com.zsd.service.StudyTaskManager;
+import com.zsd.service.TodayTaskManager;
 //import com.zsd.service.TodayTaskManager;
 import com.zsd.service.UserClassInfoManager;
 import com.zsd.service.UserManager;
@@ -740,7 +742,9 @@ public class OnlineStudyAction extends DispatchAction {
 						if(loreTypeName.equals("知识讲解")){
 							smm.updateStepById(sm.getId(), 1);
 						}else{
-							msg = "zsjjNotStart";
+							//没有视频时放过
+//							msg = "zsjjNotStart";
+							smm.updateStepById(sm.getId(), 1);
 						}
 					}else if(currStep.equals(1)){
 						if(loreTypeName.equals("点拨指导")){
@@ -808,6 +812,26 @@ public class OnlineStudyAction extends DispatchAction {
 							list_d.add(map_d);
 						}
 						map.put("sourceDetailList", list_d);
+					}
+				}
+			}else{
+				if(loreTypeName.equals("知识讲解")){
+					msg = "success";
+					//没有视频时放过
+					List<StudyMapInfo> smList = smm.listInfoByOpt(stuId, loreId);
+					if(smList.size() > 0){//存在学习记录
+						StudyMapInfo sm = smList.get(0);
+						Integer currStep = sm.getCurrStep();
+						if(currStep.equals(0)){
+							if(loreTypeName.equals("知识讲解")){
+								smm.updateStepById(sm.getId(), 1);
+							}else{
+								//没有视频时放过
+								smm.updateStepById(sm.getId(), 1);
+							}
+						}
+					}else{
+						smm.addSM(stuId, loreId, 1);
 					}
 				}
 			}
@@ -2263,7 +2287,11 @@ public class OnlineStudyAction extends DispatchAction {
 					map.put("sourceDetail", lqList.get(0).getQueAnswer());
 					map.put("loreTypeName", loreTypeName);
 				}else{
-					msg = "noInfo";
+//					msg = "noInfo";
+					msg = "success";
+					map.put("sourceDetail", "Module/commonJs/ueditor/jsp/video/12312312321.flv");
+					map.put("loreTypeName", "video");
+					//没有视频时放过
 				}
 			}else if(loreTypeName.equals("guide") || loreTypeName.equals("loreList")){//点拨指导||知识清单
 				if(loreTypeName.equals("guide")){
@@ -2557,7 +2585,7 @@ public class OnlineStudyAction extends DispatchAction {
 							StudyLogInfo  sl = slm.getEntityById(studyLogId);
 							if(sl != null){
 								//获取该记录里面最后一道题
-								if(sdm.listLastInfoByLogId(studyLogId, 0, "").get(0).getLoreQuestion().getId().equals(lqId)){
+								if(sdm.listLastInfoByLogId(studyLogId, 0, "").get(0).getLoreQuestion().getId().equals(lqId) && !loreType.equals("巩固训练")){
 									updateFlag = false;
 //										System.out.println("不能重复提交");
 									msg = "reSubmit";//不能重复提交
@@ -2602,9 +2630,17 @@ public class OnlineStudyAction extends DispatchAction {
 							//step2:向detail表中插入一条记录并查看该studyLogId+loreQuestionId有没有记录
 							List<StudyDetailInfo> sdList = sdm.listInfoByOpt(studyLogId, lqId);
 							Integer questionNumber_curr = sdList.size() + 1;
+							System.out.println("错误查看开始（在线学习增加学习详情）------------"+CurrentTime.getCurrentTime());
+							String content = "stuId="+stuId+",studyLogId="+studyLogId+",currentLoreId="+currentLoreId;
+							content += ",lqId="+lqId+",questionStep="+questionStep+",dataBaseAnswerChar="+dataBaseAnswerChar;
+							content += ",result="+result+",currTime="+currTime+",myAnswer="+myAnswer;
+							content += ",answerOptionStr[0]="+answerOptionStr[0]+",answerOptionStr[1]="+answerOptionStr[1]+",answerOptionStr[2]="+answerOptionStr[2];
+							content += ",answerOptionStr[3]="+answerOptionStr[3]+",answerOptionStr[4]="+answerOptionStr[4]+",answerOptionStr[5]="+answerOptionStr[5];
+							content += ",questionNumber_curr="+questionNumber_curr;
 							sdm.addStudyDetail(stuId, studyLogId, currentLoreId, lqId, questionStep, dataBaseAnswerChar, 
 									result, currTime, myAnswer, answerOptionStr[0], answerOptionStr[1], answerOptionStr[2]
 									,answerOptionStr[3], answerOptionStr[4], answerOptionStr[5], questionNumber_curr);
+							System.out.println("错误查看结束（在线学习增加学习详情）------------"+CurrentTime.getCurrentTime());
 							//此处增加学生学习、全平台统计---------------------start
 							//A：统计学生学习情况---------------------
 							//根据学习时间、学生编号、学科编号获取学生学习统计信息
@@ -2662,7 +2698,10 @@ public class OnlineStudyAction extends DispatchAction {
 									if(stList_1.size() > 0){
 										//修改指定studyLogId的记录的金币和时间
 										Integer stId = stList_1.get(0).getId();
+										System.out.println("错误查看开始（在线学习增加学习任务详情）------------"+CurrentTime.getCurrentTime());
+										System.out.println("stId="+stId+",coin="+stId);
 										stm.updateCoinInfoById(stId, coin);
+										System.out.println("错误查看结束（在线学习增加学习任务详情）------------"+CurrentTime.getCurrentTime());
 									}else{//新一级知识点的题（需要新增答题学习任务）
 										number = stList.get(0).getTaskNum() + 1;
 										stm.addSTask(number, studyLogId, loreTaskName, coin);
@@ -2906,12 +2945,14 @@ public class OnlineStudyAction extends DispatchAction {
 								//-1为未做
 							rzrm.addRZR(studyLogId, loreId_curr, zdxzd_flag, -1, -1, 0, 0);
 							
-							//增加今日任务
-//							List<TodayTask> ttList = ttm.listInfoByOpt(stuId, loreId_curr, CurrentTime.getStringDate(), 1, 1);
-//							if(ttList.size() > 0){
-//								ttm.updateEntityById(ttList.get(0).getId(), -1, -1, -1, 0, -1);
-//							}else{
-//								ttm.addTTask(stuId, loreId_curr, -1, -1, -1, 0, 0);
+//							if(!access_final.equals(1)){//未完全正确或全部错误
+//								//增加今日任务
+//								List<TodayTask> ttList = ttm.listInfoByOpt(stuId, loreId_curr, CurrentTime.getStringDate(), 1, 1);
+//								if(ttList.size() > 0){
+//									ttm.updateEntityById(ttList.get(0).getId(), -1, -1, -1, 0, -1);
+//								}else{
+//									ttm.addTTask(stuId, loreId_curr, zdxzd_flag, -1, -1, 0, 0);
+//								}
 //							}
 						}
 						if(currentStepLoreArray.length > 0){//其他学校不参与
@@ -2940,12 +2981,14 @@ public class OnlineStudyAction extends DispatchAction {
 						}else{//表示第一次再次诊断
 							rzrm.addRZR(studyLogId, currentLoreId, -1, -1, zczd_flag, -1, 1);
 						}
-						//增加今日任务
-//						List<TodayTask> ttList = ttm.listInfoByOpt(stuId, Integer.parseInt(currentStepLoreArray[0]), CurrentTime.getStringDate(), 1, 1);
-//						if(ttList.size() > 0){
-//							ttm.updateEntityById(ttList.get(0).getId(), -1, -1, -1, -1, ttList.get(0).getZczdTimes() + 1);
-//						}else{
-//							ttm.addTTask(stuId, Integer.parseInt(currentStepLoreArray[0]), -1, -1, -1, -1, 1);
+//						if(!access_final.equals(1)){//未完全正确或全部错误
+//							//增加今日任务
+//							List<TodayTask> ttList = ttm.listInfoByOpt(stuId, Integer.parseInt(currentStepLoreArray[0]), CurrentTime.getStringDate(), 1, 1);
+//							if(ttList.size() > 0){
+//								ttm.updateEntityById(ttList.get(0).getId(), -1, -1, zczd_flag, -1, ttList.get(0).getZczdTimes() + 1);
+//							}else{
+//								ttm.addTTask(stuId, currentLoreId, -1, -1, zczd_flag, -1, 1);
+//							}
 //						}
 					}else if(step_curr.equals(4)){//最后一个关联知识点再次诊断完全正确后step会变成4
 						Integer current_lore_id = Integer.parseInt(currentStepLoreArray[0]);
@@ -2965,9 +3008,9 @@ public class OnlineStudyAction extends DispatchAction {
 							//增加今日任务
 //							List<TodayTask> ttList = ttm.listInfoByOpt(stuId, current_lore_id, CurrentTime.getStringDate(), 1, 1);
 //							if(ttList.size() > 0){
-//								ttm.updateEntityById(ttList.get(0).getId(), -1, -1, -1, -1, ttList.get(0).getZczdTimes() + 1);
+//								ttm.updateEntityById(ttList.get(0).getId(), -1, -1, zczd_flag, -1, ttList.get(0).getZczdTimes() + 1);
 //							}else{
-//								ttm.addTTask(stuId, current_lore_id, -1, -1, -1, -1, 1);
+//								ttm.addTTask(stuId, current_lore_id, -1, -1, zczd_flag, -1, 1);
 //							}
 						}
 						
@@ -3048,6 +3091,9 @@ public class OnlineStudyAction extends DispatchAction {
 						if(fmNum > 0 && againXxSuccNum_real > 0){
 							rate = Convert.convertInputNumber_1(againXxSuccNum_real * 100.0  / fmNum) + "%";//转换率
 						}
+						if(qftj.getNoRelateNum().equals(0) && noRelateNum.equals(-1)){
+							noRelateNum = 0;
+						}
 						tjm.updateTjInfoById(qftj.getId(), oneZdSuccNum, oneZdFailNum, againXxSuccNum, againXxFailNum, noRelateNum, relateZdFailNum, relateXxSuccNum, relateXxFailNum, rate);
 					}else{
 						//增加
@@ -3055,6 +3101,9 @@ public class OnlineStudyAction extends DispatchAction {
 						Integer againXxSuccNum_real = againXxSuccNum;//再次诊断学习通过次数
 						if(fmNum > 0 && againXxSuccNum_real > 0){
 							rate = Convert.convertInputNumber_1(againXxSuccNum_real * 100.0  / fmNum) + "%";//转换率
+						}
+						if(noRelateNum < 0){
+							noRelateNum = 0;
 						}
 						tjm.addQFTJ(stuId, subId, studyLogId,oneZdSuccNum, oneZdFailNum, againXxSuccNum, againXxFailNum, noRelateNum, relateZdFailNum, relateXxSuccNum, relateXxFailNum, rate, prov, city, county, town,schoolType, schoolId, gradeName, classId);
 					}

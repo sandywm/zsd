@@ -292,6 +292,35 @@ public class CommonTools {
 			e1.printStackTrace();
 		}
     }
+    
+    public static void addLog(String filePath,Integer stuId,String account,Integer hwTjId,Integer hwStudyDetailId,Integer succNum,
+    		Integer errorNum,Integer totalNum){
+		String attackInfo = " 学生编号："+stuId + "      学生账号："+account + "     作业统计编号："+hwTjId ;
+		attackInfo += "     题号--正确--错误--全部："+hwStudyDetailId+ "--" +succNum + "--" + errorNum + "--" + totalNum + "     完成时间："+CurrentTime.getCurrentTime() ;
+		File oldfile = new File(filePath);  
+		if(!oldfile.exists()){
+			 try {
+				oldfile.createNewFile();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		FileWriter fw;
+		try {
+			fw = new FileWriter(oldfile, true);
+			PrintWriter pw = new PrintWriter(fw);
+			pw.println("  "+attackInfo);
+			pw.flush();
+			fw.flush();
+			pw.close();
+			fw.close();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+    }
+    
   //获取真实IP地址
 	public static String getIpAddress(HttpServletRequest request){
 		String ipAddress = "";
@@ -694,7 +723,7 @@ public class CommonTools {
 				Integer ediId = lore_bb.getChapter().getEducation().getEdition().getId();//学习知识点所属出版社
 				List<LoreInfo> loreList = lm.listInfoByMainLoreId(quoteLoreId);
 				for(LoreInfo lore : loreList){
-					if(lore.getInUse().equals(0)){
+//					if(lore.getInUse().equals(0)){//取消的目的是很多知识点被设置成无效，但是还需要接着溯源
 						if(lore.getChapter().getEducation().getEdition().getId().equals(ediId)){
 							String currLoreId = lore.getId().toString();
 							//目的是为了防止同一版本下知识典名称相同（比如说人教版4年级下册第一单元出现万以上的读法，第二单元又出现万以上的读法的知识典）
@@ -706,7 +735,7 @@ public class CommonTools {
 								}
 							}
 						}
-					}
+//					}
 				}
 			}
 		} catch (Exception e) {

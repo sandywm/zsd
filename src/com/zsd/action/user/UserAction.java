@@ -1049,8 +1049,9 @@ public class UserAction extends DispatchAction {
 										if(ru.getClassId().equals(0)){
 											roleName = "grade";
 										}else{
+											roleName = "class";
 											map.put("classId", ru.getClassId());
-											map.put("className", cm.listClassInfoById(ru.getClassId()));
+											map.put("className", cm.listClassInfoById(ru.getClassId()).get(0).getClassName());
 										}
 									}
 								}
